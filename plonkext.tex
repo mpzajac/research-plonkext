@@ -117,6 +117,9 @@ The definition of simulation extractability as stated above allows the malicious
 	where $\oracleo$ on input $\inp'$ returns $\pi' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $(\inp', \pi')$ to a list $Q$.
 \end{definition}
 
+\subsection{Interactive zero knowledge}
+Interactive proofs are often required to have the special soundness property which states that if for a given statement $\inp$ and first message $a$ the prover can respond to many verifier's challenges then she knows the witness. Moreover, a PPT algorithm with access to a number of prover--verifier conversations that shares the same first
+
 \subsection{Interpolation of rational functions}
 Let $F(X) = P(X) / Q(X)$ be a rational function defined over $\FF(X)$ such that $\deg P = m_a$ and $\deg Q = m_b$. We call a set $V = \smallset{(x_i, y_i)}_{i \in I}$ a \emph{support set} of $F$ if for all $i \in I$ holds $F(x_i) = y_i$. 
 As shown by Minsky et al.~in \cite{TIT:MinTraZip03} if $P$ and $Q$ are monic, then a support set $V$ of size at least $m_a + m_b$ unambiguously determines $F$. 
@@ -129,8 +132,10 @@ We note that when $P$ and $Q$ are not monic, i.e~$P(X) = p_0 X^{m_a} + p_1 X^{m_
 To that end we define monic $P'(X) = P(X) / p_0$ and $Q'(X) =  Q(X) / q_0$, and recreate $F'(X) = P'(X) / Q'(X) = q_0 /p_0 \cdot F(X)$.
 
 
-\subsection{Generalised forking lemma and its application in simulation-extractability}
+\subsection{Generalised forking lemma}
+\subsection{Simulation extractability from special soundness}
 \section{Simulation extractability of \plonk}
+The main idea behind showing that \plonk{} is simulation extractable 
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
