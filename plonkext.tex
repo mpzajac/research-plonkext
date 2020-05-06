@@ -1,0 +1,146 @@
+% !TeX spellcheck = en_GB
+\let\accentvec\vec
+% \documentclass[runningheads]{llncs}
+ \documentclass[runningheads]{amsart}
+\let\spvec\vec
+\let\vec\accentvec
+\usepackage{amssymb,amsmath}
+\let\vec\spvec
+
+\usepackage[T1]{fontenc}
+
+\newcommand{\iflipics}[1] {}
+\newcommand{\iflncs}[1] {#1}
+
+\def\vec#1{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
+	{\mbox{\boldmath$\textstyle#1$}}
+	{\mbox{\boldmath$\scriptstyle#1$}}
+	{\mbox{\boldmath$\scriptscriptstyle#1$}}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\widebar}{0}{mathx}{"73}
+
+% lncs size (as printed in books, with small margins):
+%\usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={12.2cm,19.3cm},centering]{geometry}
+
+\newcommand{\ifamsart}[1] {#1}
+\ifamsart{
+	\newtheorem{theorem}{Theorem}[section]
+	\newtheorem{proposition}[theorem]{Proposition}
+	\newtheorem{lemma}[theorem]{Lemma}
+	\newtheorem{corollary}[theorem]{Corollary}
+	\theoremstyle{definition}
+	\newtheorem{definition}[theorem]{Definition}
+	\newtheorem{example}[theorem]{Example}
+}
+
+\usepackage{soulutf8}
+\soulregister\cite7
+\soulregister\ref7
+\soulregister\pageref7
+\usepackage{hyperref}
+\hypersetup{final}
+\usepackage{mathrsfs}
+\usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
+\usepackage[capitalise]{cleveref}
+\usepackage{cite}
+\usepackage{booktabs}
+\usepackage{paralist}
+\usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed} 
+
+\newcommand{\newdefs}[1] {\setlength{\fboxsep}{1pt}\colorbox{gray!20}{\(#1\)}}
+
+\newcommand{\COMMENT}[1]  {}
+
+% General mathematics
+
+\newcommand{\range}[2] {[#1 \, .. \, #2]}
+
+\newcommand{\smallset}[1] {\{#1\}}
+\newcommand{\GRP} {\mathbb{G}}
+\newcommand{\pair} {\hat{e}}
+\newcommand{\brak}[1] {\left(#1\right)}
+\newcommand{\sbrak}[1] {(#1)}
+\newcommand{\alg}[1] {\pcalgostyle{#1}}
+\newcommand{\IM} {\operatorname{im}}
+\newcommand{\myland} {\,\land\,}
+\newcommand{\mylor} {\,\lor\,}
+\newcommand{\vect}[1] {\operatorname{vect}(#1)}
+
+% bilinear maps
+
+\newcommand{\bmap}[2] {\left[#1\right]_{#2}}
+\newcommand{\GONE}[1] {\bmap{#1}{1}}
+\newcommand{\gone}[1] {\sbmap{#1}{1}}
+\newcommand{\GTWO}[1] {\bmap{#1}{2}}
+\newcommand{\gtwo}[1] {\sbmap{#1}{2}}
+\newcommand{\gi} {\iota}
+\newcommand{\gtar}[1] {\sbmap{#1}{T}}
+\newcommand{\grpgi}[1] {\sbmap{#1}{\gi}}
+\newcommand{\sbmap}[2] {\left[#1\right]_{#2}}
+
+\newcommand{\oracleo}{\mathsf{O}}
+
+\newcommand{\kw}{\alg{kw}}
+
+%Plonk
+\newcommand{\plonk}{\textsc{Plonk}}
+
+\definecolor{darkmagenta}{rgb}{0.5,0,0.5}
+\definecolor{lightmagenta}{rgb}{1,0.85,1}
+\definecolor{darkred}{rgb}{0.7,0,0}
+\definecolor{blueish}{rgb}{0.1,0.1,0.5}
+\definecolor{pinkish}{rgb}{0.9,0.8,0.8}
+\definecolor{darkgreen}{rgb}{0,0.6,0}
+\definecolor{lightgreen}{rgb}{0.85,1,0.85}
+\definecolor{skyblue}{rgb}{0.3,0.9,0.99}
+
+\DeclareRobustCommand{\michals}[2]  {{\color{blueish}\sethlcolor{pinkish}\hl{\scriptsize\textsf{Michal #1:} #2}}}
+
+\title{On Simulation-Extractability of \textsc{Plonk}}
+% \titlerunning{Achieving additional security in LegoSNARK}
+
+\author{Michał Zając}
+% \institute{ \email{}
+% }
+
+\allowdisplaybreaks
+
+\begin{document}
+	\sloppy
+	\maketitle
+
+\begin{abstract}
+	In this paper we show that \plonk{}~\cite{EPRINT:GabWilCio19} is (non black-box) simulation extractable.
+\end{abstract}
+
+\section{Introduction}
+
+\section{Preliminaries}
+\subsection{Zero knowledge}
+\begin{definition}[Simulation extractability]
+\end{definition}
+\begin{definition}[Strong simulation extractability]
+\end{definition}
+
+\subsection{Interpolation of rational functions}
+Let $F(X) = P(X) / Q(X)$ be a rational function defined over $\FF(X)$ such that $\deg P = m_a$ and $\deg Q = m_b$. We call a set $V = \smallset{(x_i, y_i)}_{i \in I}$ a \emph{support set} of $F$ if for all $i \in I$ holds $F(x_i) = y_i$. 
+As shown by Minsky et al.~in \cite{TIT:MinTraZip03} if $P$ and $Q$ are monic, then a support set $V$ of size at least $m_a + m_b$ unambiguously determines $F$. 
+
+\begin{lemma}[Rational function interpolation]
+  Let $F(X) = P(X) / Q(X)$ be a rational function and let $P(X) = X^{m_a} + p_1 X^{m_a - 1} + \ldots p_{m_a}$, $Q(X) = X^{m_b} + q_1 X^{m_a - 1} + \ldots q_{m_b}$. Let $V_F$ be a support set of size $m = m_a + m_b$, then $V_F$ determines $F$ unambiguously.
+\end{lemma}
+
+We note that when $P$ and $Q$ are not monic, i.e~$P(X) = p_0 X^{m_a} + p_1 X^{m_a - 1} + \ldots p_{m_a}$, $Q(X) = q_0 X^{m_b} + q_1 X^{m_a - 1} + \ldots q_{m_b}$, for $p_0, q_0$ not equal $0$ or $1$, and $p_0$ and $q_0$ are known, then $F$ can be recreated anyway. 
+To that end we define monic $P'(X) = P(X) / p_0$ and $Q'(X) =  Q(X) / q_0$, and recreate $F'(X) = P'(X) / Q'(X) = q_0 /p_0 \cdot F(X)$.
+
+
+\subsection{Generalised forking lemma and its application in simulation-extractability}
+\section{Simulation extractability of \plonk}
+
+\bibliographystyle{alpha}
+\bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
+
+\end{document}
