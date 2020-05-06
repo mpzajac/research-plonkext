@@ -27,7 +27,7 @@
 
 \newcommand{\ifamsart}[1] {#1}
 \ifamsart{
-	\newtheorem{theorem}{Theorem}[section]
+	\newtheorem{theorem}{Theorem}%[section]
 	\newtheorem{proposition}[theorem]{Proposition}
 	\newtheorem{lemma}[theorem]{Lemma}
 	\newtheorem{corollary}[theorem]{Corollary}
@@ -50,54 +50,7 @@
 \usepackage{paralist}
 \usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed} 
 
-\newcommand{\newdefs}[1] {\setlength{\fboxsep}{1pt}\colorbox{gray!20}{\(#1\)}}
-
-\newcommand{\COMMENT}[1]  {}
-
-% General mathematics
-
-\newcommand{\range}[2] {[#1 \, .. \, #2]}
-
-\newcommand{\smallset}[1] {\{#1\}}
-\newcommand{\GRP} {\mathbb{G}}
-\newcommand{\pair} {\hat{e}}
-\newcommand{\brak}[1] {\left(#1\right)}
-\newcommand{\sbrak}[1] {(#1)}
-\newcommand{\alg}[1] {\pcalgostyle{#1}}
-\newcommand{\IM} {\operatorname{im}}
-\newcommand{\myland} {\,\land\,}
-\newcommand{\mylor} {\,\lor\,}
-\newcommand{\vect}[1] {\operatorname{vect}(#1)}
-
-% bilinear maps
-
-\newcommand{\bmap}[2] {\left[#1\right]_{#2}}
-\newcommand{\GONE}[1] {\bmap{#1}{1}}
-\newcommand{\gone}[1] {\sbmap{#1}{1}}
-\newcommand{\GTWO}[1] {\bmap{#1}{2}}
-\newcommand{\gtwo}[1] {\sbmap{#1}{2}}
-\newcommand{\gi} {\iota}
-\newcommand{\gtar}[1] {\sbmap{#1}{T}}
-\newcommand{\grpgi}[1] {\sbmap{#1}{\gi}}
-\newcommand{\sbmap}[2] {\left[#1\right]_{#2}}
-
-\newcommand{\oracleo}{\mathsf{O}}
-
-\newcommand{\kw}{\alg{kw}}
-
-%Plonk
-\newcommand{\plonk}{\textsc{Plonk}}
-
-\definecolor{darkmagenta}{rgb}{0.5,0,0.5}
-\definecolor{lightmagenta}{rgb}{1,0.85,1}
-\definecolor{darkred}{rgb}{0.7,0,0}
-\definecolor{blueish}{rgb}{0.1,0.1,0.5}
-\definecolor{pinkish}{rgb}{0.9,0.8,0.8}
-\definecolor{darkgreen}{rgb}{0,0.6,0}
-\definecolor{lightgreen}{rgb}{0.85,1,0.85}
-\definecolor{skyblue}{rgb}{0.3,0.9,0.99}
-
-\DeclareRobustCommand{\michals}[2]  {{\color{blueish}\sethlcolor{pinkish}\hl{\scriptsize\textsf{Michal #1:} #2}}}
+\include{macros}
 
 \title{On Simulation-Extractability of \textsc{Plonk}}
 % \titlerunning{Achieving additional security in LegoSNARK}
@@ -121,8 +74,47 @@
 \section{Preliminaries}
 \subsection{Zero knowledge}
 \begin{definition}[Simulation extractability]
+	Proof system $\Psi$ is computationally (adaptively) \emph{simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
+  \[
+	\condprob{
+  \begin{aligned}
+    &(\inp, \wit) \not\in \REL \land \inp\not\in Q \\
+    & \land \verifier (\REL, \crs_{\verifier}, \inp, \pi) = 1
+  \end{aligned}
+  }
+  {
+		\begin{aligned}
+		& \REL \gets \RELGEN (\secparam),
+		(\crs, \td) \gets \kgen (\REL), r \sample \RND{\adv},
+		\\ &
+		((\inp, \pi)  \|  \wit) \gets (\adv^{\oracleo}  \|  \ext_\adv) (\REL, \crs; r)
+		\end{aligned}
+	} \leq \negl \enspace,
+	\]
+	where $\oracleo$ on input $\inp'$ returns $\pi' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $\inp'$ to a list $Q$.
 \end{definition}
+
+The definition of simulation extractability as stated above allows the malicious prover to maul proofs output by the simulator. This possibility can be ruled out by requiring a stronger property as defined below.
+
 \begin{definition}[Strong simulation extractability]
+	Proof system $\Psi$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
+	\[
+	\condprob{
+  \begin{aligned}
+    &(\inp, \wit) \not\in \REL \land (\inp, \pi) \not\in Q \\
+    & \land \verifier (\REL, \crs_{\verifier}, \inp, \pi) = 1
+  \end{aligned}
+  }
+  {
+		\begin{aligned}
+		& \REL \gets \RELGEN (\secparam),
+		(\crs, \td) \gets \kgen (\REL), r \sample \RND{\adv},
+		\\ &
+		((\inp, \pi)  \|  \wit) \gets (\adv^{\oracleo}  \|  \ext_\adv) (\REL, \crs; r)
+		\end{aligned}
+	} \leq \negl \enspace,
+	\]
+	where $\oracleo$ on input $\inp'$ returns $\pi' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $(\inp', \pi')$ to a list $Q$.
 \end{definition}
 
 \subsection{Interpolation of rational functions}
