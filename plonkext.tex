@@ -1,7 +1,7 @@
 % !TeX spellcheck = en_GB
 \let\accentvec\vec
-% \documentclass[runningheads]{llncs}
- \documentclass[runningheads]{amsart}
+\documentclass[runningheads]{llncs}
+ % \documentclass[runningheads]{amsart}
 \let\spvec\vec
 \let\vec\accentvec
 \usepackage{amssymb,amsmath}
@@ -25,7 +25,7 @@
 % lncs size (as printed in books, with small margins):
 %\usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={12.2cm,19.3cm},centering]{geometry}
 
-\newcommand{\ifamsart}[1] {#1}
+\newcommand{\ifamsart}[1] {}
 \ifamsart{
 	\newtheorem{theorem}{Theorem}%[section]
 	\newtheorem{proposition}[theorem]{Proposition}
@@ -56,8 +56,9 @@
 % \titlerunning{Achieving additional security in LegoSNARK}
 
 \author{Michał Zając}
-% \institute{ \email{}
-% }
+\iflncs{
+  \institute{Clearmatics, UK\\ \email{m.p.zajac@gmail.com}}
+}
 
 \allowdisplaybreaks
 
@@ -72,14 +73,53 @@
 \section{Introduction}
 
 \section{Preliminaries}
+Let PPT denote probabilistic polynomial-time.
+Let $\secpar \in \NN$ be the security parameter.
+All adversaries will be stateful.
+For an algorithm $\adv$, let $\IM (\adv)$ be the image of $\adv$ (the set of valid outputs of $\adv$), let $\RND{\adv}$ denote the random tape of $\adv$ (assuming the given value of $\secpar$), and let $r \sample \RND{\adv}$ denote the random choice of the randomiser $r$ from $\RND{\adv}$.
+We denote by $\negl$ an arbitrary negligible function.
+
+Distributions $X$ and $Y$ have \emph{statistical distance} $\SD$ equals $\epsilon$ if $\sum_{a \in \supp{X \cup Y}} \abs{\prob{X = a} - \prob{Y = a}} = \epsilon$.
+We write $X \approx_\secpar Y$ if $\SD(X, Y) \leq \negl$, where $\SD$ is the statistical distance between the distributions.
+For values $a$ and $b$ we write $a \approx_\secpar b$ if $\abs{a - b} \leq \negl$. 
+
+\paragraph{Bilinear groups.}
+A bilinear group generator $\pgen (1^\secpar)$ returns $(p, \GRP_1, \GRP_2, \GRP_T, \pair, \gone{1}, \gtwo{1})$, where $\GRP_1$, $\GRP_2$, and $\GRP_T$ are additive cyclic groups of prime order $p = 2^{\Omega (\secpar)}$, $\gone{1}, \gtwo{1}$ are generators of $\GRP_1$, $\GRP_2$, resp., and $\pair: \GRP_1 \times \GRP_2 \to \GRP_T$ is a non-degenerate PPT-computable bilinear pairing.
+We assume the bilinear pairing to be Type-3, i.e., that there is no efficient isomorphism from $\GRP_1$ to $\GRP_2$ or from $\GRP_2$ to $\GRP_1$.
+We use the by now standard bracket notation, i.e., we write $\sbmap{a}{\gi}$ to denote $a g_{\gi}$ where $g_{\gi}$ is a fixed generator of $\GRP_{\gi}$.
+We denote $\pair (\gone{a}, \gtwo{b})$ as $\gone{a} \gtwo{b}$.
+Thus, $\gone{a} \gtwo{b} = \gtar{a b}$.
+We freely use the bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \vec{C}$ then $\vec{A} \grpgi{\vec{B}} = \grpgi{\vec{C}}$ and $\gone{\vec{A}} \gtwo{\vec{B}} = \gtar{\vec{C}}$.
+
 \subsection{Zero knowledge}
+In a zero-knowledge proof or argument system, a prover convinces the verifier of the veracity of a statement without leaking any side information except that the statement is true.
+Here, a proof (resp., an argument) system guarantees soundness against an unbounded (resp., a PPT) cheating prover.
+The zero-knowledge property is proven by constructing a simulator that can simulate the view of a cheating verifier without knowing the secret information (witness) of the prover.
+% A non-interactive zero-knowledge proof or argument system~\cite{STOC:BluFelMic88} consists of just one message by the prover.
+
+More precisely, let $\prover$ and $\verifier$ be algorithms, the former called \emph{prover} and the latter \emph{verifier}. 
+We denote by $\ip{\prover (\inp, \wit)}{\verifier (\inp)}$ a transcript of conversation between $\prover$ with input $(\inp, \wit)$ and $\verifier$ with input $\inp$. We write $\ip{\prover (\inp, \wit)}{\verifier (\inp)} = 1$ if in the end of the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the transcript.
+
+Let $\RELGEN(\secparam)$ be an algorithm that outputs an $\npol$ relation $\REL = \smallset{(\inp, \wit)}$. Denote by $\LANG_\REL$ the language determined by $\REL$.
+We call an interactive proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$  \emph{zero-knowledge} if for any $\REL \in \IM(\RELGEN)$ and verifier $\verifier^*$ there exists a $\ppt$ simulator $\simulator$ such that
+\[
+  \smallset{\ip{\prover (\inp, \wit)}{\verifier^{*}(\inp)}} \approx_\secpar \smallset{\ip{\simulator^{\verifier^{*}} (\inp)}{\verifier^{*}(\inp)}}\enspace,
+\]
+for any $(\inp, \wit) \in \REL$.
+
+We call zero knowledge \emph{perfect} if the distributions are equal and \emph{computational} if they are indistinguishable for any NUPPT distinguisher.
+
+We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no PPT prover $\prover^*$ can convince an honest verifier $\verifier$ to accept a proof for a false statement, i.e~for $\inp \not\in\LANG$.
+
+Interactive proofs are often required to have the special soundness property which states that if for a given statement $\inp$ and first message $a$ the prover can respond to many verifier's challenges then she knows the witness. Moreover, a PPT algorithm with access to a number of prover--verifier conversations that shares the same first
+
 \begin{definition}[Simulation extractability]
-	Proof system $\Psi$ is computationally (adaptively) \emph{simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
+	Proof system $\proofsystem$ is computationally (adaptively) \emph{simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
   \[
 	\condprob{
   \begin{aligned}
     &(\inp, \wit) \not\in \REL \land \inp\not\in Q \\
-    & \land \verifier (\REL, \crs_{\verifier}, \inp, \pi) = 1
+    & \land \verifier (\REL, \crs_{\verifier}, \inp, \proof) = 1
   \end{aligned}
   }
   {
@@ -87,22 +127,22 @@
 		& \REL \gets \RELGEN (\secparam),
 		(\crs, \td) \gets \kgen (\REL), r \sample \RND{\adv},
 		\\ &
-		((\inp, \pi)  \|  \wit) \gets (\adv^{\oracleo}  \|  \ext_\adv) (\REL, \crs; r)
+		((\inp, \proof)  \|  \wit) \gets (\adv^{\oracleo}  \|  \ext_\adv) (\REL, \crs; r)
 		\end{aligned}
 	} \leq \negl \enspace,
 	\]
-	where $\oracleo$ on input $\inp'$ returns $\pi' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $\inp'$ to a list $Q$.
+	where $\oracleo$ on input $\inp'$ returns $\proof' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $\inp'$ to a list $Q$.
 \end{definition}
 
 The definition of simulation extractability as stated above allows the malicious prover to maul proofs output by the simulator. This possibility can be ruled out by requiring a stronger property as defined below.
 
 \begin{definition}[Strong simulation extractability]
-	Proof system $\Psi$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
+	Proof system $\proofsystem$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
 	\[
 	\condprob{
   \begin{aligned}
-    &(\inp, \wit) \not\in \REL \land (\inp, \pi) \not\in Q \\
-    & \land \verifier (\REL, \crs_{\verifier}, \inp, \pi) = 1
+    &(\inp, \wit) \not\in \REL \land (\inp, \proof) \not\in Q \\
+    & \land \verifier (\REL, \crs_{\verifier}, \inp, \proof) = 1
   \end{aligned}
   }
   {
@@ -110,15 +150,12 @@ The definition of simulation extractability as stated above allows the malicious
 		& \REL \gets \RELGEN (\secparam),
 		(\crs, \td) \gets \kgen (\REL), r \sample \RND{\adv},
 		\\ &
-		((\inp, \pi)  \|  \wit) \gets (\adv^{\oracleo}  \|  \ext_\adv) (\REL, \crs; r)
+		((\inp, \proof)  \|  \wit) \gets (\adv^{\oracleo}  \|  \ext_\adv) (\REL, \crs; r)
 		\end{aligned}
 	} \leq \negl \enspace,
 	\]
-	where $\oracleo$ on input $\inp'$ returns $\pi' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $(\inp', \pi')$ to a list $Q$.
+	where $\oracleo$ on input $\inp'$ returns $\proof' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $(\inp', \proof')$ to a list $Q$.
 \end{definition}
-
-\subsection{Interactive zero knowledge}
-Interactive proofs are often required to have the special soundness property which states that if for a given statement $\inp$ and first message $a$ the prover can respond to many verifier's challenges then she knows the witness. Moreover, a PPT algorithm with access to a number of prover--verifier conversations that shares the same first
 
 \subsection{Interpolation of rational functions}
 Let $F(X) = P(X) / Q(X)$ be a rational function defined over $\FF(X)$ such that $\deg P = m_a$ and $\deg Q = m_b$. We call a set $V = \smallset{(x_i, y_i)}_{i \in I}$ a \emph{support set} of $F$ if for all $i \in I$ holds $F(x_i) = y_i$. 
