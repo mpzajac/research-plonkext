@@ -4,6 +4,7 @@
 
 %general formatting
 \newcommand{\pcvarstyle}[1]{\mathsf{#1}}
+\newcommand{\comment}[1]{}
 
 % General mathematics
 \newcommand{\range}[2] {[#1 \, .. \, #2]}
@@ -23,36 +24,37 @@
 % bilinear maps
 
 \newcommand{\bmap}[2] {\left[#1\right]_{#2}}
-\newcommand{\GONE}[1] {\bmap{#1}{1}}
-\newcommand{\gone}[1] {\sbmap{#1}{1}}
-\newcommand{\GTWO}[1] {\bmap{#1}{2}}
-\newcommand{\gtwo}[1] {\sbmap{#1}{2}}
+\newcommand{\gone}[1] {\bmap{#1}{1}}
+\newcommand{\gtwo}[1] {\bmap{#1}{2}}
 \newcommand{\gi} {\iota}
-\newcommand{\gtar}[1] {\sbmap{#1}{T}}
-\newcommand{\grpgi}[1] {\sbmap{#1}{\gi}}
-\newcommand{\sbmap}[2] {\left[#1\right]_{#2}}
+\newcommand{\gtar}[1] {\bmap{#1}{T}}
+\newcommand{\grpgi}[1] {\bmap{#1}{\gi}}
 
 
 % zero knowledge
 \newcommand{\oracleo}{\mathsf{O}}
 \newcommand{\crs}{\pcvarstyle{crs}}
 \newcommand{\td}{\pcvarstyle{td}}
+\newcommand{\ip}[2]{\langle #1, #2\rangle}
+\renewcommand{\proof}{\pi}
+\newcommand{\proofsystem}{\mathrm{\Psi}}
+\newcommand{\nuppt}{\pcmachinemodelstyle{NUPPT}}
+\newcommand{\ro}{\mathcal{H}}
+\newcommand{\trans}{\pcvarstyle{trans}}
+\newcommand{\instsize}{\pcvarstyle{n}}
+
+% general complexity theory
+\newcommand{\RND}[1]{\pcalgostyle{RND}(#1)}
 \newcommand{\RELGEN}{\mathcal{R}}
 \newcommand{\REL}{\mathbf{R}}
 \newcommand{\LANG}{\mathcal{L}}
 \newcommand{\inp}{\pcvarstyle{x}}
 \newcommand{\wit}{\pcvarstyle{w}}
-\newcommand{\ip}[2]{\langle #1, #2\rangle}
-\renewcommand{\proof}{\pi}
-\newcommand{\proofsystem}{\Psi}
-\newcommand{\nuppt}{\pcmachinemodelstyle{NUPPT}}
-
-% general algorithms
-\newcommand{\RND}[1]{\pcalgostyle{RND}(#1)}
 
 %Plonk
 \newcommand{\plonk}{\textsc{Plonk}}
 
+%colors
 \definecolor{darkmagenta}{rgb}{0.5,0,0.5}
 \definecolor{lightmagenta}{rgb}{1,0.85,1}
 \definecolor{darkred}{rgb}{0.7,0,0}
@@ -62,4 +64,5 @@
 \definecolor{lightgreen}{rgb}{0.85,1,0.85}
 \definecolor{skyblue}{rgb}{0.3,0.9,0.99}
 
+%coments
 \DeclareRobustCommand{\michals}[2]  {{\color{blueish}\sethlcolor{pinkish}\hl{\scriptsize\textsf{Michal #1:} #2}}}

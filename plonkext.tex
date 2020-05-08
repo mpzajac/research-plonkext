@@ -113,8 +113,10 @@ We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no PPT prover $\prov
 
 Interactive proofs are often required to have the special soundness property which states that if for a given statement $\inp$ and first message $a$ the prover can respond to many verifier's challenges then she knows the witness. Moreover, a PPT algorithm with access to a number of prover--verifier conversations that shares the same first
 
+
+
 \begin{definition}[Simulation extractability]
-	Proof system $\proofsystem$ is computationally (adaptively) \emph{simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
+	A proof system $\proofsystem$ is computationally (adaptively) \emph{simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
   \[
 	\condprob{
   \begin{aligned}
@@ -137,7 +139,7 @@ Interactive proofs are often required to have the special soundness property whi
 The definition of simulation extractability as stated above allows the malicious prover to maul proofs output by the simulator. This possibility can be ruled out by requiring a stronger property as defined below.
 
 \begin{definition}[Strong simulation extractability]
-	Proof system $\proofsystem$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
+	A proof system $\proofsystem$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
 	\[
 	\condprob{
   \begin{aligned}
@@ -162,17 +164,33 @@ Let $F(X) = P(X) / Q(X)$ be a rational function defined over $\FF(X)$ such that 
 As shown by Minsky et al.~in \cite{TIT:MinTraZip03} if $P$ and $Q$ are monic, then a support set $V$ of size at least $m_a + m_b$ unambiguously determines $F$. 
 
 \begin{lemma}[Rational function interpolation]
-  Let $F(X) = P(X) / Q(X)$ be a rational function and let $P(X) = X^{m_a} + p_1 X^{m_a - 1} + \ldots p_{m_a}$, $Q(X) = X^{m_b} + q_1 X^{m_a - 1} + \ldots q_{m_b}$. Let $V_F$ be a support set of size $m = m_a + m_b$, then $V_F$ determines $F$ unambiguously.
+  Let $F(X) = P(X) / Q(X)$ be a rational function and let $P(X) = X^{m_a} + p_1 X^{m_a - 1} + \ldots + p_{m_a}$, $Q(X) = X^{m_b} + q_1 X^{m_a - 1} + \ldots + q_{m_b}$. Let $V_F$ be a support set of size $m = m_a + m_b$, then $V_F$ determines $F$ unambiguously.
 \end{lemma}
 
-We note that when $P$ and $Q$ are not monic, i.e~$P(X) = p_0 X^{m_a} + p_1 X^{m_a - 1} + \ldots p_{m_a}$, $Q(X) = q_0 X^{m_b} + q_1 X^{m_a - 1} + \ldots q_{m_b}$, for $p_0, q_0$ not equal $0$ or $1$, and $p_0$ and $q_0$ are known, then $F$ can be recreated anyway. 
+We note that when $P$ and $Q$ are not monic, i.e~$P(X) = p_0 X^{m_a} + p_1 X^{m_a - 1} + \ldots +  p_{m_a}$, $Q(X) = q_0 X^{m_b} + q_1 X^{m_a - 1} + \ldots + q_{m_b}$, for $p_0, q_0$ not equal $0$ or $1$, and $p_0$ and $q_0$ are known, then $F$ can be recreated anyway. 
 To that end we define monic $P'(X) = P(X) / p_0$ and $Q'(X) =  Q(X) / q_0$, and recreate $F'(X) = P'(X) / Q'(X) = q_0 /p_0 \cdot F(X)$.
 
 
 \subsection{Generalised forking lemma}
 \subsection{Simulation extractability from special soundness}
+\section{$\plonk$ protocol rolled-out}
 \section{Simulation extractability of \plonk}
-The main idea behind showing that \plonk{} is simulation extractable 
+The main idea behind showing that \plonk{} is simulation extractable relies on the result by Faust et al.~\cite{INDOCRYPT:FauKohMarVen12} where the authors show that a public-coin special-sound protocol made non-interactive by the Fiat--Shamir transform is simulation extractable.
+Thus showing that \plonk{} is special-sound and public-coin is enough to show its simulation extractability. It is obvious that \plonk{} is public-coin, thus what remains is to show it is also special-sound.
+
+To that end we take one of the rational functions that are computed by the prover and which contains the witness as parts of the coefficients and, by programming the random oracle and rewinding the prover, we evaluate it on many different points. This allows to recreate the coefficients of the function and therefore the witness. 
+
+More precisely, the polynomial $Z(X)$ computed by the prover in the second round of the protocol is used. First the polynomial is expressed as a rational function $\Gamma$ of a formal variable $X_\gamma$, which is evaluated as $\gamma$. 
+Variable $\gamma$ is given by the random oracle $\ro$ prior to Round 2. 
+By programming $\ro$ and rewinding the prover one can evaluate $\Gamma$ in various points one can recreate the coefficients of $\Gamma$ and compute the witness. 
+
+\comment{
+The main idea behind showing that \plonk{} is simulation extractable is to use polynomial $Z(X)$ computed by the prover in the second round of the protocol to extract the witness. The polynomial involves the witness $\smallset{\wit_j}_{j = \instsize}^{3 \instsize}$ as parts of its coefficients. 
+The first step to extract the witness from $Z(X)$'s coefficients is to express $Z(X)$ as a rational function $\Gamma$ in a (formal) variable $X_\gamma$ instead of $X$. 
+$X_\gamma$ evaluates as $\gamma$ which is an output of a random oracle $\ro$ on $(1, \trans)$, where $\trans$ is the transcript of the previous messages sent in the protocol.
+Second, the extractor $\ext$ rewinds the prover multiple times to the state prior to Round 2 and programs random oracle to output different $\gamma$-s on $(1, \trans)$ each time the prover is rewound.
+After sufficiently many steps the extractor learns multiple pairs $(\gamma, \Gamma(\gamma))$ what allows him to recreate $\Gamma$, learn its coefficients, and therefore the witness.
+}
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
