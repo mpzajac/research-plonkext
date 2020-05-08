@@ -23,7 +23,8 @@
 \DeclareMathAccent{\widebar}{0}{mathx}{"73}
 
 % lncs size (as printed in books, with small margins):
-%\usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={12.2cm,19.3cm},centering]{geometry}
+\usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={13.2cm,20.3cm},centering]{geometry}
+
 
 \newcommand{\ifamsart}[1] {}
 \ifamsart{
@@ -57,7 +58,7 @@
 
 \author{Michał Zając}
 \iflncs{
-  \institute{Clearmatics, UK\\ \email{m.p.zajac@gmail.com}}
+  \institute{Clearmatics, London, UK\\ \email{m.p.zajac@gmail.com}}
 }
 
 \allowdisplaybreaks
@@ -86,7 +87,7 @@ For values $a$ and $b$ we write $a \approx_\secpar b$ if $\abs{a - b} \leq \negl
 \paragraph{Bilinear groups.}
 A bilinear group generator $\pgen (1^\secpar)$ returns $(p, \GRP_1, \GRP_2, \GRP_T, \pair, \gone{1}, \gtwo{1})$, where $\GRP_1$, $\GRP_2$, and $\GRP_T$ are additive cyclic groups of prime order $p = 2^{\Omega (\secpar)}$, $\gone{1}, \gtwo{1}$ are generators of $\GRP_1$, $\GRP_2$, resp., and $\pair: \GRP_1 \times \GRP_2 \to \GRP_T$ is a non-degenerate PPT-computable bilinear pairing.
 We assume the bilinear pairing to be Type-3, i.e., that there is no efficient isomorphism from $\GRP_1$ to $\GRP_2$ or from $\GRP_2$ to $\GRP_1$.
-We use the by now standard bracket notation, i.e., we write $\sbmap{a}{\gi}$ to denote $a g_{\gi}$ where $g_{\gi}$ is a fixed generator of $\GRP_{\gi}$.
+We use the by now standard bracket notation, i.e., we write $\bmap{a}{\gi}$ to denote $a g_{\gi}$ where $g_{\gi}$ is a fixed generator of $\GRP_{\gi}$.
 We denote $\pair (\gone{a}, \gtwo{b})$ as $\gone{a} \gtwo{b}$.
 Thus, $\gone{a} \gtwo{b} = \gtar{a b}$.
 We freely use the bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \vec{C}$ then $\vec{A} \grpgi{\vec{B}} = \grpgi{\vec{C}}$ and $\gone{\vec{A}} \gtwo{\vec{B}} = \gtar{\vec{C}}$.
@@ -121,7 +122,7 @@ Interactive proofs are often required to have the special soundness property whi
 	\condprob{
   \begin{aligned}
     &(\inp, \wit) \not\in \REL \land \inp\not\in Q \\
-    & \land \verifier (\REL, \crs_{\verifier}, \inp, \proof) = 1
+    & \land \verifier (\REL, \crs_{\verifier}, \inp, \zkproof) = 1
   \end{aligned}
   }
   {
@@ -129,11 +130,11 @@ Interactive proofs are often required to have the special soundness property whi
 		& \REL \gets \RELGEN (\secparam),
 		(\crs, \td) \gets \kgen (\REL), r \sample \RND{\adv},
 		\\ &
-		((\inp, \proof)  \|  \wit) \gets (\adv^{\oracleo}  \|  \ext_\adv) (\REL, \crs; r)
+		((\inp, \zkproof)  \|  \wit) \gets (\adv^{\oracleo}  \|  \ext_\adv) (\REL, \crs; r)
 		\end{aligned}
 	} \leq \negl \enspace,
 	\]
-	where $\oracleo$ on input $\inp'$ returns $\proof' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $\inp'$ to a list $Q$.
+	where $\oracleo$ on input $\inp'$ returns $\zkproof' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $\inp'$ to a list $Q$.
 \end{definition}
 
 The definition of simulation extractability as stated above allows the malicious prover to maul proofs output by the simulator. This possibility can be ruled out by requiring a stronger property as defined below.
@@ -143,8 +144,8 @@ The definition of simulation extractability as stated above allows the malicious
 	\[
 	\condprob{
   \begin{aligned}
-    &(\inp, \wit) \not\in \REL \land (\inp, \proof) \not\in Q \\
-    & \land \verifier (\REL, \crs_{\verifier}, \inp, \proof) = 1
+    &(\inp, \wit) \not\in \REL \land (\inp, \zkproof) \not\in Q \\
+    & \land \verifier (\REL, \crs_{\verifier}, \inp, \zkproof) = 1
   \end{aligned}
   }
   {
@@ -152,11 +153,11 @@ The definition of simulation extractability as stated above allows the malicious
 		& \REL \gets \RELGEN (\secparam),
 		(\crs, \td) \gets \kgen (\REL), r \sample \RND{\adv},
 		\\ &
-		((\inp, \proof)  \|  \wit) \gets (\adv^{\oracleo}  \|  \ext_\adv) (\REL, \crs; r)
+		((\inp, \zkproof)  \|  \wit) \gets (\adv^{\oracleo}  \|  \ext_\adv) (\REL, \crs; r)
 		\end{aligned}
 	} \leq \negl \enspace,
 	\]
-	where $\oracleo$ on input $\inp'$ returns $\proof' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $(\inp', \proof')$ to a list $Q$.
+	where $\oracleo$ on input $\inp'$ returns $\zkproof' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $(\inp', \zkproof')$ to a list $Q$.
 \end{definition}
 
 \subsection{Interpolation of rational functions}
@@ -175,22 +176,72 @@ To that end we define monic $P'(X) = P(X) / p_0$ and $Q'(X) =  Q(X) / q_0$, and 
 \subsection{Simulation extractability from special soundness}
 \section{$\plonk$ protocol rolled-out}
 \section{Simulation extractability of \plonk}
-The main idea behind showing that \plonk{} is simulation extractable relies on the result by Faust et al.~\cite{INDOCRYPT:FauKohMarVen12} where the authors show that a public-coin special-sound protocol made non-interactive by the Fiat--Shamir transform is simulation extractable.
+The main idea behind showing that \plonk{} is simulation extractable relies on the result by Faust et al.~\cite{INDOCRYPT:FKMV12} where the authors show that a public-coin special-sound protocol made non-interactive by the Fiat--Shamir transform is simulation extractable.
 Thus showing that \plonk{} is special-sound and public-coin is enough to show its simulation extractability. It is obvious that \plonk{} is public-coin, thus what remains is to show it is also special-sound.
 
-To that end we take one of the rational functions that are computed by the prover and which contains the witness as parts of the coefficients and, by programming the random oracle and rewinding the prover, we evaluate it on many different points. This allows to recreate the coefficients of the function and therefore the witness. 
-
+To that end we take one of the polynomials that are computed by the prover and which contains the witness as parts of the coefficients and, by programming the random oracle and rewinding the prover, we evaluate it on many different points. This allows to recreate the coefficients of the function and therefore the witness.  
+%
 More precisely, the polynomial $Z(X)$ computed by the prover in the second round of the protocol is used. First the polynomial is expressed as a rational function $\Gamma$ of a formal variable $X_\gamma$, which is evaluated as $\gamma$. 
-Variable $\gamma$ is given by the random oracle $\ro$ prior to Round 2. 
+The variable $\gamma$ is given by the random oracle $\ro$ prior to Round 2. 
 By programming $\ro$ and rewinding the prover one can evaluate $\Gamma$ in various points one can recreate the coefficients of $\Gamma$ and compute the witness. 
 
-\comment{
-The main idea behind showing that \plonk{} is simulation extractable is to use polynomial $Z(X)$ computed by the prover in the second round of the protocol to extract the witness. The polynomial involves the witness $\smallset{\wit_j}_{j = \instsize}^{3 \instsize}$ as parts of its coefficients. 
-The first step to extract the witness from $Z(X)$'s coefficients is to express $Z(X)$ as a rational function $\Gamma$ in a (formal) variable $X_\gamma$ instead of $X$. 
-$X_\gamma$ evaluates as $\gamma$ which is an output of a random oracle $\ro$ on $(1, \trans)$, where $\trans$ is the transcript of the previous messages sent in the protocol.
-Second, the extractor $\ext$ rewinds the prover multiple times to the state prior to Round 2 and programs random oracle to output different $\gamma$-s on $(1, \trans)$ each time the prover is rewound.
-After sufficiently many steps the extractor learns multiple pairs $(\gamma, \Gamma(\gamma))$ what allows him to recreate $\Gamma$, learn its coefficients, and therefore the witness.
-}
+We note that the extraction procedure is not very efficient. Function $\Gamma$ has numerator and denominator polynomials of degrees linear to the size of the statement. Thus a linear number of rewinds is necessary to recreate the witness.
+However, we point out that the efficiency of the extractor does not influences the efficiency of a protocol run between the prover and verifier.
+
+\begin{lemma}[Special soundness of \plonk{}]
+  \plonk{} is special-sound in the random oracle model.
+\end{lemma}
+\begin{proof}
+In the second round of \plonk{} the prover gets $\beta = \ro(0, \trans)$ and $\gamma = \ro(1, \trans)$, where $\trans$ is the transcript of the previous messages exchanged in the protocol, from the random oracle, computes polynomial
+%
+\begin{multline}
+  \label{eq:Z}
+  Z(X) = (b_7 X^2 + b_8 X + b_9) (X^\instsize - 1) + L_1 (X) + \\
+   + \sum_{i = 1}^{\instsize - 1}\brak{L_{i + 1}(X) \prod_{j = 1}^{i} 
+  \frac{(\wit_j + \beta \w^{j - 1} + \gamma)(\wit_{\instsize + j} + \beta k_1 \w^{j - 1} + \gamma) (\wit_{2\instsize + j} + \beta k_2 \w^{j - 1} + \gamma)}
+  {(\wit_j + \sigma(j)\beta + \gamma)(\wit_{\instsize + j} + \sigma(\instsize + j)\beta + \gamma)(\wit_{2\instsize + j} + \sigma (2\instsize + j) \beta + \gamma)}
+  }\,
+\end{multline}
+and makes $\gone{Z(\chi)}$ part of his proof. 
+Here, $L_i$ are Lagrange basis polynomials, $\smallset{1, \w, \ldots, \w^{\instsize - 1}}$ are roots of unity, $\sigma(j)$ are values determined by the permutation, which defines the circuit (i.e.~which gate is connected to which gate), and $k_1, k_2$ are other \emph{publicly known} values.
+Assume that the extractor knows $\chi$, what is justified since the extractor may know the trapdoor corresponding to the CRS. \michals{8.05}{Explain in more details.}
+ 
+The only unknown values in $Z$ are the values of witness elements $\smallset{\wit_{\instsize + j}}_{j = 1}^{2 \cdot \instsize}$ (note that the values $\smallset{\wit_{j}}_{j = 1}^{\instsize}$ are public, i.e.~$\smallset{\wit_{j}}_{j = 1}^{\instsize} = \inp$) and randomisers $b_7, b_8, b_9$ which are picked by the prover at the beginning of the protocol. Later we show that even though the extract cannot know the values of the randomisers it does not prevent him from learning the witness.
+
+Since $\chi$ is fixed, $Z(\chi)$ can be expressed as an evaluation of a rational function $\Gamma(X_\gamma)$ at $\gamma$. We will now focus on interpolating $\Gamma$.
+For the sake of readability we denote by $p_i (X_\gamma)$ a polynomial corresponding to the $i$-th product of the numerator of the big fraction in $Z$, that is
+\[
+  p_i(X_\gamma) = \prod_{j = 1}^{i} L_{i + 1} (\wit_j + \beta \w^{j - 1} + X_\gamma)(\wit_{\instsize + j} + \beta k_1 \w^{j - 1} + X_\gamma) (\wit_{2\instsize + j} + \beta k_2 \w^{j - 1} + X_\gamma)\,.
+\]
+Similarly, $q_i (X_\gamma)$ denotes the $i$-th product of the denominator
+\[
+  q_i(X_\gamma) = \prod_{j = 1}^{i} (\wit_j + \sigma(j)\beta + X_\gamma)(\wit_{\instsize + j} + \sigma(\instsize + j)\beta + X_\gamma)(\wit_{2\instsize + j} + \sigma (2\instsize + j) \beta + X_\gamma)\,.
+\]
+
+To make the necessary summation all fractions are given a common denominator equal $q_1 (X_\gamma)) \cdot \ldots \cdot q_{\instsize - 1} (X_\gamma)$. After this operation, $\Gamma(\gamma)$ can be written as
+\begin{multline}
+  \Gamma(\gamma) = (b_7 \chi^2 + b_8 \chi + b_9) (\chi^\instsize - 1) + L_1 (\chi) + \\
+   + \brak{\frac{
+   p_1(\gamma) q_2(\gamma) \ldots q_{\instsize - 1}(\gamma) + q_1(\gamma) p_2(\gamma) q_3(\gamma) \ldots q_{\instsize - 1}(\gamma) + \ldots + q_1(\gamma) \ldots q_{\instsize - 2}(\gamma) p_{\instsize - 1}(\gamma)
+   }{
+   q_1(\gamma) q_2(\gamma) \ldots q_{\instsize - 1}(\gamma)
+   }
+  }\,.
+\end{multline}
+Finally, let 
+\[
+  \Gamma (X_\gamma) = \frac{N(X_\gamma)}{D(X_\gamma)}\,,
+\]
+where 
+\begin{align*}
+  N(X_\gamma) & = \brak{(b_7 \chi^2 + b_8 \chi + b_9) (\chi^\instsize - 1) + L_1 (\chi)} \cdot q_1(X_\gamma) \ldots q_{\instsize - 1}(X_\gamma) + \\
+   & + p_1(X_\gamma) q_2(X_\gamma) \ldots q_{\instsize - 1}(X_\gamma) + q_1(X_\gamma) p_2(X_\gamma) q_3(X_\gamma) \ldots q_{\instsize - 1}(X_\gamma) + \ldots \\
+   & + q_1(X_\gamma) \ldots q_{\instsize - 2}(X_\gamma) p_{\instsize - 1}(\gamma)\,,\\
+  D(X_\gamma) & = q_1(X_\gamma)  \ldots q_{\instsize - 1}(X_\gamma)\,.
+\end{align*} 
+Both $N(X_\gamma)$ and $D(X_\gamma)$ have degree $3 \frac{(\instsize - 1) \instsize}{2}$, since $\deg p_i (X_\gamma) \allowbreak = \deg q_i (X_\gamma) = 3 i$.
+\qed
+\end{proof}
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
