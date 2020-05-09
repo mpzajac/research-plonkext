@@ -164,12 +164,22 @@ The definition of simulation extractability as stated above allows the malicious
 Let $F(X) = P(X) / Q(X)$ be a rational function defined over $\FF(X)$ such that $\deg P = m_a$ and $\deg Q = m_b$. We call a set $V = \smallset{(x_i, y_i)}_{i \in I}$ a \emph{support set} of $F$ if for all $i \in I$ holds $F(x_i) = y_i$. 
 As shown by Minsky et al.~in \cite{TIT:MinTraZip03} if $P$ and $Q$ are monic, then a support set $V$ of size at least $m_a + m_b$ unambiguously determines $F$. 
 
-\begin{lemma}[Rational function interpolation]
+\begin{theorem}[Rational function interpolation~\cite{TIT:MinTraZip03}]
   Let $F(X) = P(X) / Q(X)$ be a rational function and let $P(X) = X^{m_a} + p_1 X^{m_a - 1} + \ldots + p_{m_a}$, $Q(X) = X^{m_b} + q_1 X^{m_a - 1} + \ldots + q_{m_b}$. Let $V_F$ be a support set of size $m = m_a + m_b$, then $V_F$ determines $F$ unambiguously.
-\end{lemma}
+\end{theorem}
 
-We note that when $P$ and $Q$ are not monic, i.e~$P(X) = p_0 X^{m_a} + p_1 X^{m_a - 1} + \ldots +  p_{m_a}$, $Q(X) = q_0 X^{m_b} + q_1 X^{m_a - 1} + \ldots + q_{m_b}$, for $p_0, q_0$ not equal $0$ or $1$, and $p_0$ and $q_0$ are known, then $F$ can be recreated anyway. 
-To that end we define monic $P'(X) = P(X) / p_0$ and $Q'(X) =  Q(X) / q_0$, and recreate $F'(X) = P'(X) / Q'(X) = q_0 /p_0 \cdot F(X)$.
+We note that when $P$ and $Q$ are not monic, i.e~$P(X) = p_0 X^{m_a} + p_1 X^{m_a - 1} + \ldots +  p_{m_a}$, $Q(X) = q_0 X^{m_b} + q_1 X^{m_a - 1} + \ldots + q_{m_b}$, for $p_0, q_0$ not equal $0$,  then $F$ can be recreated anyway. 
+However, not uniquely but up to the following class of equivalence $\class{C}$. 
+We say that $F_0(X) = P_0(X) / Q_0(X)  \equiv_\class{C} F_1 = P_1(X) / Q_1(X)$ iff $F_0 = \frac{\alpha_0}{\beta_0} P'_0 (X) / Q'_0(X)$, $F_1 = \frac{\alpha_1}{\beta_1} P'_1 (X) / Q'_1(X)$ for monic $P'_0, Q'_0, P'_1, Q'_1$, and $\frac{\alpha_0}{\beta_0} = \frac{\alpha_1}{\beta_1}$.
+\begin{lemma}
+  Let $F (X) = P(X) / Q(X)$ be a rational function and $P(X), Q(X)$ polynomials of degrees $m_a$ and $m_b$ resp. Then a support set $V_F$ of size $m_a + m_b + 1$ defines $F$ uniquely up to the class of equivalence $\class{C}$. 
+\end{lemma}
+\begin{proof}
+\end{proof}
+\begin{corollary}
+  Let $F(X) = P(X) / Q(X)$ for a monic polynomial $Q(X)$, then a support set $V_F$ of size $m_a + m_b + 1$, where $m_a = \deg P$, $m_b = \deg Q$, defines $F$ uniquely.
+\end{corollary}
+% On the other hand, if $p_0$ and $q_0$ are known the function is determined unambiguously. To show that we define monic $P'(X) = P(X) / p_0$ and $Q'(X) =  Q(X) / q_0$, and recreate $F'(X) = P'(X) / Q'(X) = q_0 /p_0 \cdot F(X)$.
 
 
 \subsection{Generalised forking lemma}
