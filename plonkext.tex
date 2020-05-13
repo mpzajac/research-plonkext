@@ -164,40 +164,36 @@ The definition of simulation extractability as stated above allows the malicious
 Let $F(X) = P(X) / Q(X)$ be a rational function defined over $\FF(X)$ such that $\deg P = m_a$ and $\deg Q = m_b$. We call a set $V = \smallset{(x_i, y_i)}_{i \in I}$ a \emph{support set} of $F$ if for all $i \in I$ holds $F(x_i) = y_i$. 
 As shown by Minsky et al.~in \cite{TIT:MinTraZip03} if $P$ and $Q$ are monic, then a support set $V$ of size at least $m_a + m_b$ unambiguously determines $F$. 
 
-\begin{theorem}[Rational function interpolation~\cite{TIT:MinTraZip03}]
+\begin{lemma}[Rational function interpolation~{\cite[Theorem 4.1]{TIT:MinTraZip03}}]
+	\label{lem:rational_function_interpolation}
   Let $F(X) = P(X) / Q(X)$ be a rational function and let $P(X) = X^{m_a} + p_1 X^{m_a - 1} + \ldots + p_{m_a}$, $Q(X) = X^{m_b} + q_1 X^{m_a - 1} + \ldots + q_{m_b}$. Let $V_F$ be a support set of size $m = m_a + m_b$, then $V_F$ determines $F$ unambiguously.
-\end{theorem}
+\end{lemma}
 
-We note that when $P$ and $Q$ are not monic, i.e~$P(X) = p_0 X^{m_a} + p_1 X^{m_a - 1} + \ldots +  p_{m_a}$, $Q(X) = q_0 X^{m_b} + q_1 X^{m_a - 1} + \ldots + q_{m_b}$, for $p_0, q_0$ not equal $0$,  then $F$ can be recreated anyway. 
-However, not uniquely but up to the following class of equivalence $\class{F}$. 
-We say that $F_0(X) = P_0(X) / Q_0(X)  \equiv_\class{F} F_1(X) = P_1(X) / Q_1(X)$ iff for $b \in \bin$
+Note that the theorem above assumes that the polynomials determining $F$ are monic and their degrees are known. In general, a rational function is not defined unambiguously and $F(X) = P(X) / Q(X) \in \FF(X)$ represents a whole equivalence class of functions 
 \[
-  F_b(X) = \frac{\alpha_b}{\beta_b} \frac{P'_b (X)}{Q'_b(X)}\,,
+	F(X) = \frac{P(X)}{Q(X)} \equiv \frac{P(X) f(X)}{Q(X) f(X)}\,,
 \]
-for monic $P'_0, Q'_0, P'_1, Q'_1$, and $\frac{\alpha_0}{\beta_0} = \frac{\alpha_1}{\beta_1}$.
+for some $P(X), Q(X), f(X) \in \FF[X]$.
+However, when the degree of the denominator polynomial $Q(X)$ is known, then the function is determined up to $f(X)$ that are \emph{constant}. Any other polynomial would change the denominator degree). 
+Furthermore, if in $Q(X)$ there is at least one coefficient that is already known, then the whole function $F(X)$ is determined uniquely, i.e.~$f(X) \equiv 1$. Other $f$-s would affect the known coefficient $q_i$. 
+The following lemma can be formulated:
 \begin{lemma}
-  Let $F (X) = P(X) / Q(X)$ be a rational function and $P(X), Q(X)$ polynomials of degrees $m_a$ and $m_b$ resp. Then a support set $V_F$ of size $m_a + m_b + 1$ defines $F$ uniquely up to the class of equivalence $\class{F}$. 
+	\label{lem:rational_function_interpolation_2}
+	Let $F(X) = P(X) / Q(X)$ be a rational function for $P(X) = p_0 X^{m_a} + p_1 X^{m_a - 1} + \ldots + p_{m_a}$, $Q(X) = q_0 X^{m_b} + q_1 X^{m_a - 1} + \ldots + q_{m_b}$ such that $q_0$ is non-zero and at least one of the coefficients $q_i$ is known.
+	Let $V_F$ be a support set of size $m = m_a + m_b + 1$, then $V_F$ determines $F$ unambiguously. 
 \end{lemma}
 \begin{proof}
-  Let $P_0(X), Q_0(X), P_1(X), Q_1(X)$ be polynomials such that
-  \begin{compactenum}[(i)] 
-    \item for $b \in \bin$
-      \[
-        \frac{P_b(X)}{Q_b(X)} = \frac{\alpha_b}{\beta_b} \frac{P'_b (X)}{Q'_b(X)}\,
-      \]
-      for monic polynomials $P'_b(X)$, $Q'_b(X)$;
-    \item for all $x_i \in V_F$ holds 
-    \[
-      F(x_i) = \frac{P_0(x_i)}{Q_0(x_i)} = \frac{P_1(x_i)}{Q_1(x_i)}\,.
-    \]
-    Then for all $x_i \in V_F$ holds $\alpha_0 \beta_1 P'_0(x_i) Q'_1(x_i) - \alpha_1 \beta_0 P'_1(x_i) Q'_0 (x_i) = 0$.
-  \end{compactenum}
+	The lemma has almost the same proof as \cref{lem:rational_function_interpolation}. Consider two functions $P_0 / Q_0$, $P_1 / Q_1$ that share the same values for each $x_i \in V_F$. That is,
+	\[
+		\frac{P_0(x_i)}{Q_0(x_i)} = \frac{P_1(x_i)}{Q_1(x_i)}\,.
+	\]
+	Polynomial $P_0(X) Q_1(X) - P_1(X) Q_0(X)$ has degree at most $(m_a + m_b)$ and zeroes in at least $(m_a + m_b + 1)$ points, thus is identically zero. Thus
+	\[
+		\frac{P_0(X)}{Q_0(X)} = \frac{P_1(X)}{Q_1(X)}\,
+	\]
+	and the functions determined by $P_0, Q_0$ and $P_1, Q_1$ are in the same equivalence class (i.e.~are the same function). Considering the observations above, only one function in this class exists if we specify concrete degree of the denominator polynomial and one of its coefficients.
+	\qed
 \end{proof}
-\begin{corollary}
-  Let $F(X) = P(X) / Q(X)$ for a monic polynomial $Q(X)$, then a support set $V_F$ of size $m_a + m_b + 1$, where $m_a = \deg P$, $m_b = \deg Q$, defines $F$ uniquely.
-\end{corollary}
-% On the other hand, if $p_0$ and $q_0$ are known the function is determined unambiguously. To show that we define monic $P'(X) = P(X) / p_0$ and $Q'(X) =  Q(X) / q_0$, and recreate $F'(X) = P'(X) / Q'(X) = q_0 /p_0 \cdot F(X)$.
-
 
 \subsection{Generalised forking lemma}
 \subsection{Simulation extractability from special soundness}
@@ -245,7 +241,7 @@ Similarly, $q_i (X_\gamma)$ denotes the $i$-th product of the denominator
   q_i(X_\gamma) = \prod_{j = 1}^{i} (\wit_j + \sigma(j)\beta + X_\gamma)(\wit_{\instsize + j} + \sigma(\instsize + j)\beta + X_\gamma)(\wit_{2\instsize + j} + \sigma (2\instsize + j) \beta + X_\gamma)\,.
 \]
 
-To make the necessary summation all fractions are given a common denominator equal $q_1 (X_\gamma)) \cdot \ldots \cdot q_{\instsize - 1} (X_\gamma)$. After this operation, $\Gamma(\gamma)$ can be written as
+To make the necessary summation all fractions are given a common denominator equal $q_1 (X_\gamma) \cdot \ldots \cdot q_{\instsize - 1} (X_\gamma)$. After this operation, $\Gamma(\gamma)$ can be written as
 \begin{multline}
   \Gamma(\gamma) = (b_7 \chi^2 + b_8 \chi + b_9) (\chi^\instsize - 1) + L_1 (\chi) + \\
    + \brak{\frac{
@@ -263,10 +259,17 @@ where
 \begin{align*}
   N(X_\gamma) & = \brak{(b_7 \chi^2 + b_8 \chi + b_9) (\chi^\instsize - 1) + L_1 (\chi)} \cdot q_1(X_\gamma) \ldots q_{\instsize - 1}(X_\gamma) + \\
    & + p_1(X_\gamma) q_2(X_\gamma) \ldots q_{\instsize - 1}(X_\gamma) + q_1(X_\gamma) p_2(X_\gamma) q_3(X_\gamma) \ldots q_{\instsize - 1}(X_\gamma) + \ldots \\
-   & + q_1(X_\gamma) \ldots q_{\instsize - 2}(X_\gamma) p_{\instsize - 1}(\gamma)\,,\\
+   & + q_1(X_\gamma) \ldots q_{\instsize - 2}(X_\gamma) p_{\instsize - 1}(X_\gamma)\,,\\
   D(X_\gamma) & = q_1(X_\gamma)  \ldots q_{\instsize - 1}(X_\gamma)\,.
 \end{align*} 
 Both $N(X_\gamma)$ and $D(X_\gamma)$ have degree $3 \frac{(\instsize - 1) \instsize}{2}$, since $\deg p_i (X_\gamma) \allowbreak = \deg q_i (X_\gamma) = 3 i$.
+
+Observe that 
+\begin{inparaenum}[(i)]
+	\item the degree of polynomial $D(X_\gamma)$ is known and 
+	\item one of its coefficients is known, more precisely, the coefficient by the highest power is $1$.
+\end{inparaenum}
+ Thus the requirements for \cref{lem:rational_function_interpolation_2} are met and it can be used. 
 \qed
 \end{proof}
 
