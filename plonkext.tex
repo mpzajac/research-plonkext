@@ -195,7 +195,42 @@ The following lemma can be formulated:
 	\qed
 \end{proof}
 
-\subsection{Generalised forking lemma}
+\subsection{General forking lemma}
+\newcommand{\forking}{\pcalgostyle{F}}
+\begin{lemma}[General forking lemma, see~\cite{INDOCRYPT:FKMV12}]
+	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\pdv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $I \in\range{0}{q}$ and $s$ is called a \emph{side output}. 
+	Denote by $\ig$ a randomised instance generator. 
+	We denote by $\accProb$ the probability 
+	\[
+		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_1 \sample H; (i, s) \gets \pdv(y, h_1, \ldots, h_q)}\,.
+	\] 
+	Let $\forking_\pdv(y)$ denote the algorithm described in \cref{fig:forking_lemma}, then the probability $\extProb$ defined as 
+	$
+		\extProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\pdv}(y)}
+	$
+	holds 
+	\[
+		\extProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
+	\]
+	%
+	\begin{figure}
+		\centering
+		\fbox{
+		\procedure{$\forking_\pdv (y)$}
+		{
+			r \sample \RND{\pdv}\\
+			h_1, \ldots, h_q \sample H\\
+			(i, s) \gets \pdv(y, h_1, \ldots, h_q; r)\\
+			\pcif i = 0\ \pcreturn (0, \bot, \bot)\\
+			h_{i'}, \ldots, h_{q'} \sample H\\
+			(i', s') \gets \pdv(y, h_1, \ldots, h_{i - 1}, h_{i'} h_{q'}; r)\\
+			\pcif (i = i') \land (h_{i} \neq h_{i'})\ \pcreturn (1, s, s')\\
+			\pcind \pcelse \pcreturn (0, \bot, \bot)
+		}}
+		\caption{Forking algorithm $\forking_\pdv$}
+		\label{fig:forking_lemma}
+\end{figure}
+\end{lemma}
 \subsection{Simulation extractability from special soundness}
 \section{$\plonk$ protocol rolled-out}
 \section{Simulation extractability of \plonk}
@@ -267,7 +302,7 @@ Both $N(X_\gamma)$ and $D(X_\gamma)$ have degree $3 \frac{(\instsize - 1) \insts
 Observe that 
 \begin{inparaenum}[(i)]
 	\item the degree of polynomial $D(X_\gamma)$ is known and 
-	\item one of its coefficients is known, more precisely, the coefficient by the highest power is $1$.
+	\item one of its coefficients is known, more precisely, the coefficient by the highest power, $X_\gamma^{3i}$, is $1$.
 \end{inparaenum}
  Thus the requirements for \cref{lem:rational_function_interpolation_2} are met and it can be used. 
 \qed
