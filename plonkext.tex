@@ -68,7 +68,11 @@
 	\maketitle
 
 \begin{abstract}
-	In this paper we show that \plonk{}~\cite{EPRINT:GabWilCio19} is (non black-box) simulation extractable.
+	% Recent years brought rapid development of zero-knowledge SNARKs.   
+	
+	In this paper we prove show that some most-efficient updatable universal zkSNARKs like \plonk{}~\cite{EPRINT:GabWilCio19} and Sonic~\cite{CCS:MBKM19} are (non black-box) simulation extractable. 
+	To that end, we generalise the result by Faust et al.~\cite{INDOCRYPT:FKMV12} (INDOCRYPT 2012) and show that any special-sound interactive proof transformed by the Fiat--Shamir transform is simulation-extractable. Then we explain why \plonk{} is special-sound and conclude by showing it is simulation-extractable.
+	\michals{14.05}{Since Sonic is witness-extended emulation then it should be simulation extractable as well. Task: check Marlin}
 \end{abstract}
 
 \section{Introduction}
@@ -98,25 +102,42 @@ Here, a proof (resp., an argument) system guarantees soundness against an unboun
 The zero-knowledge property is proven by constructing a simulator that can simulate the view of a cheating verifier without knowing the secret information (witness) of the prover.
 % A non-interactive zero-knowledge proof or argument system~\cite{STOC:BluFelMic88} consists of just one message by the prover.
 
-More precisely, let $\prover$ and $\verifier$ be algorithms, the former called \emph{prover} and the latter \emph{verifier}. 
-We denote by $\ip{\prover (\inp, \wit)}{\verifier (\inp)}$ a transcript of conversation between $\prover$ with input $(\inp, \wit)$ and $\verifier$ with input $\inp$. We write $\ip{\prover (\inp, \wit)}{\verifier (\inp)} = 1$ if in the end of the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the transcript.
+% From a proof system $\proofsystem$ we require three properties
+% \begin{description}
+% 	\item[completeness]
+% 	\item[soundness] 
+% 	\item[zero knowledge]
+% \end{description}
 
-Let $\RELGEN(\secparam)$ be an algorithm that outputs an $\npol$ relation $\REL = \smallset{(\inp, \wit)}$. Denote by $\LANG_\REL$ the language determined by $\REL$.
-We call an interactive proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$  \emph{zero-knowledge} if for any $\REL \in \IM(\RELGEN)$ and verifier $\verifier^*$ there exists a $\ppt$ simulator $\simulator$ such that
-\[
-  \smallset{\ip{\prover (\inp, \wit)}{\verifier^{*}(\inp)}} \approx_\secpar \smallset{\ip{\simulator^{\verifier^{*}} (\inp)}{\verifier^{*}(\inp)}}\enspace,
-\]
-for any $(\inp, \wit) \in \REL$.
+More precisely, let $\RELGEN(\secparam)$ be an algorithm that outputs an $\npol$ relation $\REL = \smallset{(\inp, \wit)}$. Denote by $\LANG_\REL$ the language determined by $\REL$. 
+Let $\prover$ and $\verifier$ be algorithms, the former called \emph{prover} and the latter \emph{verifier}. 
+We denote by $\ip{\prover (\wit)}{\verifier}(\REL, \inp)$ a transcript of conversation between a $\prover$ and $\verifier$ which share input $(\REL, \inp)$ and the prover is additionally equipped with $\wit$. 
+We write $\ip{\prover (\wit)}{\verifier}(\REL, \inp) = 1$ if in the end of the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the transcript.
 
-We call zero knowledge \emph{perfect} if the distributions are equal and \emph{computational} if they are indistinguishable for any NUPPT distinguisher.
+A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
+\begin{description}
+	\item[Completeness] An interactive proof system $\proofsystem$ is \emph{complete} if an hnest prover always convinces an honest verifier, that is for all $\REL \gets \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
+	\[
+		\prob{\ip{\prover (\inp, \wit)}{\verifier (\inp)} = 1} = 1\,.
+	\]
+	\item[Soundness] We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no PPT prover $\adv$ can convince an honest verifier $\verifier$ to accept a proof for a false statement, i.e~for $\inp \not\in\LANG$. More precisely, for all $\REL \gets \RELGEN(\secparam)$
+	\[
+		\condprob{\ip{\adv}{\verifier}(\REL, \inp) = 1}{\inp \gets \adv(\REL); \inp \not\in \LANG_\REL} \leq \negl\,;
+	\]
+	\item[Zero knowledge] We call an interactive proof system $\proofsystem$ \emph{zero-knowledge} if for any $\REL \gets \RELGEN(\secparam)$ and adversary $\adv$ there exists a $\ppt$ simulator $\simulator$ such that
+	\[
+	  \smallset{\ip{\prover}{\adv}(\REL, \inp, \wit) \mid (\inp, \wit) \gets \adv(\REL)} \approx_\secpar \smallset{\ip{\simulator^{\adv}}{\adv}(\REL, \inp, \wit) \mid (\inp, \wit) \gets \adv(\REL)}\,.
+	\]
+	%
+	We call zero knowledge \emph{perfect} if the distributions are equal and \emph{computational} if they are indistinguishable for any NUPPT distinguisher.
+\end{description}
 
-We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no PPT prover $\prover^*$ can convince an honest verifier $\verifier$ to accept a proof for a false statement, i.e~for $\inp \not\in\LANG$.
-
-Interactive proofs are often required to have the special soundness property which states that if for a given statement $\inp$ and first message $a$ the prover can respond to many verifier's challenges then she knows the witness. Moreover, a PPT algorithm with access to a number of prover--verifier conversations that shares the same first
-
+%siulation extractability
+Interactive proofs are often required to have the special soundness property which states that if for a given statement $\inp$ and first message $a$ the prover can respond to many verifier's challenges then she knows the witness. Moreover, a PPT algorithm with access to a number of prover--verifier conversations that shares the same first \hl{TODO: continue}
 
 
-\begin{definition}[Simulation extractability]
+\comment{
+\begin{definition}[Weak simulation extractability]
 	A proof system $\proofsystem$ is computationally (adaptively) \emph{simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
   \[
 	\condprob{
@@ -138,8 +159,9 @@ Interactive proofs are often required to have the special soundness property whi
 \end{definition}
 
 The definition of simulation extractability as stated above allows the malicious prover to maul proofs output by the simulator. This possibility can be ruled out by requiring a stronger property as defined below.
+}
 
-\begin{definition}[Strong simulation extractability]
+\begin{definition}[Simulation extractability]
 	A proof system $\proofsystem$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
 	\[
 	\condprob{
@@ -231,7 +253,15 @@ The following lemma can be formulated:
 		\label{fig:forking_lemma}
 \end{figure}
 \end{lemma}
-\subsection{Simulation extractability from special soundness}
+\section{Simulation extractability from special soundness}
+\begin{theorem}[Simulation extractability of the Fiat-Shamir transform \cite{INDOCRYPT:FKMV12}]
+	Let $\Sigma = \ip{\prover}{\verifier}$ be a non-trivial $\Sigma$-protocol with unique responses for a language $\LANG \in \npol$. 
+	In the random oracle model, the NIZK proof system $\Sigma_{\FS} = \ip{\prover^\ro}{\verifier^{\ro}}$ 	resulting by applying the Fiat--Shamir transform to $\Sigma$ is simulation extractable with extraction error $\eta = q/h$ for the \hl{canonical} simulator $\simulator$. Here, $q$ is the number of random oracle queries and $h$ is the number of elements in the range of $\ro$. Furthermore, the extractor $\ext_\adv$ needs to run $\adv^{\simulator_1}, \adv^{\simulator_2}$ twice.
+\end{theorem}
+\michals{14.05}{Need to make this theorem more general as currently it works only for 3-move $\Sigma$-protocols!}
+
+Unfortunately the result of Faust et al.~is stated for a specific kind of special-sound proofs, i.e.~$\Sigma$-protocols 
+
 \section{$\plonk$ protocol rolled-out}
 \section{Simulation extractability of \plonk}
 The main idea behind showing that \plonk{} is simulation extractable relies on the result by Faust et al.~\cite{INDOCRYPT:FKMV12} where the authors show that a public-coin special-sound protocol made non-interactive by the Fiat--Shamir transform is simulation extractable.
@@ -304,7 +334,9 @@ Observe that
 	\item the degree of polynomial $D(X_\gamma)$ is known and 
 	\item one of its coefficients is known, more precisely, the coefficient by the highest power, $X_\gamma^{3i}$, is $1$.
 \end{inparaenum}
- Thus the requirements for \cref{lem:rational_function_interpolation_2} are met and it can be used. 
+ Thus the requirements for \cref{lem:rational_function_interpolation_2} are met.
+ 
+ The extractor $\ext$ that proceeds as follows then: First it  
 \qed
 \end{proof}
 
