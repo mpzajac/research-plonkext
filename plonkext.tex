@@ -70,7 +70,8 @@
 \begin{abstract}
 	In this paper we prove that some most-efficient updatable universal zkSNARKs like \plonk{}~\cite{EPRINT:GabWilCio19} and Sonic~\cite{CCS:MBKM19} are (non black-box) simulation extractable. 
 	To that end, we generalise the result by Faust et al.~\cite{INDOCRYPT:FKMV12} (INDOCRYPT 2012) and show that any witness-extended emulatable is also simulation-extractable if made non-interactive by the Fiat--Shamir transform. We then explain why \plonk{} is has witness-extended emulation and conclude by showing its simulation-extractability.
-	\michals{14.05}{Since Sonic is witness-extended emulation then it should be simulation extractable as well. Task: check Marlin}
+	\michals{14.05}{Since Sonic is witness-extended emulation then it should be simulation extractable as well.}
+	\task{15.05}{Check Marlin}
 \end{abstract}
 
 \section{Introduction}
@@ -116,25 +117,27 @@ A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ i
 	\]
 	\item[Zero knowledge] We call an interactive proof system $\proofsystem$ \emph{zero-knowledge} if for any $\REL \gets \RELGEN(\secparam)$ and adversary $\adv$ there exists a $\ppt$ simulator $\simulator$ such that
 	\begin{multline*}
-	  \smallset{\ip{\prover(\REL, \inp, \wit)}{\adv(\REL, \inp, \wit)} \left| (\inp, \wit) \gets \adv(\REL)\right.} \approx_\secpar \\
-		\smallset{\ip{\simulator^{\adv}(\REL, \inp)}{\adv(\REL, \inp, \wit)} \left| (\inp, \wit) \gets \adv(\REL)\right.}\,.
+	  \left\{\ip{\prover(\REL, \inp, \wit)}{\adv(\REL, \inp, \wit)} \,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar \\
+		\left\{\ip{\simulator^{\adv}(\REL, \inp)}{\adv(\REL, \inp, \wit)}\,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator^\adv}\right.\right\}\,.
 	\end{multline*}
 	%
 	We call zero knowledge \emph{perfect} if the distributions are equal and \emph{computational} if they are indistinguishable for any NUPPT distinguisher.
 \end{description}
 
-Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on input $\REL$ outputs a common reference string (CRS) $\crs$. For the sake of succinctness we denote by $\trans$ a transcript of a conversation between the prover and the verifier extended with verifier's input $(\REL, \inp)$ (or $(\REL, \crs, \inp)$ in case of a proof system with a setup).
+Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on input $\REL$ outputs a common reference string (CRS) $\crs$. The common reference string comes with a corresponding trapdoor $\td$ that allows the simulator to simulate a 
+For the sake of succinctness we denote by $\trans$ a transcript of a conversation between the prover and the verifier extended with verifier's input $(\REL, \inp)$ (or $(\REL, \crs, \inp)$ in case of a proof system with a setup).
 Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages the verifier sends are chosen uniformly at random and independently of the messages send by the prover or system parameters.
 
-Interactive proofs run in a multiprotcol environment are often required to fulfil a stronger notion of soundness called \emph{witness-extended emulation}~\cite{JC:Lindell03}. We follow \cite{EC:GroIsh08} in their formulation of this property since it considers proof systems that utilises a CRS. 
+Interactive proofs run in a multiprotcol environment are often required to fulfil a stronger notion of soundness called \emph{witness-extended emulation}~\cite{JC:Lindell03}. The following definition is inspired by  \cite{EC:GroIsh08} as their formulation of the witness-extended emulation considers proof systems that utilises a CRS. However, there are some changes introduced to fit better our purpose. More precisely, contrary to \cite{EC:GroIsh08,EC:BCCGP16} the extractor in \cref{def:witextem} is given the trapdoor $\td$, thus seems to be bit more powerful. 
+That means that a protocol that has witness-extended emulation in terms of \cite{EC:GroIsh08} has it also according to the definition below. 
 
-\begin{definition}[Witness-extended emulation \cite{EC:GroIsh08}]
-	\label{def:witextem}
+\begin{definition}[Witness-extended emulation]
+	\label{def:wit_ext_em}
 	We say a public coin proof system $\proofsystem = (\kcrs, \prover, \verifier, \simulator)$ has \emph{witness-extended emulation} if for all $\REL \in \IM(\RELGEN)$, and deterministic adversary $\adv_1$ there exists an expected polynomial time extractor $\ext$ such that for all NUPPT adversaries $\adv_0$ holds
 		\begin{multline*}
 		\Pr\left[\adv_0 (\trans, \inp, \aux_{\adv_1}) = 1 \,\left|\,
 		\begin{aligned}
-				& \crs \gets \kcrs(\REL), (\inp, \aux_{\adv_1}) \gets \adv_0, \\
+				& (\td, \crs) \gets \kcrs(\REL), (\inp, \aux_{\adv_1}) \gets \adv_0, \\
 				& \trans \gets \ip{\adv_1(\REL, \crs, \inp, \aux_{\adv_1})}{\verifier(\REL, \crs, \inp)}
 			\end{aligned}
 		\right.
@@ -147,8 +150,8 @@ Interactive proofs run in a multiprotcol environment are often required to fulfi
 				& \pcind \text{then $\REL(\inp, \wit)$}
 			\end{aligned}\,\left|\,
 			\begin{aligned}
-				& \crs \gets \kcrs(\REL), (\inp, \aux_{\adv_1}) \gets \adv_0, \\ 
-				& (\trans, \wit )\gets \ext^{\ip{\adv_1(\REL, \crs, \inp, \aux_\prover)}{\verifier(\REL, \crs, \inp)}}
+				& (\td, \crs) \gets \kcrs(\REL), (\inp, \aux_{\adv_1}) \gets \adv_0, \\ 
+				& (\trans, \wit )\gets \ext^{\ip{\adv_1(\REL, \crs, \inp, \aux_\prover)}{\verifier(\REL, \crs, \inp)}}(\REL, \inp, \td)
 			\end{aligned}
 			\vphantom{\begin{aligned}
 				\adv (\trans) = 1 \land \\
@@ -181,6 +184,58 @@ Although in the definition above the adversary $\adv_1$ is deterministic it obta
 	\]
 	where $\oracleo$ on input $\inp'$ returns $\zkproof' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $(\inp', \zkproof')$ to a list $Q$.
 \end{definition}
+
+\subsection{General forking lemma and its generalisation}
+\newcommand{\forking}{\pcalgostyle{F}}
+\begin{lemma}[General forking lemma,~\cite{INDOCRYPT:FKMV12}]
+	\label{lem:faust_forking_lemma}
+	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\pdv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $I \in\range{0}{q}$ and $s$ is called a \emph{side output}. 
+	Denote by $\ig$ a randomised instance generator. 
+	We denote by $\accProb$ the probability 
+	\[
+		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_1 \sample H; (i, s) \gets \pdv(y, h_1, \ldots, h_q)}\,.
+	\] 
+	Let $\forking_\pdv(y)$ denote the algorithm described in \cref{fig:faust_forking_lemma}, then the probability $\extProb$ defined as 
+	$
+		\extProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\pdv}(y)}
+	$
+	holds 
+	\[
+		\extProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
+	\]
+	%
+	\begin{figure}
+		\centering
+		\fbox{
+		\procedure{$\forking_\pdv (y)$}
+		{
+			r \sample \RND{\pdv}\\
+			h_1, \ldots, h_q \sample H\\
+			(i, s) \gets \pdv(y, h_1, \ldots, h_q; r)\\
+			\pcif i = 0\ \pcreturn (0, \bot, \bot)\\
+			h_{i'}, \ldots, h_{q'} \sample H\\
+			(i', s') \gets \pdv(y, h_1, \ldots, h_{i - 1}, h_{i'} h_{q'}; r)\\
+			\pcif (i = i') \land (h_{i} \neq h_{i'})\ \pcreturn (1, s, s')\\
+			\pcind \pcelse \pcreturn (0, \bot, \bot)
+		}}
+		\caption{Forking algorithm $\forking_\pdv$}
+		\label{fig:faust_forking_lemma}
+\end{figure}
+\end{lemma}
+%
+Probabilty $\ext$ can be interpreted as a lower bound for a successful witness extraction from two transcripts. The transcripts have to be \emph{acceptable} (i.e.~$i > 0$) and it should be impossible to tell from $\pdv$'s output whether it got as input $h_1, \ldots, h_q$ or $h_1, \ldots, h_{i - 1}, h_{i'}, \ldots, h_{q'}$.
+Although dubbed ''general'', \cref{lem:faust_forking_lemma} is not general enough for our purpose as it useful only for protocols that extract witness from two transcripts.
+
+Fortunately, Bootle et al.~\cite{EC:BCCGP16} shown a more general version of the lemma. More precisely, they proved that each protocol that allows for a witness extraction from a bigger number of accepting transcripts has witness-extended emulation. \cite{EC:BCCGP16} defines a \emph{tree of accepting transcript}. Let $\proofsystem$ be a $(2 \mu + 1)$-move public-coin proof system with $\mu$ challenges $h_1, \ldots, h_\mu$. Let $n_i > 1$, for $i \in \range{1}{\mu}$.
+Consider $\prod_{i = 1}^{\mu} n_i$ accepting transfers with challenges as a tree with depth $\mu$ and $\prod_{i = 1}^{\mu} n_i$ leaves.	Each node of depth $i < \mu$ has exactly $n_i$ children, each labelled with a distinct value for the $i$-th challenge $h_i$. We refer to that as a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts.
+
+ \task{15.05}{Use one forking lemma (by Bootle et al) and show that the result from Faust holds for it anyway}
+\begin{lemma}[Generalised general forking lemma~\cite{EC:BCCGP16}]
+	\label{lem:bootle_forking_lemma}
+	Let $\ip{\prover}{\verifier}$ be a $(2\mu + 1)$-move, public coin interactive  protocol. Let $\ext$ be a PPT witness extraction algorithm that always succeeds in extracting a witness from an $(n_1,\ldots, n_\mu)$-tree of accepting transcripts. Assume that $\prod_{i = 1}^{\mu} n_i \leq \poly$. 
+	Then $\ip{\prover}{\verifier}$ has witness-extended emulation.
+\end{lemma}
+As mentioned, any protocol that has witness-extended emulation defined as in \cite{EC:BCCGP16} is equipped with this property also in the light of \cref{def:wit_ext_em}.
 
 \subsection{Interpolation of rational functions}
 Let $F(X) = P(X) / Q(X)$ be a rational function defined over $\FF(X)$ such that $\deg P = m_a$ and $\deg Q = m_b$. We call a set $V = \smallset{(x_i, y_i)}_{i \in I}$ a \emph{support set} of $F$ if for all $i \in I$ holds $F(x_i) = y_i$. 
@@ -217,48 +272,12 @@ The following lemma can be formulated:
 	\qed
 \end{proof}
 
-\subsection{General forking lemma}
-\newcommand{\forking}{\pcalgostyle{F}}
-\begin{lemma}[General forking lemma, see~\cite{INDOCRYPT:FKMV12}]
-	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\pdv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $I \in\range{0}{q}$ and $s$ is called a \emph{side output}. 
-	Denote by $\ig$ a randomised instance generator. 
-	We denote by $\accProb$ the probability 
-	\[
-		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_1 \sample H; (i, s) \gets \pdv(y, h_1, \ldots, h_q)}\,.
-	\] 
-	Let $\forking_\pdv(y)$ denote the algorithm described in \cref{fig:forking_lemma}, then the probability $\extProb$ defined as 
-	$
-		\extProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\pdv}(y)}
-	$
-	holds 
-	\[
-		\extProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
-	\]
-	%
-	\begin{figure}
-		\centering
-		\fbox{
-		\procedure{$\forking_\pdv (y)$}
-		{
-			r \sample \RND{\pdv}\\
-			h_1, \ldots, h_q \sample H\\
-			(i, s) \gets \pdv(y, h_1, \ldots, h_q; r)\\
-			\pcif i = 0\ \pcreturn (0, \bot, \bot)\\
-			h_{i'}, \ldots, h_{q'} \sample H\\
-			(i', s') \gets \pdv(y, h_1, \ldots, h_{i - 1}, h_{i'} h_{q'}; r)\\
-			\pcif (i = i') \land (h_{i} \neq h_{i'})\ \pcreturn (1, s, s')\\
-			\pcind \pcelse \pcreturn (0, \bot, \bot)
-		}}
-		\caption{Forking algorithm $\forking_\pdv$}
-		\label{fig:forking_lemma}
-\end{figure}
-\end{lemma}
 \section{Simulation extractability from witness-extended emulation}
 \begin{theorem}[Simulation extractability of the Fiat-Shamir transform \cite{INDOCRYPT:FKMV12}]
 	Let $\Sigma = \ip{\prover}{\verifier}$ be a non-trivial $\Sigma$-protocol with unique responses for a language $\LANG \in \npol$. 
 	In the random oracle model, the NIZK proof system $\Sigma_{\FS} = \ip{\prover^\ro}{\verifier^{\ro}}$ 	resulting by applying the Fiat--Shamir transform to $\Sigma$ is simulation extractable with extraction error $\eta = q/h$ for the \hl{canonical} simulator $\simulator$. Here, $q$ is the number of random oracle queries and $h$ is the number of elements in the range of $\ro$. Furthermore, the extractor $\ext_\adv$ needs to run $\adv^{\simulator_1}, \adv^{\simulator_2}$ twice.
 \end{theorem}
-\michals{14.05}{Need to make this theorem more general as currently it works only for 3-move $\Sigma$-protocols!}
+\task{14.05}{Need to make this theorem more general as currently it works only for 3-move $\Sigma$-protocols!}
 
 Unfortunately the result of Faust et al.~is stated for a specific kind of special-sound proofs, i.e.~$\Sigma$-protocols, which compounds of three messages exchanged between the prover and the verifier. Both $\plonk$ and $\sonic$ require more interaction between these parties so that result is not directly applicable. However, we show that it can be generalised to a witness-extended emulatable protocols as well.
 
@@ -282,17 +301,17 @@ However, we point out that the efficiency of the extractor does not influences t
 \begin{proof}
 In the second round of \plonk{} the prover gets $\beta = \ro(0, \trans)$ and $\gamma = \ro(1, \trans)$, where $\trans$ is the transcript of the previous messages exchanged in the protocol, from the random oracle, computes polynomial
 %
-\begin{multline}
+\begin{multline*}
   \label{eq:Z}
   Z(X) = (b_7 X^2 + b_8 X + b_9) (X^\instsize - 1) + L_1 (X) + \\
    + \sum_{i = 1}^{\instsize - 1}\brak{L_{i + 1}(X) \prod_{j = 1}^{i} 
   \frac{(\wit_j + \beta \w^{j - 1} + \gamma)(\wit_{\instsize + j} + \beta k_1 \w^{j - 1} + \gamma) (\wit_{2\instsize + j} + \beta k_2 \w^{j - 1} + \gamma)}
   {(\wit_j + \sigma(j)\beta + \gamma)(\wit_{\instsize + j} + \sigma(\instsize + j)\beta + \gamma)(\wit_{2\instsize + j} + \sigma (2\instsize + j) \beta + \gamma)}
   }\,
-\end{multline}
+\end{multline*}
 and makes $\gone{Z(\chi)}$ part of his proof. 
 Here, $L_i$ are Lagrange basis polynomials, $\smallset{1, \w, \ldots, \w^{\instsize - 1}}$ are roots of unity, $\sigma(j)$ are values determined by the permutation, which defines the circuit (i.e.~which gate is connected to which gate), and $k_1, k_2$ are other \emph{publicly known} values.
-Assume that the extractor knows $\chi$, what is justified since the extractor may know the trapdoor corresponding to the CRS. \michals{8.05}{Explain in more details.}
+Assume that the extractor knows $\chi$, what is justified since the extractor may know the trapdoor corresponding to the CRS. \task{8.05}{Explain in more details.}
  
 The only unknown values in $Z$ are the values of witness elements $\smallset{\wit_{\instsize + j}}_{j = 1}^{2 \cdot \instsize}$ (note that the values $\smallset{\wit_{j}}_{j = 1}^{\instsize}$ are public, i.e.~$\smallset{\wit_{j}}_{j = 1}^{\instsize} = \inp$) and randomisers $b_7, b_8, b_9$ which are picked by the prover at the beginning of the protocol. Later we show that even though the extract cannot know the values of the randomisers it does not prevent him from learning the witness.
 
@@ -307,7 +326,7 @@ Similarly, $q_i (X_\gamma)$ denotes the $i$-th product of the denominator
 \]
 
 To make the necessary summation all fractions are given a common denominator equal $q_1 (X_\gamma) \cdot \ldots \cdot q_{\instsize - 1} (X_\gamma)$. After this operation, $\Gamma(\gamma)$ can be written as
-\begin{multline}
+\begin{multline*}
   \Gamma(\gamma) = (b_7 \chi^2 + b_8 \chi + b_9) (\chi^\instsize - 1) + L_1 (\chi) + \\
    + \brak{\frac{
    p_1(\gamma) q_2(\gamma) \ldots q_{\instsize - 1}(\gamma) + q_1(\gamma) p_2(\gamma) q_3(\gamma) \ldots q_{\instsize - 1}(\gamma) + \ldots + q_1(\gamma) \ldots q_{\instsize - 2}(\gamma) p_{\instsize - 1}(\gamma)
@@ -315,7 +334,7 @@ To make the necessary summation all fractions are given a common denominator equ
    q_1(\gamma) q_2(\gamma) \ldots q_{\instsize - 1}(\gamma)
    }
   }\,.
-\end{multline}
+\end{multline*}
 Finally, let 
 \[
   \Gamma (X_\gamma) = \frac{N(X_\gamma)}{D(X_\gamma)}\,,
@@ -336,7 +355,7 @@ Observe that
 \end{inparaenum}
  Thus the requirements for \cref{lem:rational_function_interpolation_2} are met.
  
- The extractor $\ext$ that proceeds as follows then: First it  
+ The extractor $\ext$ proceeds as follows: First it 
 \qed
 \end{proof}
 
