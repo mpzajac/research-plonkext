@@ -362,16 +362,18 @@ Observe that
 \end{inparaenum}
 Hence the requirements for \cref{lem:rational_function_interpolation_2} are met.
  
-Following \cref{def:wit_ext_em} we can assume that the extractor gets as input the trapdoor corresponding to the CRS and it knows $\chi$.
+Following \cref{def:wit_ext_em} we can assume that the extractor gets as input the trapdoor corresponding to the CRS and knows $\chi$.
 Thus the only unknown values in $Z$ are the values of witness elements $\smallset{\wit_{\instsize + j}}_{j = 1}^{2 \instsize}$ (note that the values $\smallset{\wit_{j}}_{j = 1}^{\instsize}$ are public, i.e.~$\smallset{\wit_{j}}_{j = 1}^{\instsize} = \inp$) and randomisers $b_7, b_8, b_9$ which are picked by the prover at the beginning of the protocol. 
-We need to show now that information $\ext$ has about the coefficients of $\Gamma(X_\gamma)$ is enough to extract the witness, even though some coefficients may depend on
+We need to show now that information the extractor has about the coefficients of $\Gamma(X_\gamma)$ is enough to extract the witness, even though some coefficients may depend on
 \begin{inparaenum}[(i)]
-	\item more than one witness element and
-	\item randomisers $b_7, b_8, b_9$.
+	\item more than one witness element and\label{it:many_wit}
+	\item randomisers $b_7, b_8, b_9$.\label{it:randomisers}
 \end{inparaenum}
- 
+ %
 \task{15.05}{Missing part -- show that we know enough about coefficients of $\Gamma$ to extract the witness even though (1) some coefficients may depend on many witness parts, (2) some coefficients may depend on the blinders $b_i$}
-
+%
+Again we focus on the denominator function $D(X_\gamma)$ to tackle \cref{it:many_wit,it:randomisers}.
+First, we look at the coefficient by the $X_\gamma^{3\instsize - 1}$ (i.e.~the second highest power) which is \hl{continue}
 \qed
 \end{proof}
 
