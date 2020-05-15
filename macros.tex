@@ -16,7 +16,7 @@
 \newcommand{\brak}[1] {\left(#1\right)}
 \newcommand{\sbrak}[1] {(#1)}
 \newcommand{\alg}[1] {\pcalgostyle{#1}}
-\newcommand{\IM} {\operatorname{im}}
+\newcommand{\image} {\operatorname{im}}
 \newcommand{\myland} {\,\land\,}
 \newcommand{\mylor} {\,\lor\,}
 \newcommand{\vect}[1] {\operatorname{vect}(#1)}
@@ -80,4 +80,6 @@
 
 %coments
 \DeclareRobustCommand{\michals}[2]  {{\color{blueish}\sethlcolor{pinkish}\hl{\scriptsize\textsf{Michal #1:} #2}}}
-\DeclareRobustCommand{\task}[2]  {{\color{black}\sethlcolor{yellow}\hl{\textsf{TASK #1:} #2}}}
+\newcommand{\task}[2]{\todo[author=\textbf{Task},inline]{({\textit{#1}}) #2}}
+% \newcommand{\task}[2] {\xcommenti{Task}{#1}{#2}}
+% \DeclareRobustCommand{\task}[2]  {{\color{black}\sethlcolor{yellow}\hl{\textsf{TASK #1:} #2}}}

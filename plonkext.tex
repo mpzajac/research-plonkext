@@ -36,12 +36,13 @@
 	\newtheorem{definition}[theorem]{Definition}
 	\newtheorem{example}[theorem]{Example}
 }
-
+\usepackage{soul}
 \usepackage{soulutf8}
 \soulregister\cite7
 \soulregister\ref7
 \soulregister\pageref7
 \usepackage{hyperref}
+\usepackage[color=yellow]{todonotes}
 \hypersetup{final}
 \usepackage{mathrsfs}
 \usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
@@ -75,12 +76,16 @@
 \end{abstract}
 
 \section{Introduction}
+\paragraph{The rise of updatable zkSNARKs.}
+
+\paragraph{On the importance of the simulation extractability.}
+
 
 \section{Preliminaries}
 Let PPT denote probabilistic polynomial-time.
 Let $\secpar \in \NN$ be the security parameter.
 All adversaries will be stateful.
-For an algorithm $\adv$, let $\IM (\adv)$ be the image of $\adv$ (the set of valid outputs of $\adv$), let $\RND{\adv}$ denote the random tape of $\adv$ (assuming the given value of $\secpar$), and let $r \sample \RND{\adv}$ denote the random choice of the randomiser $r$ from $\RND{\adv}$.
+For an algorithm $\adv$, let $\image (\adv)$ be the image of $\adv$ (the set of valid outputs of $\adv$), let $\RND{\adv}$ denote the random tape of $\adv$ (assuming the given value of $\secpar$), and let $r \sample \RND{\adv}$ denote the random choice of the randomiser $r$ from $\RND{\adv}$.
 We denote by $\negl$ an arbitrary negligible function.
 
 Distributions $X$ and $Y$ have \emph{statistical distance} $\SD$ equals $\epsilon$ if $\sum_{a \in \supp{X \cup Y}} \abs{\prob{X = a} - \prob{Y = a}} = \epsilon$.
@@ -133,7 +138,7 @@ That means that a protocol that has witness-extended emulation in terms of \cite
 
 \begin{definition}[Witness-extended emulation]
 	\label{def:wit_ext_em}
-	We say a public coin proof system $\proofsystem = (\kcrs, \prover, \verifier, \simulator)$ has \emph{witness-extended emulation} if for all $\REL \in \IM(\RELGEN)$, and deterministic adversary $\adv_1$ there exists an expected polynomial time extractor $\ext$ such that for all NUPPT adversaries $\adv_0$ holds
+	We say a public coin proof system $\proofsystem = (\kcrs, \prover, \verifier, \simulator)$ has \emph{witness-extended emulation} if for all $\REL \in \image(\RELGEN)$, and deterministic adversary $\adv_1$ there exists an expected polynomial time extractor $\ext$ such that for all NUPPT adversaries $\adv_0$ holds
 		\begin{multline*}
 		\Pr\left[\adv_0 (\trans, \inp, \aux_{\adv_1}) = 1 \,\left|\,
 		\begin{aligned}
@@ -142,7 +147,7 @@ That means that a protocol that has witness-extended emulation in terms of \cite
 			\end{aligned}
 		\right.
 		\right]
-		 \approx_\epsilon \\
+		 \approx_\secpar \\
 		 \Pr\left[
 			\begin{aligned}
 				& \adv_1 (\trans) = 1\ \land \\
@@ -224,7 +229,7 @@ Although in the definition above the adversary $\adv_1$ is deterministic it obta
 \end{lemma}
 %
 Probabilty $\ext$ can be interpreted as a lower bound for a successful witness extraction from two transcripts. The transcripts have to be \emph{acceptable} (i.e.~$i > 0$) and it should be impossible to tell from $\pdv$'s output whether it got as input $h_1, \ldots, h_q$ or $h_1, \ldots, h_{i - 1}, h_{i'}, \ldots, h_{q'}$.
-Although dubbed ''general'', \cref{lem:faust_forking_lemma} is not general enough for our purpose as it useful only for protocols that extract witness from two transcripts.
+Although dubbed ``general'', \cref{lem:faust_forking_lemma} is not general enough for our purpose as it useful only for protocols that extract witness from two transcripts.
 
 Fortunately, Bootle et al.~\cite{EC:BCCGP16} shown a more general version of the lemma. More precisely, they proved that each protocol that allows for a witness extraction from a bigger number of accepting transcripts has witness-extended emulation. \cite{EC:BCCGP16} defines a \emph{tree of accepting transcript}. Let $\proofsystem$ be a $(2 \mu + 1)$-move public-coin proof system with $\mu$ challenges $h_1, \ldots, h_\mu$. Let $n_i > 1$, for $i \in \range{1}{\mu}$.
 Consider $\prod_{i = 1}^{\mu} n_i$ accepting transfers with challenges as a tree with depth $\mu$ and $\prod_{i = 1}^{\mu} n_i$ leaves.	Each node of depth $i < \mu$ has exactly $n_i$ children, each labelled with a distinct value for the $i$-th challenge $h_i$. We refer to that as a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts.
@@ -273,7 +278,7 @@ The following lemma can be formulated:
 \end{proof}
 
 \section{Simulation extractability from witness-extended emulation}
-\begin{theorem}[Simulation extractability of the Fiat-Shamir transform \cite{INDOCRYPT:FKMV12}]
+\begin{theorem}[Simulation extractability of the Fiat--Shamir transform \cite{INDOCRYPT:FKMV12}]
 	Let $\Sigma = \ip{\prover}{\verifier}$ be a non-trivial $\Sigma$-protocol with unique responses for a language $\LANG \in \npol$. 
 	In the random oracle model, the NIZK proof system $\Sigma_{\FS} = \ip{\prover^\ro}{\verifier^{\ro}}$ 	resulting by applying the Fiat--Shamir transform to $\Sigma$ is simulation extractable with extraction error $\eta = q/h$ for the \hl{canonical} simulator $\simulator$. Here, $q$ is the number of random oracle queries and $h$ is the number of elements in the range of $\ro$. Furthermore, the extractor $\ext_\adv$ needs to run $\adv^{\simulator_1}, \adv^{\simulator_2}$ twice.
 \end{theorem}
@@ -281,7 +286,13 @@ The following lemma can be formulated:
 
 Unfortunately the result of Faust et al.~is stated for a specific kind of special-sound proofs, i.e.~$\Sigma$-protocols, which compounds of three messages exchanged between the prover and the verifier. Both $\plonk$ and $\sonic$ require more interaction between these parties so that result is not directly applicable. However, we show that it can be generalised to a witness-extended emulatable protocols as well.
 
-\section{$\plonk$ protocol rolled-out}
+\begin{theorem}[Witness-extended emulation of the Fiat--Shamir transform]
+	\label{thm:wit_ext_em_FS}
+	Let $\proofsystem = \ip{\prover}{\verifier}$ be an interactive protocol with unique responses for a language $\LANG \in \npol$. 
+	In the random oracle model, the NIZK proof system $\proofsystem_{\FS} = \ip{\prover^\ro}{\verifier^{\ro}}$ 	resulting by applying the Fiat--Shamir transform to $\proofsystem$ has witness-extended emulation. 
+	\comment{Here, $q$ is the number of random oracle queries and $h$ is the number of elements in the range of $\ro$. Furthermore, the extractor $\ext_\adv$ needs to run $\adv^{\simulator_1}, \adv^{\simulator_2}$ twice.}
+\end{theorem}
+
 \section{Simulation extractability of \plonk}
 The main idea behind showing that \plonk{} is simulation extractable relies on the result by Faust et al.~\cite{INDOCRYPT:FKMV12} where the authors show that a public-coin special-sound protocol made non-interactive by the Fiat--Shamir transform is simulation extractable.
 Thus showing that \plonk{} is special-sound and public-coin is enough to show its simulation extractability. It is obvious that \plonk{} is public-coin, thus what remains is to show it is also special-sound.
@@ -352,7 +363,12 @@ Observe that
 Hence the requirements for \cref{lem:rational_function_interpolation_2} are met.
  
 Following \cref{def:wit_ext_em} we can assume that the extractor gets as input the trapdoor corresponding to the CRS and it knows $\chi$.
-Thus the only unknown values in $Z$ are the values of witness elements $\smallset{\wit_{\instsize + j}}_{j = 1}^{2 \cdot \instsize}$ (note that the values $\smallset{\wit_{j}}_{j = 1}^{\instsize}$ are public, i.e.~$\smallset{\wit_{j}}_{j = 1}^{\instsize} = \inp$) and randomisers $b_7, b_8, b_9$ which are picked by the prover at the beginning of the protocol. 
+Thus the only unknown values in $Z$ are the values of witness elements $\smallset{\wit_{\instsize + j}}_{j = 1}^{2 \instsize}$ (note that the values $\smallset{\wit_{j}}_{j = 1}^{\instsize}$ are public, i.e.~$\smallset{\wit_{j}}_{j = 1}^{\instsize} = \inp$) and randomisers $b_7, b_8, b_9$ which are picked by the prover at the beginning of the protocol. 
+We need to show now that information $\ext$ has about the coefficients of $\Gamma(X_\gamma)$ is enough to extract the witness, even though some coefficients may depend on
+\begin{inparaenum}[(i)]
+	\item more than one witness element and
+	\item randomisers $b_7, b_8, b_9$.
+\end{inparaenum}
  
 \task{15.05}{Missing part -- show that we know enough about coefficients of $\Gamma$ to extract the witness even though (1) some coefficients may depend on many witness parts, (2) some coefficients may depend on the blinders $b_i$}
 
@@ -361,5 +377,8 @@ Thus the only unknown values in $Z$ are the values of witness elements $\smallse
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
+
+\appendix
+\section{$\plonk$ protocol rolled-out}
 
 \end{document}
