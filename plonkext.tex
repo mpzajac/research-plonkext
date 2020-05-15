@@ -68,10 +68,8 @@
 	\maketitle
 
 \begin{abstract}
-	% Recent years brought rapid development of zero-knowledge SNARKs.   
-	
-	In this paper we prove show that some most-efficient updatable universal zkSNARKs like \plonk{}~\cite{EPRINT:GabWilCio19} and Sonic~\cite{CCS:MBKM19} are (non black-box) simulation extractable. 
-	To that end, we generalise the result by Faust et al.~\cite{INDOCRYPT:FKMV12} (INDOCRYPT 2012) and show that any special-sound interactive proof transformed by the Fiat--Shamir transform is simulation-extractable. Then we explain why \plonk{} is special-sound and conclude by showing it is simulation-extractable.
+	In this paper we prove that some most-efficient updatable universal zkSNARKs like \plonk{}~\cite{EPRINT:GabWilCio19} and Sonic~\cite{CCS:MBKM19} are (non black-box) simulation extractable. 
+	To that end, we generalise the result by Faust et al.~\cite{INDOCRYPT:FKMV12} (INDOCRYPT 2012) and show that any witness-extended emulatable is also simulation-extractable if made non-interactive by the Fiat--Shamir transform. We then explain why \plonk{} is has witness-extended emulation and conclude by showing its simulation-extractability.
 	\michals{14.05}{Since Sonic is witness-extended emulation then it should be simulation extractable as well. Task: check Marlin}
 \end{abstract}
 
@@ -100,14 +98,6 @@ We freely use the bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \v
 In a zero-knowledge proof or argument system, a prover convinces the verifier of the veracity of a statement without leaking any side information except that the statement is true.
 Here, a proof (resp., an argument) system guarantees soundness against an unbounded (resp., a PPT) cheating prover.
 The zero-knowledge property is proven by constructing a simulator that can simulate the view of a cheating verifier without knowing the secret information (witness) of the prover.
-% A non-interactive zero-knowledge proof or argument system~\cite{STOC:BluFelMic88} consists of just one message by the prover.
-
-% From a proof system $\proofsystem$ we require three properties
-% \begin{description}
-% 	\item[completeness]
-% 	\item[soundness] 
-% 	\item[zero knowledge]
-% \end{description}
 
 More precisely, let $\RELGEN(\secparam)$ be an algorithm that outputs an $\npol$ relation $\REL = \smallset{(\inp, \wit)}$. Denote by $\LANG_\REL$ the language determined by $\REL$. 
 Let $\prover$ and $\verifier$ be algorithms, the former called \emph{prover} and the latter \emph{verifier}. 
@@ -132,34 +122,73 @@ A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ i
 	We call zero knowledge \emph{perfect} if the distributions are equal and \emph{computational} if they are indistinguishable for any NUPPT distinguisher.
 \end{description}
 
-%siulation extractability
-Interactive proofs are often required to have the special soundness property which states that if for a given statement $\inp$ and first message $a$ the prover can respond to many verifier's challenges then she knows the witness. Moreover, a PPT algorithm with access to a number of prover--verifier conversations that shares the same first \hl{TODO: continue}
+Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on input $\REL$ outputs a common reference string (CRS) $\crs$. 
+Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages the verifier sends are chosen uniformly at random and independently of the messages send by the prover or system parameters.
 
+Interactive proofs run in a multiprotcol environment are often required to fulfil a stronger notion of soundness called \emph{witness-extended emulation}~\cite{JC:Lindell03}. We follow \cite{EC:GroIsh08} in their formulation of this property since it considers proof systems that utilises a CRS. 
 
-\comment{
-\begin{definition}[Weak simulation extractability]
-	A proof system $\proofsystem$ is computationally (adaptively) \emph{simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
-  \[
-	\condprob{
-  \begin{aligned}
-    &(\inp, \wit) \not\in \REL \land \inp\not\in Q \\
-    & \land \verifier (\REL, \crs_{\verifier}, \inp, \zkproof) = 1
-  \end{aligned}
-  }
-  {
+\begin{definition}[Witness-extended emulation \cite{EC:GroIsh08}]
+	\label{def:witextem}
+	We say a public coin proof system $\proofsystem = (\kcrs, \prover, \verifier, \simulator)$ has \emph{witness-extended emulation} if for all $\REL \in \IM(\RELGEN)$, $\inp, \aux_\adv$ and deterministic adversary $\adv$ there exists an expected polynomial time extractor $\ext$ such that for all NUPPT distinguishers $\ddv$ holds
+		\begin{multline*}
+		\Pr\left[\ddv (\trans, \inp, \aux_{\adv}) = 1 \,\left|\,
 		\begin{aligned}
-		& \REL \gets \RELGEN (\secparam),
-		(\crs, \td) \gets \kgen (\REL), r \sample \RND{\adv},
-		\\ &
-		((\inp, \zkproof)  \|  \wit) \gets (\adv^{\oracleo}  \|  \ext_\adv) (\REL, \crs; r)
-		\end{aligned}
-	} \leq \negl \enspace,
-	\]
-	where $\oracleo$ on input $\inp'$ returns $\zkproof' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $\inp'$ to a list $Q$.
-\end{definition}
+				& \crs \gets \kcrs(\REL), (\inp, \aux_{\prover^{*}}) \gets \adv, \\
+				& \trans \gets \ip{\prover^{*}(\REL, \crs, \inp, \aux_\prover)}{\verifier(\REL, \crs, \inp)}
+			\end{aligned}
+		\right.
+		\right]
+		 \approx_\epsilon \\
+		 \Pr\left[
+			\begin{aligned}
+				& \adv (\trans) = 1\ \land \\
+				& \text{if $\trans$ is accepting} \\ 
+				& \pcind \text{then $\REL(\inp, \wit)$}
+			\end{aligned}\,\left|\,
+			\begin{aligned}
+				& \crs \gets \kcrs(\REL), (\inp, \aux_{\prover^{*}}) \gets \adv, \\ 
+				& (\trans, \wit )\gets \ext^{\ip{\prover^{*}(\REL, \crs, \inp, \aux_\prover)}{\verifier(\REL, \crs, \inp)}}
+			\end{aligned}
+			\vphantom{\begin{aligned}
+				\adv (\trans) = 1 \land \\
+				\text{if $\trans{}$ is accepting} \\ 
+				\pcind \text{then $\REL(\inp, \wit)$}
+			\end{aligned}}\right.
+			\right]\,,
+\end{multline*}
+where the extractor $\ext$ can rewind the conversation between the prover and the verifier to a particular round and run it again with a fresh randomness for the verifier. 
+\end{definition} 
+Although in the definition above the adversary $\adv$ is deterministic it obtains an auxiliary input $\aux_\adv$ that may be used by $\adv$ as a source of randomness. \cite{EC:GroIsh08} notes that since the protocol is public-coin, verifier's randomness is part of the transcript. Thus combining $\REL, \crs, \inp, \aux_\adv$ and an accepting transcript $\trans$ gives a view of both the prover and the verifier and thus gives a witness.
 
-The definition of simulation extractability as stated above allows the malicious prover to maul proofs output by the simulator. This possibility can be ruled out by requiring a stronger property as defined below.
-}
+\comment{\begin{definition}[Witness-extended emulation \cite{EC:GroIsh08}]
+	We say a public coin proof system $\proofsystem = (\kcrs, \prover, \verifier, \simulator)$ has \emph{witness-extended emulation} if for all $\REL \in \IM(\RELGEN)$, deterministic polynomial time $\prover^{*}$ there exists an expected polynomial time extractor $\ext$ such that for all NUPPT adversaries $\adv$ holds
+		\begin{multline*}
+		\Pr\left[\adv (\trans) = 1 \,\left|\,
+		\begin{aligned}
+				& \crs \gets \kcrs(\REL), (\inp, \aux_{\prover^{*}}) \gets \adv, \\
+				& \trans \gets \ip{\prover^{*}(\REL, \crs, \inp, \aux_\prover)}{\verifier(\REL, \crs, \inp)}
+			\end{aligned}
+		\right.
+		\right]
+		 \approx_\epsilon \\
+		 \Pr\left[
+			\begin{aligned}
+				& \adv (\trans) = 1\ \land \\
+				& \text{if $\trans$ is accepting} \\ 
+				& \pcind \text{then $\REL(\inp, \wit)$}
+			\end{aligned}\,\left|\,
+			\begin{aligned}
+				& \crs \gets \kcrs(\REL), (\inp, \aux_{\prover^{*}}) \gets \adv, \\ 
+				& (\trans, \wit )\gets \ext^{\ip{\prover^{*}(\REL, \crs, \inp, \aux_\prover)}{\verifier(\REL, \crs, \inp)}}
+			\end{aligned}
+			\vphantom{\begin{aligned}
+				\adv (\trans) = 1 \land \\
+				\text{if $\trans{}$ is accepting} \\ 
+				\pcind \text{then $\REL(\inp, \wit)$}
+			\end{aligned}}\right.
+			\right]\,.
+\end{multline*}
+\end{definition} }
 
 \begin{definition}[Simulation extractability]
 	A proof system $\proofsystem$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
