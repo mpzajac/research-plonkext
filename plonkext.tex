@@ -295,12 +295,11 @@ By programming $\ro$ and rewinding the prover one can evaluate $\Gamma$ in vario
 We note that the extraction procedure is not very efficient. Function $\Gamma$ has numerator and denominator polynomials of degrees linear to the size of the statement. Thus a linear number of rewinds is necessary to recreate the witness.
 However, we point out that the efficiency of the extractor does not influences the efficiency of a protocol run between the prover and verifier.
 
-\begin{lemma}[Special soundness of \plonk{}]
-  \plonk{} is special-sound in the random oracle model.
-\end{lemma}
+\begin{theorem}[Witness-extended emulation in \plonk{}]
+  \plonk{} has witness-extended emulation in the random oracle model.
+\end{theorem}
 \begin{proof}
-In the second round of \plonk{} the prover gets $\beta = \ro(0, \trans)$ and $\gamma = \ro(1, \trans)$, where $\trans$ is the transcript of the previous messages exchanged in the protocol, from the random oracle, computes polynomial
-%
+In the second round of \plonk{} the prover gets from a random oracle $\beta = \ro(0, \tr)$ and $\gamma = \ro(1, \tr)$, where $\tr$ is the transcript of the previous messages exchanged in the protocol. Then he computes a polynomial
 \begin{multline*}
   \label{eq:Z}
   Z(X) = (b_7 X^2 + b_8 X + b_9) (X^\instsize - 1) + L_1 (X) + \\
@@ -311,9 +310,6 @@ In the second round of \plonk{} the prover gets $\beta = \ro(0, \trans)$ and $\g
 \end{multline*}
 and makes $\gone{Z(\chi)}$ part of his proof. 
 Here, $L_i$ are Lagrange basis polynomials, $\smallset{1, \w, \ldots, \w^{\instsize - 1}}$ are roots of unity, $\sigma(j)$ are values determined by the permutation, which defines the circuit (i.e.~which gate is connected to which gate), and $k_1, k_2$ are other \emph{publicly known} values.
-Assume that the extractor knows $\chi$, what is justified since the extractor may know the trapdoor corresponding to the CRS. \task{8.05}{Explain in more details.}
- 
-The only unknown values in $Z$ are the values of witness elements $\smallset{\wit_{\instsize + j}}_{j = 1}^{2 \cdot \instsize}$ (note that the values $\smallset{\wit_{j}}_{j = 1}^{\instsize}$ are public, i.e.~$\smallset{\wit_{j}}_{j = 1}^{\instsize} = \inp$) and randomisers $b_7, b_8, b_9$ which are picked by the prover at the beginning of the protocol. Later we show that even though the extract cannot know the values of the randomisers it does not prevent him from learning the witness.
 
 Since $\chi$ is fixed, $Z(\chi)$ can be expressed as an evaluation of a rational function $\Gamma(X_\gamma)$ at $\gamma$. We will now focus on interpolating $\Gamma$.
 For the sake of readability we denote by $p_i (X_\gamma)$ a polynomial corresponding to the $i$-th product of the numerator of the big fraction in $Z$, that is
@@ -353,9 +349,13 @@ Observe that
 	\item the degree of polynomial $D(X_\gamma)$ is known and 
 	\item one of its coefficients is known, more precisely, the coefficient by the highest power, $X_\gamma^{3i}$, is $1$.
 \end{inparaenum}
- Thus the requirements for \cref{lem:rational_function_interpolation_2} are met.
+Hence the requirements for \cref{lem:rational_function_interpolation_2} are met.
  
- The extractor $\ext$ proceeds as follows: First it 
+Following \cref{def:wit_ext_em} we can assume that the extractor gets as input the trapdoor corresponding to the CRS and it knows $\chi$.
+Thus the only unknown values in $Z$ are the values of witness elements $\smallset{\wit_{\instsize + j}}_{j = 1}^{2 \cdot \instsize}$ (note that the values $\smallset{\wit_{j}}_{j = 1}^{\instsize}$ are public, i.e.~$\smallset{\wit_{j}}_{j = 1}^{\instsize} = \inp$) and randomisers $b_7, b_8, b_9$ which are picked by the prover at the beginning of the protocol. 
+ 
+\task{15.05}{Missing part -- show that we know enough about coefficients of $\Gamma$ to extract the witness even though (1) some coefficients may depend on many witness parts, (2) some coefficients may depend on the blinders $b_i$}
+
 \qed
 \end{proof}
 
