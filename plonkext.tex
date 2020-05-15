@@ -101,8 +101,8 @@ The zero-knowledge property is proven by constructing a simulator that can simul
 
 More precisely, let $\RELGEN(\secparam)$ be an algorithm that outputs an $\npol$ relation $\REL = \smallset{(\inp, \wit)}$. Denote by $\LANG_\REL$ the language determined by $\REL$. 
 Let $\prover$ and $\verifier$ be algorithms, the former called \emph{prover} and the latter \emph{verifier}. 
-We denote by $\ip{\prover (\wit)}{\verifier}(\REL, \inp)$ a transcript of conversation between a $\prover$ and $\verifier$ which share input $(\REL, \inp)$ and the prover is additionally equipped with $\wit$. 
-We write $\ip{\prover (\wit)}{\verifier}(\REL, \inp) = 1$ if in the end of the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the transcript.
+We denote by $\ip{\prover(\REL, \inp, \wit)}{\verifier(\REL, \inp)}$ a transcript of conversation between a $\prover$ with input $(\REL, \inp, \wit)$ and $\verifier$ with input $(\REL, \inp)$. 
+We write $\ip{\prover (\REL, \inp, \wit)}{\verifier(\REL, \inp)} = 1$ if in the end of the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the transcript.
 
 A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
 \begin{description}
@@ -112,42 +112,43 @@ A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ i
 	\]
 	\item[Soundness] We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no PPT prover $\adv$ can convince an honest verifier $\verifier$ to accept a proof for a false statement, i.e~for $\inp \not\in\LANG$. More precisely, for all $\REL \gets \RELGEN(\secparam)$
 	\[
-		\condprob{\ip{\adv}{\verifier}(\REL, \inp) = 1}{\inp \gets \adv(\REL); \inp \not\in \LANG_\REL} \leq \negl\,;
+		\condprob{\ip{\adv(\REL, \inp)}{\verifier(\REL, \inp)} = 1}{\inp \gets \adv(\REL); \inp \not\in \LANG_\REL} \leq \negl\,;
 	\]
 	\item[Zero knowledge] We call an interactive proof system $\proofsystem$ \emph{zero-knowledge} if for any $\REL \gets \RELGEN(\secparam)$ and adversary $\adv$ there exists a $\ppt$ simulator $\simulator$ such that
-	\[
-	  \smallset{\ip{\prover}{\adv}(\REL, \inp, \wit) \mid (\inp, \wit) \gets \adv(\REL)} \approx_\secpar \smallset{\ip{\simulator^{\adv}}{\adv}(\REL, \inp, \wit) \mid (\inp, \wit) \gets \adv(\REL)}\,.
-	\]
+	\begin{multline*}
+	  \smallset{\ip{\prover(\REL, \inp, \wit)}{\adv(\REL, \inp, \wit)} \left| (\inp, \wit) \gets \adv(\REL)\right.} \approx_\secpar \\
+		\smallset{\ip{\simulator^{\adv}(\REL, \inp)}{\adv(\REL, \inp, \wit)} \left| (\inp, \wit) \gets \adv(\REL)\right.}\,.
+	\end{multline*}
 	%
 	We call zero knowledge \emph{perfect} if the distributions are equal and \emph{computational} if they are indistinguishable for any NUPPT distinguisher.
 \end{description}
 
-Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on input $\REL$ outputs a common reference string (CRS) $\crs$. 
+Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on input $\REL$ outputs a common reference string (CRS) $\crs$. For the sake of succinctness we denote by $\trans$ a transcript of a conversation between the prover and the verifier extended with verifier's input $(\REL, \inp)$ (or $(\REL, \crs, \inp)$ in case of a proof system with a setup).
 Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages the verifier sends are chosen uniformly at random and independently of the messages send by the prover or system parameters.
 
 Interactive proofs run in a multiprotcol environment are often required to fulfil a stronger notion of soundness called \emph{witness-extended emulation}~\cite{JC:Lindell03}. We follow \cite{EC:GroIsh08} in their formulation of this property since it considers proof systems that utilises a CRS. 
 
 \begin{definition}[Witness-extended emulation \cite{EC:GroIsh08}]
 	\label{def:witextem}
-	We say a public coin proof system $\proofsystem = (\kcrs, \prover, \verifier, \simulator)$ has \emph{witness-extended emulation} if for all $\REL \in \IM(\RELGEN)$, $\inp, \aux_\adv$ and deterministic adversary $\adv$ there exists an expected polynomial time extractor $\ext$ such that for all NUPPT distinguishers $\ddv$ holds
+	We say a public coin proof system $\proofsystem = (\kcrs, \prover, \verifier, \simulator)$ has \emph{witness-extended emulation} if for all $\REL \in \IM(\RELGEN)$, and deterministic adversary $\adv_1$ there exists an expected polynomial time extractor $\ext$ such that for all NUPPT adversaries $\adv_0$ holds
 		\begin{multline*}
-		\Pr\left[\ddv (\trans, \inp, \aux_{\adv}) = 1 \,\left|\,
+		\Pr\left[\adv_0 (\trans, \inp, \aux_{\adv_1}) = 1 \,\left|\,
 		\begin{aligned}
-				& \crs \gets \kcrs(\REL), (\inp, \aux_{\prover^{*}}) \gets \adv, \\
-				& \trans \gets \ip{\prover^{*}(\REL, \crs, \inp, \aux_\prover)}{\verifier(\REL, \crs, \inp)}
+				& \crs \gets \kcrs(\REL), (\inp, \aux_{\adv_1}) \gets \adv_0, \\
+				& \trans \gets \ip{\adv_1(\REL, \crs, \inp, \aux_{\adv_1})}{\verifier(\REL, \crs, \inp)}
 			\end{aligned}
 		\right.
 		\right]
 		 \approx_\epsilon \\
 		 \Pr\left[
 			\begin{aligned}
-				& \adv (\trans) = 1\ \land \\
+				& \adv_1 (\trans) = 1\ \land \\
 				& \text{if $\trans$ is accepting} \\ 
 				& \pcind \text{then $\REL(\inp, \wit)$}
 			\end{aligned}\,\left|\,
 			\begin{aligned}
-				& \crs \gets \kcrs(\REL), (\inp, \aux_{\prover^{*}}) \gets \adv, \\ 
-				& (\trans, \wit )\gets \ext^{\ip{\prover^{*}(\REL, \crs, \inp, \aux_\prover)}{\verifier(\REL, \crs, \inp)}}
+				& \crs \gets \kcrs(\REL), (\inp, \aux_{\adv_1}) \gets \adv_0, \\ 
+				& (\trans, \wit )\gets \ext^{\ip{\adv_1(\REL, \crs, \inp, \aux_\prover)}{\verifier(\REL, \crs, \inp)}}
 			\end{aligned}
 			\vphantom{\begin{aligned}
 				\adv (\trans) = 1 \land \\
@@ -158,37 +159,7 @@ Interactive proofs run in a multiprotcol environment are often required to fulfi
 \end{multline*}
 where the extractor $\ext$ can rewind the conversation between the prover and the verifier to a particular round and run it again with a fresh randomness for the verifier. 
 \end{definition} 
-Although in the definition above the adversary $\adv$ is deterministic it obtains an auxiliary input $\aux_\adv$ that may be used by $\adv$ as a source of randomness. \cite{EC:GroIsh08} notes that since the protocol is public-coin, verifier's randomness is part of the transcript. Thus combining $\REL, \crs, \inp, \aux_\adv$ and an accepting transcript $\trans$ gives a view of both the prover and the verifier and thus gives a witness.
-
-\comment{\begin{definition}[Witness-extended emulation \cite{EC:GroIsh08}]
-	We say a public coin proof system $\proofsystem = (\kcrs, \prover, \verifier, \simulator)$ has \emph{witness-extended emulation} if for all $\REL \in \IM(\RELGEN)$, deterministic polynomial time $\prover^{*}$ there exists an expected polynomial time extractor $\ext$ such that for all NUPPT adversaries $\adv$ holds
-		\begin{multline*}
-		\Pr\left[\adv (\trans) = 1 \,\left|\,
-		\begin{aligned}
-				& \crs \gets \kcrs(\REL), (\inp, \aux_{\prover^{*}}) \gets \adv, \\
-				& \trans \gets \ip{\prover^{*}(\REL, \crs, \inp, \aux_\prover)}{\verifier(\REL, \crs, \inp)}
-			\end{aligned}
-		\right.
-		\right]
-		 \approx_\epsilon \\
-		 \Pr\left[
-			\begin{aligned}
-				& \adv (\trans) = 1\ \land \\
-				& \text{if $\trans$ is accepting} \\ 
-				& \pcind \text{then $\REL(\inp, \wit)$}
-			\end{aligned}\,\left|\,
-			\begin{aligned}
-				& \crs \gets \kcrs(\REL), (\inp, \aux_{\prover^{*}}) \gets \adv, \\ 
-				& (\trans, \wit )\gets \ext^{\ip{\prover^{*}(\REL, \crs, \inp, \aux_\prover)}{\verifier(\REL, \crs, \inp)}}
-			\end{aligned}
-			\vphantom{\begin{aligned}
-				\adv (\trans) = 1 \land \\
-				\text{if $\trans{}$ is accepting} \\ 
-				\pcind \text{then $\REL(\inp, \wit)$}
-			\end{aligned}}\right.
-			\right]\,.
-\end{multline*}
-\end{definition} }
+Although in the definition above the adversary $\adv_1$ is deterministic it obtains an auxiliary input $\aux_{\adv_1}$ that may be used by $\adv_1$ as a source of randomness. \cite{EC:GroIsh08} notes that since the protocol is public-coin, verifier's randomness is part of the transcript. Thus combining $\inp, \aux_\adv$ and an accepting transcript $\trans$ gives a view of both the prover and the verifier and thus gives a witness.
 
 \begin{definition}[Simulation extractability]
 	A proof system $\proofsystem$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
@@ -282,14 +253,14 @@ The following lemma can be formulated:
 		\label{fig:forking_lemma}
 \end{figure}
 \end{lemma}
-\section{Simulation extractability from special soundness}
+\section{Simulation extractability from witness-extended emulation}
 \begin{theorem}[Simulation extractability of the Fiat-Shamir transform \cite{INDOCRYPT:FKMV12}]
 	Let $\Sigma = \ip{\prover}{\verifier}$ be a non-trivial $\Sigma$-protocol with unique responses for a language $\LANG \in \npol$. 
 	In the random oracle model, the NIZK proof system $\Sigma_{\FS} = \ip{\prover^\ro}{\verifier^{\ro}}$ 	resulting by applying the Fiat--Shamir transform to $\Sigma$ is simulation extractable with extraction error $\eta = q/h$ for the \hl{canonical} simulator $\simulator$. Here, $q$ is the number of random oracle queries and $h$ is the number of elements in the range of $\ro$. Furthermore, the extractor $\ext_\adv$ needs to run $\adv^{\simulator_1}, \adv^{\simulator_2}$ twice.
 \end{theorem}
 \michals{14.05}{Need to make this theorem more general as currently it works only for 3-move $\Sigma$-protocols!}
 
-Unfortunately the result of Faust et al.~is stated for a specific kind of special-sound proofs, i.e.~$\Sigma$-protocols 
+Unfortunately the result of Faust et al.~is stated for a specific kind of special-sound proofs, i.e.~$\Sigma$-protocols, which compounds of three messages exchanged between the prover and the verifier. Both $\plonk$ and $\sonic$ require more interaction between these parties so that result is not directly applicable. However, we show that it can be generalised to a witness-extended emulatable protocols as well.
 
 \section{$\plonk$ protocol rolled-out}
 \section{Simulation extractability of \plonk}
