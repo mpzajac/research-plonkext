@@ -69,7 +69,7 @@
 	\maketitle
 
 \begin{abstract}
-	In this paper we prove that some most-efficient updatable universal zkSNARKs like \plonk{}~\cite{EPRINT:GabWilCio19} and Sonic~\cite{CCS:MBKM19} are (non black-box) simulation extractable. 
+	In this paper we prove that some most-efficient updatable universal zkSNARKs like \plonk{}~\cite{EPRINT:GabWilCio19} \comment{and Sonic~\cite{CCS:MBKM19} are} is (non black-box) simulation extractable. 
 	To that end, we generalise the result by Faust et al.~\cite{INDOCRYPT:FKMV12} (INDOCRYPT 2012) and show that any witness-extended emulatable is also simulation-extractable if made non-interactive by the Fiat--Shamir transform. We then explain why \plonk{} is has witness-extended emulation and conclude by showing its simulation-extractability.
 	\michals{14.05}{Since Sonic is witness-extended emulation then it should be simulation extractable as well.}
 	\task{15.05}{Check Marlin}
@@ -80,6 +80,14 @@
 
 \paragraph{On the importance of the simulation extractability.}
 
+\subsection{Our contribution}
+We prove that $\plonk$ is simulation-extractable. Although we do not change the original protocol at all, we had to solve a number of problems in order to show that. The idea of the proof goes as follows. 
+First, we show that $\plonk$ has witness-extended emulation. To that end we show how from a number of accepting transcript a witness can be extracted. Unfortunately,  \plonk{} seem not to fit well in the standard definitions of witness-extended emulations like by Lindell \cite{JC:Lindell03} or by Groth and Ishai \cite{EC:GroIsh08}. The former does not consider arguments that utilises a CRS, the latter does, but does not consider giving the CRS trapdoor to the extractor. Thus, we had to modify the definition for the witness-extended emulation. We believe that our formulation would fit well in showing simulation-extractability of NIZKs. 
+
+Then, we took the classical result by Faust et al.~\cite{INDOCRYPT:FKMV12} which shows that a special-sound $\Sigma$-protocol that has the unique response property (URP) is simulation-extractable if made non-interactive by the Fiat--Shamir transform. This result also could not be used directly, as \plonk{} is not a $3$-round $\Sigma$-protocol. It was also not obvious that it poses URP. 
+To make Faust et al.~result working in our setting we had to prove it fits multi-round protocols and show that \plonk{} in fact has URP.
+
+We believe that our result may be useful for designing new zkSNARKs, especially those based on a polynomial commitment schemes~\cite{AC:KatZavGol10}, as it shows that a careful protocol design may give it a strong security notion for free.
 
 \section{Preliminaries}
 Let PPT denote probabilistic polynomial-time.
@@ -228,16 +236,43 @@ Although in the definition above the adversary $\adv_1$ is deterministic it obta
 \end{figure}
 \end{lemma}
 %
-Probabilty $\ext$ can be interpreted as a lower bound for a successful witness extraction from two transcripts. The transcripts have to be \emph{acceptable} (i.e.~$i > 0$) and it should be impossible to tell from $\pdv$'s output whether it got as input $h_1, \ldots, h_q$ or $h_1, \ldots, h_{i - 1}, h_{i'}, \ldots, h_{q'}$.
+In case of a $\Sigma$-protocol, the probability $\extProb$ can be interpreted as a lower bound for a successful witness extraction from two transcripts. 
+Let $\tr_1 = (\inp, a, z, \gamma)$ and $\tr_2 = (\inp, a, z', \gamma')$ be the transcripts.
+Both $\tr_1$ and $\tr_2$ have to be \emph{acceptable}, i.e.~$i > 0$. Index $i$ can be interpreted as an index of $h_i$ which was sent as a challenge for $(\inp, a)$. For the sake of extractability, both transcripts have to have the same index $i$, i.e.~the same instance $\inp$ and the first message $a$, but the actual challenges $z = h_i$ and $z' = h_{i'}$ have to differ.
 Although dubbed ``general'', \cref{lem:faust_forking_lemma} is not general enough for our purpose as it useful only for protocols that extract witness from two transcripts.
 
-Fortunately, Bootle et al.~\cite{EC:BCCGP16} shown a more general version of the lemma. More precisely, they proved that each protocol that allows for a witness extraction from a bigger number of accepting transcripts has witness-extended emulation. \cite{EC:BCCGP16} defines a \emph{tree of accepting transcript}. Let $\proofsystem$ be a $(2 \mu + 1)$-move public-coin proof system with $\mu$ challenges $h_1, \ldots, h_\mu$. Let $n_i > 1$, for $i \in \range{1}{\mu}$.
+Fortunately, Bootle et al.~\cite{EC:BCCGP16} shown a more general version of the lemma. More precisely, they proved that each protocol that allows for a witness extraction from a bigger number of accepting transcripts has witness-extended emulation. \cite{EC:BCCGP16} defines a \emph{tree of accepting transcript}. 
+Let $\proofsystem$ be a $(2 \mu + 1)$-move public-coin proof system with $\mu$ challenges $h_1, \ldots, h_\mu$. Let $n_i > 1$, for $i \in \range{1}{\mu}$.
 Consider $\prod_{i = 1}^{\mu} n_i$ accepting transfers with challenges as a tree with depth $\mu$ and $\prod_{i = 1}^{\mu} n_i$ leaves.	Each node of depth $i < \mu$ has exactly $n_i$ children, each labelled with a distinct value for the $i$-th challenge $h_i$. We refer to that as a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts.
+
+Besides that, we additionally require that a protocol $\proofsystem$ has \emph{unique responses after $i$}. We call such a protocol an $\iur$-protocol.
+We call a $(2\mu + 1)$-move interactive protocol $\proofsystem = \ip{\prover}{\verifier}$ to be an $\iur$ protocol if after the $i$-th round of the protocol (i.e.~after the $2i - 1$ message) all the responses of the prover are fixed. More precisely:
+
+\begin{definition}[Unique responses after $i$]
+	\label{def:iur}
+	Let $\proofsystem = \ip{\prover}{\verifier}$ be an interactive proof system. Denote by $a_1, b_1, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier. We say that $\proofsystem$ has \emph{unique responses after $i$} if for any PPT adversary $\adv$ probability
+	\[
+		\condprob{
+		\begin{aligned}
+			& \verifier(\REL, \crs, (a_1, \ldots, a_{i + 1}, \ldots, a_{\mu})) = 1 \, \land \\ 
+			& \verifier(\REL, \crs, (a_1, \ldots, a'_{i + 1} \ldots, a'_{\mu})) = 1
+		\end{aligned}
+		}
+		{
+		\begin{aligned}
+			& \crs \gets \kcrs(\REL), \\
+			& (a_1, b_1, \ldots, a'_{i + 1}, b'_{i + 1}, \ldots, a'_{\mu}) \gets \adv(\REL, \crs),\\ 
+			& (a_{i + 1}, b_{i + 1}, \ldots, a_{\mu}) \neq (a'_{i + 1}, b'_{i + 1}, \ldots, a'_{\mu})
+		\end{aligned}
+		}
+	\]
+	is negligible in $\secpar$.
+\end{definition}
 
  \task{15.05}{Use one forking lemma (by Bootle et al) and show that the result from Faust holds for it anyway}
 \begin{lemma}[Generalised general forking lemma~\cite{EC:BCCGP16}]
 	\label{lem:bootle_forking_lemma}
-	Let $\ip{\prover}{\verifier}$ be a $(2\mu + 1)$-move, public coin interactive  protocol. Let $\ext$ be a PPT witness extraction algorithm that always succeeds in extracting a witness from an $(n_1,\ldots, n_\mu)$-tree of accepting transcripts. Assume that $\prod_{i = 1}^{\mu} n_i \leq \poly$. 
+	Let $\proofsystem = \ip{\prover}{\verifier}$ be a $(2\mu + 1)$-move, public coin interactive  protocol. Let $\ext$ be a PPT witness extraction algorithm that always succeeds in extracting a witness from an $(n_1,\ldots, n_\mu)$-tree of accepting transcripts. Assume that $\prod_{i = 1}^{\mu} n_i \leq \poly$. 
 	Then $\ip{\prover}{\verifier}$ has witness-extended emulation.
 \end{lemma}
 As mentioned, any protocol that has witness-extended emulation defined as in \cite{EC:BCCGP16} is equipped with this property also in the light of \cref{def:wit_ext_em}.
@@ -353,7 +388,7 @@ where
    & + q_1(X_\gamma) \ldots q_{\instsize - 2}(X_\gamma) p_{\instsize - 1}(X_\gamma)\,,\\
   D(X_\gamma) & = q_1(X_\gamma)  \ldots q_{\instsize - 1}(X_\gamma)\,.
 \end{align*} 
-Both $N(X_\gamma)$ and $D(X_\gamma)$ have degree $3 \frac{(\instsize - 1) \instsize}{2}$, since $\deg p_i (X_\gamma) \allowbreak = \deg q_i (X_\gamma) = 3 i$.
+Both $N(X_\gamma)$ and $D(X_\gamma)$ have degree $\maxdegree = 3 \frac{(\instsize - 1) \instsize}{2}$, since $\deg p_i (X_\gamma) \allowbreak = \deg q_i (X_\gamma) = 3 i$.
 
 Observe that 
 \begin{inparaenum}[(i)]
@@ -373,7 +408,8 @@ We need to show now that information the extractor has about the coefficients of
 \task{15.05}{Missing part -- show that we know enough about coefficients of $\Gamma$ to extract the witness even though (1) some coefficients may depend on many witness parts, (2) some coefficients may depend on the blinders $b_i$}
 %
 Again we focus on the denominator function $D(X_\gamma)$ to tackle \cref{it:many_wit,it:randomisers}.
-First, we look at the coefficient by the $X_\gamma^{3\instsize - 1}$ (i.e.~the second highest power) which is \hl{continue}
+First, we look at the coefficient by the $X_\gamma^{\maxdegree - 1}$ (i.e.~the second highest power) which is  \hl{continue}
+That resolves \cref{it:many_wit}. The other issue that comes with \cref{it:randomisers} is easy since there are no randomisers used in the denominator polynomial.
 \qed
 \end{proof}
 
