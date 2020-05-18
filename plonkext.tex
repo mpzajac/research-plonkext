@@ -98,7 +98,9 @@
 First of all, we prove that $\plonk$ is simulation-extractable. Although we do not change the original protocol at all, we had to solve a number of problems in order to show that. The idea of the proof goes as follows. 
 
 \paragraph{Witness-extended emulation of \plonk{}.} 
-First, we show that $\plonk$ has witness-extended emulation. To that end we show how from a number of accepting transcript a witness can be extracted. Unfortunately, \plonk{} does not to fit well in the standard definitions of witness-extended emulations like by Lindell \cite{JC:Lindell03} or by Groth and Ishai \cite{EC:GroIsh08}. The former does not consider arguments that utilises a CRS, the latter does, but does not consider giving the CRS trapdoor to the extractor. Thus, we had to modify the definition for the witness-extended emulation. We believe that our formulation would fit well in showing simulation-extractability of NIZKs.
+First, we show that $\plonk$ has witness-extended emulation. To that end we show how from a number of accepting transcript a witness can be extracted. Unfortunately, \plonk{} does not to fit well in the standard definitions of witness-extended emulations like by Lindell \cite{JC:Lindell03} or by Groth and Ishai \cite{EC:GroIsh08}. The former does not cover arguments that utilises a CRS, the latter does, but does not consider giving the CRS trapdoor to the extractor. Thus, we had to modify the definition for the witness-extended emulation. 
+By this modification we bring the notion of the witness extended-emulation closer to the definition of simulation extractability, where giving the trapdoor to the extractor is a natural thing to do, cf.~\cite{AC:Groth06,AC:DHLW10,PKC:ADKNO13,DCC:DerSla19}.
+We believe that our formulation would serve well in showing simulation-extractability of NIZKs. 
 
 \paragraph{From witness-extended emulation to simulation extractability.}
 Second, we took the classical result by Faust et al.~\cite{INDOCRYPT:FKMV12} which shows that a special-sound $\Sigma$-protocol that has the unique response property is simulation-extractable if made non-interactive by the Fiat--Shamir transform. This result also could not be used directly, as \plonk{} is not a $3$-round $\Sigma$-protocol. 
@@ -124,6 +126,8 @@ Distributions $X$ and $Y$ have \emph{statistical distance} $\SD$ equals $\epsilo
 We write $X \approx_\secpar Y$ if $\SD(X, Y) \leq \negl$, where $\SD$ is the statistical distance between the distributions.
 For values $a$ and $b$ we write $a \approx_\secpar b$ if $\abs{a - b} \leq \negl$. 
 
+Denote by $\RELGEN$ a \emph{relation generator} -- a PPT algorithm that on input $\secparam$ outputs an $\npol$ relation $\REL$. We assume that if $\RELGEN$ provides any auxiliary input to $\REL$, it is benign. Directly from the description of $\REL$ one learns security parameter $\secpar$ and other necessary information like a description of a group $\GRP$, if the relation is a relation of group elements (as it usually is in case of zkSNARKs).
+
 \paragraph{Bilinear groups.}
 A bilinear group generator $\pgen (1^\secpar)$ returns $(p, \GRP_1, \GRP_2, \GRP_T, \pair, \gone{1}, \gtwo{1})$, where $\GRP_1$, $\GRP_2$, and $\GRP_T$ are additive cyclic groups of prime order $p = 2^{\Omega (\secpar)}$, $\gone{1}, \gtwo{1}$ are generators of $\GRP_1$, $\GRP_2$, resp., and $\pair: \GRP_1 \times \GRP_2 \to \GRP_T$ is a non-degenerate PPT-computable bilinear pairing.
 We assume the bilinear pairing to be Type-3, i.e., that there is no efficient isomorphism from $\GRP_1$ to $\GRP_2$ or from $\GRP_2$ to $\GRP_1$.
@@ -137,7 +141,7 @@ In a zero-knowledge proof or argument system, a prover convinces the verifier of
 Here, a proof (resp., an argument) system guarantees soundness against an unbounded (resp., a PPT) cheating prover.
 The zero-knowledge property is proven by constructing a simulator that can simulate the view of a cheating verifier without knowing the secret information (witness) of the prover.
 
-More precisely, let $\RELGEN(\secparam)$ be an algorithm that outputs an $\npol$ relation $\REL = \smallset{(\inp, \wit)}$. Denote by $\LANG_\REL$ the language determined by $\REL$. 
+More precisely, let $\RELGEN(\secparam)$ be a relation generator that outputs an $\npol$ relation $\REL = \smallset{(\inp, \wit)}$. Denote by $\LANG_\REL$ the language determined by $\REL$. 
 Let $\prover$ and $\verifier$ be algorithms, the former called \emph{prover} and the latter \emph{verifier}. 
 We denote by $\ip{\prover(\REL, \inp, \wit)}{\verifier(\REL, \inp)}$ a transcript of conversation between a $\prover$ with input $(\REL, \inp, \wit)$ and $\verifier$ with input $(\REL, \inp)$. 
 We write $\ip{\prover (\REL, \inp, \wit)}{\verifier(\REL, \inp)} = 1$ if in the end of the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the transcript.
@@ -146,7 +150,7 @@ A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ i
 \begin{description}
 	\item[Completeness] An interactive proof system $\proofsystem$ is \emph{complete} if an hnest prover always convinces an honest verifier, that is for all $\REL \gets \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
 	\[
-		\prob{\ip{\prover (\inp, \wit)}{\verifier (\inp)} = 1} = 1\,.
+		\prob{\ip{\prover (\REL, \inp, \wit)}{\verifier (\REL, \inp)} = 1} = 1\,.
 	\]
 	\item[Soundness] We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no PPT prover $\adv$ can convince an honest verifier $\verifier$ to accept a proof for a false statement, i.e~for $\inp \not\in\LANG$. More precisely, for all $\REL \gets \RELGEN(\secparam)$
 	\[
@@ -165,7 +169,7 @@ Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on i
 For the sake of succinctness we denote by $\trans$ a transcript of a conversation between the prover and the verifier extended with verifier's input $(\REL, \inp)$ (or $(\REL, \crs, \inp)$ in case of a proof system with a setup).
 Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages the verifier sends are chosen uniformly at random and independently of the messages send by the prover or system parameters.
 
-Interactive proofs run in a multiprotcol environment are often required to fulfil a stronger notion of soundness called \emph{witness-extended emulation}~\cite{JC:Lindell03}. The following definition is inspired by  \cite{EC:GroIsh08} as their formulation of the witness-extended emulation considers proof systems that utilises a CRS. However, there are some changes introduced to fit better our purpose. More precisely, contrary to \cite{EC:GroIsh08,EC:BCCGP16} the extractor in \cref{def:witextem} is given the trapdoor $\td$, thus seems to be bit more powerful. 
+Interactive proofs run in a multiprotcol environment are often required to fulfil a stronger notion of soundness called \emph{witness-extended emulation}~\cite{JC:Lindell03}. The following definition is inspired by  \cite{EC:GroIsh08} as their formulation of the witness-extended emulation considers proof systems that utilises a CRS. However, there are some changes introduced to fit better our purpose. More precisely, contrary to \cite{EC:GroIsh08,EC:BCCGP16} the extractor in \cref{def:wit_ext_em} is given the trapdoor $\td$, thus seems to be bit more powerful. 
 That means that a protocol that has witness-extended emulation in terms of \cite{EC:GroIsh08} has it also according to the definition below. 
 
 \begin{definition}[Witness-extended emulation]
@@ -187,7 +191,7 @@ That means that a protocol that has witness-extended emulation in terms of \cite
 				& \pcind \text{then $\REL(\inp, \wit)$}
 			\end{aligned}\,\left|\,
 			\begin{aligned}
-				& (\td, \crs) \gets \kcrs(\REL), (\inp, \aux_{\adv_1}) \gets \adv_0, \\ 
+				& (\td, \crs) \gets \kcrs(\REL), (\inp, \aux_{\adv_1}) \gets \adv_0(\REL), \\ 
 				& (\trans, \wit )\gets \ext^{\ip{\adv_1(\REL, \crs, \inp, \aux_\prover)}{\verifier(\REL, \crs, \inp)}}(\REL, \inp, \td)
 			\end{aligned}
 			\vphantom{\begin{aligned}
@@ -278,10 +282,10 @@ Consider $\prod_{i = 1}^{\mu} n_i$ accepting transfers with challenges as a tree
 \end{lemma}
 As mentioned, any protocol that has witness-extended emulation defined as in \cite{EC:BCCGP16} is equipped with this property also in the light of \cref{def:wit_ext_em}.
 
-Besides that, we additionally require that a protocol $\proofsystem$ has \emph{unique responses after $i$}. We call such a protocol an $\iur$-protocol.
-We call a $(2\mu + 1)$-move interactive protocol $\proofsystem = \ip{\prover}{\verifier}$ to be an $\iur$ protocol if after the $i$-th round of the protocol (i.e.~after the $2i - 1$ message) all the responses of the prover are fixed. More precisely:
+Besides that, we additionally require that a protocol $\proofsystem$ has \emph{unique responses after $i$}. We call such a protocol an $\ur{i}$-protocol.
+We call a $(2\mu + 1)$-move interactive protocol $\proofsystem = \ip{\prover}{\verifier}$ to be an $\ur{i}$ protocol if after the $i$-th round of the protocol (i.e.~after the $2i - 1$ message) all the responses of the prover are fixed. More precisely:
 
-\begin{definition}[Unique responses after $i$]
+\begin{definition}[$\ur{i}$-protocol]
 	\label{def:iur}
 	Let $\proofsystem = \ip{\prover}{\verifier}$ be an interactive proof system. Denote by $a_1, b_1, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier. We say that $\proofsystem$ has \emph{unique responses after $i$} if for any PPT adversary $\adv$ probability
 	\[
@@ -301,6 +305,7 @@ We call a $(2\mu + 1)$-move interactive protocol $\proofsystem = \ip{\prover}{\v
 	\]
 	is negligible in $\secpar$.
 \end{definition}
+For example $\Sigma$-protocols are often $\ur{1}$-protocols i.e.~when a conversation between the prover and the verifier compounds of an instance $\inp$ and three messages $(a, z, \gamma)$, then given $(a, z)$ it is infeasible for the prover to produce $\gamma, \gamma'$, such that $\gamma \neq \gamma'$ and $\verifier(\REL, \inp, a, z, \gamma) = \verifier(\REL, \inp, a, z, \gamma) = 1$.
 
 \subsection{Interpolation of rational functions}
 Let $F(X) = P(X) / Q(X)$ be a rational function defined over $\FF(X)$ such that $\deg P = m_a$ and $\deg Q = m_b$. We call a set $V = \smallset{(x_i, y_i)}_{i \in I}$ a \emph{support set} of $F$ if for all $i \in I$ holds $F(x_i) = y_i$. 
@@ -338,6 +343,8 @@ The following lemma can be formulated:
 \end{proof}
 
 \section{Simulation extractability from witness-extended emulation}
+Faust et al.~\cite{INDOCRYPT:FKMV12} shown that a special-sound $\Sigma$-protocol that is also $\ur{1}$ 
+
 \begin{theorem}[Simulation extractability of the Fiat--Shamir transform \cite{INDOCRYPT:FKMV12}]
 	Let $\Sigma = \ip{\prover}{\verifier}$ be a non-trivial $\Sigma$-protocol with unique responses for a language $\LANG \in \npol$. 
 	In the random oracle model, the NIZK proof system $\Sigma_{\FS} = \ip{\prover^\ro}{\verifier^{\ro}}$ 	resulting by applying the Fiat--Shamir transform to $\Sigma$ is simulation extractable with extraction error $\eta = q/h$ for the \hl{canonical} simulator $\simulator$. Here, $q$ is the number of random oracle queries and $h$ is the number of elements in the range of $\ro$. Furthermore, the extractor $\ext_\adv$ needs to run $\adv^{\simulator_1}, \adv^{\simulator_2}$ twice.
