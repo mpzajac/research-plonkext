@@ -287,18 +287,18 @@ We call a $(2\mu + 1)$-move interactive protocol $\proofsystem = \ip{\prover}{\v
 
 \begin{definition}[$\ur{i}$-protocol]
 	\label{def:iur}
-	Let $\proofsystem = \ip{\prover}{\verifier}$ be an interactive proof system. Denote by $a_1, b_1, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier. We say that $\proofsystem$ has \emph{unique responses after $i$} if for any PPT adversary $\adv$ probability
+	Let $\proofsystem = \ip{\prover}{\verifier}$ be an interactive proof system. Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier. We say that $\proofsystem$ has \emph{unique responses after $i$} if for any PPT adversary $\adv$ probability
 	\[
 		\condprob{
 		\begin{aligned}
-			& \verifier(\REL, \crs, (a_1, \ldots, a_{i + 1}, \ldots, a_{\mu})) = 1 \, \land \\ 
-			& \verifier(\REL, \crs, (a_1, \ldots, a'_{i + 1} \ldots, a'_{\mu})) = 1
+			& \verifier(\REL, \crs, (a_0, \ldots, a_{i + 1}, \ldots, a_{\mu})) = 1 \, \land \\ 
+			& \verifier(\REL, \crs, (a_0, \ldots, a'_{i + 1} \ldots, a'_{\mu})) = 1
 		\end{aligned}
 		}
 		{
 		\begin{aligned}
 			& \crs \gets \kcrs(\REL), \\
-			& (a_1, b_1, \ldots, a'_{i + 1}, b'_{i + 1}, \ldots, a'_{\mu}) \gets \adv(\REL, \crs),\\ 
+			& (a_0, b_0, \ldots, a'_{i + 1}, b'_{i + 1}, \ldots, a'_{\mu}) \gets \adv(\REL, \crs),\\ 
 			& (a_{i + 1}, b_{i + 1}, \ldots, a_{\mu}) \neq (a'_{i + 1}, b'_{i + 1}, \ldots, a'_{\mu})
 		\end{aligned}
 		}
@@ -306,6 +306,17 @@ We call a $(2\mu + 1)$-move interactive protocol $\proofsystem = \ip{\prover}{\v
 	is negligible in $\secpar$.
 \end{definition}
 For example $\Sigma$-protocols are often $\ur{1}$-protocols i.e.~when a conversation between the prover and the verifier compounds of an instance $\inp$ and three messages $(a, z, \gamma)$, then given $(a, z)$ it is infeasible for the prover to produce $\gamma, \gamma'$, such that $\gamma \neq \gamma'$ and $\verifier(\REL, \inp, a, z, \gamma) = \verifier(\REL, \inp, a, z, \gamma) = 1$.
+
+\begin{lemma}
+	Let $\proofsystem = \ip{\prover}{\verifier}$ be an interactive $\ur{i}$-protocol, such that there exists an extractor $\ext$ that extracts the witness from a $(1, \ldots, 1, n_i, \ldots, n_\mu)$-tree of accepting transcripts. 
+	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model if $N =\prod_{j = i}^\mu = \poly$.
+\end{lemma}
+\begin{proof}
+	Let $\adv^{\simulator_{\crs}, \simulator_\zkproof}$ produces for an instance $\inp$ an acceptable proof $\zkproof_\fs = (a_0, \ldots, a_{i + 1}, \ldots, a_\mu)$ that is not in the list $Q$. 
+	Because of the $\ur{i}$ property, $(\inp, a_0, b_0, \ldots, a_{i})$ must be a fresh query to the random oracle $\ro$. (Otherwise the rest of the proof is uniquely determined and the proof was already recorded in $Q$.)
+	We now consider $\prod_{j = i}^\mu n_j$ runs of the adversary that differ by picking at random random oracle outputs on $a_{i + 1}, \ldots, a_\mu$. That is, the runs differ by the different randomness provided by $\simulator_\crs$. Assume that all such runs produce an acceptable transcript. Probability of such event is non-negligible over the choice of adversary's and simulator $\simulator_\crs$ randomness.
+	By \cref{lem:bootle_forking_lemma} there exists an extractor $\ext$ that provided $N$ transcripts extracts witness $\wit$. Thus $\zkproof_\fs$ is simulation extractable.
+\end{proof}
 
 \subsection{Interpolation of rational functions}
 Let $F(X) = P(X) / Q(X)$ be a rational function defined over $\FF(X)$ such that $\deg P = m_a$ and $\deg Q = m_b$. We call a set $V = \smallset{(x_i, y_i)}_{i \in I}$ a \emph{support set} of $F$ if for all $i \in I$ holds $F(x_i) = y_i$. 
