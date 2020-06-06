@@ -283,7 +283,7 @@ Finally \cite{INDOCRYPT:FKMV12} shows the following theorem:
 \end{theorem}
 % \task{14.05}{Need to make this theorem more general as currently it works only for 3-move $\Sigma$-protocols!}
 
-% 
+%
 \section{Simulation extractability for multi-round protocols}
 Unfortunately, Faust et al.'s result cannot be directly applied in our case since the protocols we consider have more than three rounds of interaction.
 
@@ -341,6 +341,7 @@ For example $\Sigma$-protocols are often $\ur{1}$-protocols (e.g~Schnorr's proto
 	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model if $N =\prod_{j = i}^\mu = \poly$.
 	Furthermore the extractor $\ext_\fs$ for $\proofsystem_\fs$ needs to run $(\simulator_\crs, \simulator_\zkproof)$ $N$ times.
 \end{theorem}
+\task{6.06}{One problem with this proof: in the original proof by Faust et al.~they use a unique response property for a CRS-free interactive proof, i.e. the proof the simulator makes could be prepared by anyone if allowed to pick the proof messages in any order wanted. That's may not be the case for Plonk, as the simulator (may) require the knowledge of trapdoor $x$ (i.e. the adversary cannot produce the simulated proof himself).}
 \begin{proof}
 	Let $\adv^{\simulator_{\crs}, \simulator_\zkproof}$ produces for an instance $\inp$ an acceptable proof $\zkproof_\fs = (a_0, \ldots, a_{i + 1}, \ldots, a_\mu)$ that is not in the list $Q$.
 	Because of the $\ur{i}$ property, $(\inp, a_0, b_0, \ldots, a_{i})$ must be a fresh query to the random oracle $\ro$. (Otherwise the rest of the proof is uniquely determined and the proof was already recorded in $Q$.)
