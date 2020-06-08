@@ -319,7 +319,30 @@ We walk around these obstacles by providing two generalized notions of the uniqu
 More precisely, we say that a $(2\mu + 1)$-round protocol has \emph{weak unique responses after $i$} and is called a weakly-$\ur{i}$-protocol if 
 \begin{definition}[Weakly $\ur{i}$-protocol]
 	\label{def:wiur}
-	Let $\proofsystem = (\prover, \verifier, \simulator)$ be a standard-model interactive proof system. Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier. We say that $\proofsystem$ has \emph{unique responses after $i$} if for any PPT adversary $\adv$ probability
+	Let $\proofsystem = (\prover, \verifier, \simulator_\zkproof)$ be a standard-model interactive proof system. Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier. We say that $\proofsystem$ has \emph{unique responses after $i$} if for any PPT adversary $\adv$ probability
+	\[
+		\condprob{
+		\begin{aligned}
+			& \verifier(\REL, \crs, (a_0, \ldots, a_{i + 1}, \ldots, a_{\mu})) = 1 \, \land \\ 
+			& \verifier(\REL, \crs, (a_0, \ldots, a'_{i + 1} \ldots, a'_{\mu})) = 1
+		\end{aligned}
+		}
+		{
+		\begin{aligned}
+			% & \crs \gets \kcrs(\REL), \\
+			& (a_0, b_0, \ldots, a'_{i + 1}, b'_{i + 1}, \ldots, a'_{\mu}) \gets \adv(\REL, \crs),\\ 
+			& (a_{i + 1}, b_{i + 1}, \ldots, a_{\mu}) \neq (a'_{i + 1}, b'_{i + 1}, \ldots, a'_{\mu})
+		\end{aligned}
+		}
+	\]
+	is negligible in $\secpar$.
+\end{definition}
+
+By expanding \cref{def:wiur} on interactive proof systems in the CRS model, we get the definition of \emph{strongly $\ur{i}$-protocol} as defined below.
+
+\begin{definition}[Strongly $\ur{i}$-protocol]
+	\label{def:siur}
+	Let $\proofsystem = (\prover, \verifier, \simulator_\crs, \simulator_\zkproof)$ be an interactive proof system. Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier. We say that $\proofsystem$ has \emph{unique responses after $i$} if for any PPT adversary $\adv$ probability
 	\[
 		\condprob{
 		\begin{aligned}
