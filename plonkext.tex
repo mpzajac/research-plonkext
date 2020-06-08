@@ -50,7 +50,7 @@
 \usepackage{cite}
 \usepackage{booktabs}
 \usepackage{paralist}
-\usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed}
+\usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed} 
 
 \include{macros}
 
@@ -69,7 +69,7 @@
 	\maketitle
 
 \begin{abstract}
-	In this paper we prove that some most-efficient updatable universal zkSNARKs like \plonk{}~\cite{EPRINT:GabWilCio19} \comment{and Sonic~\cite{CCS:MBKM19} are} is (non black-box) simulation extractable.
+	In this paper we prove that some most-efficient updatable universal zkSNARKs like \plonk{}~\cite{EPRINT:GabWilCio19} \comment{and Sonic~\cite{CCS:MBKM19} are} is (non black-box) simulation extractable. 
 	To that end, we generalise the result by Faust et al.~\cite{INDOCRYPT:FKMV12} (INDOCRYPT 2012) and show that any witness-extended emulatable is also simulation-extractable if made non-interactive by the Fiat--Shamir transform. We then explain why \plonk{} is has witness-extended emulation and conclude by showing its simulation-extractability.
 	\michals{14.05}{Since Sonic is witness-extended emulation then it should be simulation extractable as well. But does it have the unique response property?}
 	\task{15.05}{Check Marlin}
@@ -95,21 +95,21 @@
 
 
 \subsection{Our contribution}
-First of all, we prove that $\plonk$ is simulation-extractable. Although we do not change the original protocol at all, we had to solve a number of problems in order to show that. The idea of the proof goes as follows.
+First of all, we prove that $\plonk$ is simulation-extractable. Although we do not change the original protocol at all, we had to solve a number of problems in order to show that. The idea of the proof goes as follows. 
 
-\paragraph{Witness-extended emulation of \plonk{}.}
-First, we show that $\plonk$ has witness-extended emulation. To that end we show how from a number of accepting transcript a witness can be extracted. Unfortunately, \plonk{} does not to fit well in the standard definitions of witness-extended emulations like by Lindell \cite{JC:Lindell03} or by Groth and Ishai \cite{EC:GroIsh08}. The former does not cover arguments that utilises a CRS, the latter does, but does not consider giving the CRS trapdoor to the extractor. Thus, we had to modify the definition for the witness-extended emulation.
+\paragraph{Witness-extended emulation of \plonk{}.} 
+First, we show that $\plonk$ has witness-extended emulation. To that end we show how from a number of accepting transcript a witness can be extracted. Unfortunately, \plonk{} does not to fit well in the standard definitions of witness-extended emulations like by Lindell \cite{JC:Lindell03} or by Groth and Ishai \cite{EC:GroIsh08}. The former does not cover arguments that utilises a CRS, the latter does, but does not consider giving the CRS trapdoor to the extractor. Thus, we had to modify the definition for the witness-extended emulation. 
 By this modification we bring the notion of the witness extended-emulation closer to the definition of simulation extractability, where giving the trapdoor to the extractor is a natural thing to do, cf.~\cite{AC:Groth06,AC:DHLW10,PKC:ADKNO13,DCC:DerSla19}.
-We believe that our formulation would serve well in showing simulation-extractability of NIZKs.
+We believe that our formulation would serve well in showing simulation-extractability of NIZKs. 
 
 \paragraph{From witness-extended emulation to simulation extractability.}
-Second, we took the classical result by Faust et al.~\cite{INDOCRYPT:FKMV12} which shows that a special-sound $\Sigma$-protocol that has the unique response property is simulation-extractable if made non-interactive by the Fiat--Shamir transform. This result also could not be used directly, as \plonk{} is not a $3$-round $\Sigma$-protocol.
+Second, we took the classical result by Faust et al.~\cite{INDOCRYPT:FKMV12} which shows that a special-sound $\Sigma$-protocol that has the unique response property is simulation-extractable if made non-interactive by the Fiat--Shamir transform. This result also could not be used directly, as \plonk{} is not a $3$-round $\Sigma$-protocol. 
 To make Faust et al.~result working in our setting we had to prove it fits multi-round protocols and show that \plonk{} in fact has the unique response property.
 
 \paragraph{Interactive zero knowledge vs non-interactive zero knowledge.}
-Another issue we tackle with is a question whether NIZK proof systems are in fact zero-knowledge, see e.g.~\cite{C:Pass03}. This problem was raised as one could observe that a NIZK proof system has a property alien to interactive proofs --- a verifier who obtains a proof $\zkproof$ for a statement $\inp \in \LANG$ inevitably learns how to prove this statement. More precisely, he can just reuse the obtained proof $\zkproof$. This makes the verifier learn undoubtedly more than simply the veracity of the proven statement. On the other hand, the verifier learns a particular proof $\zkproof$ for a concrete CRS $\crs$ only. However, the CRS generator is considered trusted, thus the proof $\zkproof$ could be considered as a proof for $\inp$ universally, regardless the CRS.
+Another issue we tackle with is a question whether NIZK proof systems are in fact zero-knowledge, see e.g.~\cite{C:Pass03}. This problem was raised as one could observe that a NIZK proof system has a property alien to interactive proofs --- a verifier who obtains a proof $\zkproof$ for a statement $\inp \in \LANG$ inevitably learns how to prove this statement. More precisely, he can just reuse the obtained proof $\zkproof$. This makes the verifier learn undoubtedly more than simply the veracity of the proven statement. On the other hand, the verifier learns a particular proof $\zkproof$ for a concrete CRS $\crs$ only. However, the CRS generator is considered trusted, thus the proof $\zkproof$ could be considered as a proof for $\inp$ universally, regardless the CRS. 
 
-Simulation-extractable updatable NIZKs (and zkSNARKs in particular) tighten the gap between interactive zero knowledge and non-interactive zero knowledge in the CRS model.
+Simulation-extractable updatable NIZKs (and zkSNARKs in particular) tighten the gap between interactive zero knowledge and non-interactive zero knowledge in the CRS model. 
 First, simulation-extractability assures that no adversary can maul an existing proof and make a fresh one, what limits replay attacks.
 Second, updatable NIZKs does not assume that there is a trusted party that provides a CRS, but rather a sequence of parties (called updaters) that modify it. The security model is radically different as now one believes in the veracity of a proof only if she trusts that there is at least one honest party between the updaters. Hence, the proof is no longer universal.
 
@@ -124,7 +124,7 @@ We denote by $\negl$ an arbitrary negligible function.
 
 Distributions $X$ and $Y$ have \emph{statistical distance} $\SD$ equals $\epsilon$ if $\sum_{a \in \supp{X \cup Y}} \abs{\prob{X = a} - \prob{Y = a}} = \epsilon$.
 We write $X \approx_\secpar Y$ if $\SD(X, Y) \leq \negl$, where $\SD$ is the statistical distance between the distributions.
-For values $a$ and $b$ we write $a \approx_\secpar b$ if $\abs{a - b} \leq \negl$.
+For values $a$ and $b$ we write $a \approx_\secpar b$ if $\abs{a - b} \leq \negl$. 
 
 Denote by $\RELGEN$ a \emph{relation generator} -- a PPT algorithm that on input $\secparam$ outputs an $\npol$ relation $\REL$. We assume that if $\RELGEN$ provides any auxiliary input to $\REL$, it is benign. Directly from the description of $\REL$ one learns security parameter $\secpar$ and other necessary information like a description of a group $\GRP$, if the relation is a relation of group elements (as it usually is in case of zkSNARKs).
 
@@ -141,14 +141,14 @@ In a zero-knowledge proof or argument system, a prover convinces the verifier of
 Here, a proof (resp., an argument) system guarantees soundness against an unbounded (resp., a PPT) cheating prover.
 The zero-knowledge property is proven by constructing a simulator that can simulate the view of a cheating verifier without knowing the secret information (witness) of the prover.
 
-More precisely, let $\RELGEN(\secparam)$ be a relation generator that outputs an $\npol$ relation $\REL = \smallset{(\inp, \wit)}$. Denote by $\LANG_\REL$ the language determined by $\REL$.
-Let $\prover$ and $\verifier$ be algorithms, the former called \emph{prover} and the latter \emph{verifier}.
-We denote by $\ip{\prover(\REL, \inp, \wit)}{\verifier(\REL, \inp)}$ a transcript of conversation between a $\prover$ with input $(\REL, \inp, \wit)$ and $\verifier$ with input $(\REL, \inp)$.
+More precisely, let $\RELGEN(\secparam)$ be a relation generator that outputs an $\npol$ relation $\REL = \smallset{(\inp, \wit)}$. Denote by $\LANG_\REL$ the language determined by $\REL$. 
+Let $\prover$ and $\verifier$ be algorithms, the former called \emph{prover} and the latter \emph{verifier}. 
+We denote by $\ip{\prover(\REL, \inp, \wit)}{\verifier(\REL, \inp)}$ a transcript of conversation between a $\prover$ with input $(\REL, \inp, \wit)$ and $\verifier$ with input $(\REL, \inp)$. 
 We write $\ip{\prover (\REL, \inp, \wit)}{\verifier(\REL, \inp)} = 1$ if in the end of the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the transcript.
 
 A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
 \begin{description}
-	\item[Completeness] An interactive proof system $\proofsystem$ is \emph{complete} if an honest prover always convinces an honest verifier, that is for all $\REL \gets \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
+	\item[Completeness] An interactive proof system $\proofsystem$ is \emph{complete} if an hnest prover always convinces an honest verifier, that is for all $\REL \gets \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
 	\[
 		\prob{\ip{\prover (\REL, \inp, \wit)}{\verifier (\REL, \inp)} = 1} = 1\,.
 	\]
@@ -165,12 +165,12 @@ A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ i
 	We call zero knowledge \emph{perfect} if the distributions are equal and \emph{computational} if they are indistinguishable for any NUPPT distinguisher.
 \end{description}
 
-Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on input $\REL$ outputs a common reference string (CRS) $\crs$. The common reference string comes with a corresponding trapdoor $\td$ that allows the simulator to simulate a
+Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on input $\REL$ outputs a common reference string (CRS) $\crs$. The common reference string comes with a corresponding trapdoor $\td$ that allows the simulator to simulate a 
 For the sake of succinctness we denote by $\trans$ a transcript of a conversation between the prover and the verifier extended with verifier's input $(\REL, \inp)$ (or $(\REL, \crs, \inp)$ in case of a proof system with a setup).
 Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages the verifier sends are chosen uniformly at random and independently of the messages send by the prover or system parameters.
 
-Interactive proofs run in a multiprotcol environment are often required to fulfil a stronger notion of soundness called \emph{witness-extended emulation}~\cite{JC:Lindell03}. The following definition is inspired by  \cite{EC:GroIsh08} as their formulation of the witness-extended emulation considers proof systems that utilises a CRS. However, there are some changes introduced to fit better our purpose. More precisely, contrary to \cite{EC:GroIsh08,EC:BCCGP16} the extractor in \cref{def:wit_ext_em} is given the trapdoor $\td$, thus seems to be bit more powerful.
-That means that a protocol that has witness-extended emulation in terms of \cite{EC:GroIsh08} has it also according to the definition below.
+Interactive proofs run in a multiprotcol environment are often required to fulfil a stronger notion of soundness called \emph{witness-extended emulation}~\cite{JC:Lindell03}. The following definition is inspired by  \cite{EC:GroIsh08} as their formulation of the witness-extended emulation considers proof systems that utilises a CRS. However, there are some changes introduced to fit better our purpose. More precisely, contrary to \cite{EC:GroIsh08,EC:BCCGP16} the extractor in \cref{def:wit_ext_em} is given the trapdoor $\td$, thus seems to be bit more powerful. 
+That means that a protocol that has witness-extended emulation in terms of \cite{EC:GroIsh08} has it also according to the definition below. 
 
 \begin{definition}[Witness-extended emulation]
 	\label{def:wit_ext_em}
@@ -187,22 +187,22 @@ That means that a protocol that has witness-extended emulation in terms of \cite
 		 \Pr\left[
 			\begin{aligned}
 				& \adv_1 (\trans) = 1\ \land \\
-				& \text{if $\trans$ is accepting} \\
+				& \text{if $\trans$ is accepting} \\ 
 				& \pcind \text{then $\REL(\inp, \wit)$}
 			\end{aligned}\,\left|\,
 			\begin{aligned}
-				& (\td, \crs) \gets \kcrs(\REL), (\inp, \aux_{\adv_1}) \gets \adv_0(\REL), \\
+				& (\td, \crs) \gets \kcrs(\REL), (\inp, \aux_{\adv_1}) \gets \adv_0(\REL), \\ 
 				& (\trans, \wit )\gets \ext^{\ip{\adv_1(\REL, \crs, \inp, \aux_\prover)}{\verifier(\REL, \crs, \inp)}}(\REL, \inp, \td)
 			\end{aligned}
 			\vphantom{\begin{aligned}
 				\adv (\trans) = 1 \land \\
-				\text{if $\trans{}$ is accepting} \\
+				\text{if $\trans{}$ is accepting} \\ 
 				\pcind \text{then $\REL(\inp, \wit)$}
 			\end{aligned}}\right.
 			\right]\,,
 \end{multline*}
-where the extractor $\ext$ can rewind the conversation between the prover and the verifier to a particular round and run it again with a fresh randomness for the verifier.
-\end{definition}
+where the extractor $\ext$ can rewind the conversation between the prover and the verifier to a particular round and run it again with a fresh randomness for the verifier. 
+\end{definition} 
 Although in the definition above the adversary $\adv_1$ is deterministic it obtains an auxiliary input $\aux_{\adv_1}$ that may be used by $\adv_1$ as a source of randomness. \cite{EC:GroIsh08} notes that since the protocol is public-coin, verifier's randomness is part of the transcript. Thus combining $\inp, \aux_\adv$ and an accepting transcript $\trans$ gives a view of both the prover and the verifier and thus gives a witness.
 
 \begin{definition}[Simulation extractability]
@@ -227,26 +227,26 @@ Although in the definition above the adversary $\adv_1$ is deterministic it obta
 \end{definition}
 
 \subsection{Simulation extractability for sigma protocols}
-Faust et al.~\cite{INDOCRYPT:FKMV12} shown that every sigma protocol that is specially sound and has a unique response property is simulation-extractable.
+Faust et al.~\cite{INDOCRYPT:FKMV12} shown that every sigma protocol that is specially sound and has a unique response property is simulation-extractable. 
 
-Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a sigma protocol which transcript contains three messages $(a, b, z)$ with the middle being sent as a challenge from the verifier.
-Special soundness states that any acceptable pair of transcripts $(a, b, z)$ and $(a, b', z')$ for some statement $\inp$ can be used to extract the corresponding witness $\wit$.
+Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a sigma protocol which transcript contains three messages $(a, b, z)$ with the middle being sent as a challenge from the verifier. 
+Special soundness states that any acceptable pair of transcripts $(a, b, z)$ and $(a, b', z')$ for some statement $\inp$ can be used to extract the corresponding witness $\wit$. 
 This is formalised and generalized by the so-called general forking lemma
 
 \newcommand{\forking}{\pcalgostyle{F}}
 \begin{lemma}[General forking lemma,~\cite{INDOCRYPT:FKMV12}]
 	\label{lem:faust_forking_lemma}
-	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\pdv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $I \in\range{0}{q}$ and $s$ is called a \emph{side output}.
-	Denote by $\ig$ a randomised instance generator.
-	We denote by $\accProb$ the probability
+	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\pdv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $I \in\range{0}{q}$ and $s$ is called a \emph{side output}. 
+	Denote by $\ig$ a randomised instance generator. 
+	We denote by $\accProb$ the probability 
 	\[
 		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_1 \sample H; (i, s) \gets \pdv(y, h_1, \ldots, h_q)}\,.
-	\]
-	Let $\forking_\pdv(y)$ denote the algorithm described in \cref{fig:faust_forking_lemma}, then the probability $\extProb$ defined as
+	\] 
+	Let $\forking_\pdv(y)$ denote the algorithm described in \cref{fig:faust_forking_lemma}, then the probability $\extProb$ defined as 
 	$
 		\extProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\pdv}(y)}
 	$
-	holds
+	holds 
 	\[
 		\extProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
 	\]
@@ -270,7 +270,7 @@ This is formalised and generalized by the so-called general forking lemma
 \end{figure}
 \end{lemma}
 %
-In case of a $\Sigma$-protocol, the probability $\extProb$ can be interpreted as a lower bound for a successful witness extraction from two transcripts.
+In case of a $\Sigma$-protocol, the probability $\extProb$ can be interpreted as a lower bound for a successful witness extraction from two transcripts. 
 Let $\tr_1 = (\inp, a, z, \gamma)$ and $\tr_2 = (\inp, a, z', \gamma')$ be the transcripts.
 Both $\tr_1$ and $\tr_2$ have to be \emph{acceptable}, i.e.~$i > 0$. Index $i$ can be interpreted as an index of $h_i$ which was sent as a challenge for $(\inp, a)$. For the sake of extractability, both transcripts have to have the same index $i$, i.e.~the same instance $\inp$ and the first message $a$, but the actual challenges $z = h_i$ and $z' = h_{i'}$ have to differ.
 
@@ -278,50 +278,59 @@ Another property required by Faust et al.~\cite{INDOCRYPT:FKMV12} to show simula
 
 Finally \cite{INDOCRYPT:FKMV12} shows the following theorem:
 \begin{theorem}[Simulation extractability of the Fiat--Shamir transform \cite{INDOCRYPT:FKMV12}]
-	Let $\Sigma = \ip{\prover}{\verifier}$ be a non-trivial $\Sigma$-protocol with unique responses for a language $\LANG \in \npol$.
+	Let $\Sigma = (\prover, \verifier, \simulator)$ be a non-trivial $\Sigma$-protocol with unique responses for a language $\LANG \in \npol$. 
 	In the random oracle model, the NIZK proof system $\Sigma_{\FS} = \ip{\prover^\ro}{\verifier^{\ro}}$ 	resulting by applying the Fiat--Shamir transform to $\Sigma$ is simulation extractable with extraction error $\eta = q/h$ for the \hl{canonical} simulator $\simulator$. Here, $q$ is the number of random oracle queries and $h$ is the number of elements in the range of $\ro$. Furthermore, the extractor $\ext_\adv$ needs to run $\adv^{\simulator_1}, \adv^{\simulator_2}$ twice.
 \end{theorem}
 % \task{14.05}{Need to make this theorem more general as currently it works only for 3-move $\Sigma$-protocols!}
 
-%
-\section{Simulation extractability for multi-round protocols}
+% 
+\section{Simulation extractability for multiround protocols}
 Unfortunately, Faust et al.'s result cannot be directly applied in our case since the protocols we consider have more than three rounds of interaction.
 
 \paragraph{Witness extended-emulation.}
 First of all, although dubbed ``general'', \cref{lem:faust_forking_lemma} is not general enough for our purpose as it useful only for protocols that extract witness from two transcripts.
 
-Fortunately, Bootle et al.~\cite{EC:BCCGP16} shown a more general version of the lemma. More precisely, they proved that each protocol that allows for a witness extraction from a bigger number of accepting transcripts has witness-extended emulation. \cite{EC:BCCGP16} defines a \emph{tree of accepting transcript}.
+Fortunately, Bootle et al.~\cite{EC:BCCGP16} shown a more general version of the lemma. More precisely, they proved that each protocol that allows for a witness extraction from a bigger number of accepting transcripts has witness-extended emulation. \cite{EC:BCCGP16} defines a \emph{tree of accepting transcript}. 
 Let $\proofsystem$ be a $(2 \mu + 1)$-move public-coin proof system with $\mu$ challenges $h_1, \ldots, h_\mu$. Let $n_i > 1$, for $i \in \range{1}{\mu}$.
 Consider $\prod_{i = 1}^{\mu} n_i$ accepting transfers with challenges as a tree with depth $\mu$ and $\prod_{i = 1}^{\mu} n_i$ leaves.	Each node of depth $i < \mu$ has exactly $n_i$ children, each labelled with a distinct value for the $i$-th challenge $h_i$. We refer to that as a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts.
 
  % \task{15.05}{Use one forking lemma (by Bootle et al) and show that the result from Faust holds for it anyway}
 \begin{lemma}[Generalised general forking lemma~\cite{EC:BCCGP16}]
 	\label{lem:bootle_forking_lemma}
-	Let $\proofsystem = \ip{\prover}{\verifier}$ be a $(2\mu + 1)$-move, public coin interactive  protocol. Let $\ext$ be a PPT witness extraction algorithm that always succeeds in extracting a witness from an $(n_1,\ldots, n_\mu)$-tree of accepting transcripts. Assume that $\prod_{i = 1}^{\mu} n_i \leq \poly$.
-	Then $\ip{\prover}{\verifier}$ has witness-extended emulation.
+	Let $\proofsystem = (\prover, \verifier, \simulator)$ be a $(2\mu + 1)$-move, public coin interactive  protocol. Let $\ext$ be a PPT witness extraction algorithm that always succeeds in extracting a witness from an $(n_1, \ldots, n_\mu)$-tree of accepting transcripts. Assume that $\prod_{i = 1}^{\mu} n_i \leq \poly$. 
+	Then $(\prover, \verifier, \simulator)$ has witness-extended emulation.
 \end{lemma}
 As mentioned, any protocol that has witness-extended emulation defined as in \cite{EC:BCCGP16} is equipped with this property also in the light of \cref{def:wit_ext_em}.
 
-\paragraph{Unique-response protocols}
-The unique response property has been first proposed by Fischlin in \cite{C:Fischlin05}.
-Fischlin's formulation, although perfectly fine for applications presented in \cite{C:Fischlin05}, is not enough in our case. First of all, the property assumes that the protocol has three rounds, with the middle being the challenge from the verifier. That is not the case we consider here. Furthermore, it is not entirely clear how to generalize the property. Should one require that after the first challenge from the verifier the responses are fixed? That could not work since if there are more challenges then they are random.
-Even if we directly consider a protocol transformed by the Fiat--Shamir transform and the verifier challenges are determined by the random oracle it may be the case that the protocol contains some round (obviously, except the first one) where the prover randomises his message. In that case unique-responsiveness can not hold as well.
+\paragraph{Unique-response protocols.}
+We say that a sigma-protocol has unique response property (Fischlin \cite{C:Fischlin05}), or is a ur-protocol, if there is no adversary that can produce two accepting transcripts that differ only on the last element. 
+More precisely, let $\sigmaprot = (\prover, \verifier, \simulator_\zkproof)$ be a standard-model sigma-protocol for relation $\REL \gets \RELGEN(\secparam)$ which proofs compound of three messages $(\alpha, \beta, \gamma)$. We say that $\sigmaprot$ is a ur-protocol if for all PPT algorithms $\adv$ holds
+\[
+\condprob{\verifier (\alpha, \beta, \gamma) = \verifier (\alpha, \beta, \gamma')  = 1}{(\alpha, \beta, \gamma, \gamma') \gets \adv(\REL)} \leq \negl\,.
+\]
+For the sake of completeness we note that many sigma-protocols, like e.g.~Schnorr's protocol \cite{C:Schnorr89}, fulfil this requirement.
 
-We walk around this obstacle by providing a generalized notion of the unique response property. More precisely, we say that a $(2\mu + 1)$-round protocol has \emph{unique responses after $i$} and is called an $\ur{i}$-protocol if
-\begin{definition}[$\ur{i}$-protocol]
-	\label{def:iur}
-	Let $\proofsystem = \ip{\prover}{\verifier}$ be an interactive proof system. Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier. We say that $\proofsystem$ has \emph{unique responses after $i$} if for any PPT adversary $\adv$ probability
+Fischlin's formulation, although perfectly fine for applications presented in \cite{C:Fischlin05}, is not enough in our case. 
+First of all, the property assumes that the protocol has three rounds, with the middle being the challenge from the verifier. That is not the case we consider here. Second, it is not entirely clear how to generalize the property. Should one require that after the first challenge from the verifier the responses are fixed? That could not work since if there are more challenges then they are random. 
+Even if we directly consider a protocol transformed by the Fiat--Shamir transform and the verifier challenges are determined by the random oracle it may be the case that the protocol contains some round (obviously, except the first one) where the prover randomises his message. In that case unique-responsiveness can not hold as well.
+Last but not least, the protocol we consider here most, \plonk, is not in a standard-model, but utilises CRS. That also complicates things considerably.
+
+We walk around these obstacles by providing two generalized notions of the unique response property, one dubbed \emph{weak} and another \emph{strong}. 
+More precisely, we say that a $(2\mu + 1)$-round protocol has \emph{weak unique responses after $i$} and is called a weakly-$\ur{i}$-protocol if 
+\begin{definition}[Weakly $\ur{i}$-protocol]
+	\label{def:wiur}
+	Let $\proofsystem = (\prover, \verifier, \simulator)$ be a standard-model interactive proof system. Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier. We say that $\proofsystem$ has \emph{unique responses after $i$} if for any PPT adversary $\adv$ probability
 	\[
 		\condprob{
 		\begin{aligned}
-			& \verifier(\REL, \crs, (a_0, \ldots, a_{i + 1}, \ldots, a_{\mu})) = 1 \, \land \\
+			& \verifier(\REL, \crs, (a_0, \ldots, a_{i + 1}, \ldots, a_{\mu})) = 1 \, \land \\ 
 			& \verifier(\REL, \crs, (a_0, \ldots, a'_{i + 1} \ldots, a'_{\mu})) = 1
 		\end{aligned}
 		}
 		{
 		\begin{aligned}
-			& \crs \gets \kcrs(\REL), \\
-			& (a_0, b_0, \ldots, a'_{i + 1}, b'_{i + 1}, \ldots, a'_{\mu}) \gets \adv(\REL, \crs),\\
+			% & \crs \gets \kcrs(\REL), \\
+			& (a_0, b_0, \ldots, a'_{i + 1}, b'_{i + 1}, \ldots, a'_{\mu}) \gets \adv(\REL, \crs),\\ 
 			& (a_{i + 1}, b_{i + 1}, \ldots, a_{\mu}) \neq (a'_{i + 1}, b'_{i + 1}, \ldots, a'_{\mu})
 		\end{aligned}
 		}
@@ -329,28 +338,33 @@ We walk around this obstacle by providing a generalized notion of the unique res
 	is negligible in $\secpar$.
 \end{definition}
 
-
-For example $\Sigma$-protocols are often $\ur{1}$-protocols (e.g~Schnorr's protocol) i.e.~when a conversation between the prover and the verifier compounds of an instance $\inp$ and three messages $(a, z, \gamma)$, then given $(a, z)$ it is infeasible for the prover to produce $\gamma, \gamma'$, such that $\gamma \neq \gamma'$ and $\verifier(\REL, \inp, a, z, \gamma) = \verifier(\REL, \inp, a, z, \gamma) = 1$.
-
 \subsection{Simulation extractability from unique responses and witness-extended emulation}
 % Unfortunately the result of Faust et al.~is stated for a specific kind of special-sound proofs, i.e.~$\Sigma$-protocols, which compounds of three messages exchanged between the prover and the verifier. Both $\plonk$ and $\sonic$ require more interaction between these parties so that result is not directly applicable. However, we show that it can be generalised to a witness-extended emulatable protocols as well.
+In this section we present two proofs for the Fiat--Shamir transform simulation extractability -- one for the standard---weaker---version of the unique response property, one for the stronger.
+
+In the former, we assume that the underlying interactive proof system is in the standard model. More precisely, we require that the only additional power given to the simulator is the ability of producing proof elements in any order it wants. Especially, producing a simulated proof does not require knowledge of some sort of a trapdoor. 
+Although we believe that this result may be of independent interest, it is not enough in our case, it is not enough to show simulation extractability of \plonk. 
+This is since we show our result by contradiction and build an adversary $\bdv$ that breaks the unique response property using an adversary $\adv$ that breaks simulation extractability. Thus, to make the reduction hold we need to allow $\bdv$ to make simulated proofs for $\adv$.
+
+To make the result useful in the context of CRS-model zkSNARKs like \plonk, we need to rely on a stronger version of the unique response property presented in \cref{def:siur} to allow the unique-response-property adversary to learn the simulated proofs as well.
+
 \begin{theorem}[Simulation extractability of the Fiat--Shamir transform II]
 	\label{thm:wit_ext_em_FS}
-	Let $\proofsystem = (\prover, \verifier, \simulator_\crs, \simulator_\zkproof)$ be an interactive $\ur{i}$-protocol for a relation $\REL$.
-	Assume there exists an extractor $\ext$ that extracts the witness from a $(1, \ldots, 1, n_i, \ldots, n_\mu)$-tree of accepting transcripts.
+	Let $\proofsystem = (\prover, \verifier, \simulator_\zkproof)$ be a standard-model interactive $\ur{i}$-protocol for a relation $\REL$. 
+	Assume there exists an extractor $\ext$ that extracts the witness from a $(1, \ldots, 1, n_i, \ldots, n_\mu)$-tree of accepting transcripts. 
 	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model if $N =\prod_{j = i}^\mu = \poly$.
-	Furthermore the extractor $\ext_\fs$ for $\proofsystem_\fs$ needs to run $(\simulator_\crs, \simulator_\zkproof)$ $N$ times.
+	Furthermore the extractor $\ext_\fs$ for $\proofsystem_\fs$ needs to run $(\simulator_\ro, \simulator_\zkproof)$ $N$ times.
 \end{theorem}
-\task{6.06}{One problem with this proof: in the original proof by Faust et al.~they use a unique response property for a CRS-free interactive proof, i.e. the proof the simulator makes could be prepared by anyone if allowed to pick the proof messages in any order wanted. That's may not be the case for Plonk, as the simulator (may) require the knowledge of trapdoor $x$ (i.e. the adversary cannot produce the simulated proof himself).}
 \begin{proof}
-	Let $\adv^{\simulator_{\crs}, \simulator_\zkproof}$ produces for an instance $\inp$ an acceptable proof $\zkproof_\fs = (a_0, \ldots, a_{i + 1}, \ldots, a_\mu)$ that is not in the list $Q$.
+	Let $\adv^{\simulator_{\ro}, \simulator_\zkproof}$ produces for an instance $\inp$ an acceptable proof $\zkproof_\fs = (a_0, \ldots, a_{i + 1}, \ldots, a_\mu)$ that is not in the list $Q$. 
 	Because of the $\ur{i}$ property, $(\inp, a_0, b_0, \ldots, a_{i})$ must be a fresh query to the random oracle $\ro$. (Otherwise the rest of the proof is uniquely determined and the proof was already recorded in $Q$.)
 	We now consider $\prod_{j = i}^\mu n_j$ runs of the adversary that differ by picking at random random oracle outputs on $a_{i + 1}, \ldots, a_\mu$. That is, the runs differ by the different randomness provided by $\simulator_\crs$. Assume that all such runs produce an acceptable transcript. Probability of such event is non-negligible over the choice of adversary's and simulator $\simulator_\crs$ randomness.
 	By \cref{lem:bootle_forking_lemma} there exists an extractor $\ext$ that provided $N$ transcripts extracts witness $\wit$. Thus $\zkproof_\fs$ is simulation extractable.
+	\task{8.06}{Write the full reduction for unique responses for PPT adversaries, not strict ur.}
 \end{proof}
 
-%
-% Faust et al.~\cite{INDOCRYPT:FKMV12} shown that a special-sound $\Sigma$-protocol that is also $\ur{1}$
+% 
+% Faust et al.~\cite{INDOCRYPT:FKMV12} shown that a special-sound $\Sigma$-protocol that is also $\ur{1}$ 
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
@@ -360,26 +374,26 @@ For example $\Sigma$-protocols are often $\ur{1}$-protocols (e.g~Schnorr's proto
 
 \section{Old subsections}
 \subsection{Interpolation of rational functions}
-Let $F(X) = P(X) / Q(X)$ be a rational function defined over $\FF(X)$ such that $\deg P = m_a$ and $\deg Q = m_b$. We call a set $V = \smallset{(x_i, y_i)}_{i \in I}$ a \emph{support set} of $F$ if for all $i \in I$ holds $F(x_i) = y_i$.
-As shown by Minsky et al.~in \cite{TIT:MinTraZip03} if $P$ and $Q$ are monic, then a support set $V$ of size at least $m_a + m_b$ unambiguously determines $F$.
+Let $F(X) = P(X) / Q(X)$ be a rational function defined over $\FF(X)$ such that $\deg P = m_a$ and $\deg Q = m_b$. We call a set $V = \smallset{(x_i, y_i)}_{i \in I}$ a \emph{support set} of $F$ if for all $i \in I$ holds $F(x_i) = y_i$. 
+As shown by Minsky et al.~in \cite{TIT:MinTraZip03} if $P$ and $Q$ are monic, then a support set $V$ of size at least $m_a + m_b$ unambiguously determines $F$. 
 
 \begin{lemma}[Rational function interpolation~{\cite[Theorem 4.1]{TIT:MinTraZip03}}]
 	\label{lem:rational_function_interpolation}
   Let $F(X) = P(X) / Q(X)$ be a rational function and let $P(X) = X^{m_a} + p_1 X^{m_a - 1} + \ldots + p_{m_a}$, $Q(X) = X^{m_b} + q_1 X^{m_a - 1} + \ldots + q_{m_b}$. Let $V_F$ be a support set of size $m = m_a + m_b$, then $V_F$ determines $F$ unambiguously.
 \end{lemma}
 
-Note that the theorem above assumes that the polynomials determining $F$ are monic and their degrees are known. In general, a rational function is not defined unambiguously and $F(X) = P(X) / Q(X) \in \FF(X)$ represents a whole equivalence class of functions
+Note that the theorem above assumes that the polynomials determining $F$ are monic and their degrees are known. In general, a rational function is not defined unambiguously and $F(X) = P(X) / Q(X) \in \FF(X)$ represents a whole equivalence class of functions 
 \[
 	F(X) = \frac{P(X)}{Q(X)} \equiv \frac{P(X) f(X)}{Q(X) f(X)}\,,
 \]
 for some $P(X), Q(X), f(X) \in \FF[X]$.
-However, when the degree of the denominator polynomial $Q(X)$ is known, then the function is determined up to $f(X)$ that are \emph{constant}. Any other polynomial would change the denominator degree).
-Furthermore, if in $Q(X)$ there is at least one coefficient that is already known, then the whole function $F(X)$ is determined uniquely, i.e.~$f(X) \equiv 1$. Other $f$-s would affect the known coefficient $q_i$.
+However, when the degree of the denominator polynomial $Q(X)$ is known, then the function is determined up to $f(X)$ that are \emph{constant}. Any other polynomial would change the denominator degree). 
+Furthermore, if in $Q(X)$ there is at least one coefficient that is already known, then the whole function $F(X)$ is determined uniquely, i.e.~$f(X) \equiv 1$. Other $f$-s would affect the known coefficient $q_i$. 
 The following lemma can be formulated:
 \begin{lemma}
 	\label{lem:rational_function_interpolation_2}
 	Let $F(X) = P(X) / Q(X)$ be a rational function for $P(X) = p_0 X^{m_a} + p_1 X^{m_a - 1} + \ldots + p_{m_a}$, $Q(X) = q_0 X^{m_b} + q_1 X^{m_a - 1} + \ldots + q_{m_b}$ such that $q_0$ is non-zero and at least one of the coefficients $q_i$ is known.
-	Let $V_F$ be a support set of size $m = m_a + m_b + 1$, then $V_F$ determines $F$ unambiguously.
+	Let $V_F$ be a support set of size $m = m_a + m_b + 1$, then $V_F$ determines $F$ unambiguously. 
 \end{lemma}
 \begin{proof}
 	The lemma has almost the same proof as \cref{lem:rational_function_interpolation}. Consider two functions $P_0 / Q_0$, $P_1 / Q_1$ that share the same values for each $x_i \in V_F$. That is,
@@ -398,11 +412,11 @@ The following lemma can be formulated:
 The main idea behind showing that \plonk{} is simulation extractable relies on the result by Faust et al.~\cite{INDOCRYPT:FKMV12} where the authors show that a public-coin special-sound protocol made non-interactive by the Fiat--Shamir transform is simulation extractable.
 Thus showing that \plonk{} is special-sound and public-coin is enough to show its simulation extractability. It is obvious that \plonk{} is public-coin, thus what remains is to show it is also special-sound.
 
-To that end we take one of the polynomials that are computed by the prover and which contains the witness as parts of the coefficients and, by programming the random oracle and rewinding the prover, we evaluate it on many different points. This allows to recreate the coefficients of the function and therefore the witness.
+To that end we take one of the polynomials that are computed by the prover and which contains the witness as parts of the coefficients and, by programming the random oracle and rewinding the prover, we evaluate it on many different points. This allows to recreate the coefficients of the function and therefore the witness.  
 %
-More precisely, the polynomial $Z(X)$ computed by the prover in the second round of the protocol is used. First the polynomial is expressed as a rational function $\Gamma$ of a formal variable $X_\gamma$, which is evaluated as $\gamma$.
-The variable $\gamma$ is given by the random oracle $\ro$ prior to Round 2.
-By programming $\ro$ and rewinding the prover one can evaluate $\Gamma$ in various points one can recreate the coefficients of $\Gamma$ and compute the witness.
+More precisely, the polynomial $Z(X)$ computed by the prover in the second round of the protocol is used. First the polynomial is expressed as a rational function $\Gamma$ of a formal variable $X_\gamma$, which is evaluated as $\gamma$. 
+The variable $\gamma$ is given by the random oracle $\ro$ prior to Round 2. 
+By programming $\ro$ and rewinding the prover one can evaluate $\Gamma$ in various points one can recreate the coefficients of $\Gamma$ and compute the witness. 
 
 We note that the extraction procedure is not very efficient. Function $\Gamma$ has numerator and denominator polynomials of degrees linear to the size of the statement. Thus a linear number of rewinds is necessary to recreate the witness.
 However, we point out that the efficiency of the extractor does not influences the efficiency of a protocol run between the prover and verifier.
@@ -415,12 +429,12 @@ In the second round of \plonk{} the prover gets from a random oracle $\beta = \r
 \begin{multline*}
   \label{eq:Z}
   Z(X) = (b_7 X^2 + b_8 X + b_9) (X^\instsize - 1) + L_1 (X) + \\
-   + \sum_{i = 1}^{\instsize - 1}\brak{L_{i + 1}(X) \prod_{j = 1}^{i}
+   + \sum_{i = 1}^{\instsize - 1}\brak{L_{i + 1}(X) \prod_{j = 1}^{i} 
   \frac{(\wit_j + \beta \w^{j - 1} + \gamma)(\wit_{\instsize + j} + \beta k_1 \w^{j - 1} + \gamma) (\wit_{2\instsize + j} + \beta k_2 \w^{j - 1} + \gamma)}
   {(\wit_j + \sigma(j)\beta + \gamma)(\wit_{\instsize + j} + \sigma(\instsize + j)\beta + \gamma)(\wit_{2\instsize + j} + \sigma (2\instsize + j) \beta + \gamma)}
   }\,
 \end{multline*}
-and makes $\gone{Z(\chi)}$ part of his proof.
+and makes $\gone{Z(\chi)}$ part of his proof. 
 Here, $L_i$ are Lagrange basis polynomials, $\smallset{1, \w, \ldots, \w^{\instsize - 1}}$ are roots of unity, $\sigma(j)$ are values determined by the permutation, which defines the circuit (i.e.~which gate is connected to which gate), and $k_1, k_2$ are other \emph{publicly known} values.
 
 Since $\chi$ is fixed, $Z(\chi)$ can be expressed as an evaluation of a rational function $\Gamma(X_\gamma)$ at $\gamma$. We will now focus on interpolating $\Gamma$.
@@ -443,28 +457,28 @@ To make the necessary summation all fractions are given a common denominator equ
    }
   }\,.
 \end{multline*}
-Finally, let
+Finally, let 
 \[
   \Gamma (X_\gamma) = \frac{N(X_\gamma)}{D(X_\gamma)}\,,
 \]
-where
+where 
 \begin{align*}
   N(X_\gamma) & = \brak{(b_7 \chi^2 + b_8 \chi + b_9) (\chi^\instsize - 1) + L_1 (\chi)} \cdot q_1(X_\gamma) \ldots q_{\instsize - 1}(X_\gamma) + \\
    & + p_1(X_\gamma) q_2(X_\gamma) \ldots q_{\instsize - 1}(X_\gamma) + q_1(X_\gamma) p_2(X_\gamma) q_3(X_\gamma) \ldots q_{\instsize - 1}(X_\gamma) + \ldots \\
    & + q_1(X_\gamma) \ldots q_{\instsize - 2}(X_\gamma) p_{\instsize - 1}(X_\gamma)\,,\\
   D(X_\gamma) & = q_1(X_\gamma)  \ldots q_{\instsize - 1}(X_\gamma)\,.
-\end{align*}
+\end{align*} 
 Both $N(X_\gamma)$ and $D(X_\gamma)$ have degree $\maxdegree = 3 \frac{(\instsize - 1) \instsize}{2}$, since $\deg p_i (X_\gamma) \allowbreak = \deg q_i (X_\gamma) = 3 i$.
 
-Observe that
+Observe that 
 \begin{inparaenum}[(i)]
-	\item the degree of polynomial $D(X_\gamma)$ is known and
+	\item the degree of polynomial $D(X_\gamma)$ is known and 
 	\item one of its coefficients is known, more precisely, the coefficient by the highest power, $X_\gamma^{3i}$, is $1$.
 \end{inparaenum}
 Hence the requirements for \cref{lem:rational_function_interpolation_2} are met.
-
+ 
 Following \cref{def:wit_ext_em} we can assume that the extractor gets as input the trapdoor corresponding to the CRS and knows $\chi$.
-Thus the only unknown values in $Z$ are the values of witness elements $\smallset{\wit_{\instsize + j}}_{j = 1}^{2 \instsize}$ (note that the values $\smallset{\wit_{j}}_{j = 1}^{\instsize}$ are public, i.e.~$\smallset{\wit_{j}}_{j = 1}^{\instsize} = \inp$) and randomisers $b_7, b_8, b_9$ which are picked by the prover at the beginning of the protocol.
+Thus the only unknown values in $Z$ are the values of witness elements $\smallset{\wit_{\instsize + j}}_{j = 1}^{2 \instsize}$ (note that the values $\smallset{\wit_{j}}_{j = 1}^{\instsize}$ are public, i.e.~$\smallset{\wit_{j}}_{j = 1}^{\instsize} = \inp$) and randomisers $b_7, b_8, b_9$ which are picked by the prover at the beginning of the protocol. 
 We need to show now that information the extractor has about the coefficients of $\Gamma(X_\gamma)$ is enough to extract the witness, even though some coefficients may depend on
 \begin{inparaenum}[(i)]
 	\item more than one witness element and\label{it:many_wit}
