@@ -158,19 +158,66 @@ A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ i
 	\]
 	\item[Zero knowledge] We call an interactive proof system $\proofsystem$ \emph{zero-knowledge} if for any $\REL \gets \RELGEN(\secparam)$ and adversary $\adv$ there exists a $\ppt$ simulator $\simulator$ such that
 	\begin{multline*}
-	  \left\{\ip{\prover(\REL, \inp, \wit)}{\adv(\REL, \inp, \wit)} \,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar \\
-		\left\{\ip{\simulator^{\adv}(\REL, \inp)}{\adv(\REL, \inp, \wit)}\,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator^\adv}\right.\right\}\,.
+	  \left\{\ip{\prover(\REL, \inp, \wit)}{\adv(\REL, \inp, \wit)} \,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar 
+		% \\
+		\left\{\simulator^{\adv}(\REL, \inp)\,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator^\adv}\right.\right\}\,.
 	\end{multline*}
 	%
 	We call zero knowledge \emph{perfect} if the distributions are equal and \emph{computational} if they are indistinguishable for any NUPPT distinguisher.
 \end{description}
 
-Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on input $\REL$ outputs a common reference string (CRS) $\crs$. The common reference string comes with a corresponding trapdoor $\td$ that allows the simulator to simulate a 
-For the sake of succinctness we denote by $\trans$ a transcript of a conversation between the prover and the verifier extended with verifier's input $(\REL, \inp)$ (or $(\REL, \crs, \inp)$ in case of a proof system with a setup).
-Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages the verifier sends are chosen uniformly at random and independently of the messages send by the prover or system parameters.
+\paragraph{Sigma protocols.}
+A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$  for a relation $\REL \gets \RELGEN(\secparam)$ is a special case of an interactive proof which transcript compounds of three messages $(a, b, z)$, the middle being a challenge provided by the verifier.
+Sigma protocols are specially-sound. That is, there exists an extractor $\ext$ which from two accepting transcripts $(a, b, z)$, $(a, b', z')$ for a statement $\inp$ can recreate the corresponding witness if $b \neq b'$. Formally,
+\begin{description}
+	\item[Special soundness] A sigma protocol $\sigmaprot$ is \emph{specially-sound} if for any adversary $\adv$ the probability
+	\[
+		\Pr\left[
+		\begin{aligned}
+				& \wit \gets \ext(\REL, \inp, (a, b, z), (a, b', z')),\\
+				& \REL(\inp, \wit) = 0
+		\end{aligned}		
+		\,\left|\,
+		\begin{aligned}
+			& (\inp, (a, b, z), (a, b', z')) \gets \adv(\REL), \\
+			& \verifier(\REL, \inp, (a, b, z)) = \\
+			& \qquad = \verifier(\REL, \inp, (a, b', z')) = 1, \\
+		\end{aligned}
+		\right.\right]
+	\]
+	is negligible in $\secpar$.
+\end{description}
 
-Interactive proofs run in a multiprotcol environment are often required to fulfil a stronger notion of soundness called \emph{witness-extended emulation}~\cite{JC:Lindell03}. The following definition is inspired by  \cite{EC:GroIsh08} as their formulation of the witness-extended emulation considers proof systems that utilises a CRS. However, there are some changes introduced to fit better our purpose. More precisely, contrary to \cite{EC:GroIsh08,EC:BCCGP16} the extractor in \cref{def:wit_ext_em} is given the trapdoor $\td$, thus seems to be bit more powerful. 
-That means that a protocol that has witness-extended emulation in terms of \cite{EC:GroIsh08} has it also according to the definition below. 
+Furthermore sigma protocols are \emph{honest verifier zero-knowledge} (HVZK). That is the zero-knowledge property holds only for honest verifiers, what is formalized as follows:
+\begin{description}
+	\item[Honest verifier zero knowledge] A sigma protocol $\sigmaprot$ is \emph{honest verifier zero-knowledge} if for all adversaries $\adv$ holds
+	\begin{multline*}
+		\left\{\ip{\prover(\REL, \inp, \wit)}{\verifier(\REL, \inp)} \,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar 
+		\left\{\simulator^{\verifier}(\REL, \inp)\,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator^\adv}\right.\right\}\,.
+	\end{multline*}
+\end{description}
+Although this notion is weaker than a standard zero knowledge it is often sufficient. Furthermore, a HVZK interactive proof system transformed by the Fiat--Shamir transformation is zero-knowledge.
+
+Another property that sigma protocols sometimes have is, introduced by Fischlin \cite{C:Fischlin05}, a unique response property which states that no PPT adversary  can produce two accepting transcripts that differ only on the last element. 
+More precisely, 
+\begin{description}
+	\item[Unique response property] Let $\sigmaprot = (\prover, \verifier, \simulator_\zkproof)$ be a standard-model sigma-protocol for relation $\REL \gets \RELGEN(\secparam)$ which proofs compound of three messages $(\alpha, \beta, \gamma)$. We say that $\sigmaprot$ is has a unique response property if for all PPT algorithms $\adv$ holds
+	\[
+	\condprob{\verifier (\alpha, \beta, \gamma) = \verifier (\alpha, \beta, \gamma')  = 1}{(\alpha, \beta, \gamma, \gamma') \gets \adv(\REL)} \leq \negl\,.
+	\]
+\end{description}
+Later on we often call protocols that follows this notion ur-protocols.
+For the sake of completeness we note that many sigma-protocols, like e.g.~Schnorr's protocol \cite{C:Schnorr89}, fulfil this requirement.
+
+\paragraph{Zero knowledge proof system in the CRS model}
+Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on input $\REL$ outputs a common reference string (CRS) $\crs$. The common reference string comes with a corresponding trapdoor $\td$ that allows the simulator to simulate a proof. 
+
+\paragraph{Witness-extended emulation.}
+Interactive proofs run in a multi-protocol environment are often required to fulfil a stronger notion of soundness called \emph{witness-extended emulation}~\cite{JC:Lindell03}. 
+The following definition is inspired by  \cite{EC:GroIsh08} as their formulation of the witness-extended emulation considers proof systems that utilises a CRS. However, there are some changes introduced to fit better our purpose. More precisely, contrary to \cite{EC:GroIsh08,EC:BCCGP16} the extractor in \cref{def:wit_ext_em} is given the trapdoor $\td$, thus seems to be bit more powerful. 
+This means that a protocol that has witness-extended emulation in terms of \cite{EC:GroIsh08} has it also according to \cref{def:wit_ext_em} below. 
+There, for the sake of succinctness, we denote by $\trans$ a transcript of a conversation between the prover and the verifier extended with verifier's input $(\REL, \inp)$ (or $(\REL, \crs, \inp)$ in case of a proof system with a setup).
+Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages the verifier sends are chosen uniformly at random and independently of the messages send by the prover or system parameters.
 
 \begin{definition}[Witness-extended emulation]
 	\label{def:wit_ext_em}
@@ -205,6 +252,10 @@ where the extractor $\ext$ can rewind the conversation between the prover and th
 \end{definition} 
 Although in the definition above the adversary $\adv_1$ is deterministic it obtains an auxiliary input $\aux_{\adv_1}$ that may be used by $\adv_1$ as a source of randomness. \cite{EC:GroIsh08} notes that since the protocol is public-coin, verifier's randomness is part of the transcript. Thus combining $\inp, \aux_\adv$ and an accepting transcript $\trans$ gives a view of both the prover and the verifier and thus gives a witness.
 
+\subsection{Simulation extractable NIZKs from sigma protocols}
+Real life applications often require from a NIZK proof system to be non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement $\inp$ should not be able to provide a new proof $\zkproof'$ related to $\zkproof$. 
+A strong version of non-malleability is formalized by simulation extractability. This notion states that no adversary can produce an acceptable proof for without knowning the corresponding witness. That holds even if the adversary is allowed to see polynomially many simulated proofs for any statements she wishes.
+
 \begin{definition}[Simulation extractability]
 	A proof system $\proofsystem$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
 	\[
@@ -226,9 +277,10 @@ Although in the definition above the adversary $\adv_1$ is deterministic it obta
 	where $\oracleo$ on input $\inp'$ returns $\zkproof' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $(\inp', \zkproof')$ to a list $Q$.
 \end{definition}
 
-\subsection{Simulation extractability for sigma protocols}
-Faust et al.~\cite{INDOCRYPT:FKMV12} shown that every sigma protocol that is specially sound and has a unique response property is simulation-extractable. 
 
+
+Faust et al.~\cite{INDOCRYPT:FKMV12} show that every sigma protocol that is specially sound and has a unique response property is simulation-extractable. 
+%
 Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a sigma protocol which transcript contains three messages $(a, b, z)$ with the middle being sent as a challenge from the verifier. 
 Special soundness states that any acceptable pair of transcripts $(a, b, z)$ and $(a, b', z')$ for some statement $\inp$ can be used to extract the corresponding witness $\wit$. 
 This is formalised and generalized by the so-called general forking lemma
@@ -274,7 +326,7 @@ In case of a $\Sigma$-protocol, the probability $\extProb$ can be interpreted as
 Let $\tr_1 = (\inp, a, z, \gamma)$ and $\tr_2 = (\inp, a, z', \gamma')$ be the transcripts.
 Both $\tr_1$ and $\tr_2$ have to be \emph{acceptable}, i.e.~$i > 0$. Index $i$ can be interpreted as an index of $h_i$ which was sent as a challenge for $(\inp, a)$. For the sake of extractability, both transcripts have to have the same index $i$, i.e.~the same instance $\inp$ and the first message $a$, but the actual challenges $z = h_i$ and $z' = h_{i'}$ have to differ.
 
-Another property required by Faust et al.~\cite{INDOCRYPT:FKMV12} to show simulation extractability of a sigma protocol is the unique response property which states that no PPT adversary can provide two different transcripts $(a, b, z)$ and $(a, b, z')$ such that the verifier $\verifier$ accepts both.
+% Another property required by Faust et al.~\cite{INDOCRYPT:FKMV12} to show simulation extractability of a sigma protocol is the unique response property which states that no PPT adversary can provide two different transcripts $(a, b, z)$ and $(a, b, z')$ such that the verifier $\verifier$ accepts both.
 
 Finally \cite{INDOCRYPT:FKMV12} shows the following theorem:
 \begin{theorem}[Simulation extractability of the Fiat--Shamir transform \cite{INDOCRYPT:FKMV12}]
@@ -303,12 +355,7 @@ Consider $\prod_{i = 1}^{\mu} n_i$ accepting transfers with challenges as a tree
 As mentioned, any protocol that has witness-extended emulation defined as in \cite{EC:BCCGP16} is equipped with this property also in the light of \cref{def:wit_ext_em}.
 
 \paragraph{Unique-response protocols.}
-We say that a sigma-protocol has unique response property (Fischlin \cite{C:Fischlin05}), or is a ur-protocol, if there is no adversary that can produce two accepting transcripts that differ only on the last element. 
-More precisely, let $\sigmaprot = (\prover, \verifier, \simulator_\zkproof)$ be a standard-model sigma-protocol for relation $\REL \gets \RELGEN(\secparam)$ which proofs compound of three messages $(\alpha, \beta, \gamma)$. We say that $\sigmaprot$ is a ur-protocol if for all PPT algorithms $\adv$ holds
-\[
-\condprob{\verifier (\alpha, \beta, \gamma) = \verifier (\alpha, \beta, \gamma')  = 1}{(\alpha, \beta, \gamma, \gamma') \gets \adv(\REL)} \leq \negl\,.
-\]
-For the sake of completeness we note that many sigma-protocols, like e.g.~Schnorr's protocol \cite{C:Schnorr89}, fulfil this requirement.
+
 
 Fischlin's formulation, although perfectly fine for applications presented in \cite{C:Fischlin05}, is not enough in our case. 
 First of all, the property assumes that the protocol has three rounds, with the middle being the challenge from the verifier. That is not the case we consider here. Second, it is not entirely clear how to generalize the property. Should one require that after the first challenge from the verifier the responses are fixed? That could not work since if there are more challenges then they are random. 
@@ -361,9 +408,9 @@ By expanding \cref{def:wiur} on interactive proof systems in the CRS model, we g
 	is negligible in $\secpar$.
 \end{definition}
 
-\subsection{Simulation extractability from unique responses and witness-extended emulation}
-% Unfortunately the result of Faust et al.~is stated for a specific kind of special-sound proofs, i.e.~$\Sigma$-protocols, which compounds of three messages exchanged between the prover and the verifier. Both $\plonk$ and $\sonic$ require more interaction between these parties so that result is not directly applicable. However, we show that it can be generalised to a witness-extended emulatable protocols as well.
-In this section we present two proofs for the Fiat--Shamir transform simulation extractability -- one for the standard---weaker---version of the unique response property, one for the stronger.
+\paragraph
+{Simulation extractability from unique responses and witness-extended emulation.}
+We can now present two proofs for the Fiat--Shamir transform simulation extractability, one for the standard---weaker---version of the unique response property, one for the stronger.
 
 In the former, we assume that the underlying interactive proof system is in the standard model. More precisely, we require that the only additional power given to the simulator is the ability of producing proof elements in any order it wants. Especially, producing a simulated proof does not require knowledge of some sort of a trapdoor. 
 Although we believe that this result may be of independent interest, it is not enough in our case, it is not enough to show simulation extractability of \plonk. 
