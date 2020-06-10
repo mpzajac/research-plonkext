@@ -1,6 +1,6 @@
 % !TeX spellcheck = en_GB
 \let\accentvec\vec
-\documentclass[runningheads]{llncs}
+\documentclass[runningheads,11pt]{llncs}
  % \documentclass[runningheads]{amsart}
 \let\spvec\vec
 \let\vec\accentvec
@@ -475,7 +475,7 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 		For a query $x$ simulator $\simulator_{\fs, \ro}$ checks whether a list of queries $L$ already contains a pair $(x, y)$, for some $y$, and, if that is the case, outputs $y$.
 		Otherwise, it picks an element $y'$ from the random oracle range, outputs it and adds $(x, y')$ to $L$. Importantly $y'$ is picked accordingly to the randomness tape provided to $\simulator_{\fs, \ro}$, i.e.~one may assume that $\simulator_{\fs, \ro}$ gets as input a randomness tape $r$ that provides values $y_1, \ldots, y_Q$.
 		When the simulator needs to answer a fresh query $x$ it takes the successive $y_i$ from $r$.
-		\item[$\simulator_{\fs, \zkproof}$] that provides simulated proofs. The simulator may also program random oracle queries. That is, it may add pair $(x, y)$ to $L$ unless there is a pair that have $x$ on the first position. In that case it outputs $\bad$.
+		\item[$\simulator_{\fs, \zkproof}$] that provides simulated proofs. The simulator may also program random oracle queries. That is, it may add pair $(x, y)$ to $L$ unless there is a pair that have $x$ on the first position. In that case it aborts.
 	\end{description}
 
 	Let $\adv_\se^{\simulator_\fs}$ be a simulation-extractability adversary for $\proofsystem_\fs$, $\inp$ the instance $\adv_\se$ proves and $\zkproof = \vec{a} = (a_0, \ldots, a_\mu)$ the corresponding acceptable proof.
@@ -490,7 +490,7 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 	Now, after $\simulator_{\fs, \ro}$ was queried with $(\inp, \vec{a}_{[0:j]})$, the adversary $\adv_\se$ is rewound and a new further queries responses for the simulator are picked. This step is repeated $n_j$ times.
 	More precisely, assume that $(\inp, \vec{a}_{[0:j]})$ was $J_j$-th query to $\simulator_{\fs, \ro}$, then the sequence of responses $\vec{y} = y_1, \ldots, y_Q$ changes to $\vec{y'} = y_1, \ldots, y_{J_j}, y'_{J_j + 1}, \ldots, y'_{Q}$, for some fresh and independent $y'_{J_j + 1}, \ldots, y'_{Q}$ picked accordingly to $r$.
 	W.l.o.g.~we can assume that all sequences $\vec{y}$ are registered and stored and when a new $\vec{y'}$ comes and for some $k > J_j$ holds $\vec{y_k} = \vec{y'_k}$ then the simulator $\simulator_{\fs, \ro}$ aborts. However, this happens with negligible probability only as the number of drawn $\vec{y}$-sequences is polynomially bounded and the number of possible values they pick is exponential in the security parameter.
-	
+
 	Since the first $J_j$ queries do not change, the adversary, whose randomness tape remains the same, submits $(\inp, \vec{a}_{[0:j]})$ as its $J_j$-th query regardless it was rewound.
 	That way, for each $j$, new $\prod_{k = 1}^{j} n_k$ partial transcripts $(\inp, \vec{a}_{[0 : j]})$ is obtained, each of the previous $\prod_{k = 1}^{j - 1} n_k$ transcripts is extended in $n_j$ different ways respectively to different sequence of responses of $\simulator_{\fs, \ro}$.
 
