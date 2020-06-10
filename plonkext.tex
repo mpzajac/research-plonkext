@@ -477,17 +477,20 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 		\item $\simulator_{\fs, \zkproof}$ that provides simulated proofs. The simulator may also program random oracle queries. That is, it may add pair $(x, y)$ to $L$ unless there is a pair that have $x$ on the first position. In that case it outputs $\bad$.
 	\end{itemize}
 	
-	Let $\adv_\se^{\simulator_\fs}$ be a simulation-extractability adversary for $\proofsystem_\fs$, $\inp$ the instance $\adv_\se$ proves and $\zkproof = \vec{a} = (a_0, \ldots, a_\mu)$ the corresponding proof. 
+	Let $\adv_\se^{\simulator_\fs}$ be a simulation-extractability adversary for $\proofsystem_\fs$, $\inp$ the instance $\adv_\se$ proves and $\zkproof = \vec{a} = (a_0, \ldots, a_\mu)$ the corresponding acceptable proof. 
 	The instance and proof are output after $\adv_\se$ learnt simulated proofs from $\simulator_{\fs, \zkproof}$.
 	
-	Divide the adversary's proof $\zkproof$ into two parts. 
-	The first, $\vec{a}^\heartsuit = (a_0, \ldots, a_i)$ and the second $\vec{a}^{\spadesuit} = (a_{i + 1}, \ldots, a_\mu)$.
+	For $j > i$ divide the adversary's proof $\zkproof$ into two parts: 
+	first, $\vec{a}^\heartsuit = (a_0, \ldots, a_j)$ and second $\vec{a}^{\spadesuit} = (a_{j + 1}, \ldots, a_\mu)$.
 	\michals{10.06}{I think this generalised idea of unique resp. may not make much sense, we should explicitly require that $i = \mu - 1$. Otherwise, the prover gets a randomised challenge from the verifier, so his answer is not unique. OTOH, we may require that for every challenge there is only one correct answer.}
 	Note that $(\inp, \vec{a}^\heartsuit)$ is a query to the random oracle that is performed by the adversary. 
-	Otherwise, if the query was made by the simulator $\simulator_{\fs, \zkproof}$ then, since $\proofsystem$ is an $\ur{i}$-protocol, a proof starting with $(\inp, \vec{a}^\heartsuit)$ is in the list $Q$ and cannot be used by the simulation-extractability adversary $\adv_\se$.
+	Otherwise, if the query was made by the simulator $\simulator_{\fs, \zkproof}$ then, since $\proofsystem$ is an $\ur{i}$-protocol and $j \geq i$, a proof starting with $(\inp, \vec{a}^\heartsuit)$ is in the list $Q$ and cannot be used by the simulation-extractability adversary $\adv_\se$.
 	
-	After the oracle was queried with $(\inp, \vec{a}^\heartsuit)$, a new randomness for $\simulator_{\fs, \ro}$ is picked. 
-	More precisely, assume that $(\inp, \vec{a}^\heartsuit)$ was $J$-th query to $\simulator_{\fs, \ro}$, then the sequence of answers $y_1, \ldots, y_Q$ changes to $y_1, \ldots, y_J, y'_{J + 1}, \ldots, y'_{Q}$, for some fresh $y'_{J + 1}, \ldots, y'_{Q}$ picked accordingly to $r$.
+	For each $j > i$, after the oracle was queried with $(\inp, \vec{a}^\heartsuit)$, the adversary $\adv_\se$ is rewound and a new randomness for $\simulator_{\fs, \ro}$ is picked. This step is repeated $n_j$ times.
+	More precisely, assume that $(\inp, \vec{a}^\heartsuit)$ was $J_j$-th query to $\simulator_{\fs, \ro}$, then the sequence of answers $y_1, \ldots, y_Q$ changes to $y_1, \ldots, y_{J_j}, y'_{J_j + 1}, \ldots, y'_{Q}$, for some fresh and independent $y'_{J_j + 1}, \ldots, y'_{Q}$ picked accordingly to $r$. 
+	Since the first $J_j$ queries do not change, the adversary, whose randomness tape remains the same, submits $(\inp, \vec{a}^\heartsuit)$ as its $J_j$-th query.
+	
+	When $j$ reaches $\mu$, there are $\prod_{j}^{\mu} n_j$ transcripts that makes an $(1, \ldots, 1, n_{i + 1}, \ldots, n_\mu)$-tree of accepting transcripts. Thus, from the forking lemma (cf.~\cref{lem:bootle_forking_lemma}), there exists an extractor $\ext_\fs$ that recreates a witness $\wit$ such that $\REL(\inp, \wit)$.	
 \end{proof}
 
 \bibliographystyle{alpha}
