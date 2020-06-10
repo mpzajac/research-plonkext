@@ -465,19 +465,29 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 	Let $\proofsystem = (\prover, \verifier, \simulator)$ be an interactive strongly $\ur{i}$-protocol for a relation $\REL$ \michals{10.06}{Here, new version of \emph{strongly} $\ur{i}$-protocol -- even unbounded adversary cannot provide two valid proofs that differ after $i$}. 
 	Assume there exists an extractor $\ext$ that extracts the witness from a $(1, \ldots, 1, n_{i + 1}, \ldots, n_\mu)$-tree of accepting transcripts of $\proofsystem$. 
 	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model if $N =\prod_{j = i}^\mu = \poly$.
-	Furthermore the extractor $\ext_\fs$ for $\proofsystem_\fs$ needs to run $(\simulator)$ $N$ times.
+	Furthermore the extractor $\ext_\fs$ for $\proofsystem_\fs$ needs to run $\simulator$ $N$ times.
 \end{theorem}
 \begin{proof}
-	The proof goes similarly to \cite[Theorem 3]{INDOCRYPT:FKMV12}.
-	Let $\adv_\se^{\simulator_\fs}$ be a simulation-extractability adversary for $\proofsystem_\fs$, $\inp$ the instance $\adv_\se$ proves and $\zkproof = \vec{a} = (a_0, \ldots, a_\mu)$ the corresponding proof. 
-	The instance and proof are output after $\adv_\se$ learnt simulated proofs from $\simulator_\fs$.
+	The proof goes similarly to \cite[Theorem 3]{INDOCRYPT:FKMV12}. For the sake of clarity let divide the simulator algorithm $\simulator_\fs$ of $\proofsystem_\fs$  into two subroutines: 
+	\begin{itemize}
+		\item $\simulator_{\fs, \ro}$, that takes care about random oracle queries. Assume that there is an upper bound $Q = \poly$ for the number of queries that may be asked.
+		For a query $x$ simulator $\simulator_{\fs, \ro}$ checks whether a list of queries $L$ contains a pair $(x, y)$, for some $y$, and, if that is the case, outputs $y$. 
+		Otherwise, it picks an element $y'$ from the random oracle range, outputs it and adds $(x, y')$ to $L$. Importantly $y'$ is picked accordingly to the randomness tape provided to $\simulator_{\fs, \ro}$, i.e.~one may assume that $\simulator_{\fs, \ro}$ gets as input a randomness tape $r$ that provides values $y_1, \ldots, y_Q$. 
+		When the simulator needs to answer a fresh query $x$ it takes the successive $y_i$ from $r$.
+		\item $\simulator_{\fs, \zkproof}$ that provides simulated proofs. The simulator may also program random oracle queries. That is, it may add pair $(x, y)$ to $L$ unless there is a pair that have $x$ on the first position. In that case it outputs $\bad$.
+	\end{itemize}
 	
-	Divide the adversary's proof $\zkproof$ into two parts. First, $\vec{a^\heartsuit} = (a_0, \ldots, a_i)$ and second $\vec{a^{\spadesuit}} = (a_{i + 1}, \ldots, a_\mu)$.
+	Let $\adv_\se^{\simulator_\fs}$ be a simulation-extractability adversary for $\proofsystem_\fs$, $\inp$ the instance $\adv_\se$ proves and $\zkproof = \vec{a} = (a_0, \ldots, a_\mu)$ the corresponding proof. 
+	The instance and proof are output after $\adv_\se$ learnt simulated proofs from $\simulator_{\fs, \zkproof}$.
+	
+	Divide the adversary's proof $\zkproof$ into two parts. 
+	The first, $\vec{a}^\heartsuit = (a_0, \ldots, a_i)$ and the second $\vec{a}^{\spadesuit} = (a_{i + 1}, \ldots, a_\mu)$.
 	\michals{10.06}{I think this generalised idea of unique resp. may not make much sense, we should explicitly require that $i = \mu - 1$. Otherwise, the prover gets a randomised challenge from the verifier, so his answer is not unique. OTOH, we may require that for every challenge there is only one correct answer.}
-	Note that $(\inp, \vec{a^\heartsuit})$ is a fresh query to the random oracle made by the adversary. 
-	Otherwise, if the query was made  by the simulator (internally, as the simulator answers all random oracle queries) then, since $\proofsystem$ is an $\ur{i}$-protocol, a proof starting with $(\inp, \vec{a^\heartsuit})$ is in the list $Q$ and cannot be used by the simulation-extractability adversary $\adv_\se$.
-	%  is not a part of a simulated proof output by $\simulator_\fs$.
-	% Otherwise, since $\proofsystem$ is an $\ur{i}$-protocol, $\vec{a^\heartsuit}$ uniquely determines $\vec{a^\spadesuit}$, thus the output proof $\vec{a} = \vec{a^\heartsuit} \| \vec{a^\spadesuit}$ belongs to the list $Q$, thus cannot be used by $\adv_\se$ to break simulation extractability.
+	Note that $(\inp, \vec{a}^\heartsuit)$ is a query to the random oracle that is performed by the adversary. 
+	Otherwise, if the query was made by the simulator $\simulator_{\fs, \zkproof}$ then, since $\proofsystem$ is an $\ur{i}$-protocol, a proof starting with $(\inp, \vec{a}^\heartsuit)$ is in the list $Q$ and cannot be used by the simulation-extractability adversary $\adv_\se$.
+	
+	After the oracle was queried with $(\inp, \vec{a}^\heartsuit)$, a new randomness for $\simulator_{\fs, \ro}$ is picked. 
+	More precisely, assume that $(\inp, \vec{a}^\heartsuit)$ was $J$-th query to $\simulator_{\fs, \ro}$, then the sequence of answers $y_1, \ldots, y_Q$ changes to $y_1, \ldots, y_J, y'_{J + 1}, \ldots, y'_{Q}$, for some fresh $y'_{J + 1}, \ldots, y'_{Q}$ picked accordingly to $r$.
 \end{proof}
 
 \bibliographystyle{alpha}
