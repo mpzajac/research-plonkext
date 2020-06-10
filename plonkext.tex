@@ -462,35 +462,38 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 
 \begin{theorem}[Simulation extractability of the Fiat--Shamir transform III]
 	\label{thm:wit_ext_em_FS_III}
-	Let $\proofsystem = (\prover, \verifier, \simulator)$ be an interactive strongly $\ur{i}$-protocol for a relation $\REL$ \michals{10.06}{Here, new version of \emph{strongly} $\ur{i}$-protocol -- even unbounded adversary cannot provide two valid proofs that differ after $i$}. 
+	Let $\proofsystem = (\prover, \verifier, \simulator)$ be an interactive strongly-$\ur{i}$ protocol for a relation $\REL$ 
+	\michals{10.06}{Here, new version of \emph{strongly}-$\ur{i}$ protocol -- even unbounded adversary cannot provide two valid proofs that differ after $i$}. 
 	Assume there exists an extractor $\ext$ that extracts the witness from a $(1, \ldots, 1, n_{i + 1}, \ldots, n_\mu)$-tree of accepting transcripts of $\proofsystem$. 
 	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model if $N =\prod_{j = i}^\mu = \poly$.
-	Furthermore the extractor $\ext_\fs$ for $\proofsystem_\fs$ needs to run $\simulator$ $N$ times.
+	% Furthermore the extractor $\ext_\fs$ for $\proofsystem_\fs$ needs to run $\simulator$ $N$ times.
 \end{theorem}
 \begin{proof}
 	The proof goes similarly to \cite[Theorem 3]{INDOCRYPT:FKMV12}. For the sake of clarity let divide the simulator algorithm $\simulator_\fs$ of $\proofsystem_\fs$  into two subroutines: 
-	\begin{itemize}
-		\item $\simulator_{\fs, \ro}$, that takes care about random oracle queries. Assume that there is an upper bound $Q = \poly$ for the number of queries that may be asked.
-		For a query $x$ simulator $\simulator_{\fs, \ro}$ checks whether a list of queries $L$ contains a pair $(x, y)$, for some $y$, and, if that is the case, outputs $y$. 
+	\begin{description}
+		\item[$\simulator_{\fs, \ro}$] that takes care about random oracle queries. Assume that there is an upper bound $Q = \poly$ for the number of queries that may be submitted.
+		For a query $x$ simulator $\simulator_{\fs, \ro}$ checks whether a list of queries $L$ already contains a pair $(x, y)$, for some $y$, and, if that is the case, outputs $y$. 
 		Otherwise, it picks an element $y'$ from the random oracle range, outputs it and adds $(x, y')$ to $L$. Importantly $y'$ is picked accordingly to the randomness tape provided to $\simulator_{\fs, \ro}$, i.e.~one may assume that $\simulator_{\fs, \ro}$ gets as input a randomness tape $r$ that provides values $y_1, \ldots, y_Q$. 
 		When the simulator needs to answer a fresh query $x$ it takes the successive $y_i$ from $r$.
-		\item $\simulator_{\fs, \zkproof}$ that provides simulated proofs. The simulator may also program random oracle queries. That is, it may add pair $(x, y)$ to $L$ unless there is a pair that have $x$ on the first position. In that case it outputs $\bad$.
-	\end{itemize}
+		\item[$\simulator_{\fs, \zkproof}$] that provides simulated proofs. The simulator may also program random oracle queries. That is, it may add pair $(x, y)$ to $L$ unless there is a pair that have $x$ on the first position. In that case it outputs $\bad$.
+	\end{description}
 	
 	Let $\adv_\se^{\simulator_\fs}$ be a simulation-extractability adversary for $\proofsystem_\fs$, $\inp$ the instance $\adv_\se$ proves and $\zkproof = \vec{a} = (a_0, \ldots, a_\mu)$ the corresponding acceptable proof. 
-	The instance and proof are output after $\adv_\se$ learnt simulated proofs from $\simulator_{\fs, \zkproof}$.
+	W.l.o.g.~we may assume that $(\inp, \pi)$ are output after $\adv_\se$ learnt simulated proofs from $\simulator_{\fs, \zkproof}$.
 	
-	For $j > i$ divide the adversary's proof $\zkproof$ into two parts: 
-	first, $\vec{a}^\heartsuit = (a_0, \ldots, a_j)$ and second $\vec{a}^{\spadesuit} = (a_{j + 1}, \ldots, a_\mu)$.
+	For each $j > i$, divide the adversary's proof $\zkproof$ into two parts: 
+	first, $\vec{a}_{[0:j]} = (a_0, \ldots, a_j)$ and second $\vec{a}_{{[j + 1:\mu]}} = (a_{j + 1}, \ldots, a_\mu)$.
 	\michals{10.06}{I think this generalised idea of unique resp. may not make much sense, we should explicitly require that $i = \mu - 1$. Otherwise, the prover gets a randomised challenge from the verifier, so his answer is not unique. OTOH, we may require that for every challenge there is only one correct answer.}
-	Note that $(\inp, \vec{a}^\heartsuit)$ is a query to the random oracle that is performed by the adversary. 
-	Otherwise, if the query was made by the simulator $\simulator_{\fs, \zkproof}$ then, since $\proofsystem$ is an $\ur{i}$-protocol and $j \geq i$, a proof starting with $(\inp, \vec{a}^\heartsuit)$ is in the list $Q$ and cannot be used by the simulation-extractability adversary $\adv_\se$.
+	Note that $(\inp, \vec{a}^{[0:j]})$ is a query to the random oracle that is performed by the adversary. 
+	Otherwise, if the query was made by the simulator $\simulator_{\fs, \zkproof}$ then, since $\proofsystem$ is an $\ur{i}$-protocol and $j > i$, a proof starting with $(\inp, \vec{a}_{[0:j]})$ is in the list of simulated proofs $Q$ and cannot be used by the simulation-extractability adversary $\adv_\se$.
 	
-	For each $j > i$, after the oracle was queried with $(\inp, \vec{a}^\heartsuit)$, the adversary $\adv_\se$ is rewound and a new randomness for $\simulator_{\fs, \ro}$ is picked. This step is repeated $n_j$ times.
-	More precisely, assume that $(\inp, \vec{a}^\heartsuit)$ was $J_j$-th query to $\simulator_{\fs, \ro}$, then the sequence of answers $y_1, \ldots, y_Q$ changes to $y_1, \ldots, y_{J_j}, y'_{J_j + 1}, \ldots, y'_{Q}$, for some fresh and independent $y'_{J_j + 1}, \ldots, y'_{Q}$ picked accordingly to $r$. 
-	Since the first $J_j$ queries do not change, the adversary, whose randomness tape remains the same, submits $(\inp, \vec{a}^\heartsuit)$ as its $J_j$-th query.
+	Now, after $\simulator_{\fs, \ro}$ was queried with $(\inp, \vec{a}_{[0:j]})$, the adversary $\adv_\se$ is rewound and a new further queries responses for the simulator are picked. This step is repeated $n_j$ times.
+	More precisely, assume that $(\inp, \vec{a}_{[0:j]})$ was $J_j$-th query to $\simulator_{\fs, \ro}$, then the sequence of responses $y_1, \ldots, y_Q$ changes to $y_1, \ldots, y_{J_j}, y'_{J_j + 1}, \ldots, y'_{Q}$, for some fresh and independent $y'_{J_j + 1}, \ldots, y'_{Q}$ picked accordingly to $r$. 
+	Since the first $J_j$ queries do not change, the adversary, whose randomness tape remains the same, submits $(\inp, \vec{a}_{[0:j]})$ as its $J_j$-th query regardless it was rewound. 
+	That way, for each $j$, new $n_j$ partial transcripts $(\inp, \vec{a}_{[0 : j]})$ is obtained.
 	
 	When $j$ reaches $\mu$, there are $\prod_{j}^{\mu} n_j$ transcripts that makes an $(1, \ldots, 1, n_{i + 1}, \ldots, n_\mu)$-tree of accepting transcripts. Thus, from the forking lemma (cf.~\cref{lem:bootle_forking_lemma}), there exists an extractor $\ext_\fs$ that recreates a witness $\wit$ such that $\REL(\inp, \wit)$.	
+	\qed
 \end{proof}
 
 \bibliographystyle{alpha}
