@@ -460,6 +460,26 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 % 
 % Faust et al.~\cite{INDOCRYPT:FKMV12} shown that a special-sound $\Sigma$-protocol that is also $\ur{1}$ 
 
+\begin{theorem}[Simulation extractability of the Fiat--Shamir transform III]
+	\label{thm:wit_ext_em_FS_III}
+	Let $\proofsystem = (\prover, \verifier, \simulator)$ be an interactive strongly $\ur{i}$-protocol for a relation $\REL$ \michals{10.06}{Here, new version of \emph{strongly} $\ur{i}$-protocol -- even unbounded adversary cannot provide two valid proofs that differ after $i$}. 
+	Assume there exists an extractor $\ext$ that extracts the witness from a $(1, \ldots, 1, n_{i + 1}, \ldots, n_\mu)$-tree of accepting transcripts of $\proofsystem$. 
+	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model if $N =\prod_{j = i}^\mu = \poly$.
+	Furthermore the extractor $\ext_\fs$ for $\proofsystem_\fs$ needs to run $(\simulator)$ $N$ times.
+\end{theorem}
+\begin{proof}
+	The proof goes similarly to \cite[Theorem 3]{INDOCRYPT:FKMV12}.
+	Let $\adv_\se^{\simulator_\fs}$ be a simulation-extractability adversary for $\proofsystem_\fs$, $\inp$ the instance $\adv_\se$ proves and $\zkproof = \vec{a} = (a_0, \ldots, a_\mu)$ the corresponding proof. 
+	The instance and proof are output after $\adv_\se$ learnt simulated proofs from $\simulator_\fs$.
+	
+	Divide the adversary's proof $\zkproof$ into two parts. First, $\vec{a^\heartsuit} = (a_0, \ldots, a_i)$ and second $\vec{a^{\spadesuit}} = (a_{i + 1}, \ldots, a_\mu)$.
+	\michals{10.06}{I think this generalised idea of unique resp. may not make much sense, we should explicitly require that $i = \mu - 1$. Otherwise, the prover gets a randomised challenge from the verifier, so his answer is not unique. OTOH, we may require that for every challenge there is only one correct answer.}
+	Note that $(\inp, \vec{a^\heartsuit})$ is a fresh query to the random oracle made by the adversary. 
+	Otherwise, if the query was made  by the simulator (internally, as the simulator answers all random oracle queries) then, since $\proofsystem$ is an $\ur{i}$-protocol, a proof starting with $(\inp, \vec{a^\heartsuit})$ is in the list $Q$ and cannot be used by the simulation-extractability adversary $\adv_\se$.
+	%  is not a part of a simulated proof output by $\simulator_\fs$.
+	% Otherwise, since $\proofsystem$ is an $\ur{i}$-protocol, $\vec{a^\heartsuit}$ uniquely determines $\vec{a^\spadesuit}$, thus the output proof $\vec{a} = \vec{a^\heartsuit} \| \vec{a^\spadesuit}$ belongs to the list $Q$, thus cannot be used by $\adv_\se$ to break simulation extractability.
+\end{proof}
+
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
 
