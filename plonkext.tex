@@ -498,6 +498,24 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 	\qed
 \end{proof}
 
+\section{Simulation extractability of $\plonk$}
+\newcommand{\chz}{\mathfrak{z}}
+\paragraph{Simulation in \plonk.}
+The simulator $\simulator$ in $\plonk$ proceeds according to the following steps:
+\begin{description}
+	\item[Round 1]
+	Since the simulator does not know a witness $\wit$ for the proven statement $\inp$, $\simulator$ cannot compute the output of this round accordingly to the protocol. Instead, it picks randomly both the "blinders" $b_1, \ldots, b_6$ and evaluations of polynomials $\p{a}, \p{b}, \p{c}$ by picking their coefficents randomly and outputting $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
+	\item[Round 2]
+	Although the simulator controls fully the random oracle, it takes its permutation argument challenges $\beta, \gamma$.
+	Similarly as in the previous round, the simulator cannot evaluate the requested polynomial $\p{z}$ honestly as it does not know the witness, picks its coefficients randomly and outputs $\gone{\p{z}(\chi)}$.
+	\item[Round 3 and 4]
+	In these rounds $\simulator$ proceeds as an honest prover would using its knowledge of coefficents of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$.
+	More concretely, in Round 3, the simulator outputs an evaluation of the quotient polynomial $t$: $\gone{t_{lo}(\chi), t_{mid}(\chi), t_{hi}(\chi)}$ and in
+	Round 4 it computes the challenge $\chz$ and outputs $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p(z)(\chz \omega), \p{t}(\chz)$ along with evaluations of permutation-related polynomials $\p{S_{\sigma 1}(\chz)}, \p{S_{\sigma 2}(\chz)}$.
+	\item[Round 5]
+	In this round a prover is asked to output values $\gone{W_{\chz}, W_{\chz \omega}}$ assuring that required polynomials' evaluations were computed correctly. The simulator proceeds similarly, however it uses its knowledge of the simulation trapdoor $\chi$ since the evaluations were computed without use of the witness.
+\end{description}
+
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
 
