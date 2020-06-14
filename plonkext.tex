@@ -513,7 +513,18 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 	More concretely, in Round 3, the simulator outputs an evaluation of the quotient polynomial $t$: $\gone{t_{lo}(\chi), t_{mid}(\chi), t_{hi}(\chi)}$ and in
 	Round 4 it computes the challenge $\chz$ and outputs $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p(z)(\chz \omega), \p{t}(\chz)$ along with evaluations of permutation-related polynomials $\p{S_{\sigma 1}(\chz)}, \p{S_{\sigma 2}(\chz)}$.
 	\item[Round 5]
-	In this round a prover is asked to output values $\gone{W_{\chz}, W_{\chz \omega}}$ assuring that required polynomials' evaluations were computed correctly. The simulator proceeds similarly, however it uses its knowledge of the simulation trapdoor $\chi$ since the evaluations were computed without use of the witness.
+	In this round the prover is asked to output values $\gone{W_{\chz}(\chi), W_{\chz \omega}(\chi)}$ assuring that required polynomials' evaluations are computed correctly. The simulator proceeds similarly, however it uses its knowledge of the simulation trapdoor $\chi$ since the evaluations were computed without use of the witness.
+
+	Recall that an honest prover takes $v$ as a challenge and computes $W_{\chz}, W_{\chz \omega}$ as
+	\begin{align}
+		W_{\chz}(X) = \left(
+			\begin{aligned}
+				& (t_{lo}(X) + \chz^\numberofconstrains t_{mid}(X) + \chz^{2\numberofconstrains} t_{hi}(X)) \\
+				+ & v (\p{r}(X) - \p{r}(\chz)) \\
+				+ & v^2 (\p{a}(X) - \p{a}(\chz))
+			\end{aligned}
+		\right)
+	\end{align}
 \end{description}
 
 \bibliographystyle{alpha}
