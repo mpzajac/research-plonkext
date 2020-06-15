@@ -511,7 +511,7 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 	\item[Round 3 and 4]
 	In these rounds $\simulator$ proceeds as an honest prover would using its knowledge of coefficents of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$.
 	More concretely, in Round 3, the simulator outputs an evaluation of the quotient polynomial $\p{t}$: $\gone{\p{t}_{lo}(\chi), \p{t}_{mid}(\chi), \p{t}_{hi}(\chi)}$ and in
-	Round 4 it computes the challenge $\chz$ and outputs $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p(z)(\chz \omega), \p{t}(\chz)$ along with evaluations of permutation-related polynomials $\p{S_{\sigma 1}(\chz)}, \p{S_{\sigma 2}(\chz)}$.
+	Round 4 it computes the challenge $\chz$ and outputs $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{z}(\chz \omega), \p{t}(\chz)$ along with evaluations of permutation-related polynomials $\p{S_{\sigma 1}(\chz)}, \p{S_{\sigma 2}(\chz)}$.
 	\item[Round 5]
 	In this round the prover is asked to output values $\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ assuring that required polynomials' evaluations are computed correctly. The simulator proceeds similarly, however it uses its knowledge of the simulation trapdoor $\chi$ since the evaluations were computed without use of the witness.
 
@@ -546,7 +546,7 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 	\]
 	and gets $u$ as a final challenge (which it does not reply to).\michals{15.06}{It may be better to just say that $u$ is a random picked by the verifier and not put it as an additional challenge.}
 	
-	More precisely, the verifier computes 
+	More precisely, the verifier, following the \plonk{} paper, computes $\gone{D, E, F}$ as follows:
 	$\gone{D} = v \gone{r} + u \gone {z}$ that is
 	\begin{align*}
 		\gone{D} & = v 
@@ -555,20 +555,43 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 			& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
 			& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
 			% &   \\
-			& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}} + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}} + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
+			& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
 		\end{aligned}
 		\right) + \\
-		& + u \gone{\p{z}(\chi)}
+		& + u \gone{\p{z}(\chi)}\,.
 		% \gone{D} & = \p{a}(\chz)\p{b}(\chz)v \cdot \gone{\selmulti} + \p{a}(\chz) v \gone{\selleft} + \p{b} v \gone{\selright} + \p{c} v \gone{\seloutput} + \\
 		% & + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha v + \\
 		% & + \lag_1(\chz) \alpha^2 v + u) \gone{\p{z}(\chi)} + \\
 		% & - (\p{a}(\chz) + \beta \p{S_{\sigma 1}} + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}} + \gamma) \alpha v \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)}
 	\end{align*}
-\begin{align*}
-	\gone{F} & = \gone{\p{t_{lo}}(\chi)} + \chz^\numberofconstrains \gone{\p{t_{mid}}(\chi)} + \chz^{2 \numberofconstrains} \gone{\p{t_{hi}}(\chi)} \\
-	& + \gone{D} +
-	v^2 \gone{\p{a}(\chi)} + v^3 \gone{\p{b}(\chi)} + v^4 \gone{\p{c}(\chi)} + v^5 \gone{\p{S_{\sigma 1}(\chi)}} + v^6 \gone{\p{S_{\sigma 2}}(\chi)}
-\end{align*}
+	Next it computes $\gone{F}$:
+	\begin{align*}
+		\gone{F} & = \left(\gone{\p{t_{lo}}(\chi)} + \chz^\numberofconstrains \gone{\p{t_{mid}}(\chi)} + \chz^{2 \numberofconstrains} \gone{\p{t_{hi}}(\chi)}\right) + u \gone{\p{z}(\chi)} + \\
+		& + v 
+		\left(
+		\begin{aligned}
+			& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
+			& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
+			% &   \\
+			& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
+		\end{aligned}
+		\right) \\ 
+		% & + \gone{D} +
+		& + v^2 \gone{\p{a}(\chi)} + v^3 \gone{\p{b}(\chi)} + v^4 \gone{\p{c}(\chi)} + v^5 \gone{\p{S_{\sigma 1}(\chi)}} + v^6 \gone{\p{S_{\sigma 2}}(\chi)}
+	\end{align*}
+	Folowed by $\gone{E}$:
+	\begin{align*}
+		\gone{E} & = \frac{1}{\p{Z_H}(\chz)}\gone{
+		\begin{aligned}
+			& \p{r}(\chz) + \pubinppoly(\chz) + \\
+			& - \alpha \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}} (\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}} (\chz) + \gamma) (\p{c}(\chz) + \gamma) \p{z}(\chz \omega) \right) + \\
+			& + \alpha^2  \lag_1 (\chz) 
+		\end{aligned}
+		}\\
+		& + \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }
+	\end{align*}
+	
+	Finally the verifier checks whether the verification equation holds:
 \end{description}
 
 \bibliographystyle{alpha}
