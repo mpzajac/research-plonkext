@@ -514,7 +514,10 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 	Round 4 it computes the challenge $\chz$ and outputs $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{z}(\chz \omega), \p{t}(\chz)$ along with evaluations of permutation-related polynomials $\p{S_{\sigma 1}(\chz)}, \p{S_{\sigma 2}(\chz)}$.
 	\item[Round 5]
 	In this round the prover is asked to output values $\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ assuring that required polynomials' evaluations are computed correctly. The simulator proceeds similarly, however it uses its knowledge of the simulation trapdoor $\chi$ since the evaluations were computed without use of the witness.
-
+\end{description}
+	We describe the output of the simulator in Round 5 in more details.
+	Before that it should be explained how the \plonk's verifier works.
+	
 	Recall that an honest prover takes $v$ as a challenge and computes $\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ as
 	\begin{align}
 		& \p{W}_{\chz}(X) = \left(
@@ -592,7 +595,19 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 	\end{align*}
 	
 	Finally the verifier checks whether the verification equation holds:
-\end{description}
+	% \begin{equation}
+		\begin{multline}
+			\left(
+			\gone{\p{W_{\chz}}(\chi)} + u \cdot \gone{\p{W_{\chz \omega}}(\chi)}
+			\right) \bullet 
+			\gtwo{\chi} = \\
+			\left(
+				\chz \cdot \gone{\p{W_{\chz}}(\chi)} + u \chz \omega \cdot \gone{\p{W_{\chz \omega}}(\chi)} + \gone{F} - \gone{E}
+			\right) \bullet
+			\gtwo{1}\,.
+		\end{multline}
+	% \end{equation}
+% \end{description}
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
