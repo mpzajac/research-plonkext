@@ -535,21 +535,40 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 		%\right)
 		\,.
 	\end{align}
-	The simulator computes $\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ such that the verification equation holds and outputs the proof
-	$\zkproof = \left(
-		\begin{aligned}
-			& \gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi), \p{a}(\chi), \p{a}(\chi), }\\
-			%
-		\end{aligned}
-	\right)$ 
-	More precisely the verifier computes 
-	$\gone{D} = v \gone{r} + u \gone {z}$ that is
+	The simulator computes $\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ such that the verification equation holds, outputs the proof
 	\[
-	\gone{D} = 
+	\zkproof = \left(
+		\begin{aligned}
+			& \gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi), \p{a}(\chi), \p{a}(\chi)}\\
+			& \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{r}(\chz), \p{z}(\chz \omega)
+		\end{aligned}
+	\right)
 	\]
-% 	a ̄bv · [qM]1 + a ̄v · [qL]1 + bv · [qR]1 + c ̄v · [qO]1 + v · [qC]1 􏰀 ̄2􏰁
-% [D]1 := + (a ̄+βz+γ)(b+βk1z+γ)(c ̄+βk2z+γ)αv+L1(z)α v+u ·[z]1  ̄
-% −(a ̄+β ̄s +γ)(b+β ̄s +γ)αvβz ̄ [s ] σ1 σ2 ω σ31
+	and gets $u$ as a final challenge (which it does not reply to).\michals{15.06}{It may be better to just say that $u$ is a random picked by the verifier and not put it as an additional challenge.}
+	
+	More precisely, the verifier computes 
+	$\gone{D} = v \gone{r} + u \gone {z}$ that is
+	\begin{align*}
+		\gone{D} & = v 
+		\left(
+		\begin{aligned}
+			& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
+			& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
+			% &   \\
+			& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}} + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}} + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
+		\end{aligned}
+		\right) + \\
+		& + u \gone{\p{z}(\chi)}
+		% \gone{D} & = \p{a}(\chz)\p{b}(\chz)v \cdot \gone{\selmulti} + \p{a}(\chz) v \gone{\selleft} + \p{b} v \gone{\selright} + \p{c} v \gone{\seloutput} + \\
+		% & + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha v + \\
+		% & + \lag_1(\chz) \alpha^2 v + u) \gone{\p{z}(\chi)} + \\
+		% & - (\p{a}(\chz) + \beta \p{S_{\sigma 1}} + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}} + \gamma) \alpha v \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)}
+	\end{align*}
+\begin{align*}
+	\gone{F} & = \gone{\p{t_{lo}}(\chi)} + \chz^\numberofconstrains \gone{\p{t_{mid}}(\chi)} + \chz^{2 \numberofconstrains} \gone{\p{t_{hi}}(\chi)} \\
+	& + \gone{D} +
+	v^2 \gone{\p{a}(\chi)} + v^3 \gone{\p{b}(\chi)} + v^4 \gone{\p{c}(\chi)} + v^5 \gone{\p{S_{\sigma 1}(\chi)}} + v^6 \gone{\p{S_{\sigma 2}}(\chi)}
+\end{align*}
 \end{description}
 
 \bibliographystyle{alpha}
