@@ -510,21 +510,46 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 	Similarly as in the previous round, the simulator cannot evaluate the requested polynomial $\p{z}$ honestly as it does not know the witness, picks its coefficients randomly and outputs $\gone{\p{z}(\chi)}$.
 	\item[Round 3 and 4]
 	In these rounds $\simulator$ proceeds as an honest prover would using its knowledge of coefficents of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$.
-	More concretely, in Round 3, the simulator outputs an evaluation of the quotient polynomial $t$: $\gone{t_{lo}(\chi), t_{mid}(\chi), t_{hi}(\chi)}$ and in
+	More concretely, in Round 3, the simulator outputs an evaluation of the quotient polynomial $\p{t}$: $\gone{\p{t}_{lo}(\chi), \p{t}_{mid}(\chi), \p{t}_{hi}(\chi)}$ and in
 	Round 4 it computes the challenge $\chz$ and outputs $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p(z)(\chz \omega), \p{t}(\chz)$ along with evaluations of permutation-related polynomials $\p{S_{\sigma 1}(\chz)}, \p{S_{\sigma 2}(\chz)}$.
 	\item[Round 5]
-	In this round the prover is asked to output values $\gone{W_{\chz}(\chi), W_{\chz \omega}(\chi)}$ assuring that required polynomials' evaluations are computed correctly. The simulator proceeds similarly, however it uses its knowledge of the simulation trapdoor $\chi$ since the evaluations were computed without use of the witness.
+	In this round the prover is asked to output values $\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ assuring that required polynomials' evaluations are computed correctly. The simulator proceeds similarly, however it uses its knowledge of the simulation trapdoor $\chi$ since the evaluations were computed without use of the witness.
 
-	Recall that an honest prover takes $v$ as a challenge and computes $W_{\chz}, W_{\chz \omega}$ as
+	Recall that an honest prover takes $v$ as a challenge and computes $\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ as
 	\begin{align}
-		W_{\chz}(X) = \left(
+		& \p{W}_{\chz}(X) = \left(
 			\begin{aligned}
-				& (t_{lo}(X) + \chz^\numberofconstrains t_{mid}(X) + \chz^{2\numberofconstrains} t_{hi}(X)) \\
+				& (\p{t}_{lo}(X) + \chz^\numberofconstrains \p{t}_{mid}(X) + \chz^{2\numberofconstrains} \p{t}_{hi}(X)) \\
 				+ & v (\p{r}(X) - \p{r}(\chz)) \\
-				+ & v^2 (\p{a}(X) - \p{a}(\chz))
+				+ & v^2 (\p{a}(X) - \p{a}(\chz)) \\
+				+ & v^3 (\p{b}(X) - \p{b}(\chz)) \\
+				+ & v^4 (\p{c}(X) - \p{c}(\chz)) \\
+				+ & v^5 (\p{S_{\sigma 1}}(X) - \p{S_{\sigma 1}}(\chz)) \\
+				+ & v^6 (\p{S_{\sigma 2}}(X) - \p{S_{\sigma 2}}(\chz))
 			\end{aligned}
-		\right)
+		\right)\,,\\
+		& \p{W}_{\chz \omega}(X) =  %\left(
+			\begin{aligned}
+				\frac{\p{z}(X) - \p{z}(\chz \omega)}{X - \chz \omega}
+			\end{aligned}
+		%\right)
+		\,.
 	\end{align}
+	The simulator computes $\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ such that the verification equation holds and outputs the proof
+	$\zkproof = \left(
+		\begin{aligned}
+			& \gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi), \p{a}(\chi), \p{a}(\chi), }\\
+			%
+		\end{aligned}
+	\right)$ 
+	More precisely the verifier computes 
+	$\gone{D} = v \gone{r} + u \gone {z}$ that is
+	\[
+	\gone{D} = 
+	\]
+% 	a ̄bv · [qM]1 + a ̄v · [qL]1 + bv · [qR]1 + c ̄v · [qO]1 + v · [qC]1 􏰀 ̄2􏰁
+% [D]1 := + (a ̄+βz+γ)(b+βk1z+γ)(c ̄+βk2z+γ)αv+L1(z)α v+u ·[z]1  ̄
+% −(a ̄+β ̄s +γ)(b+β ̄s +γ)αvβz ̄ [s ] σ1 σ2 ω σ31
 \end{description}
 
 \bibliographystyle{alpha}
