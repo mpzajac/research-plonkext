@@ -505,7 +505,7 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 \begin{description}
 	\item[Round 1]
 	Since the simulator does not know a witness $\wit$ for the proven statement $\inp$, $\simulator$ cannot compute the output of this round accordingly to the protocol. Instead, it picks randomly both the "blinders" $b_1, \ldots, b_6$ and evaluations of polynomials $\p{a}, \p{b}, \p{c}$ by picking their coefficents randomly and outputting $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
-	To ensure deterministic nature of the simulation from now on, the simulator also picks value $w$ which later will be output as $\p{W}_\chz(\chi)$ and determine the value of $\p{W}_{\chz \omaga}(\chi)$.
+	To ensure deterministic nature of the simulation from now on, the simulator also picks value $w$ which later will be output as $\p{W}_\chz(\chi)$ and determine the value of $\p{W}_{\chz \omega}(\chi)$.
 	\item[Round 2]
 	Although the simulator controls fully the random oracle, it takes its permutation argument challenges $\beta, \gamma$.
 	Similarly as in the previous round, the simulator cannot evaluate the requested polynomial $\p{z}$ honestly as it does not know the witness, picks its coefficients randomly and outputs $\gone{\p{z}(\chi)}$.
@@ -518,7 +518,7 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 \end{description}
 	We describe the output of the simulator in Round 5 in more details.
 	Before that it should be explained how the \plonk's verifier works.
-	
+
 	Recall that an honest prover takes $v$ as a challenge and computes $\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ as
 	\begin{align}
 		& \p{W}_{\chz}(X) = \frac{1} {X - \chz} \left(
@@ -549,11 +549,11 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 	\right)
 	\]
 	and gets $u$ as a final challenge (which it does not reply to).\michals{15.06}{It may be better to just say that $u$ is a random picked by the verifier and not put it as an additional challenge.}
-	
+
 	More precisely, the verifier, following the \plonk{} paper, computes $\gone{D, E, F}$ as follows:
 	$\gone{D} = v \gone{r} + u \gone {z}$ that is
 	\begin{align*}
-		\gone{D} & = v 
+		\gone{D} & = v
 		\left(
 		\begin{aligned}
 			& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
@@ -571,7 +571,7 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 	Next it computes $\gone{F}$:
 	\begin{align*}
 		\gone{F} & = \left(\gone{\p{t_{lo}}(\chi)} + \chz^\numberofconstrains \gone{\p{t_{mid}}(\chi)} + \chz^{2 \numberofconstrains} \gone{\p{t_{hi}}(\chi)}\right) + u \gone{\p{z}(\chi)} + \\
-		& + v 
+		& + v
 		\left(
 		\begin{aligned}
 			& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
@@ -579,7 +579,7 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 			% &   \\
 			& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
 		\end{aligned}
-		\right) \\ 
+		\right) \\
 		% & + \gone{D} +
 		& + v^2 \gone{\p{a}(\chi)} + v^3 \gone{\p{b}(\chi)} + v^4 \gone{\p{c}(\chi)} + v^5 \gone{\p{S_{\sigma 1}(\chi)}} + v^6 \gone{\p{S_{\sigma 2}}(\chi)}
 	\end{align*}
@@ -589,26 +589,26 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 		\begin{aligned}
 			& \p{r}(\chz) + \pubinppoly(\chz) + \\
 			& - \alpha \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}} (\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}} (\chz) + \gamma) (\p{c}(\chz) + \gamma) \p{z}(\chz \omega) \right) + \\
-			& + \alpha^2  \lag_1 (\chz) 
+			& + \alpha^2  \lag_1 (\chz)
 		\end{aligned}
 		}\\
 		 + & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }
 	\end{align*}
-	
+
 	Finally, the verifier checks whether the verification equation holds:
 		\begin{multline}
 			\label{eq:ver_eq}
 			\left(
 			\gone{\p{W_{\chz}}(\chi)} + u \cdot \gone{\p{W_{\chz \omega}}(\chi)}
-			\right) \bullet 
+			\right) \bullet
 			\gtwo{\chi} = \\
 			\left(
-				\chz \cdot \gone{\p{W_{\chz}}(\chi)} + u \chz \omega \cdot \gone{\p{W_{\chz \omega}}(\chi)} + \gone{F} - \gone{E} 
+				\chz \cdot \gone{\p{W_{\chz}}(\chi)} + u \chz \omega \cdot \gone{\p{W_{\chz \omega}}(\chi)} + \gone{F} - \gone{E}
 			\right) \bullet
 			\gtwo{1}\,.
 		\end{multline}
 	The verification equation is a batched version of the verification equation from \cite{AC:KatZavGol10} which allows the verifier to check openings of multiple polynomials in two points (instead of checking an opening of a single polynomial at one point).
-	
+
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
