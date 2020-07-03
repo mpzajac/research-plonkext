@@ -421,6 +421,38 @@ By expanding \cref{def:wiur} on interactive proof systems in the CRS model, we g
 	is negligible in $\secpar$.
 \end{definition}
 
+\paragraph{Simulatability of proofs.}
+We note that in the standard model protocols the simulator does not require any additional power like knowledge of a CRS trapdoor or programmability of the random oracle. This implies that every adversary can produce a simulated proof by its own.  
+On the other hand, we have CRS-based zk-proofs where knowledge of trapdoor is required to make an simulated proof. 
+
+Given a multi-round Fiat--Shamir-transformed protocol which simulation utilises trapdoor we can ask another question -- how many rounds---from the beginning of the protocol---can be simulated by the adversary unless the trapdoor is required? Note that to answer this question we shall quantify over all possible simulators. That would not be a problem though in the setting we consider.
+
+\begin{definition}[$k$-out-of-$n$ simulatable proof system]
+	Let $\proofsystem = (\kgen, \prover, \verifier)$ for $\RELGEN$ be a $n$-round interactive proof. Let $(\inp, a_0, b_0, \ldots, b_{n - 2}, a_{n - 1})$ be a proof for a statement $\inp$ where $a_i$-s, $i \in \range{0}{n - 1}$ are messages send by the prover and $b_i$-s, $i \in \range{0}{n - 2}$ by the verifier. 
+	Similarly we denote by $(\inp, a^{\simulator}_0, b^{\simulator}_0, \ldots, b^{\simulator}_{n - 2}, a^{\simulator}_{n - 1})$ a proof output by the simulator $\simulator$.
+	We say that $\proofsystem$ is \emph{$k$-out-of-$n$ simulatable} if for  $\REL \in \image{\RELGEN(\secparam)}$ and simulator $\simulator$ there exists a $\ppt$ adversary $\adv = (\adv_0, \adv_1)$ can produce a proof $(\inp, a_0, b_0, \ldots, b_{n - 2}, a_{n - 1})$ such that 
+	\begin{multline*}
+		\left\{(\inp, a_0, b_0, \ldots, b_{k - 1}, a_{k}) \gets \adv_1(\REL ,\crs) \,\left\vert\, 
+		\begin{aligned}
+			 & (\crs, \td) \gets \kgen(\REL) \\
+			 & \inp \gets \adv_0(\REL, \crs)
+		\end{aligned}
+		\right.
+		\right\} \approx_\secpar \\
+		\left\{(\inp, a_0, b_0, \ldots, b_{k - 1}, a_{k}) \gets \simulator(\REL, \crs, \td) \,\left\vert\, 
+		\begin{aligned}
+			 & (\crs, \td) \gets \kgen(\REL) \\
+			 & \inp \gets \adv_0(\REL, \crs)
+		\end{aligned}
+		\right.
+		\right\}\,.
+	\end{multline*}
+	\michals{3.07.20}{Note that $\inp$ doesn't need to be in the language!}
+\end{definition}
+
+This definition will have consequences later on as in a $k$-out-of-$n$ simulatable proof system learning first $2k - 1$ messages of the simulated proof gives the adversary no additional power as it could compute these messages by its own.
+\michals{03.07}{a proof for that statement would be nice.}
+
 \paragraph
 {Simulation extractability from unique responses and witness-extended emulation.}
 We can now present two proofs for the Fiat--Shamir transform simulation extractability, one for the standard---weaker---version of the unique response property, one for the stronger.
@@ -505,7 +537,7 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 \begin{description}
 	\item[Round 1]
 	Since the simulator does not know a witness $\wit$ for the proven statement $\inp$, $\simulator$ cannot compute the output of this round accordingly to the protocol. Instead, it picks randomly both the "blinders" $b_1, \ldots, b_6$ and evaluations of polynomials $\p{a}, \p{b}, \p{c}$ by picking their coefficents randomly and outputting $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
-	To ensure deterministic nature of the simulation from now on, the simulator also picks value $w$ which later will be output as $\p{W}_\chz(\chi)$ and determine the value of $\p{W}_{\chz \omaga}(\chi)$.
+	To ensure deterministic nature of the simulation from now on, the simulator also picks value $w$ which later will be output as $\p{W}_\chz(\chi)$ and determine the value of $\p{W}_{\chz \omega}(\chi)$.
 	\item[Round 2]
 	Although the simulator controls fully the random oracle, it takes its permutation argument challenges $\beta, \gamma$.
 	Similarly as in the previous round, the simulator cannot evaluate the requested polynomial $\p{z}$ honestly as it does not know the witness, picks its coefficients randomly and outputs $\gone{\p{z}(\chi)}$.
