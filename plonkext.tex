@@ -379,7 +379,9 @@ We walk around these obstacles by providing two generalized notions of the uniqu
 More precisely, we say that a $(2\mu + 1)$-round protocol has \emph{weak unique responses after $i$} and is called a weakly-$\ur{i}$-protocol if
 \begin{definition}[Weakly $\ur{i}$-protocol]
 	\label{def:wiur}
-	Let $\proofsystem = (\prover, \verifier, \simulator_\zkproof)$ be a standard-model interactive proof system. Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier. We say that $\proofsystem$ has \emph{unique responses after $i$} if for any PPT adversary $\adv$ probability
+	Let $\proofsystem = (\prover, \verifier, \simulator_\zkproof)$ be a standard-model interactive proof system. 
+	Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier. 
+	We say that $\proofsystem$ has \emph{unique responses after $i$} if for any PPT adversary $\adv$ probability
 	\[
 		\condprob{
 		\begin{aligned}
@@ -428,9 +430,9 @@ On the other hand, we have CRS-based zk-proofs where knowledge of trapdoor is re
 Given a multi-round Fiat--Shamir-transformed protocol which simulation utilises trapdoor we can ask another question -- how many rounds---from the beginning of the protocol---can be simulated by the adversary unless the trapdoor is required? Note that to answer this question we shall quantify over all possible simulators. That would not be a problem though in the setting we consider.
 
 \begin{definition}[$k$-out-of-$n$ simulatable proof system]
-	Let $\proofsystem = (\kgen, \prover, \verifier)$ for $\RELGEN$ be a $n$-round interactive proof. Let $(\inp, a_0, b_0, \ldots, b_{n - 2}, a_{n - 1})$ be a proof for a statement $\inp$ where $a_i$-s, $i \in \range{0}{n - 1}$ are messages send by the prover and $b_i$-s, $i \in \range{0}{n - 2}$ by the verifier. 
+	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ be a $n$-round interactive proof. Let $(\inp, a_0, b_0, \ldots, b_{n - 2}, a_{n - 1})$ be a proof for a statement $\inp$ where $a_i$-s, $i \in \range{0}{n - 1}$ are messages send by the prover and $b_i$-s, $i \in \range{0}{n - 2}$ by the verifier. 
 	Similarly we denote by $(\inp, a^{\simulator}_0, b^{\simulator}_0, \ldots, b^{\simulator}_{n - 2}, a^{\simulator}_{n - 1})$ a proof output by the simulator $\simulator$.
-	We say that $\proofsystem$ is \emph{$k$-out-of-$n$ simulatable} if for  $\REL \in \image{\RELGEN(\secparam)}$ and simulator $\simulator$ there exists a $\ppt$ adversary $\adv = (\adv_0, \adv_1)$ can produce a proof $(\inp, a_0, b_0, \ldots, b_{n - 2}, a_{n - 1})$ such that 
+	We say that $\proofsystem$ is \emph{$k$-out-of-$n$ simulatable} if for  $\REL \in \image{\RELGEN(\secparam)}$ there exists a $\ppt$ adversary $\adv = (\adv_0, \adv_1)$ can produce a proof $(\inp, a_0, b_0, \ldots, b_{n - 2}, a_{n - 1})$ such that 
 	\begin{multline*}
 		\left\{(\inp, a_0, b_0, \ldots, b_{k - 1}, a_{k}) \gets \adv_1(\REL ,\crs) \,\left\vert\, 
 		\begin{aligned}
@@ -495,7 +497,6 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 \begin{theorem}[Simulation extractability of the Fiat--Shamir transform III]
 	\label{thm:wit_ext_em_FS_III}
 	Let $\proofsystem = (\prover, \verifier, \simulator)$ be an interactive strongly-$\ur{i}$ protocol for a relation $\REL$
-	\michals{10.06}{Here, new version of \emph{strongly}-$\ur{i}$ protocol -- even unbounded adversary cannot provide two valid proofs that differ after $i$}.
 	Assume there exists an extractor $\ext$ that extracts the witness from a $(1, \ldots, 1, n_{i + 1}, \ldots, n_\mu)$-tree of accepting transcripts of $\proofsystem$.
 	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model if $N =\prod_{j = i}^\mu = \poly$.
 	% Furthermore the extractor $\ext_\fs$ for $\proofsystem_\fs$ needs to run $\simulator$ $N$ times.
