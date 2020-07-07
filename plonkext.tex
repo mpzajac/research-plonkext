@@ -376,50 +376,16 @@ Even if we directly consider a protocol transformed by the Fiat--Shamir transfor
 Last but not least, the protocol we consider here most, \plonk, is not in a standard-model, but utilises CRS. That also complicates things considerably.
 
 We walk around these obstacles by providing two generalized notions of the unique response property, one dubbed \emph{weak} and another \emph{strong}.
-More precisely, we say that a $(2\mu + 1)$-round protocol has \emph{weak unique responses after $i$} and is called a weakly-$\ur{i}$-protocol if
-\begin{definition}[Weakly $\ur{i}$-protocol]
+More precisely, we say that a $(2\mu + 1)$-round protocol has \emph{unique responses after $i$} and is called a $\ur{i}$-protocol if
+\begin{definition}[$\ur{i}$-protocol]
 	\label{def:wiur}
-	Let $\proofsystem = (\prover, \verifier, \simulator_\zkproof)$ be a standard-model interactive proof system. Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier. We say that $\proofsystem$ has \emph{unique responses after $i$} if for any PPT adversary $\adv$ probability
-	\[
-		\condprob{
-		\begin{aligned}
-			& \verifier(\REL, \crs, (a_0, \ldots, a_{i + 1}, \ldots, a_{\mu})) = 1 \, , \\
-			& \verifier(\REL, \crs, (a_0, \ldots, a'_{i + 1} \ldots, a'_{\mu})) = 1
-		\end{aligned}
-		}
-		{
-		\begin{aligned}
-			% & \crs \gets \kcrs(\REL), \\
-			& (a_0, b_0, \ldots, a'_{i + 1}, b'_{i + 1}, \ldots, a'_{\mu}) \gets \adv(\REL, \crs),\\
-			& (a_{i + 1}, b_{i + 1}, \ldots, a_{\mu}) \neq (a'_{i + 1}, b'_{i + 1}, \ldots, a'_{\mu})
-		\end{aligned}
-		}
-	\]
-	is negligible in $\secpar$.
+	Let $\proofsystem$ be a multi-round proof system. 
+	Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier. 
+	We say that $\proofsystem$ has \emph{unique responses after $i$}
+	if after submitting his $i$-th message the prover is a deterministic function. That is, it does not use his randomness tape and deterministically answers verifier's challenges.
 \end{definition}
-
-By expanding \cref{def:wiur} on interactive proof systems in the CRS model, we get the definition of \emph{strongly $\ur{i}$-protocol} as defined below.
-
-\begin{definition}[Strongly $\ur{i}$-protocol]
-	\label{def:siur}
-	Let $\proofsystem = (\prover, \verifier, \simulator_\crs, \simulator_\zkproof)$ be an interactive proof system. Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier. We say that $\proofsystem$ has \emph{unique responses after $i$} if for any PPT adversary $\adv$ probability
-	\[
-		\condprob{
-		\begin{aligned}
-			& \verifier(\REL, \crs, (a_0, \ldots, a_{i + 1}, \ldots, a_{\mu})) = 1, \, \\
-			& \verifier(\REL, \crs, (a_0, \ldots, a'_{i + 1} \ldots, a'_{\mu})) = 1
-		\end{aligned}
-		}
-		{
-		\begin{aligned}
-			% & \crs \gets \kcrs(\REL), \\
-			& (a_0, b_0, \ldots, a'_{i + 1}, b'_{i + 1}, \ldots, a'_{\mu}) \gets \adv(\REL, \crs),\\
-			& (a_{i + 1}, b_{i + 1}, \ldots, a_{\mu}) \neq (a'_{i + 1}, b'_{i + 1}, \ldots, a'_{\mu})
-		\end{aligned}
-		}
-	\]
-	is negligible in $\secpar$.
-\end{definition}
+We note that the definition above is independent on whether the proof system $\proofsystem$ utilises CRS (and compounds of the CRS-generating $\kgen$ algorithm) or not.
+% Furthermore it is also blind whether $\proofsystem$ is interactive or not. 
 
 \paragraph{Simulatability of proofs.}
 We note that in the standard model protocols the simulator does not require any additional power like knowledge of a CRS trapdoor or programmability of the random oracle. This implies that every adversary can produce a simulated proof by its own.  
@@ -428,9 +394,9 @@ On the other hand, we have CRS-based zk-proofs where knowledge of trapdoor is re
 Given a multi-round Fiat--Shamir-transformed protocol which simulation utilises trapdoor we can ask another question -- how many rounds---from the beginning of the protocol---can be simulated by the adversary unless the trapdoor is required? Note that to answer this question we shall quantify over all possible simulators. That would not be a problem though in the setting we consider.
 
 \begin{definition}[$k$-out-of-$n$ simulatable proof system]
-	Let $\proofsystem = (\kgen, \prover, \verifier)$ for $\RELGEN$ be a $n$-round interactive proof. Let $(\inp, a_0, b_0, \ldots, b_{n - 2}, a_{n - 1})$ be a proof for a statement $\inp$ where $a_i$-s, $i \in \range{0}{n - 1}$ are messages send by the prover and $b_i$-s, $i \in \range{0}{n - 2}$ by the verifier. 
+	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ be a $n$-round interactive proof. Let $(\inp, a_0, b_0, \ldots, b_{n - 2}, a_{n - 1})$ be a proof for a statement $\inp$ where $a_i$-s, $i \in \range{0}{n - 1}$ are messages send by the prover and $b_i$-s, $i \in \range{0}{n - 2}$ by the verifier. 
 	Similarly we denote by $(\inp, a^{\simulator}_0, b^{\simulator}_0, \ldots, b^{\simulator}_{n - 2}, a^{\simulator}_{n - 1})$ a proof output by the simulator $\simulator$.
-	We say that $\proofsystem$ is \emph{$k$-out-of-$n$ simulatable} if for  $\REL \in \image{\RELGEN(\secparam)}$ and simulator $\simulator$ there exists a $\ppt$ adversary $\adv = (\adv_0, \adv_1)$ can produce a proof $(\inp, a_0, b_0, \ldots, b_{n - 2}, a_{n - 1})$ such that 
+	We say that $\proofsystem$ is \emph{$k$-out-of-$n$ simulatable} if for  $\REL \in \image{\RELGEN(\secparam)}$ there exists a $\ppt$ adversary $\adv = (\adv_0, \adv_1)$ can produce a proof $(\inp, a_0, b_0, \ldots, b_{n - 2}, a_{n - 1})$ such that 
 	\begin{multline*}
 		\left\{(\inp, a_0, b_0, \ldots, b_{k - 1}, a_{k}) \gets \adv_1(\REL ,\crs) \,\left\vert\, 
 		\begin{aligned}
@@ -461,41 +427,29 @@ In the former, we assume that the underlying interactive proof system is in the 
 Although we believe that this result may be of independent interest, it is not enough in our case, it is not enough to show simulation extractability of \plonk.
 This is since we show our result by contradiction and build an adversary $\bdv$ that breaks the unique response property using an adversary $\adv$ that breaks simulation extractability. Thus, to make the reduction hold we need to allow $\bdv$ to make simulated proofs for $\adv$.
 
-To make the result useful in the context of CRS-model zkSNARKs like \plonk, we need to rely on a stronger version of the unique response property presented in \cref{def:siur} to allow the unique-response-property adversary to learn the simulated proofs as well.
+To make the result useful in the context of CRS-model zkSNARKs like \plonk, we need to rely on a stronger version of the unique response property presented in \cref{def:wiur} to allow the unique-response-property adversary to learn the simulated proofs as well.
 
-\begin{theorem}[Simulation extractability of the Fiat--Shamir transform II]
-	\label{thm:wit_ext_em_FS}
-	Let $\proofsystem = (\prover, \verifier, \simulator_\zkproof)$ be a standard-model interactive $\ur{i}$-protocol for a relation $\REL$.
-	Assume there exists an extractor $\ext$ that extracts the witness from a $(1, \ldots, 1, n_{i + 1}, \ldots, n_\mu)$-tree of accepting transcripts.
-	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model if $N =\prod_{j = i}^\mu = \poly$.
-	Furthermore the extractor $\ext_\fs$ for $\proofsystem_\fs$ needs to run $(\simulator_\ro, \simulator_\zkproof)$ $N$ times.
-\end{theorem}
-\begin{proof}
-	The proof goes by contradiction. Similarly to \cite{INDOCRYPT:FKMV12}
-	let us assume that there is an adversary $\adv_{\se}$ that breaks simulation extractability with a non-negligible probability $\eta$. We use $\adv_\se$ to build two adversaries $\bdv_\ur{i}$ and $\bdv_\snd$ such that when $\adv_\se$ is successful then either $\bdv_\ur{i}$ breaks unique responses after $i$ property or $\bdv_\snd$ breaks soundness.
-
-	Denote by $\zkproof = (a_1, \ldots, a_\mu)$ the accepting proof for some instance $\inp$ output by $\adv_\se(\REL; r)$. We assume that $(\inp, \zkproof)$ are not on the list $Q$ and the extractor $\ext_{\adv_\se}(\REL, \inp, \zkproof; r)$ fails to output $\wit$ such that $\REL(\inp, \wit)$.
-	Denote by $\vec{a_0} = (a_1, \ldots, a_i)$ and by $\vec{a_1} = (a_{i + 1}, \ldots, a_\mu)$.
-	Let $\event{E}$ be an event that $\vec{a_0}$ comes from a proof simulated by $\simulator$ and let
-	\michals{10.06}{I am not sure this line of proof could work. The problem is that we cannot build a simple reduction that breaks the soundness of $\proofsystem$ as that would require $\adv_\se$ not to ask about the simulated proofs (which cannot be delivered by $\bdv_\snd$ as he cannot produce them).}
-\end{proof}
-%
+% \begin{theorem}[Simulation extractability of the Fiat--Shamir transform II]
+% 	\label{thm:wit_ext_em_FS}
+% 	Let $\proofsystem = (\prover, \verifier, \simulator_\zkproof)$ be a standard-model interactive $\ur{i}$-protocol for a relation $\REL$.
+% 	Assume there exists an extractor $\ext$ that extracts the witness from a $(1, \ldots, 1, n_{i + 1}, \ldots, n_\mu)$-tree of accepting transcripts.
+% 	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model if $N =\prod_{j = i}^\mu = \poly$.
+% 	Furthermore the extractor $\ext_\fs$ for $\proofsystem_\fs$ needs to run $(\simulator_\ro, \simulator_\zkproof)$ $N$ times.
+% \end{theorem}
 % \begin{proof}
-%Commenting old proof
-% 	Let $\adv^{\simulator_{\ro}, \simulator_\zkproof}$ produces for an instance $\inp$ an acceptable proof $\zkproof_\fs = (a_0, \ldots, a_{i + 1}, \ldots, a_\mu)$ that is not in the list $Q$.
-% 	Because of the $\ur{i}$ property, $(\inp, a_0, b_0, \ldots, a_{i})$ must be a fresh query to the random oracle $\ro$. (Otherwise the rest of the proof is uniquely determined and the proof was already recorded in $Q$.)
-% 	We now consider $\prod_{j = i}^\mu n_j$ runs of the adversary that differ by picking at random random oracle outputs on $a_{i + 1}, \ldots, a_\mu$. That is, the runs differ by the different randomness provided by $\simulator_\crs$. Assume that all such runs produce an acceptable transcript. Probability of such event is non-negligible over the choice of adversary's and simulator $\simulator_\crs$ randomness.
-% 	By \cref{lem:bootle_forking_lemma} there exists an extractor $\ext$ that provided $N$ transcripts extracts witness $\wit$. Thus $\zkproof_\fs$ is simulation extractable.
-% 	\task{8.06}{Write the full reduction for unique responses for PPT adversaries, not strict ur.}
+% 	The proof goes by contradiction. Similarly to \cite{INDOCRYPT:FKMV12}
+% 	let us assume that there is an adversary $\adv_{\se}$ that breaks simulation extractability with a non-negligible probability $\eta$. We use $\adv_\se$ to build two adversaries $\bdv_\ur{i}$ and $\bdv_\snd$ such that when $\adv_\se$ is successful then either $\bdv_\ur{i}$ breaks unique responses after $i$ property or $\bdv_\snd$ breaks soundness.
+% 
+% 	Denote by $\zkproof = (a_1, \ldots, a_\mu)$ the accepting proof for some instance $\inp$ output by $\adv_\se(\REL; r)$. We assume that $(\inp, \zkproof)$ are not on the list $Q$ and the extractor $\ext_{\adv_\se}(\REL, \inp, \zkproof; r)$ fails to output $\wit$ such that $\REL(\inp, \wit)$.
+% 	Denote by $\vec{a_0} = (a_1, \ldots, a_i)$ and by $\vec{a_1} = (a_{i + 1}, \ldots, a_\mu)$.
+% 	Let $\event{E}$ be an event that $\vec{a_0}$ comes from a proof simulated by $\simulator$ and let
+% 	\michals{10.06}{I am not sure this line of proof could work. The problem is that we cannot build a simple reduction that breaks the soundness of $\proofsystem$ as that would require $\adv_\se$ not to ask about the simulated proofs (which cannot be delivered by $\bdv_\snd$ as he cannot produce them).}
 % \end{proof}
 
-%
-% Faust et al.~\cite{INDOCRYPT:FKMV12} shown that a special-sound $\Sigma$-protocol that is also $\ur{1}$
-
 \begin{theorem}[Simulation extractability of the Fiat--Shamir transform III]
+	\michals{03.07}{The label of this theorem will probably be changed to II (from III)}
 	\label{thm:wit_ext_em_FS_III}
-	Let $\proofsystem = (\prover, \verifier, \simulator)$ be an interactive strongly-$\ur{i}$ protocol for a relation $\REL$
-	\michals{10.06}{Here, new version of \emph{strongly}-$\ur{i}$ protocol -- even unbounded adversary cannot provide two valid proofs that differ after $i$}.
+	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an interactive $\ur{i}$ protocol for a relation $\REL$.
 	Assume there exists an extractor $\ext$ that extracts the witness from a $(1, \ldots, 1, n_{i + 1}, \ldots, n_\mu)$-tree of accepting transcripts of $\proofsystem$.
 	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model if $N =\prod_{j = i}^\mu = \poly$.
 	% Furthermore the extractor $\ext_\fs$ for $\proofsystem_\fs$ needs to run $\simulator$ $N$ times.
