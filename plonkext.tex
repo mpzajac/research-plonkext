@@ -391,6 +391,10 @@ We note that the definition above is independent on whether the proof system $\p
 % Furthermore it is also blind whether $\proofsystem$ is interactive or not. 
 \michals{08.07.20}{Should we change it to "deterministic prover property"?}
 
+\paragraph{Unique responses and extractability.}
+The key observations that will be used in our simulation-extractability proof is following: if a $\mu$-round protocol has deterministic prover from the $i$-th round on and it has witness-extended emulation from a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts, where $n_1 = \ldots = n_{i - 1} = 1$ and $\prod_{i = 1}^\mu n_\mu \leq \poly$, then the $\fs$-transformed version of the protocol is simulation-extractable.
+
+
 \paragraph{Simulatability of proofs.}
 \michals{08.07.20}{Actually, I am not sure that this property is required anymore}
 We note that in the standard model protocols the simulator does not require any additional power like knowledge of a CRS trapdoor or programmability of the random oracle. This implies that every adversary can produce a simulated proof by its own.  
@@ -434,23 +438,6 @@ Although we believe that this result may be of independent interest, it is not e
 This is since we show our result by contradiction and build an adversary $\bdv$ that breaks the unique response property using an adversary $\adv$ that breaks simulation extractability. Thus, to make the reduction hold we need to allow $\bdv$ to make simulated proofs for $\adv$.
 
 To make the result useful in the context of CRS-model zkSNARKs like \plonk, we need to rely on a stronger version of the unique response property presented in \cref{def:wiur} to allow the unique-response-property adversary to learn the simulated proofs as well.
-
-% \begin{theorem}[Simulation extractability of the Fiat--Shamir transform II]
-% 	\label{thm:wit_ext_em_FS}
-% 	Let $\proofsystem = (\prover, \verifier, \simulator_\zkproof)$ be a standard-model interactive $\ur{i}$-protocol for a relation $\REL$.
-% 	Assume there exists an extractor $\ext$ that extracts the witness from a $(1, \ldots, 1, n_{i + 1}, \ldots, n_\mu)$-tree of accepting transcripts.
-% 	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model if $N =\prod_{j = i}^\mu = \poly$.
-% 	Furthermore the extractor $\ext_\fs$ for $\proofsystem_\fs$ needs to run $(\simulator_\ro, \simulator_\zkproof)$ $N$ times.
-% \end{theorem}
-% \begin{proof}
-% 	The proof goes by contradiction. Similarly to \cite{INDOCRYPT:FKMV12}
-% 	let us assume that there is an adversary $\adv_{\se}$ that breaks simulation extractability with a non-negligible probability $\eta$. We use $\adv_\se$ to build two adversaries $\bdv_\ur{i}$ and $\bdv_\snd$ such that when $\adv_\se$ is successful then either $\bdv_\ur{i}$ breaks unique responses after $i$ property or $\bdv_\snd$ breaks soundness.
-% 
-% 	Denote by $\zkproof = (a_1, \ldots, a_\mu)$ the accepting proof for some instance $\inp$ output by $\adv_\se(\REL; r)$. We assume that $(\inp, \zkproof)$ are not on the list $Q$ and the extractor $\ext_{\adv_\se}(\REL, \inp, \zkproof; r)$ fails to output $\wit$ such that $\REL(\inp, \wit)$.
-% 	Denote by $\vec{a_0} = (a_1, \ldots, a_i)$ and by $\vec{a_1} = (a_{i + 1}, \ldots, a_\mu)$.
-% 	Let $\event{E}$ be an event that $\vec{a_0}$ comes from a proof simulated by $\simulator$ and let
-% 	\michals{10.06}{I am not sure this line of proof could work. The problem is that we cannot build a simple reduction that breaks the soundness of $\proofsystem$ as that would require $\adv_\se$ not to ask about the simulated proofs (which cannot be delivered by $\bdv_\snd$ as he cannot produce them).}
-% \end{proof}
 
 \begin{theorem}[Simulation extractability of the Fiat--Shamir transform III]
 	\michals{03.07}{The label of this theorem will probably be changed to II (from III)}
