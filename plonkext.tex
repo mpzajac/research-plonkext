@@ -392,8 +392,10 @@ We note that the definition above is independent on whether the proof system $\p
 \michals{08.07.20}{Should we change it to "deterministic prover property"?}
 
 \paragraph{Unique responses and extractability.}
-The key observations that will be used in our simulation-extractability proof is following: if a $\mu$-round protocol has deterministic prover from the $i$-th round on and it has witness-extended emulation from a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts, where $n_1 = \ldots = n_{i - 1} = 1$ and $\prod_{i = 1}^\mu n_\mu \leq \poly$, then the $\fs$-transformed version of the protocol is simulation-extractable.
+The key observations that will be used in our simulation-extractability proof is following: if a $\mu$-round protocol $\proofsystem$ has deterministic prover from the $i$-th round on and it has witness-extended emulation from a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts, where $n_1 = \ldots = n_{i - 1} = 1$ and $\prod_{i = 1}^\mu n_\mu \leq \poly$, then the $\fs$-transformed version of the protocol $\proofsystem_\fs$ is simulation-extractable.
 
+Furthermore, if $\proofsystem$ has a deterministic prover from round $i$ on, but not in round $i - 1$ and it has witness-extended emulation only from $(1, \ldots, n_{i - 1}, \ldots, n_\mu)$-trees of accepting transcripts such that $n_{i - 1} \neq 1$, then $\proofsystem_\fs$ is not simulation-extractable.
+\michals{08.07}{Continue} 
 
 \paragraph{Simulatability of proofs.}
 \michals{08.07.20}{Actually, I am not sure that this property is required anymore}
@@ -593,6 +595,7 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
 
 \appendix
+\noindent{\Huge{\bf THIS IS NOT APPENDIX. \\THIS IS GRAVEYARD.}}
 \section{$\plonk$ protocol rolled-out}
 
 \section{Old subsections}
