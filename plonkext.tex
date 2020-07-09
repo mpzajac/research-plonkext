@@ -589,7 +589,7 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	\zkproof = \left(
 		\begin{aligned}
 			& \gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi), \p{W_\chz}(\chi), \p{W_{\chz \omega}}(\chi)}\\
-			& \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{r}(\chz), \p{z}(\chz \omega)
+			& \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{r}(\chz), \p{z}(\chz \omega)\,.
 		\end{aligned}
 	\right)
 	\]
@@ -606,12 +606,14 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 		\item[Step 6] Compute Lagrange polynomial evaluation $\lag_1 (\chz) = \frac{\chz^\numberofconstrains -1}{\numberofconstrains (\chz - 1)}$.
 		\item[Step 7] Compute public input polynomial evaluation $\pubinppoly (\chz) = \sum_{i \in \range{1}{\instsize}} \wit_i \lag_i(\chz)$.
 		\item[Step 8] Compute quotient polynomials evaluations
-		\begin{align*}
-			\p{t} (\chz) & = \frac{1}{\p{Z_H}(\chz)} (\p{r} (\chz) + \pubinppoly(\chz) - \lag_1 (\chz) \alpha^2) \\
-			\p{t'}(\chz) & = \frac{1}{\p{Z_H} (\chz)} (\p{r'}(\chz) - (\p{a}(\chz) + \beta \p{S_\sigma 1}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_\sigma 2}(\chz) + \gamma)
-			(\p{c}(\chz) + \gamma)\p{z}(\chz \omega) \alpha
-			)
-		\end{align*}
+		\begin{multline*}
+			\p{t} (\chz)  = \frac{1}{\p{Z_H}(\chz)} 
+			\Big(
+				\p{r} (\chz) + \pubinppoly(\chz) - (\p{a}(\chz) + \beta \p{S_\sigma 1}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_\sigma 2}(\chz) + \gamma) \\
+				(\p{c}(\chz) + 
+				\gamma)\p{z}(\chz \omega) \alpha - \lag_1 (\chz) \alpha^2
+			\Big) \,.
+		\end{multline*}
 		\item[Step 9] Compute batched polynomial commitment
 		$\gone{D} = v \gone{r} + u \gone {z}$ that is
 		\begin{align*}
@@ -639,7 +641,7 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 				& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
 			\end{aligned}
 			\right) \\
-			& + v^2 \gone{\p{a}(\chi)} + v^3 \gone{\p{b}(\chi)} + v^4 \gone{\p{c}(\chi)} + v^5 \gone{\p{S_{\sigma 1}(\chi)}} + v^6 \gone{\p{S_{\sigma 2}}(\chi)}
+			& + v^2 \gone{\p{a}(\chi)} + v^3 \gone{\p{b}(\chi)} + v^4 \gone{\p{c}(\chi)} + v^5 \gone{\p{S_{\sigma 1}(\chi)}} + v^6 \gone{\p{S_{\sigma 2}}(\chi)}\,.
 		\end{align*}
 		\item[Step 11] Compute group-encoded batch evaluation $\gone{E}$
 		\begin{align*}
@@ -650,7 +652,7 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 				& + \alpha^2  \lag_1 (\chz)
 			\end{aligned}
 			}\\
-			 + & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }
+			 + & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }\,.
 		\end{align*}
 		\item[Step 12] Check whether the verification equation holds
 		\begin{multline}
