@@ -114,6 +114,7 @@ it. The security model is radically different as now one believes in the
 veracity of a proof only if she trusts that there is at least one honest party
 between the updaters. Hence, the proof is no longer
 universal.\markulf{09.07.20}{What does universal mean?}
+\michals{09.07.20}{I meant universal here in a broad sense -- i.e. I called a setting  a TTP that is trusted by everyone "universal" to denote that a given proof is believable for everybody. Since "universal" tends to have other meanings in terms of ZK, it should probably be changed.}
 
 We believe that our result may be useful for designing new zkSNARKs, especially those based on a polynomial commitment schemes~\cite{AC:KatZavGol10}, as it shows that a careful protocol design may give it a strong security notion for free.
 
@@ -149,6 +150,7 @@ We denote by $\ip{\prover(\REL, \inp, \wit)}{\verifier(\REL, \inp)}$ a transcrip
 We write $\ip{\prover (\REL, \inp, \wit)}{\verifier(\REL, \inp)} = 1$ if in the end of the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the transcript.
 
 \markulf{09.07.20}{Could also all quantify for Soundness and Zero knowledge?}
+\michals{09.07.20}{I am not sure what you meant here. You want to have for all $\inp, \wit \in \REL$ or you doubt these properties make sense for all $\REL \gets \RELGEN$?}
 A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
 \begin{description}
 	\item[Completeness] An interactive proof system $\proofsystem$ is \emph{complete} if an honest prover always convinces an honest verifier, that is for all $\REL \gets \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
@@ -173,8 +175,9 @@ A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ i
 In NIZKs in the Random Oracle Model we distinguish, for the sake of clarity, two simulators, one denoted by $\simulator_\zkproof$ that is responsible for providing simulated proofs and $\simulator_\ro$ that picks a random oracle instantiation and takes care of all parties' queries to $\ro$.
 % \michals{9.06}{Should we distinguish two simulators or just pack everything into a single one?}
 For the sake of consistency (with random oracle-free NIZKs) we use $\simulator$
-to denote the pair of simulators $\simulator_\zkproof,
+to denote the pair of state-shareing simulators $\simulator_\zkproof,
 \simulator_\ro$.\markulf{09.07.20}{These simulators also share state.}
+\michals{09.07}{Done.}
 % % \paragraph{Fiat--Shamir transformation.}
 % Denote by $\rof{A}{B}$ the family of all functions mapping set $A$ to $B$ and let $\ro$ be a randomly picked function from $\rof{A}{B}$.
 % In the Random Oracle Model all algorithms are given oracle access to $\ro$
@@ -236,6 +239,7 @@ More precisely, contrary to \cite{EC:GroIsh08,EC:BCCGP16} the extractor in
 \cref{def:wit_ext_em} is given the trapdoor $\td$, thus seems to be bit more
 powerful.\markulf{09.07.20}{This is the simulation trapdoor. There are no
   extraction trapdoors in our setting.}
+	\michals{09.07.20}{In my first idea for extraction I wanted to extract from polynomial $\p{z}$ that is computed by the prover in Round 2. To do that the extract had to know the simulation trapdoor and no extractability definitions I saw equipped the extractor with it. Anyway, the idea now is to extract the witness from much simpler polynomials evaluated by the prover in Round 4: $\p{a}, \p{b}, \p{c}$. In that case the extractor doesn't need to know the trapdoor.}
 This means that a protocol that has witness-extended emulation in terms of \cite{EC:GroIsh08} has it also according to \cref{def:wit_ext_em} below.
 There, for the sake of succinctness, we denote by $\trans$ a transcript of a conversation between the prover and the verifier extended with verifier's input $(\REL, \inp)$ (or $(\REL, \crs, \inp)$ in case of a proof system with a setup).
 Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages the verifier sends are chosen uniformly at random and independently of the messages send by the prover or system parameters.
@@ -246,7 +250,8 @@ Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages
   \simulator)$ has \emph{witness-extended emulation} if for all $\REL \in
   \image(\RELGEN)$, and deterministic adversary $\adv_1$ there exists an
   expected polynomial time extractor $\ext$ \markulf{09.07.20}{Do we want
-    expected PPT, how crucial is the non-uniformity?} such that for all NUPPT adversaries $\adv_0$ holds
+    expected PPT, how crucial is the non-uniformity?}
+		\michals{09.07}{We need NUPPT extractor to cover NUPPT adversaries, no?} such that for all NUPPT adversaries $\adv_0$ holds
 		\begin{multline*}
 		\Pr\left[\adv_0 (\trans, \inp, \aux_{\adv_1}) = 1 \,\left|\,
 		\begin{aligned}
@@ -273,7 +278,9 @@ Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages
 			\end{aligned}}\right.
 			\right]\,,
 \end{multline*}
-\markulf{09.07.20}{fix left of $|$}where the extractor $\ext$ can rewind the conversation between the prover and the verifier to a particular round and run it again with a fresh randomness for the verifier.
+\markulf{09.07.20}{fix left of $|$}
+\michals{09.07}{what do you mean?}
+where the extractor $\ext$ can rewind the conversation between the prover and the verifier to a particular round and run it again with a fresh randomness for the verifier.
 \end{definition}
 Although in the definition above the adversary $\adv_1$ is deterministic it obtains an auxiliary input $\aux_{\adv_1}$ that may be used by $\adv_1$ as a source of randomness. Groth and Ishai~\cite{EC:GroIsh08} note that since the protocol is public-coin, verifier's randomness is part of the transcript. Thus combining $\inp, \aux_\adv$ and an accepting transcript $\trans$ gives a view of both the prover and the verifier and thus gives a witness.
 
@@ -441,9 +448,9 @@ We note that the definition above is independent on whether the proof system $\p
 
 % \paragraph{Unique responses and extractability.}
 % The key observations that will be used in our simulation-extractability proof is following: if a $\mu$-round protocol $\proofsystem$ has deterministic prover from the $i$-th round on and it has witness-extended emulation from a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts, where $n_1 = \ldots = n_{i - 1} = 1$ and $\prod_{i = 1}^\mu n_\mu \leq \poly$, then the $\fs$-transformed version of the protocol $\proofsystem_\fs$ is simulation-extractable.
-% 
+%
 % Furthermore, if $\proofsystem$ has a deterministic prover from round $i$ on, but not in round $i - 1$, and it has witness-extended emulation only from $(n_1, \ldots, n_{i - 1}, \ldots, n_\mu)$-trees of accepting transcripts such that $n_{i - 1} \neq 1$, then $\proofsystem_\fs$ is not simulation-extractable.
-% 
+%
 % The argument behind that goes as follows. To obtain a tree which allows for witness extraction one must rewind the protocol back to round $i - 1$.
 % \michals{08.07}{Continue}
 
@@ -477,7 +484,7 @@ Given a multi-round Fiat--Shamir-transformed protocol which simulation utilises 
 	\michals{3.07.20}{Note that $\inp$ doesn't need to be in the language!}
 \end{definition}
 
-This definition will have consequences later on as in a $k$-out-of-$n$ simulatable proof system learning first $2k - 1$ messages of the simulated proof gives the adversary no additional power as it could compute these messages by its own. 
+This definition will have consequences later on as in a $k$-out-of-$n$ simulatable proof system learning first $2k - 1$ messages of the simulated proof gives the adversary no additional power as it could compute these messages by its own.
 This property will be important later in the simulation-extractability proof.
 \michals{03.07}{a proof for that statement would be nice.}
 
@@ -519,7 +526,7 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 
 	The tree of accepting transcripts is generating by rewinding the adversary as depicted on~\cref{fig:rewinding_advse}, which is a version of the tree extraction algorithm from \cref{fig:rewinding_prover} tuned for non-interactive proofs and adversaries that have access to simulated proofs.
 	To obtain the full tree of transcripts the extractor runs $\treebuild_{\adv_\se, \simulator_{\fs, \zkproof}, \simulator_{\fs, \ro}}^{\REL, \crs, \inp}(1)$, verifies whether all collected transcripts are acceptable and the tree is valid and, if that is the case, returns the witness.
-	
+
 	\begin{figure}
 		\centering
 		\fbox{
@@ -552,7 +559,7 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 \end{proof}
 
 \section{Simulation extractability of $\plonk$}
-The only modification that has been made to the original \plonk{} protocol is a cosmetic one---originally the value $\gone{\p{W}_{\chz}(\chi)}$ in Round 5, while here it is computed in Round 4. This does not change the security of the protocol as $\gone{\p{W}_{\chz}(\chi)}$ does not include the challenge $v$ which is provided by the verifier after Round~4. 
+The only modification that has been made to the original \plonk{} protocol is a cosmetic one---originally the value $\gone{\p{W}_{\chz}(\chi)}$ in Round 5, while here it is computed in Round 4. This does not change the security of the protocol as $\gone{\p{W}_{\chz}(\chi)}$ does not include the challenge $v$ which is provided by the verifier after Round~4.
 For the sake of clarity we denote this little modified protocol $\plonkmod$, its description has been provided in \cref{sec:plonk_explained}.
 
 \begin{theorem}
@@ -561,7 +568,7 @@ For the sake of clarity we denote this little modified protocol $\plonkmod$, its
 \begin{proof}
 	First, we observe that \plonkmod{} compounds of 5 rounds and after Round 4, the remain message from the prover is deterministic\michals{09.08}{Prove}.
 	Second, observe that if an adversary $\adv_\se$ provides an acceptable proof $\zkproof$ for an instance $\inp$ then the corresponding witness can be extracted from a $(1, 1, \numberofconstrains + 3, 1)$-tree of accepting transcripts. More precisely, in Round 3 the adversary evaluates polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$ at challenge $\chz$, each of the polynomials has degree $\numberofconstrains + 2$.
-	By rewinding the adversary $\numberofconstrains + 2$ times and providing fresh challenges $\chz$---by programming the random oracle---the extractor can retrieve the coefficients of $\p{a}(X), \p{b}(X), \p{c}(X)$ which contain witness elements $\smallset{\wit_i}_{i = 1}^{3 \numberofconstrains}$.	
+	By rewinding the adversary $\numberofconstrains + 2$ times and providing fresh challenges $\chz$---by programming the random oracle---the extractor can retrieve the coefficients of $\p{a}(X), \p{b}(X), \p{c}(X)$ which contain witness elements $\smallset{\wit_i}_{i = 1}^{3 \numberofconstrains}$.
 	\qed
 \end{proof}
 
@@ -587,10 +594,10 @@ The \plonk{} verifier works as follows
 	\item[Step 7] Compute public input polynomial evaluation $\pubinppoly (\chz) = \sum_{i \in \range{1}{\instsize}} \wit_i \lag_i(\chz)$.
 	\item[Step 8] Compute quotient polynomials evaluations
 	\begin{multline*}
-		\p{t} (\chz)  = \frac{1}{\p{Z_H}(\chz)} 
+		\p{t} (\chz)  = \frac{1}{\p{Z_H}(\chz)}
 		\Big(
 			\p{r} (\chz) + \pubinppoly(\chz) - (\p{a}(\chz) + \beta \p{S_\sigma 1}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_\sigma 2}(\chz) + \gamma) \\
-			(\p{c}(\chz) + 
+			(\p{c}(\chz) +
 			\gamma)\p{z}(\chz \omega) \alpha - \lag_1 (\chz) \alpha^2
 		\Big) \,.
 	\end{multline*}
@@ -662,12 +669,12 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	\item[Round 3 and 4]
 	In these rounds $\simulator$ proceeds as an honest prover would using its knowledge of coefficents of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$.
 	More concretely, in Round 3, the simulator outputs an evaluation of the quotient polynomial $\p{t}$: $\gone{\p{t}_{lo}(\chi), \p{t}_{mid}(\chi), \p{t}_{hi}(\chi)}$ and in
-	Round 4 it computes the challenge $\chz$ and outputs $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{z}(\chz \omega), \p{t}(\chz)$ along with evaluations of permutation-related polynomials $\p{S_{\sigma 1}(\chz)}, \p{S_{\sigma 2}(\chz)}$. 
+	Round 4 it computes the challenge $\chz$ and outputs $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{z}(\chz \omega), \p{t}(\chz)$ along with evaluations of permutation-related polynomials $\p{S_{\sigma 1}(\chz)}, \p{S_{\sigma 2}(\chz)}$.
 	The last output value is a polynomial commitment opening $\gone{\p{W}_{\chz}(\chi)}$ which is set to a random group element (which discrete log is known to the simulator).
 	\item[Round 5]
 	In this round the prover is asked to output value $\gone{\p{W}_{\chz \omega}(\chi)}$ assuring that required polynomials' evaluations are computed correctly. The simulator proceeds similarly, however it uses its knowledge of the simulation trapdoor $\chi$ since the evaluations were computed without use of the witness.
 \end{description}
-	The only things where the simulator deviates from the behaviour of an honest prover are in Rounds 4 and 5 when it is asked to compute $\gone{\p{W}_{\chz}(\chi)}$ and $\gone{\p{W}_{\chz \omega}(\chi)}$. 
+	The only things where the simulator deviates from the behaviour of an honest prover are in Rounds 4 and 5 when it is asked to compute $\gone{\p{W}_{\chz}(\chi)}$ and $\gone{\p{W}_{\chz \omega}(\chi)}$.
 
 	Recall that an honest prover in Round 4 computes $\gone{\p{W}_{\chz}(\chi)}$ as
 	\begin{align}
