@@ -520,7 +520,7 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 			\pcif \tree = \bot \pcthen \pcreturn (\zkproof, \bot)\\
 			\counter \gets 1\\
 			\pcwhile \counter \leq n_i \pcthen\\
-			\pcind \text{Rewind $\adv_\se$ back until just before challenge $h_i$}\\
+			\pcind \text{Rewind $\adv_\se$ back until just before it gets response to $\simulator_{\fs, \ro}$ query $(\inp, \vec{a}_{[0 : i - 1]})$}\\
 			\pcind (\zkproof', \tree') \gets \treebuild(i + 1)\\
 			\pcind \pcif \tree' \neq \bot \pcthen\\
 			\pcind \pcind \tree \gets \tree \cup \smallset{\zkproof'} \\
@@ -539,7 +539,9 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 \end{proof}
 
 \section{Simulation extractability of $\plonk$}
-\newcommand{\chz}{\mathfrak{z}}
+The only modification that has been made to the original \plonk{} protocol is a cosmetic one---originally the value $\gone{p{W}_{\chz}(\chi)}$ in Round 5, while here it is computed in Round 4. This does not change the security of the protocol as $\gone{p{W}_{\chz}(\chi)}$ does not include the challenge $v$ which is provided by the verifier after Round 4. 
+For the fully exposed \plonk{} protocol refer to \cref{sec:plonk_explained}
+
 \paragraph{Simulation in \plonk.}
 The simulator $\simulator$ in $\plonk$ proceeds according to the following steps:
 \begin{description}
@@ -552,14 +554,15 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 	\item[Round 3 and 4]
 	In these rounds $\simulator$ proceeds as an honest prover would using its knowledge of coefficents of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$.
 	More concretely, in Round 3, the simulator outputs an evaluation of the quotient polynomial $\p{t}$: $\gone{\p{t}_{lo}(\chi), \p{t}_{mid}(\chi), \p{t}_{hi}(\chi)}$ and in
-	Round 4 it computes the challenge $\chz$ and outputs $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{z}(\chz \omega), \p{t}(\chz)$ along with evaluations of permutation-related polynomials $\p{S_{\sigma 1}(\chz)}, \p{S_{\sigma 2}(\chz)}$.
+	Round 4 it computes the challenge $\chz$ and outputs $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{z}(\chz \omega), \p{t}(\chz)$ along with evaluations of permutation-related polynomials $\p{S_{\sigma 1}(\chz)}, \p{S_{\sigma 2}(\chz)}$. 
+	The last output value is a polynomial commitment opening $\gone{\p{W}_{\chz}(\chi)}$ which is set to a random group element (which discrete log is known to the simulator).
 	\item[Round 5]
-	In this round the prover is asked to output values $\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ assuring that required polynomials' evaluations are computed correctly. The simulator proceeds similarly, however it uses its knowledge of the simulation trapdoor $\chi$ since the evaluations were computed without use of the witness.
+	In this round the prover is asked to output value $\gone{\p{W}_{\chz \omega}(\chi)}$ assuring that required polynomials' evaluations are computed correctly. The simulator proceeds similarly, however it uses its knowledge of the simulation trapdoor $\chi$ since the evaluations were computed without use of the witness.
 \end{description}
-	We describe the output of the simulator in Round 5 in more details.
-	Before that it should be explained how the \plonk's verifier works.
+	The only things where the simulator deviates from the behaviour of an honest prover are in Rounds 4 and 5 when it is asked to compute $\gone{\p{W}_{\chz}(\chi)}$ and $\gone{\p{W}_{\chz \omega}(\chi)}$. 
+	Before we explain how these values are computed, it should be explained how the \plonk's verifier works.
 
-	Recall that an honest prover takes $v$ as a challenge and computes $\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ as
+	Recall that an honest prover in Round 4 computes $\gone{\p{W}_{\chz}(\chi)}$ and in Round 5 it gets a challenge $v$ and computes $\gone{\p{W}_{\chz \omega}(\chi)}$ as
 	\begin{align}
 		& \p{W}_{\chz}(X) = \frac{1} {X - \chz} \left(
 			\begin{aligned}
@@ -652,4 +655,8 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
+
+\appendix
+\section{\plonk{}'s prover explained}
+\label{sec:plonk_explained}
 \end{document}
