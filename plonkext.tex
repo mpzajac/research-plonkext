@@ -539,10 +539,12 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 \end{proof}
 
 \section{Simulation extractability of $\plonk$}
-The only modification that has been made to the original \plonk{} protocol is a cosmetic one---originally the value $\gone{p{W}_{\chz}(\chi)}$ in Round 5, while here it is computed in Round 4. This does not change the security of the protocol as $\gone{p{W}_{\chz}(\chi)}$ does not include the challenge $v$ which is provided by the verifier after Round 4. 
-For the fully exposed \plonk{} protocol refer to \cref{sec:plonk_explained}
+The only modification that has been made to the original \plonk{} protocol is a cosmetic one---originally the value $\gone{\p{W}_{\chz}(\chi)}$ in Round 5, while here it is computed in Round 4. This does not change the security of the protocol as $\gone{\p{W}_{\chz}(\chi)}$ does not include the challenge $v$ which is provided by the verifier after Round 4. 
+% For the fully exposed \plonk{} protocol refer to \cref{sec:plonk_explained}
 
-\paragraph{Simulation in \plonk.}
+Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the simulator of \plonk{} works, it is presented here.
+\paragraph{\fbox{\normalfont{\plonk{} simulator $\simulator(\REL, \crs, \td, \inp)$}}} \\
+% \paragraph{Simulation in \plonk.}
 The simulator $\simulator$ in $\plonk$ proceeds according to the following steps:
 \begin{description}
 	\item[Round 1]
@@ -651,6 +653,35 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 			\gtwo{1}\,.
 		\end{multline}
 	The verification equation is a batched version of the verification equation from \cite{AC:KatZavGol10} which allows the verifier to check openings of multiple polynomials in two points (instead of checking an opening of a single polynomial at one point).
+	
+	\paragraph{\fbox{\normalfont{\plonk{} verifier $\verifier(\REL, \crs, \inp, \zkproof)$}}}\ \newline
+	The \plonk{} verifier works as follows
+	\begin{description}
+		\item[Step 1] Validate all obtained group elements.
+		\item[Step 2] Validate all obtained field elements.
+		\item[Step 3] Validate the instace $\inp = \smallset{\wit_i}_{i = 1}^\instsize$.
+		\item[Step 4] Compute challenges $\beta, \gamma, \alpha, \alpha', \chz, v, u$ from the transcript.
+		\item[Step 5] Compute zero polynomial evaluation $\p{Z_H} (\chz)  =\chz^\numberofconstrains - 1$.
+		\item[Step 6] Compute Lagrange polynomial evaluation $\lag_1 (\chz) = \frac{\chz^\numberofconstrains -1}{\numberofconstrains (\chz - 1)}$.
+		\item[Step 7] Compute public input polynomial evaluation $\pubinppoly (\chz) = \sum_{i \in \range{1}{\instsize}} \wit_i \lag_i(\chz)$.
+		\item[Step 8] Compute quotient polynomials evaluations
+		\begin{align*}
+			\p{t} (\chz) & = \frac{1}{\p{Z_H}(\chz)} (\p{r} (\chz) + \pubinppoly(\chz) - \lag_1 (\chz) \alpha^2) \\
+			\p{t'}(\chz) & = \frac{1}{\p{Z_H} (\chz)} (\p{r'}(\chz) - (\p{a}(\chz) + \beta \p{S_\sigma 1}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_\sigma 2}(\chz) + \gamma)
+			(\p{c}(\chz) + \gamma)\p{z}(\chz \omega) \alpha
+			)
+		\end{align*}
+		\item[Step 9] Compute batched polynomial commitment
+		\begin{align*}
+			\gone{D} & = \p{a}(\chz) \p{b}(\chz) v \gone{\selmulti(x)} + \p{a}(\chz) v \gone{\selleft(x)} + \p{b}(\chz) v \gone{\selright (x)} + \p{c}(\chz) v \gone{\seloutput(x)} + \\
+			& + v \gone{\selconst (x)} + ((\p{a}(\chz) + \beta \chz + \gamma)(\p{b}(\chz) + \beta k_1 \chz + \gamma)(\p{c}(\chz) + \beta k_2 \chz + \gamma)\alpha v + \\
+			& + \lag_1(\chz) \alpha^2 v + u)\gone{\p{z}(x)}\\
+			\gone{D'} & = (\p{a}(\chz) + \beta \p{S_{\sigma 1}} (\chz) + \gamma)(\p{b}(\chz) + \beta \p{S_{\sigma 2}} (\chz) + \gamma)\alpha v \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(x)}
+		\end{align*}
+		\item[Step 10]
+		\item[Step 11]
+		\item[Step 12]
+	\end{description}
 
 
 \bibliographystyle{alpha}
