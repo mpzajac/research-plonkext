@@ -143,7 +143,9 @@ In a zero-knowledge proof or argument system, a prover convinces the verifier of
 Here, a proof (resp., an argument) system guarantees soundness against an unbounded (resp., a PPT) cheating prover.
 The zero-knowledge property is proven by constructing a simulator that can simulate the view of a cheating verifier without knowing the secret information---witness---of the prover.
 
-More precisely, let $\RELGEN(\secparam)$ be a relation generator that outputs an $\npol$ relation $\REL = \smallset{(\inp, \wit)}$. Denote by $\LANG_\REL$ the language determined by $\REL$.
+More precisely, let $\RELGEN(\secparam)$ be a relation generator that outputs an $\npol$ relation $\REL = \smallset{(\inp, \wit)}$. \markulf{09.07.20}{Not too fond of relation
+  generators, but guess this is more general
+  than family of relations.} Denote by $\LANG_\REL$ the language determined by $\REL$.
 Let $\prover$ and $\verifier$ be algorithms, the former called \emph{prover} and the latter \emph{verifier}.
 We denote by $\ip{\prover(\REL, \inp, \wit)}{\verifier(\REL, \inp)}$ a transcript of conversation between a $\prover$ with input $(\REL, \inp, \wit)$ and $\verifier$ with input $(\REL, \inp)$.
 We write $\ip{\prover (\REL, \inp, \wit)}{\verifier(\REL, \inp)} = 1$ if in the end of the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the transcript.
@@ -181,7 +183,8 @@ to denote the pair of simulators $\simulator_\zkproof,
 % The Fiat--Shamir transforms
 
 \paragraph{Sigma protocols.}
-A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$  for a relation $\REL \gets \RELGEN(\secparam)$ is a special case of an interactive proof which transcript compounds of three messages $(a, b, z)$, the middle being a challenge provided by the verifier.
+A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$  for a relation
+$\REL \gets \RELGEN(\secparam)$  is a special case of an interactive proof which transcript compounds of three messages $(a, b, z)$, the middle being a challenge provided by the verifier.
 Sigma protocols are specially-sound. That is, there exists an extractor $\ext$ which from two accepting transcripts $(a, b, z)$, $(a, b', z')$ for a statement $\inp$ can recreate the corresponding witness if $b \neq b'$. Formally,
 \begin{description}
 	\item[Special soundness] A sigma protocol $\sigmaprot$ is \emph{specially-sound} if for any adversary $\adv$ the probability
@@ -278,8 +281,10 @@ Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages
 Although in the definition above the adversary $\adv_1$ is deterministic it obtains an auxiliary input $\aux_{\adv_1}$ that may be used by $\adv_1$ as a source of randomness. Groth and Ishai~\cite{EC:GroIsh08} note that since the protocol is public-coin, verifier's randomness is part of the transcript. Thus combining $\inp, \aux_\adv$ and an accepting transcript $\trans$ gives a view of both the prover and the verifier and thus gives a witness.
 
 \subsection{Simulation extractable NIZKs from sigma protocols}
-Real life applications often require from a NIZK proof system to be non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement $\inp$ should not be able to provide a new proof $\zkproof'$ related to $\zkproof$.
-A strong version of non-malleability is formalized by simulation extractability. This notion states that no adversary can produce an acceptable proof for without knowning the corresponding witness. That holds even if the adversary is allowed to see polynomially many simulated proofs for any statements she wishes.
+Real life applications often require from a NIZK proof system to be non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement $\inp$ should be able to provide a new proof $\zkproof'$ related to $\zkproof$.
+A strong version of non-malleability is formalized by simulation extractability.
+This notion states that no adversary can produce valid proof without knowning
+the corresponding witness. This must hold even if the adversary is allowed to see polynomially many simulated proofs for any statements she wishes.
 
 \begin{definition}[Simulation extractability]
 	A proof system $\proofsystem$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
@@ -288,7 +293,7 @@ A strong version of non-malleability is formalized by simulation extractability.
   \begin{aligned}
     &(\inp, \wit) \not\in \REL,\\
 		&(\inp, \zkproof) \not\in Q, \\
-    & \verifier (\REL, \crs_{\verifier}, \inp, \zkproof) = 1
+    & \verifier (\REL, \crs, \inp, \zkproof) = 1
   \end{aligned}
   }
   {
@@ -304,7 +309,8 @@ A strong version of non-malleability is formalized by simulation extractability.
 \end{definition}
 
 % Faust et al.~\cite{INDOCRYPT:FKMV12} show every
-Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that is specially sound and has a unique response property is simulation-extractable. Let $\sigmaprot_\fs = (\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the Fiat--Shamir transform to $\sigmaprot$.
+Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
+is specially sound and has a unique response property is simulation-extractable \markulf{}{typo?}. Let $\sigmaprot_\fs = (\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the Fiat--Shamir transform to $\sigmaprot$.
 Faust et al.~\cite{INDOCRYPT:FKMV12} show that every such $\sigmaprot_\fs$ is simulation-extractable.
 
 \begin{theorem}[Simulation extractability of the Fiat--Shamir transform \cite{INDOCRYPT:FKMV12}]
@@ -313,7 +319,7 @@ Faust et al.~\cite{INDOCRYPT:FKMV12} show that every such $\sigmaprot_\fs$ is si
 	% Furthermore, the extractor $\ext_\adv$ needs to run $\adv^{\simulator_{\fs, \ro}}, \adv^{\simulator_{\fs, \zkproof}}$ twice.
 \end{theorem}
 
-The theorem relies on the following classical lemma, called \emph{General forkikng lemma} \cite{JC:PoiSte00}.
+The theorem relies on the following classical lemma, called \emph{General forking lemma} \cite{JC:PoiSte00}.
 %
 % The result relies on
 % Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a sigma protocol which transcript contains three messages $(a, b, z)$ with the middle being sent as a challenge from the verifier.
@@ -376,7 +382,12 @@ First of all, although dubbed ``general'', \cref{lem:faust_forking_lemma} is not
 
 Fortunately, Bootle et al.~\cite{EC:BCCGP16} shown a more general version of the lemma. More precisely, they proved that each protocol that allows for a witness extraction from a bigger number of accepting transcripts has witness-extended emulation. \cite{EC:BCCGP16} defines a \emph{tree of accepting transcript}.
 Let $\proofsystem$ be a $(2 \mu + 1)$-move public-coin proof system with $\mu$ challenges $h_1, \ldots, h_\mu$. Let $n_i > 1$, for $i \in \range{1}{\mu}$.
-Consider $\prod_{i = 1}^{\mu} n_i$ accepting transfers with challenges as a tree with depth $\mu$ and $\prod_{i = 1}^{\mu} n_i$ leaves.	Each node of depth $i < \mu$ has exactly $n_i$ children, each labelled with a distinct value for the $i$-th challenge $h_i$. We refer to that as a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts.
+Consider $\prod_{i = 1}^{\mu} n_i$ accepting transfers with challenges as a tree
+with depth $\mu$ and $\prod_{i = 1}^{\mu} n_i$ leaves.	Each node of depth $i <
+\mu$ has exactly $n_i$ children, each labelled with a distinct value for the
+$i$-th challenge $h_i$. We refer to that as a $(n_1, \ldots, n_\mu)$-tree of
+accepting transcripts. \markulf{09.07.20}{Generalize special soundness in
+  similar fashion}
 
  % \task{15.05}{Use one forking lemma (by Bootle et al) and show that the result from Faust holds for it anyway}
 \begin{lemma}[Generalised general forking lemma~\cite{EC:BCCGP16}]
@@ -452,10 +463,14 @@ We note that the definition above is independent on whether the proof system $\p
 We note that in the standard model protocols the simulator does not require any additional power like knowledge of a CRS trapdoor or programmability of the random oracle. This implies that every adversary can produce a simulated proof by its own.
 On the other hand, we have CRS-based zk-proofs where knowledge of trapdoor is required to make an simulated proof.
 
-Given a multi-round Fiat--Shamir-transformed protocol which simulation utilises trapdoor we can ask another question---how many rounds, from the beginning of the protocol, can be simulated by the adversary unless the trapdoor is required? Note that to answer this question we shall quantify over all possible simulators. That would not be a problem though in the setting we consider.
+Given a multi-round Fiat--Shamir-transformed protocol which simulation utilises
+trapdoor we can ask another question---how many rounds, from the beginning of
+the protocol, can be simulated by the adversary unless the trapdoor is required?
+\markulf{}{interesting} Note that to answer this question we shall quantify over all possible simulators. That would not be a problem though in the setting we consider.
 
 \begin{definition}[$k$-out-of-$n$ simulatable proof system]
-	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ be a $n$-round interactive proof. Let $(\inp, a_0, b_0, \ldots, b_{n - 2}, a_{n - 1})$ be a proof for a statement $\inp$ where $a_i$-s, $i \in \range{0}{n - 1}$ are messages send by the prover and $b_i$-s, $i \in \range{0}{n - 2}$ by the verifier.
+	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ be
+  a $n$-round \markulf{09.07.20}{2n-1 round} interactive proof. Let $(\inp, a_0, b_0, \ldots, b_{n - 2}, a_{n - 1})$ be a proof for a statement $\inp$ where $a_i$-s, $i \in \range{0}{n - 1}$ are messages send by the prover and $b_i$-s, $i \in \range{0}{n - 2}$ by the verifier.
 	% Similarly we denote by $(\inp, a^{\simulator}_0, b^{\simulator}_0, \ldots, b^{\simulator}_{n - 2}, a^{\simulator}_{n - 1})$ a proof output by the simulator $\simulator$.
 	We say that $\proofsystem$ is \emph{$k$-out-of-$n$ simulatable} if for  $\REL \in \image{\RELGEN(\secparam)}$ there exists a $\ppt$ algorithm $\bdv$ that for every PPT adversary $\adv$ can produce a proof $(\inp, a_0, b_0, \ldots, b_{n - 2}, a_{n - 1})$ such that
 	\begin{multline*}
