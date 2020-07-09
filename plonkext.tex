@@ -108,7 +108,12 @@ Another issue we tackle with is a question whether NIZK proof systems are in fac
 
 Simulation-extractable updatable NIZKs---and zkSNARKs in particular---tighten the gap between interactive zero knowledge and non-interactive zero knowledge in the CRS model.
 First, simulation-extractability assures that no adversary can maul an existing proof and make a fresh one, what limits replay attacks.
-Second, updatable NIZKs does not assume that there is a trusted party that provides a CRS, but rather a sequence of parties (called updaters) that modify it. The security model is radically different as now one believes in the veracity of a proof only if she trusts that there is at least one honest party between the updaters. Hence, the proof is no longer universal.
+Second, updatable NIZKs does not assume that there is a trusted party that
+provides a CRS, but rather a sequence of parties (called updaters) that modify
+it. The security model is radically different as now one believes in the
+veracity of a proof only if she trusts that there is at least one honest party
+between the updaters. Hence, the proof is no longer
+universal.\markulf{09.07.20}{What does universal mean?}
 
 We believe that our result may be useful for designing new zkSNARKs, especially those based on a polynomial commitment schemes~\cite{AC:KatZavGol10}, as it shows that a careful protocol design may give it a strong security notion for free.
 
@@ -143,6 +148,7 @@ Let $\prover$ and $\verifier$ be algorithms, the former called \emph{prover} and
 We denote by $\ip{\prover(\REL, \inp, \wit)}{\verifier(\REL, \inp)}$ a transcript of conversation between a $\prover$ with input $(\REL, \inp, \wit)$ and $\verifier$ with input $(\REL, \inp)$.
 We write $\ip{\prover (\REL, \inp, \wit)}{\verifier(\REL, \inp)} = 1$ if in the end of the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the transcript.
 
+\markulf{09.07.20}{Could also all quantify for Soundness and Zero knowledge?}
 A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
 \begin{description}
 	\item[Completeness] An interactive proof system $\proofsystem$ is \emph{complete} if an honest prover always convinces an honest verifier, that is for all $\REL \gets \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
@@ -166,7 +172,9 @@ A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ i
 \paragraph{NIZKs in the Random Oracle Model.}
 In NIZKs in the Random Oracle Model we distinguish, for the sake of clarity, two simulators, one denoted by $\simulator_\zkproof$ that is responsible for providing simulated proofs and $\simulator_\ro$ that picks a random oracle instantiation and takes care of all parties' queries to $\ro$.
 % \michals{9.06}{Should we distinguish two simulators or just pack everything into a single one?}
-For the sake of consistency (with random oracle-free NIZKs) we use $\simulator$ to denote the pair of simulators $\simulator_\zkproof, \simulator_\ro$.
+For the sake of consistency (with random oracle-free NIZKs) we use $\simulator$
+to denote the pair of simulators $\simulator_\zkproof,
+\simulator_\ro$.\markulf{09.07.20}{These simulators also share state.}
 % % \paragraph{Fiat--Shamir transformation.}
 % Denote by $\rof{A}{B}$ the family of all functions mapping set $A$ to $B$ and let $\ro$ be a randomly picked function from $\rof{A}{B}$.
 % In the Random Oracle Model all algorithms are given oracle access to $\ro$
@@ -221,14 +229,24 @@ Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on i
 
 \paragraph{Witness-extended emulation.}
 Interactive proofs run in a multi-protocol environment are often required to fulfil a stronger notion of soundness called \emph{witness-extended emulation}~\cite{JC:Lindell03}.
-The following definition is inspired by  \cite{EC:GroIsh08} as their formulation of the witness-extended emulation considers proof systems that utilises a CRS. However, there are some changes introduced to make it fit better our purpose. More precisely, contrary to \cite{EC:GroIsh08,EC:BCCGP16} the extractor in \cref{def:wit_ext_em} is given the trapdoor $\td$, thus seems to be bit more powerful.
+The following definition is inspired by  \cite{EC:GroIsh08} as their formulation
+of the witness-extended emulation considers proof systems that utilises a CRS.
+However, there are some changes introduced to make it fit better our purpose.
+More precisely, contrary to \cite{EC:GroIsh08,EC:BCCGP16} the extractor in
+\cref{def:wit_ext_em} is given the trapdoor $\td$, thus seems to be bit more
+powerful.\markulf{09.07.20}{This is the simulation trapdoor. There are no
+  extraction trapdoors in our setting.}
 This means that a protocol that has witness-extended emulation in terms of \cite{EC:GroIsh08} has it also according to \cref{def:wit_ext_em} below.
 There, for the sake of succinctness, we denote by $\trans$ a transcript of a conversation between the prover and the verifier extended with verifier's input $(\REL, \inp)$ (or $(\REL, \crs, \inp)$ in case of a proof system with a setup).
 Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages the verifier sends are chosen uniformly at random and independently of the messages send by the prover or system parameters.
 
 \begin{definition}[Witness-extended emulation]
 	\label{def:wit_ext_em}
-	We say a public coin proof system $\proofsystem = (\kcrs, \prover, \verifier, \simulator)$ has \emph{witness-extended emulation} if for all $\REL \in \image(\RELGEN)$, and deterministic adversary $\adv_1$ there exists an expected polynomial time extractor $\ext$ such that for all NUPPT adversaries $\adv_0$ holds
+	We say a public coin proof system $\proofsystem = (\kcrs, \prover, \verifier,
+  \simulator)$ has \emph{witness-extended emulation} if for all $\REL \in
+  \image(\RELGEN)$, and deterministic adversary $\adv_1$ there exists an
+  expected polynomial time extractor $\ext$ \markulf{09.07.20}{Do we want
+    expected PPT, how crucial is the non-uniformity?} such that for all NUPPT adversaries $\adv_0$ holds
 		\begin{multline*}
 		\Pr\left[\adv_0 (\trans, \inp, \aux_{\adv_1}) = 1 \,\left|\,
 		\begin{aligned}
@@ -255,7 +273,7 @@ Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages
 			\end{aligned}}\right.
 			\right]\,,
 \end{multline*}
-where the extractor $\ext$ can rewind the conversation between the prover and the verifier to a particular round and run it again with a fresh randomness for the verifier.
+\markulf{09.07.20}{fix left of $|$}where the extractor $\ext$ can rewind the conversation between the prover and the verifier to a particular round and run it again with a fresh randomness for the verifier.
 \end{definition}
 Although in the definition above the adversary $\adv_1$ is deterministic it obtains an auxiliary input $\aux_{\adv_1}$ that may be used by $\adv_1$ as a source of randomness. Groth and Ishai~\cite{EC:GroIsh08} note that since the protocol is public-coin, verifier's randomness is part of the transcript. Thus combining $\inp, \aux_\adv$ and an accepting transcript $\trans$ gives a view of both the prover and the verifier and thus gives a witness.
 

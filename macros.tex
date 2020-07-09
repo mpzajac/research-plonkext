@@ -108,9 +108,10 @@
 \definecolor{pinkish}{rgb}{0.9,0.8,0.8}
 \definecolor{darkgreen}{rgb}{0,0.6,0}
 \definecolor{lightgreen}{rgb}{0.85,1,0.85}
-\definecolor{skyblue}{rgb}{0.3,0.9,0.99}
+\definecolor{skyblue}{rgb}{0.3,0.9,0.99} mb
 
 %coments
+\DeclareRobustCommand{\markulf}[2]  {{\color{purple}\hl{\scriptsize\textsf{Markulf #1:} #2}}}
 \DeclareRobustCommand{\michals}[2]  {{\color{blueish}\sethlcolor{pinkish}\hl{\scriptsize\textsf{Michal #1:} #2}}}
 \newcommand{\task}[2]{\todo[author=\textbf{Task},inline]{({\textit{#1}}) #2}}
 % \newcommand{\task}[2] {\xcommenti{Task}{#1}{#2}}
