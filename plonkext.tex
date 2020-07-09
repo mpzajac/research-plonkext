@@ -530,20 +530,108 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 		\caption{Rewinding strategy for $\adv_\se$---getting a tree of accepting transcripts. For the sake of clarity parameters of $\treebuild$ algorithm have been omitted in the code. We also assume that $\adv_\se$ separately outputs instance $\inp$ which it plans to prove.}
 		\label{fig:rewinding_advse}
 \end{figure}
-
-	% Since the first $J_j$ queries do not change, the adversary, whose randomness tape remains the same, submits $(\inp, \vec{a}_{[0:j]})$ as its $J_j$-th query regardless it was rewound.
-	% That way, for each $j$, new $\prod_{k = 1}^{j} n_k$ partial transcripts $(\inp, \vec{a}_{[0 : j]})$ is obtained, each of the previous $\prod_{k = 1}^{j - 1} n_k$ transcripts is extended in $n_j$ different ways respectively to different sequence of responses of $\simulator_{\fs, \ro}$.
-	% 
-	% When $j$ reaches $\mu$, there are $\prod_{j}^{\mu} n_j$ transcripts that makes an $(1, \ldots, 1, n_{i + 1}, \ldots, n_\mu)$-tree of accepting transcripts. Thus, from the forking lemma (cf.~\cref{lem:bootle_forking_lemma}), there exists an extractor $\ext_\fs$ that recreates a witness $\wit$ such that $\REL(\inp, \wit)$.
 	\qed
 \end{proof}
 
 \section{Simulation extractability of $\plonk$}
-The only modification that has been made to the original \plonk{} protocol is a cosmetic one---originally the value $\gone{\p{W}_{\chz}(\chi)}$ in Round 5, while here it is computed in Round 4. This does not change the security of the protocol as $\gone{\p{W}_{\chz}(\chi)}$ does not include the challenge $v$ which is provided by the verifier after Round 4. 
-% For the fully exposed \plonk{} protocol refer to \cref{sec:plonk_explained}
+The only modification that has been made to the original \plonk{} protocol is a cosmetic one---originally the value $\gone{\p{W}_{\chz}(\chi)}$ in Round 5, while here it is computed in Round 4. This does not change the security of the protocol as $\gone{\p{W}_{\chz}(\chi)}$ does not include the challenge $v$ which is provided by the verifier after Round~4. 
+For the sake of clarity we denote this little modified protocol $\plonkmod$, its description has been provided in \cref{sec:plonk_explained}.
+
+\begin{theorem}
+	\plonkmod{} is simulation-extractable.
+\end{theorem}
+\begin{proof}
+	First, we observe that \plonkmod{} compounds of 5 rounds and after Round 4, the remain message from the prover is deterministic\michals{09.08}{Prove}.
+	Second, observe that if an adversary $\adv_\se$ provides an acceptable proof $\zkproof$ for an instance $\inp$ then the corresponding witness can be extracted from a $(1, 1, \numberofconstrains + 3, 1)$-tree of accepting transcripts. More precisely, in Round 3 the adversary evaluates polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$ at challenge $\chz$, each of the polynomials has degree $\numberofconstrains + 2$.
+	By rewinding the adversary $\numberofconstrains + 2$ times and providing fresh challenges $\chz$---by programming the random oracle---the extractor can retrieve the coefficients of $\p{a}(X), \p{b}(X), \p{c}(X)$ which contain witness elements $\smallset{\wit_i}_{i = 1}^{3 \numberofconstrains}$.	
+	\qed
+\end{proof}
+
+\bibliographystyle{alpha}
+\bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
+
+\appendix
+\section{$\plonkmod$'s prover explained}
+\label{sec:plonk_explained}
+
+\paragraph{\fbox{\normalfont{$\plonkmod$ prover $\prover(\REL, \crs, \inp, \wit)$}}}
+
+
+\paragraph{\fbox{\normalfont{$\plonkmod$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$}}}\ \newline
+The \plonk{} verifier works as follows
+\begin{description}
+	\item[Step 1] Validate all obtained group elements.
+	\item[Step 2] Validate all obtained field elements.
+	\item[Step 3] Validate the instace $\inp = \smallset{\wit_i}_{i = 1}^\instsize$.
+	\item[Step 4] Compute challenges $\beta, \gamma, \alpha, \alpha', \chz, v, u$ from the transcript.
+	\item[Step 5] Compute zero polynomial evaluation $\p{Z_H} (\chz)  =\chz^\numberofconstrains - 1$.
+	\item[Step 6] Compute Lagrange polynomial evaluation $\lag_1 (\chz) = \frac{\chz^\numberofconstrains -1}{\numberofconstrains (\chz - 1)}$.
+	\item[Step 7] Compute public input polynomial evaluation $\pubinppoly (\chz) = \sum_{i \in \range{1}{\instsize}} \wit_i \lag_i(\chz)$.
+	\item[Step 8] Compute quotient polynomials evaluations
+	\begin{multline*}
+		\p{t} (\chz)  = \frac{1}{\p{Z_H}(\chz)} 
+		\Big(
+			\p{r} (\chz) + \pubinppoly(\chz) - (\p{a}(\chz) + \beta \p{S_\sigma 1}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_\sigma 2}(\chz) + \gamma) \\
+			(\p{c}(\chz) + 
+			\gamma)\p{z}(\chz \omega) \alpha - \lag_1 (\chz) \alpha^2
+		\Big) \,.
+	\end{multline*}
+	\item[Step 9] Compute batched polynomial commitment
+	$\gone{D} = v \gone{r} + u \gone {z}$ that is
+	\begin{align*}
+		\gone{D} & = v
+		\left(
+		\begin{aligned}
+			& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
+			& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
+			% &   \\
+			& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
+		\end{aligned}
+		\right) + \\
+		& + u \gone{\p{z}(\chi)}\,.
+	\end{align*}
+	\item[Step 10] Computes full batched polynomial commitment $\gone{F}$:
+	Next it computes $\gone{F}$:
+	\begin{align*}
+		\gone{F} & = \left(\gone{\p{t_{lo}}(\chi)} + \chz^\numberofconstrains \gone{\p{t_{mid}}(\chi)} + \chz^{2 \numberofconstrains} \gone{\p{t_{hi}}(\chi)}\right) + u \gone{\p{z}(\chi)} + \\
+		& + v
+		\left(
+		\begin{aligned}
+			& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
+			& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
+			% &   \\
+			& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
+		\end{aligned}
+		\right) \\
+		& + v^2 \gone{\p{a}(\chi)} + v^3 \gone{\p{b}(\chi)} + v^4 \gone{\p{c}(\chi)} + v^5 \gone{\p{S_{\sigma 1}(\chi)}} + v^6 \gone{\p{S_{\sigma 2}}(\chi)}\,.
+	\end{align*}
+	\item[Step 11] Compute group-encoded batch evaluation $\gone{E}$
+	\begin{align*}
+		\gone{E}  = \frac{1}{\p{Z_H}(\chz)} & \gone{
+		\begin{aligned}
+			& \p{r}(\chz) + \pubinppoly(\chz) +  \alpha^2  \lag_1 (\chz) + \\
+			& - \alpha \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}} (\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}} (\chz) + \gamma) (\p{c}(\chz) + \gamma) \p{z}(\chz \omega) \right)
+		\end{aligned}
+		}\\
+		 + & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }\,.
+	\end{align*}
+	\item[Step 12] Check whether the verification equation holds
+	\begin{multline}
+		\label{eq:ver_eq}
+		\left(
+		\gone{\p{W_{\chz}}(\chi)} + u \cdot \gone{\p{W_{\chz \omega}}(\chi)}
+		\right) \bullet
+		\gtwo{\chi} = \\
+		\left(
+			\chz \cdot \gone{\p{W_{\chz}}(\chi)} + u \chz \omega \cdot \gone{\p{W_{\chz \omega}}(\chi)} + \gone{F} - \gone{E}
+		\right) \bullet
+		\gtwo{1}\,.
+	\end{multline}
+The verification equation is a batched version of the verification equation from \cite{AC:KatZavGol10} which allows the verifier to check openings of multiple polynomials in two points (instead of checking an opening of a single polynomial at one point).
+\end{description}
 
 Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the simulator of \plonk{} works, it is presented here.
-\paragraph{\fbox{\normalfont{\plonk{} simulator $\simulator(\REL, \crs, \td, \inp)$}}}
+\paragraph{\fbox{\normalfont{$\plonkmod$ simulator $\simulator(\REL, \crs, \td, \inp)$}}}
 % \paragraph{Simulation in \plonk.}
 % The simulator $\simulator$ in $\plonk$ proceeds according to the following steps:
 \begin{description}
@@ -562,9 +650,12 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	In this round the prover is asked to output value $\gone{\p{W}_{\chz \omega}(\chi)}$ assuring that required polynomials' evaluations are computed correctly. The simulator proceeds similarly, however it uses its knowledge of the simulation trapdoor $\chi$ since the evaluations were computed without use of the witness.
 \end{description}
 	The only things where the simulator deviates from the behaviour of an honest prover are in Rounds 4 and 5 when it is asked to compute $\gone{\p{W}_{\chz}(\chi)}$ and $\gone{\p{W}_{\chz \omega}(\chi)}$. 
-	Before we explain how these values are computed, it should be explained how the \plonk's verifier works.
 
-	Recall that an honest prover in Round 4 computes $\gone{\p{W}_{\chz}(\chi)}$ and in Round 5 it gets a challenge $v$ and computes $\gone{\p{W}_{\chz \omega}(\chi)}$ as
+	Recall that an honest prover in Round 4 computes $\gone{\p{W}_{\chz}(\chi)}$ as
+	\begin{align}
+		\p{W}_{\chz \omega}(X) =  \frac{\p{z}(X) - \p{z}(\chz \omega)}{X - \chz \omega}\,,
+	\end{align}
+	and in Round 5 it gets a challenge $v$ and computes $\gone{\p{W}_{\chz \omega}(\chi)}$ as
 	\begin{align}
 		& \p{W}_{\chz}(X) = \frac{1} {X - \chz} \left(
 			\begin{aligned}
@@ -576,15 +667,10 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 				+ & v^5 (\p{S_{\sigma 1}}(X) - \p{S_{\sigma 1}}(\chz)) \\
 				+ & v^6 (\p{S_{\sigma 2}}(X) - \p{S_{\sigma 2}}(\chz))
 			\end{aligned}
-		\right)\,,\\
-		& \p{W}_{\chz \omega}(X) =  %\left(
-			\begin{aligned}
-				\frac{\p{z}(X) - \p{z}(\chz \omega)}{X - \chz \omega}
-			\end{aligned}
-		%\right)
-		\,.
+		\right)\,.
 	\end{align}
-	The simulator computes $\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ such that the verification equation holds, outputs the proof
+	The simulator computes $\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ such that the verification equation holds,
+	\task{09.08}{Explain how the simulator computes $\gone{\p{W}_{\chz}(\chi)}$} outputs the proof
 	\[
 	\zkproof = \left(
 		\begin{aligned}
@@ -594,86 +680,4 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	\right)
 	\]
 	and gets $u$ as a final challenge (which it does not reply to).\michals{15.06}{It may be better to just say that $u$ is a random picked by the verifier and not put it as an additional challenge.}
-	
-	\paragraph{\fbox{\normalfont{\plonk{} verifier $\verifier(\REL, \crs, \inp, \zkproof)$}}}\ \newline
-	The \plonk{} verifier works as follows
-	\begin{description}
-		\item[Step 1] Validate all obtained group elements.
-		\item[Step 2] Validate all obtained field elements.
-		\item[Step 3] Validate the instace $\inp = \smallset{\wit_i}_{i = 1}^\instsize$.
-		\item[Step 4] Compute challenges $\beta, \gamma, \alpha, \alpha', \chz, v, u$ from the transcript.
-		\item[Step 5] Compute zero polynomial evaluation $\p{Z_H} (\chz)  =\chz^\numberofconstrains - 1$.
-		\item[Step 6] Compute Lagrange polynomial evaluation $\lag_1 (\chz) = \frac{\chz^\numberofconstrains -1}{\numberofconstrains (\chz - 1)}$.
-		\item[Step 7] Compute public input polynomial evaluation $\pubinppoly (\chz) = \sum_{i \in \range{1}{\instsize}} \wit_i \lag_i(\chz)$.
-		\item[Step 8] Compute quotient polynomials evaluations
-		\begin{multline*}
-			\p{t} (\chz)  = \frac{1}{\p{Z_H}(\chz)} 
-			\Big(
-				\p{r} (\chz) + \pubinppoly(\chz) - (\p{a}(\chz) + \beta \p{S_\sigma 1}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_\sigma 2}(\chz) + \gamma) \\
-				(\p{c}(\chz) + 
-				\gamma)\p{z}(\chz \omega) \alpha - \lag_1 (\chz) \alpha^2
-			\Big) \,.
-		\end{multline*}
-		\item[Step 9] Compute batched polynomial commitment
-		$\gone{D} = v \gone{r} + u \gone {z}$ that is
-		\begin{align*}
-			\gone{D} & = v
-			\left(
-			\begin{aligned}
-				& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
-				& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
-				% &   \\
-				& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
-			\end{aligned}
-			\right) + \\
-			& + u \gone{\p{z}(\chi)}\,.
-		\end{align*}
-		\item[Step 10] Computes full batched polynomial commitment $\gone{F}$:
-		Next it computes $\gone{F}$:
-		\begin{align*}
-			\gone{F} & = \left(\gone{\p{t_{lo}}(\chi)} + \chz^\numberofconstrains \gone{\p{t_{mid}}(\chi)} + \chz^{2 \numberofconstrains} \gone{\p{t_{hi}}(\chi)}\right) + u \gone{\p{z}(\chi)} + \\
-			& + v
-			\left(
-			\begin{aligned}
-				& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
-				& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
-				% &   \\
-				& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
-			\end{aligned}
-			\right) \\
-			& + v^2 \gone{\p{a}(\chi)} + v^3 \gone{\p{b}(\chi)} + v^4 \gone{\p{c}(\chi)} + v^5 \gone{\p{S_{\sigma 1}(\chi)}} + v^6 \gone{\p{S_{\sigma 2}}(\chi)}\,.
-		\end{align*}
-		\item[Step 11] Compute group-encoded batch evaluation $\gone{E}$
-		\begin{align*}
-			\gone{E}  = \frac{1}{\p{Z_H}(\chz)} & \gone{
-			\begin{aligned}
-				& \p{r}(\chz) + \pubinppoly(\chz) + \\
-				& - \alpha \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}} (\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}} (\chz) + \gamma) (\p{c}(\chz) + \gamma) \p{z}(\chz \omega) \right) + \\
-				& + \alpha^2  \lag_1 (\chz)
-			\end{aligned}
-			}\\
-			 + & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }\,.
-		\end{align*}
-		\item[Step 12] Check whether the verification equation holds
-		\begin{multline}
-			\label{eq:ver_eq}
-			\left(
-			\gone{\p{W_{\chz}}(\chi)} + u \cdot \gone{\p{W_{\chz \omega}}(\chi)}
-			\right) \bullet
-			\gtwo{\chi} = \\
-			\left(
-				\chz \cdot \gone{\p{W_{\chz}}(\chi)} + u \chz \omega \cdot \gone{\p{W_{\chz \omega}}(\chi)} + \gone{F} - \gone{E}
-			\right) \bullet
-			\gtwo{1}\,.
-		\end{multline}
-	The verification equation is a batched version of the verification equation from \cite{AC:KatZavGol10} which allows the verifier to check openings of multiple polynomials in two points (instead of checking an opening of a single polynomial at one point).
-	\end{description}
-
-
-\bibliographystyle{alpha}
-\bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
-
-\appendix
-\section{\plonk{}'s prover explained}
-\label{sec:plonk_explained}
 \end{document}
