@@ -89,13 +89,10 @@
 \cite{AC:Groth07}
 \cite{EPRINT:AbdRamSla20}
 \cite{EPRINT:KZMQCP15}
-\cite{EPRINT:BagAta19}
-\cite{EPRINT:Baghery20}
-
-
+\cite{EPRINT:AtaBag19}
 
 \subsection{Our contribution}
-First of all, we prove that $\plonk$ is simulation-extractable. Although we do not change the original protocol at all, we had to solve a number of problems in order to show that. The idea of the proof goes as follows.
+First of all, we prove that $\plonk$ is simulation-extractable. Although we change the original protocol only little, we had to solve a number of problems in order to show that. The idea of the proof goes as follows.
 
 \paragraph{Witness-extended emulation of \plonk{}.}
 First, we show that $\plonk$ has witness-extended emulation. To that end we show how from a number of accepting transcript a witness can be extracted. Unfortunately, \plonk{} does not to fit well in the standard definitions of witness-extended emulations like by Lindell \cite{JC:Lindell03} or by Groth and Ishai \cite{EC:GroIsh08}. The former does not cover arguments that utilises a CRS; although the latter does, it does not consider giving the CRS trapdoor to the extractor. Thus, we had to modify the definition for the witness-extended emulation.
@@ -371,6 +368,35 @@ Consider $\prod_{i = 1}^{\mu} n_i$ accepting transfers with challenges as a tree
 \end{lemma}
 As mentioned, any protocol that has witness-extended emulation defined as in \cite{EC:BCCGP16} is equipped with this property also in the light of \cref{def:wit_ext_em}.
 
+To obtain the full tree of acceptable transcripts and to extract the witness from a $\prover^*$ the extractor runs $\treebuild_\prover (1)$, cf.~\cref{fig:rewinding_prover} (taken from \cite{EC:BCCGP16}).
+
+\begin{figure}
+	\centering
+	\fbox{
+	\procedure{$\treebuild_{\adv_\se} (i)$}
+	{
+		\pcif i = \mu + 1 \pcthen\\
+			\pcind \trans \gets \ip{\prover^*}{\verifier}\\
+			\pcind b \gets \verifier(\trans)\\
+			\pcind \pcif b = 0 \pcthen \pcreturn (\trans, \bot)\\
+			\pcind \pcif b = 1 \pcthen \\
+			\pcind \pcind \tree \gets \smallset{\trans}\  \pcreturn (\trans, \tree)	\\
+		\text{Run $\ip{\prover^*}{\verifier}$ up to and including move $2 i + 1$}\\
+		(\trans, \tree) \gets \treebuild_{\adv_\se}(i + 1)\\
+		\pcif \tree = \bot \pcthen \pcreturn (\trans, \bot)\\
+		\counter \gets 1\\
+		\pcwhile \counter \leq n_i \pcthen\\
+		\pcind \text{Rewind $\ip{\prover^*}{\verifier}$ back until just before move $2 i$}\\
+		\pcind (\trans', \tree') \gets \treebuild(i + 1)\\
+		\pcind \pcif \tree' \neq \bot \pcthen\\
+		\pcind \pcind \tree \gets \tree \cup \smallset{\trans'} \\
+		\pcind \pcind \counter \gets \counter + 1\\
+		\pcreturn \trans, \tree
+	}}
+	\caption{Rewinding strategy for $\adv_\se$ -- getting a tree of accepting transcripts.}
+	\label{fig:rewinding_prover}
+\end{figure}
+
 \paragraph{Unique-response protocols.}
 Another problem comes with another assumption required by Faust et al. That is, the unique response property of the transformed sigma protocol.
 Fischlin's formulation, although perfectly fine for applications presented in \cite{C:Fischlin05}, is not enough in our case.
@@ -387,20 +413,24 @@ More precisely, we say that a $(2\mu + 1)$-round protocol has \emph{unique respo
 	We say that $\proofsystem$ has \emph{unique responses after $i$}
 	if after submitting his $i$-th message the prover is a deterministic function. That is, it does not use his randomness tape and deterministically answers verifier's challenges.
 \end{definition}
+\begin{example}
+	The Schnorr protocol is $\ur{1}$. That is, after submitting his first message $a$, the prover is a deterministic function of the instance, $a$, and the verifier's challenge.
+\end{example}
+
 We note that the definition above is independent on whether the proof system $\proofsystem$ utilises CRS (and compounds of the CRS-generating $\kgen$ algorithm) or not.
 % Furthermore it is also blind whether $\proofsystem$ is interactive or not.
 \michals{08.07.20}{Should we change it to "deterministic prover property"?}
 
-\paragraph{Unique responses and extractability.}
-The key observations that will be used in our simulation-extractability proof is following: if a $\mu$-round protocol $\proofsystem$ has deterministic prover from the $i$-th round on and it has witness-extended emulation from a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts, where $n_1 = \ldots = n_{i - 1} = 1$ and $\prod_{i = 1}^\mu n_\mu \leq \poly$, then the $\fs$-transformed version of the protocol $\proofsystem_\fs$ is simulation-extractable.
-
-Furthermore, if $\proofsystem$ has a deterministic prover from round $i$ on, but not in round $i - 1$, and it has witness-extended emulation only from $(n_1, \ldots, n_{i - 1}, \ldots, n_\mu)$-trees of accepting transcripts such that $n_{i - 1} \neq 1$, then $\proofsystem_\fs$ is not simulation-extractable.
-
-The argument behind that goes as follows. To obtain a tree which allows for witness extraction one must rewind the protocol back to round $i - 1$.
-\michals{08.07}{Continue}
+% \paragraph{Unique responses and extractability.}
+% The key observations that will be used in our simulation-extractability proof is following: if a $\mu$-round protocol $\proofsystem$ has deterministic prover from the $i$-th round on and it has witness-extended emulation from a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts, where $n_1 = \ldots = n_{i - 1} = 1$ and $\prod_{i = 1}^\mu n_\mu \leq \poly$, then the $\fs$-transformed version of the protocol $\proofsystem_\fs$ is simulation-extractable.
+% 
+% Furthermore, if $\proofsystem$ has a deterministic prover from round $i$ on, but not in round $i - 1$, and it has witness-extended emulation only from $(n_1, \ldots, n_{i - 1}, \ldots, n_\mu)$-trees of accepting transcripts such that $n_{i - 1} \neq 1$, then $\proofsystem_\fs$ is not simulation-extractable.
+% 
+% The argument behind that goes as follows. To obtain a tree which allows for witness extraction one must rewind the protocol back to round $i - 1$.
+% \michals{08.07}{Continue}
 
 \paragraph{Simulatability of proofs.}
-\michals{08.07.20}{Actually, I am not sure that this property is required anymore}
+% \michals{08.07.20}{Actually, I am not sure that this property is required anymore}
 We note that in the standard model protocols the simulator does not require any additional power like knowledge of a CRS trapdoor or programmability of the random oracle. This implies that every adversary can produce a simulated proof by its own.
 On the other hand, we have CRS-based zk-proofs where knowledge of trapdoor is required to make an simulated proof.
 
@@ -429,7 +459,8 @@ Given a multi-round Fiat--Shamir-transformed protocol which simulation utilises 
 	\michals{3.07.20}{Note that $\inp$ doesn't need to be in the language!}
 \end{definition}
 
-This definition will have consequences later on as in a $k$-out-of-$n$ simulatable proof system learning first $2k - 1$ messages of the simulated proof gives the adversary no additional power as it could compute these messages by its own.
+This definition will have consequences later on as in a $k$-out-of-$n$ simulatable proof system learning first $2k - 1$ messages of the simulated proof gives the adversary no additional power as it could compute these messages by its own. 
+This property will be important later in the simulation-extractability proof.
 \michals{03.07}{a proof for that statement would be nice.}
 
 \section
@@ -446,38 +477,64 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 \begin{theorem}[Simulation extractability of the Fiat--Shamir transform III]
 	\michals{03.07}{The label of this theorem will probably be changed to II (from III)}
 	\label{thm:wit_ext_em_FS_III}
-	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an interactive $\ur{i}$ protocol for a relation $\REL$.
-	Assume there exists an extractor $\ext$ that extracts the witness from a $(1, \ldots, 1, n_{i + 1}, \ldots, n_\mu)$-tree of accepting transcripts of $\proofsystem$.
-	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model if $N =\prod_{j = i}^\mu = \poly$.
-	% Furthermore the extractor $\ext_\fs$ for $\proofsystem_\fs$ needs to run $\simulator$ $N$ times.
+	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an interactive $\mu$-round $\ur{i}$ protocol for a relation $\REL$ and $i < \mu$.
+	Assume there exists an extractor $\ext$ that extracts the witness from a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts of $\proofsystem$ and $\prod_{j = 1}^\mu n_j \leq \poly$.
+	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model.
 \end{theorem}
 \begin{proof}
 	The proof goes similarly to \cite[Theorem 3]{INDOCRYPT:FKMV12}. For the sake of clarity let divide the simulator algorithm $\simulator_\fs$ of $\proofsystem_\fs$  into two subroutines:
 	\begin{description}
 		\item[$\simulator_{\fs, \ro}$] that takes care about random oracle queries. Assume that there is an upper bound $Q = \poly$ for the number of queries that may be submitted.
 		For a query $x$ simulator $\simulator_{\fs, \ro}$ checks whether a list of queries $L$ already contains a pair $(x, y)$, for some $y$, and, if that is the case, outputs $y$.
-		Otherwise, it picks an element $y'$ from the random oracle range, outputs it and adds $(x, y')$ to $L$. Importantly $y'$ is picked accordingly to the randomness tape provided to $\simulator_{\fs, \ro}$, i.e.~one may assume that $\simulator_{\fs, \ro}$ gets as input a randomness tape $r$ that provides values $y_1, \ldots, y_Q$.
+		Otherwise, it picks an element $y'$ from the random oracle codomain, outputs it and adds $(x, y')$ to $L$. Importantly $y'$ is picked accordingly to the randomness tape provided to $\simulator_{\fs, \ro}$, i.e.~one may assume that $\simulator_{\fs, \ro}$ gets as input a randomness tape $r$ that provides values $y_1, \ldots, y_Q$.
 		When the simulator needs to answer a fresh query $x$ it takes the successive $y_i$ from $r$.
-		\item[$\simulator_{\fs, \zkproof}$] that provides simulated proofs. The simulator may also program random oracle queries. That is, it may add pair $(x, y)$ to $L$ unless there is a pair that have $x$ on the first position. In that case it aborts.
+		\item[$\simulator_{\fs, \zkproof}$] that provides simulated proofs. The simulator may also program random oracle queries as it wishes. That is, it may add pair $(x, y)$ to $L$ unless there is a pair that have $x$ on the first position. In that case it aborts.
 	\end{description}
 
 	Let $\adv_\se^{\simulator_\fs}$ be a simulation-extractability adversary for $\proofsystem_\fs$, $\inp$ the instance $\adv_\se$ proves and $\zkproof = \vec{a} = (a_0, \ldots, a_\mu)$ the corresponding acceptable proof.
-	W.l.o.g.~we may assume that $(\inp, \pi)$ are output after $\adv_\se$ learnt simulated proofs from $\simulator_{\fs, \zkproof}$.
+	W.l.o.g.~we may assume that $(\inp, \pi)$ is output after $\adv_\se$ learnt simulated proofs from $\simulator_{\fs, \zkproof}$.
 
 	For each $j > i$, divide the adversary's proof $\zkproof$ into two parts:
 	first, $\vec{a}_{[0:j]} = (a_0, \ldots, a_j)$ and second $\vec{a}_{{[j + 1:\mu]}} = (a_{j + 1}, \ldots, a_\mu)$.
-	\michals{10.06}{I think this generalised idea of unique resp. may not make much sense, we should explicitly require that $i = \mu - 1$. Otherwise, the prover gets a randomised challenge from the verifier, so his answer is not unique. OTOH, we may require that for every challenge there is only one correct answer.}
-	Note that $(\inp, \vec{a}^{[0:j]})$ is a query to the random oracle that is performed by the adversary.
-	Otherwise, if the query was made by the simulator $\simulator_{\fs, \zkproof}$ then, since $\proofsystem$ is an $\ur{i}$-protocol and $j > i$, a proof starting with $(\inp, \vec{a}_{[0:j]})$ is in the list of simulated proofs $Q$ and cannot be used by the simulation-extractability adversary $\adv_\se$.
+	Note that $(\inp, \vec{a}_{[0:j]})$ is a fresh query to the random oracle that is performed by the adversary.
+	Otherwise, if the query was made by the simulator $\simulator_{\fs, \zkproof}$ then, since $\proofsystem$ is an $\ur{i}$-protocol and $j > i$, a proof starting with $(\inp, \vec{a}_{[0:j]})$ is already in the list of simulated proofs $Q$ and cannot be used by the simulation-extractability adversary $\adv_\se$.
 
-	Now, after $\simulator_{\fs, \ro}$ was queried with $(\inp, \vec{a}_{[0:j]})$, the adversary $\adv_\se$ is rewound and a new further queries responses for the simulator are picked. This step is repeated $n_j$ times.
-	More precisely, assume that $(\inp, \vec{a}_{[0:j]})$ was $J_j$-th query to $\simulator_{\fs, \ro}$, then the sequence of responses $\vec{y} = y_1, \ldots, y_Q$ changes to $\vec{y'} = y_1, \ldots, y_{J_j}, y'_{J_j + 1}, \ldots, y'_{Q}$, for some fresh and independent $y'_{J_j + 1}, \ldots, y'_{Q}$ picked accordingly to $r$.
-	W.l.o.g.~we can assume that all sequences $\vec{y}$ are registered and stored and when a new $\vec{y'}$ comes and for some $k > J_j$ holds $\vec{y_k} = \vec{y'_k}$ then the simulator $\simulator_{\fs, \ro}$ aborts. However, this happens with negligible probability only as the number of drawn $\vec{y}$-sequences is polynomially bounded and the number of possible values they pick is exponential in the security parameter.
+	The tree of accepting transcripts is generating by rewinding the adversary as depicted on~\cref{fig:rewinding_advse}, which is a version of the tree extraction algorithm from \cref{fig:rewinding_prover} tuned for non-interactive proofs and adversaries that have access to simulated proofs.
+	To obtain the full tree of transcripts the extractor runs $\treebuild_{\adv_\se, \simulator_{\fs, \zkproof}, \simulator_{\fs, \ro}}^{\REL, \crs, \inp}(1)$, verifies whether all collected transcripts are acceptable and the tree is valid and, if that is the case, returns the witness.
+	
+	\begin{figure}
+		\centering
+		\fbox{
+		\procedure{$\treebuild_{\adv_\se, \simulator_{\fs, \zkproof}, \simulator_{\fs, \ro}}^{\REL, \crs, \inp} (i)$}
+		{
+			\pcif i = \mu + 1 \pcthen\\
+				\pcind \zkproof \gets \adv_\se^{\simulator_{\fs, \zkproof}, \simulator_{\fs, \ro}}(\REL, \crs)\\
+				\pcind \pcif (\inp, \zkproof) \in Q \pcthen \pcreturn (\zkproof, \bot) \\
+				\pcind \pcind \pccomment{$Q$ is the list of $(\inp, \zkproof)$ pairs that have been submitted to  $\simulator_{\fs, \ro}$.}\\
+				\pcind b \gets \verifier(\REL, \crs, \inp, \zkproof)\\
+				\pcind \pcif b = 0 \pcthen \pcreturn (\zkproof, \bot)\\
+				\pcind \pcif b = 1 \pcthen \\
+				\pcind \pcind \tree \gets \smallset{\zkproof}\ \pcreturn (\zkproof, \tree)	\\
+			\text{Run $\adv_\se$ up to and including query $(\inp, \vec{a}_{[0 : i]})$ to $\simulator_{\FS, \ro}$}\\
+			(\zkproof, \tree) \gets \treebuild(i + 1)\\
+			\pcif \tree = \bot \pcthen \pcreturn (\zkproof, \bot)\\
+			\counter \gets 1\\
+			\pcwhile \counter \leq n_i \pcthen\\
+			\pcind \text{Rewind $\adv_\se$ back until just before challenge $h_i$}\\
+			\pcind (\zkproof', \tree') \gets \treebuild(i + 1)\\
+			\pcind \pcif \tree' \neq \bot \pcthen\\
+			\pcind \pcind \tree \gets \tree \cup \smallset{\zkproof'} \\
+			\pcind \pcind \counter \gets \counter + 1\\
+			\pcreturn \zkproof, \tree
+		}}
+		\caption{Rewinding strategy for $\adv_\se$---getting a tree of accepting transcripts. For the sake of clarity parameters of $\treebuild$ algorithm have been omitted in the code. We also assume that $\adv_\se$ separately outputs instance $\inp$ which it plans to prove.}
+		\label{fig:rewinding_advse}
+\end{figure}
 
-	Since the first $J_j$ queries do not change, the adversary, whose randomness tape remains the same, submits $(\inp, \vec{a}_{[0:j]})$ as its $J_j$-th query regardless it was rewound.
-	That way, for each $j$, new $\prod_{k = 1}^{j} n_k$ partial transcripts $(\inp, \vec{a}_{[0 : j]})$ is obtained, each of the previous $\prod_{k = 1}^{j - 1} n_k$ transcripts is extended in $n_j$ different ways respectively to different sequence of responses of $\simulator_{\fs, \ro}$.
-
-	When $j$ reaches $\mu$, there are $\prod_{j}^{\mu} n_j$ transcripts that makes an $(1, \ldots, 1, n_{i + 1}, \ldots, n_\mu)$-tree of accepting transcripts. Thus, from the forking lemma (cf.~\cref{lem:bootle_forking_lemma}), there exists an extractor $\ext_\fs$ that recreates a witness $\wit$ such that $\REL(\inp, \wit)$.
+	% Since the first $J_j$ queries do not change, the adversary, whose randomness tape remains the same, submits $(\inp, \vec{a}_{[0:j]})$ as its $J_j$-th query regardless it was rewound.
+	% That way, for each $j$, new $\prod_{k = 1}^{j} n_k$ partial transcripts $(\inp, \vec{a}_{[0 : j]})$ is obtained, each of the previous $\prod_{k = 1}^{j - 1} n_k$ transcripts is extended in $n_j$ different ways respectively to different sequence of responses of $\simulator_{\fs, \ro}$.
+	% 
+	% When $j$ reaches $\mu$, there are $\prod_{j}^{\mu} n_j$ transcripts that makes an $(1, \ldots, 1, n_{i + 1}, \ldots, n_\mu)$-tree of accepting transcripts. Thus, from the forking lemma (cf.~\cref{lem:bootle_forking_lemma}), there exists an extractor $\ext_\fs$ that recreates a witness $\wit$ such that $\REL(\inp, \wit)$.
 	\qed
 \end{proof}
 
@@ -595,130 +652,4 @@ The simulator $\simulator$ in $\plonk$ proceeds according to the following steps
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
-
-\appendix
-\noindent{\Huge{\bf THIS IS NOT APPENDIX. \\THIS IS GRAVEYARD.}}
-\section{$\plonk$ protocol rolled-out}
-
-\section{Old subsections}
-\subsection{Interpolation of rational functions}
-Let $F(X) = P(X) / Q(X)$ be a rational function defined over $\FF(X)$ such that $\deg P = m_a$ and $\deg Q = m_b$. We call a set $V = \smallset{(x_i, y_i)}_{i \in I}$ a \emph{support set} of $F$ if for all $i \in I$ holds $F(x_i) = y_i$.
-As shown by Minsky et al.~in \cite{TIT:MinTraZip03} if $P$ and $Q$ are monic, then a support set $V$ of size at least $m_a + m_b$ unambiguously determines $F$.
-
-\begin{lemma}[Rational function interpolation~{\cite[Theorem 4.1]{TIT:MinTraZip03}}]
-	\label{lem:rational_function_interpolation}
-  Let $F(X) = P(X) / Q(X)$ be a rational function and let $P(X) = X^{m_a} + p_1 X^{m_a - 1} + \ldots + p_{m_a}$, $Q(X) = X^{m_b} + q_1 X^{m_a - 1} + \ldots + q_{m_b}$. Let $V_F$ be a support set of size $m = m_a + m_b$, then $V_F$ determines $F$ unambiguously.
-\end{lemma}
-
-Note that the theorem above assumes that the polynomials determining $F$ are monic and their degrees are known. In general, a rational function is not defined unambiguously and $F(X) = P(X) / Q(X) \in \FF(X)$ represents a whole equivalence class of functions
-\[
-	F(X) = \frac{P(X)}{Q(X)} \equiv \frac{P(X) f(X)}{Q(X) f(X)}\,,
-\]
-for some $P(X), Q(X), f(X) \in \FF[X]$.
-However, when the degree of the denominator polynomial $Q(X)$ is known, then the function is determined up to $f(X)$ that are \emph{constant}. Any other polynomial would change the denominator degree).
-Furthermore, if in $Q(X)$ there is at least one coefficient that is already known, then the whole function $F(X)$ is determined uniquely, i.e.~$f(X) \equiv 1$. Other $f$-s would affect the known coefficient $q_i$.
-The following lemma can be formulated:
-\begin{lemma}
-	\label{lem:rational_function_interpolation_2}
-	Let $F(X) = P(X) / Q(X)$ be a rational function for $P(X) = p_0 X^{m_a} + p_1 X^{m_a - 1} + \ldots + p_{m_a}$, $Q(X) = q_0 X^{m_b} + q_1 X^{m_a - 1} + \ldots + q_{m_b}$ such that $q_0$ is non-zero and at least one of the coefficients $q_i$ is known.
-	Let $V_F$ be a support set of size $m = m_a + m_b + 1$, then $V_F$ determines $F$ unambiguously.
-\end{lemma}
-\begin{proof}
-	The lemma has almost the same proof as \cref{lem:rational_function_interpolation}. Consider two functions $P_0 / Q_0$, $P_1 / Q_1$ that share the same values for each $x_i \in V_F$. That is,
-	\[
-		\frac{P_0(x_i)}{Q_0(x_i)} = \frac{P_1(x_i)}{Q_1(x_i)}\,.
-	\]
-	Polynomial $P_0(X) Q_1(X) - P_1(X) Q_0(X)$ has degree at most $(m_a + m_b)$ and zeroes in at least $(m_a + m_b + 1)$ points, thus is identically zero. Thus
-	\[
-		\frac{P_0(X)}{Q_0(X)} = \frac{P_1(X)}{Q_1(X)}\,
-	\]
-	and the functions determined by $P_0, Q_0$ and $P_1, Q_1$ are in the same equivalence class (i.e.~are the same function). Considering the observations above, only one function in this class exists if we specify concrete degree of the denominator polynomial and one of its coefficients.
-	\qed
-\end{proof}
-
-\section{Simulation extractability of \plonk [OLD]}
-The main idea behind showing that \plonk{} is simulation extractable relies on the result by Faust et al.~\cite{INDOCRYPT:FKMV12} where the authors show that a public-coin special-sound protocol made non-interactive by the Fiat--Shamir transform is simulation extractable.
-Thus showing that \plonk{} is special-sound and public-coin is enough to show its simulation extractability. It is obvious that \plonk{} is public-coin, thus what remains is to show it is also special-sound.
-
-To that end we take one of the polynomials that are computed by the prover and which contains the witness as parts of the coefficients and, by programming the random oracle and rewinding the prover, we evaluate it on many different points. This allows to recreate the coefficients of the function and therefore the witness.
-%
-More precisely, the polynomial $Z(X)$ computed by the prover in the second round of the protocol is used. First the polynomial is expressed as a rational function $\Gamma$ of a formal variable $X_\gamma$, which is evaluated as $\gamma$.
-The variable $\gamma$ is given by the random oracle $\ro$ prior to Round 2.
-By programming $\ro$ and rewinding the prover one can evaluate $\Gamma$ in various points one can recreate the coefficients of $\Gamma$ and compute the witness.
-
-We note that the extraction procedure is not very efficient. Function $\Gamma$ has numerator and denominator polynomials of degrees linear to the size of the statement. Thus a linear number of rewinds is necessary to recreate the witness.
-However, we point out that the efficiency of the extractor does not influences the efficiency of a protocol run between the prover and verifier.
-
-\begin{theorem}[Witness-extended emulation in \plonk{}]
-  \plonk{} has witness-extended emulation in the random oracle model.
-\end{theorem}
-\begin{proof}
-In the second round of \plonk{} the prover gets from a random oracle $\beta = \ro(0, \tr)$ and $\gamma = \ro(1, \tr)$, where $\tr$ is the transcript of the previous messages exchanged in the protocol. Then he computes a polynomial
-\begin{multline*}
-  \label{eq:Z}
-  Z(X) = (b_7 X^2 + b_8 X + b_9) (X^\instsize - 1) + L_1 (X) + \\
-   + \sum_{i = 1}^{\instsize - 1}\brak{L_{i + 1}(X) \prod_{j = 1}^{i}
-  \frac{(\wit_j + \beta \w^{j - 1} + \gamma)(\wit_{\instsize + j} + \beta k_1 \w^{j - 1} + \gamma) (\wit_{2\instsize + j} + \beta k_2 \w^{j - 1} + \gamma)}
-  {(\wit_j + \sigma(j)\beta + \gamma)(\wit_{\instsize + j} + \sigma(\instsize + j)\beta + \gamma)(\wit_{2\instsize + j} + \sigma (2\instsize + j) \beta + \gamma)}
-  }\,
-\end{multline*}
-and makes $\gone{Z(\chi)}$ part of his proof.
-Here, $L_i$ are Lagrange basis polynomials, $\smallset{1, \w, \ldots, \w^{\instsize - 1}}$ are roots of unity, $\sigma(j)$ are values determined by the permutation, which defines the circuit (i.e.~which gate is connected to which gate), and $k_1, k_2$ are other \emph{publicly known} values.
-
-Since $\chi$ is fixed, $Z(\chi)$ can be expressed as an evaluation of a rational function $\Gamma(X_\gamma)$ at $\gamma$. We will now focus on interpolating $\Gamma$.
-For the sake of readability we denote by $p_i (X_\gamma)$ a polynomial corresponding to the $i$-th product of the numerator of the big fraction in $Z$, that is
-\[
-  p_i(X_\gamma) = \prod_{j = 1}^{i} L_{i + 1} (\wit_j + \beta \w^{j - 1} + X_\gamma)(\wit_{\instsize + j} + \beta k_1 \w^{j - 1} + X_\gamma) (\wit_{2\instsize + j} + \beta k_2 \w^{j - 1} + X_\gamma)\,.
-\]
-Similarly, $q_i (X_\gamma)$ denotes the $i$-th product of the denominator
-\[
-  q_i(X_\gamma) = \prod_{j = 1}^{i} (\wit_j + \sigma(j)\beta + X_\gamma)(\wit_{\instsize + j} + \sigma(\instsize + j)\beta + X_\gamma)(\wit_{2\instsize + j} + \sigma (2\instsize + j) \beta + X_\gamma)\,.
-\]
-
-To make the necessary summation all fractions are given a common denominator equal $q_1 (X_\gamma) \cdot \ldots \cdot q_{\instsize - 1} (X_\gamma)$. After this operation, $\Gamma(\gamma)$ can be written as
-\begin{multline*}
-  \Gamma(\gamma) = (b_7 \chi^2 + b_8 \chi + b_9) (\chi^\instsize - 1) + L_1 (\chi) + \\
-   + \brak{\frac{
-   p_1(\gamma) q_2(\gamma) \ldots q_{\instsize - 1}(\gamma) + q_1(\gamma) p_2(\gamma) q_3(\gamma) \ldots q_{\instsize - 1}(\gamma) + \ldots + q_1(\gamma) \ldots q_{\instsize - 2}(\gamma) p_{\instsize - 1}(\gamma)
-   }{
-   q_1(\gamma) q_2(\gamma) \ldots q_{\instsize - 1}(\gamma)
-   }
-  }\,.
-\end{multline*}
-Finally, let
-\[
-  \Gamma (X_\gamma) = \frac{N(X_\gamma)}{D(X_\gamma)}\,,
-\]
-where
-\begin{align*}
-  N(X_\gamma) & = \brak{(b_7 \chi^2 + b_8 \chi + b_9) (\chi^\instsize - 1) + L_1 (\chi)} \cdot q_1(X_\gamma) \ldots q_{\instsize - 1}(X_\gamma) + \\
-   & + p_1(X_\gamma) q_2(X_\gamma) \ldots q_{\instsize - 1}(X_\gamma) + q_1(X_\gamma) p_2(X_\gamma) q_3(X_\gamma) \ldots q_{\instsize - 1}(X_\gamma) + \ldots \\
-   & + q_1(X_\gamma) \ldots q_{\instsize - 2}(X_\gamma) p_{\instsize - 1}(X_\gamma)\,,\\
-  D(X_\gamma) & = q_1(X_\gamma)  \ldots q_{\instsize - 1}(X_\gamma)\,.
-\end{align*}
-Both $N(X_\gamma)$ and $D(X_\gamma)$ have degree $\maxdegree = 3 \frac{(\instsize - 1) \instsize}{2}$, since $\deg p_i (X_\gamma) \allowbreak = \deg q_i (X_\gamma) = 3 i$.
-
-Observe that
-\begin{inparaenum}[(i)]
-	\item the degree of polynomial $D(X_\gamma)$ is known and
-	\item one of its coefficients is known, more precisely, the coefficient by the highest power, $X_\gamma^{3i}$, is $1$.
-\end{inparaenum}
-Hence the requirements for \cref{lem:rational_function_interpolation_2} are met.
-
-Following \cref{def:wit_ext_em} we can assume that the extractor gets as input the trapdoor corresponding to the CRS and knows $\chi$.
-Thus the only unknown values in $Z$ are the values of witness elements $\smallset{\wit_{\instsize + j}}_{j = 1}^{2 \instsize}$ (note that the values $\smallset{\wit_{j}}_{j = 1}^{\instsize}$ are public, i.e.~$\smallset{\wit_{j}}_{j = 1}^{\instsize} = \inp$) and randomisers $b_7, b_8, b_9$ which are picked by the prover at the beginning of the protocol.
-We need to show now that information the extractor has about the coefficients of $\Gamma(X_\gamma)$ is enough to extract the witness, even though some coefficients may depend on
-\begin{inparaenum}[(i)]
-	\item more than one witness element and\label{it:many_wit}
-	\item randomisers $b_7, b_8, b_9$.\label{it:randomisers}
-\end{inparaenum}
- %
-\task{15.05}{Missing part -- show that we know enough about coefficients of $\Gamma$ to extract the witness even though (1) some coefficients may depend on many witness parts, (2) some coefficients may depend on the blinders $b_i$}
-%
-Again we focus on the denominator function $D(X_\gamma)$ to tackle \cref{it:many_wit,it:randomisers}.
-First, we look at the coefficient by the $X_\gamma^{\maxdegree - 1}$ (i.e.~the second highest power) which is  \hl{continue}
-That resolves \cref{it:many_wit}. The other issue that comes with \cref{it:randomisers} is easy since there are no randomisers used in the denominator polynomial.
-\qed
-\end{proof}
-
 \end{document}
