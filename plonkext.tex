@@ -328,7 +328,7 @@ Faust et al.~\cite{INDOCRYPT:FKMV12} show that every such $\sigmaprot_\fs$ is si
 
 The theorem relies on the following classical lemma, called \emph{General forking lemma} \cite{JC:PoiSte00}.
 
-\begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12}]
+\begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12,CCS:BelNev06}]
 	\label{lem:forking_lemma}
 	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\adv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $i \in\range{0}{q}$ and $s$ is called a \emph{side output}.
 	Denote by $\ig$ a randomised instance generator.
@@ -374,17 +374,20 @@ For the sake of extractability, both transcripts have to have the same index $i$
 Unfortunately, Faust et al.'s result cannot be directly applied in our case since the protocols we consider have more than three rounds of interaction.
 
 \paragraph{Generalised forking lemma.}
-First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not general enough for our purpose as it useful only for protocols that extract witness from two transcripts.
+First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not general enough for our purpose as it useful only for protocols that extract witness from two transcripts. 
+To be able to extract a witness from a \plonk{} execution we need to obtain at least $\numberofconstrains + 3$ transcripts.
+Fortunately, since the witness can be extracted by repeating only one round of the protocol, we can proceed as in a protocol that utylises only one challenge.
+\michals{15.07}{Is that true?}
 
-Here we propose a generalisation of the general forking lemma that given probability $\accProb$ gives a lower bound on the probability of generating a \emph{tree of accepting transcripts}, which could be used to extract a witness. Note that the transcripts now indeed make a tree which branches with every challenge. 
+Here we propose a generalisation of the general forking lemma that given probability $\accProb$ gives a lower bound on the probability of generating a \emph{tree of accepting transcripts}, which could be used to extract a witness. 
 
-\begin{proposition}[Generalised general forking lemma]
+\begin{lemma}[General forking lemma II]
 	% Let $\proofsystem$ be a $(2 \mu + 1)$-round protocol and $\proofsystem_\fs$ its $\fs$-transformed version.
 	Fix $q \in \ZZ$ and set $H$ of size $h > \cdots$. 
-	Let $\adv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(\vec{k}, s)$ where $\vec{k} \in \range{0,q}^\mu$ and $s$ is called a side output. 
+	Let $\adv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$ where $i \in \range{0}{q}$ and $s$ is called a side output. 
 	Denote by $\ig$ a randomised instance generator. We denote by $\accProb$ the probability
 	\[
-		\condprob{\vec{k}_i \neq 0,\text{ for } i \in \range{1}{\mu}}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (\vec{k}, s) \gets \adv(y, h_1, \ldots, h_q)}\,.
+		\condprob{i \neq 0}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.
 	\]
 	Let $\genforking_\adv$ denote the algorithm described in \cref{fig:genforking_lemma} then the probability $\extProb := \condprob{b = 1}{y \gets \ig;\ (b, \vec{s}) \gets \genforking_\adv(y)}$ is at least
 	\[
@@ -397,19 +400,22 @@ Here we propose a generalisation of the general forking lemma that given probabi
 		\procedure{$\genforking_\adv (y)$}
 		{
 			r \sample \RND{\adv}\\
-			h_1, \ldots, h_q \sample H\\
-			\vdots
-			% (i, s) \gets \adv(y, h_1, \ldots, h_q; r)\\
-			% \pcif i = 0\ \pcreturn (0, \bot, \bot)\\
-			% h_{i'}, \ldots, h_{q'} \sample H\\
-			% (i', s') \gets \adv(y, h_1, \ldots, h_{i - 1}, h_{i'} h_{q'}; r)\\
-			% \pcif (i = i') \land (h_{i} \neq h_{i'})\ \pcreturn (1, s, s')\\
-			% \pcind \pcelse \pcreturn (0, \bot, \bot)
+			h_1, \ldots, h_{i - 1} \sample H\\
+			\pcfor j \in \range{1}{m}\\
+			\pcind h_{i_j}, \ldots, h_{q_j} \sample H\\
+			\pcind (i_j, s_j) \gets \adv(y, h_1, \ldots, h_{i - 1}, h_{i_j}, \ldots, h_{q_j}; r)\\
+			\pcind \pcif i = 0\ \pcreturn (0, \bot, \bot)\\
+			\pcif \forall j, j'  \in \range{1}{m}\colon (i_{j} = i_{j'}) \land (h_{i_j} \neq h_{i_{j'}})\ \pcreturn (1, \vec{s})\\
+			\pcind \pcelse \pcreturn (0, \bot, \bot)
 		}}
 		\caption{Generalised forking algorithm $\genforking_\adv$}
 		\label{fig:genforking_lemma}
 \end{figure}
-\end{proposition}
+\end{lemma}
+\begin{proof}
+	We proceed similarly as in \cite{CCS:BelNev06}.
+	
+\end{proof}
 
 % 
 % \begin{figure}
