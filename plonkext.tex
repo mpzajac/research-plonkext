@@ -327,11 +327,6 @@ Faust et al.~\cite{INDOCRYPT:FKMV12} show that every such $\sigmaprot_\fs$ is si
 \end{theorem}
 
 The theorem relies on the following classical lemma, called \emph{General forking lemma} \cite{JC:PoiSte00}.
-%
-% The result relies on
-% Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a sigma protocol which transcript contains three messages $(a, b, z)$ with the middle being sent as a challenge from the verifier.
-% Special soundness states that any acceptable pair of transcripts $(a, b, z)$ and $(a, b', z')$ for some statement $\inp$ can be used to extract the corresponding witness $\wit$.
-% This is formalised and generalized by the so-called general forking lemma
 
 \begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12}]
 	\label{lem:forking_lemma}
@@ -359,9 +354,9 @@ The theorem relies on the following classical lemma, called \emph{General forkin
 			h_1, \ldots, h_q \sample H\\
 			(i, s) \gets \adv(y, h_1, \ldots, h_q; r)\\
 			\pcif i = 0\ \pcreturn (0, \bot, \bot)\\
-			h_{i'}, \ldots, h_{q'} \sample H\\
-			(i', s') \gets \adv(y, h_1, \ldots, h_{i - 1}, h_{i'} h_{q'}; r)\\
-			\pcif (i = i') \land (h_{i} \neq h_{i'})\ \pcreturn (1, s, s')\\
+			h'_{i}, \ldots, h'_{q} \sample H\\
+			(i', s') \gets \adv(y, h_1, \ldots, h_{i - 1}, h'_{i} h'_{q}; r)\\
+			\pcif (i = i') \land (h_{i} \neq h'_{i})\ \pcreturn (1, s, s')\\
 			\pcind \pcelse \pcreturn (0, \bot, \bot)
 		}}
 		\caption{Forking algorithm $\forking_\adv$}
