@@ -333,18 +333,17 @@ The theorem relies on the following classical lemma, called \emph{General forkin
 % Special soundness states that any acceptable pair of transcripts $(a, b, z)$ and $(a, b', z')$ for some statement $\inp$ can be used to extract the corresponding witness $\wit$.
 % This is formalised and generalized by the so-called general forking lemma
 
-\newcommand{\forking}{\pcalgostyle{F}}
 \begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12}]
-	\label{lem:faust_forking_lemma}
-	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\pdv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $I \in\range{0}{q}$ and $s$ is called a \emph{side output}.
+	\label{lem:forking_lemma}
+	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\adv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $i \in\range{0}{q}$ and $s$ is called a \emph{side output}.
 	Denote by $\ig$ a randomised instance generator.
 	We denote by $\accProb$ the probability
 	\[
-		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_1 \sample H; (i, s) \gets \pdv(y, h_1, \ldots, h_q)}\,.
+		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_q \sample H; (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.
 	\]
-	Let $\forking_\pdv(y)$ denote the algorithm described in \cref{fig:faust_forking_lemma}, then the probability $\extProb$ defined as
+	Let $\forking_\adv(y)$ denote the algorithm described in \cref{fig:forking_lemma}, then the probability $\extProb$ defined as
 	$
-		\extProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\pdv}(y)}
+		\extProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\adv}(y)}
 	$
 	holds
 	\[
@@ -354,84 +353,96 @@ The theorem relies on the following classical lemma, called \emph{General forkin
 	\begin{figure}
 		\centering
 		\fbox{
-		\procedure{$\forking_\pdv (y)$}
+		\procedure{$\forking_\adv (y)$}
 		{
-			r \sample \RND{\pdv}\\
+			r \sample \RND{\adv}\\
 			h_1, \ldots, h_q \sample H\\
-			(i, s) \gets \pdv(y, h_1, \ldots, h_q; r)\\
+			(i, s) \gets \adv(y, h_1, \ldots, h_q; r)\\
 			\pcif i = 0\ \pcreturn (0, \bot, \bot)\\
 			h_{i'}, \ldots, h_{q'} \sample H\\
-			(i', s') \gets \pdv(y, h_1, \ldots, h_{i - 1}, h_{i'} h_{q'}; r)\\
+			(i', s') \gets \adv(y, h_1, \ldots, h_{i - 1}, h_{i'} h_{q'}; r)\\
 			\pcif (i = i') \land (h_{i} \neq h_{i'})\ \pcreturn (1, s, s')\\
 			\pcind \pcelse \pcreturn (0, \bot, \bot)
 		}}
-		\caption{Forking algorithm $\forking_\pdv$}
-		\label{fig:faust_forking_lemma}
+		\caption{Forking algorithm $\forking_\adv$}
+		\label{fig:forking_lemma}
 \end{figure}
 \end{lemma}
 %
 In case of a sigma protocol, the probability $\extProb$ can be interpreted as a lower bound for a successful witness extraction from two transcripts.
 Let $\tr_1 = (\inp, a, z, \gamma)$ and $\tr_2 = (\inp, a, z', \gamma')$ be the transcripts.
-Both $\tr_1$ and $\tr_2$ have to be \emph{acceptable}, i.e.~$i > 0$. Index $i$ can be interpreted as an index of $h_i$ which was sent as a challenge for $(\inp, a)$. For the sake of extractability, both transcripts have to have the same index $i$, i.e.~the same instance $\inp$ and the first message $a$, but the actual challenges $z = h_i$ and $z' = h_{i'}$ have to differ.
+Both $\tr_1$ and $\tr_2$ have to be \emph{acceptable}, i.e.~$i > 0$ and the probability that $\adv$ makes an acceptable transcript is denoted by $\accProb$. 
+Index $i$ can be interpreted as an index of $h_i$ which was sent as a challenge for $(\inp, a)$, this index has to be guessed by the security reduction. 
+For the sake of extractability, both transcripts have to have the same index $i$, i.e.~the same instance $\inp$ and the first message $a$, but the actual challenges $z = h_i$ and $z' = h'_{i}$ have to differ.
 
-% Another property required by Faust et al.~\cite{INDOCRYPT:FKMV12} to show simulation extractability of a sigma protocol is the unique response property which states that no PPT adversary can provide two different transcripts $(a, b, z)$ and $(a, b, z')$ such that the verifier $\verifier$ accepts both.
-
-% Finally \cite{INDOCRYPT:FKMV12} shows the following theorem:
-
-% \task{14.05}{Need to make this theorem more general as currently it works only for 3-move $\Sigma$-protocols!}
-
-%
 \subsection{Simulation extractability for multi-round protocols}
 Unfortunately, Faust et al.'s result cannot be directly applied in our case since the protocols we consider have more than three rounds of interaction.
 
 \paragraph{Generalised forking lemma.}
-First of all, although dubbed ``general'', \cref{lem:faust_forking_lemma} is not general enough for our purpose as it useful only for protocols that extract witness from two transcripts.
+First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not general enough for our purpose as it useful only for protocols that extract witness from two transcripts.
 
-Fortunately, Bootle et al.~\cite{EC:BCCGP16} shown a more general version of the lemma. More precisely, they proved that each protocol that allows for a witness extraction from a bigger number of accepting transcripts has witness-extended emulation. \cite{EC:BCCGP16} defines a \emph{tree of accepting transcript}.
-Let $\proofsystem$ be a $(2 \mu + 1)$-move public-coin proof system with $\mu$ challenges $h_1, \ldots, h_\mu$. Let $n_i > 1$, for $i \in \range{1}{\mu}$.
-Consider $\prod_{i = 1}^{\mu} n_i$ accepting transfers with challenges as a tree
-with depth $\mu$ and $\prod_{i = 1}^{\mu} n_i$ leaves.	Each node of depth $i <
-\mu$ has exactly $n_i$ children, each labelled with a distinct value for the
-$i$-th challenge $h_i$. We refer to that as a $(n_1, \ldots, n_\mu)$-tree of
-accepting transcripts. \markulf{09.07.20}{Generalize special soundness in
-  similar fashion}
+Here we propose a generalisation of the general forking lemma that given probability $\accProb$ gives a lower bound on the probability of generating a \emph{tree of accepting transcripts}, which could be used to extract a witness. Note that the transcripts now indeed make a tree which branches with every challenge. 
 
- % \task{15.05}{Use one forking lemma (by Bootle et al) and show that the result from Faust holds for it anyway}
-\begin{lemma}[Generalised general forking lemma~\cite{EC:BCCGP16}]
-	\label{lem:bootle_forking_lemma}
-	Let $\proofsystem = (\prover, \verifier, \simulator)$ be a $(2\mu + 1)$-move, public coin interactive  protocol. Let $\ext$ be a PPT witness extraction algorithm that always succeeds in extracting a witness from an $(n_1, \ldots, n_\mu)$-tree of accepting transcripts. Assume that $\prod_{i = 1}^{\mu} n_i \leq \poly$.
-	Then $(\prover, \verifier, \simulator)$ has witness-extended emulation.
-\end{lemma}
-As mentioned, any protocol that has witness-extended emulation defined as in \cite{EC:BCCGP16} is equipped with this property also in the light of \cref{def:wit_ext_em}.
-
-To obtain the full tree of acceptable transcripts and to extract the witness from a $\prover^*$ the extractor runs $\treebuild_\prover (1)$, cf.~\cref{fig:rewinding_prover} (taken from \cite{EC:BCCGP16}).
-
-\begin{figure}
-	\centering
-	\fbox{
-	\procedure{$\treebuild_{\adv_\se} (i)$}
-	{
-		\pcif i = \mu + 1 \pcthen\\
-			\pcind \trans \gets \ip{\prover^*}{\verifier}\\
-			\pcind b \gets \verifier(\trans)\\
-			\pcind \pcif b = 0 \pcthen \pcreturn (\trans, \bot)\\
-			\pcind \pcif b = 1 \pcthen \\
-			\pcind \pcind \tree \gets \smallset{\trans}\  \pcreturn (\trans, \tree)	\\
-		\text{Run $\ip{\prover^*}{\verifier}$ up to and including move $2 i + 1$}\\
-		(\trans, \tree) \gets \treebuild_{\adv_\se}(i + 1)\\
-		\pcif \tree = \bot \pcthen \pcreturn (\trans, \bot)\\
-		\counter \gets 1\\
-		\pcwhile \counter \leq n_i \pcthen\\
-		\pcind \text{Rewind $\ip{\prover^*}{\verifier}$ back until just before move $2 i$}\\
-		\pcind (\trans', \tree') \gets \treebuild(i + 1)\\
-		\pcind \pcif \tree' \neq \bot \pcthen\\
-		\pcind \pcind \tree \gets \tree \cup \smallset{\trans'} \\
-		\pcind \pcind \counter \gets \counter + 1\\
-		\pcreturn \trans, \tree
-	}}
-	\caption{Rewinding strategy for $\adv_\se$ -- getting a tree of accepting transcripts.}
-	\label{fig:rewinding_prover}
+\begin{proposition}[Generalised general forking lemma]
+	% Let $\proofsystem$ be a $(2 \mu + 1)$-round protocol and $\proofsystem_\fs$ its $\fs$-transformed version.
+	Fix $q \in \ZZ$ and set $H$ of size $h > \cdots$. 
+	Let $\adv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(\vec{k}, s)$ where $\vec{k} \in \range{0,q}^\mu$ and $s$ is called a side output. 
+	Denote by $\ig$ a randomised instance generator. We denote by $\accProb$ the probability
+	\[
+		\condprob{\vec{k}_i \neq 0,\text{ for } i \in \range{1}{\mu}}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (\vec{k}, s) \gets \adv(y, h_1, \ldots, h_q)}\,.
+	\]
+	Let $\genforking_\adv$ denote the algorithm described in \cref{fig:genforking_lemma} then the probability $\extProb := \condprob{b = 1}{y \gets \ig;\ (b, \vec{s}) \gets \genforking_\adv(y)}$ is at least
+	\[
+		\cdots
+	\]
+	
+	\begin{figure}
+		\centering
+		\fbox{
+		\procedure{$\genforking_\adv (y)$}
+		{
+			r \sample \RND{\adv}\\
+			h_1, \ldots, h_q \sample H\\
+			\vdots
+			% (i, s) \gets \adv(y, h_1, \ldots, h_q; r)\\
+			% \pcif i = 0\ \pcreturn (0, \bot, \bot)\\
+			% h_{i'}, \ldots, h_{q'} \sample H\\
+			% (i', s') \gets \adv(y, h_1, \ldots, h_{i - 1}, h_{i'} h_{q'}; r)\\
+			% \pcif (i = i') \land (h_{i} \neq h_{i'})\ \pcreturn (1, s, s')\\
+			% \pcind \pcelse \pcreturn (0, \bot, \bot)
+		}}
+		\caption{Generalised forking algorithm $\genforking_\adv$}
+		\label{fig:genforking_lemma}
 \end{figure}
+\end{proposition}
+
+% 
+% \begin{figure}
+% 	\centering
+% 	\fbox{
+% 	\procedure{$\treebuild_{\adv_\se} (i)$}
+% 	{
+% 		\pcif i = \mu + 1 \pcthen\\
+% 			\pcind \trans \gets \ip{\prover^*}{\verifier}\\
+% 			\pcind b \gets \verifier(\trans)\\
+% 			\pcind \pcif b = 0 \pcthen \pcreturn (\trans, \bot)\\
+% 			\pcind \pcif b = 1 \pcthen \\
+% 			\pcind \pcind \tree \gets \smallset{\trans}\  \pcreturn (\trans, \tree)	\\
+% 		\text{Run $\ip{\prover^*}{\verifier}$ up to and including move $2 i + 1$}\\
+% 		(\trans, \tree) \gets \treebuild_{\adv_\se}(i + 1)\\
+% 		\pcif \tree = \bot \pcthen \pcreturn (\trans, \bot)\\
+% 		\counter \gets 1\\
+% 		\pcwhile \counter \leq n_i \pcthen\\
+% 		\pcind \text{Rewind $\ip{\prover^*}{\verifier}$ back until just before move $2 i$}\\
+% 		\pcind (\trans', \tree') \gets \treebuild(i + 1)\\
+% 		\pcind \pcif \tree' \neq \bot \pcthen\\
+% 		\pcind \pcind \tree \gets \tree \cup \smallset{\trans'} \\
+% 		\pcind \pcind \counter \gets \counter + 1\\
+% 		\pcreturn \trans, \tree
+% 	}}
+% 	\caption{Rewinding strategy for $\adv_\se$ -- getting a tree of accepting transcripts.}
+% 	\label{fig:rewinding_prover}
+% \end{figure}
 
 \paragraph{Unique-response protocols.}
 Another problem comes with another assumption required by Faust et al. That is, the unique response property of the transformed sigma protocol.
