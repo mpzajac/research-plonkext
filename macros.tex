@@ -5,6 +5,7 @@
 %general formatting
 \newcommand{\pcvarstyle}[1]{\mathsf{#1}}
 \newcommand{\comment}[1]{{\color{lightgray}#1}}
+\newcommand{\continue}{{\Huge{\hl{$\cdots$}}}}
 
 % General mathematics
 \newcommand{\range}[2] {[#1 \, .. \, #2]}
@@ -24,6 +25,8 @@
 \newcommand{\const}{\pcpolynomialstyle{const}}
 \newcommand{\p}[1]{\pcpolynomialstyle{#1}}
 \newcommand{\numberofconstrains}{\pcvarstyle{n}}
+\newcommand{\expected}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\infrac}[2]{#1 / #2}
 
 % bilinear maps
 
@@ -79,7 +82,8 @@
 \newcommand{\pubinppoly}{\p{PI}}
 
 % general complexity theory
-\newcommand{\RND}[1]{\pcalgostyle{RND}(#1)}
+% \newcommand{\RND}[1]{\pcalgostyle{RND}(#1)}
+\newcommand{\RND}[1]{\pcvarstyle{R}(#1)}
 \newcommand{\RELGEN}{\mathcal{R}}
 \newcommand{\REL}{\mathbf{R}}
 \newcommand{\LANG}{\mathcal{L}}

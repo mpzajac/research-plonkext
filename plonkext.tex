@@ -55,12 +55,11 @@
 \include{macros}
 
 \title{On Simulation-Extractability of \textsc{Plonk}}
-% \titlerunning{Achieving additional security in LegoSNARK}
 
-% \author{Michał Zając}
-% \iflncs{
-%   \institute{Clearmatics, London, UK\\ \email{m.p.zajac@gmail.com}}
-% }
+\author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}}
+\iflncs{
+  \institute{University of Edinburgh, Edinburgh, UK \and IOHK \\ \email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London UK \\ \email{m.p.zajac@gmail.com}}
+}
 
 \allowdisplaybreaks
 
@@ -180,10 +179,6 @@ For the sake of consistency (with random oracle-free NIZKs) we use $\simulator$
 to denote the pair of state-shareing simulators $\simulator_\zkproof,
 \simulator_\ro$.\markulf{09.07.20}{These simulators also share state.}
 \michals{09.07}{Done.}
-% % \paragraph{Fiat--Shamir transformation.}
-% Denote by $\rof{A}{B}$ the family of all functions mapping set $A$ to $B$ and let $\ro$ be a randomly picked function from $\rof{A}{B}$.
-% In the Random Oracle Model all algorithms are given oracle access to $\ro$
-% The Fiat--Shamir transforms
 
 \paragraph{Sigma protocols.}
 A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$  for a relation
@@ -376,23 +371,21 @@ Unfortunately, Faust et al.'s result cannot be directly applied in our case sinc
 \paragraph{Generalised forking lemma.}
 First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not general enough for our purpose as it useful only for protocols that extract witness from two transcripts. 
 To be able to extract a witness from a \plonk{} execution we need to obtain at least $\numberofconstrains + 3$ transcripts.
-Fortunately, since the witness can be extracted by repeating only one round of the protocol, we can proceed as in a protocol that utylises only one challenge.
+Fortunately, since the witness can be extracted by repeating only one round of the protocol, we can proceed similarly as in a protocol that utylises only one challenge.
 \michals{15.07}{Is that true?}
 
 Here we propose a generalisation of the general forking lemma that given probability $\accProb$ gives a lower bound on the probability of generating a \emph{tree of accepting transcripts}, which could be used to extract a witness. 
 
 \begin{lemma}[General forking lemma II]
 	% Let $\proofsystem$ be a $(2 \mu + 1)$-round protocol and $\proofsystem_\fs$ its $\fs$-transformed version.
-	Fix $q \in \ZZ$ and set $H$ of size $h > \cdots$. 
+	Fix $q \in \ZZ$ and set $H$ of size $h >$ \continue. 
 	Let $\adv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$ where $i \in \range{0}{q}$ and $s$ is called a side output. 
 	Denote by $\ig$ a randomised instance generator. We denote by $\accProb$ the probability
 	\[
 		\condprob{i \neq 0}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.
 	\]
 	Let $\genforking_\adv$ denote the algorithm described in \cref{fig:genforking_lemma} then the probability $\extProb := \condprob{b = 1}{y \gets \ig;\ (b, \vec{s}) \gets \genforking_\adv(y)}$ is at least
-	\[
-		\cdots
-	\]
+		\continue
 	
 	\begin{figure}
 		\centering
@@ -413,37 +406,54 @@ Here we propose a generalisation of the general forking lemma that given probabi
 \end{figure}
 \end{lemma}
 \begin{proof}
-	We proceed similarly as in \cite{CCS:BelNev06}.
+	\michals{3.08.20}{DISCLAIMER: This proof is a naive generalisation of the general forking lemma from Bellare and Neven 06. Need to check that all (in)equalities hold!}
+	We proceed similarly as in \cite{CCS:BelNev06} (with some parts taken almost verbatim).
 	
+	\continue
+	Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$.
+	\begin{align*}
+	\accProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land h_{i_j} \neq h_{i_{j'}} \text{ for } (j, j') \in J}	\\
+	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \\
+	& \qquad - \prob{i_j \geq 1 \land h_{i_j} = h_{i_{j'}} \text{ for some } (j, j') \in J}\\
+	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} - \prob{i_j \geq 1} \cdot \frac{m - 1}{h} \\
+	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \frac{m - 1}{h}\,.
+	\end{align*}
+	It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \geq \infrac{\accProb(y)^m}{q}$.
+	
+	Let $\RND{\adv}$ denote the set from which $\adv$ picks its coins at random. For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\adv} \times H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots, h_\iota)$ to
+	\[
+		\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, \vec{s}) \gets \adv(y, h_1, \ldots, h_q; \rho)} 
+	\] 
+	for all $\rho \in \RND{\adv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider $X_\iota$ as a random variable over the uniform distribution on its domain. 
+	Then
+	\begin{align*}
+		& \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \\
+		& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota \land \ldots \land i_m = \iota} \\
+		& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota} \cdot \condprob{i_2 = \iota}{i_1 = \iota} \cdot \ldots \cdot \condprob{i_m = \iota}{i_1 = \ldots = i_{m - 1} = \iota} \\
+		& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota} (\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\adv}} \cdot \abs{H}^{\iota - 1}}\\
+		& = \sum_{\iota = 1}^{q} \expected{X_\iota^m} \geq \sum_{\iota = 1}^{q} \expected{X_\iota}^m\,.
+	\end{align*}
+	Where the last inequality holds by \cref{lem:jensen}
+	\continue
+	\qed
 \end{proof}
 
-% 
-% \begin{figure}
-% 	\centering
-% 	\fbox{
-% 	\procedure{$\treebuild_{\adv_\se} (i)$}
-% 	{
-% 		\pcif i = \mu + 1 \pcthen\\
-% 			\pcind \trans \gets \ip{\prover^*}{\verifier}\\
-% 			\pcind b \gets \verifier(\trans)\\
-% 			\pcind \pcif b = 0 \pcthen \pcreturn (\trans, \bot)\\
-% 			\pcind \pcif b = 1 \pcthen \\
-% 			\pcind \pcind \tree \gets \smallset{\trans}\  \pcreturn (\trans, \tree)	\\
-% 		\text{Run $\ip{\prover^*}{\verifier}$ up to and including move $2 i + 1$}\\
-% 		(\trans, \tree) \gets \treebuild_{\adv_\se}(i + 1)\\
-% 		\pcif \tree = \bot \pcthen \pcreturn (\trans, \bot)\\
-% 		\counter \gets 1\\
-% 		\pcwhile \counter \leq n_i \pcthen\\
-% 		\pcind \text{Rewind $\ip{\prover^*}{\verifier}$ back until just before move $2 i$}\\
-% 		\pcind (\trans', \tree') \gets \treebuild(i + 1)\\
-% 		\pcind \pcif \tree' \neq \bot \pcthen\\
-% 		\pcind \pcind \tree \gets \tree \cup \smallset{\trans'} \\
-% 		\pcind \pcind \counter \gets \counter + 1\\
-% 		\pcreturn \trans, \tree
-% 	}}
-% 	\caption{Rewinding strategy for $\adv_\se$ -- getting a tree of accepting transcripts.}
-% 	\label{fig:rewinding_prover}
-% \end{figure}
+\begin{lemma}\label{lem:jensen}
+	Let $\RND{\adv}$ denote the set from which $\adv$ picks its coins at random. For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\adv} \times H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots, h_\iota)$ to 
+	\[
+		\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, \vec{s}) \gets \adv(y, h_1, \ldots, h_q; \rho)} 
+	\] 
+	for all $\rho \in \RND{\adv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider $X_\iota$ as a random variable over the uniform distribution on its domain. 
+	Then $\expected{X_\iota^m} \geq \expected{X_\iota}^m$.
+\end{lemma}
+\begin{proof}
+	By the Jensen inequality, if for some random variable $X$ holds $\abs{\expected{X}} \leq \infty$ and $f$ is a Borel convex function then 
+	\[
+		f(\expected{X}) \leq \expected{f(X)}\,.
+	\] 
+	
+	\qed
+\end{proof}
 
 \paragraph{Unique-response protocols.}
 Another problem comes with another assumption required by Faust et al. That is, the unique response property of the transformed sigma protocol.
@@ -737,3 +747,4 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	\]
 	and gets $u$ as a final challenge (which it does not reply to).\michals{15.06}{It may be better to just say that $u$ is a random picked by the verifier and not put it as an additional challenge.}
 \end{document}
+
