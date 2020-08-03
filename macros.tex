@@ -39,9 +39,10 @@
 \newcommand{\oracleo}{\mathsf{O}}
 \newcommand{\crs}{\pcvarstyle{crs}}
 \newcommand{\td}{\pcvarstyle{td}}
-\newcommand{\ip}[2]{\left\langle #1, #2\vphantom{A^B}\right\rangle}
+\newcommand{\ip}[2]{\left\langle #1, #2\right\rangle}
 \newcommand{\zkproof}{\pi}
 \newcommand{\proofsystem}{\mathrm{\Psi}}
+\newcommand{\ps}{\proofsystem}
 \newcommand{\nuppt}{\pcmachinemodelstyle{NUPPT}}
 \newcommand{\ro}{\mathcal{H}}
 \newcommand{\rof}[2]{\mathbf{\Omega}_{#1, #2}}
@@ -57,6 +58,13 @@
 \newcommand{\snd}{\pcvarstyle{snd}}
 \newcommand{\zk}{\pcvarstyle{zk}}
 
+%rewinding---tree of transcripts
+\newcommand{\pcboolstyle}[1]{\mathtt{#1}}
+\newcommand{\treebuild}{\pcalgostyle{TreeBuild}}
+\newcommand{\tree}{\pcvarstyle{tree}}
+\newcommand{\counter}{\pcvarstyle{counter}}
+
+
 %PLONK related
 \newcommand{\selector}[1]{\pcvarstyle{q_{#1}}}
 \newcommand{\selmulti}{\selector{M}}
@@ -64,6 +72,8 @@
 \newcommand{\selright}{\selector{R}}
 \newcommand{\seloutput}{\selector{O}}
 \newcommand{\selconst}{\selector{C}}
+\newcommand{\chz}{\mathfrak{z}}
+
 
 \newcommand{\lag}{\p{L}}
 \newcommand{\pubinppoly}{\p{PI}}
@@ -83,11 +93,16 @@
 \newcommand{\aux}{\pcvarstyle{aux}} %auxiliary input
 
 %Plonk and Sonic
-\newcommand{\plonk}{\textsc{Plonk}}
+\newcommand{\plonk}{\ensuremath{\textsc{Plonk}}}
+\newcommand{\plonkmod}{\ensuremath{\plonk^\star}}
 \newcommand{\sonic}{\textsc{Sonic}}
 \newcommand{\maxdegree}{\pcvarstyle{N}}
 
 \newcommand{\ur}[1]{{#1\text{-}\mathsf{ur}}}
+
+%forking
+\newcommand{\forking}{\pcalgostyle{F}}
+\newcommand{\genforking}{\pcalgostyle{GF}}
 
 %colors
 \definecolor{darkmagenta}{rgb}{0.5,0,0.5}
@@ -101,7 +116,13 @@
 \definecolor{skyblue}{rgb}{0.3,0.9,0.99}
 
 %coments
+\DeclareRobustCommand{\markulf}[2]  {{\color{darkmagenta}\hl{\scriptsize\textsf{Markulf #1:} #2}}}
 \DeclareRobustCommand{\michals}[2]  {{\color{blueish}\sethlcolor{pinkish}\hl{\scriptsize\textsf{Michal #1:} #2}}}
 \newcommand{\task}[2]{\todo[author=\textbf{Task},inline]{({\textit{#1}}) #2}}
 % \newcommand{\task}[2] {\xcommenti{Task}{#1}{#2}}
 % \DeclareRobustCommand{\task}[2]  {{\color{black}\sethlcolor{yellow}\hl{\textsf{TASK #1:} #2}}}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "plonkext"
+%%% End:
