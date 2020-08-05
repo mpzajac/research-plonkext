@@ -384,9 +384,11 @@ Here we propose a generalisation of the general forking lemma that given probabi
 	\[
 		\condprob{i \neq 0}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.
 	\]
-	Let $\genforking_\adv$ denote the algorithm described in \cref{fig:genforking_lemma} then the probability $\extProb := \condprob{b = 1}{y \gets \ig;\ (b, \vec{s}) \gets \genforking_\adv(y)}$ is at least
-		\continue
-	
+	Let $\genforking_\adv$ denote the algorithm described in \cref{fig:genforking_lemma} then the probability $\extProb := \condprob{b = 1}{y \gets \ig;\ (b, \vec{s}) \gets \genforking_\adv(y)}$ is at least 
+	\[
+		\frac{\accProb(y)^m}{q^{m - 1}} - \frac{(m - 1) \cdot  \accProb(y)}{h}\,.
+	\]
+		
 	\begin{figure}
 		\centering
 		\fbox{
@@ -409,16 +411,18 @@ Here we propose a generalisation of the general forking lemma that given probabi
 	\michals{3.08.20}{DISCLAIMER: This proof is a naive generalisation of the general forking lemma from Bellare and Neven 06. Need to check that all (in)equalities hold!}
 	We proceed similarly as in \cite{CCS:BelNev06} (with some parts taken almost verbatim).
 	
+	
+	
 	\continue
 	Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$.
 	\begin{align*}
-	\accProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land h_{i_j} \neq h_{i_{j'}} \text{ for } (j, j') \in J}	\\
+	\extProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land h_{i_j} \neq h_{i_{j'}} \text{ for } (j, j') \in J}	\\
 	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \\
 	& \qquad - \prob{i_j \geq 1 \land h_{i_j} = h_{i_{j'}} \text{ for some } (j, j') \in J}\\
 	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} - \prob{i_j \geq 1} \cdot \frac{m - 1}{h} \\
 	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \frac{m - 1}{h}\,.
 	\end{align*}
-	It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \geq \infrac{\accProb(y)^m}{q}$.
+	It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$.
 	
 	Let $\RND{\adv}$ denote the set from which $\adv$ picks its coins at random. For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\adv} \times H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots, h_\iota)$ to
 	\[
@@ -433,7 +437,17 @@ Here we propose a generalisation of the general forking lemma that given probabi
 		& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota} (\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\adv}} \cdot \abs{H}^{\iota - 1}}\\
 		& = \sum_{\iota = 1}^{q} \expected{X_\iota^m} \geq \sum_{\iota = 1}^{q} \expected{X_\iota}^m\,.
 	\end{align*}
-	Where the last inequality holds by \cref{lem:jensen}
+	Where the last inequality holds by \cref{lem:jensen}.
+	We now use the H\"older inequality from \cref{lem:holder} where we set  $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
+	\begin{gather*}
+		\sum_{i = 1}^{q} \expected{X_i}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right)^{\frac{1}{m}} \cdot \left(\sum_{i = 1}^{q} 1^\frac{m}{m - 1}\right)^{\frac{m - 1}{m}} \\
+		\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
+		\frac{1}{q^{m - 1}} \cdot \accProb(x)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
+	\end{gather*}
+	Finally, we get
+	\[
+		\extProb (y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - \frac{(m - 1) \cdot  \accProb(y)}{h}\.
+	\]
 	\continue
 	\qed
 \end{proof}
@@ -454,6 +468,13 @@ Here we propose a generalisation of the general forking lemma that given probabi
 	Finally, we note that $\abs{\expected{X}} \leq \infty$ and taking to thee $m$-th power is a Borel convex function on $[0, 1]$ interval. 
 	\qed
 \end{proof}
+
+\begin{lemma}[H\"older's inequality. Simplified.]\label{lem:holder}
+	Let $x_i, y_i$, for $i \in \range{1}{q}$, and $p, q$ be real numbers such that $1/p + 1/q = 1$. Then
+	\[
+		\sum_{i = 1}^{q} x_i y_i \leq \left(\sum_{i = 1}^{q} x_i^p\right)^{\frac{1}{p}} \cdot \left(\sum_{i = 1}^{q} y_i^p\right)^{\frac{1}{q}}\,.
+	\]
+\end{lemma}
 
 \paragraph{Unique-response protocols.}
 Another problem comes with another assumption required by Faust et al. That is, the unique response property of the transformed sigma protocol.
