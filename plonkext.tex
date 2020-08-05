@@ -378,7 +378,7 @@ Here we propose a generalisation of the general forking lemma that given probabi
 
 \begin{lemma}[General forking lemma II]
 	% Let $\proofsystem$ be a $(2 \mu + 1)$-round protocol and $\proofsystem_\fs$ its $\fs$-transformed version.
-	Fix $q \in \ZZ$ and set $H$ of size $h >$ \continue. 
+	Fix $q \in \ZZ$ and set $H$ of size $h \geq m$. 
 	Let $\adv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$ where $i \in \range{0}{q}$ and $s$ is called a side output. 
 	Denote by $\ig$ a randomised instance generator. We denote by $\accProb$ the probability
 	\[
@@ -386,7 +386,7 @@ Here we propose a generalisation of the general forking lemma that given probabi
 	\]
 	Let $\genforking_\adv$ denote the algorithm described in \cref{fig:genforking_lemma} then the probability $\extProb := \condprob{b = 1}{y \gets \ig;\ (b, \vec{s}) \gets \genforking_\adv(y)}$ is at least 
 	\[
-		\frac{\accProb(y)^m}{q^{m - 1}} - \frac{(m - 1) \cdot  \accProb(y)}{h}\,.
+		\frac{\accProb^m}{q^{m - 1}} - \frac{(m - 1) \cdot \accProb}{h}\,.
 	\]
 		
 	\begin{figure}
@@ -411,16 +411,35 @@ Here we propose a generalisation of the general forking lemma that given probabi
 	\michals{3.08.20}{DISCLAIMER: This proof is a naive generalisation of the general forking lemma from Bellare and Neven 06. Need to check that all (in)equalities hold!}
 	We proceed similarly as in \cite{CCS:BelNev06} (with some parts taken almost verbatim).
 	
-	
-	
-	\continue
-	Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$.
+	First let denote by $\accProb(y)$ and $\extProb(y)$ the following probabilities
 	\begin{align*}
-	\extProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land h_{i_j} \neq h_{i_{j'}} \text{ for } (j, j') \in J}	\\
-	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \\
-	& \qquad - \prob{i_j \geq 1 \land h_{i_j} = h_{i_{j'}} \text{ for some } (j, j') \in J}\\
-	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} - \prob{i_j \geq 1} \cdot \frac{m - 1}{h} \\
-	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \frac{m - 1}{h}\,.
+		\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.\\
+		\extProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets \genforking_\adv(y)}\,.
+	\end{align*}
+	
+	We start by claiming that for all $y$ 
+	\begin{equation}\label{eq:extprob_y}
+		\extProb(y) \geq 
+			\frac{\accProb(y)^m}{q^{m - 1}} - \frac{(m - 1) \cdot  \accProb(y)}{h}\,.
+	\end{equation}
+	Then with the expectation taken over $y \sample \ig$, we have
+	\begin{align}
+		\extProb & = \expected{\extProb(y)} \geq \expected{\frac{\accProb(y)^m}{q^{m - 1}} - \frac{(m - 1) \cdot  \accProb(y)}{h}} \label{eq:use_eq1}\\
+		& = \frac{\expected{\accProb(y)^m}}{q^{m - 1}} - \frac{(m - 1) \cdot \expected{\accProb(y)}}{h} \\
+		& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} - \frac{(m - 1) \cdot \expected{\accProb(y)}}{h} \label{eq:by_lemma_jensen}\\
+		& = \frac{\accProb^m}{q^{m - 1}} - \frac{(m - 1) \cdot  \accProb}{h}\label{eq:by_accProb}\,.
+	\end{align}
+	Where Ineq.~(\ref{eq:use_eq1}) comes from \cref{eq:extprob_y};   Ineq.~(\ref{eq:by_lemma_jensen}) comes from \cref{lem:jensen}; and (\ref{eq:by_accProb}) holds by the fact that $\expected{\accProb(y)} = \accProb$.
+	
+	We now show \cref{eq:extprob_y}.
+	Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$. 
+	For any input $y$, with probabilities taken over the coin tosses of $\genforking_\adv$ we have
+	\begin{align*}
+		\extProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land h_{i_j} \neq h_{i_{j'}} \text{ for } (j, j') \in J}	\\
+		& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \\
+		& \qquad - \prob{i_j \geq 1 \land h_{i_j} = h_{i_{j'}} \text{ for some } (j, j') \in J}\\
+		& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} - \prob{i_j \geq 1} \cdot \frac{m - 1}{h} \\
+		& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \frac{m - 1}{h}\,.
 	\end{align*}
 	It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$.
 	
@@ -446,9 +465,9 @@ Here we propose a generalisation of the general forking lemma that given probabi
 	\end{gather*}
 	Finally, we get
 	\[
-		\extProb (y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - \frac{(m - 1) \cdot  \accProb(y)}{h}\.
+		\extProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
+		\frac{(m - 1) \cdot \accProb(y)}{h}\,.
 	\]
-	\continue
 	\qed
 \end{proof}
 
