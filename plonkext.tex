@@ -454,14 +454,19 @@ Here we propose a generalisation of the general forking lemma that given probabi
 		& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota \land \ldots \land i_m = \iota} \\
 		& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota} \cdot \condprob{i_2 = \iota}{i_1 = \iota} \cdot \ldots \cdot \condprob{i_m = \iota}{i_1 = \ldots = i_{m - 1} = \iota} \\
 		& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota} (\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\adv}} \cdot \abs{H}^{\iota - 1}}\\
-		& = \sum_{\iota = 1}^{q} \expected{X_\iota^m} \geq \sum_{\iota = 1}^{q} \expected{X_\iota}^m\,.
+		& = \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
 	\end{align*}
-	Where the last inequality holds by \cref{lem:jensen}.
+	Then by \cref{lem:jensen} we get
+	\[
+		\sum_{\iota = 1}^{q} \expected{X_\iota^m} \geq \sum_{\iota = 1}^{q} \expected{X_\iota}^m\,.
+	\]
+	We note that for e.g.~$X_i = 1$, $i \in \range{1}{q}$ the inequality becomes equality, that is, it is tight.
+	 
 	We now use the H\"older inequality from \cref{lem:holder} where we set  $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
 	\begin{gather}
 		\sum_{i = 1}^{q} \expected{X_i}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right)^{\frac{1}{m}} \cdot \left(\sum_{i = 1}^{q} 1^\frac{m}{m - 1}\right)^{\frac{m - 1}{m}} \label{eq:tightness} \\
 		\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
-		\frac{1}{q^{m - 1}} \cdot \accProb(x)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
+		\frac{1}{q^{m - 1}} \cdot \accProb(y)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
 	\end{gather}
 	Finally, we get
 	\[
@@ -477,7 +482,7 @@ Here we propose a generalisation of the general forking lemma that given probabi
 		\sum_{i = 1}^q x = \left(\sum_{i = 1}^{q} x^m\right)^\frac{1}{m} \cdot \left(\sum_{i = 1}^{q} 1^{\frac{m}{m - 1}}\right)^{\frac{m - 1}{m}} \\
 		qx = \left(qx^m\right)^\frac{1}{m} \cdot q^{\frac{m - 1}{m}} \\
 		(qx)^m = qx^m \cdot q^{m - 1} \\
-		(qx)^m = (qx)^m
+		(qx)^m = (qx)^m\,.
 	\end{gather*}
 \end{remark}
 
