@@ -458,11 +458,11 @@ Here we propose a generalisation of the general forking lemma that given probabi
 	\end{align*}
 	Where the last inequality holds by \cref{lem:jensen}.
 	We now use the H\"older inequality from \cref{lem:holder} where we set  $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
-	\begin{gather*}
-		\sum_{i = 1}^{q} \expected{X_i}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right)^{\frac{1}{m}} \cdot \left(\sum_{i = 1}^{q} 1^\frac{m}{m - 1}\right)^{\frac{m - 1}{m}} \\
+	\begin{gather}
+		\sum_{i = 1}^{q} \expected{X_i}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right)^{\frac{1}{m}} \cdot \left(\sum_{i = 1}^{q} 1^\frac{m}{m - 1}\right)^{\frac{m - 1}{m}} \label{eq:tightness} \\
 		\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
 		\frac{1}{q^{m - 1}} \cdot \accProb(x)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
-	\end{gather*}
+	\end{gather}
 	Finally, we get
 	\[
 		\extProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
@@ -470,6 +470,16 @@ Here we propose a generalisation of the general forking lemma that given probabi
 	\]
 	\qed
 \end{proof}
+
+\begin{remark}[Tightness of \cref{eq:tightness}]
+	In is important to note that Inequality	(\ref{eq:tightness}) is tight. More precisely, for $\expected{X_i} = x$, $i \in \range{1}{q}$ we have
+	\begin{gather*}
+		\sum_{i = 1}^q x = \left(\sum_{i = 1}^{q} x^m\right)^\frac{1}{m} \cdot \left(\sum_{i = 1}^{q} 1^{\frac{m}{m - 1}}\right)^{\frac{m - 1}{m}} \\
+		qx = \left(qx^m\right)^\frac{1}{m} \cdot q^{\frac{m - 1}{m}} \\
+		(qx)^m = qx^m \cdot q^{m - 1} \\
+		(qx)^m = (qx)^m
+	\end{gather*}
+\end{remark}
 
 \begin{lemma}\label{lem:jensen}
 	Let $\RND{\adv}$ denote the set from which $\adv$ picks its coins at random. For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\adv} \times H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots, h_\iota)$ to 
