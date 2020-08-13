@@ -757,26 +757,50 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 % The simulator $\simulator$ in $\plonk$ proceeds according to the following steps:
 \begin{description}
 	\item[Round 1]
-	Since the simulator does not know a witness $\wit$ for the proven statement $\inp$, $\simulator$ cannot compute the output of this round accordingly to the protocol. Instead, it picks randomly both the "blinders" $b_1, \ldots, b_6$ and evaluations of polynomials $\p{a}, \p{b}, \p{c}$ by picking their coefficents randomly and outputting $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
-	To ensure deterministic nature of the simulation from now on, the simulator also picks value $w$ which later will be output as $\p{W}_\chz(\chi)$ and determine the value of $\p{W}_{\chz \omega}(\chi)$.
+	Since the simulator does not know a witness $\wit$ for the proven statement $\inp$, $\simulator$ cannot compute the output of this round accordingly to the protocol. Instead, it picks randomly both the "blinders" $b_1, \ldots, b_6$ and evaluations of polynomials $\p{a}, \p{b}, \p{c}$ by picking their coefficients randomly and outputting $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
 	\item[Round 2]
-	Although the simulator controls fully the random oracle, it takes its permutation argument challenges $\beta, \gamma$.
+	The simulator takes permutation argument challenges $\beta, \gamma$ as a random oracle output in the ongoing proof.
 	Similarly as in the previous round, the simulator cannot evaluate the requested polynomial $\p{z}$ honestly as it does not know the witness, picks its coefficients randomly and outputs $\gone{\p{z}(\chi)}$.
-	\item[Round 3 and 4]
-	In these rounds $\simulator$ proceeds as an honest prover would using its knowledge of coefficents of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$.
-	More concretely, in Round 3, the simulator outputs an evaluation of the quotient polynomial $\p{t}$: $\gone{\p{t}_{lo}(\chi), \p{t}_{mid}(\chi), \p{t}_{hi}(\chi)}$ and in
-	Round 4 it computes the challenge $\chz$ and outputs $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{z}(\chz \omega), \p{t}(\chz)$ along with evaluations of permutation-related polynomials $\p{S_{\sigma 1}(\chz)}, \p{S_{\sigma 2}(\chz)}$.
-	The last output value is a polynomial commitment opening $\gone{\p{W}_{\chz}(\chi)}$ which is set to a random group element (which discrete log is known to the simulator).
+	\item[Round 3]
+	In thius round the simulator starts by picking at random a challenge $\chz$ that will be later used to program a random oracle.
+	Then it computes evaluations $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \pubinppoly(\chz), \lag_1(\chz), \p{Z_H}(\chz),\allowbreak \p{z}(\chz\omega)$
+	
+	Given the evaluations $\simulator$ computes polynomial $\p{r}(X)$ honestly, i.e.
+	\[
+		\p{r}(X) = 
+		\begin{aligned}
+			& \p{a}(\chz) \p{b}(\chz) \selmulti(X) + \p{a}(\chz) \selleft(X) + \p{b}(\chz) \selright(X) + \p{c}(\chz) \seloutput(X) + \selconst(X) \\
+			& + \alpha \cdot \left( (\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma)(\p{c}(\chz) + \beta k_2 \chz + \gamma) \cdot \p{z}(X)\right) \\
+			& - \alpha \cdot \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma)\beta \p{z}(\chz\omega) \cdot \p{S_{\sigma 3}}(X)\right) \\
+			& + \alpha^2 \cdot \lag_1(\chz) \cdot \p{z}(X)
+		\end{aligned}
+	\]
+	and evaluates $\p{r}(X)$ at $\chz$.
+	
+	In the next step the simulator computes $\ev{t}$ as the verifier would compute in Step 8.
+	Next, $\simulator$ picks randomly a polynomial $\p{t}$ such that $\p{t} (\chz) = \ev{t}$.
+	The simulator concludes this round as an honest prover would by dividing $\p{t}$ into $\p{t_{hi}}, \p{t_{mid}}, \p{t_{lo}}$ and outputting $\gone{\p{t_{hi}}(\chi), \p{t_{mid}}(\chi), \p{t_{lo}}(\chi)}$. 
+	\item[Round 4]
+	The simulator program random oracle to return $\chz$ when queried on the current state of the transcript. 
+	Since the necessary evaluations at $\chz$ are already computed, $\simulator$ simply outputs 
+	\[
+		\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega)\,.
+	\]
 	\item[Round 5]
-	In this round the prover is asked to output value $\gone{\p{W}_{\chz \omega}(\chi)}$ assuring that required polynomials' evaluations are computed correctly. The simulator proceeds similarly, however it uses its knowledge of the simulation trapdoor $\chi$ since the evaluations were computed without use of the witness.
-\end{description}
-	The only things where the simulator deviates from the behaviour of an honest prover are in Rounds 4 and 5 when it is asked to compute $\gone{\p{W}_{\chz}(\chi)}$ and $\gone{\p{W}_{\chz \omega}(\chi)}$.
-
-	Recall that an honest prover in Round 4 computes $\gone{\p{W}_{\chz}(\chi)}$ as
-	\begin{align}
-		\p{W}_{\chz \omega}(X) =  \frac{\p{z}(X) - \p{z}(\chz \omega)}{X - \chz \omega}\,,
-	\end{align}
-	and in Round 5 it gets a challenge $v$ and computes $\gone{\p{W}_{\chz \omega}(\chi)}$ as
+	In this round the simulator proceeds as an honest prover would.
+	
+ \end{description}
+\end{document}
+\comment{
+\item[Round 5]
+In this round the prover is asked to output values 
+$\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ 
+assuring that required polynomials' evaluations are computed correctly. 
+Since the simulator could not compute them honestly using the instance's witness, it has to use its power to make the verification equation hold.
+To that end $\simulator$:
+\begin{itemize}
+	\item programs the random oracle in a way that $\ro(\trans)$ returns $v$ such that 
+	$\gone{\p{W}_{\chz \omega}(\chi)}$ as
 	\begin{align}
 		& \p{W}_{\chz}(X) = \frac{1} {X - \chz} \left(
 			\begin{aligned}
@@ -790,16 +814,11 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 			\end{aligned}
 		\right)\,.
 	\end{align}
-	The simulator computes $\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ such that the verification equation holds,
-	\task{09.08}{Explain how the simulator computes $\gone{\p{W}_{\chz}(\chi)}$} outputs the proof
-	\[
-	\zkproof = \left(
-		\begin{aligned}
-			& \gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi), \p{W_\chz}(\chi), \p{W_{\chz \omega}}(\chi)}\\
-			& \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{r}(\chz), \p{z}(\chz \omega)\,.
-		\end{aligned}
-	\right)
-	\]
-	and gets $u$ as a final challenge (which it does not reply to).\michals{15.06}{It may be better to just say that $u$ is a random picked by the verifier and not put it as an additional challenge.}
-\end{document}
+	Value $v$ is picked such that a verification equation 
+	\item computes the opening of $\p{z}$ at $\chz \omega$, i.e.~ $\gone{\p{W}_{\chz \omega}(\chi)}$, honestly, i.e.
+	\begin{align}
+		\p{W}_{\chz \omega}(X) =  \frac{\p{z}(X) - \p{z}(\chz \omega)}{X - \chz \omega}\,,
+	\end{align}
+\end{itemize}
+}
 
