@@ -247,11 +247,9 @@ Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages
 	We say a public coin proof system $\proofsystem = (\kcrs, \prover, \verifier,
   \simulator)$ has \emph{witness-extended emulation} if for all $\REL \in
   \image(\RELGEN)$, and deterministic adversary $\adv_1$ there exists an
-  expected polynomial time extractor $\ext$ \markulf{09.07.20}{Do we want
-    expected PPT, how crucial is the non-uniformity?}
-		\michals{09.07}{We need NUPPT extractor to cover NUPPT adversaries, no?} such that for all NUPPT adversaries $\adv_0$ holds
+  expected polynomial time extractor $\ext$ such that for all PPT adversaries $\adv_0$ holds
 		\begin{multline*}
-		\Pr\left[\adv_0 (\trans, \inp, \aux_{\adv_1}) = 1 \,\left|\,
+		\Pr\left[\adv_0 (\trans) = 1 \,\left|\,
 		\begin{aligned}
 				& (\td, \crs) \gets \kcrs(\REL), (\inp, \aux_{\adv_1}) \gets \adv_0, \\
 				& \trans \gets \ip{\adv_1(\REL, \crs, \inp, \aux_{\adv_1})}{\verifier(\REL, \crs, \inp)}
@@ -261,7 +259,7 @@ Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages
 		 \approx_\secpar \\
 		 \Pr\left[
 			\begin{aligned}
-				& \adv_1 (\trans) = 1\ , \\
+				& \adv_0 (\trans) = 1\ , \\
 				& \text{if $\trans$ is accepting} \\
 				& \pcind \text{then $\REL(\inp, \wit)$}
 			\end{aligned}\,\left|\,
@@ -278,6 +276,7 @@ Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages
 \end{multline*}
 \markulf{09.07.20}{fix left of $|$}
 \michals{09.07}{what do you mean?}
+\michals{14.08}{fixed}
 where the extractor $\ext$ can rewind the conversation between the prover and the verifier to a particular round and run it again with a fresh randomness for the verifier.
 \end{definition}
 Although in the definition above the adversary $\adv_1$ is deterministic it obtains an auxiliary input $\aux_{\adv_1}$ that may be used by $\adv_1$ as a source of randomness. Groth and Ishai~\cite{EC:GroIsh08} note that since the protocol is public-coin, verifier's randomness is part of the transcript. Thus combining $\inp, \aux_\adv$ and an accepting transcript $\trans$ gives a view of both the prover and the verifier and thus gives a witness.
@@ -331,13 +330,13 @@ The theorem relies on the following classical lemma, called \emph{General forkin
 	\[
 		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_q \sample H; (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.
 	\]
-	Let $\forking_\adv(y)$ denote the algorithm described in \cref{fig:forking_lemma}, then the probability $\extProb$ defined as
+	Let $\forking_\adv(y)$ denote the algorithm described in \cref{fig:forking_lemma}, then the probability $\frkProb$ defined as
 	$
-		\extProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\adv}(y)}
+		\frkProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\adv}(y)}
 	$
 	holds
 	\[
-		\extProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
+		\frkProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
 	\]
 	%
 	\begin{figure}
@@ -359,7 +358,7 @@ The theorem relies on the following classical lemma, called \emph{General forkin
 \end{figure}
 \end{lemma}
 %
-In case of a sigma protocol, the probability $\extProb$ can be interpreted as a lower bound for a successful witness extraction from two transcripts.
+In case of a sigma protocol, the probability $\frkProb$ can be interpreted as a lower bound for a successful witness extraction from two transcripts.
 Let $\tr_1 = (\inp, a, z, \gamma)$ and $\tr_2 = (\inp, a, z', \gamma')$ be the transcripts.
 Both $\tr_1$ and $\tr_2$ have to be \emph{acceptable}, i.e.~$i > 0$ and the probability that $\adv$ makes an acceptable transcript is denoted by $\accProb$. 
 Index $i$ can be interpreted as an index of $h_i$ which was sent as a challenge for $(\inp, a)$, this index has to be guessed by the security reduction. 
@@ -384,7 +383,7 @@ Here we propose a generalisation of the general forking lemma that given probabi
 	\[
 		\condprob{i \neq 0}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.
 	\]
-	Let $\genforking_\adv$ denote the algorithm described in \cref{fig:genforking_lemma} then the probability $\extProb := \condprob{b = 1}{y \gets \ig;\ (b, \vec{s}) \gets \genforking_\adv(y)}$ is at least 
+	Let $\genforking_\adv$ denote the algorithm described in \cref{fig:genforking_lemma} then the probability $\frkProb := \condprob{b = 1}{y \gets \ig;\ (b, \vec{s}) \gets \genforking_\adv(y)}$ is at least 
 	\[
 		\frac{\accProb^m}{q^{m - 1}} - \frac{(m - 1) \cdot \accProb}{h}\,.
 	\]
@@ -411,31 +410,31 @@ Here we propose a generalisation of the general forking lemma that given probabi
 	\michals{3.08.20}{DISCLAIMER: This proof is a naive generalisation of the general forking lemma from Bellare and Neven 06. Need to check that all (in)equalities hold!}
 	We proceed similarly as in \cite{CCS:BelNev06} (with some parts taken almost verbatim).
 	
-	First let denote by $\accProb(y)$ and $\extProb(y)$ the following probabilities
+	First let denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
 	\begin{align*}
 		\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.\\
-		\extProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets \genforking_\adv(y)}\,.
+		\frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets \genforking_\adv(y)}\,.
 	\end{align*}
 	
 	We start by claiming that for all $y$ 
-	\begin{equation}\label{eq:extprob_y}
-		\extProb(y) \geq 
+	\begin{equation}\label{eq:frkProb_y}
+		\frkProb(y) \geq 
 			\frac{\accProb(y)^m}{q^{m - 1}} - \frac{(m - 1) \cdot  \accProb(y)}{h}\,.
 	\end{equation}
 	Then with the expectation taken over $y \sample \ig$, we have
 	\begin{align}
-		\extProb & = \expected{\extProb(y)} \geq \expected{\frac{\accProb(y)^m}{q^{m - 1}} - \frac{(m - 1) \cdot  \accProb(y)}{h}} \label{eq:use_eq1}\\
+		\frkProb & = \expected{\frkProb(y)} \geq \expected{\frac{\accProb(y)^m}{q^{m - 1}} - \frac{(m - 1) \cdot  \accProb(y)}{h}} \label{eq:use_eq1}\\
 		& = \frac{\expected{\accProb(y)^m}}{q^{m - 1}} - \frac{(m - 1) \cdot \expected{\accProb(y)}}{h} \\
 		& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} - \frac{(m - 1) \cdot \expected{\accProb(y)}}{h} \label{eq:by_lemma_jensen}\\
 		& = \frac{\accProb^m}{q^{m - 1}} - \frac{(m - 1) \cdot  \accProb}{h}\label{eq:by_accProb}\,.
 	\end{align}
-	Where Ineq.~(\ref{eq:use_eq1}) comes from \cref{eq:extprob_y};   Ineq.~(\ref{eq:by_lemma_jensen}) comes from \cref{lem:jensen}; and (\ref{eq:by_accProb}) holds by the fact that $\expected{\accProb(y)} = \accProb$.
+	Where Ineq.~(\ref{eq:use_eq1}) comes from \cref{eq:frkProb_y};   Ineq.~(\ref{eq:by_lemma_jensen}) comes from \cref{lem:jensen}; and (\ref{eq:by_accProb}) holds by the fact that $\expected{\accProb(y)} = \accProb$.
 	
-	We now show \cref{eq:extprob_y}.
+	We now show \cref{eq:frkProb_y}.
 	Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$. 
 	For any input $y$, with probabilities taken over the coin tosses of $\genforking_\adv$ we have
 	\begin{align*}
-		\extProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land h_{i_j} \neq h_{i_{j'}} \text{ for } (j, j') \in J}	\\
+		\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land h_{i_j} \neq h_{i_{j'}} \text{ for } (j, j') \in J}	\\
 		& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \\
 		& \qquad - \prob{i_j \geq 1 \land h_{i_j} = h_{i_{j'}} \text{ for some } (j, j') \in J}\\
 		& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} - \prob{i_j \geq 1} \cdot \frac{m - 1}{h} \\
@@ -470,7 +469,7 @@ Here we propose a generalisation of the general forking lemma that given probabi
 	\end{gather}
 	Finally, we get
 	\[
-		\extProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
+		\frkProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
 		\frac{(m - 1) \cdot \accProb(y)}{h}\,.
 	\]
 	\qed
@@ -534,16 +533,8 @@ We note that the definition above is independent on whether the proof system $\p
 % Furthermore it is also blind whether $\proofsystem$ is interactive or not.
 \michals{08.07.20}{Should we change it to "deterministic prover property"?}
 
-% \paragraph{Unique responses and extractability.}
-% The key observations that will be used in our simulation-extractability proof is following: if a $\mu$-round protocol $\proofsystem$ has deterministic prover from the $i$-th round on and it has witness-extended emulation from a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts, where $n_1 = \ldots = n_{i - 1} = 1$ and $\prod_{i = 1}^\mu n_\mu \leq \poly$, then the $\fs$-transformed version of the protocol $\proofsystem_\fs$ is simulation-extractable.
-%
-% Furthermore, if $\proofsystem$ has a deterministic prover from round $i$ on, but not in round $i - 1$, and it has witness-extended emulation only from $(n_1, \ldots, n_{i - 1}, \ldots, n_\mu)$-trees of accepting transcripts such that $n_{i - 1} \neq 1$, then $\proofsystem_\fs$ is not simulation-extractable.
-%
-% The argument behind that goes as follows. To obtain a tree which allows for witness extraction one must rewind the protocol back to round $i - 1$.
-% \michals{08.07}{Continue}
-
+\comment{
 \paragraph{Simulatability of proofs.}
-% \michals{08.07.20}{Actually, I am not sure that this property is required anymore}
 We note that in the standard model protocols the simulator does not require any additional power like knowledge of a CRS trapdoor or programmability of the random oracle. This implies that every adversary can produce a simulated proof by its own.
 On the other hand, we have CRS-based zk-proofs where knowledge of trapdoor is required to make an simulated proof.
 
@@ -583,6 +574,7 @@ This reduction is not that easy if $\proofsystem$ uses a CRS -- now the reductio
 This definition will have consequences later on as in a $k$-out-of-$n$ simulatable proof system learning first $2k - 1$ messages of the simulated proof gives the adversary no additional power as it could compute these messages by its own.
 This property will be important later in the simulation-extractability proof.
 \michals{03.07}{a proof for that statement would be nice.}
+}
 
 \section
 {Simulation extractability from unique responses and witness-extended emulation.}
@@ -595,9 +587,8 @@ This is since we show our result by contradiction and build an adversary $\bdv$ 
 
 To make the result useful in the context of CRS-model zkSNARKs like \plonk, we need to rely on a stronger version of the unique response property presented in \cref{def:wiur} to allow the unique-response-property adversary to learn the simulated proofs as well.
 
-\begin{theorem}[Simulation extractability of the Fiat--Shamir transform III]
-	\michals{03.07}{The label of this theorem will probably be changed to II (from III)}
-	\label{thm:wit_ext_em_FS_III}
+\begin{theorem}[Simulation extractability of the Fiat--Shamir transform II]
+	\label{thm:wit_ext_em_FS_II}
 	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an interactive $\mu$-round $\ur{i}$ protocol for a relation $\REL$ and $i < \mu$.
 	Assume there exists an extractor $\ext$ that extracts the witness from a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts of $\proofsystem$ and $\prod_{j = 1}^\mu n_j \leq \poly$.
 	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model.
@@ -655,16 +646,17 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 \end{proof}
 
 \section{Simulation extractability of $\plonk$}
-The only modification that has been made to the original \plonk{} protocol is a cosmetic one---originally the value $\gone{\p{W}_{\chz}(\chi)}$ in Round 5, while here it is computed in Round 4. This does not change the security of the protocol as $\gone{\p{W}_{\chz}(\chi)}$ does not include the challenge $v$ which is provided by the verifier after Round~4.
-For the sake of clarity we denote this little modified protocol $\plonkmod$, its description has been provided in \cref{sec:plonk_explained}.
 
 \begin{theorem}
 	\plonkmod{} is simulation-extractable.
 \end{theorem}
 \begin{proof}
-	First, we observe that \plonkmod{} compounds of 5 rounds and after Round 4, the remain message from the prover is deterministic\michals{09.08}{Prove}.
-	Second, observe that if an adversary $\adv_\se$ provides an acceptable proof $\zkproof$ for an instance $\inp$ then the corresponding witness can be extracted from a $(1, 1, \numberofconstrains + 3, 1)$-tree of accepting transcripts. More precisely, in Round 3 the adversary evaluates polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$ at challenge $\chz$, each of the polynomials has degree $\numberofconstrains + 2$.
-	By rewinding the adversary $\numberofconstrains + 2$ times and providing fresh challenges $\chz$---by programming the random oracle---the extractor can retrieve the coefficients of $\p{a}(X), \p{b}(X), \p{c}(X)$ which contain witness elements $\smallset{\wit_i}_{i = 1}^{3 \numberofconstrains}$.
+	Proof outline. Games:
+	\begin{enumerate}
+		\item Witness extraction from Plonk with an AGM adversary 
+		\item Witness extraction from Plonk with an AGM adversary AND check that polynomial equation holds (not only the verification equation on evaluations). If that's not the case, output $\bad$ and show that when $\bad$ is output the adversary can be used to break $q$-dlog assumption
+		\item Show unique response property for the polynomial protocol (statistical unique response property)
+	\end{enumerate}
 	\qed
 \end{proof}
 
@@ -712,7 +704,6 @@ The \plonk{} verifier works as follows
 		& + u \gone{\p{z}(\chi)}\,.
 	\end{align*}
 	\item[Step 10] Computes full batched polynomial commitment $\gone{F}$:
-	Next it computes $\gone{F}$:
 	\begin{align*}
 		\gone{F} & = \left(\gone{\p{t_{lo}}(\chi)} + \chz^\numberofconstrains \gone{\p{t_{mid}}(\chi)} + \chz^{2 \numberofconstrains} \gone{\p{t_{hi}}(\chi)}\right) + u \gone{\p{z}(\chi)} + \\
 		& + v
@@ -762,7 +753,7 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	The simulator takes permutation argument challenges $\beta, \gamma$ as a random oracle output in the ongoing proof.
 	Similarly as in the previous round, the simulator cannot evaluate the requested polynomial $\p{z}$ honestly as it does not know the witness, picks its coefficients randomly and outputs $\gone{\p{z}(\chi)}$.
 	\item[Round 3]
-	In thius round the simulator starts by picking at random a challenge $\chz$ that will be later used to program a random oracle.
+	In this round the simulator starts by picking at random a challenge $\chz$ that will be later used to program a random oracle.
 	Then it computes evaluations $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \pubinppoly(\chz), \lag_1(\chz), \p{Z_H}(\chz),\allowbreak \p{z}(\chz\omega)$
 	
 	Given the evaluations $\simulator$ computes polynomial $\p{r}(X)$ honestly, i.e.
