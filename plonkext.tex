@@ -476,7 +476,7 @@ Here we propose a generalisation of the general forking lemma that given probabi
 \end{proof}
 
 \begin{remark}[Tightness of \cref{eq:tightness}]
-	In is important to note that Inequality	(\ref{eq:tightness}) is tight. More precisely, for $\expected{X_i} = x$, $i \in \range{1}{q}$ we have
+	In is important to note that Inequality (\ref{eq:tightness}) is tight. More precisely, for $\expected{X_i} = x$, $i \in \range{1}{q}$ we have
 	\begin{gather*}
 		\sum_{i = 1}^q x = \left(\sum_{i = 1}^{q} x^m\right)^\frac{1}{m} \cdot \left(\sum_{i = 1}^{q} 1^{\frac{m}{m - 1}}\right)^{\frac{m - 1}{m}} \\
 		qx = \left(qx^m\right)^\frac{1}{m} \cdot q^{\frac{m - 1}{m}} \\
@@ -647,16 +647,42 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 
 \section{Simulation extractability of $\plonk$}
 
-\begin{theorem}
-	\plonkmod{} is simulation-extractable.
-\end{theorem}
+\begin{lemma}
+	\plonkint{} has unique response property after Round 2.
+\end{lemma}
+
+\begin{lemma}
+	\plonkint{} is special-sound against AGM adversaries.
+\end{lemma}
 \begin{proof}
-	Proof outline. Games:
-	\begin{enumerate}
-		\item Witness extraction from Plonk with an AGM adversary 
-		\item Witness extraction from Plonk with an AGM adversary AND check that polynomial equation holds (not only the verification equation on evaluations). If that's not the case, output $\bad$ and show that when $\bad$ is output the adversary can be used to break $q$-dlog assumption
-		\item Show unique response property for the polynomial protocol (statistical unique response property)
-	\end{enumerate}
+	Proof outline. 
+	In the following games an AGM adversary $\adv$ is tasked to break $m$-special-soundess property of $\plonkint$. The extractor $\ext$ which from $m$ accepting transcripts for a statement $\inp$ reveals the corresponding witness $\wit$ is the games' challenger $\cdv$. 
+	We allow $\adv$ to ask about simulated proofs for chosen statements. These queries are handled by $\cdv$ as well.
+	\paragraph{Game $\game{1}$:}
+		The challenger picks trapdoor $\chi$, computes \plonk's CRS $
+		\crs$ and gives it to an AGM adversary $\adv$. The challenger also provides the adversary with the CRS and plays the role of the verifier $\plonkint.\verifier$ of the proof system. 		
+		Finally, the adversary outputs an instance $\inp$ and proof $\zkproof$. If the proof is acceptable by $\plonkint.\verifier$ then with overwhelming probability the extractor returns $\wit$ such that $(\inp, \wit) \in \REL$.
+		
+		\paragraph{Game $\game{2}$:}
+		The game runs as the previous except that the challenger $\cdv$ additionally tries to break a $(\numberofconstrains + 2)$-dlog assumption. To that end it engages in a $(\numberofconstrains + 2)$-dlog game with a $(\numberofconstrains + 2)$-dlog challenger $\cdv_\dlog$ who provides $\cdv$ with $(\numberofconstrains + 2)$-dlog input $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. 
+		The challenger $\cdv$ computes the rest of $\plonkint$ CRS and starts the game with the adversary $\adv$. (In this game we do not specify what $\cdv$ returns to $\cdv_\dlog$).
+		
+		\paragraph{Game $\game{3}$:}
+		The game goes as previous except that the challenger $\cdv$ runs runs $\plonkintpoly.\verifier$ along with  $\plonkint.\verifier$. More precisely, $\cdv$ picks challenges that the verifiers would send and provide them to the adversary when necessary. 
+		Since $\adv$ is algebraic for each polynomial commitment $\gone{f(\chi)}$ it sends it also provides $f$'s coefficients. That is, the only group elements $\adv$ has access to are the CRS $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ and the proofs it required from the simulator (operated by $\cdv$).
+		 
+		This allows $\cdv$ to recreate the polynomials committed by $\adv$ and transform its messages to messages that (potentially malicious) $\plonkintpoly.\prover$ would send. 
+		
+		In the end, the challenger checks verification equations of $\plonkint$ and $\plonkintpoly$. The latter is for polynomials, while to former for the polynomials' evaluations.
+		Similarly as in \cite{EPRINT:GabWilCio19} we argue that 
+		\begin{itemize}
+			\item $\plonkintpoly$'s verification equation accepts only true statements except negligible probability, and 
+			\item  if the verification equation for $\plonkint$ holds, while $\plonkintpoly$ does not, then the $\adv$ can be used to break $(\numberofconstrains + 2)$-dlog assumption.
+		\end{itemize}
+		
+		Witness extraction from Plonk with an AGM adversary AND check that polynomial equation holds (not only the verification equation on evaluations). If that's not the case, output $\bad$ and show that when $\bad$ is output the adversary can be used to break $q$-dlog assumption
+		\paragraph{Game $\game{4}$} Show unique response property for the polynomial protocol (statistical unique response property)
+	% \end{description}
 	\qed
 \end{proof}
 
@@ -664,13 +690,13 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
 
 \appendix
-\section{$\plonkmod$'s prover explained}
+\section{$\plonk$'s prover explained}
 \label{sec:plonk_explained}
 
-\paragraph{\fbox{\normalfont{$\plonkmod$ prover $\prover(\REL, \crs, \inp, \wit)$}}}
+\paragraph{\fbox{\normalfont{$\plonk$ prover $\prover(\REL, \crs, \inp, \wit)$}}}
 
 
-\paragraph{\fbox{\normalfont{$\plonkmod$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$}}}\ \newline
+\paragraph{\fbox{\normalfont{$\plonk$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$}}}\ \newline
 The \plonk{} verifier works as follows
 \begin{description}
 	\item[Step 1] Validate all obtained group elements.
@@ -743,7 +769,7 @@ The verification equation is a batched version of the verification equation from
 \end{description}
 
 Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the simulator of \plonk{} works, it is presented here.
-\paragraph{\fbox{\normalfont{$\plonkmod$ simulator $\simulator(\REL, \crs, \td, \inp)$}}}
+\paragraph{\fbox{\normalfont{$\plonk$ simulator $\simulator(\REL, \crs, \td, \inp)$}}}
 % \paragraph{Simulation in \plonk.}
 % The simulator $\simulator$ in $\plonk$ proceeds according to the following steps:
 \begin{description}
