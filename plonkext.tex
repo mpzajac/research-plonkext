@@ -657,13 +657,25 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 \begin{proof}[Proof idea]
 	Let $\advse$ be an adversary that breaks simulation extractability of $\plonkprotfs$. We show a reduction $\rdv$ that breaks knowledge soundness of $\plonkprot$.
 	
-	At first $\reduction$ obtains $\crs$ from $\plonkprot.\kgen$ and passes it to $\advse$. Assume that 
+	At first $\reduction$ obtains $\crs$ from $\plonkprot.\kgen$ and passes it to $\advse$. 
+	Assume that 
 	\begin{itemize}
 		\item the adversary makes $q_\simulator$ queries to the simulator obtaining $q_\simulator$ simulated proofs;
-		\item the adversary copies first $r$ round of some simulated proof in its final simulation-extractability breaking proof. (Note that from the unique response property $r < 3$.)
+		\item the adversary copies first $r$ round of some simulated proof in its final simulation-extractability breaking proof including the statement proven by $\simulator$. (Note that from the unique response property $0 \leq r < 3$.)
 	\end{itemize}
+	The reduction guesses query $i_\simulator$ and $r$ with probability $1/(3 q_\simulator)$ and assume it guesses correctly.
 	
-	\qed
+	For $\advse$ queries for the simulated proof, except query $i_\simulator$ if $r > 0$, the reduction provides the adversary simulated proofs. For that particular query $\rdv$ starts its interaction with $\plonkprot.\verifier$:
+	\begin{itemize}
+		\item In Round 1, $\rdv$ randomly picks polynomials $\p{a}, \p{b}, \p{c}$.
+		\item In Round 2, $\rdv$ gets challenge $\beta, \gamma$ from $\plonkprot.\verifier$, creates $\p{z}$ exactly as the simulator would including $\beta, \gamma$ in $\p{z}$, and returns $\gone{\p{z}(\chi)}$.
+		\item If $r = 1$, $\rdv$ pauses its interaction with the verifier and continues generating the proof as $\simulator$ would generate.
+		\item If $r = 2$, $\rdv$ continues talking with the verifier and gets in Round 3 challenge $\alpha$. After that the reduction pauses its interaction with the verifier and continues its simulated proof playing $\simulator$ for the rest of the rounds.
+	\end{itemize}
+	When $\advse$ decides to continue generating its malicious proof the reduction resumes its communication with $\plonkprot.\verifier$. That is, for each $\advse$ message it responds with the corresponding challenge from the verifier. In the end, the adversary returns a proof $\zkproof$ along with a vector of coefficients for each group element in $\zkproof$.
+	
+	Assume the proof is acceptable. 
+	\michals{21.08}{Maybe it is enough to show a reduction to breaking k. soundness of $\plonkprotfs$. What is the role of the $\plonkprot.\verifier$?}
 \end{proof}
 
 \COMMENT
