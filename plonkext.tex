@@ -648,10 +648,26 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 \section{Simulation extractability of $\plonk$}
 
 \begin{lemma}
-	\plonkint{} has unique response property after Round 2.
+	$\plonkprot$ has unique response property after Round 2.
 \end{lemma}
 
-\begin{lemma}
+\begin{theorem}
+	$\plonkprot$ is simulation-extractable agains algebraic adversaries.
+\end{theorem}
+\begin{proof}[Proof idea]
+	Let $\advse$ be an adversary that breaks simulation extractability of $\plonkprotfs$. We show a reduction $\rdv$ that breaks knowledge soundness of $\plonkprot$.
+	
+	At first $\reduction$ obtains $\crs$ from $\plonkprot.\kgen$ and passes it to $\advse$. Assume that 
+	\begin{itemize}
+		\item the adversary makes $q_\simulator$ queries to the simulator obtaining $q_\simulator$ simulated proofs;
+		\item the adversary copies first $r$ round of some simulated proof in its final simulation-extractability breaking proof. (Note that from the unique response property $r < 3$.)
+	\end{itemize}
+	
+	\qed
+\end{proof}
+
+\COMMENT
+{\begin{lemma}
 	\plonkint{} is special-sound against AGM adversaries.
 \end{lemma}
 \begin{proof}
@@ -674,17 +690,14 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 		This allows $\cdv$ to recreate the polynomials committed by $\adv$ and transform its messages to messages that (potentially malicious) $\plonkintpoly.\prover$ would send. 
 		
 		In the end, the challenger checks verification equations of $\plonkint$ and $\plonkintpoly$. The latter is for polynomials, while to former for the polynomials' evaluations.
-		Similarly as in \cite{EPRINT:GabWilCio19} we argue that 
-		\begin{itemize}
-			\item $\plonkintpoly$'s verification equation accepts only true statements except negligible probability, and 
-			\item  if the verification equation for $\plonkint$ holds, while $\plonkintpoly$ does not, then the $\adv$ can be used to break $(\numberofconstrains + 2)$-dlog assumption.
-		\end{itemize}
+		Similarly as in \cite{EPRINT:GabWilCio19} we note that  $\plonkintpoly$'s polynomial verification equation accepts only true statements except negligible probability. Furthermore, we denote by $\bad$ the case when the verification equation for $\plonkint$ holds, while $\plonkintpoly$ does not. We show that if $\bad$ happens, then $\adv$ can be used to break $(\numberofconstrains + 2)$-dlog assumption.
 		
-		Witness extraction from Plonk with an AGM adversary AND check that polynomial equation holds (not only the verification equation on evaluations). If that's not the case, output $\bad$ and show that when $\bad$ is output the adversary can be used to break $q$-dlog assumption
-		\paragraph{Game $\game{4}$} Show unique response property for the polynomial protocol (statistical unique response property)
+		\paragraph{Game $\game{4}$:}
+		
+		% Show unique response property for the polynomial protocol (statistical unique response property)
 	% \end{description}
 	\qed
-\end{proof}
+\end{proof}}
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
