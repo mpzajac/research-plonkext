@@ -675,8 +675,8 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 	When $\advse$ decides to continue generating its malicious proof the reduction resumes its communication with $\plonkprot.\verifier$. That is, for each $\advse$ message it responds with the corresponding challenge from the verifier. In the end, the adversary returns a proof $\zkproof$.
 	
 	Assume the proof $\zkproof$ is acceptable. 
-		\michals{21.08}{Maybe it is enough to show a reduction to breaking k. soundness of $\plonkprotfs$. What is the role of the $\plonkprot.\verifier$?}
-	\michals{24.08}{If we stick to the non-interactive setting, then we need to program the oracle to be able to produce an acceptable simulated proof. I.e. we cannot simulate on our own, but need to rely on simulator's superpowers.}
+	% 	\michals{21.08}{Maybe it is enough to show a reduction to breaking k. soundness of $\plonkprotfs$. What is the role of the $\plonkprot.\verifier$?}
+	% \michals{24.08}{If we stick to the non-interactive setting, then we need to program the oracle to be able to produce an acceptable simulated proof. I.e. we cannot simulate on our own, but need to rely on simulator's superpowers.}
 	Let 
 	\begin{align*}
 		\zkproof = & \gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi),
@@ -703,8 +703,15 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 		\chz \cdot \p{W_{\chz}}(X) + u \chz \omega \cdot \p{W_{\chz \omega}}(X) + F(X) - E\,.
 	\end{multline}
 	\end{proof}
-	In that case 
-
+	In that case \hl{show how to extract the witness}
+	
+	The second case is when the verification equation of evaluations holds (as it is required for the adversary to be successful), but the polynomial equation does not. In that case $\advse$ can be used to break $(\numberofconstrains + 2)$-dlog assumption. That is, let 
+	\begin{align}
+		\p{V}(X) = \p{W_{\chz}}(X) + u \cdot \p{W_{\chz \omega}}(X)
+		\cdot X - \chz \cdot \p{W_{\chz}}(X) - u \chz \omega \cdot \p{W_{\chz \omega}}(X) - F(X) + E\,.
+	\end{align}
+	Since \cref{eq:ver_eq_poly} does not hold, $\p{V}(X)$ is not a zero polynomial. On the other hand, since \cref{eq:ver_eq} holds, $\p{V}(\chi) = 0$. Thus, one can factor $\p{V}$ and find $\chi$.
+	
 \COMMENT
 {\begin{lemma}
 	\plonkint{} is special-sound against AGM adversaries.
