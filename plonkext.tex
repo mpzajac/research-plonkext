@@ -113,7 +113,7 @@ it. The security model is radically different as now one believes in the
 veracity of a proof only if she trusts that there is at least one honest party
 between the updaters. Hence, the proof is no longer
 universal.\markulf{09.07.20}{What does universal mean?}
-\michals{09.07.20}{I meant universal here in a broad sense -- i.e. I called a setting  a TTP that is trusted by everyone "universal" to denote that a given proof is believable for everybody. Since "universal" tends to have other meanings in terms of ZK, it should probably be changed.}
+\michals{09.07.20}{I meant universal here in a broad sense---i.e. I called a setting  a TTP that is trusted by everyone "universal" to denote that a given proof is believable for everybody. Since "universal" tends to have other meanings in terms of ZK, it should probably be changed.}
 
 We believe that our result may be useful for designing new zkSNARKs, especially those based on a polynomial commitment schemes~\cite{AC:KatZavGol10}, as it shows that a careful protocol design may give it a strong security notion for free.
 
@@ -128,7 +128,7 @@ Distributions $X$ and $Y$ have \emph{statistical distance} $\SD$ equals $\epsilo
 We write $X \approx_\secpar Y$ if $\SD(X, Y) \leq \negl$, where $\SD$ is the statistical distance between the distributions.
 For values $a$ and $b$ we write $a \approx_\secpar b$ if $\abs{a - b} \leq \negl$.
 
-Denote by $\RELGEN$ a \emph{relation generator} -- a PPT algorithm that on input $\secparam$ outputs an $\npol$ relation $\REL$. We assume that if $\RELGEN$ provides any auxiliary input to $\REL$, it is benign. Directly from the description of $\REL$ one learns security parameter $\secpar$ and other necessary information like a description of a group $\GRP$, if the relation is a relation of group elements (as it usually is in case of zkSNARKs).
+Denote by $\RELGEN$ a \emph{relation generator}---a PPT algorithm that on input $\secparam$ outputs an $\npol$ relation $\REL$. We assume that if $\RELGEN$ provides any auxiliary input to $\REL$, it is benign. Directly from the description of $\REL$ one learns security parameter $\secpar$ and other necessary information like a description of a group $\GRP$, if the relation is a relation of group elements (as it usually is in case of zkSNARKs).
 
 \paragraph{Bilinear groups.}
 A bilinear group generator $\pgen (1^\secpar)$ returns $(p, \GRP_1, \GRP_2, \GRP_T, \pair, \gone{1}, \gtwo{1})$, where $\GRP_1$, $\GRP_2$, and $\GRP_T$ are additive cyclic groups of prime order $p = 2^{\Omega (\secpar)}$, $\gone{1}, \gtwo{1}$ are generators of $\GRP_1$, $\GRP_2$, resp., and $\pair: \GRP_1 \times \GRP_2 \to \GRP_T$ is a non-degenerate PPT-computable bilinear pairing.
@@ -541,8 +541,8 @@ On the other hand, we have CRS-based zk-proofs where knowledge of trapdoor is re
 Given a multi-round Fiat--Shamir-transformed protocol which simulation utilises
 trapdoor we can ask another question---how many rounds, from the beginning of
 the protocol, can be simulated by the adversary unless the trapdoor is required?
-\markulf{}{interesting}\michals{09.07}{I am not sure this property is needed, but the question seems interesting. It came from the following -- in the case of a standard model protocol $\proofsystem$, as in your Indocrypt paper, one can easy make a reduction from breaking a simulation extractability of $\proofsystem_\fs$ to breaking a soundness of $\proofsystem$ (or breaking the unique resp. prop of $\proofsystem$ but that's not the case we consider here). This comes since the reduction can easily simulate proofs of $\proofsystem$ for the se adversary $\adv$.
-This reduction is not that easy if $\proofsystem$ uses a CRS -- now the reduction does not know the trapdoor and cannot provide simulated proofs.}
+\markulf{}{interesting}\michals{09.07}{I am not sure this property is needed, but the question seems interesting. It came from the following---in the case of a standard model protocol $\proofsystem$, as in your Indocrypt paper, one can easy make a reduction from breaking a simulation extractability of $\proofsystem_\fs$ to breaking a soundness of $\proofsystem$ (or breaking the unique resp. prop of $\proofsystem$ but that's not the case we consider here). This comes since the reduction can easily simulate proofs of $\proofsystem$ for the se adversary $\adv$.
+This reduction is not that easy if $\proofsystem$ uses a CRS---now the reduction does not know the trapdoor and cannot provide simulated proofs.}
 % \michals{09.07.20}{Also, it is not clear for me that in a multiround protocol we can simply use the following argument from your Indocrypt paper -- let $\inp, \vec{a}$ be a partially proof provided by the adversary, then it is a fresh query to the random oracle, otherwise }
 % \michals{09.07}{There is also another question -- in Plonk's round 4 the simulator outputs some randomised message. }
 % Note that to answer this question we shall quantify over all possible simulators. That would not be a problem though in the setting we consider.
@@ -652,29 +652,39 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 \end{lemma}
 
 \begin{theorem}
-	If $(numberofconstrains + 2$-dlog assumption holds then $\plonkprotfs$ is simulation-extractable against algebraic adversaries.
+	If $(\numberofconstrains + 2)$-dlog assumption holds then $\plonkprotfs$ is simulation-extractable against algebraic adversaries.
 \end{theorem}
 \begin{proof}[Proof draft]
 	The proof goes by contradiction.
-	Let $\advse$ be an adversary that breaks simulation extractability of $\plonkprotfs$. We show a reduction $\rdv$ that breaks knowledge soundness of $\plonkprot$.
+	Let $\advse$ be an adversary that breaks simulation extractability of $\plonkprotfs$. We show a reduction $\rdv$ uses $\advse$ to either break knowledge soundness of $\plonkprot$ or to break $(\numberofconstrains + 2)$-dlog assumption.
 	
 	The reduction $\reduction$ starts with obtaining $\crs$ from $\plonkprot.\kgen$ and passing it to $\advse$. 
 	Assume that 
 	\begin{itemize}
 		\item the adversary makes $q_\simulator$ queries to the simulator $\plonkprotfs.\simulator$ obtaining $q_\simulator$ simulated proofs;
-		\item the adversary copies first $r$ round of some simulated proof in its final simulation-extractability breaking proof including the statement $\inp$ proven by $\plonkprotfs.\simulator$. (Note that from the unique response property $0 \leq r < 3$.)
+		\item the adversary copies first $r$ round of some simulated proof in its final simulation-extractability breaking proof including the statement $\inp$ proven by $\plonkprotfs.\simulator$; note that from the unique response property $0 \leq r < 3$;
+		\item the adversary makes at most $q_\ro$ random oracle queries---including the queries that the simulator has to perform to be able to provide a simulated proof; we denote by $h$ a list of random oracle queries $h_{i_1}, \ldots, h_{i_6}$ that are used in the simulation-extractability breaking proof $\zkproof$ returned by $\advse$.
 	\end{itemize}
-	The reduction guesses query $i_\simulator$ and $r$ with probability $1/(3 q_\simulator)$. Assume its guess is correct.
+	The reduction guesses indices of queries $i_\simulator, h_{i_1}, \ldots, h_{i_6}$ and $r$ with probability 
+	\[
+	\frac{1}{3 \cdot q_\simulator \cdot  q_\ro^6}.
+	\]
+	Assume the guess is correct.
 	
-	For $\advse$'s queries for a simulated proof, except query $i_\simulator$ if $r > 0$, the reduction provides the adversary the required proofs. 
+	For $\advse$'s queries for a simulated proof, except query $i_\simulator$ if $r > 0$, the reduction provides the adversary the required proofs. However, when the simulator is about to make a random oracle query $h_{i_j}$ from the list $h$ it submits the query to $\plonkprot.\verifier$ and returns as $h_{i_j}$ the verifier's challenge (we assume that in $\plonkprot$ the first message sent by the prover to the verifier includes the proven statement $\inp$).
+	
 	For query $i_\simulator$ the reduction $\rdv$ starts its interaction with $\plonkprot.\verifier$:
 	\begin{itemize}
 		\item In Round 1, $\rdv$ randomly picks polynomials $\p{a}, \p{b}, \p{c}$.
-		\item In Round 2, $\rdv$ gets challenge $\beta, \gamma$ from $\plonkprot.\verifier$, creates $\p{z}$ exactly as the simulator would --- including $\beta, \gamma$ in $\p{z}$ ---  and returns $\gone{\p{z}(\chi)}$.
+		\item In Round 2, $\rdv$ gets challenge $\beta, \gamma$ from $\plonkprot.\verifier$, creates $\p{z}$ exactly as the simulator would---including $\beta, \gamma$ in $\p{z}$---and returns $\gone{\p{z}(\chi)}$.
 		\item If $r = 1$, $\rdv$ pauses its interaction with the verifier and continues generating the proof as $\plonkprotfs.\simulator$ would generate.
-		\item If $r = 2$, $\rdv$ continues talking with the verifier and gets in Round 3 challenge $\alpha$. After that the reduction pauses its interaction with the verifier and continues its simulated proof playing $\simulator$ for the rest of the rounds.
+		\item If $r = 2$, $\rdv$ continues talking with the verifier and gets in Round 3 challenge $\alpha$. After that the reduction pauses its interaction with the verifier and continues its simulated proof playing $\plonkprotfs.\simulator$ for the rest of the rounds.
 	\end{itemize}
-	When $\advse$ decides to continue generating its malicious proof the reduction resumes its communication with $\plonkprot.\verifier$. That is, for each $\advse$ message it responds with the corresponding challenge from the verifier. In the end, the adversary returns a proof $\zkproof$. We assume that $\plonkprot.\verifier$ accepts the proof $\zkproof$.
+	(Communication with the verifier is resumes when the adversary makes a query from $h$).
+	\michals{24.08}{The proof should hold for a bit better parameter, when we only guess the random oracle queries, putting aside guessing the simulator query}
+	% When $\advse$ decides to continue generating its malicious proof the reduction resumes its communication with $\plonkprot.\verifier$. 
+	% That is, for each $\advse$ message it responds with the corresponding challenge from the verifier. 
+	In the end, the adversary returns a proof $\zkproof$. We assume that $\plonkprot.\verifier$ accepts $\zkproof$.
 	% 	\michals{21.08}{Maybe it is enough to show a reduction to breaking k. soundness of  $\plonkprotfs$. What is the role of the $\plonkprot.\verifier$?}
 	% \michals{24.08}{If we stick to the non-interactive setting, then we need to program the oracle to be able to produce an acceptable simulated proof. I.e. we cannot simulate on our own, but need to rely on simulator's superpowers.}
 	
@@ -686,7 +696,7 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 		& \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz),
 		\p{S_{\sigma 2}}(\chz), \p{r}(\chz), \p{z}(\chz \omega)\,.
 	\end{align*}
-	Since $\advse$ is algebraic, each of the group elements it output is accompanied with coefficients for each of group elements that are input to $\advse$. 
+	Since $\advse$ is algebraic, each of the group elements it outputs is accompanied with coefficients for each of group elements that are input to $\advse$. 
 	That is, the CRS $\crs$ and simulated proofs provided by $\rdv$.
 	Hence, each proof element in $\GRP_1$ can be written as 
 	\[
