@@ -679,6 +679,7 @@ Finally, we assume that $\plonkprotfs$ is not simulation-extractable and build a
 \begin{theorem}
 	If $(\numberofconstrains + 2)$-dlog assumption holds then $\plonkprotfs$ is simulation-extractable against algebraic adversaries.
 \end{theorem}
+\michals{25.08}{I think the proof should be modified s.t. the reduction only guesses ro queries $h_1, ..., h_6$ instead of the queries plus $i_\simulator$}
 \begin{proof}[Proof draft]
 	The proof goes by contradiction.
 	Let $\advse$ be an adversary that breaks simulation extractability of $\plonkprotfs$. We show a reduction $\rdv$ uses $\advse$ to either break knowledge soundness of $\plonkprot$ or to break $(\numberofconstrains + 2)$-dlog assumption.
