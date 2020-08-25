@@ -647,9 +647,30 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 
 \section{Simulation extractability of $\plonk$}
 
+\michals{25.08}{I think the following could be quite easily generalise to polynomial protocols, not just plonk.}
 \begin{lemma}
 	$\plonkprot$ has unique response property after Round 2.
 \end{lemma}
+\begin{proof}
+	We assume that the contrary is true and analyse possible cases depending on which round a malicious prover can provide at least two acceptable outputs.
+	\case{1}
+	Assume a malicious prover $\adv$ is able to produce in Round 3 two outputs: 
+	$\gone{\vec{r_3}} = \gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$ and 
+	$\gone{\vec{r_3'}} = \gone{\p{t'_{lo}}(\chi), \p{t'_{mid}}(\chi), \p{t'_{hi}}(\chi)}$ 
+	such that both result in acceptable proof transcripts. 
+	%
+	In that case either $\gone{\vec{t}}$ or $\gone{\vec{t'}}$ is not a commitment to the quotient polynomial specified in Round 3, thus it should be rejected by the verifier or the proof system is not sound.
+	\case{2}
+	Assume a malicious prover $\adv$ is able to produce two different outputs of Round 4: $\vec{r_4} = (\ev{\p{a}}, \ev{\p{b}}, \ev{\p{c}}, \ev{\p{S_{\sigma 1}}}, \ev{\p{S_{\sigma 2}}}, \ev{\p{r}}, \ev{\p{z}})$ and 
+	$\vec{r_4} = (\ev{\p{a}}', \ev{\p{b}}', \ev{\p{c}}', \ev{\p{S_{\sigma 1}}}', \ev{\p{S_{\sigma 2}}}', \ev{\p{r}}', \ev{\p{z}}')$
+	which suppose to be evaluations at $\chz$ of polynomials $\p{a}, \p{b}, \p{c}, \p{S_{\sigma 1}}, \p{S_{\sigma 2}}, \p{r}$ and evaluation at $\chz \omega$ of $\p{z}$.
+	Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$---i.e.~at least one of the output evaluations---has to be incorrect, thus it should be rejected of the verifier of the proof system.
+	\case{3} 
+	Assume a malicious prover $\adv$ is able to produce two different polynomial commitment opennings pairs: 
+	$\vec{r_5} = (\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and 
+	$\vec{r'_5} = (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
+	As previously one of the openings has to be incorrect and should be rejected by the verifier if the proof system be sound.
+\end{proof}
 
 \begin{theorem}
 	If $(\numberofconstrains + 2)$-dlog assumption holds then $\plonkprotfs$ is simulation-extractable against algebraic adversaries.
