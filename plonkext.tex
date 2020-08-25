@@ -646,6 +646,10 @@ To make the result useful in the context of CRS-model zkSNARKs like \plonk, we n
 \end{proof}
 
 \section{Simulation extractability of $\plonk$}
+We show simulation extractability of $\plonk$ in a few steps. 
+First we focus on the interactive version of the protocol, which we denote by $\plonkprot$ and assuming it is knowledge sound, we show security properties of its non-interactive version $\plonkprotfs$ which was obtained by the Fiat--Shamir transform on $\plonkprot$.
+Then we show that $\plonkprot$ has unique response property after Round 2 or is not sound.
+Finally, we assume that $\plonkprotfs$ is not simulation-extractable and build a reduction that either breaks $(\numberofconstrains + 2)$-dlog assumption or knowledge soundness of the underlying $\plonkprot$ protocol.
 
 \michals{25.08}{I think the following could be quite easily generalise to polynomial protocols, not just plonk.}
 \begin{lemma}
