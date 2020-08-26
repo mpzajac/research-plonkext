@@ -704,22 +704,23 @@ In the end, the adversary outputs a proof $\zkproof$ that should be acceptable b
 \michals{25.08}{I think the proof should be modified s.t. the reduction only guesses ro queries $h_1, ..., h_6$ instead of the queries plus $i_\simulator$}
 \begin{proof}
 	\michals{26.05}{The following is 2 days old and should be modified a bit}
-	The proof goes by contradiction. Assume there exists an adversary $\advse$ that breaks simulation extractability with non-negligible probability $\eps$. We use $\advse$ to build two reductions $\rdvks$ and $\rdvdlog$, where the former uses $\advse$ to break knowledge soundness of $\plonkprot$ and the latter to break the $(\numberofconstrains + 2)$-dlog assumption.
+	The proof goes by contradiction. Assume there exists an adversary $\advse$ that breaks simulation extractability with non-negligible probability $\eps$. 
+	We use $\advse$ to build two reductions $\rdvks$ and $\rdvdlog$, where the former uses $\advse$ to break knowledge soundness of $\plonkprot$ and the latter to break the $(\numberofconstrains + 2)$-dlog assumption.
 	Since the reductions behave almost identically, we present them together and use $\rdv$ to denote both them. 
 	Note that both reductions run in parallel and have access to independent copies of $\advse$.
 	
-	The reduction $\rdvks$ starts with obtaining $\crs$ from $\plonkprot.\kgen$ and passing it to $\advse$. Similarly, $\rdvdlog$ gets its challenge from the $(\numberofconstrains + 2)$-dlog challenger $\cdv_\dlog$.
-	Assume that 
-	\begin{itemize}
-		\item the adversary makes $q_\simulator$ queries to the simulator $\plonkprotfs.\simulator$ obtaining $q_\simulator$ simulated proofs;
-		\item the adversary copies first $r$ round of some simulated proof in its final simulation-extractability breaking proof including the statement $\inp$ proven by $\plonkprotfs.\simulator$; note that from the unique response property $0 \leq r < 3$;
-		\item the adversary makes at most $q_\ro$ random oracle queries---including the queries that the simulator has to perform to be able to provide a simulated proof; we denote by $h$ a list of random oracle queries $h_{i_1}, \ldots, h_{i_6}$ that are used in the simulation-extractability breaking proof $\zkproof$ returned by $\advse$.
-	\end{itemize}
-	The reduction guesses indices of queries $i_\simulator, h_{i_1}, \ldots, h_{i_6}$ and $r$ with probability 
-	\[
-	\frac{1}{3 \cdot q_\simulator \cdot  q_\ro^6}.
-	\]
-	Assume the guess is correct.
+	The reduction $\rdvks$ starts with obtaining $\crs$ from $\plonkprot.\kgen$ and passing it to $\advse$. 
+	Similarly, $\rdvdlog$ gets its challenge $c$ from the $(\numberofconstrains + 2)$-dlog challenger $\cdv_\dlog$ and then internally starts $\plonkprot.\verifier$ equipping it with the CRS $\crs = c$.
+	Reductions answer $\advse$ queries to the random oracle and provides it with simulated proofs on submitted instances---this is possible since the reductions control the random oracle instances and can program them as they wish.
+	
+	We assume that the adversary makes at most $q_\ro$ random oracle queries---including the queries that the simulator has to perform to be able to provide a simulated proof. 
+	To make a proof in $\plonkprotfs$ the adversary has to make at least $6$ random oracle queries. 
+	Denote by $h$ a list of random oracle queries $h_{i_1}, \ldots, h_{i_6}$ that are used in the final proof $\zkproof$ returned by $\advse$.
+	The reduction guesses the indices $i_1, \ldots, i_6$ of the queries with probability at least $\infrac{1}{q_\ro^6}$. In the later, assume that the guess is correct.
+	
+	Given query $i_1$ the reduction starts its interaction with $\plonkprot.\verifier$. That is it sends $h_{i_1}$ as the first message to the verifier and gets the corresponding challenge $c_1$. The challenge is returned to the adversary $\advse$ as an output of $\ro(h_{i_1})$. 
+	Similarly for other guessed queries $h_{i_2}, \ldots, h_{i_6}$, except in that case the reduction continues its interaction with $\plonkprot.\verifier$.
+	
 	
 	For $\advse$'s queries for a simulated proof, except query $i_\simulator$ if $r > 0$, the reduction provides the adversary the required proofs. However, when the simulator is about to make a random oracle query $h_{i_j}$ from the list $h$ it submits the query to $\plonkprot.\verifier$ and returns as $h_{i_j}$ the verifier's challenge (we assume that in $\plonkprot$ the first message sent by the prover to the verifier includes the proven statement $\inp$).
 	
