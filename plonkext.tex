@@ -701,116 +701,51 @@ In the end, the adversary outputs a proof $\zkproof$ that should be acceptable b
 	Assume that $(\numberofconstrains + 2)$-dlog is hard, $\plonkprot$ is knowledge sound and has unique response property after Round 2. 
 	Then $\plonkprotfs$ is simulation-extractable against algebraic adversaries.
 \end{theorem}
-\michals{25.08}{I think the proof should be modified s.t. the reduction only guesses ro queries $h_1, ..., h_6$ instead of the queries plus $i_\simulator$}
 \begin{proof}
-	\michals{26.05}{The following is 2 days old and should be modified a bit}
+	\task{26.08}{Explain the freshness of queries}
+	\task{26.08}{How the unique resp prop is used?}
 	The proof goes by contradiction. Assume there exists an adversary $\advse$ that breaks simulation extractability with non-negligible probability $\eps$. 
 	We use $\advse$ to build two reductions $\rdvks$ and $\rdvdlog$, where the former uses $\advse$ to break knowledge soundness of $\plonkprot$ and the latter to break the $(\numberofconstrains + 2)$-dlog assumption.
-	Since the reductions behave almost identically, we present them together and use $\rdv$ to denote both them. 
-	Note that both reductions run in parallel and have access to independent copies of $\advse$.
+	We start with picking a reduction at random and denote by $\rdv$ the chosen one.
 	
-	The reduction $\rdvks$ starts with obtaining $\crs$ from $\plonkprot.\kgen$ and passing it to $\advse$. 
-	Similarly, $\rdvdlog$ gets its challenge $c$ from the $(\numberofconstrains + 2)$-dlog challenger $\cdv_\dlog$ and then internally starts $\plonkprot.\verifier$ equipping it with the CRS $\crs = c$.
-	Reductions answer $\advse$ queries to the random oracle and provides it with simulated proofs on submitted instances---this is possible since the reductions control the random oracle instances and can program them as they wish.
+	The reduction $\rdvks$ starts with obtaining $\crs = \gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ from $\plonkprot.\kgen$ and passing it to $\advse$. 
+	Similarly, $\rdvdlog$ gets its challenge $c$ from the $(\numberofconstrains + 2)$-dlog challenger $\cdv_\dlog$ and then internally starts $\plonkprot.\verifier$ equipping it with the CRS $\crs = c$. (Although the CRS from $\plonkprot.\kgen$ given to $\rdvks$ may not equal the challenge given by $\cdv_\dlog$ we use $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ for both of them.)
+	Reductions answer $\advse$ queries to the random oracle and provide it with simulated proofs $\vec{\zkproof_{\simulator, 1}}, \ldots, \vec{\zkproof_{\simulator, q_\simulator}}$ on submitted instances, where $q_\simulator$ is the total number of required simulated proofs---this is possible since the reductions control the random oracle instances and can program them as they wish.
 	
 	We assume that the adversary makes at most $q_\ro$ random oracle queries---including the queries that the simulator has to perform to be able to provide a simulated proof. 
 	To make a proof in $\plonkprotfs$ the adversary has to make at least $6$ random oracle queries. 
 	Denote by $h$ a list of random oracle queries $h_{i_1}, \ldots, h_{i_6}$ that are used in the final proof $\zkproof$ returned by $\advse$.
-	The reduction guesses the indices $i_1, \ldots, i_6$ of the queries with probability at least $\infrac{1}{q_\ro^6}$. In the later, assume that the guess is correct.
+	The reduction guesses the indices $i_1, \ldots, i_6$ of the queries with probability at least $\infrac{1}{q_\ro^6}$. Later, assume that the guess is correct.
 	
 	Given query $i_1$ the reduction starts its interaction with $\plonkprot.\verifier$. That is it sends $h_{i_1}$ as the first message to the verifier and gets the corresponding challenge $c_1$. The challenge is returned to the adversary $\advse$ as an output of $\ro(h_{i_1})$. 
 	Similarly for other guessed queries $h_{i_2}, \ldots, h_{i_6}$, except in that case the reduction continues its interaction with $\plonkprot.\verifier$.
-	In the end, the adversary returns a proof $\zkproof$. We assume that $\plonkprot.\verifier$ accepts $\zkproof$, if that is not the case $\advse$ fails.
+	In the end, the adversary returns a proof $\zkproof$ for some statement $\inp$. We assume that $\plonkprot.\verifier$ accepts $\zkproof$, if that is not the case $\advse$ fails.
 	
-	\noindent******************************************\\
-	OLD proof below that line\\
-	******************************************
-	
-	
-	For $\advse$'s queries for a simulated proof, except query $i_\simulator$ if $r > 0$, the reduction provides the adversary the required proofs. However, when the simulator is about to make a random oracle query $h_{i_j}$ from the list $h$ it submits the query to $\plonkprot.\verifier$ and returns as $h_{i_j}$ the verifier's challenge (we assume that in $\plonkprot$ the first message sent by the prover to the verifier includes the proven statement $\inp$).
-	
-	For query $i_\simulator$ the reduction $\rdv$ starts its interaction with $\plonkprot.\verifier$:
-	\begin{itemize}
-		\item In Round 1, $\rdv$ randomly picks polynomials $\p{a}, \p{b}, \p{c}$.
-		\item In Round 2, $\rdv$ gets challenge $\beta, \gamma$ from $\plonkprot.\verifier$, creates $\p{z}$ exactly as the simulator would---including $\beta, \gamma$ in $\p{z}$---and returns $\gone{\p{z}(\chi)}$.
-		\item If $r = 1$, $\rdv$ pauses its interaction with the verifier and continues generating the proof as $\plonkprotfs.\simulator$ would generate.
-		\item If $r = 2$, $\rdv$ continues talking with the verifier and gets in Round 3 challenge $\alpha$. After that the reduction pauses its interaction with the verifier and continues its simulated proof playing $\plonkprotfs.\simulator$ for the rest of the rounds.
-	\end{itemize}
-	(Communication with the verifier is resumes when the adversary makes a query from $h$).
-	\michals{24.08}{The proof should hold for a bit better parameter, when we only guess the random oracle queries, putting aside guessing the simulator query}
-	% When $\advse$ decides to continue generating its malicious proof the reduction resumes its communication with $\plonkprot.\verifier$. 
-	% That is, for each $\advse$ message it responds with the corresponding challenge from the verifier. 
-	In the end, the adversary returns a proof $\zkproof$. We assume that $\plonkprot.\verifier$ accepts $\zkproof$.
-	% 	\michals{21.08}{Maybe it is enough to show a reduction to breaking k. soundness of  $\plonkprotfs$. What is the role of the $\plonkprot.\verifier$?}
-	% \michals{24.08}{If we stick to the non-interactive setting, then we need to program the oracle to be able to produce an acceptable simulated proof. I.e. we cannot simulate on our own, but need to rely on simulator's superpowers.}
-	
-	Let 
-	\begin{align*}
-		\zkproof = & \gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi),
-		\p{W_\chz}(\chi), \p{W_{\chz \omega}}(\chi), \p{t_{lo}}(\chi),
-		\p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}, \\
-		& \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz),
-		\p{S_{\sigma 2}}(\chz), \p{r}(\chz), \p{z}(\chz \omega)\,.
-	\end{align*}
-	Since $\advse$ is algebraic, each of the group elements it outputs is accompanied with coefficients for each of group elements that are input to $\advse$. 
-	That is, the CRS $\crs$ and simulated proofs provided by $\rdv$.
-	Hence, each proof element in $\GRP_1$ can be written as 
+	Since $\advse$ is algebraic the adversary provides along the proof $\zkproof$ also vectors of coefficients of all group elements it learnt for all group elements in the proof---that is, for each group element $\gone{\iota}$ included in the proof $\advse$ provides vector of coefficients $\vec{\iota}$ such that
 	\[
-		\gone{\iota} = \vec{\iota} \cdot (\underbrace{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}_{\crs} \| \vec{\zkproof_\simulator}_1 \| \ldots \| \vec{\zkproof_\simulator}_{q_\simulator}),\] 
-	where $\vec{\zkproof_\simulator}_1, \ldots, \vec{\zkproof_\simulator}_{q_\simulator}$ are vectors representing group elements in the simulated proofs obtained by the adversary.
-	Importantly, from the way the simulator works, the reduction knows representation of each $\vec{\zkproof_\simulator}_1, \ldots, \vec{\zkproof_\simulator}_{q_\simulator}$ as a vector of  $(1, \chi, \ldots, \chi^{\numberofconstrains + 2})$.
+		\iota = \vec{\iota}\top \cdot (\underbrace{1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2}}_{\crs} \| \vec{\tilde{\zkproof}_\simulator}_1^{\top} \| \ldots \| \vec{\tilde{\zkproof}_\simulator}_{q_\simulator}^\top)^\top,
+	\]
+	where $\vec{\tilde{\zkproof}_\simulator}_{j}$ is a vector of group elements contained in the $j$-th simulated proof requested by the adversary.
+	Since the reduction also constructs its simulated proofs by using $\crs = \gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ it knows the representation of $\vec{\tilde{\zkproof}_\simulator}_1, \ldots, \vec{\tilde{\zkproof}_\simulator}_{q_\simulator}$ as vectors of $(1, \chi, \ldots, \chi^{\numberofconstrains + 2})$. 
+	That is, it knows a vector $\vec{\tilde{\iota}}$ such that
+	\[
+		\gone{\iota} = \vec{\tilde{\iota}}^\top \cdot (1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2})^\top\,.
+	\]
 	
-	Consider the following two cases. First, that the verification equation for polynomial evaluations hold, so does the verification equation on polynomials themselves. That is
-	\begin{multline}
-		\label{eq:ver_eq_poly}
-		\left(
-		\p{W_{\chz}}(X) + u \cdot \p{W_{\chz \omega}}(X)
-		\right) \cdot 
-		X = 
-		\chz \cdot \p{W_{\chz}}(X) + u \chz \omega \cdot \p{W_{\chz \omega}}(X) + F(X) - E\,.
-	\end{multline}
-	\end{proof}
-	In that case $\rdv$ reveals witness $\wit$ from $\advse$'s coefficients of $\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)$. If for the extracted $\wit$ holds $\REL(\inp, \wit) = 1$, then $\advse$ failed to break simulation extractability of $\plonkprotfs$. On the other hand, if $\REL(\inp, \wit) = 0$, then $\rdv$ breaks knowledge soundness of $\plonkprot$. 
-	
-	The second case is when the verification equation of evaluations holds (as it is required for the adversary to be successful), but the polynomial equation does not. In that case $\advse$ can be used to break $(\numberofconstrains + 2)$-dlog assumption. That is, let 
-	\begin{align}
+	Recall the $\plonkprot$'s verification equation, \cref{eq:ver_eq}. Let $\p{V}(X)$ be a polynomial such that 
+	\[
 		\p{V}(X) = \p{W_{\chz}}(X) + u \cdot \p{W_{\chz \omega}}(X)
-		\cdot X - \chz \cdot \p{W_{\chz}}(X) - u \chz \omega \cdot \p{W_{\chz \omega}}(X) -  F(X) + E\,.
-	\end{align}
-	Since \cref{eq:ver_eq_poly} does not hold, $\p{V}(X)$ is not a zero polynomial. On the other hand, since \cref{eq:ver_eq} holds, $\p{V}(\chi) = 0$. Thus, one can factor $\p{V}$ and find $\chi$ breaking the dlog assumption.
+		\cdot X - \chz \cdot \p{W_{\chz}}(X) - u \chz \omega \cdot \p{W_{\chz \omega}}(X) -  F(X) + E = 0\,.
+	\]
+	Hence, from the soundness of the polynomial protocol underlying $\plonkprot$ the polynomial $\p{V}(X)$ should be a zero-polynomial if all the constrains of the proof system are fulfilled. However, in the real life protocol only $\p{V}$'s value at $\chi$ is checked to be $0$.
 	
-\COMMENT
-{\begin{lemma}
-	\plonkint{} is special-sound against AGM adversaries.
-\end{lemma}
-\begin{proof}
-	Proof outline. 
-	In the following games an AGM adversary $\adv$ is tasked to break $m$-special-soundess property of $\plonkint$. The extractor $\ext$ which from $m$ accepting transcripts for a statement $\inp$ reveals the corresponding witness $\wit$ is the games' challenger $\cdv$. 
-	We allow $\adv$ to ask about simulated proofs for chosen statements. These queries are handled by $\cdv$ as well.
-	\paragraph{Game $\game{1}$:}
-		The challenger picks trapdoor $\chi$, computes \plonk's CRS $
-		\crs$ and gives it to an AGM adversary $\adv$. The challenger also provides the adversary with the CRS and plays the role of the verifier $\plonkint.\verifier$ of the proof system. 		
-		Finally, the adversary outputs an instance $\inp$ and proof $\zkproof$. If the proof is acceptable by $\plonkint.\verifier$ then with overwhelming probability the extractor returns $\wit$ such that $(\inp, \wit) \in \REL$.
-		
-		\paragraph{Game $\game{2}$:}
-		The game runs as the previous except that the challenger $\cdv$ additionally tries to break a $(\numberofconstrains + 2)$-dlog assumption. To that end it engages in a $(\numberofconstrains + 2)$-dlog game with a $(\numberofconstrains + 2)$-dlog challenger $\cdv_\dlog$ who provides $\cdv$ with $(\numberofconstrains + 2)$-dlog input $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. 
-		The challenger $\cdv$ computes the rest of $\plonkint$ CRS and starts the game with the adversary $\adv$. (In this game we do not specify what $\cdv$ returns to $\cdv_\dlog$).
-		
-		\paragraph{Game $\game{3}$:}
-		The game goes as previous except that the challenger $\cdv$ runs runs $\plonkintpoly.\verifier$ along with  $\plonkint.\verifier$. More precisely, $\cdv$ picks challenges that the verifiers would send and provide them to the adversary when necessary. 
-		Since $\adv$ is algebraic for each polynomial commitment $\gone{f(\chi)}$ it sends it also provides $f$'s coefficients. That is, the only group elements $\adv$ has access to are the CRS $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ and the proofs it required from the simulator (operated by $\cdv$).
-		 
-		This allows $\cdv$ to recreate the polynomials committed by $\adv$ and transform its messages to messages that (potentially malicious) $\plonkintpoly.\prover$ would send. 
-		
-		In the end, the challenger checks verification equations of $\plonkint$ and $\plonkintpoly$. The latter is for polynomials, while to former for the polynomials' evaluations.
-		Similarly as in \cite{EPRINT:GabWilCio19} we note that  $\plonkintpoly$'s polynomial verification equation accepts only true statements except negligible probability. Furthermore, we denote by $\bad$ the case when the verification equation for $\plonkint$ holds, while $\plonkintpoly$ does not. We show that if $\bad$ happens, then $\adv$ can be used to break $(\numberofconstrains + 2)$-dlog assumption.
-		
-		\paragraph{Game $\game{4}$:}
-		
-		% Show unique response property for the polynomial protocol (statistical unique response property)
-	% \end{description}
+	Consider two cases. 
+	First, when $\p{V}(X) = 0$. Obviously then also holds $\p{V}(\chi) = 0$, i.e.~the verifier accepts the proof. In that case $\rdvks$ reconstructs polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$ from the corresponding vectors of coefficients of the CRS elements. Given the coefficients of the polynomials $\rdvks$ reveals a witness $\wit$ and verifies whether $\REL(\inp, \wit) = 1$. 
+	If it does then $\rdvks$ fails, but also $\advse$ fails. Alternatively, if $\REL(\inp, \wit) = 0$, then $\rdvks$ produced a $\plonkprot.\verifier$-acceptable transcript for a false statement. Thus it breaks $\plonkprot$'s soundness.
+	
+	Second, if $\p{V}(X)$ is not identically equal zero, but $\p{V}(\chi) = 0$, then the reduction $\rdvdlog$ can find zeroes of $\p{V}(X)$ and hence reveal $\chi$ breaking the $(\numberofconstrains + 2)$-dlog assumption.
 	\qed
-\end{proof}}
+\end{proof}
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
