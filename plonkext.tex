@@ -720,6 +720,11 @@ In the end, the adversary outputs a proof $\zkproof$ that should be acceptable b
 	
 	Given query $i_1$ the reduction starts its interaction with $\plonkprot.\verifier$. That is it sends $h_{i_1}$ as the first message to the verifier and gets the corresponding challenge $c_1$. The challenge is returned to the adversary $\advse$ as an output of $\ro(h_{i_1})$. 
 	Similarly for other guessed queries $h_{i_2}, \ldots, h_{i_6}$, except in that case the reduction continues its interaction with $\plonkprot.\verifier$.
+	In the end, the adversary returns a proof $\zkproof$. We assume that $\plonkprot.\verifier$ accepts $\zkproof$, if that is not the case $\advse$ fails.
+	
+	\noindent******************************************\\
+	OLD proof below that line\\
+	******************************************
 	
 	
 	For $\advse$'s queries for a simulated proof, except query $i_\simulator$ if $r > 0$, the reduction provides the adversary the required proofs. However, when the simulator is about to make a random oracle query $h_{i_j}$ from the list $h$ it submits the query to $\plonkprot.\verifier$ and returns as $h_{i_j}$ the verifier's challenge (we assume that in $\plonkprot$ the first message sent by the prover to the verifier includes the proven statement $\inp$).
