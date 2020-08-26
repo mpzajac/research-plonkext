@@ -574,74 +574,7 @@ This property will be important later in the simulation-extractability proof.
 \michals{03.07}{a proof for that statement would be nice.}
 }
 
-\section
-{Simulation extractability from unique responses and witness-extended emulation.}
-We can now present two proofs for the Fiat--Shamir transform simulation extractability, one for the standard---weaker---version of the unique response property, one for the stronger.
-\michals{08.07.20}{That probably will be changed as we don't have disctinction of weak and strong ur prop.---the weak version that worked for CRS-less protocols has been provisionally removed.}
-
-In the former, we assume that the underlying interactive proof system is in the standard model. More precisely, we require that the only additional power given to the simulator is the ability of producing proof elements in any order it wants. Especially, producing a simulated proof does not require knowledge of some sort of a trapdoor.
-Although we believe that this result may be of independent interest, it is not enough in our case, it is not enough to show simulation extractability of \plonk.
-This is since we show our result by contradiction and build an adversary $\bdv$ that breaks the unique response property using an adversary $\adv$ that breaks simulation extractability. Thus, to make the reduction hold we need to allow $\bdv$ to make simulated proofs for $\adv$.
-
-To make the result useful in the context of CRS-model zkSNARKs like \plonk, we need to rely on a stronger version of the unique response property presented in \cref{def:wiur} to allow the unique-response-property adversary to learn the simulated proofs as well.
-
-\begin{theorem}[Simulation extractability of the Fiat--Shamir transform II]
-	\label{thm:wit_ext_em_FS_II}
-	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an interactive $\mu$-round $\ur{i}$ protocol for a relation $\REL$ and $i < \mu$.
-	Assume there exists an extractor $\ext$ that extracts the witness from a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts of $\proofsystem$ and $\prod_{j = 1}^\mu n_j \leq \poly$.
-	Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model.
-\end{theorem}
-\begin{proof}
-	The proof goes similarly to \cite[Theorem 3]{INDOCRYPT:FKMV12}. For the sake of clarity let divide the simulator algorithm $\simulator_\fs$ of $\proofsystem_\fs$  into two subroutines:
-	\begin{description}
-		\item[$\simulator_{\fs, \ro}$] that takes care about random oracle queries. Assume that there is an upper bound $Q = \poly$ for the number of queries that may be submitted.
-		For a query $x$ simulator $\simulator_{\fs, \ro}$ checks whether a list of queries $L$ already contains a pair $(x, y)$, for some $y$, and, if that is the case, outputs $y$.
-		Otherwise, it picks an element $y'$ from the random oracle codomain, outputs it and adds $(x, y')$ to $L$. Importantly $y'$ is picked accordingly to the randomness tape provided to $\simulator_{\fs, \ro}$, i.e.~one may assume that $\simulator_{\fs, \ro}$ gets as input a randomness tape $r$ that provides values $y_1, \ldots, y_Q$.
-		When the simulator needs to answer a fresh query $x$ it takes the successive $y_i$ from $r$.
-		\item[$\simulator_{\fs, \zkproof}$] that provides simulated proofs. The simulator may also program random oracle queries as it wishes. That is, it may add pair $(x, y)$ to $L$ unless there is a pair that have $x$ on the first position. In that case it aborts.
-	\end{description}
-
-	Let $\adv_\se^{\simulator_\fs}$ be a simulation-extractability adversary for $\proofsystem_\fs$, $\inp$ the instance $\adv_\se$ proves and $\zkproof = \vec{a} = (a_0, \ldots, a_\mu)$ the corresponding acceptable proof.
-	W.l.o.g.~we may assume that $(\inp, \pi)$ is output after $\adv_\se$ learnt simulated proofs from $\simulator_{\fs, \zkproof}$.
-
-	For each $j > i$, divide the adversary's proof $\zkproof$ into two parts:
-	first, $\vec{a}_{[0:j]} = (a_0, \ldots, a_j)$ and second $\vec{a}_{{[j + 1:\mu]}} = (a_{j + 1}, \ldots, a_\mu)$.
-	Note that $(\inp, \vec{a}_{[0:j]})$ is a fresh query to the random oracle that is performed by the adversary.
-	Otherwise, if the query was made by the simulator $\simulator_{\fs, \zkproof}$ then, since $\proofsystem$ is an $\ur{i}$-protocol and $j > i$, a proof starting with $(\inp, \vec{a}_{[0:j]})$ is already in the list of simulated proofs $Q$ and cannot be used by the simulation-extractability adversary $\adv_\se$.
-
-	The tree of accepting transcripts is generating by rewinding the adversary as depicted on~\cref{fig:rewinding_advse}, which is a version of the tree extraction algorithm from \cref{fig:rewinding_prover} tuned for non-interactive proofs and adversaries that have access to simulated proofs.
-	To obtain the full tree of transcripts the extractor runs $\treebuild_{\adv_\se, \simulator_{\fs, \zkproof}, \simulator_{\fs, \ro}}^{\REL, \crs, \inp}(1)$, verifies whether all collected transcripts are acceptable and the tree is valid and, if that is the case, returns the witness.
-
-	\begin{figure}
-		\centering
-		\fbox{
-		\procedure{$\treebuild_{\adv_\se, \simulator_{\fs, \zkproof}, \simulator_{\fs, \ro}}^{\REL, \crs, \inp} (i)$}
-		{
-			\pcif i = \mu + 1 \pcthen\\
-				\pcind \zkproof \gets \adv_\se^{\simulator_{\fs, \zkproof}, \simulator_{\fs, \ro}}(\REL, \crs)\\
-				\pcind \pcif (\inp, \zkproof) \in Q \pcthen \pcreturn (\zkproof, \bot) \\
-				\pcind \pcind \pccomment{$Q$ is the list of $(\inp, \zkproof)$ pairs that have been submitted to  $\simulator_{\fs, \ro}$.}\\
-				\pcind b \gets \verifier(\REL, \crs, \inp, \zkproof)\\
-				\pcind \pcif b = 0 \pcthen \pcreturn (\zkproof, \bot)\\
-				\pcind \pcif b = 1 \pcthen \\
-				\pcind \pcind \tree \gets \smallset{\zkproof}\ \pcreturn (\zkproof, \tree)	\\
-			\text{Run $\adv_\se$ up to and including query $(\inp, \vec{a}_{[0 : i]})$ to $\simulator_{\FS, \ro}$}\\
-			(\zkproof, \tree) \gets \treebuild(i + 1)\\
-			\pcif \tree = \bot \pcthen \pcreturn (\zkproof, \bot)\\
-			\counter \gets 1\\
-			\pcwhile \counter \leq n_i \pcthen\\
-			\pcind \text{Rewind $\adv_\se$ back until just before it gets response to $\simulator_{\fs, \ro}$ query $(\inp, \vec{a}_{[0 : i - 1]})$}\\
-			\pcind (\zkproof', \tree') \gets \treebuild(i + 1)\\
-			\pcind \pcif \tree' \neq \bot \pcthen\\
-			\pcind \pcind \tree \gets \tree \cup \smallset{\zkproof'} \\
-			\pcind \pcind \counter \gets \counter + 1\\
-			\pcreturn \zkproof, \tree
-		}}
-		\caption{Rewinding strategy for $\adv_\se$---getting a tree of accepting transcripts. For the sake of clarity parameters of $\treebuild$ algorithm have been omitted in the code. We also assume that $\adv_\se$ separately outputs instance $\inp$ which it plans to prove.}
-		\label{fig:rewinding_advse}
-\end{figure}
-	\qed
-\end{proof}
+\
 
 \section{Simulation extractability of $\plonk$}
 We show simulation extractability of $\plonk$ in a few steps. 
@@ -723,7 +656,7 @@ In the end, the adversary outputs a proof $\zkproof$ that should be acceptable b
 	
 	Since $\advse$ is algebraic the adversary provides along the proof $\zkproof$ also vectors of coefficients of all group elements it learnt for all group elements in the proof---that is, for each group element $\gone{\iota}$ included in the proof $\advse$ provides vector of coefficients $\vec{\iota}$ such that
 	\[
-		\iota = \vec{\iota}\top \cdot (\underbrace{1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2}}_{\crs} \| \vec{\tilde{\zkproof}_\simulator}_1^{\top} \| \ldots \| \vec{\tilde{\zkproof}_\simulator}_{q_\simulator}^\top)^\top,
+		\iota = \vec{\iota}^\top \cdot (\underbrace{1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2}}_{\crs} \| \vec{\tilde{\zkproof}_\simulator}_1^{\top} \| \ldots \| \vec{\tilde{\zkproof}_\simulator}_{q_\simulator}^\top)^\top,
 	\]
 	where $\vec{\tilde{\zkproof}_\simulator}_{j}$ is a vector of group elements contained in the $j$-th simulated proof requested by the adversary.
 	Since the reduction also constructs its simulated proofs by using $\crs = \gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ it knows the representation of $\vec{\tilde{\zkproof}_\simulator}_1, \ldots, \vec{\tilde{\zkproof}_\simulator}_{q_\simulator}$ as vectors of $(1, \chi, \ldots, \chi^{\numberofconstrains + 2})$. 
@@ -746,6 +679,8 @@ In the end, the adversary outputs a proof $\zkproof$ that should be acceptable b
 	Second, if $\p{V}(X)$ is not identically equal zero, but $\p{V}(\chi) = 0$, then the reduction $\rdvdlog$ can find zeroes of $\p{V}(X)$ and hence reveal $\chi$ breaking the $(\numberofconstrains + 2)$-dlog assumption.
 	\qed
 \end{proof}
+
+\section{Simulation extractability with special soundness and no AGM}
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
@@ -866,37 +801,76 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	\]
 	\item[Round 5]
 	In this round the simulator proceeds as an honest prover would.
+	\end{description}
 	
- \end{description}
+	\section{OLDIES}
+	section
+	{Simulation extractability from unique responses and witness-extended emulation.}
+	We can now present two proofs for the Fiat--Shamir transform simulation extractability, one for the standard---weaker---version of the unique response property, one for the stronger.
+	\michals{08.07.20}{That probably will be changed as we don't have disctinction of weak and strong ur prop.---the weak version that worked for CRS-less protocols has been provisionally removed.}
+
+	In the former, we assume that the underlying interactive proof system is in the standard model. More precisely, we require that the only additional power given to the simulator is the ability of producing proof elements in any order it wants. Especially, producing a simulated proof does not require knowledge of some sort of a trapdoor.
+	Although we believe that this result may be of independent interest, it is not enough in our case, it is not enough to show simulation extractability of \plonk.
+	This is since we show our result by contradiction and build an adversary $\bdv$ that breaks the unique response property using an adversary $\adv$ that breaks simulation extractability. Thus, to make the reduction hold we need to allow $\bdv$ to make simulated proofs for $\adv$.
+
+	To make the result useful in the context of CRS-model zkSNARKs like \plonk, we need to rely on a stronger version of the unique response property presented in \cref{def:wiur} to allow the unique-response-property adversary to learn the simulated proofs as well.
+
+	\begin{theorem}[Simulation extractability of the Fiat--Shamir transform II]
+		\label{thm:wit_ext_em_FS_II}
+		Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an interactive $\mu$-round $\ur{i}$ protocol for a relation $\REL$ and $i < \mu$.
+		Assume there exists an extractor $\ext$ that extracts the witness from a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts of $\proofsystem$ and $\prod_{j = 1}^\mu n_j \leq \poly$.
+		Then $\proofsystem_\fs$ is simulation-extractable in the random oracle model.
+	\end{theorem}
+	\begin{proof}
+		The proof goes similarly to \cite[Theorem 3]{INDOCRYPT:FKMV12}. For the sake of clarity let divide the simulator algorithm $\simulator_\fs$ of $\proofsystem_\fs$  into two subroutines:
+		\begin{description}
+			\item[$\simulator_{\fs, \ro}$] that takes care about random oracle queries. Assume that there is an upper bound $Q = \poly$ for the number of queries that may be submitted.
+			For a query $x$ simulator $\simulator_{\fs, \ro}$ checks whether a list of queries $L$ already contains a pair $(x, y)$, for some $y$, and, if that is the case, outputs $y$.
+			Otherwise, it picks an element $y'$ from the random oracle codomain, outputs it and adds $(x, y')$ to $L$. Importantly $y'$ is picked accordingly to the randomness tape provided to $\simulator_{\fs, \ro}$, i.e.~one may assume that $\simulator_{\fs, \ro}$ gets as input a randomness tape $r$ that provides values $y_1, \ldots, y_Q$.
+			When the simulator needs to answer a fresh query $x$ it takes the successive $y_i$ from $r$.
+			\item[$\simulator_{\fs, \zkproof}$] that provides simulated proofs. The simulator may also program random oracle queries as it wishes. That is, it may add pair $(x, y)$ to $L$ unless there is a pair that have $x$ on the first position. In that case it aborts.
+		\end{description}
+
+		Let $\adv_\se^{\simulator_\fs}$ be a simulation-extractability adversary for $\proofsystem_\fs$, $\inp$ the instance $\adv_\se$ proves and $\zkproof = \vec{a} = (a_0, \ldots, a_\mu)$ the corresponding acceptable proof.
+		W.l.o.g.~we may assume that $(\inp, \pi)$ is output after $\adv_\se$ learnt simulated proofs from $\simulator_{\fs, \zkproof}$.
+
+		For each $j > i$, divide the adversary's proof $\zkproof$ into two parts:
+		first, $\vec{a}_{[0:j]} = (a_0, \ldots, a_j)$ and second $\vec{a}_{{[j + 1:\mu]}} = (a_{j + 1}, \ldots, a_\mu)$.
+		Note that $(\inp, \vec{a}_{[0:j]})$ is a fresh query to the random oracle that is performed by the adversary.
+		Otherwise, if the query was made by the simulator $\simulator_{\fs, \zkproof}$ then, since $\proofsystem$ is an $\ur{i}$-protocol and $j > i$, a proof starting with $(\inp, \vec{a}_{[0:j]})$ is already in the list of simulated proofs $Q$ and cannot be used by the simulation-extractability adversary $\adv_\se$.
+
+		The tree of accepting transcripts is generating by rewinding the adversary as depicted on~\cref{fig:rewinding_advse}, which is a version of the tree extraction algorithm from \cref{fig:rewinding_prover} tuned for non-interactive proofs and adversaries that have access to simulated proofs.
+		To obtain the full tree of transcripts the extractor runs $\treebuild_{\adv_\se, \simulator_{\fs, \zkproof}, \simulator_{\fs, \ro}}^{\REL, \crs, \inp}(1)$, verifies whether all collected transcripts are acceptable and the tree is valid and, if that is the case, returns the witness.
+
+		\begin{figure}
+			\centering
+			\fbox{
+			\procedure{$\treebuild_{\adv_\se, \simulator_{\fs, \zkproof}, \simulator_{\fs, \ro}}^{\REL, \crs, \inp} (i)$}
+			{
+				\pcif i = \mu + 1 \pcthen\\
+					\pcind \zkproof \gets \adv_\se^{\simulator_{\fs, \zkproof}, \simulator_{\fs, \ro}}(\REL, \crs)\\
+					\pcind \pcif (\inp, \zkproof) \in Q \pcthen \pcreturn (\zkproof, \bot) \\
+					\pcind \pcind \pccomment{$Q$ is the list of $(\inp, \zkproof)$ pairs that have been submitted to  $\simulator_{\fs, \ro}$.}\\
+					\pcind b \gets \verifier(\REL, \crs, \inp, \zkproof)\\
+					\pcind \pcif b = 0 \pcthen \pcreturn (\zkproof, \bot)\\
+					\pcind \pcif b = 1 \pcthen \\
+					\pcind \pcind \tree \gets \smallset{\zkproof}\ \pcreturn (\zkproof, \tree)	\\
+				\text{Run $\adv_\se$ up to and including query $(\inp, \vec{a}_{[0 : i]})$ to $\simulator_{\FS, \ro}$}\\
+				(\zkproof, \tree) \gets \treebuild(i + 1)\\
+				\pcif \tree = \bot \pcthen \pcreturn (\zkproof, \bot)\\
+				\counter \gets 1\\
+				\pcwhile \counter \leq n_i \pcthen\\
+				\pcind \text{Rewind $\adv_\se$ back until just before it gets response to $\simulator_{\fs, \ro}$ query $(\inp, \vec{a}_{[0 : i - 1]})$}\\
+				\pcind (\zkproof', \tree') \gets \treebuild(i + 1)\\
+				\pcind \pcif \tree' \neq \bot \pcthen\\
+				\pcind \pcind \tree \gets \tree \cup \smallset{\zkproof'} \\
+				\pcind \pcind \counter \gets \counter + 1\\
+				\pcreturn \zkproof, \tree
+			}}
+			\caption{Rewinding strategy for $\adv_\se$---getting a tree of accepting transcripts. For the sake of clarity parameters of $\treebuild$ algorithm have been omitted in the code. We also assume that $\adv_\se$ separately outputs instance $\inp$ which it plans to prove.}
+			\label{fig:rewinding_advse}
+	\end{figure}
+		\qed
+	\end{proof}
 \end{document}
-\comment{
-\item[Round 5]
-In this round the prover is asked to output values 
-$\gone{\p{W}_{\chz}(\chi), \p{W}_{\chz \omega}(\chi)}$ 
-assuring that required polynomials' evaluations are computed correctly. 
-Since the simulator could not compute them honestly using the instance's witness, it has to use its power to make the verification equation hold.
-To that end $\simulator$:
-\begin{itemize}
-	\item programs the random oracle in a way that $\ro(\trans)$ returns $v$ such that 
-	$\gone{\p{W}_{\chz \omega}(\chi)}$ as
-	\begin{align}
-		& \p{W}_{\chz}(X) = \frac{1} {X - \chz} \left(
-			\begin{aligned}
-				& (\p{t}_{lo}(X) + \chz^\numberofconstrains \p{t}_{mid}(X) + \chz^{2\numberofconstrains} \p{t}_{hi}(X)) \\
-				+ & v (\p{r}(X) - \p{r}(\chz)) \\
-				+ & v^2 (\p{a}(X) - \p{a}(\chz)) \\
-				+ & v^3 (\p{b}(X) - \p{b}(\chz)) \\
-				+ & v^4 (\p{c}(X) - \p{c}(\chz)) \\
-				+ & v^5 (\p{S_{\sigma 1}}(X) - \p{S_{\sigma 1}}(\chz)) \\
-				+ & v^6 (\p{S_{\sigma 2}}(X) - \p{S_{\sigma 2}}(\chz))
-			\end{aligned}
-		\right)\,.
-	\end{align}
-	Value $v$ is picked such that a verification equation 
-	\item computes the opening of $\p{z}$ at $\chz \omega$, i.e.~ $\gone{\p{W}_{\chz \omega}(\chi)}$, honestly, i.e.
-	\begin{align}
-		\p{W}_{\chz \omega}(X) =  \frac{\p{z}(X) - \p{z}(\chz \omega)}{X - \chz \omega}\,,
-	\end{align}
-\end{itemize}
-}
 
