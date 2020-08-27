@@ -588,7 +588,9 @@ Finally, we assume that $\plonkprotfs$ is not simulation-extractable and build a
 	If $\plonkprot$ is knowledge sound, then it also has the unique response property after Round 2.
 \end{lemma}
 \begin{proof}
-	We assume that the contrary is true and analyse possible cases depending on
+	First, for the sake of clarity, we assume here that $\plonk$'s CRS consists only of monomials $\gone{1, \chi, \ldots, \chi^(\numberofconstrains + 2)}$ for some trapdoor $\chi$. This is allowed as the rest of the CRS, as described in \cite{GabWilCio19}, can be computed from  $\gone{1, \chi, \ldots, \chi^(\numberofconstrains + 2)}$.
+	
+	We assume that the theorem does not hold and the contrary is true and analyse possible cases depending on
   the round in which the transcripts produced by a malicious prover $\adv$ start
   to differ.
 	\case{1}
@@ -681,8 +683,8 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
 	We use $\advse$ to build two reductions $\rdvks$ and $\rdvdlog$, where the former uses $\advse$ to break knowledge soundness of $\plonkprot$ and the latter to break the $(\numberofconstrains + 2)$-dlog assumption.
 	We start with picking a reduction at random and denote by $\rdv$ the chosen one.
 	
-	The reduction $\rdvks$ starts with obtaining $\crs = \gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ from $\plonkprot.\kgen$ and passing it to $\advse$. 
-	Similarly, $\rdvdlog$ gets its challenge $c$ from the $(\numberofconstrains + 2)$-dlog challenger $\cdv_\dlog$ and then internally starts $\plonkprot.\verifier$ equipping it with the CRS $\crs = c$. (Although the CRS from $\plonkprot.\kgen$ given to $\rdvks$ may not equal the challenge given by $\cdv_\dlog$ we use $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ for both of them.)
+	The reduction $\rdvks$ starts with obtaining $\crs$ from $\plonkprot.\kgen$ and passing it to $\advse$. 
+	Similarly, $\rdvdlog$ gets its challenge $c$ from the $(\numberofconstrains + 2)$-dlog challenger $\cdv_\dlog$ and then internally starts $\plonkprot.\verifier$ equipping it with the CRS $\crs = c$. (Although the CRS from $\plonkprot.\kgen$ given to $\rdvks$ may not equal the challenge given by $\cdv_\dlog$ we use $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ to denote both of them.)
 	Reductions answer $\advse$ queries to the random oracle and provide it with simulated proofs $\vec{\zkproof_{\simulator, 1}}, \ldots, \vec{\zkproof_{\simulator, q_\simulator}}$ on submitted instances, where $q_\simulator$ is the total number of required simulated proofs---this is possible since the reductions control the random oracle instances and can program them as they wish.
 	
 	We assume that the adversary makes at most $q_\ro$ random oracle
@@ -693,12 +695,13 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
 	Denote by $h$ a list of random oracle queries $h_{i_1}, \ldots, h_{i_6}$ that are used in the final proof $\zkproof$ returned by $\advse$.
 	The reduction guesses the indices $i_1, \ldots, i_6$ of the queries with probability at least $\infrac{1}{q_\ro^6}$. Later, assume that the guess is correct.
 	
-	Given query $i_1$ the reduction starts its interaction with $\plonkprot.\verifier$. That is it sends $h_{i_1}$ as the first message to the verifier and gets the corresponding challenge $c_1$. The challenge is returned to the adversary $\advse$ as an output of $\ro(h_{i_1})$. 
+	Given query $i_1$ the reduction starts its interaction with $\plonkprot.\verifier$. That is, it sends $h_{i_1}$ as the first message to the verifier and gets the corresponding challenge $c_1$. The challenge is returned to the adversary $\advse$ as an output of $\ro(h_{i_1})$. 
 	Similarly for other guessed queries $h_{i_2}, \ldots, h_{i_6}$, except in that
   case the reduction continues its interaction with $\plonkprot.\verifier$.
   \markulf{27.08}{I struggle to understand how this would work when simulated RO
     queries are reused.}
-		\michals{27.08}{Wouldn't including queries made by the simulator here solve the problem?}
+	Since the reduction passes as $\ro{h_{i_j}}$ real challenges from the verifier $\plonkprot.\verifier$ it may happened that 
+		
 	In the end, the adversary returns a proof $\zkproof$ for some statement $\inp$. We assume that $\plonkprot.\verifier$ accepts $\zkproof$, if that is not the case $\advse$ fails.
 	
 	Since $\advse$ is algebraic the adversary provides along the proof $\zkproof$ also vectors of coefficients of all group elements it learnt for all group elements in the proof---that is, for each group element $\gone{\iota}$ included in the proof $\advse$ provides vector of coefficients $\vec{\iota}$ such that
