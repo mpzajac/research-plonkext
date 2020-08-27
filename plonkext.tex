@@ -726,10 +726,12 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
   coefficients of the CRS elements. Given the coefficients of the polynomials,
   $\rdvks$ reveals a witness $\wit$ and verifies whether $\REL(\inp, \wit) = 1$.
   \markulf{27.08}{How is the knowledge extraction extractor $E$ used here?}
+	\michals{27.08}{Quite naturally -- since the reduction knows coefficients of polynomials $a, b, c$ it knows the witness as the witness is included in these coefficients.}
 	If it does then $\rdvks$ fails, but also $\advse$ fails. Alternatively, if
   $\REL(\inp, \wit) = 0$, then $\rdvks$ produced a
   $\plonkprot.\verifier$-acceptable transcript for a false statement. Thus it
   breaks $\plonkprot$'s soundness. \markulf{27.08}{Soundness or knowledge soundness?}
+	\michals{27.08}{Good question. I think it may even break soundness}
 	
 	Second, if $\p{V}(X)$ is not identically equal zero, but $\p{V}(\chi) = 0$, then the reduction $\rdvdlog$ can find zeroes of $\p{V}(X)$ and hence reveal $\chi$ breaking the $(\numberofconstrains + 2)$-dlog assumption.
 	\qed
