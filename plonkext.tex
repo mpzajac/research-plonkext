@@ -692,7 +692,17 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
   to provide a simulated proof.\markulf{27.08}{That's consistent with what I
     suggested above then.} 
 	To make a proof in $\plonkprotfs$ the adversary has to make at least $6$ random oracle queries. 
-	Denote by $h$ a list of random oracle queries $h_{i_1}, \ldots, h_{i_6}$ that are used in the final proof $\zkproof$ returned by $\advse$.
+	Denote by $h$ a list of random oracle queries $h_{i_1}, \ldots, h_{i_6}$ that are used in the final proof $\zkproof_{\advse}$ returned by $\advse$.
+	Denote by $\zkproof[i]$ the transcript of the proof after Round $i$. 
+	For the proof to be acceptable with non-negligible probability it has to hold
+	\begin{align*}
+		h_{i_1} & = \zkproof_{\advse}[1] \| 0 \quad \pccomment{challenge $\beta$}\\
+		h_{i_2} & = \zkproof_{\advse}[1] \| 1 \quad \pccomment{challenge $\gamma$}\\
+		h_{i_3} & = \zkproof_{\advse}[2] \qquad \pccomment{challenge $\alpha$}\\
+		h_{i_4} & = \zkproof_{\advse}[3] \qquad \pccomment{challenge $\chz$}\\
+		h_{i_5} & = \zkproof_{\advse}[4] \qquad \pccomment{challenge $v$}\\
+		h_{i_6} & = \zkproof_{\advse}[5] \qquad \pccomment{challenge $u$}
+	\end{align*}
 	The reduction guesses the indices $i_1, \ldots, i_6$ of the queries with probability at least $\infrac{1}{q_\ro^6}$. Later, assume that the guess is correct.
 	
 	Given query $i_1$ the reduction starts its interaction with $\plonkprot.\verifier$. That is, it sends $h_{i_1}$ as the first message to the verifier and gets the corresponding challenge $c_1$. The challenge is returned to the adversary $\advse$ as an output of $\ro(h_{i_1})$. 
@@ -700,9 +710,16 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
   case the reduction continues its interaction with $\plonkprot.\verifier$.
   \markulf{27.08}{I struggle to understand how this would work when simulated RO
     queries are reused.}
-	Since the reduction passes as $\ro{h_{i_j}}$ real challenges from the verifier $\plonkprot.\verifier$ it may happened that 
-		
-	In the end, the adversary returns a proof $\zkproof$ for some statement $\inp$. We assume that $\plonkprot.\verifier$ accepts $\zkproof$, if that is not the case $\advse$ fails.
+	
+	It may happen that $\zkproof_{\advse}[3] =\zkproof_{\simulator_k}[3]$, for some simulated proof $\zkproof_{\simulator_k}$.
+	In that case the reduction has to abort since 
+	on adversary's query $h_{i_4}$, which should equal $\zkproof_{\advse}[3]$, $\rdv$ has to return a real challenge $\chz$ from the verifier $\plonkprot.\verifier$ to be able to finish its proof $\zkproof_\rdv$. 
+	On the other hand, in a simulated proof the challenge $\chz_k$ that comes after Round 3 has to be programmed. 
+	Unfortunately, if $\chz_k \neq \chz$, what happens except negligible probability, the reduction cannot provide $\chz$ to the adversary as it could spot the inconsistency in the random oracle responses. On the other hand, $\rdv$ also cannot provide $\advse$ with $\chz_k$ (again) as it differ from the verifiers challenge.
+	Fortunately, this situation may hold with negligible probability only. That is, we show that if this happens then $\plonkprot$ is not $\ur{3}$.
+	\task{27.08}{Continue}
+			
+	Eventually, the adversary returns a proof $\zkproof$ for some statement $\inp$. We assume that $\plonkprot.\verifier$ accepts $\zkproof$, if that is not the case $\advse$ fails.
 	
 	Since $\advse$ is algebraic the adversary provides along the proof $\zkproof$ also vectors of coefficients of all group elements it learnt for all group elements in the proof---that is, for each group element $\gone{\iota}$ included in the proof $\advse$ provides vector of coefficients $\vec{\iota}$ such that
 	\[
