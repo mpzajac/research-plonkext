@@ -712,7 +712,7 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
 		\gone{\iota} = \vec{\tilde{\iota}}^\top \cdot (1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2})^\top\,.
 	\]
 	
-	Recall the $\plonkprot$'s verification equation, \cref{eq:ver_eq}. Let $\p{V}(X)$ be a polynomial such that 
+	Recall $\plonkprot$'s verification equation, \cref{eq:ver_eq}. Let $\p{V}(X)$ be a polynomial such that 
 	\[
 		\p{V}(X) = \p{W_{\chz}}(X) + u \cdot \p{W_{\chz \omega}}(X)
 		\cdot X - \chz \cdot \p{W_{\chz}}(X) - u \chz \omega \cdot \p{W_{\chz \omega}}(X) -  F(X) + E = 0\,.
@@ -720,8 +720,16 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
 	Hence, from the soundness of the polynomial protocol underlying $\plonkprot$ the polynomial $\p{V}(X)$ should be a zero-polynomial if all the constrains of the proof system are fulfilled. However, in the real life protocol only $\p{V}$'s value at $\chi$ is checked to be $0$.
 	
 	Consider two cases. 
-	First, when $\p{V}(X) = 0$. Obviously then also holds $\p{V}(\chi) = 0$, i.e.~the verifier accepts the proof. In that case $\rdvks$ reconstructs polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$ from the corresponding vectors of coefficients of the CRS elements. Given the coefficients of the polynomials $\rdvks$ reveals a witness $\wit$ and verifies whether $\REL(\inp, \wit) = 1$. 
-	If it does then $\rdvks$ fails, but also $\advse$ fails. Alternatively, if $\REL(\inp, \wit) = 0$, then $\rdvks$ produced a $\plonkprot.\verifier$-acceptable transcript for a false statement. Thus it breaks $\plonkprot$'s soundness.
+	First, when $\p{V}(X) = 0$. Obviously then it also holds that $\p{V}(\chi) =
+  0$, i.e.~the verifier accepts the proof. In that case $\rdvks$ reconstructs
+  polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$ from the corresponding vectors of
+  coefficients of the CRS elements. Given the coefficients of the polynomials,
+  $\rdvks$ reveals a witness $\wit$ and verifies whether $\REL(\inp, \wit) = 1$.
+  \markulf{27.08}{How is the knowledge extraction extractor $E$ used here?}
+	If it does then $\rdvks$ fails, but also $\advse$ fails. Alternatively, if
+  $\REL(\inp, \wit) = 0$, then $\rdvks$ produced a
+  $\plonkprot.\verifier$-acceptable transcript for a false statement. Thus it
+  breaks $\plonkprot$'s soundness. \markulf{27.08}{Soundness or knowledge soundness?}
 	
 	Second, if $\p{V}(X)$ is not identically equal zero, but $\p{V}(\chi) = 0$, then the reduction $\rdvdlog$ can find zeroes of $\p{V}(X)$ and hence reveal $\chi$ breaking the $(\numberofconstrains + 2)$-dlog assumption.
 	\qed
