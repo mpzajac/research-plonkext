@@ -585,31 +585,46 @@ Finally, we assume that $\plonkprotfs$ is not simulation-extractable and build a
 \michals{25.08}{I think the following results could be quite easily generalise to polynomial protocols, not just plonk.}
 \begin{lemma}
 	\label{lem:plonk_ur}
-	$\plonkprot$ has unique response property after Round 2.
+	If $\plonkprot$ is knowledge sound, then it also has the unique response property after Round 2.
 \end{lemma}
 \begin{proof}
-	We assume that the contrary is true and analyse possible cases depending on which round a malicious prover $\adv$ provides at least two acceptable outputs.
+	We assume that the contrary is true and analyse possible cases depending on
+  the round in which the transcripts produced by a malicious prover $\adv$ start
+  to differ.
 	\case{1}
-	In Round 3 the prover is tasked to output a commitment to the quotient polynomial $\p{t}$ that assures that all constrains---extended permutation, constrains of the circuits, etc.---are satisfied. Since the polynomial commitment is deterministic, there is only one value that can be produced by the prover.
+	In Round 3 the prover is tasked to output a commitment to the quotient
+  polynomial $\p{t}$ that assures that all constrains---extended permutation,
+  constrains of the circuits, etc.---are satisfied. Since the polynomial
+  commitment is deterministic, there is only one value that can be produced by
+  the prover. \markulf{27.08}{Unless he commits to two different polynomials?}
 	
 	Assume $\adv$ is able to produce in that round two outputs: 
 	$\gone{\vec{r_3}} = \gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$ and 
 	$\gone{\vec{r_3'}} = \gone{\p{t'_{lo}}(\chi), \p{t'_{mid}}(\chi), \p{t'_{hi}}(\chi)}$ 
 	such that both result in acceptable proof transcripts. 
 	%
-	In that case either $\gone{\vec{t}}$ or $\gone{\vec{t'}}$ is not a commitment to the quotient polynomial and it should be rejected by the verifier or the proof system is not sound.
+	In that case either $\gone{\vec{t}}$ or $\gone{\vec{t'}}$ is not a commitment
+  to the quotient polynomial and it should be rejected by the verifier or the
+  proof system is not sound. \markulf{27.08}{This seems to rely on the fact that for a
+    given statement (and the first two initial rounds), there is only a single
+    quotient polynomial.} 
 	\case{2}
 	In Round 4 the prover is asked to give evaluations of predefined polynomials at some point $\chz$. Naturally, for the given polynomials only one value at $\chz$ is correct.
 	Assume $\adv$ is able to produce two different outputs in that round: $\vec{r_4} = (\ev{\p{a}}, \ev{\p{b}}, \ev{\p{c}}, \ev{\p{S_{\sigma 1}}}, \ev{\p{S_{\sigma 2}}}, \ev{\p{r}}, \ev{\p{z}})$ and 
 	$\vec{r_4} = (\ev{\p{a}}', \ev{\p{b}}', \ev{\p{c}}', \ev{\p{S_{\sigma 1}}}', \ev{\p{S_{\sigma 2}}}', \ev{\p{r}}', \ev{\p{z}}')$
 	which suppose to be evaluations at $\chz$ of polynomials $\p{a}, \p{b}, \p{c}, \p{S_{\sigma 1}}, \p{S_{\sigma 2}}, \p{r}$ and an evaluation at $\chz \omega$ of $\p{z}$.
-	Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus it should be rejected of the verifier of the proof system.
+	Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus
+  it should be rejected of the verifier of the proof system.\markulf{28.08}{This
+  argument seems to rely also on the binding property of the commitment scheme,
+  or at least the knowledge soundness of the proof system.}
 	\case{3} 
 	In the last round of the protocol the prover provides openings for the polynomial commitments done before. 
-	Assume $\adv$ is able to produce two different polynomial commitment opennings pairs: 
+	Assume $\adv$ is able to produce two different polynomial commitment openings pairs: 
 	$\vec{r_5} = (\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and 
 	$\vec{r'_5} = (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
-	As previously one of the openings has to be incorrect and should be rejected by the verifier if the proof system be sound.
+	As previously one of the openings has to be incorrect and should be rejected
+  by the verifier if the proof system be sound. \markulf{28.08}{Given the commitment
+    and the value, the opening is fixed?}
 	\qed
 \end{proof}
 
@@ -619,15 +634,33 @@ The proof goes by contradiction. Below we show some intuitions behind it.
 Let $\advse$ be an adversary that breaks simulation extractability of $\plonkprotfs$ with some non-negligible probability. 
 We show a $\rdv$ which use $\advse$ to either break knowledge soundness of $\plonkprot$ or to break $(\numberofconstrains + 2)$-dlog assumption.
 
-The proof idea is following. First the reduction takes the CRS from a challenger $\cdv_\plonkprot$ or $\cdv_\dlog$, where the former represents game where the reduction tries to break soundness of $\plonkprot$ and the latter game of breaking the dlog assumption. We run the reductions in parallel and use $\rdv$ to denote either $\rdvks$ or $\rdvdlog$.
+The proof idea is following. First the reduction takes the CRS from a challenger
+$\cdv_\plonkprot$ or $\cdv_\dlog$ \markulf{28.08}{For dlog the CRS needs to be
+  computed from the monomials?}, where the former represents game where the reduction tries to break soundness of $\plonkprot$ and the latter game of breaking the dlog assumption. We run the reductions in parallel and use $\rdv$ to denote either $\rdvks$ or $\rdvdlog$.
 % For the sake of simiplicity we assume that $\rdv$ picks the challenger randomly. 
 
 Then, the CRS is provided to the simulation extractability adversary. The reduction allows $\advse$ to make calls to a random oracle and get simulated proofs on required statements. All these queries are handled by $\rdv$.
-Note that $\plonkprotfs$ consists $6$ calls to a random oracle and for the adversary to be successful, it has to perform at least that number of queries performing its simulation extractability-breaking proof. The reduction tries to guess which queries, out of all random oracle queries submitted by the adversary, are going to be used in the final proof. Denote the queries by $h_{i_1}, \ldots, h_{i_6}$. 
+Note that $\plonkprotfs$ makes $6$ calls to a random oracle to produce a proof
+and for the adversary to be successful, it has to perform at least that number
+of queries to produce its simulation extractability-breaking
+proof.\markulf{27.08}{Why is this obvious? The adversary could randomize a
+  simulated proof without having to make RO queries? I think we need to use the
+  unique response property here.} The reduction tries to guess which queries,
+out of all random oracle queries submitted by the adversary
+\markulf{27.08}{Maybe include all oracle queries, not just adversarial ones
+  here? At least one query needs to be adversarial however?}, are going to be used in the final proof. Denote the queries by $h_{i_1}, \ldots, h_{i_6}$. 
 The reduction on query $h_{i_1}$, which contain the first part of the proof and the proven statement $\inp$, engages in a conversation with $\plonkprot.\verifier$ and try to make a convincing proof for $\inp$ and sends $h_{i_1}$ as its first message for $\plonkprot.\verifier$. Given the verifier's challenge it passes the challenge to the adversary as a result of $\ro(h_{i_1})$. 
 Similarly for the rest of the queries $h_{i_2}, \ldots, h_{i_6}$---the reduction passes them to the verifier and responds to the adversary with the verifier's challenges.
 
-In the end, the adversary outputs a proof $\zkproof$ that should be acceptable by $\plonkprotfs.\verifier$, thus the proof produced by $\rdv$ with challenges from $\plonkprot.\verifier$ should be acceptable as well. Using the fact that the adversary is algebraic, the reduction knows coefficients of the CRS elements used in the output proof. For the adversary to be successful the proof cannot only be acceptable, it should also be impossible to extract a correct witness from it. We consider two cases. In the first, the proof is acceptable, but the statement is false. This allows $\rdv$ to break the dlog assumption. Another case is when the proof is acceptable, statement is valid, but the witness cannot be extracted. This proof allows $\rdv$ to break knowledge soundness of $\plonkprot$.
+In the end, the adversary outputs a proof $\zkproof$ that should be acceptable
+by $\plonkprotfs.\verifier$, thus the proof produced by $\rdv$ with challenges
+from $\plonkprot.\verifier$ should be acceptable as well. Using the fact that
+the adversary is algebraic, the reduction knows coefficients of the CRS elements
+used in the output proof. For the adversary to be successful the proof cannot
+only be acceptable, it should also be impossible to extract a correct witness
+from it. We consider two cases. In the first, the proof is acceptable, but the
+statement is false. This allows $\rdv$ to break the dlog assumption.
+\markulf{27.08}{Guessing this is explained in more detail below.} Another case is when the proof is acceptable, statement is valid, but the witness cannot be extracted. This proof allows $\rdv$ to break knowledge soundness of $\plonkprot$.
 
 
 \begin{theorem}
@@ -645,13 +678,19 @@ In the end, the adversary outputs a proof $\zkproof$ that should be acceptable b
 	Similarly, $\rdvdlog$ gets its challenge $c$ from the $(\numberofconstrains + 2)$-dlog challenger $\cdv_\dlog$ and then internally starts $\plonkprot.\verifier$ equipping it with the CRS $\crs = c$. (Although the CRS from $\plonkprot.\kgen$ given to $\rdvks$ may not equal the challenge given by $\cdv_\dlog$ we use $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ for both of them.)
 	Reductions answer $\advse$ queries to the random oracle and provide it with simulated proofs $\vec{\zkproof_{\simulator, 1}}, \ldots, \vec{\zkproof_{\simulator, q_\simulator}}$ on submitted instances, where $q_\simulator$ is the total number of required simulated proofs---this is possible since the reductions control the random oracle instances and can program them as they wish.
 	
-	We assume that the adversary makes at most $q_\ro$ random oracle queries---including the queries that the simulator has to perform to be able to provide a simulated proof. 
+	We assume that the adversary makes at most $q_\ro$ random oracle
+  queries---including the queries that the simulator has to perform to be able
+  to provide a simulated proof.\markulf{27.08}{That's consistent with what I
+    suggested above then.} 
 	To make a proof in $\plonkprotfs$ the adversary has to make at least $6$ random oracle queries. 
 	Denote by $h$ a list of random oracle queries $h_{i_1}, \ldots, h_{i_6}$ that are used in the final proof $\zkproof$ returned by $\advse$.
 	The reduction guesses the indices $i_1, \ldots, i_6$ of the queries with probability at least $\infrac{1}{q_\ro^6}$. Later, assume that the guess is correct.
 	
 	Given query $i_1$ the reduction starts its interaction with $\plonkprot.\verifier$. That is it sends $h_{i_1}$ as the first message to the verifier and gets the corresponding challenge $c_1$. The challenge is returned to the adversary $\advse$ as an output of $\ro(h_{i_1})$. 
-	Similarly for other guessed queries $h_{i_2}, \ldots, h_{i_6}$, except in that case the reduction continues its interaction with $\plonkprot.\verifier$.
+	Similarly for other guessed queries $h_{i_2}, \ldots, h_{i_6}$, except in that
+  case the reduction continues its interaction with $\plonkprot.\verifier$.
+  \markulf{27.08}{I struggle to understand how this would work when simulated RO
+    queries are reused.}
 	In the end, the adversary returns a proof $\zkproof$ for some statement $\inp$. We assume that $\plonkprot.\verifier$ accepts $\zkproof$, if that is not the case $\advse$ fails.
 	
 	Since $\advse$ is algebraic the adversary provides along the proof $\zkproof$ also vectors of coefficients of all group elements it learnt for all group elements in the proof---that is, for each group element $\gone{\iota}$ included in the proof $\advse$ provides vector of coefficients $\vec{\iota}$ such that
