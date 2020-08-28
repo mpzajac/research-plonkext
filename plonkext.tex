@@ -168,15 +168,38 @@ A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ i
 	\end{multline*}
 	%
 	We call zero knowledge \emph{perfect} if the distributions are equal and \emph{computational} if they are indistinguishable for any NUPPT distinguisher.
+	
+	Sometimes a stronger notion of soundness is required---except requiring that the verifier rejects proofs of statements outside the language, we request from the prover to know a witness corresponding to the proven statement. This property is formalised by the following notion:
+	
+	\item[Knowledge soundness] We call an interactive proof system $\proofsystem$ \emph{knowledge-sound} if for any $\REL \gets \RELGEN(\secparam)$ and a PPT adversary $\adv$
+	% \begin{multline*}
+	\[
+	\Pr\left[
+		\begin{aligned}
+			& \text{$\trans$ is acceptable} \\
+			& \land \REL(\inp, \wit) = 0
+	 \end{aligned}
+	  \,\left|\,
+	 \begin{aligned}
+		 & (\td, \crs) \gets \kcrs(\REL), \inp \gets \adv(\REL,\crs), \\
+		 & (\wit, \trans) \gets \ext^{\ip{\adv(\REL, \crs, \inp)}{\verifier(\REL, \crs, \inp)}}(\REL, \inp)
+	 \end{aligned}
+	 \vphantom{\begin{aligned}
+		 \adv (\trans) = 1, \\
+		 \text{if $\trans{}$ is accepting} \\
+		 \pcind \text{then $\REL(\inp, \wit)$}
+	 \end{aligned}}\right.
+	 \right] \leq \negl\,,
+ % \end{multline*}
+ \]
 \end{description}
 
 \paragraph{NIZKs in the Random Oracle Model.}
 In NIZKs in the Random Oracle Model we distinguish, for the sake of clarity, two simulators, one denoted by $\simulator_\zkproof$ that is responsible for providing simulated proofs and $\simulator_\ro$ that picks a random oracle instantiation and takes care of all parties' queries to $\ro$.
 % \michals{9.06}{Should we distinguish two simulators or just pack everything into a single one?}
 For the sake of consistency (with random oracle-free NIZKs) we use $\simulator$
-to denote the pair of state-shareing simulators $\simulator_\zkproof,
-\simulator_\ro$.\markulf{09.07.20}{These simulators also share state.}
-\michals{09.07}{Done.}
+to denote the pair of state-sharing simulators $\simulator_\zkproof,
+\simulator_\ro$.
 
 \paragraph{Sigma protocols.}
 A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$  for a relation
@@ -226,6 +249,7 @@ For the sake of completeness we note that many sigma-protocols, like e.g.~Schnor
 \paragraph{Zero knowledge proof system in the CRS model.}
 Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on input $\REL$ outputs a common reference string (CRS) $\crs$. The common reference string comes with a corresponding trapdoor $\td$ that allows the simulator to simulate a proof.
 
+\comment{
 \paragraph{Witness-extended emulation.}
 Interactive proofs run in a multi-protocol environment are often required to fulfil a stronger notion of soundness called \emph{witness-extended emulation}~\cite{JC:Lindell03}.
 The following definition is inspired by  \cite{EC:GroIsh08} as their formulation
@@ -278,6 +302,7 @@ Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages
 where the extractor $\ext$ can rewind the conversation between the prover and the verifier to a particular round and run it again with a fresh randomness for the verifier.
 \end{definition}
 Although in the definition above the adversary $\adv_1$ is deterministic it obtains an auxiliary input $\aux_{\adv_1}$ that may be used by $\adv_1$ as a source of randomness. Groth and Ishai~\cite{EC:GroIsh08} note that since the protocol is public-coin, verifier's randomness is part of the transcript. Thus combining $\inp, \aux_\adv$ and an accepting transcript $\trans$ gives a view of both the prover and the verifier and thus gives a witness.
+}
 
 \subsection{Simulation extractable NIZKs from sigma protocols}
 Real life applications often require from a NIZK proof system to be non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement $\inp$ should be able to provide a new proof $\zkproof'$ related to $\zkproof$.
@@ -582,13 +607,51 @@ First we focus on the interactive version of the protocol, which we denote by $\
 Next we show that $\plonkprot$ has unique response property after Round 2 or is not sound.
 Finally, we assume that $\plonkprotfs$ is not simulation-extractable and build a reduction that either breaks $(\numberofconstrains + 2)$-dlog assumption or knowledge soundness of the underlying $\plonkprot$ protocol.
 
+\begin{lemma}
+	Let $\PCOM$ be a batched varsion of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19}. 
+	Then for every PPT adversary $\adv$	
+	\begin{multline*}
+		\condprob{
+		\PCOM.\verify(\crs, \vec{z}, \vec{s}, \vec{o})
+		}
+		{\crs \gets \PCOM.\kcrs(\secparam), 
+			(\vec{z}, \vec{s}, \vec{o}) \gets \adv(\crs)
+		}
+		 \leq \negl.
+	\end{multline*}
+\end{lemma}
+
+\begin{lemma}
+	If a polynomial commitment scheme $\PCOM$ is evaluation binding, then $\plonkprot$ is $\ur{3}$.
+\end{lemma}
+\begin{proof}
+	Assume the opposite and an adversary $\adv$ that breaks $\ur{3}$-ness of $\plonkprot$. 
+	%We build an adversary $\bdv$ that breaks binding of the commitment scheme. To that end, we consider 2 cases, depending on which round $\adv$ is able to provide at least two outputs such that the resulting transcripts are acceptable.
+	We consider 2 cases, depending on which round $\adv$ is able to provide at least two outputs such that the resulting transcripts are acceptable, and show that in each of them $\adv$ breaks evaluation binding property of $\PCOM$.
+	\case{1}
+	In Round 4 the prover is asked to give evaluations of predefined polynomials at some point $\chz$. Naturally, for the given polynomials only one value at $\chz$ is correct.
+	Assume $\adv$ is able to produce two different outputs in that round: $\vec{r_4} = (\ev{\p{a}}, \ev{\p{b}}, \ev{\p{c}}, \ev{\p{S_{\sigma 1}}}, \ev{\p{S_{\sigma 2}}}, \ev{\p{r}}, \ev{\p{z}})$ and 
+	$\vec{r_4} = (\ev{\p{a}}', \ev{\p{b}}', \ev{\p{c}}', \ev{\p{S_{\sigma 1}}}', \ev{\p{S_{\sigma 2}}}', \ev{\p{r}}', \ev{\p{z}}')$
+	which suppose to be evaluations at $\chz$ of polynomials $\p{a}, \p{b}, \p{c}, \p{S_{\sigma 1}}, \p{S_{\sigma 2}}, \p{r}$ and an evaluation at $\chz \omega$ of $\p{z}$.
+	Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus if both evaluations are acceptable by the $\PCOM.\verify$ then the evaluation binding property of $\PCOM$ is broken.
+	\case{2}
+	In the last round of the protocol the prover provides openings for the polynomial commitments done before. 
+	Assume $\adv$ is able to produce two different polynomial commitment openings pairs: 
+	$\vec{r_5} = (\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and 
+	$\vec{r'_5} = (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
+	As previously one of the openings has to be incorrect and should be rejected
+  by the verifier if the proof system be sound. 
+	\michals{28.08}{In this case we also need to show that only one opening for a KZG polynomial commitment is acceptable. This property seems not be covered by the original KZG paper}
+\end{proof}
+
+\COMMENT{
 \michals{25.08}{I think the following results could be quite easily generalise to polynomial protocols, not just plonk.}
 \begin{lemma}
 	\label{lem:plonk_ur}
 	If $\plonkprot$ is knowledge sound, then it also has the unique response property after Round 2.
 \end{lemma}
 \begin{proof}
-	First, for the sake of clarity, we assume here that $\plonk$'s CRS consists only of monomials $\gone{1, \chi, \ldots, \chi^(\numberofconstrains + 2)}$ for some trapdoor $\chi$. This is allowed as the rest of the CRS, as described in \cite{GabWilCio19}, can be computed from  $\gone{1, \chi, \ldots, \chi^(\numberofconstrains + 2)}$.
+	First, for the sake of clarity, we assume here that $\plonk$'s CRS consists only of monomials $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ for some trapdoor $\chi$. This is allowed as the rest of the CRS, as described in \cite{EPRINT:GabWilCio19}, can be computed from  $\gone{1, \chi, \ldots, \chi^(\numberofconstrains + 2)}$.
 	
 	We assume that the theorem does not hold and the contrary is true and analyse possible cases depending on
   the round in which the transcripts produced by a malicious prover $\adv$ start
@@ -633,6 +696,7 @@ Finally, we assume that $\plonkprotfs$ is not simulation-extractable and build a
 		\michals{27.08}{In the standard commitment it is. However batch opening gives some freedom -- i.e. the opening may be incorrect, but if a good batch coefficient is picked, then it may be accepted anyway. This happens with negligible probability only.}
 	\qed
 \end{proof}
+}
 
 Equipped with \cref{lem:plonk_ur} we can show the main theorem, i.e.~prove that $\plonk$ is simulation extractable. The theorem assumes that dlog is hard, the interactive protocol underlying $\plonk$ is knowledge sound and has unique response property.
 
@@ -715,7 +779,7 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
 	In that case the reduction has to abort since 
 	on adversary's query $h_{i_4}$, which should equal $\zkproof_{\advse}[3]$, $\rdv$ has to return a real challenge $\chz$ from the verifier $\plonkprot.\verifier$ to be able to finish its proof $\zkproof_\rdv$. 
 	On the other hand, in a simulated proof the challenge $\chz_k$ that comes after Round 3 has to be programmed. 
-	Unfortunately, if $\chz_k \neq \chz$, what happens except negligible probability, the reduction cannot provide $\chz$ to the adversary as it could spot the inconsistency in the random oracle responses. On the other hand, $\rdv$ also cannot provide $\advse$ with $\chz_k$ (again) as it differ from the verifiers challenge.
+	Unfortunately, if $\chz_k \neq \chz$, what happens except negligible probability, the reduction cannot provide $\chz$ to the adversary as it could spot the inconsistency in the random oracle responses---namely, it is once $\chz$ and $\chz_k$ another time despite the transcripts being equal. On the other hand, $\rdv$ also cannot provide $\advse$ with $\chz_k$ (again) as it differ from the verifiers challenge.
 	Fortunately, this situation may hold with negligible probability only. That is, we show that if this happens then $\plonkprot$ is not $\ur{3}$.
 	\task{27.08}{Continue}
 			
