@@ -733,7 +733,7 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
 	Assume that $(\numberofconstrains + 2)$-dlog is hard, $\plonkprot$ is knowledge sound and has unique response property after Round 2. 
 	Then $\plonkprotfs$ is simulation-extractable against algebraic adversaries.
 \end{theorem}
-\michals{28.08}{Minor thing -- need to change the reduction for dlog -- the CRS for Plonk requires also $\gtwo{\chi}$, which is not given as a part of the dlog challenge.}
+\michals{28.08}{Minor thing -- need to change the reduction for dlog -- the CRS for Plonk requires also $\gtwo{\chi}$, which is not given as a part of the dlog challenge. I guess the simplest way to solve is would be to introduce a slight modification of the dlog assumption -- where the adversary learns not only $\gone{1, x, ..., x^n}$ but also $\gtwo{x}$.}
 \begin{proof}
 	The proof goes by contradiction. Assume there exists an adversary $\advse$ that breaks simulation extractability with non-negligible probability $\eps$. 
 	We use $\advse$ to build two reductions $\rdvks$ and $\rdvdlog$, where the former uses $\advse$ to break knowledge soundness of $\plonkprot$ and the latter to break the $(\numberofconstrains + 2)$-dlog assumption.
