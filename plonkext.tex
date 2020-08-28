@@ -644,59 +644,7 @@ Finally, we assume that $\plonkprotfs$ is not simulation-extractable and build a
 	\michals{28.08}{In this case we also need to show that only one opening for a KZG polynomial commitment is acceptable. This property seems not be covered by the original KZG paper}
 \end{proof}
 
-\COMMENT{
-\michals{25.08}{I think the following results could be quite easily generalise to polynomial protocols, not just plonk.}
-\begin{lemma}
-	\label{lem:plonk_ur}
-	If $\plonkprot$ is knowledge sound, then it also has the unique response property after Round 2.
-\end{lemma}
-\begin{proof}
-	First, for the sake of clarity, we assume here that $\plonk$'s CRS consists only of monomials $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ for some trapdoor $\chi$. This is allowed as the rest of the CRS, as described in \cite{EPRINT:GabWilCio19}, can be computed from  $\gone{1, \chi, \ldots, \chi^(\numberofconstrains + 2)}$.
-	
-	We assume that the theorem does not hold and the contrary is true and analyse possible cases depending on
-  the round in which the transcripts produced by a malicious prover $\adv$ start
-  to differ.
-	\case{1}
-	In Round 3 the prover is tasked to output a commitment to the quotient
-  polynomial $\p{t}$ that assures that all constrains---extended permutation,
-  constrains of the circuits, etc.---are satisfied. Since the polynomial
-  commitment is deterministic, there is only one value that can be produced by
-  the prover. \markulf{27.08}{Unless he commits to two different polynomials?}
-	\michals{27.08}{That's right. Point is that the quotient polynomial is a polynomial that assures that all constrains are fulfilled, thus if the adversary commit to a different polynomial, then some constrains won't be met.}
-	
-	Assume $\adv$ is able to produce in that round two outputs: 
-	$\gone{\vec{r_3}} = \gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$ and 
-	$\gone{\vec{r_3'}} = \gone{\p{t'_{lo}}(\chi), \p{t'_{mid}}(\chi), \p{t'_{hi}}(\chi)}$ 
-	such that both result in acceptable proof transcripts. 
-	%
-	In that case either $\gone{\vec{t}}$ or $\gone{\vec{t'}}$ is not a commitment
-  to the quotient polynomial and it should be rejected by the verifier or the
-  proof system is not sound. \markulf{27.08}{This seems to rely on the fact that for a
-    given statement (and the first two initial rounds), there is only a single
-    quotient polynomial.} 
-		\michals{27.08}{That's right}
-	\case{2}
-	In Round 4 the prover is asked to give evaluations of predefined polynomials at some point $\chz$. Naturally, for the given polynomials only one value at $\chz$ is correct.
-	Assume $\adv$ is able to produce two different outputs in that round: $\vec{r_4} = (\ev{\p{a}}, \ev{\p{b}}, \ev{\p{c}}, \ev{\p{S_{\sigma 1}}}, \ev{\p{S_{\sigma 2}}}, \ev{\p{r}}, \ev{\p{z}})$ and 
-	$\vec{r_4} = (\ev{\p{a}}', \ev{\p{b}}', \ev{\p{c}}', \ev{\p{S_{\sigma 1}}}', \ev{\p{S_{\sigma 2}}}', \ev{\p{r}}', \ev{\p{z}}')$
-	which suppose to be evaluations at $\chz$ of polynomials $\p{a}, \p{b}, \p{c}, \p{S_{\sigma 1}}, \p{S_{\sigma 2}}, \p{r}$ and an evaluation at $\chz \omega$ of $\p{z}$.
-	Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus
-  it should be rejected of the verifier of the proof system.\markulf{28.08}{This
-  argument seems to rely also on the binding property of the commitment scheme,
-  or at least the knowledge soundness of the proof system.}
-	\michals{27.08}{Yes, I think this could be called the binding property---the committer shouldn't be able to open the commitment to an incorrect value.}
-	\case{3} 
-	In the last round of the protocol the prover provides openings for the polynomial commitments done before. 
-	Assume $\adv$ is able to produce two different polynomial commitment openings pairs: 
-	$\vec{r_5} = (\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and 
-	$\vec{r'_5} = (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
-	As previously one of the openings has to be incorrect and should be rejected
-  by the verifier if the proof system be sound. \markulf{27.08}{Given the commitment
-    and the value, the opening is fixed?}
-		\michals{27.08}{In the standard commitment it is. However batch opening gives some freedom -- i.e. the opening may be incorrect, but if a good batch coefficient is picked, then it may be accepted anyway. This happens with negligible probability only.}
-	\qed
-\end{proof}
-}
+
 
 Equipped with \cref{lem:plonk_ur} we can show the main theorem, i.e.~prove that $\plonk$ is simulation extractable. The theorem assumes that dlog is hard, the interactive protocol underlying $\plonk$ is knowledge sound and has unique response property.
 
