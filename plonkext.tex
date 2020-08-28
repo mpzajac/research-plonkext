@@ -703,8 +703,6 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
 	Then $\plonkprotfs$ is simulation-extractable against algebraic adversaries.
 \end{theorem}
 \begin{proof}
-	\task{26.08}{Explain the freshness of queries}
-	\michals{28.08}{Need to add this to the unique resp prop part}
 	The proof goes by contradiction. Assume there exists an adversary $\advse$ that breaks simulation extractability with non-negligible probability $\eps$. 
 	We use $\advse$ to build two reductions $\rdvks$ and $\rdvdlog$, where the former uses $\advse$ to break knowledge soundness of $\plonkprot$ and the latter to break the $(\numberofconstrains + 2)$-dlog assumption.
 	We start with picking a reduction at random and denote by $\rdv$ the chosen one.
