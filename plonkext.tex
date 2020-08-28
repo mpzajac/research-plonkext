@@ -602,31 +602,40 @@ This property will be important later in the simulation-extractability proof.
 \
 
 \section{Simulation extractability of $\plonk$}
-We show simulation extractability of $\plonk$ in a few steps. 
-First we focus on the interactive version of the protocol, which we denote by $\plonkprot$, and assuming it is knowledge sound, we show security properties of its non-interactive version $\plonkprotfs$ which was obtained by the Fiat--Shamir transform on $\plonkprot$.
-Next we show that $\plonkprot$ has unique response property after Round 2 or is not sound.
-Finally, we assume that $\plonkprotfs$ is not simulation-extractable and build a reduction that either breaks $(\numberofconstrains + 2)$-dlog assumption or knowledge soundness of the underlying $\plonkprot$ protocol.
-
 \begin{lemma}
-	Let $\PCOM$ be a batched varsion of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19}. 
-	Then for every PPT adversary $\adv$	
-	\begin{multline*}
+	Let $\PCOM$ be a batched varsion of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19}. Let $k \in \NN$, $\vec{z}, \vec{o} \in \FF_p^2$, $\vec{c}, \vec{s} \in \ZZ_p^k$, then for every PPT adversary $\adv$	
+	\[
 		\condprob{
-		\PCOM.\verify(\crs, \vec{z}, \vec{s}, \vec{o})
+		\PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o})
 		}
 		{\crs \gets \PCOM.\kcrs(\secparam), 
-			(\vec{z}, \vec{s}, \vec{o}) \gets \adv(\crs)
+			(\vec{c}, \vec{z}, \vec{s}, \vec{o}) \gets \adv(\crs)
 		}
 		 \leq \negl.
-	\end{multline*}
+	\]
 \end{lemma}
+\begin{proof}
+	First, consider a case where the commitment limited to commit to multiple polynomials which are evaluated at the same point $z$. 
+	As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the probability of adversary succeeding using the idealised verification equation, which considers equality between polynomials, instead of the real verification equation, which consider equality of the polynomials' evaluations.
+	
+	For polynomials $\vec{f} = f_1, \ldots, f_k$, evaluation point $z$, evaluation result $\vec{s} = s_1, \ldots, s_k$, and opening $o$ the idealised check verifies that
+	\begin{equation}
+		\sum_{i = 1}^k \gamma^{i - 1} f_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} s_i \equiv o(X) (X - z)\,.
+		\label{eq:pcom_idealised_check}
+	\end{equation}
+	Since $\vec{f}$ and $o$ are polynomials then from \cref{eq:pcom_idealised_check} holds 
+	\[
+		\sum_{i = 1}^k \gamma^{i - 1} f_i(z) = \sum_{i = 1}^{k} \gamma^{i - 1} s_i
+	\]
+	
+\end{proof}
 
 \begin{lemma}
+	\label{lem:plonkprot_ur}
 	If a polynomial commitment scheme $\PCOM$ is evaluation binding, then $\plonkprot$ is $\ur{3}$.
 \end{lemma}
 \begin{proof}
 	Assume the opposite and an adversary $\adv$ that breaks $\ur{3}$-ness of $\plonkprot$. 
-	%We build an adversary $\bdv$ that breaks binding of the commitment scheme. To that end, we consider 2 cases, depending on which round $\adv$ is able to provide at least two outputs such that the resulting transcripts are acceptable.
 	We consider 2 cases, depending on which round $\adv$ is able to provide at least two outputs such that the resulting transcripts are acceptable, and show that in each of them $\adv$ breaks evaluation binding property of $\PCOM$.
 	\case{1}
 	In Round 4 the prover is asked to give evaluations of predefined polynomials at some point $\chz$. Naturally, for the given polynomials only one value at $\chz$ is correct.
@@ -646,7 +655,7 @@ Finally, we assume that $\plonkprotfs$ is not simulation-extractable and build a
 
 
 
-Equipped with \cref{lem:plonk_ur} we can show the main theorem, i.e.~prove that $\plonk$ is simulation extractable. The theorem assumes that dlog is hard, the interactive protocol underlying $\plonk$ is knowledge sound and has unique response property.
+Equipped with \cref{lem:plonkprot_ur} we can show the main theorem, i.e.~prove that $\plonk$ is simulation extractable. The theorem assumes that dlog is hard, the interactive protocol underlying $\plonk$ is knowledge sound and has unique response property.
 
 The proof goes by contradiction. Below we show some intuitions behind it.
 Let $\advse$ be an adversary that breaks simulation extractability of $\plonkprotfs$ with some non-negligible probability. 
