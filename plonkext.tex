@@ -749,8 +749,8 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
 	% (as we need $\advse$ to be successful) 
 	and $\zkproof_{\advse}[3] =\zkproof_{\simulator_k}[3]$. 
 	Since the produced proof has to be different from all simulated proofs, then $\advse$ could be used to break the $\ur{3}$-ness of $\plonkprot$.
-	\task{28.08}{How is that related to freshness of queries?}
-			
+	Thus we may assume that the random oracle query done by $\advse$ on $\zkproof_{\advse}[3]$ is fresh.
+
 	Eventually, the adversary returns a proof $\zkproof$ for some statement $\inp$. We assume that $\plonkprot.\verifier$ accepts $\zkproof$, if that is not the case $\advse$ fails.
 	
 	Since $\advse$ is algebraic the adversary provides along the proof $\zkproof$ also vectors of coefficients of all group elements it learnt for all group elements in the proof---that is, for each group element $\gone{\iota}$ included in the proof $\advse$ provides vector of coefficients $\vec{\iota}$ such that
