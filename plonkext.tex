@@ -599,10 +599,10 @@ This property will be important later in the simulation-extractability proof.
 \michals{03.07}{a proof for that statement would be nice.}
 }
 
-\
-
 \section{Simulation extractability of $\plonk$}
+\task{28.07}{All proofs in this section should be verified}
 \begin{lemma}
+	\label{lem:kzg_unique_op}
 	Let $\PCOM$ be a batched varsion of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19}. Let $k \in \NN$, $\vec{z}, \vec{o} \in \FF_p^2$, $\vec{c}, \vec{s} \in \ZZ_p^k$, then for every PPT adversary $\adv$	
 	\[
 		\condprob{
@@ -638,7 +638,7 @@ This property will be important later in the simulation-extractability proof.
 
 \begin{lemma}
 	\label{lem:plonkprot_ur}
-	If a polynomial commitment scheme $\PCOM$ is evaluation binding, then $\plonkprot$ is $\ur{3}$.
+	If a polynomial commitment scheme $\PCOM$ is evaluation binding, then $\plonkprot$ is $\ur{3}$.\footnote{An attentive reader may note that $\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required.}
 \end{lemma}
 \begin{proof}
 	Assume the opposite and an adversary $\adv$ that breaks $\ur{3}$-ness of $\plonkprot$. 
@@ -654,14 +654,13 @@ This property will be important later in the simulation-extractability proof.
 	Assume $\adv$ is able to produce two different polynomial commitment openings pairs: 
 	$\vec{r_5} = (\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and 
 	$\vec{r'_5} = (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
-	As previously one of the openings has to be incorrect and should be rejected
-  by the verifier if the proof system be sound. 
+	Since \cref{lem:kzg_unique_op}, one of the openings has to be incorrect and should be rejected by the polynomial commitment verifier. 
 	\michals{28.08}{In this case we also need to show that only one opening for a KZG polynomial commitment is acceptable. This property seems not be covered by the original KZG paper}
+	\michals{28.08}{See the lemma above}
+	\qed
 \end{proof}
 
-
-
-Equipped with \cref{lem:plonkprot_ur} we can show the main theorem, i.e.~prove that $\plonk$ is simulation extractable. The theorem assumes that dlog is hard, the interactive protocol underlying $\plonk$ is knowledge sound and has unique response property.
+Equipped with \cref{lem:plonkprot_ur} we show the main theorem and prove that $\plonk$ is simulation extractable. The theorem assumes that dlog is hard, the interactive protocol underlying $\plonk$ is knowledge sound and has unique response property (after third round).
 
 The proof goes by contradiction. Below we show some intuitions behind it.
 Let $\advse$ be an adversary that breaks simulation extractability of $\plonkprotfs$ with some non-negligible probability. 
@@ -705,7 +704,7 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
 \end{theorem}
 \begin{proof}
 	\task{26.08}{Explain the freshness of queries}
-	\task{26.08}{How the unique resp prop is used?}
+	\michals{28.08}{Need to add this to the unique resp prop part}
 	The proof goes by contradiction. Assume there exists an adversary $\advse$ that breaks simulation extractability with non-negligible probability $\eps$. 
 	We use $\advse$ to build two reductions $\rdvks$ and $\rdvdlog$, where the former uses $\advse$ to break knowledge soundness of $\plonkprot$ and the latter to break the $(\numberofconstrains + 2)$-dlog assumption.
 	We start with picking a reduction at random and denote by $\rdv$ the chosen one.
@@ -737,14 +736,20 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
   case the reduction continues its interaction with $\plonkprot.\verifier$.
   \markulf{27.08}{I struggle to understand how this would work when simulated RO
     queries are reused.}
+		\michals{28.08}{See the paragraph below}
 	
-	It may happen that $\zkproof_{\advse}[3] =\zkproof_{\simulator_k}[3]$, for some simulated proof $\zkproof_{\simulator_k}$.
+	We consider now a case when $\zkproof_{\advse}[3] =\zkproof_{\simulator_k}[3]$, for some simulated proof $\zkproof_{\simulator_k}$.
 	In that case the reduction has to abort since 
 	on adversary's query $h_{i_4}$, which should equal $\zkproof_{\advse}[3]$, $\rdv$ has to return a real challenge $\chz$ from the verifier $\plonkprot.\verifier$ to be able to finish its proof $\zkproof_\rdv$. 
 	On the other hand, in a simulated proof the challenge $\chz_k$ that comes after Round 3 has to be programmed. 
-	Unfortunately, if $\chz_k \neq \chz$, what happens except negligible probability, the reduction cannot provide $\chz$ to the adversary as it could spot the inconsistency in the random oracle responses---namely, it is once $\chz$ and $\chz_k$ another time despite the transcripts being equal. On the other hand, $\rdv$ also cannot provide $\advse$ with $\chz_k$ (again) as it differ from the verifiers challenge.
-	Fortunately, this situation may hold with negligible probability only. That is, we show that if this happens then $\plonkprot$ is not $\ur{3}$.
-	\task{27.08}{Continue}
+	Unfortunately, if $\chz_k \neq \chz$, what happens except negligible probability, the reduction cannot provide $\chz$ to the adversary as it could spot the inconsistency in the random oracle responses---namely, it is once $\chz$ and $\chz_k$ another time despite the transcripts being equal. On the other hand, $\rdv$ also cannot provide $\advse$ with $\chz_k$ (again) as it differ from the verifier's challenge.
+	Fortunately, this situation may hold with negligible probability only. 
+	% That is, if this happens then $\plonkprot$ is not $\ur{3}$---
+	That is, assume that $\zkproof_{\advse}$ is acceptable by the verifier $\plonkprotfs.\verifier$ and differs from all simulated proofs $\zkproof_{\simulator_1}, \ldots, \zkproof_{\simulator_{q_\simulator}}$, 
+	% (as we need $\advse$ to be successful) 
+	and $\zkproof_{\advse}[3] =\zkproof_{\simulator_k}[3]$. 
+	Since the produced proof has to be different from all simulated proofs, then $\advse$ could be used to break the $\ur{3}$-ness of $\plonkprot$.
+	\task{28.08}{How is that related to freshness of queries?}
 			
 	Eventually, the adversary returns a proof $\zkproof$ for some statement $\inp$. We assume that $\plonkprot.\verifier$ accepts $\zkproof$, if that is not the case $\advse$ fails.
 	
