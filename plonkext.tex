@@ -636,9 +636,13 @@ This property will be important later in the simulation-extractability proof.
 	\qed
 \end{proof}
 
+\begin{corollary}
+	A modification of the KZG polynomial commitment scheme \cite{AC:KatZavGol10} $\PCOM$, as presented in \cite{EPRINT:GabWilCio19} is evaluation binding and has unique response property.
+\end{corollary}
+
 \begin{lemma}
 	\label{lem:plonkprot_ur}
-	If a polynomial commitment scheme $\PCOM$ is evaluation binding, then $\plonkprot$ is $\ur{3}$.\footnote{An attentive reader may note that $\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required.}
+	If a polynomial commitment scheme $\PCOM$ is evaluation binding and has unique openings property\michals{28.08}{Formalise that property}, then $\plonkprot$ is $\ur{3}$.\footnote{An attentive reader may note that $\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required.}
 \end{lemma}
 \begin{proof}
 	Assume the opposite and an adversary $\adv$ that breaks $\ur{3}$-ness of $\plonkprot$. 
@@ -654,7 +658,9 @@ This property will be important later in the simulation-extractability proof.
 	Assume $\adv$ is able to produce two different polynomial commitment openings pairs: 
 	$\vec{r_5} = (\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and 
 	$\vec{r'_5} = (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
-	Since \cref{lem:kzg_unique_op}, one of the openings has to be incorrect and should be rejected by the polynomial commitment verifier. 
+	% Since \cref{lem:kzg_unique_op}, 
+	Since $\PCOM$ has unique opening property, 
+	one of the openings has to be incorrect and should be rejected by the polynomial commitment verifier. 
 	\michals{28.08}{In this case we also need to show that only one opening for a KZG polynomial commitment is acceptable. This property seems not be covered by the original KZG paper}
 	\michals{28.08}{See the lemma above}
 	\qed
