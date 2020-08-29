@@ -672,12 +672,14 @@ This property will be important later in the simulation-extractability proof.
 \begin{proof}
 	Assume the opposite and an adversary $\adv$ that breaks $\ur{3}$-ness of $\plonkprot$. 
 	We consider 2 cases, depending on which round $\adv$ is able to provide at least two outputs such that the resulting transcripts are acceptable, and show that in each of them $\adv$ breaks evaluation binding property of $\PCOM$.
+	
 	\case{1}
 	In Round 4 the prover is asked to give evaluations of predefined polynomials at some point $\chz$. Naturally, for the given polynomials only one value at $\chz$ is correct.
 	Assume $\adv$ is able to produce two different outputs in that round: $\vec{r_4} = (\ev{\p{a}}, \ev{\p{b}}, \ev{\p{c}}, \ev{\p{S_{\sigma 1}}}, \ev{\p{S_{\sigma 2}}}, \ev{\p{r}}, \ev{\p{z}})$ and 
 	$\vec{r_4} = (\ev{\p{a}}', \ev{\p{b}}', \ev{\p{c}}', \ev{\p{S_{\sigma 1}}}', \ev{\p{S_{\sigma 2}}}', \ev{\p{r}}', \ev{\p{z}}')$
 	which suppose to be evaluations at $\chz$ of polynomials $\p{a}, \p{b}, \p{c}, \p{S_{\sigma 1}}, \p{S_{\sigma 2}}, \p{r}$ and an evaluation at $\chz \omega$ of $\p{z}$.
 	Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus if both evaluations are acceptable by the $\PCOM.\verify$ then the evaluation binding property of $\PCOM$ is broken.
+	
 	\case{2}
 	In the last round of the protocol the prover provides openings for the polynomial commitments done before. 
 	Assume $\adv$ is able to produce two different polynomial commitment openings pairs: 
@@ -795,15 +797,15 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
 		\gone{\iota} = \vec{\tilde{\iota}}^\top \cdot (1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2})^\top\,.
 	\]
 	
-	Recall $\plonkprot$'s verification equation, \cref{eq:ver_eq}. Let $\p{V}(X)$ be a polynomial such that 
+	Recall $\plonkprot$'s verification equation, \cref{eq:ver_eq}. Let $\vereq(X)$ be a polynomial such that 
 	\[
-		\p{V}(X) = \p{W_{\chz}}(X) + u \cdot \p{W_{\chz \omega}}(X)
+		\vereq(X) = \p{W_{\chz}}(X) + u \cdot \p{W_{\chz \omega}}(X)
 		\cdot X - \chz \cdot \p{W_{\chz}}(X) - u \chz \omega \cdot \p{W_{\chz \omega}}(X) -  F(X) + E = 0\,.
 	\]
-	Hence, from the soundness of the polynomial protocol underlying $\plonkprot$ the polynomial $\p{V}(X)$ should be a zero-polynomial if all the constrains of the proof system are fulfilled. However, in the real life protocol only $\p{V}$'s value at $\chi$ is checked to be $0$.
+	Hence, from the soundness of the polynomial protocol underlying $\plonkprot$ the polynomial $\vereq(X)$ should be a zero-polynomial if all the constrains of the proof system are fulfilled. However, in the real life protocol only $\vereq$'s value at $\chi$ is checked to be $0$.
 	
 	Consider two cases. 
-	First, when $\p{V}(X) = 0$. Obviously then it also holds that $\p{V}(\chi) =
+	First, when $\vereq(X) = 0$. Obviously then it also holds that $\vereq(\chi) =
   0$, i.e.~the verifier accepts the proof. In that case $\rdvks$ reconstructs
   polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$ from the corresponding vectors of
   coefficients of the CRS elements, which are output by $\advse$ since it is algebraic. 
@@ -816,8 +818,130 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
   breaks $\plonkprot$'s soundness. \markulf{27.08}{Soundness or knowledge soundness?}
 	\michals{27.08}{Good question. I think it may even break soundness}
 	
-	Second, if $\p{V}(X)$ is not identically equal zero, but $\p{V}(\chi) = 0$, then the reduction $\rdvdlog$ can find zeroes of $\p{V}(X)$ and hence reveal $\chi$ breaking the $(\numberofconstrains + 2)$-dlog assumption.
+	Second, if $\vereq(X)$ is not identically equal zero, but $\vereq(\chi) = 0$, then the reduction $\rdvdlog$ can find zeroes of $\vereq(X)$ and hence reveal $\chi$ breaking the $(\numberofconstrains + 2)$-dlog assumption.
 	\qed
+\end{proof}
+
+\begin{theorem}[Simulation extractability]
+	~\newline\michals{29.08}{Proof done similarly to \cite{INDOCRYPT:FKMV12}}
+	Assume that $(\numberofconstrains + 2)$-dlog is $\eps_\dlog(\secpar)$-hard, $\plonkprot$ is knowledge sound and $\ur{3}$ with security $\eps_{\ks}(\secpar)$ and $\eps_{\ur{3}}(\secpar)$ respectively. 
+	Then the probability that an algebraic, PPT adversary $\advse$ breaks simulation extractability of $\plonkprotfs$ is upper-bounded by 
+	\[
+		\eps_{\ur{3}}(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \eps_{\ks}(\secpar))\,,
+	\]
+	where $q_\ro$ is the total number of queries required by the adversary $\advse$.
+\end{theorem}
+\begin{proof}
+	We proceed by a contradiction. Suppose there exist a PPT adversary $\advse$ that breaks simulation extractability with non-negligible probability
+	\[
+	\eps := \Pr
+		\left[
+		\begin{aligned}
+			& \plonkprotfs.\verifier(\REL, \crs, \inp, \zkproof_{\advse}),\\
+			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+			& \neg \REL(\inp_{\advse}, \wit_{\advse}) 
+		\end{aligned}
+		\,\left|\,
+		\begin{aligned}
+			& \crs \gets \plonkprotfs.\kcrs(\REL, \secparam)\\
+			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator, \ro} (\REL, \crs),\\
+			& \wit_{\advse} \gets \ext_{\advse}(\REL, \crs, \inp, \zkproof_{\advse})
+		\end{aligned}
+		\right.\right] \leq \negl.
+	\]
+
+In such case, we are able to build two reductions $\rdvks$, $\rdvur$, which using $\advse$ as a black-box, violate either the soundness or unique response properties of the underlying interactive protocol $\plonkprot$.
+
+In the following we denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs returned by the adversary and the simulator respectively. We use $\zkproof[i]$ to denote prover's message in the $i$-th round of the proof, $\zkproof[i].\ch$ to denote the challenge that is given to the prover after $\zkproof[i]$, and $\zkproof\range{i}{j}$ to denote all messages of the proof between round $i$ and $j$.
+
+Without loss of generality for every acceptable proof $\zkproof_{\advse}$, we assume that whenever $\advse$ outputs in Round $i$, a message $m$, which results in a partial proof $\zkproof_{\advse}[:i]$, then $\zkproof_{\advse}[i]$ is a fresh query to the random oracle. 
+In is straightforward to transform any adversary that violates this condition into an adversary that makes these additional queries to the random oracle and wins with the same probability.
+
+A crucial observation is that the adversary $\advse$ may have learned $\zkproof_{\advse}\range{1}{3}$ by querying the simulator on $\inp_{\advse}$ or might have computed it itself. We denote the first event by $\event{E}$ and the second by $\nevent{E}$. 
+
+Additionally, we divide even $\nevent{E}$ into two disjunctive subevents: $\nevent{E}_0$ and $\nevent{E}_1$. 
+The event $\nevent{E}_0$ considers a case when the final proof provided by the adversary $\advse$ is accepted by the idealised verification equation, i.e.~for that proof $\vereq(X) \equiv 0$. 
+Alternatively, the event $\nevent{E}_1$ covers a case when for $\zkproof_\advse$ holds $\vereq(\chi) = 0$, but $\vereq(X) \neq 0$, where $\chi$ is $\plonkprotfs$'s trapdoor.
+%
+As all these events are mutually exclusive and exhaustive, we have
+\[
+	\eps = \prob{\advse \text{ wins}} = \prob{\advse \text{ wins}, \event{E}} + \prob{\advse \text{ wins}, \nevent{E}_0} + \prob{\adv \text{ wins}, \nevent{E}_1}\,.
+\]
+
+\ncase{When $\event{E}$ happens}
+We assume that $\inp_{\advse}$ is submitted to the simulator $\simulator$. 
+We show how $\rdvur$ utylises $\advse$, that makes use of $\inp_\advse, \zkproof_{\advse}\range{1}{3}$, to break the $\ur{3}$ property of $\plonkprot$. 
+This way we bound the probability $\prob{\adv \text{ wins}, \event{E}}$ by the probability of $\rdvur$ being able to win in the $\ur{3}$ game.
+
+Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box.
+\begin{itemize}
+	\item The reduction answers both queries to the simulator. It also keeps lists $Q$, for the simulated proofs, and $Q_\ro$ for the random oracle queries. $\plonkprotfs.\simulator$ and random oracle queries.
+	\item When $\advse$ outputs a fake proof $\zkproof_{\advse}$ for  $\inp_\advse$, $\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds 
+	$\zkproof_{\simulator}\range{1}{3}$ such that $\zkproof_{\advse}\range{1}{2} = \zkproof_{\simulator}\range{1}{2}$ and a random oracle query on $\zkproof_{\simulator}\range{1}{2}$.
+	\item $\rdvur$ returns two proofs for $\inp_\advse$:
+	\begin{align*}
+		\zkproof_1 = (\inp_{\advse},\zkproof_{\simulator}\range{1}{2}, \zkproof_{\simulator}\range{1}{2}.\ch, \zkproof_{\simulator}\range{3}{5})\\
+		\zkproof_2 = (\inp_{\advse}, \zkproof_{\simulator}\range{1}{2}, \zkproof_{\simulator}\range{1}{2}.\ch, \zkproof_{\advse}\range{3}{5})
+	\end{align*}
+	\end{itemize}  
+	If $\zkproof_1 = \zkproof_2$, then $\advse$ fails to break simulation extractability, as $\zkproof_2 \in Q$.
+	On the other hand, if the proofs are not equal, then $\rdvur$ breaks $\ur{3}$-ness of $\plonkprot$. Thus 
+	\[
+		\prob{\adv \text{ wins}, \event{E}} \leq \eps_{\ur{3}}(\secpar).
+	\]
+	
+	Before the events $\nevent{E}_0$ and $\nevent{E}_1$ are analysed, the following observation should be made:
+	Since $\advse$ is algebraic, the proof $\zkproof_\advse$ it outputs can be written as 
+	\[
+		\zkproof_\advse = \vec{M} \cdot (\underbrace{1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2}}_{\crs} \| \vec{\tilde{\zkproof}_\simulator}_1^{\top} \| \ldots \| \vec{\tilde{\zkproof}_\simulator}_{q_\simulator}^\top)^\top\,,
+	\]
+	where $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ are all $\GRP_1$-elements from the CRS of $\plonkprotfs$, $\vec{M}$ is a matrix of coefficients output by $\advse$ aside the proof, $\vec{\tilde{\zkproof}_\simulator}_i$ denote all group $\GRP_1$ elements from the simulated proof ${\zkproof_\simulator}_i$. 
+	Since the reduction provides the simulated proofs, $\rdv$ knows a matrix $\vec{M'}$ such that
+	\begin{equation}
+		\label{eq:M_prim}
+		\zkproof_\advse = \vec{M'} \cdot (1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2})^\top\,.
+	\end{equation}
+	We use this property when analysing probability success of reductions $\rdvks$ and $\rdvdlog$.
+	
+	We also note that a proof $\zkproof$ could be accepted only if the verification equation $\vereq(\chi)$ holds. That is, the verifier plugs-in elements of $\zkproof$ into $\vereq(\chi)$ and checks whether it equals $0$. That is what is called a \emph{real check} in \cite{EPRINT:GabWilCio19}. 
+	On the other hand there is an \emph{idealised check}, which verifies whether $\vereq(X) = 0$ \emph{as a polynomial} (with proof elements being polynomials as well).
+
+\ncase{When $\nevent{E}_0$ happens}
+In this case the reduction $\rdvks$ uses $\advse$ to break the \hl{knowledge} soundness of $\plonkprot$ with probability $\eps_\ks / q_{\ro}^6$, where $q_\ro$ is the number of total random oracle queries performed by the adversary or by $\rdvks$ on behalf of the simulator.
+As previously, $\rdvks$ runs $\advse$ internally and simulates its environment by answering to its queries to $\plonkprotfs.\simulator$ and $\ro$. The reduction works as follows:
+\begin{itemize}
+	\item It guesses indices $i_1, \ldots, i_6$ such that $\advse$'s queries $h_{i_1}, \ldots, h_{i_6}$ are the queries used in $\zkproof_\advse$. This is done with probability at least $1/q_{\ro}^6$ (since there are $6$ challenges from the verifier in $\plonkprot$).
+	\item On query $h \not\in \smallset{h_{i_1}, \ldots, h_{i_6}}$, $\rdvks$ returns randomly picked $y$, sets $\ro(h) = y $ and stores $(h, y)$ in $Q_\ro$ if $h$ is sent to $\ro$ the first time. If that's not the case, $\rdv$ finds $h$ in $Q_\ro$ and returns the corresponding $y$.
+	\item On query $h \in \smallset{h_{i_1}, \ldots, h_{i_6}}$, $\rdvks$ runs $\plonkprot$ with $\plonkprot.\verifier$ using $h_{i_j}$ as a $\plonkprot.\prover$'s $j$-th message. The verifier responds with a challenge $\zkproof[j].\ch$. The reduction sets $\ro(h) = \zkproof[j].\ch$
+	\item On query $\inp_\simulator$ to $\simulator$ it runs a simulator $\plonkprotfs.\simulator$ internally and returns $\zkproof_\simulator$.
+	\item Answers $\plonkprot.\verifier$'s challenge $\zkproof[j].\ch$ using $\zkproof_\advse[j + 1]$.
+\end{itemize}
+
+Assume that the $\plonkprot.\verifier$ accepts $\zkproof_\advse$. We consider case when the idealised verification equation accepts. (Thus, the real verification accepts as well.) 
+In that case $\rdvks$ extracts from $\vec{M'}$ coefficients of $1, \chi, \ldots, \chi^{\numberofconstrains + 2}$ for polynomials $\p{a}, \p{b}$, and $\p{c}$ and reveals the witness $\wit_\advse$ (as it is encoded in theses polynomials' coefficients).
+If $\REL(\inp_\advse, \wit_\advse)$ holds then $\advse$ failed to break simulation-extractability of $\plonkprotfs$. On the other hand, if that is not the case, then $\rdvks$ breaks soundness of $\plonkprot$.
+%
+Since the reduction guesses queries $h_{i_1}, \ldots, h_{i_6}$ with probability $1/q_\ro^6$, then 
+\[
+	\prob{\advse \text{ wins}, \nevent{E}_0} \leq q_\ro^6 \cdot \eps_{\ks}(\secpar).
+\]
+
+\ncase{When $\nevent{E}_1$ happens}
+The reduction $\rdvdlog$ runs internally a protocol $\plonkprotfs$, which CRS is computed from the challenge $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}$ from the $(\numberofconstrains + 2)$-dlog assumption challenger. 
+Then it proceeds as $\rdvks$ does, except in the last part, when the adversary provided its proof $\zkproof_\advse$, it uses the fact that the real verification equation holds, but the ideal verification equation does not to break the dlog assumption. 
+
+
+Since $\vereq(X) \neq 0$, but $\vereq(\chi) = 0$ and $\rdvdlog$ knows $\vec{M'}$, as defined in \cref{eq:M_prim}, it can recreate all the polynomials submitted by $\advse$ as part of the proof and included in $\vereq(X)$. This way, it knows all coefficients of $\vereq(X)$. Thus it can factorise it and find its roots, one of the would be the required $\chi$. Hence the probability that 
+\[
+	\prob{\advse \text{ wins}, \nevent{E}_1} \leq q_\ro^6 \cdot \eps_{\dlog}(\secpar).
+\]
+
+The proof is concluded by observing that the analysis of events $\event{E}, \nevent{E}_0, \nevent{E}_1$ gives
+\[
+	\eps \leq \eps_{\ur{3}}(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \eps_{\ks}(\secpar))\,,
+\]
+hence $\eps$ is negligible if dlog is hard and $\plonkprot$ is sound and $\ur{3}$.
+\qed
 \end{proof}
 
 \section{Simulation extractability with special soundness and no AGM}

@@ -6,7 +6,8 @@
 \newcommand{\pcvarstyle}[1]{\mathsf{#1}}
 \newcommand{\comment}[1]{{\color{lightgray}#1}}
 \newcommand{\continue}{{\Huge{\hl{$\cdots$}}}}
-\renewcommand{\case}[1]{\newline\noindent\textit{\fbox{Case #1:}}}
+\renewcommand{\case}[1]{\medskip\noindent\textit{\fbox{Case #1:}}}
+\newcommand{\ncase}[1]{\medskip\noindent\textit{\fbox{#1:}}}
 
 % General mathematics
 \newcommand{\range}[2] {[#1 \, .. \, #2]}
@@ -63,7 +64,7 @@
 \newcommand{\se}{\pcvarstyle{se}}
 \newcommand{\snd}{\pcvarstyle{snd}}
 \newcommand{\zk}{\pcvarstyle{zk}}
-\newcommand{\advse}{\adv_\se}
+\newcommand{\advse}{{\adv_\se}}
 
 %rewinding---tree of transcripts
 \newcommand{\pcboolstyle}[1]{\mathtt{#1}}
@@ -83,6 +84,7 @@
 \newcommand{\selconst}{\selector{C}}
 \newcommand{\chz}{\mathfrak{z}}
 \newcommand{\reduction}{\rdv}
+\newcommand{\ch}{\pcvarstyle{ch}}
 
 \newcommand{\game}[1]{\pcalgostyle{G}_{#1}}
 
@@ -104,6 +106,7 @@
 \newcommand{\FS}{\pcalgostyle{FS}} % Fiat-Shamir transform
 \newcommand{\aux}{\pcvarstyle{aux}} %auxiliary input
 % \newcommand{\dlog}{\pcvarstyle{dlog}}
+\newcommand{\vereq}{\p{ve}}
 
 %Commitment schemes
 \newcommand{\COM}{\pcalgostyle{C}}
@@ -112,6 +115,8 @@
 \newcommand{\op}{\pcalgostyle{Op}}
 
 %Plonk and Sonic
+\newcommand{\ur}[1]{{#1\text{-}\mathsf{ur}}}
+
 \newcommand{\plonk}{\ensuremath{\textsc{Plonk}}}
 \newcommand{\plonkmod}{\ensuremath{\plonk^\star}}
 \newcommand{\plonkint}{\ensuremath{\plonk^\star}}
@@ -122,10 +127,11 @@
 
 \newcommand{\dlog}{\pcvarstyle{dlog}}
 
-\newcommand{\rdvks}{\rdv_\pcvarstyle{ks}}
-\newcommand{\rdvdlog}{\rdv_\dlog}
+\newcommand{\ks}{\pcvarstyle{ks}}
+\newcommand{\rdvks}{{\rdv_\ks}}
+\newcommand{\rdvdlog}{{\rdv_\dlog}}
+\newcommand{\rdvur}{\rdv_\pcvarstyle{ur}}
 
-\newcommand{\ur}[1]{{#1\text{-}\mathsf{ur}}}
 
 %forking
 \newcommand{\forking}{\pcalgostyle{F}}
