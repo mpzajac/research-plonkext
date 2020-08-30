@@ -677,14 +677,13 @@ vector of points? $\vec{s}$ vector of evaluation result}
 	%  for each individual $i \in \range{1}{k}$.
 	\qed
 \end{proof}
-\markulf{28.08}{Something is off here between statement of the lemma and the
-  proof. I know too little to know how to fix it.}
-
+\comment{
 \begin{corollary}
 	Let $\PCOM$ be a modification of the KZG polynomial commitment scheme
   \cite{AC:KatZavGol10} as presented in \cite{EPRINT:GabWilCio19}. Then $\PCOM$
   is evaluation binding and has unique opening property.
 \end{corollary}
+}
 
 \begin{lemma}
 	\label{lem:plonkprot_ur}
@@ -777,19 +776,22 @@ is this a flaw in the Plonk proof? How is this to be understood?}
 	We start with picking a reduction at random and denote by $\rdv$ the chosen one.
 	
 	The reduction $\rdvks$ starts with obtaining a CRS $\crs$ from $\plonkprot.\kgen$ and passing it to $\advse$. 
-	Similarly, $\rdvdlog$ gets its challenge $c$ from the $(\numberofconstrains + 2)$-dlog challenger $\cdv_\dlog$ and then internally starts $\plonkprot.\verifier$ equipping it with the CRS $\crs = c$. (Although the CRS from $\plonkprot.\kgen$ given to $\rdvks$ may not equal the challenge given by $\cdv_\dlog$ we use $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}$ to denote both of them.)
+	Similarly, $\rdvdlog$ gets its challenge $c$ from the $(\numberofconstrains +
+  2)$-dlog challenger $\cdv_\dlog$ and then internally starts
+  $\plonkprot.\verifier$ equipping it with the CRS $\crs = c$. (Although the CRS
+  from $\plonkprot.\kgen$ given to $\rdvks$ may not \markulf{30.08}{may not is
+    too fuzzy} equal the challenge given by $\cdv_\dlog$ we use $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}$ to denote both of them.)
 	%
 	The reductions answer $\advse$ queries to the random oracle and provide it with simulated proofs $\vec{\zkproof_{\simulator, 1}}, \ldots, \vec{\zkproof_{\simulator, q_\simulator}}$ on submitted instances, where $q_\simulator$ is the total number of required simulated proofs---this is possible since the reductions control the random oracle instances and can program them as they wish.
 	
-	We assume that the adversary makes at most $q_\ro$ random oracle
-  queries---including the queries that the simulator has to perform to be able
-  to provide a simulated proof.
-	\markulf{27.08}{That's consistent with what I
-    suggested above then.} 
-	To make a proof in $\plonkprotfs$ the adversary has to make at least $6$ random oracle queries. 
+	We assume that the adversary and the simulator make at most $q_\ro$ random oracle
+  queries---the simulator has to perform queries to be able
+  to provide a simulated proof. 
+	To make a proof in $\plonkprotfs$ the adversary has to use at least $6$ random oracle queries. 
 	Denote by $h$ a list of random oracle queries $h_{i_1}, \ldots, h_{i_6}$ that are used in the final proof $\zkproof_{\advse}$ returned by $\advse$.
-	Denote by $\zkproof[i]$ the transcript of a proof after Round $i$. 
-	For the proof to be acceptable with non-negligible probability it has to hold
+	Denote by $\zkproof[i]$ the transcript of a proof at Round $i$. Note that
+  $\zkproof[i]$ is a prefix of $\zkproof[i+1]$.
+	For the proof to be acceptable with non-negligible probability it has to hold that
 	\begin{align*}
 		h_{i_1} & = \zkproof_{\advse}[1] \| 0 \quad \pccomment{challenge $\beta$}\\
 		h_{i_2} & = \zkproof_{\advse}[1] \| 1 \quad \pccomment{challenge $\gamma$}\\
@@ -886,16 +888,24 @@ is this a flaw in the Plonk proof? How is this to be understood?}
 
 In such case, we are able to build reductions $\rdvks$, $\rdvur$, $\rdvdlog$ which using $\advse$ as a black-box, violate either the soundness, unique response properties of the underlying interactive protocol $\plonkprot$, or the $(\numberofconstrains + 2)$-dlog assumption.
 
-In the following we denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs returned by the adversary and the simulator respectively. We use $\zkproof[i]$ to denote prover's message in the $i$-th round of the proof, $\zkproof[i].\ch$ to denote the challenge that is given to the prover after $\zkproof[i]$, and $\zkproof\range{i}{j}$ to denote all messages of the proof between rounds $i$ and $j$.
+In the following we denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
+returned by the adversary and the simulator respectively. We use $\zkproof[i]$
+to denote prover's message in the $i$-th round of the proof, $\zkproof[i].\ch$
+to denote the challenge that is given to the prover after $\zkproof[i]$, and
+$\zkproof\range{i}{j}$ to denote all messages of the proof including challenges between rounds $i$ and $j$.
 
-Without loss of generality, for every acceptable proof $\zkproof_{\advse}$, we assume that whenever $\advse$ outputs in Round $i$ a message $m$, then $\zkproof_{\advse}\range{1}{i}$ is a fresh query to the random oracle. 
+Without loss of generality, for every acceptable proof $\zkproof_{\advse}$, we
+assume that whenever $\advse$ outputs in Round $i$ a message $m$, then
+$\zkproof_{\advse}\range{1}{i}$ is a fresh query to the random oracle.
+\markulf{30.08}{What does fresh mean here? What about messages coming from the simulator?} 
 It is straightforward to transform any adversary that violates this condition into an adversary that makes these additional queries to the random oracle and wins with the same probability.
 
 A crucial observation is that the adversary $\advse$ may have learned $\zkproof_{\advse}\range{1}{3}$ by querying the simulator on $\inp_{\advse}$ or might have computed it itself. We denote the first event by $\event{E}$ and the second by $\nevent{E}$. 
 %
 Additionally, we divide event $\nevent{E}$ into two disjunctive subevents: $\nevent{E}_0$ and $\nevent{E}_1$. 
 Event $\nevent{E}_0$ considers a case when the final proof provided by the adversary $\advse$ is accepted by the idealised verification equation, i.e.~for that proof $\vereq(X) = 0$. 
-Alternatively, event $\nevent{E}_1$ covers a case when for $\zkproof_\advse$ holds $\vereq(\chi) = 0$, but $\vereq(X) \neq 0$, where $\chi$ is $\plonkprotfs$'s trapdoor.
+Alternatively, event $\nevent{E}_1$ covers a case when for $\zkproof_\advse$ it
+holds that $\vereq(\chi) = 0$, but $\vereq(X) \neq 0$, where $\chi$ is $\plonkprotfs$'s trapdoor.
 %
 As all these events are mutually exclusive and exhaustive, we have
 \[
@@ -904,7 +914,7 @@ As all these events are mutually exclusive and exhaustive, we have
 
 \ncase{When $\event{E}$ happens}
 We assume that $\inp_{\advse}$ is submitted to the simulator $\simulator$. 
-We show how $\rdvur$ utylises $\advse$, that makes use of $\inp_\advse, \zkproof_{\advse}\range{1}{3}$, to break the $\ur{3}$ property of $\plonkprot$. 
+We show how $\rdvur$ utilizes $\advse$, that makes use of $\inp_\advse, \zkproof_{\advse}\range{1}{3}$, to break the $\ur{3}$ property of $\plonkprot$. 
 This way we bound the probability $\prob{\adv \text{ wins}, \event{E}}$ by the probability of $\rdvur$ being able to win in the $\ur{3}$ game.
 
 Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
@@ -925,8 +935,8 @@ Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
 		\prob{\adv \text{ wins}, \event{E}} \leq \eps_{\ur{3}}(\secpar).
 	\]
 	
-	Before the events $\nevent{E}_0$ and $\nevent{E}_1$ are analysed, the following observation should be made.
-	Since $\advse$ is algebraic, the proof $\zkproof_\advse$ it outputs can be written as 
+	Before analyzing the events $\nevent{E}_0$ and $\nevent{E}_1$, we make the following observation:
+	Since $\advse$ is algebraic, it outputs a proof $\zkproof_\advse$ that can be written as 
 	\[
 		\zkproof_\advse = \vec{M} \cdot (\underbrace{1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2}}_{\crs} \| \vec{\tilde{\zkproof}_\simulator}_1^{\top} \| \ldots \| \vec{\tilde{\zkproof}_\simulator}_{q_\simulator}^\top)^\top\,,
 	\]
@@ -936,7 +946,7 @@ Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
 		\label{eq:M_prim}
 		\zkproof_\advse = \vec{M'} \cdot (1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2})^\top\,.
 	\end{equation}
-	We use this property when analysing probability success of reductions $\rdvks$ and $\rdvdlog$.
+	We use this property when analysing the success probability of reductions $\rdvks$ and $\rdvdlog$.
 	
 	We also note that a proof $\zkproof$ could be accepted only if the verification equation $\vereq(\chi)$ holds. That is, the verifier plugs-in elements of $\zkproof$ into $\vereq(\chi)$ and checks whether it equals $0$. That is what is called a \emph{real check} in \cite{EPRINT:GabWilCio19}. 
 	On the other hand there is an \emph{idealised check}, which verifies whether $\vereq(X) = 0$ \emph{as a polynomial} (with proof elements being polynomials as well).
@@ -945,11 +955,20 @@ Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
 In this case the reduction $\rdvks$ uses $\advse$ to break the \hl{knowledge} soundness of $\plonkprot$ with probability $\eps_\ks / q_{\ro}^6$, where $q_\ro$ is the number of total random oracle queries performed by the adversary or by $\rdvks$ on behalf of the simulator.
 As previously, $\rdvks$ runs $\advse$ internally and simulates its environment by answering to its queries to $\plonkprotfs.\simulator$ and $\ro$. The reduction works as follows:
 \begin{itemize}
-	\item It guesses indices $i_1, \ldots, i_6$ such that $\advse$'s queries $h_{i_1}, \ldots, h_{i_6}$ are the queries used in $\zkproof_\advse$. This is done with probability at least $1/q_{\ro}^6$ (since there are $6$ challenges from the verifier in $\plonkprot$).
-	\item On query $h \not\in \smallset{h_{i_1}, \ldots, h_{i_6}}$, $\rdvks$ returns randomly picked $y$, sets $\ro(h) = y $ and stores $(h, y)$ in $Q_\ro$ if $h$ is sent to $\ro$ the first time. If that is not the case, $\rdv$ finds $h$ in $Q_\ro$ and returns the corresponding $y$.
-	\item On query $h \in \smallset{h_{i_1}, \ldots, h_{i_6}}$, $\rdvks$ runs $\plonkprot$ with $\plonkprot.\verifier$ using $h_{i_j}$ as a $\plonkprot.\prover$'s $j$-th message. The verifier responds with a challenge $\zkproof[j].\ch$. The reduction sets $\ro(h) = \zkproof[j].\ch$
-	\item On query $\inp_\simulator$ to $\simulator$ it runs a simulator $\plonkprotfs.\simulator$ internally and returns $\zkproof_\simulator$.
-	\item Answers $\plonkprot.\verifier$'s challenge $\zkproof[j].\ch$ using $\zkproof_\advse[j + 1]$.
+\item It guesses indices $i_1, \ldots, i_6$ such that random oracle queries $h_{i_1}, \ldots, h_{i_6}$ are the queries used in $\zkproof_\advse$. This is done with probability at least $1/q_{\ro}^6$ (since there are $6$ challenges from the verifier in $\plonkprot$).
+	\item On input $h$ for the $i$-th, $i \not\in \smallset{{i_1}, \ldots, {i_6}}$, random
+    oracle query, $\rdvks$ returns randomly picked $
+    y$, sets $\ro(h) = y $ and stores $(h, y)$ in $Q_\ro$ if $h$ is sent to $\ro$ the first time. If that is not the case, $\rdv$ finds $h$ in $Q_\ro$ and returns the corresponding $y$.
+	\item On input $h_{i_j}$ for the $i_j$-th, $i_j \in \smallset{{i_1}, \ldots, {i_6}}$,
+    random oracle query, $\rdvks$ parses $h_{i_j}$ as a partial proof transcript
+    $\zkproof[1..j]$ and runs $\plonkprot$ with $\plonkprot.\verifier$ using $\zkproof[j]$ as a $\plonkprot.\prover$'s $j$-th message. The verifier responds with a challenge $\zkproof[j].\ch$. The reduction sets $\ro(h_{i_j}) = \zkproof[j].\ch$
+	\item On query $\inp_\simulator$ to $\simulator$ it runs a simulator
+    $\plonkprotfs.\simulator$ internally and returns $\zkproof_\simulator$. If
+    the random oracle query with input $\zkproof_\simulator[j]$, $1 \leq j \leq 3$, of the simulator is the $i_j$-th query,
+    generate $\zkproof_\simulator[j].\ch$ by invoking $\plonkprot.\verifier$ on
+    $\zkproof_\simulator[j]$ and programming $\ro(h_{i_j}) = \zkproof_\simulator[j].\ch$.
+	\item Answers $\plonkprot.\verifier$'s challenge $\zkproof[j].\ch$ using
+    $\zkproof_\advse[j + 1]$.\markulf{30.08}{I don't understand this last step.}
 \end{itemize}
 
 Assume that the $\plonkprot.\verifier$ accepts $\zkproof_\advse$. We consider a case when the idealised verification equation accepts. (Thus, the real verification accepts as well.) 
@@ -962,12 +981,18 @@ Since the reduction guesses queries $h_{i_1}, \ldots, h_{i_6}$ with probability 
 	\prob{\advse \text{ wins}, \nevent{E}_0} \leq q_\ro^6 \cdot \eps_{\ks}(\secpar).
 \end{gather*}
 
+\markulf{30.08}{We might have to extract from $M$ rather than $M'$. :(}
+
 \ncase{When $\nevent{E}_1$ happens}
 The reduction $\rdvdlog$ runs internally a protocol $\plonkprotfs$, which CRS is computed from the challenge $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}$ from the $(\numberofconstrains + 2)$-dlog assumption challenger. 
 Then it proceeds as $\rdvks$ does, except in the last part, when the adversary provided its proof $\zkproof_\advse$, $\rdvdlog$ uses the fact that the real verification equation holds, but the ideal verification equation does not to break the dlog assumption. 
 
 
-Since $\vereq(X) \neq 0$, but $\vereq(\chi) = 0$ and $\rdvdlog$ knows $\vec{M'}$, as defined in \cref{eq:M_prim}, it can recreate all the polynomials submitted by $\advse$ as part of the proof and included in $\vereq(X)$. This way, it knows all coefficients of $\vereq(X)$. Thus it can factorise it and find its roots, one of the would be the required $\chi$. Hence, by the analogous analysis as in the previous case, holds
+Since $\vereq(X) \neq 0$, but $\vereq(\chi) = 0$ and $\rdvdlog$ knows
+$\vec{M'}$, as defined in \cref{eq:M_prim}, it can recreate all the polynomials
+submitted by $\advse$ as part of the proof and included in $\vereq(X)$. This
+way, it knows all coefficients of $\vereq(X)$. Thus it can factorise it and find
+its roots, one of them is the required $\chi$. Hence it holds, by the analogous analysis as in the previous case, that
 \[
 	\prob{\advse \text{ wins}, \nevent{E}_1} \leq q_\ro^6 \cdot \eps_{\dlog}(\secpar).
 \]
