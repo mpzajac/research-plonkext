@@ -898,6 +898,7 @@ Without loss of generality, for every acceptable proof $\zkproof_{\advse}$, we
 assume that whenever $\advse$ outputs in Round $i$ a message $m$, then
 $\zkproof_{\advse}\range{1}{i}$ is a fresh query to the random oracle.
 \markulf{30.08}{What does fresh mean here? What about messages coming from the simulator?} 
+\michals{30.08}{I thought that with this assumption we may just consider only queries from $\advse$}
 It is straightforward to transform any adversary that violates this condition into an adversary that makes these additional queries to the random oracle and wins with the same probability.
 
 A crucial observation is that the adversary $\advse$ may have learned $\zkproof_{\advse}\range{1}{3}$ by querying the simulator on $\inp_{\advse}$ or might have computed it itself. We denote the first event by $\event{E}$ and the second by $\nevent{E}$. 
@@ -969,6 +970,7 @@ As previously, $\rdvks$ runs $\advse$ internally and simulates its environment b
     $\zkproof_\simulator[j]$ and programming $\ro(h_{i_j}) = \zkproof_\simulator[j].\ch$.
 	\item Answers $\plonkprot.\verifier$'s challenge $\zkproof[j].\ch$ using
     $\zkproof_\advse[j + 1]$.\markulf{30.08}{I don't understand this last step.}
+		\michals{30.08}{Here I just wanted to say that to respond to $\plonkprot/\verifier$'s challenges $\rdv$ uses the responses from $\advse$}
 \end{itemize}
 
 Assume that the $\plonkprot.\verifier$ accepts $\zkproof_\advse$. We consider a case when the idealised verification equation accepts. (Thus, the real verification accepts as well.) 
@@ -980,8 +982,9 @@ Since the reduction guesses queries $h_{i_1}, \ldots, h_{i_6}$ with probability 
 	\prob{\rdvks \text{ wins}} = \prob{\advse \text{ wins}, h_{i_1}, \ldots, h_{i_6} \text{ are guessed correctly}, \nevent{E}_0}, \text{ hence}\\
 	\prob{\advse \text{ wins}, \nevent{E}_0} \leq q_\ro^6 \cdot \eps_{\ks}(\secpar).
 \end{gather*}
-
 \markulf{30.08}{We might have to extract from $M$ rather than $M'$. :(}
+\michals{30.08}{I think that is fine.
+$\rdvks$ provides the simulated proofs for the adversary so it knows how the polynomials used in the proofs are built (i.e. how to express them using $\gone{1, \chi, ... \chi^{n + 2}}$}
 
 \ncase{When $\nevent{E}_1$ happens}
 The reduction $\rdvdlog$ runs internally a protocol $\plonkprotfs$, which CRS is computed from the challenge $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}$ from the $(\numberofconstrains + 2)$-dlog assumption challenger. 
