@@ -1,0 +1,76 @@
+% !TeX spellcheck = en_GB
+\let\accentvec\vec
+\documentclass[runningheads,11pt]{llncs}
+ % \documentclass[runningheads]{amsart}
+\let\spvec\vec
+\let\vec\accentvec
+\usepackage{amssymb,amsmath}
+\let\vec\spvec
+
+\usepackage[T1]{fontenc}
+
+\newcommand{\iflipics}[1] {}
+\newcommand{\iflncs}[1] {#1}
+
+\def\vec#1{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
+	{\mbox{\boldmath$\textstyle#1$}}
+	{\mbox{\boldmath$\scriptstyle#1$}}
+	{\mbox{\boldmath$\scriptscriptstyle#1$}}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\widebar}{0}{mathx}{"73}
+
+% lncs size (as printed in books, with small margins):
+% \usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={13.2cm,20.3cm},centering]{geometry}
+
+
+% \newcommand{\ifamsart}[1] {}
+% \ifamsart{
+% 	\newtheorem{theorem}{Theorem}%[section]
+% 	\newtheorem{proposition}[theorem]{Proposition}
+% 	\newtheorem{lemma}[theorem]{Lemma}
+% 	\newtheorem{corollary}[theorem]{Corollary}
+% 	\theoremstyle{definition}
+% 	\newtheorem{definition}[theorem]{Definition}
+% 	\newtheorem{example}[theorem]{Example}
+% }
+\usepackage{fullpage}
+\usepackage{soul}
+\usepackage{soulutf8}
+\soulregister\cite7
+\soulregister\ref7
+\soulregister\pageref7
+\usepackage{hyperref}
+\usepackage[color=yellow]{todonotes}
+\hypersetup{final}
+\usepackage{mathrsfs}
+\usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
+\usepackage[capitalise]{cleveref}
+\usepackage{cite}
+\usepackage{booktabs}
+\usepackage{paralist}
+\usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed}
+
+\include{macros}
+
+\title{On Simulation-Extractability of \textsc{Plonk}, abstract}
+
+\author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}}
+\iflncs{
+  \institute{University of Edinburgh, Edinburgh, UK \and IOHK \\ \email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London UK \\ \email{m.p.zajac@gmail.com}}
+}
+
+\begin{document}
+	\maketitle
+	
+	\paragraph{On the importance of simulation extractability.}
+	
+	\paragraph{Simulation-extractability of $\plonk$.}
+	
+	\paragraph{Simulation-extractability of special-sound protocols. Generalised forking lemma}
+	
+	
+\end{document}
+
