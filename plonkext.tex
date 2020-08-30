@@ -630,12 +630,26 @@ This property will be important later in the simulation-extractability proof.
 	\label{lem:kzg_unique_op}
 	Let $\PCOM$ be a batched varsion of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19}. Let $k \in \NN$, $\vec{z}, \vec{o} \in \FF_p^2$, $\vec{c}, \vec{s} \in \ZZ_p^k$, then for every PPT adversary $\adv$	
 	\[
-		\condprob{
-		\PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o})
-		}
-		{\crs \gets \PCOM.\kcrs(\secparam), 
-			(\vec{c}, \vec{z}, \vec{s}, \vec{o}) \gets \adv(\crs)
-		}
+		\Pr
+			\left[
+				\begin{aligned}
+					& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o}), \\
+					& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o'}) \\
+					% & \vec{s'} \neq \vec{s} \lor 
+					&\vec{o'} \neq \vec{o}
+				\end{aligned}
+			\,\left|\,
+			\vphantom{\begin{aligned}
+				& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o}), \\
+				& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o'}) \\
+				% & \vec{s'} \neq \vec{s} \lor 
+				&\vec{o'} \neq \vec{o}
+			\end{aligned}}
+			\begin{aligned}
+				& \crs \gets \PCOM.\kcrs(\secparam), 
+					(\vec{c}, \vec{z}, \vec{s}, \vec{o}) \gets \adv(\crs)
+			\end{aligned}
+			\right.\right]
 		 \leq \negl.
 	\]
 \end{lemma}
