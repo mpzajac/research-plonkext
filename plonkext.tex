@@ -628,7 +628,7 @@ This property will be important later in the simulation-extractability proof.
 \task{28.07}{All proofs in this section should be verified}
 \begin{lemma}
 	\label{lem:kzg_unique_op}
-	Let $\PCOM$ be a batched varsion of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19}. Let $k \in \NN$, $\vec{z}, \vec{o} \in \FF_p^2$, $\vec{c}, \vec{s} \in \ZZ_p^k$, then for every PPT adversary $\adv$	
+	Let $\PCOM$ be a batched version of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19}. Let $k \in \NN$, $\vec{z}, \vec{o} \in \FF_p^2$, $\vec{c}, \vec{s} \in \ZZ_p^k$, then for every PPT adversary $\adv$	
 	\[
 		\Pr
 			\left[
@@ -653,9 +653,12 @@ This property will be important later in the simulation-extractability proof.
 		 \leq \negl.
 	\]
 \end{lemma}
+\markulf{30.08}{Explain what $\vec{c}, \vec{z}, \vec{s}, \vec{o}$ are. $\vec{z}$
+vector of points? $\vec{s}$ vector of evaluation result}
 \begin{proof}
-	First, consider a case where the commitment limited to commit to multiple polynomials which are evaluated at the same point $z$. 
-	As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the probability of adversary succeeding using the idealised verification equation, which considers equality between polynomials, instead of the real verification equation, which consider equality of the polynomials' evaluations.
+	First, consider a case where the commitment is limited to commit to multiple polynomials which are evaluated at the same point $z$. 
+	As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound
+  the probability of the adversary succeeding using the idealised verification equation, which considers equality between polynomials, instead of the real verification equation, which consider equality of the polynomials' evaluations.
 	
 	For polynomials $\vec{f} = f_1, \ldots, f_k$, evaluation point $z$, evaluation result $\vec{s} = s_1, \ldots, s_k$, and opening $o$ the idealised check verifies that
 	\begin{equation}
@@ -674,9 +677,13 @@ This property will be important later in the simulation-extractability proof.
 	%  for each individual $i \in \range{1}{k}$.
 	\qed
 \end{proof}
+\markulf{28.08}{Something is off here between statement of the lemma and the
+  proof. I know too little to know how to fix it.}
 
 \begin{corollary}
-	Let $\PCOM$ be a modification of the KZG polynomial commitment scheme \cite{AC:KatZavGol10} as presented in \cite{EPRINT:GabWilCio19}. Then $\PCOM$ is evaluation binding and has unique response property.
+	Let $\PCOM$ be a modification of the KZG polynomial commitment scheme
+  \cite{AC:KatZavGol10} as presented in \cite{EPRINT:GabWilCio19}. Then $\PCOM$
+  is evaluation binding and has unique opening property.
 \end{corollary}
 
 \begin{lemma}
@@ -684,8 +691,16 @@ This property will be important later in the simulation-extractability proof.
 	If a polynomial commitment scheme $\PCOM$ is evaluation binding and has unique openings property\michals{28.08}{Property formalised in Sec 2.1}, then $\plonkprot$ is $\ur{3}$.\footnote{An attentive reader may note that $\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required.}
 \end{lemma}
 \begin{proof}
-	Assume the opposite and an adversary $\adv$ that breaks $\ur{3}$-ness of $\plonkprot$. 
-	We consider 2 cases, depending on which round $\adv$ is able to provide at least two outputs such that the resulting transcripts are acceptable, and show that in each of them $\adv$ breaks evaluation binding property of $\PCOM$.
+	Assume the opposite and an adversary $\adv$ that breaks $\ur{3}$-ness of
+  $\plonkprot$. \markulf{30.08}{This is fine. But sounds as if the law of the
+    excluded middle is needed here. I am not sure it is. :) Mostly a
+    philosophical point.}
+	We consider 2 cases, depending on which round $\adv$ is able to provide at
+  least two outputs such that the resulting transcripts are acceptable.
+  \markulf{30.08}{Rewrote this text: that in each of them $\adv$ breaks the
+    evaluation binding property of $\PCOM$.}
+  For the first case we show that $\adv$ breaks the evaluation binding property of $\PCOM$, while for the
+  second case we show that it breaks the unique opening property of $\PCOM$.
 	
 	\case{1}
 	In Round 4 the prover is asked to give evaluations of predefined polynomials at some point $\chz$. Naturally, for the given polynomials only one value at $\chz$ is correct.
@@ -750,7 +765,12 @@ statement is false. This allows $\rdv$ to break the dlog assumption.
 	Assume that $(\numberofconstrains + 2)$-dlog is hard, $\plonkprot$ is knowledge sound and $\ur{3}$. 
 	Then $\plonkprotfs$ is simulation-extractable against algebraic adversaries.
 \end{theorem}
-\michals{28.08}{Minor thing -- need to change the reduction for dlog -- the CRS for Plonk requires also $\gtwo{\chi}$, which is not given as a part of the dlog challenge. I guess the simplest way to solve is would be to introduce a slight modification of the dlog assumption -- where the adversary learns not only $\gone{1, x, ..., x^n}$ but also $\gtwo{x}$.}
+\michals{28.08}{Minor thing -- need to change the reduction for dlog -- the CRS
+  for Plonk requires also $\gtwo{\chi}$, which is not given as a part of the
+  dlog challenge. I guess the simplest way to solve is would be to introduce a
+  slight modification of the dlog assumption -- where the adversary learns not
+  only $\gone{1, x, ..., x^n}$ but also $\gtwo{x}$.}\markulf{30.08}{Interesting,
+is this a flaw in the Plonk proof? How is this to be understood?}
 \begin{proof}
 	The proof goes by contradiction. Assume there exists an adversary $\advse$ that breaks simulation extractability with non-negligible probability $\eps$. 
 	We use $\advse$ to build two reductions $\rdvks$ and $\rdvdlog$, where the former uses $\advse$ to break knowledge soundness of $\plonkprot$ and the latter to break the $(\numberofconstrains + 2)$-dlog assumption.
