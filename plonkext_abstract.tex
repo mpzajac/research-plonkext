@@ -58,6 +58,7 @@
 \include{macros}
 
 \title{On Simulation-Extractability of \textsc{Plonk}, abstract}
+\title{On the Non-malleability of Real-world SNARKs}
 
 \author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}}
 \iflncs{
@@ -69,6 +70,19 @@
 	
 	\subsubsection*{On the importance of simulation extractability.}
 	Simulation extractability (SE) is a strong version of protocol's soundness.
+
+  --- non-malleability is important (bitcoin signature malleability problems), current
+  systems such as zcash employ somewhat ad-hoc solutions
+
+  --- simulation extractability is the gold standard for proof systems that
+  should support both simulation (zero-knowledge) and extraction (proof of
+  knowledge).
+
+  + implies both UC security, CCA security and strong signature unforgeability
+  for well known compilers
+
+  + weak simulation extractabilty is sufficient for many applications, RCCA,
+  stabndard signature unforgeability
 	
 	\subsubsection*{$\plonk$ as an efficient universal zkSNARK.}
 	\michals{31.08}{importance of plonk}
