@@ -86,7 +86,7 @@
 	
 	\subsubsection*{Simulation-extractability of $\plonk$.}
 	In the paper we show that $\plonk$ is (non black-box) simulation-extractable. Importantly, the security proof we show does not require any modification to the proof system. 
-	Hence, there is no computational overhead compared to other works that took an existing zkSNARK and apply some existing transformation which inevitable lead to efficiency loss---either because the the final proof is longer \cite{EPRINT:BowGab18}, the prover has to prove a more complicated statement (\michals{31.08}{cite OR constructions}\cite{ASIACCS:DerSla18,IMA:AbdKhoSla19}), or, in the context of showing correctness of computation, the arithmetisation of choice is less efficient \cite{C:GroMal17}.
+	Hence, there is no computational overhead compared to other works that took an existing zkSNARK and apply some existing transformation which inevitable lead to efficiency loss---either because the the final proof is longer \cite{EPRINT:BowGab18}, the prover has to prove a more complicated statement (\michals{31.08}{cite OR constructions}\cite{ASIACCS:DerSla18,EPRINT:AbdRamSla20}), or, in the context of showing correctness of computation, the arithmetisation of choice is less efficient \cite{C:GroMal17}.
 	
 	We were able to show simulation extractability of $\plonk$ by providing three reductions, each of which able to break some assumption if the proof system has not the desired security property. 
 	More precisely, we show that if there exists a simulation extractability-breaking adversary $\advse$ then one can either break: 
