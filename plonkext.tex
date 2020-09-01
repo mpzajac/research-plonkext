@@ -1025,7 +1025,7 @@ The \plonk{} verifier works as follows
 \begin{description}
 	\item[Step 1] Validate all obtained group elements.
 	\item[Step 2] Validate all obtained field elements.
-	\item[Step 3] Validate the instace $\inp = \smallset{\wit_i}_{i = 1}^\instsize$.
+	\item[Step 3] Validate the instance $\inp = \smallset{\wit_i}_{i = 1}^\instsize$.
 	\item[Step 4] Compute challenges $\beta, \gamma, \alpha, \alpha', \chz, v, u$ from the transcript.
 	\item[Step 5] Compute zero polynomial evaluation $\p{Z_H} (\chz)  =\chz^\numberofconstrains - 1$.
 	\item[Step 6] Compute Lagrange polynomial evaluation $\lag_1 (\chz) = \frac{\chz^\numberofconstrains -1}{\numberofconstrains (\chz - 1)}$.

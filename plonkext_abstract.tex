@@ -69,7 +69,14 @@
 	\maketitle
 	
 	\subsubsection*{On the importance of simulation extractability.}
-	Simulation extractability (SE) is a strong version of protocol's soundness.
+	Arguably, the strongest non-malleability property for SNARK systems are \emph{simulation soundness} (SS) and \emph{simulation extractability} (SE) \cite{FOCS:Sahai99,C:DDOPS01}---security notions that extends soundness (SS) and knowledge soundness (SE) by allowing the adversary to also access the simulation oracle and learn simulated proofs. 
+	%
+	One of the important properties of simulation extractability is that its
+	straight-line, blackbox variant is necessary to achieve Universally Composable~(UC~\cite{uc}) security, as shown more generally in 	\cite{STOC:CLOS02,AC:Groth06,EC:GroOstSah06} for non-interactive zero-knowledge (NIZK) proof systems. Moreover, it is also needed in game-hopping style proofs~\cite{EPRINT:Shoup04} in which one game hop
+	introduces the simulator and a subsequent game hop relies on knowledge
+	soundness~\cite{SP:KMSWP16,CCS:CamDriDub17}.
+	%
+	Compared to just sound NIZKs, simulation sound NIZKs allow for more efficient transformation to black-box simulation-extractable and universally composable (UC) NIZKs \cite{AFRICACRYPT:Baghery19}. 
 
   --- non-malleability is important (bitcoin signature malleability problems), current
   systems such as zcash employ somewhat ad-hoc solutions
@@ -84,11 +91,13 @@
   + weak simulation extractabilty is sufficient for many applications, RCCA,
   stabndard signature unforgeability
 	
+	\subsubsection*{\groth{} as the most efficient zkSNARK.}
+	
+	
 	\subsubsection*{$\plonk$ as an efficient universal zkSNARK.}
 	\michals{31.08}{importance of plonk}
 	
 	\subsubsection*{Preliminaries.}
-	\michals{31.08}{Put a (informal?) definition of SE, unique resp., dlog assumption here}
 	Before we continue we introduce definitions crucial to understand the following result. 
 	\begin{description}
 		\item[Algebraic Group Model] is a computational model introduced in \cite{C:FucKilLos18}, which assumes that each algorithm $\adv$ that takes a vector of group elements $\vec{g}$ and returns a vector of $n$ group elements $\vec{h}$ outputs also a matrix $\vec{A} = (\vec{a_1}, \ldots, \vec{a_n})$ such that $h_i = \vec{a_i}^\top \vec{g}$, for $i \in \range{1}{n}$.
@@ -98,11 +107,12 @@
 		\item[$q$-dlog assumption] states that it is infeasibly hard for a PPT adversary to output $\chi$ from $1, g^{\chi}, \ldots, g^{\chi^q}, h^{\chi}$, where $g \in \GRP_1$ and $h \in \GRP_2$.
 	\end{description}
 	
-	\subsubsection*{Simulation-extractability of $\plonk$.}
-	In the paper we show that $\plonk$ is (non black-box) simulation-extractable. Importantly, the security proof we show does not require any modification to the proof system. 
-	Hence, there is no computational overhead compared to other works that took an existing zkSNARK and apply some existing transformation which inevitable lead to efficiency loss---either because the the final proof is longer \cite{EPRINT:BowGab18}, the prover has to prove a more complicated statement (\michals{31.08}{cite OR constructions}\cite{ASIACCS:DerSla18,EPRINT:AbdRamSla20}), or, in the context of showing correctness of computation, the arithmetisation of choice is less efficient \cite{C:GroMal17}.
+	\subsubsection*{Simulation-soundness of $\plonk$.}
+	In the paper we show that $\plonk$ is simulation-sound. 
+	Importantly, the security proof we show does not require any modification to the proof system. 
+	Hence, there is no computational overhead compared to other works that took an existing zkSNARK and apply some existing transformation which inevitable lead to efficiency loss---either because the the final proof is longer \cite{EPRINT:BowGab18}, the prover has to prove a more complicated statement \cite{ASIACCS:DerSla18,EPRINT:AbdRamSla20}), or, in the context of showing correctness of computation, the arithmetisation of choice is less efficient \cite{C:GroMal17}.
 	
-	We were able to show simulation extractability of $\plonk$ by providing three reductions, each of which able to break some assumption if the proof system has not the desired security property. 
+	We were able to show simulation soundness of $\plonk$ by providing three reductions, each of which able to break some assumption if the proof system has not the desired security property. 
 	More precisely, we show that if there exists a simulation extractability-breaking adversary $\advse$ then one can either break: 
 	\begin{compactenum}
 		\item \label{it:ks} knowledge soundness of the interactive protocol underlying $\plonk$; 
@@ -110,11 +120,10 @@
 		\item \label{it:ur} an $(\numberofconstrains + 2)$ discrete log assumption, for $\numberofconstrains$ being a number of constrain in the proven statement.
 	\end{compactenum}
 	
-	\medskip
-	We believe, although it is for the further work, that the result can be generalised to other protocols which relies on Fiat--Shamir transform and are knowledge sound in the Algebraic Group Model.
+	We believe, although it is for the further work, that the result can be generalised to other protocols which relies on Fiat--Shamir transform and are shown to be knowledge sound in the Algebraic Group Model.
 	
 	\subsubsection*{Simulation-extractability of special-sound protocols. Generalised forking lemma}
-	Independently on the previous result, we also show that simulation-extractability can 
+	Independently on the previous results, we also show that a broad class of protocols is simulation extractable
 	
 	\bibliographystyle{abbrv}
 	\bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
