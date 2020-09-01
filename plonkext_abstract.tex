@@ -83,12 +83,14 @@
   efficient compilers.
 	
 	\subsubsection*{$\plonk$ as an efficient universal zkSNARK.}
-	\michals{31.08}{importance of plonk}
 	Although efficient, \groth{} proof system has also its limitations. First of all, the CRS for it is relation-dependent and it changes when the relation changes. Given that secure CRS generation is a troublesome task and require either a trusted (by everyone) third party or computationally costly multi party computations, fact that $\plonk$ can be used to proof computation correctness for any circuit (up to a given size) is a great improvement. Hence, we call \plonk{} \emph{universal}.
 	
 	Similarly, \plonk{} relies on milder security assumptions. 
 	Although \groth{} can be shown to be \emph{subversion zero-knowledge} (i.e.~the zero knowledge property holds even if the CRS is subverted, e.g.~by the verifier), it is not sound if some untrusted party computed the CRS. 
 	On the other hand, \plonk{} is \emph{updatable sound}. That is, the parties using the proof system can (verifiably) update the CRS; the security guarantee is that the system remains sound if at least one of the updating parties is honest.
+	
+	Last, but not least $\plonk$ is efficient. Although it does not use QAP for arithmetisation it is able to achieve similar proving times as \groth{}. (However the number of proof elements is considerably bigger). 
+	It is also the most efficient updatable and universal zkSNARK up to date.
 	
 	\subsubsection*{On the importance of simulation extractability.}
 	Arguably, the strongest non-malleability property for SNARK systems are \emph{simulation soundness} (SS) and \emph{simulation extractability} (SE) \cite{FOCS:Sahai99,C:DDOPS01}---security notions that extends soundness (SS) and knowledge soundness (SE) by allowing the adversary to also access the simulation oracle and learn simulated proofs. 
@@ -138,10 +140,18 @@
 		\item \label{it:ur} an $(\numberofconstrains + 2)$ discrete log assumption, for $\numberofconstrains$ being a number of constrain in the proven statement.
 	\end{compactenum}
 	
-	We believe, although it is for the further work, that the result can be generalised to other protocols which relies on Fiat--Shamir transform and are shown to be knowledge sound in the Algebraic Group Model.
+	We believe, although it is for the further work, that the result can be generalised to other protocols which relies on Fiat--Shamir transform and are shown to be knowledge sound in AGM.
 	
+	% \comment{
 	\subsubsection*{Simulation-extractability of special-sound protocols. Generalised forking lemma}
-	Independently on the previous results, we also show that a broad class of protocols is simulation extractable
+	Independently on the previous results, we also show that a broad class of protocols is simulation extractable. 
+	Following protocols like \cite{EPRINT:GabWilCio19,CCS:MBKM19,EC:CHMMVW20} we focus on \emph{interactive} proofs of knowledge that are made non-interactive using random oracle and the Fiat--Shamir transform. For our reduction to work we require the underlying interactive protocol to 
+	\begin{compactenum}
+		\item be special-sound, that is a given a tree of acceptable transcripts, which share some root, it is feasible to extract a witness; and
+		\item have unique response property.
+	\end{compactenum}
+	For that end, we prove a generalisation of the general forking lemma which applies to proofs that require more than two transcript for witness extraction.
+	% }
 	
 	\bibliographystyle{abbrv}
 	\bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
