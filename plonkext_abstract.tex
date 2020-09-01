@@ -68,6 +68,14 @@
 \begin{document}
 	\maketitle
 	
+	In the paper we focus on non-malleability properties of two popular zkSNARKs---\groth{}  \cite{EC:Groth16}, which is the most efficient zkSNARK for QAP, and \plonk{} \cite{EPRINT:GabWilCio19}, which is less efficient than \groth{} but is universal and updatable.
+	We show that the former is (weakly) simulation-extractable and the latter is simulation-sound
+	
+	Importantly, the security proofs we show do not require any modification to the proof system. 
+	Hence, there is no computational overhead compared to other works that took an existing zkSNARK and apply some existing transformation which inevitable lead to efficiency loss---either because the the final proof is longer \cite{EPRINT:BowGab18}, the prover has to prove a more complicated statement \cite{ASIACCS:DerSla18,EPRINT:AbdRamSla20}), or, in the context of showing correctness of computation, the arithmetisation of choice is less efficient \cite{C:GroMal17}.	
+	
+	Additionaly, we show how to generalise these results to cover a broader class of protocols.  
+	
 	\subsubsection*{\groth{} as the most efficient zkSNARK.}
 	Due to its simplicity, succinctness, and performance, \groth{} is
   currently the most widely deployed succinct (zero-knowledge) argument of
@@ -128,10 +136,6 @@
 	\end{description}
 	
 	\subsubsection*{Simulation-soundness of $\plonk$.}
-	In the paper we show that $\plonk$ is simulation-sound. 
-	Importantly, the security proof we show does not require any modification to the proof system. 
-	Hence, there is no computational overhead compared to other works that took an existing zkSNARK and apply some existing transformation which inevitable lead to efficiency loss---either because the the final proof is longer \cite{EPRINT:BowGab18}, the prover has to prove a more complicated statement \cite{ASIACCS:DerSla18,EPRINT:AbdRamSla20}), or, in the context of showing correctness of computation, the arithmetisation of choice is less efficient \cite{C:GroMal17}.
-	
 	We were able to show simulation soundness of $\plonk$ by providing three reductions, each of which able to break some assumption if the proof system has not the desired security property. 
 	More precisely, we show that if there exists a simulation extractability-breaking adversary $\advse$ then one can either break: 
 	\begin{compactenum}
