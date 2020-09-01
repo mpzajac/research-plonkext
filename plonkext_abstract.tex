@@ -57,22 +57,44 @@
 
 \include{macros}
 
-\title{On Simulation-Extractability of \textsc{Plonk}, abstract}
+% \title{On Simulation-Extractability of \textsc{Plonk}, abstract}
 \title{On the Non-malleability of Real-world SNARKs}
 
-\author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}}
+\author{Markulf Kohlweiss\inst{1,2} \and Mikhail Volkhov\inst{1} \and Michał Zając\inst{3}}
 \iflncs{
-  \institute{University of Edinburgh, Edinburgh, UK \and IOHK \\ \email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London UK \\ \email{m.p.zajac@gmail.com}}
+  \institute{University of Edinburgh, Edinburgh, UK \and IOHK \\ \email{mkohlwei@inf.ed.ac.uk}, \email{mikhail.volkhov@ed.ac.uk} \and Clearmatics, London UK \\ \email{m.p.zajac@gmail.com}}
 }
 
 \begin{document}
 	\maketitle
 	
+	\subsubsection*{\groth{} as the most efficient zkSNARK.}
+	Due to its simplicity, succinctness, and performance, \groth{} is
+  currently the most widely deployed succinct (zero-knowledge) argument of
+  knowledge (SNARK) system. \groth{} is known to be perfectly zero-knowledge and knowledge sound in the generic (and algebraic) group model. However, the existing security arguments for \groth{} are silent about the soundness of the proof system in the presence of simulated proofs---a common requirement for both the composable security and game-hopping style security analysis of protocols built using such argument systems. This important gap let to a line of work on simulation-extractable, also called simulation knowledge sound, succinct proof systems. \groth{} itself cannot satisfy the strongest
+  notion of simulation-extractability that implies proof
+  non-malleability---in fact proofs are perfectly randomizable.
+
+  Surprisingly, in this short note we show that \groth{} does satisfy a
+  weaker notion of simulation-extractability implying statement
+  non-malleability. This property is often sufficient for typical
+  applications that motivate the use of strong
+  simulation-extractability. Notably, one can obtain UC security using
+  efficient compilers.
+	
+	\subsubsection*{$\plonk$ as an efficient universal zkSNARK.}
+	\michals{31.08}{importance of plonk}
+	Although efficient, \groth{} proof system has also its limitations. First of all, the CRS for it is relation-dependent and it changes when the relation changes. Given that secure CRS generation is a troublesome task and require either a trusted (by everyone) third party or computationally costly multi party computations, fact that $\plonk$ can be used to proof computation correctness for any circuit (up to a given size) is a great improvement. Hence, we call \plonk{} \emph{universal}.
+	
+	Similarly, \plonk{} relies on milder security assumptions. 
+	Although \groth{} can be shown to be \emph{subversion zero-knowledge} (i.e.~the zero knowledge property holds even if the CRS is subverted, e.g.~by the verifier), it is not sound if some untrusted party computed the CRS. 
+	On the other hand, \plonk{} is \emph{updatable sound}. That is, the parties using the proof system can (verifiably) update the CRS; the security guarantee is that the system remains sound if at least one of the updating parties is honest.
+	
 	\subsubsection*{On the importance of simulation extractability.}
 	Arguably, the strongest non-malleability property for SNARK systems are \emph{simulation soundness} (SS) and \emph{simulation extractability} (SE) \cite{FOCS:Sahai99,C:DDOPS01}---security notions that extends soundness (SS) and knowledge soundness (SE) by allowing the adversary to also access the simulation oracle and learn simulated proofs. 
 	%
 	One of the important properties of simulation extractability is that its
-	straight-line, blackbox variant is necessary to achieve Universally Composable~(UC~\cite{uc}) security, as shown more generally in 	\cite{STOC:CLOS02,AC:Groth06,EC:GroOstSah06} for non-interactive zero-knowledge (NIZK) proof systems. Moreover, it is also needed in game-hopping style proofs~\cite{EPRINT:Shoup04} in which one game hop
+	straight-line, blackbox variant is necessary to achieve Universally Composable~(UC~\cite{FOCS:Canetti01}) security, as shown more generally in 	\cite{STOC:CLOS02,AC:Groth06,EC:GroOstSah06} for non-interactive zero-knowledge (NIZK) proof systems. Moreover, it is also needed in game-hopping style proofs~\cite{EPRINT:Shoup04} in which one game hop
 	introduces the simulator and a subsequent game hop relies on knowledge
 	soundness~\cite{SP:KMSWP16,CCS:CamDriDub17}.
 	%
@@ -91,17 +113,13 @@
   + weak simulation extractabilty is sufficient for many applications, RCCA,
   stabndard signature unforgeability
 	
-	\subsubsection*{\groth{} as the most efficient zkSNARK.}
-	
-	
-	\subsubsection*{$\plonk$ as an efficient universal zkSNARK.}
-	\michals{31.08}{importance of plonk}
-	
+		
 	\subsubsection*{Preliminaries.}
-	Before we continue we introduce definitions crucial to understand the following result. 
+	Before we continue we introduce definitions crucial to understand the following result. \michals{01.09}{Maybe we should remove it to gain some space?}
 	\begin{description}
 		\item[Algebraic Group Model] is a computational model introduced in \cite{C:FucKilLos18}, which assumes that each algorithm $\adv$ that takes a vector of group elements $\vec{g}$ and returns a vector of $n$ group elements $\vec{h}$ outputs also a matrix $\vec{A} = (\vec{a_1}, \ldots, \vec{a_n})$ such that $h_i = \vec{a_i}^\top \vec{g}$, for $i \in \range{1}{n}$.
 		\item[zkSNARK] is a non-interactive zero-knowledge proof, which proof length is sublinear to the statement and witness size. Due to impossibility result of \cite{STOC:GenWic11}, zkSNARKs can be sound only under some non-falsifiable assumption, like the Algebraic Group Model.
+		\item[Simulation soundness] is a strong notion of soundness, which states that no PPT adversary can break the soundness of the system even if it is given access to a simulator oracle that provides it simulated proofs for required statements.
 		\item[Simulation extractability] is a strong notion of soundness, which states that for every adversary there exists an extractor able to extract a valid witness from a proven statement given an acceptable proof for that statement. This property holds even if the adversary has access to a simulator oracle that provides it simulated proofs for required statements. 
 		\item[Unique response property] states that after some round (here, Round 3) prover's responses to verifier's challenges are deterministic. That is, no PPT adversary can produce two valid transcripts that have the same challenges yet different answers (after Round 3).
 		\item[$q$-dlog assumption] states that it is infeasibly hard for a PPT adversary to output $\chi$ from $1, g^{\chi}, \ldots, g^{\chi^q}, h^{\chi}$, where $g \in \GRP_1$ and $h \in \GRP_2$.
