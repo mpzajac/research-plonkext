@@ -1,6 +1,6 @@
 % !TeX spellcheck = en_GB
 \let\accentvec\vec
-\documentclass[runningheads,11pt]{llncs}
+\documentclass[runningheads,10pt]{llncs}
  % \documentclass[runningheads]{amsart}
 \let\spvec\vec
 \let\vec\accentvec
@@ -107,6 +107,16 @@
   especially when one considers implementations\footnote{We exclude \sonic{} with helpers
   from this comparison.}. 
 	
+	We were able to show simulation soundness of $\plonk$ by providing three reductions, each of which able to break some assumption if the proof system has not the desired security property. 
+	More precisely, we show that if there exists a simulation extractability-breaking adversary $\advse$ then one can either break: 
+	\begin{compactenum}
+		\item \label{it:ks} knowledge soundness of the interactive protocol underlying $\plonk$; 
+		\item \label{it:dlog} unique response property (after $3$-rd round) of $\plonk$; or 
+		\item \label{it:ur} an $(\numberofconstrains + 2)$ discrete log assumption, for $\numberofconstrains$ being a number of constrain in the proven statement.
+	\end{compactenum}
+	
+	We believe, although it is for the further work, that the result can be generalised to other protocols which relies on Fiat--Shamir transform and are shown to be knowledge sound in AGM.
+	
 	\subsubsection*{On the importance of simulation extractability.}
 	Arguably, the strongest non-malleability property for SNARK systems are
   \emph{simulation soundness} (SS) and \emph{simulation extractability} (SE)
@@ -125,7 +135,7 @@
   non-malleability is important beyond UC security: As is well known, the
   malleability of bitcoin's ECDSA signatures, resulted in inconvenience and
   attacks\footnote{\url{https://bitcointalk.org/index.php?topic=8392.msg1245898\#msg1245898}.}
-  In turn, the security properties of \texttt{Zerocash}, the precursor of
+  In turn, the security properties of \texttt{Zerocash}~\cite{SP:BCGGMT14}, the precursor of
   \texttt{Zcash} requires transaction non-malleability. While ad-hoc solutions
   such as those employed by \texttt{Zcash} exist, simulation
   extractability is the gold standards for non-malleable proof systems that support both
@@ -137,28 +147,7 @@
 
   % + weak simulation extractabilty is sufficient for many applications, RCCA,
   % stabndard signature unforgeability
-		
-	\subsubsection*{Preliminaries.}
-	Before we continue we introduce definitions crucial to understand the following result. \michals{01.09}{Maybe we should remove it to gain some space?}
-	\begin{description}
-		\item[Algebraic Group Model] is a computational model introduced in \cite{C:FucKilLos18}, which assumes that each algorithm $\adv$ that takes a vector of group elements $\vec{g}$ and returns a vector of $n$ group elements $\vec{h}$ outputs also a matrix $\vec{A} = (\vec{a_1}, \ldots, \vec{a_n})$ such that $h_i = \vec{a_i}^\top \vec{g}$, for $i \in \range{1}{n}$.
-		\item[zkSNARK] is a non-interactive zero-knowledge proof, which proof length is sublinear to the statement and witness size. Due to impossibility result of \cite{STOC:GenWic11}, zkSNARKs can be sound only under some non-falsifiable assumption, like the Algebraic Group Model.
-		\item[Simulation soundness] is a strong notion of soundness, which states that no PPT adversary can break the soundness of the system even if it is given access to a simulator oracle that provides it simulated proofs for required statements.
-		\item[Simulation extractability] is a strong notion of soundness, which states that for every adversary there exists an extractor able to extract a valid witness from a proven statement given an acceptable proof for that statement. This property holds even if the adversary has access to a simulator oracle that provides it simulated proofs for required statements. 
-		\item[Unique response property] states that after some round (here, Round 3) prover's responses to verifier's challenges are deterministic. That is, no PPT adversary can produce two valid transcripts that have the same challenges yet different answers (after Round 3).
-		\item[$q$-dlog assumption] states that it is infeasibly hard for a PPT adversary to output $\chi$ from $1, g^{\chi}, \ldots, g^{\chi^q}, h^{\chi}$, where $g \in \GRP_1$ and $h \in \GRP_2$.
-	\end{description}
 	
-	\subsubsection*{Simulation-soundness of $\plonk$.}
-	We were able to show simulation soundness of $\plonk$ by providing three reductions, each of which able to break some assumption if the proof system has not the desired security property. 
-	More precisely, we show that if there exists a simulation extractability-breaking adversary $\advse$ then one can either break: 
-	\begin{compactenum}
-		\item \label{it:ks} knowledge soundness of the interactive protocol underlying $\plonk$; 
-		\item \label{it:dlog} unique response property (after $3$-rd round) of $\plonk$; or 
-		\item \label{it:ur} an $(\numberofconstrains + 2)$ discrete log assumption, for $\numberofconstrains$ being a number of constrain in the proven statement.
-	\end{compactenum}
-	
-	We believe, although it is for the further work, that the result can be generalised to other protocols which relies on Fiat--Shamir transform and are shown to be knowledge sound in AGM.
 	
 	% \comment{
 	\subsubsection*{Simulation-extractability of special-sound protocols. Generalised forking lemma}
@@ -168,9 +157,10 @@
 		\item be special-sound, that is given a tree of acceptable transcripts, which share some root, it is feasible to extract a witness; and
 		\item have unique response property.
 	\end{compactenum}
-	For that end, we prove a generalisation of the general forking lemma which applies to proofs that require more than two transcript for witness extraction.
+	For that end, we prove a generalisation of the general forking lemma which applies to proofs that require more than two transcript for witness extraction and follow the template given by \cite{INDOCRYPT:FKMV12} who shown that any special-sound sigma protocol that has unique response property is simulation-extractable when transformed using the Fiat--Shamir transform.
 	% }
 	
+	\clearpage
 	\bibliographystyle{abbrv}
 	\bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
 \end{document}
