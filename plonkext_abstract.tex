@@ -72,7 +72,7 @@
 	We show that the former is (weakly) simulation-extractable and the latter is simulation-sound
 	
 	Importantly, the security proofs we show do not require any modification to the proof system. 
-	Hence, there is no computational overhead compared to other works that took an existing zkSNARK and apply some existing transformation which inevitable lead to efficiency loss---either because the the final proof is longer \cite{EPRINT:BowGab18}, the prover has to prove a more complicated statement \cite{ASIACCS:DerSla18,EPRINT:AbdRamSla20}), or, in the context of showing correctness of computation, the arithmetisation of choice is less efficient \cite{C:GroMal17}.	
+	Hence, there is no computational overhead compared to other works that took an existing zkSNARK and apply some existing transformation which inevitable lead to efficiency loss---either because the final proof is longer \cite{EPRINT:BowGab18}, the prover has to prove a more complicated statement \cite{ASIACCS:DerSla18,EPRINT:AbdRamSla20}), or, in the context of showing correctness of computation, the arithmetisation of choice is less efficient \cite{C:GroMal17}.	
 	
 	Additionaly, we show how to generalise these results to cover a broader class of protocols.  
 	
@@ -91,17 +91,27 @@
   efficient compilers.
 	
 	\subsubsection*{$\plonk$ as an efficient universal zkSNARK.}
-	Although efficient, \groth{} proof system has also its limitations. First of all, the CRS for it is relation-dependent and it changes when the relation changes. Given that secure CRS generation is a troublesome task and require either a trusted (by everyone) third party or computationally costly multi party computations, fact that $\plonk$ can be used to proof computation correctness for any circuit (up to a given size) is a great improvement. Hence, we call \plonk{} \emph{universal}.
+	Although efficient, the \groth{} proof system has limitations. First of all,
+  ts CRS is relation-dependent and must be regenerated whenever the relation
+  changes. Such secure CRS generation is a troublesome task and requires
+  either a trusted (by everyone) third party or computationally costly multi
+  party computations.  In contract, $\plonk$ can be used to prove correct evaluation
+  of any circuit (up to a given size). Hence, we call \plonk{} \emph{universal}.
 	
-	Similarly, \plonk{} relies on milder security assumptions. 
+	Similarly, \plonk{} relies on a milder trust assumption. 
 	Although \groth{} can be shown to be \emph{subversion zero-knowledge} (i.e.~the zero knowledge property holds even if the CRS is subverted, e.g.~by the verifier), it is not sound if some untrusted party computed the CRS. 
 	On the other hand, \plonk{} is \emph{updatable sound}. That is, the parties using the proof system can (verifiably) update the CRS; the security guarantee is that the system remains sound if at least one of the updating parties is honest.
 	
 	Last, but not least $\plonk$ is efficient. Although it does not use QAP for arithmetisation it is able to achieve similar proving times as \groth{}. (However the number of proof elements is considerably bigger). 
-	It is also the most efficient updatable and universal zkSNARK up to date.
+	It is arguably the most efficient updatable and universal zkSNARK up to date,
+  especially when one considers implementations\footnote{We exclude \sonic{} with helpers
+  from this comparison.}. 
 	
 	\subsubsection*{On the importance of simulation extractability.}
-	Arguably, the strongest non-malleability property for SNARK systems are \emph{simulation soundness} (SS) and \emph{simulation extractability} (SE) \cite{FOCS:Sahai99,C:DDOPS01}---security notions that extends soundness (SS) and knowledge soundness (SE) by allowing the adversary to also access the simulation oracle and learn simulated proofs. 
+	Arguably, the strongest non-malleability property for SNARK systems are
+  \emph{simulation soundness} (SS) and \emph{simulation extractability} (SE)
+  \cite{FOCS:Sahai99,C:DDOPS01}---security notions that extends soundness (for
+  SS) and knowledge soundness (for SE) by allowing the adversary to also access the simulation oracle and learn simulated proofs. 
 	%
 	One of the important properties of simulation extractability is that its
 	straight-line, blackbox variant is necessary to achieve Universally Composable~(UC~\cite{FOCS:Canetti01}) security, as shown more generally in 	\cite{STOC:CLOS02,AC:Groth06,EC:GroOstSah06} for non-interactive zero-knowledge (NIZK) proof systems. Moreover, it is also needed in game-hopping style proofs~\cite{EPRINT:Shoup04} in which one game hop
@@ -110,19 +120,23 @@
 	%
 	Compared to just sound NIZKs, simulation sound NIZKs allow for more efficient transformation to black-box simulation-extractable and universally composable (UC) NIZKs \cite{AFRICACRYPT:Baghery19}. 
 
-  --- non-malleability is important (bitcoin signature malleability problems), current
-  systems such as zcash employ somewhat ad-hoc solutions
+  This is crucial for efficiently realizing protocols such as Hawk and
+  Crypsinous that employ the UC composition theorem in their analysis. However,
+  non-malleability is important beyond UC security: As is well known, the
+  malleability of bitcoin's ECDSA signatures, resulted in inconvenience and
+  attacks\footnote{\url{https://bitcointalk.org/index.php?topic=8392.msg1245898#msg1245898}.}
+  In turn, the security properties of \texttt{Zerocash}, the precursor of
+  \texttt{Zcash} requires transaction non-malleability. While ad-hoc solutions
+  such as those employed by \texttt{Zcash} exist, simulation
+  extractability is the gold standards for non-malleable proof systems that support both
+  simulation (zero-knowledge) and extraction (proof of knowledge).
 
-  --- simulation extractability is the gold standard for proof systems that
-  should support both simulation (zero-knowledge) and extraction (proof of
-  knowledge).
-
-  + implies both UC security, CCA security and strong signature unforgeability
-  for well known compilers
-
-  + weak simulation extractabilty is sufficient for many applications, RCCA,
-  stabndard signature unforgeability
 	
+  % + implies both UC security, CCA security and strong signature unforgeability
+  % for well known compilers
+
+  % + weak simulation extractabilty is sufficient for many applications, RCCA,
+  % stabndard signature unforgeability
 		
 	\subsubsection*{Preliminaries.}
 	Before we continue we introduce definitions crucial to understand the following result. \michals{01.09}{Maybe we should remove it to gain some space?}
@@ -151,7 +165,7 @@
 	Independently on the previous results, we also show that a broad class of protocols is simulation extractable. 
 	Following protocols like \cite{EPRINT:GabWilCio19,CCS:MBKM19,EC:CHMMVW20} we focus on \emph{interactive} proofs of knowledge that are made non-interactive using random oracle and the Fiat--Shamir transform. For our reduction to work we require the underlying interactive protocol to 
 	\begin{compactenum}
-		\item be special-sound, that is a given a tree of acceptable transcripts, which share some root, it is feasible to extract a witness; and
+		\item be special-sound, that is given a tree of acceptable transcripts, which share some root, it is feasible to extract a witness; and
 		\item have unique response property.
 	\end{compactenum}
 	For that end, we prove a generalisation of the general forking lemma which applies to proofs that require more than two transcript for witness extraction.
