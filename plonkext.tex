@@ -624,8 +624,9 @@ This property will be important later in the simulation-extractability proof.
 \michals{03.07}{a proof for that statement would be nice.}
 }
 
-\section{Simulation extractability of $\plonk$}
+\section{(Tight) Simulation soundness of $\plonk$}
 \task{28.07}{All proofs in this section should be verified}
+\michals{15.09}{As MK noted, this proof holds only for simulation soundness. For extractability we use special soundness (cf the next section)}
 \begin{lemma}
 	\label{lem:kzg_unique_op}
 	Let $\PCOM$ be a batched version of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19}. Let $k \in \NN$, $\vec{z}, \vec{o} \in \FF_p^2$, $\vec{c}, \vec{s} \in \ZZ_p^k$, then for every PPT adversary $\adv$	
@@ -908,6 +909,39 @@ The proof is concluded by observing that the analysis of events $\event{E}, \nev
 \]
 hence $\eps$ is negligible if dlog is hard and $\plonkprot$ is sound and $\ur{3}$.
 \qed
+\end{proof}
+
+\section{Simulation extractability}
+Note that the special soundness property as usually defined holds for all, even computationally unbounded, adversaries. Since a simulation trapdoor for \plonk{} exists, it is not special sound in that regard. However, we provide a weaker, yet sufficient, definition of \emph{computational special soundness}. More precisely, we state that an adversary that is able to answer correctly multiple challenges either knows the witness or can be used to break a compuational assumption. 
+
+\newcommand{\compass}{\mathtt{C}}
+% \newcommand{\tree}{T}
+\begin{definition}[Computational special soundness under $\compass$]
+	Let $\compass = (\cdv, c)$ be a falsifiable assumption and $\proofsystem$ be an $k$-round zero-knowledge proof system for a relation $\REL$. 
+	We say that $\proofsystem$ is $(n_1, \ldots, n_k)$-\emph{special sound} if for every PPT adversary $\adv$ that produces an accepting $(n_1, \ldots, n_k)$ tree of transcripts $\tree$ for a statement $\inp$ 
+	\begin{compactitem}
+		\item either exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$, or
+		\item there exists a reduction $\rdv$ that black-box uses $\adv$ to break $\compass$.
+	\end{compactitem}
+\end{definition}
+
+\begin{lemma}
+	$\plonkprot$ is $(1, 1, 1, \numberofconstrains + 3, 1)$-computationally special sound under $(\numberofconstrains + 2)$-dlog assumption and algebraic group model.
+\end{lemma}
+\begin{proof}
+	Let $\adv$ be an adversary that for a statement $\inp$ produces a $(1, 1, 1, \numberofconstrains + 3, 1)$-tree of acceptable transcripts $\tree$ with non-negligible probability $\eta_\tree$. 
+	Note that in all transcripts the instance $\inp$, proof elements $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and challenges $\alpha, \beta, \gamma$ are common as the transcripts share the first three rounds. 
+	
+	We consider two mutually disjunctive events. 
+	First, $\event{E}$ holds when all of the transcripts were generated honestly;
+	second, $\nevent{E}$ holds when there is a transcript that is acceptable, yet the adversary deviated from the protocol.
+	
+	\ncase{When $\event{E}$ happens} Since all of the transcripts have been generated honestly then there is a witness $\wit$, such that $\REL(\inp, \wit)$. 
+	Note that witness-carrying polynomials $\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)$ have degree $(\numberofconstrains + 2)$ and since $\adv$ answered honestly on $(\numberofconstrains + 3)$ different challenges $\chz$ then $(\numberofconstrains + 3)$ evaluations of these polynomials (at different points) are known. Thus the polynomials can be interpolated and the witness exposed.
+	
+	\ncase{When $\nevent{E}$ happens}
+	Consider a transcript that is acceptable, yet has not been generated honestly.
+	In this case, from the soundness of the polynomial protocol, with overwhelming probability, $\vereq(X) \neq 0$, but $\vereq(\chi) = 0$. 
 \end{proof}
 
 \section{Simulation extractability with special soundness and no AGM}
