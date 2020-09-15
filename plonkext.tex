@@ -935,6 +935,7 @@ Note that the special soundness property as usually defined holds for all, even 
 	We consider two mutually disjunctive events. 
 	First, $\event{E}$ holds when all of the transcripts were generated honestly;
 	second, $\nevent{E}$ holds when there is a transcript that is acceptable, yet the adversary deviated from the protocol.
+	We build two reductions $\rdvse$ and $\rdvdlog$, which given the tree of transcripts $\tree$ try to reveal the witness ($\rdvse$) or break the dlog assumption ($\rdvdlog$). We show that the probability that one of them succeeds is non-negligible.
 	
 	\ncase{When $\event{E}$ happens} Since all of the transcripts have been generated honestly then there is a witness $\wit$, such that $\REL(\inp, \wit)$. 
 	Note that witness-carrying polynomials $\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)$ have degree $(\numberofconstrains + 2)$ and since $\adv$ answered honestly on $(\numberofconstrains + 3)$ different challenges $\chz$ then $(\numberofconstrains + 3)$ evaluations of these polynomials (at different points) are known. Thus the polynomials can be interpolated and the witness exposed.
