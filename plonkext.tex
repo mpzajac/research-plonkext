@@ -968,11 +968,12 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 
 \begin{theorem}[Simulation extractability]
 	Assume that $(\numberofconstrains + 2)$-dlog is $\eps_\dlog(\secpar)$-hard, $\plonkprot$ is $\ur{3}$ with security $\eps_{\ur{3}}(\secpar)$. 
-	Then the probability that an algebraic, PPT adversary $\advse$ breaks simulation extractability of $\plonkprotfs$ is upper-bounded by 
-	\michals{16.09}{some numbers will come here}
-	\michals{16.09}{check what the extraction error is (in FKMV it's Q/h)}
+	% Then the probability that an algebraic, PPT adversary $\advse$ breaks simulation extractability of $\plonkprotfs$ is upper-bounded by 
+	% \michals{16.09}{some numbers will come here}
+	% \michals{16.09}{check what the extraction error is (in FKMV it's Q/h)}
+	Then the extraction error $\eps$ is upper-bounded by
 	\[
-		\eps_{\ur{3}} + .
+		1 - \frkProb (1 - \eps_{\ur{3}})(1 - \epsbatch)(1 - \eps_\dlog).
 	\]
 	\michals{16.09}{Should inlice the simulation error above?}
 	The simulation error for $\plonkprotfs$ is \hl{\ldots}
@@ -1016,6 +1017,8 @@ It is straightforward to transform any adversary that violates this condition in
 A crucial observation is that the adversary $\advse$ may have learned $\zkproof_{\advse}\range{1}{3}$ by querying the simulator on $\inp_{\advse}$ or might have computed it itself. We denote the first event by $\event{E}$ and the second by $\nevent{E}$. 
 %
 When $\nevent{E}$ happens the reduction utilises the generalised forking lemma and rewinds the adversary and programs the random multiple times to get $(1, 1, 1, \numberofconstrains + 3, 1)$-tree of acceptable transcripts $\tree$. 
+We denote the probability that the reduction is succesfull in generating the tree $\tree$ by $\event{F}$.
+If $\event{F}$ does not happen, what is denoted by $\nevent{F}$ then we grant $\advse$ victory.
 %
 Additionally, we divide event $\nevent{E}$ into two disjunctive subevents: $\nevent{E}_0$ and $\nevent{E}_1$. 
 Event $\nevent{E}_0$ considers a case when all transcripts in $\tree$ has been computed honestly, i.e.~all of them are accepted by the idealised verification equation---for that proof $\vereq(X) = 0$.
@@ -1023,9 +1026,10 @@ Alternatively, event $\nevent{E}_1$ covers a case when for $\zkproof_\advse$ it
 holds that $\vereq(\chi) = 0$, but $\vereq(X) \neq 0$, where $\chi$ is $\plonkprotfs$'s trapdoor.
 %
 As all these events are mutually exclusive and exhaustive, we have
-\[
-	\eps = \prob{\advse \text{ wins}} = \prob{\advse \text{ wins}, \event{E}} + \prob{\advse \text{ wins}, \nevent{E}_0} + \prob{\adv \text{ wins}, \nevent{E}_1}\,.
-\]
+\begin{multline*}
+	\eps = \prob{\advse \text{ wins}} = \prob{\advse \text{ wins}, \event{E}} + \prob{\advse \text{ wins}, \nevent{E}_0, \event{F}} + \prob{\adv \text{ wins}, \nevent{E}_1, \event{F}} + \\
+	\prob{\adv \text{ wins}, \nevent{E}, \nevent{F}}\,.
+\end{multline*}
 
 \ncase{When $\event{E}$ happens}
 We assume that $\inp_{\advse}$ is submitted to the simulator $\simulator$. 
