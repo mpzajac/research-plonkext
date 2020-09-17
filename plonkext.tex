@@ -1003,7 +1003,60 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	\]
 	% \end{multline*}
 \end{theorem}
-\begin{proof}
+\begin{proof}[by game hoping]
+	We build reductions $\rdvur$, $\rdvss$ which using $\advse$ as a black-box, violate either the unique response property of the underlying interactive protocol $\plonkprot$, or its computational special soundness. 
+	We also provide a special extractor $\rdv_\ss$ that from a given tree of acceptable transcripts extracts a witness (effectively making $\advse$ lose). 
+	\markulf{17.09}{Here we also need the computational special soundness property}
+	\markulf{17.09}{The adversary that is being rewound for special soundness}
+
+	In the following we assume that a reduction $\rdv$, for $\rdv \in \smallset{\rdvur, \rdv_\ss}$, provides $\advse$ with access to a random oracle and simulator. That is, the reductions provide the adversary with simulated proofs. Also, it reqind the adversary when needed.
+	Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
+	returned by the adversary and the simulator respectively. We use $\zkproof[i]$
+	to denote prover's message in the $i$-th round of the proof, $\zkproof[i].\ch$
+	to denote the challenge that is given to the prover after $\zkproof[i]$, and
+	$\zkproof\range{i}{j}$ to denote all messages of the proof including challenges between rounds $i$ and $j$.
+
+	Without loss of generality, for every acceptable proof $\zkproof_{\advse}$, we
+	assume that whenever $\advse$ outputs in Round $i$ a message $m$, then
+	$\zkproof_{\advse}\range{1}{i}$ is a fresh query to the random oracle.
+	In the following we denote the instance and proof output by $\advse$ by $\inp_\advse$ and $\zkproof_\advse$ respectively.
+	
+	\ngame{0} \michals{17.09}{$\advse$ wins if there is no extractable witness for its proof}
+	In this game the adversary $\advse$ wins if it provides an acceptable proof $\zkproof$ for a statement $\inp$ which it does not know a witness for.
+	
+	\ngame{1}\michals{17.09}{$\advse$ wins if there is no extractable witness for its proof, break when $\ur{3}$ broken}
+	As in $\game{0}$, $\advse$ wins if it provides an acceptable proof for a statement it does not know a witness for, however the $\game{1}$ additionally aborts when $\advse$ breaks $\ur{3}$-ness of $\plonkprot$. Denote that event 
+	by $\event{\errur}$.
+
+	
+	Assume that $\advse$ queried the simulator on $\inp_{\advse}$. 
+	We show a reduction $\rdvur$ that utilizes $\advse$, which outputs $\inp_\advse, \zkproof_{\advse}\range{1}{3}$, to break the $\ur{3}$ property of $\plonkprot$. 
+
+	Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
+	\begin{itemize}
+		\item The reduction answers both queries to the simulator $\plonkprotfs.\simulator$ and to the random oracle. 
+		It also keeps lists $Q$, for the simulated proofs, and $Q_\ro$ for the random oracle queries. 
+		\item When $\advse$ outputs a fake proof $\zkproof_{\advse}$ for  $\inp_\advse$, $\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds 
+		$\zkproof_{\simulator}\range{1}{3}$ such that $\zkproof_{\advse}\range{1}{2} = \zkproof_{\simulator}\range{1}{2}$ and a random oracle query $\zkproof_{\simulator}[2].\ch$ on $\zkproof_{\simulator}\range{1}{2}$.
+		\item $\rdvur$ returns two proofs for $\inp_\advse$:
+		\begin{align*}
+			\zkproof_1 = (\inp_{\advse},\zkproof_{\simulator}\range{1}{2}, \zkproof_{\simulator}[2].\ch, \zkproof_{\simulator}\range{3}{5})\\
+			\zkproof_2 = (\inp_{\advse}, \zkproof_{\simulator}\range{1}{2}, \zkproof_{\simulator}[2].\ch, \zkproof_{\advse}\range{3}{5})
+		\end{align*}
+		\end{itemize}  
+		If $\zkproof_1 = \zkproof_2$, then $\advse$ fails to break simulation extractability, as $\zkproof_2 \in Q$.
+		On the other hand, if the proofs are not equal, then $\rdvur$ breaks $\ur{3}$-ness of $\plonkprot$. Thus
+		\[
+			\prob{\game{0}} = \prob{\game{1} \land \nevent{\errur}}
+		\]
+		
+		
+	\ngame{2}\michals{17.09}{$\advse$ wins if there is no extractable witness for its proof, break when $\ur{3}$ broken or generating tree of transcripts fails}
+	
+	\ngame{3}\michals{17.09}{$\advse$ wins if there is no extractable witness for its proof, break when $\ur{3}$ broken, generating tree of transcripts fails, or ...}
+	\qed
+\end{proof}
+\begin{proof}[by separation of events]
 	Let $\advse$ be an adversary that breaks simulation extractability with non-neglibible probability.
 	\michals{16.09}{Need to change that -- the extractor doens't work with some non-negligible probability (need amplification?)}
 	\[
