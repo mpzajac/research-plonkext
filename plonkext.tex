@@ -858,7 +858,7 @@ Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
 	On the other hand there is an \emph{idealised check}, which verifies whether $\vereq(X) = 0$ \emph{as a polynomial} (with proof elements being polynomials as well).
 
 \ncase{When $\nevent{E}_0$ happens}
-In this case the reduction $\rdvks$ uses $\advse$ to break the \hl{knowledge} soundness of $\plonkprot$ with probability $\eps_\ks / q_{\ro}^6$, where $q_\ro$ is the number of total random oracle queries performed by the adversary or by $\rdvks$ on behalf of the simulator.
+In this case the reduction $\rdvks$ uses $\advse$ to break soundness of $\plonkprot$ with probability $\eps_\ks / q_{\ro}^6$, where $q_\ro$ is the number of total random oracle queries performed by the adversary or by $\rdvks$ on behalf of the simulator.
 As previously, $\rdvks$ runs $\advse$ internally and simulates its environment by answering to its queries to $\plonkprotfs.\simulator$ and $\ro$. The reduction works as follows:
 \begin{itemize}
 \item It guesses indices $i_1, \ldots, i_6$ such that random oracle queries $h_{i_1}, \ldots, h_{i_6}$ are the queries used in $\zkproof_\advse$. This is done with probability at least $1/q_{\ro}^6$ (since there are $6$ challenges from the verifier in $\plonkprot$).
@@ -915,19 +915,14 @@ hence $\eps$ is negligible if dlog is hard and $\plonkprot$ is sound and $\ur{3}
 
 \section{Simulation extractability} In this section we show that $\plonkprotfs$
 is not only simulation-sound, but also simulation-extractable. To that end, we
-proceed as follows. First we show that the proof scheme is (kind of)
-special-sound. That is, given a number of acceptable transcripts which match on
-the first 3 rounds of the protocol we can either reveal a correct witness for
-the proven statement or use one of the transcripts to break the dlog assumption.
-The latter requires use of the AGM. More precisely, we assume that each group
-element that is published as a part of the transcripts comes with a vector of
-coefficients that represents the element in the basis compound of the input
-group elements, i.e.~$\plonkprotfs$'s CRS. \michals{17.09}{Need to check: if I
-make a simulated proof, that uses only programmability of the RO and not
-knowledge of the trapdoor -- is the output proof acceptable by the idealised
-polynomial verification?}
-\markulf{17/09}{In Groth-Maller, the basis is extended to include previously
-  simulated proofs}
+proceed as follows. First we show that the underlying interactive proof scheme
+$\plonkprot$ is (kind of) special-sound. That is, given a number of acceptable
+transcripts which match on the first 3 rounds of the protocol we can either
+reveal a correct witness for the proven statement or use one of the transcripts
+to break the dlog assumption. The latter requires use of the AGM. More
+precisely, we assume that each group element that is published as a part of the
+transcripts comes with a vector of coefficients that represents the element in
+the basis compound of the input group elements, i.e.~$\plonkprot$'s CRS.
 
 Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is simulation-extractable. That is, we build reductions that given a simulation extractability adversary $\advse$ either breaks the protocol's unique response property or breaks the dlog assumption, if extracting a valid witness from a tree of transcripts is impossible.
 
@@ -935,27 +930,14 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 Note that the special soundness property (as usually defined) holds for all--- even computationally unbounded---adversaries. Since a simulation trapdoor for $\plonkprot$ exists, it is not special sound in that regard---as an unbounded adversary could reveal the trapdoor and build a number of simulated proofs for a fake statement. 
 Hence, we provide a weaker, yet sufficient, definition of \emph{computational special soundness}. More precisely, we state that an adversary that is able to answer correctly multiple challenges either knows the witness or can be used to break some computational assumption. 
 
-\begin{definition}[Computational special soundness under $\compass$]
-	Let $\compass = (\cdv, c)$ be a falsifiable assumption and $\proofsystem$ be an $2k$-round zero-knowledge proof system for a relation $\REL$. 
-	We say that $\proofsystem$ is $(n_1, \ldots, n_k)$-\emph{special sound} if for every PPT adversary $\adv$ that produces an accepting $(n_1, \ldots, n_k)$ tree of transcripts $\tree$ for a statement $\inp$ 
-	\begin{compactitem}
-		\item either exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$, or
-		\item there exists a reduction $\rdv$ that black-box uses $\adv$ to break $\compass$.\michals{16.09}{I think the black-box part is not necessary, esp.~we use AGM}
-	\end{compactitem}
+\begin{definition}[Computational special soundness]
+	Let $\proofsystem$ be an $2k$-round zero-knowledge proof system for a relation $\REL$. 
+	We say that $\proofsystem$ is $(n_1, \ldots, n_k)$-\emph{special sound} if for every PPT adversary $\adv$ that produces an accepting $(n_1, \ldots, n_k)$ tree of transcripts $\tree$ for a statement $\inp$ there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$ with an overwhelming probability.
 \end{definition}
-\markulf{17/09/2020}{I am confused about when we rely on AGM and when on
-  rewinding?}
-
 
 \begin{lemma}
 	\label{lem:plonkprot_ss}
 	$\plonkprot$ is $(1, 1, 1, \numberofconstrains + 3, 1)$-computationally special sound under $(\numberofconstrains + 2)$-dlog assumption and algebraic group model.
-	\michals{16.09}{$\plonkprot$ is an interactive protocol, but maybe the
-    adversary should have access to simulated proofs nevertheless? (Or we just
-    assume that the simulation is done without using trapdoor but by
-    reprogramming the ro and we don't need to care)}
-  \markulf{17.09}{It seems important that in the interactive protocol, the
-    adversary can create simulated proofs itself, by knowing the challenge in advance.}
 \end{lemma}
 \begin{proof}
 	Let $\crs$ be $\plonkprot$'s CRS and denote by $\crs_1$ all CRS's $\GRP_1$-elements; that is, $\crs_1 = \gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. 
