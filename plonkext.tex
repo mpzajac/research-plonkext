@@ -913,18 +913,33 @@ hence $\eps$ is negligible if dlog is hard and $\plonkprot$ is sound and $\ur{3}
 \qed
 \end{proof}
 
-\section{Simulation extractability}
-\subsection{Special-soundness of $\plonkprot$}
-Note that the special soundness property as usually defined holds for all, even computationally unbounded, adversaries. Since a simulation trapdoor for \plonk{} exists, it is not special sound in that regard. However, we provide a weaker, yet sufficient, definition of \emph{computational special soundness}. More precisely, we state that an adversary that is able to answer correctly multiple challenges either knows the witness or can be used to break a compuational assumption. 
+\section{Simulation extractability} In this section we show that $\plonkprotfs$
+is not only simulation-sound, but also simulation-extractable. To that end, we
+proceed as follows. First we show that the proof scheme is (kind of)
+special-sound. That is, given a number of acceptable transcripts which match on
+the first 3 rounds of the protocol we can either reveal a correct witness for
+the proven statement or use one of the transcripts to break the dlog assumption.
+The latter requires use of the AGM. More precisely, we assume that each group
+element that is published as a part of the transcripts comes with a vector of
+coefficients that represents the element in the basis compound of the input
+group elements, i.e.~$\plonkprotfs$'s CRS. \michals{17.09}{Need to check: if I
+make a simulated proof, that uses only programmability of the RO and not
+knowledge of the trapdoor -- is the output proof acceptable by the idealised
+polynomial verification?}
+
+Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is simulation-extractable. That is, we build reductions that given a simulation extractability adversary $\advse$ either breaks the protocol's unique response property or breaks the dlog assumption, if extracting a valid witness from a tree of transcripts is impossible.
+
+\subsection{Special soundness of $\plonkprot$}
+Note that the special soundness property (as usually defined) holds for all--- even computationally unbounded---adversaries. Since a simulation trapdoor for \plonk{} exists, is not special sound in that regard---as an unbounded adversary could reveal the trapdoor and build a number of simulated proofs for a fake statement. 
+Hence, we provide a weaker, yet sufficient, definition of \emph{computational special soundness}. More precisely, we state that an adversary that is able to answer correctly multiple challenges either knows the witness or can be used to break some computational assumption. 
 
 \newcommand{\compass}{\mathtt{C}}
-% \newcommand{\tree}{T}
 \begin{definition}[Computational special soundness under $\compass$]
-	Let $\compass = (\cdv, c)$ be a falsifiable assumption and $\proofsystem$ be an $k$-round zero-knowledge proof system for a relation $\REL$. 
+	Let $\compass = (\cdv, c)$ be a falsifiable assumption and $\proofsystem$ be an $2k$-round zero-knowledge proof system for a relation $\REL$. 
 	We say that $\proofsystem$ is $(n_1, \ldots, n_k)$-\emph{special sound} if for every PPT adversary $\adv$ that produces an accepting $(n_1, \ldots, n_k)$ tree of transcripts $\tree$ for a statement $\inp$ 
 	\begin{compactitem}
 		\item either exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$, or
-		\item there exists a reduction $\rdv$ that black-box uses $\adv$ to break $\compass$.
+		\item there exists a reduction $\rdv$ that black-box uses $\adv$ to break $\compass$.\michals{16.09}{I think the black-box part is not necessary, esp.~we use AGM}
 	\end{compactitem}
 \end{definition}
 
@@ -934,16 +949,16 @@ Note that the special soundness property as usually defined holds for all, even 
 	\michals{16.09}{$\plonkprot$ is an interactive protocol, but maybe the adversary should have access to simulated proofs nevertheless? (Or we just assume that the simulation is done without using trapdoor but by reprogramming the ro and we don't need to care)}
 \end{lemma}
 \begin{proof}
-	Let $\crs$ be $\plonkprot$'s CRS and denote by $\crs_1$ all CRS's $\GRP_1$-elements; that is,$\crs_1 = \gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. 
+	Let $\crs$ be $\plonkprot$'s CRS and denote by $\crs_1$ all CRS's $\GRP_1$-elements; that is, $\crs_1 = \gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. 
 	Let $\adv$ be an algebraic adversary that for a statement $\inp$ produces a $(1, 1, 1, \numberofconstrains + 3, 1)$-tree of acceptable transcripts $\tree$. % with non-negligible probability $\eta_\tree$. 
 	Note that in all transcripts the instance $\inp$, proof elements $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and challenges $\alpha, \beta, \gamma$ are common as the transcripts share the first three rounds. 
 	
 	We consider two mutually disjunctive events. 
-	First, $\event{E}$ holds when all of the transcripts were generated honestly;
-	second, $\nevent{E}$ holds when there is a transcript that is acceptable, yet the adversary deviated from the protocol.
+	First, $\event{E}$ holds when all of the transcripts were generated honestly. That is, all the transcripts are acceptable by the idealised verification equation, i.e.~$\vereq(X) = 0$ 
+	Second, $\nevent{E}$ holds when there is a transcript that is acceptable, yet the adversary deviated from the protocol, i.e.~for some transcript $\vereq(\chi) = 0$, but $\vereq(X) \neq 0$.
 	We build two reductions $\rdvss$ and $\rdvdlog$, which given the tree of transcripts $\tree$ either reveal the witness ($\rdvss$) or break the dlog assumption ($\rdvdlog$). We show that the probability that one of them succeeds is non-negligible.
 	
-	\ncase{When $\event{E}$ happens}  Since all of the transcripts have been
+	\ncase{When $\event{E}$ happens} Since all of the transcripts have been
 	generated honestly then there exists a witness $\wit$, such that $\REL(\inp,
 	\wit)$ holds.  Note that witness-carrying polynomials $\p{a}(X), \p{b}(X),
 	\p{c}(X)$ have degree $(\numberofconstrains + 2)$ and since $\adv$ answered
@@ -953,6 +968,7 @@ Note that the special soundness property as usually defined holds for all, even 
 	the corresponding witness $\wit$.  Note that if $\REL(\inp, \wit)$ does not
 	hold then, from the soundness of the polynomial protocol, at least one of the
 	transcripts has not been generated honestly (and $\nevent{E}$ happened).
+	\michals{17.09}{$\rdvss$ is what is called in FKMV12 a "special extractor"--an extractor that extracts from a tree of transcripts.}
 	
 	\ncase{When $\nevent{E}$ happens} Consider a transcript that is acceptable,
 	yet has not been generated honestly. Since the polynomial protocol is sound,
@@ -962,7 +978,7 @@ Note that the special soundness property as usually defined holds for all, even 
 	verification equation.
 	Furthermore, since the adversary is algebraic, all group elements included in the tree of transcripts are extended by their representation as a combination of the input $\GRP_1$-elements i.e.~$\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. Hence all coefficients of the verification equation polynomial $\vereq(X)$ are known and $\rdvdlog$ can find its zero points. Since $\vereq(\chi) = 0$, the targeted discrete log value $\chi$ is among them.
 \end{proof}
-
+\michals{17.09}{Need to reformulate the above --- $\event{E}$--idealised verification accepts (and we have $\epsbatch$ there) and $\nevent{E}$ some idealised verification doesn't accept, but the real one does.}
 \subsection{From special-soundness and unique response property to simulation extractability}
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ and computationally special sound.
 
@@ -975,8 +991,8 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	\[
 		1 - \frkProb (1 - \eps_{\ur{3}})(1 - \epsbatch)(1 - \eps_\dlog).
 	\]
-	\michals{16.09}{Should inlice the simulation error above?}
-	The simulation error for $\plonkprotfs$ is \hl{\ldots}
+	\michals{16.09}{Should include the simulation error above?}
+	% The simulation error for $\plonkprotfs$ is \hl{\ldots}
 	% where $q_\ro$ is the total number of queries required by the adversary $\advse$.
 \end{theorem}
 \begin{proof}
