@@ -926,6 +926,8 @@ group elements, i.e.~$\plonkprotfs$'s CRS. \michals{17.09}{Need to check: if I
 make a simulated proof, that uses only programmability of the RO and not
 knowledge of the trapdoor -- is the output proof acceptable by the idealised
 polynomial verification?}
+\markulf{17/09}{In Groth-Maller, the basis is extended to include previously
+  simulated proofs}
 
 Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is simulation-extractable. That is, we build reductions that given a simulation extractability adversary $\advse$ either breaks the protocol's unique response property or breaks the dlog assumption, if extracting a valid witness from a tree of transcripts is impossible.
 
@@ -942,11 +944,19 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 		\item there exists a reduction $\rdv$ that black-box uses $\adv$ to break $\compass$.\michals{16.09}{I think the black-box part is not necessary, esp.~we use AGM}
 	\end{compactitem}
 \end{definition}
+\markulf{17/09/2020}{I am confused about when we rely on AGM and when on
+  rewinding?}
+
 
 \begin{lemma}
 	\label{lem:plonkprot_ss}
 	$\plonkprot$ is $(1, 1, 1, \numberofconstrains + 3, 1)$-computationally special sound under $(\numberofconstrains + 2)$-dlog assumption and algebraic group model.
-	\michals{16.09}{$\plonkprot$ is an interactive protocol, but maybe the adversary should have access to simulated proofs nevertheless? (Or we just assume that the simulation is done without using trapdoor but by reprogramming the ro and we don't need to care)}
+	\michals{16.09}{$\plonkprot$ is an interactive protocol, but maybe the
+    adversary should have access to simulated proofs nevertheless? (Or we just
+    assume that the simulation is done without using trapdoor but by
+    reprogramming the ro and we don't need to care)}
+  \markulf{17.09}{It seems important that in the interactive protocol, the
+    adversary can create simulated proofs itself, by knowing the challenge in advance.}
 \end{lemma}
 \begin{proof}
 	Let $\crs$ be $\plonkprot$'s CRS and denote by $\crs_1$ all CRS's $\GRP_1$-elements; that is, $\crs_1 = \gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. 
@@ -975,7 +985,9 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 	$\vereq(X) \neq 0$, but $\vereq(\chi) = 0$, with probability at least $(1 -
 	\epsbatch)$.  Here, $\epsbatch$ is (negligible) probability of making an
 	acceptable transcript for a false statement because of use of batching in the
-	verification equation.
+	verification equation.\markulf{17.09}{Why is batching special, wouldn't
+    batching as a polynomial protocol also be perfect? We would have to treat
+    the batching challenge as a formal variable? I guess that is not possible?}
 	Furthermore, since the adversary is algebraic, all group elements included in the tree of transcripts are extended by their representation as a combination of the input $\GRP_1$-elements i.e.~$\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. Hence all coefficients of the verification equation polynomial $\vereq(X)$ are known and $\rdvdlog$ can find its zero points. Since $\vereq(\chi) = 0$, the targeted discrete log value $\chi$ is among them.
 \end{proof}
 \michals{17.09}{Need to reformulate the above --- $\event{E}$--idealised verification accepts (and we have $\epsbatch$ there) and $\nevent{E}$ some idealised verification doesn't accept, but the real one does.}
@@ -1026,6 +1038,9 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	\]
 
 We build reductions $\rdvur$, $\rdvdlog$ which using $\advse$ as a black-box, violate either the unique response property of the underlying interactive protocol $\plonkprot$, or the $(\numberofconstrains + 2)$-dlog assumption.
+\markulf{17.09}{Here we also need the computational special soundness property}
+\markulf{17.09}{The adversary that is being rewound for special soundness
+  includes $\simulator$?}
 
 In the following we denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
 returned by the adversary and the simulator respectively. We use $\zkproof[i]$
@@ -1037,7 +1052,11 @@ Without loss of generality, for every acceptable proof $\zkproof_{\advse}$, we
 assume that whenever $\advse$ outputs in Round $i$ a message $m$, then
 $\zkproof_{\advse}\range{1}{i}$ is a fresh query to the random oracle.
 \markulf{30.08}{What does fresh mean here? What about messages coming from the simulator?} 
-\michals{30.08}{I thought that with this assumption we may just consider only queries from $\advse$}
+\michals{30.08}{I thought that with this assumption we may just consider only
+  queries from $\advse$}
+\markulf{19/09}{I would like to understand this requirement better in light of
+  the new proof approach.}
+
 It is straightforward to transform any adversary that violates this condition into an adversary that makes these additional queries to the random oracle and wins with the same probability.
 
 Since we rely on the special soundness property, we denote by $\event{F}$ event when the reduction manages to build a $(1, 1, 1, \numberofconstrains + 3, 1)$-tree of acceptable transcripts $\tree$.
@@ -1101,7 +1120,9 @@ Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
 		\frac{\accProb^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \frac{\accProb \cdot (\numberofconstrains + 2)}{2^\secpar}.
 	\]
 	}
-	
+
+	\markulf{17/09}{Both of these cases would be subsumed by computational special
+  soundness}
 \ncase{When $\nevent{E}_0$ happens}
 Since in this case all of the transcripts from $\tree$ are acceptable by the polynomial verification equation, that is for each transcript $\vereq(X) = 0$, then the special extractor can reveal the witness corresponding to $\inp$ by interpolating polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$. This happens except some negligible probability $\epsbatch$, which corresponds to the verification error that could occur due to use of batching in verification.
 Hence
