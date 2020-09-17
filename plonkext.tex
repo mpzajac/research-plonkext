@@ -1054,7 +1054,7 @@ As all these events are mutually exclusive and exhaustive, we have
 \begin{multline*}
 	\eps = \prob{\advse \text{ wins}} \leq 
 	\prob{\nevent{F}} + \prob{\event{F}} \cdot (\condprob{\advse \text{ wins}, \event{E}}{\event{F}} + \\ 
-	\condprob{\advse \text{ wins}, \nevent{E}_0}{\event{F}} + \condprob{\adv \text{ wins}, \nevent{E}_1}{\nevent{F}}).
+	\condprob{\advse \text{ wins}, \nevent{E}_0}{\event{F}} + \condprob{\advse \text{ wins}, \nevent{E}_1}{\nevent{F}}).
 	% \prob{\advse \text{ wins}, \event{E}} + \condprob{\advse \text{ wins}, \nevent{E}_0}{\event{F}}\prob{\event{F}} + \\
 	% \condprob{\adv \text{ wins}, \nevent{E}_1}{\event{F}}\prob{\event{F}} +
 	% \condprob{\adv \text{ wins}, \nevent{E}}{\nevent{F}}\prob{\nevent{F}}\,.
@@ -1088,7 +1088,7 @@ Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
 	If $\zkproof_1 = \zkproof_2$, then $\advse$ fails to break simulation extractability, as $\zkproof_2 \in Q$.
 	On the other hand, if the proofs are not equal, then $\rdvur$ breaks $\ur{3}$-ness of $\plonkprot$. Thus 
 	\[
-		\condprob{\adv \text{ wins}, \event{E}}{\event{F}} \leq \eps_{\ur{3}}(\secpar).
+		\condprob{\advse \text{ wins}, \event{E}}{\event{F}} \leq \eps_{\ur{3}}(\secpar).
 	\]
 	
 	\comment{
@@ -1106,14 +1106,14 @@ Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
 Since in this case all of the transcripts from $\tree$ are acceptable by the polynomial verification equation, that is for each transcript $\vereq(X) = 0$, then the special extractor can reveal the witness corresponding to $\inp$ by interpolating polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$. This happens except some negligible probability $\epsbatch$, which corresponds to the verification error that could occur due to use of batching in verification.
 Hence
 \[
-	\condprob{\adv \text{ wins}, \nevent{E}_0}{\event{F}} \leq \epsbatch\,.
+	\condprob{\advse \text{ wins}, \nevent{E}_0}{\event{F}} \leq \epsbatch\,.
 \]
 
 \ncase{When $\nevent{E}_1$ happens}
 In this case the adversary manages to provide a transcript such that $\vereq(X) \neq 0$, but $\vereq(\chi) = 0$.
 As explained in e.g.~\cref{lem:plonkprot_ss}, in that case the reduction $\rdvdlog$ is able to factorize $\vereq(X)$, find its zero points and reveal $\chi$ effectively breaking the discrete logarithm assumption.
 \[
-	\condprob{\adv \text{ wins}, \nevent{E}_1}{\event{F}} \leq \eps_\dlog\,.
+	\condprob{\advse \text{ wins}, \nevent{E}_1}{\event{F}} \leq \eps_\dlog\,.
 \]
 \qed
 \end{proof}
