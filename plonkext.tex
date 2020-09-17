@@ -937,7 +937,12 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 
 \begin{lemma}
 	\label{lem:plonkprot_ss}
-	$\plonkprot$ is $(1, 1, 1, \numberofconstrains + 3, 1)$-computationally special sound under $(\numberofconstrains + 2)$-dlog assumption and algebraic group model.
+	Let $\adv$ be a PPT algebraic adversary. The probability $\epsss$ that $\adv$ breaks 
+	 $(1, 1, 1, \numberofconstrains + 3, 1)$-computational special soundness of $\plonkprot$ is upper-bounded as
+	 \[
+	 	\epsss \leq \epsbatch + \epsdlog\,,
+	 \] 
+	 where $\epsbatch$ is (negligible) probability that $\plonkprot$'s idealised verification equation $\vereq(X)$ accepts an invalid proof because of batching and $\epsdlog$ is a probability that a PPT algorithm can break $(\numberofconstrains + 2)$-dlog assumption.
 \end{lemma}
 \begin{proof}
 	Let $\crs$ be $\plonkprot$'s CRS and denote by $\crs_1$ all CRS's $\GRP_1$-elements; that is, $\crs_1 = \gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. 
@@ -945,20 +950,21 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 	Note that in all transcripts the instance $\inp$, proof elements $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and challenges $\alpha, \beta, \gamma$ are common as the transcripts share the first three rounds. 
 	
 	We consider two mutually disjunctive events. 
-	First, $\event{E}$ holds when all of the transcripts were generated honestly. That is, all the transcripts are acceptable by the idealised verification equation, i.e.~$\vereq(X) = 0$ 
-	Second, $\nevent{E}$ holds when there is a transcript that is acceptable, yet the adversary deviated from the protocol, i.e.~for some transcript $\vereq(\chi) = 0$, but $\vereq(X) \neq 0$.
-	We build two reductions $\rdvss$ and $\rdvdlog$, which given the tree of transcripts $\tree$ either reveal the witness ($\rdvss$) or break the dlog assumption ($\rdvdlog$). We show that the probability that one of them succeeds is non-negligible.
+	First, $\event{E}$ holds when all of the transcripts are acceptable by the idealised verification equation, i.e.~$\vereq(X) = 0$ 
+	Second, $\nevent{E}$ holds when there is a transcript that is acceptable, yet 
+	for some transcript $\vereq(\chi) = 0$, but $\vereq(X) \neq 0$.
+	We build a special extractor $\extss$ which given the tree of transcripts $\tree$ reveals the witness with an overwhelming probability when $\event{E}$ happens. 
+	We show a reduction $\rdvdlog$ that, when $\nevent{E}$ happens, breaks the dlog assumption. 
 	
-	\ncase{When $\event{E}$ happens} Since all of the transcripts have been
-	generated honestly then there exists a witness $\wit$, such that $\REL(\inp,
-	\wit)$ holds.  Note that witness-carrying polynomials $\p{a}(X), \p{b}(X),
-	\p{c}(X)$ have degree $(\numberofconstrains + 2)$ and since $\adv$ answered
-	honestly on $(\numberofconstrains + 3)$ different challenges $\chz$ then
-	$(\numberofconstrains + 3)$ evaluations of these polynomials (at different
-	points) are known. Reduction $\rdvss$ interpolates the polynomials and reveals
-	the corresponding witness $\wit$.  
-	Note that $\REL(\inp, \wit)$ may not hold, but, since the polynomial protocol is sound, this may happen only when a batching error occurred. Probability of such event is upper-bounded by some negligible $\epsbatch$.
-	\michals{17.09}{$\rdvss$ is what is called in FKMV12 a "special extractor"--an extractor that extracts from a tree of transcripts.}
+	\ncase{When $\event{E}$ happens}  Since the protocol $\plonkprot$ is sound,
+	except probability of batching failure $\epsbatch$, for a valid proof
+	$\zkproof$ of a statement $\inp$ there exists a witness $\wit$, such that
+	$\REL(\inp, \wit)$ holds.  Note that witness-carrying polynomials $\p{a}(X),
+	\p{b}(X), \p{c}(X)$ have degree $(\numberofconstrains + 2)$ and since $\adv$
+	answered honestly on $(\numberofconstrains + 3)$ different challenges $\chz$
+	then $(\numberofconstrains + 3)$ evaluations of these polynomials (at
+	different points) are known. The extractor $\extss$ interpolates the
+	polynomials and reveals the corresponding witness $\wit$. 
 	
 	\ncase{When $\nevent{E}$ happens} Consider a transcript that such that
 	$\vereq(X) \neq 0$, but $\vereq(\chi) = 0$.
@@ -968,11 +974,9 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
       2}}$. Hence all coefficients of the verification equation polynomial
   $\vereq(X)$ are known and $\rdvdlog$ can find its zero points. Since
   $\vereq(\chi) = 0$, the targeted discrete log value $\chi$ is among them.
-  \markulf{17.09}{You rewrote this. Why is batching special, wouldn't
-    batching as a polynomial protocol also be perfect? We would have to treat
-    the batching challenge as a formal variable? I guess that is not possible?}
+	\qed
 \end{proof}
-\michals{17.09}{Need to reformulate the above---$\event{E}$--idealised verification accepts (and we have $\epsbatch$ there) and $\nevent{E}$ some idealised verification doesn't accept, but the real one does.}
+
 \subsection{From special-soundness and unique response property to simulation extractability}
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ and computationally special sound.
 
