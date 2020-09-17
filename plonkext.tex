@@ -1047,7 +1047,11 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 		If $\zkproof_1 = \zkproof_2$, then $\advse$ fails to break simulation extractability, as $\zkproof_2 \in Q$.
 		On the other hand, if the proofs are not equal, then $\rdvur$ breaks $\ur{3}$-ness of $\plonkprot$. Thus
 		\[
-			\prob{\game{0}} = \prob{\game{1} \land \nevent{\errur}}
+			\prob{\game{0} \land \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}}
+		\]
+		and, from the difference lemma, cf.~\cref{lem:difference_lemma}
+		\[
+			\abs{\prob{\game{0}} - \prob{\game{1}}} \leq \event{\errur}\,.
 		\]
 		
 		
