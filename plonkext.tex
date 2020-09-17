@@ -1020,7 +1020,7 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	\]
 
 We build reductions $\rdvur$, $\rdvdlog$ which using $\advse$ as a black-box, violate either the unique response property of the underlying interactive protocol $\plonkprot$, or the $(\numberofconstrains + 2)$-dlog assumption. 
-For the sake of completeness we also provide reduction $\rdv_\se$ that from a given tree of acceptable transcripts extracts a witness (effectively making $\advse$ lose). 
+For the sake of completeness we also provide a reduction\footnote{Called sometimes \emph{a special extractor}.} $\rdv_\se$ that from a given tree of acceptable transcripts extracts a witness (effectively making $\advse$ lose). 
 
 In the following we assume that a reduction $\rdv$, for $\rdv \in \smallset{\rdvdlog, \rdvur, \rdv_\se}$, provides $\advse$ with access to a random oracle and simulator. That is, the reductions provide the adversary with simulated proofs. 
 Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
@@ -1089,19 +1089,9 @@ Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
 		\condprob{\advse \text{ wins}, \event{E}}{\event{F}} \leq \eps_{\ur{3}}(\secpar).
 	\]
 	
-	\comment{
-	Before analyzing the events $\nevent{E}_0$ and $\nevent{E}_1$, we note that a proof $\zkproof$ could be accepted only if the verification equation $\vereq(\chi)$ holds. That is, the verifier plugs-in elements of $\zkproof$ into $\vereq(\chi)$ and checks whether it equals $0$. That is what is called a \emph{real check} in \cite{EPRINT:GabWilCio19}. 
-	On the other hand there is an \emph{idealised check}, which verifies whether $\vereq(X) = 0$ \emph{as a polynomial} (with proof elements being polynomials as well).
-	
-	Also, in these cases the reduction $\rdvdlog$ runs $\advse$ internally and is responsible for simulating its access to simulated proofs and random oracle. When $\advse$ outputs an accepting proof then it is rewound to the state just after Round 3, where $\rdvdlog$ programs anew the random oracle. This step is repeated up to a point when $\advse$ provides a $(1, 1, 1, \numberofconstrains + 3, 1)$-tree of acceptable transfers $\tree$.
-	Assume that $\advse$ provides an acceptable proof with probability $\accProb$ and the random oracle has image of size $2^\secpar$, then by the generalised forking lemma \cref{lem:generalised_forking_lemma} probability that in $(\numberofconstrains + 3)$ rewinds of $\advse$ a $(1, 1, 1, \numberofconstrains + 3, 1)$-tree of acceptable transfers is built is at least
-	\[
-		\frac{\accProb^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \frac{\accProb \cdot (\numberofconstrains + 2)}{2^\secpar}.
-	\]
-	}
-	
 \ncase{When $\nevent{E}_0$ happens}
-Since in this case all of the transcripts from $\tree$ are acceptable by the polynomial verification equation, that is for each transcript $\vereq(X) = 0$, then the special extractor can reveal the witness corresponding to $\inp$ by interpolating polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$. This happens except some negligible probability $\epsbatch$, which corresponds to the verification error that could occur due to use of batching in verification.
+Since in this case all of the transcripts from $\tree$ are acceptable by the polynomial verification equation, that is for each transcript $\vereq(X) = 0$, then the special extractor $\rdv_\se$ reveals the witness $\wit$, such that $\REL(\inp, \wit)$ holds, by interpolating polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$. 
+This happens except some negligible probability $\epsbatch$, which corresponds to the verification error that could occur due to use of batching in verification.
 Hence
 \[
 	\condprob{\advse \text{ wins}, \nevent{E}_0}{\event{F}} \leq \epsbatch\,.
