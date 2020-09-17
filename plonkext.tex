@@ -930,10 +930,9 @@ polynomial verification?}
 Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is simulation-extractable. That is, we build reductions that given a simulation extractability adversary $\advse$ either breaks the protocol's unique response property or breaks the dlog assumption, if extracting a valid witness from a tree of transcripts is impossible.
 
 \subsection{Special soundness of $\plonkprot$}
-Note that the special soundness property (as usually defined) holds for all--- even computationally unbounded---adversaries. Since a simulation trapdoor for \plonk{} exists, is not special sound in that regard---as an unbounded adversary could reveal the trapdoor and build a number of simulated proofs for a fake statement. 
+Note that the special soundness property (as usually defined) holds for all--- even computationally unbounded---adversaries. Since a simulation trapdoor for $\plonkprot$ exists, it is not special sound in that regard---as an unbounded adversary could reveal the trapdoor and build a number of simulated proofs for a fake statement. 
 Hence, we provide a weaker, yet sufficient, definition of \emph{computational special soundness}. More precisely, we state that an adversary that is able to answer correctly multiple challenges either knows the witness or can be used to break some computational assumption. 
 
-\newcommand{\compass}{\mathtt{C}}
 \begin{definition}[Computational special soundness under $\compass$]
 	Let $\compass = (\cdv, c)$ be a falsifiable assumption and $\proofsystem$ be an $2k$-round zero-knowledge proof system for a relation $\REL$. 
 	We say that $\proofsystem$ is $(n_1, \ldots, n_k)$-\emph{special sound} if for every PPT adversary $\adv$ that produces an accepting $(n_1, \ldots, n_k)$ tree of transcripts $\tree$ for a statement $\inp$ 
@@ -965,25 +964,20 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 	honestly on $(\numberofconstrains + 3)$ different challenges $\chz$ then
 	$(\numberofconstrains + 3)$ evaluations of these polynomials (at different
 	points) are known. Reduction $\rdvss$ interpolates the polynomials and reveals
-	the corresponding witness $\wit$.  Note that if $\REL(\inp, \wit)$ does not
-	hold then, from the soundness of the polynomial protocol, at least one of the
-	transcripts has not been generated honestly (and $\nevent{E}$ happened).
+	the corresponding witness $\wit$.  
+	Note that $\REL(\inp, \wit)$ may not hold, but, since the polynomial protocol is sound, this may happen only when a batching error occurred. Probability of such event is upper-bounded by some negligible $\epsbatch$.
 	\michals{17.09}{$\rdvss$ is what is called in FKMV12 a "special extractor"--an extractor that extracts from a tree of transcripts.}
 	
-	\ncase{When $\nevent{E}$ happens} Consider a transcript that is acceptable,
-	yet has not been generated honestly. Since the polynomial protocol is sound,
-	$\vereq(X) \neq 0$, but $\vereq(\chi) = 0$, with probability at least $(1 -
-	\epsbatch)$.  Here, $\epsbatch$ is (negligible) probability of making an
-	acceptable transcript for a false statement because of use of batching in the
-	verification equation.
-	Furthermore, since the adversary is algebraic, all group elements included in the tree of transcripts are extended by their representation as a combination of the input $\GRP_1$-elements i.e.~$\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. Hence all coefficients of the verification equation polynomial $\vereq(X)$ are known and $\rdvdlog$ can find its zero points. Since $\vereq(\chi) = 0$, the targeted discrete log value $\chi$ is among them.
+	\ncase{When $\nevent{E}$ happens} Consider a transcript that such that
+	$\vereq(X) \neq 0$, but $\vereq(\chi) = 0$.
+	Since the adversary is algebraic, all group elements included in the tree of transcripts are extended by their representation as a combination of the input $\GRP_1$-elements i.e.~$\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. Hence all coefficients of the verification equation polynomial $\vereq(X)$ are known and $\rdvdlog$ can find its zero points. Since $\vereq(\chi) = 0$, the targeted discrete log value $\chi$ is among them.
 \end{proof}
-\michals{17.09}{Need to reformulate the above --- $\event{E}$--idealised verification accepts (and we have $\epsbatch$ there) and $\nevent{E}$ some idealised verification doesn't accept, but the real one does.}
+\michals{17.09}{Need to reformulate the above---$\event{E}$--idealised verification accepts (and we have $\epsbatch$ there) and $\nevent{E}$ some idealised verification doesn't accept, but the real one does.}
 \subsection{From special-soundness and unique response property to simulation extractability}
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ and computationally special sound.
 
 \begin{theorem}[Simulation extractability]
-	Assume that $(\numberofconstrains + 2)$-dlog is $\eps_\dlog(\secpar)$-hard, $\plonkprot$ is $\ur{3}$ with security $\eps_{\ur{3}}(\secpar)$. 
+	Assume that $(\numberofconstrains + 2)$-dlog is $\eps_\dlog(\secpar)$-hard and $\plonkprot$ is $\ur{3}$ with security $\eps_{\ur{3}}(\secpar)$. 
 	Let $\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. 
 	Let $\advse$ be a PPT adversary that can make up to $q$ random oracle queries and outputs an acceptable proof for $\plonkprotfs$ with probability at least $\accProb$
 	% Then the probability that an algebraic, PPT adversary $\advse$ breaks simulation extractability of $\plonkprotfs$ is upper-bounded by 
@@ -1025,9 +1019,11 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 		\right.\right].
 	\]
 
-We build reductions $\rdvur$, $\rdvdlog$ which using $\advse$ as a black-box, violate either the unique response property of the underlying interactive protocol $\plonkprot$, or the $(\numberofconstrains + 2)$-dlog assumption.
+We build reductions $\rdvur$, $\rdvdlog$ which using $\advse$ as a black-box, violate either the unique response property of the underlying interactive protocol $\plonkprot$, or the $(\numberofconstrains + 2)$-dlog assumption. 
+For the sake of completeness we also provide reduction $\rdv_\se$ that from a given tree of acceptable transcripts extracts a witness (effectively making $\advse$ lose). 
 
-In the following we denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
+In the following we assume that a reduction $\rdv$, for $\rdv \in \smallset{\rdvdlog, \rdvur, \rdv_\se}$, provides $\advse$ with access to a random oracle and simulator. That is, the reductions provide the adversary with simulated proofs. 
+Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
 returned by the adversary and the simulator respectively. We use $\zkproof[i]$
 to denote prover's message in the $i$-th round of the proof, $\zkproof[i].\ch$
 to denote the challenge that is given to the prover after $\zkproof[i]$, and
@@ -1040,15 +1036,17 @@ $\zkproof_{\advse}\range{1}{i}$ is a fresh query to the random oracle.
 \michals{30.08}{I thought that with this assumption we may just consider only queries from $\advse$}
 It is straightforward to transform any adversary that violates this condition into an adversary that makes these additional queries to the random oracle and wins with the same probability.
 
-Since we rely on the special soundness property, we denote by $\event{F}$ event when the reduction manages to build a $(1, 1, 1, \numberofconstrains + 3, 1)$-tree of acceptable transcripts $\tree$.
+Since we rely on the special soundness property, we denote by $\event{F}$ event when the reduction manages to build a $(1, 1, 1, \numberofconstrains + 3, 1)$-tree of acceptable transcripts $\tree$ (by rewinding $\advse$ and providing it with a fresh random oracle).
 If $\event{F}$ does not happen, what is denoted by $\nevent{F}$ then we grant $\advse$ a victory.
 
 A crucial observation is that the adversary $\advse$ may have learned $\zkproof_{\advse}\range{1}{3}$ by querying the simulator on $\inp_{\advse}$ or might have computed it itself. We denote the first event by $\event{E}$ and the second by $\nevent{E}$. 
 %
-Additionally, we divide event $\nevent{E}$ into two disjunctive subevents: $\nevent{E}_0$ and $\nevent{E}_1$. 
-Event $\nevent{E}_0$ considers a case when all transcripts in $\tree$ has been computed honestly, i.e.~all of them are accepted by the idealised verification equation---for that proof $\vereq(X) = 0$.
-Alternatively, event $\nevent{E}_1$ covers a case when for $\zkproof_\advse$ it
-holds that $\vereq(\chi) = 0$, but $\vereq(X) \neq 0$, where $\chi$ is $\plonkprotfs$'s trapdoor.
+Additionally, we divide event $\nevent{E}$ into two disjunctive subevents:
+$\nevent{E}_0$ and $\nevent{E}_1$.  Event $\nevent{E}_0$ considers a case when
+all transcripts in $\tree$ are accepted by the idealised verification
+equation---for that proof $\vereq(X) = 0$. Alternatively, event $\nevent{E}_1$
+covers a case when for some $\zkproof_\advse$ it holds that $\vereq(\chi) = 0$,
+but $\vereq(X) \neq 0$, where $\chi$ is $\plonkprotfs$'s trapdoor.
 %
 As all these events are mutually exclusive and exhaustive, we have
 \begin{multline*}
@@ -1069,8 +1067,8 @@ In the cases below, we assume that $\event{F}$ holds.
 
 \ncase{When $\event{E}$ happens}
 \michals{17.09}{I think this event could be made independent on $\event{F}$, but then the analysis is more messy}
-We assume that $\inp_{\advse}$ was submitted to the simulator $\simulator$. 
-We show how $\rdvur$ utilizes $\advse$, that makes use of $\inp_\advse, \zkproof_{\advse}\range{1}{3}$, to break the $\ur{3}$ property of $\plonkprot$. 
+Assume that $\inp_{\advse}$ was submitted to the simulator $\simulator$. 
+We show how $\rdvur$ utilizes $\advse$, which outputs $\inp_\advse, \zkproof_{\advse}\range{1}{3}$, to break the $\ur{3}$ property of $\plonkprot$. 
 This way we bound the probability $\prob{\adv \text{ wins}, \event{E}}$ by the probability of $\rdvur$ being able to win in the $\ur{3}$ game.
 
 Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
