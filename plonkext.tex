@@ -1027,7 +1027,9 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	In this game the environment $\env$ runs the adversary $\advse$ and provides it with access to a random oracle $\ro$ and $\plonkprotfs$ simulator $\plonkprotfs.\simulator$. It picks as input a CRS $\crs$ and inputs it to $\advse$.
 	\michals{18.09}{Who provides the CRS? Should it be taken "from the outside", i.e.~should the environment be an algorithm gets $\crs$ from some external $\plonkprot$ instance?}
 	The adversary wins if it provides an acceptable proof $\zkproof_\advse$ for a statement $\inp_\advse$ which it does not know a witness for.
-	\michals{18.09}{Who extracts the witness? Environment $\env$?}
+	\michals{18.09}{Who extracts the witness? Environment $\env$?}\\
+	\michals{18.09}{Is the environment here inefficient? (how it check the winning condition)?}\\
+	\michals{18.09}{Maybe the adversary should win if it gives an acceptable proof for a false statement (and remove the requirement of knowledge of the witness)?}
 	
 	\ngame{1}\michals{17.09}{$\advse$ wins if there is no extractable witness for its proof, break when $\ur{3}$ broken}
 	This is identical to $\game{0}$ except that now the environment aborts when the proof provided by $\advse$ can be used to break $\ur{3}$-ness of $\plonkprot$. Denote that event 
@@ -1060,10 +1062,13 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 		\end{align*}
 		\end{itemize}  
 		If $\zkproof_1 = \zkproof_2$, then $\advse$ fails to break simulation extractability, as $\zkproof_2 \in Q$.
-		On the other hand, if the proofs are not equal, then $\rdvur$ breaks $\ur{3}$-ness of $\plonkprot$. 
+		On the other hand, if the proofs are not equal, then $\rdvur$ breaks $\ur{3}$-ness of $\plonkprot$, what may happen with some negligible probability $\epsur$ only, hence
+		\[
+			\prob{\event{\errur}} \leq \epsur\,.
+		\]
 		
 	\ngame{2}\michals{17.09}{$\advse$ wins if there is no extractable witness for its proof, break when $\ur{3}$ broken or generating tree of transcripts fails}
-	This is identical to $\game{1}$ except that now the environment aborts also when it fails to build a $(1, 1, 1, \numberofconstrains + 3, 1)$-tree of accepting transcripts by rewinding $\advse$. Denote that event 
+	This is identical to $\game{1}$ except that now the environment aborts also when it fails to build a $(1, 1, 1, \numberofconstrains + 3, 1)$-tree of accepting transcripts $\tree$ by rewinding $\advse$. Denote that event 
 	by $\event{\errfrk}$.
 	
 	\ncase{$\game{1} \mapsto \game{2}$}	
@@ -1077,7 +1082,20 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	\]
 	
 	\ngame{3}\michals{17.09}{$\advse$ wins if there is no extractable witness for its proof, break when $\ur{3}$ broken, generating tree of transcripts fails, or special soundness is broken}
-	This is identical to $\game{2}$ except that now the environment aborts also when from the tree of accepting transcript $\tree$ it cannot produce a valid witness $\wit_\advse$, such that $\REL(\inp_\advse, \wit_\advse)$ holds. Denote that event by $\event{\errss}$.
+	This is identical to $\game{2}$ except that now the environment uses the tree $\tree$ to extract the witness for the proven statement and aborts when it fails. Denote that event by $\event{\errss}$.
+	
+	\ncase{$\game{2} \mapsto \game{3}$}	
+	As previously, 
+	\[
+		\abs{\prob{\game{2}} - \prob{\game{3}}} \leq \event{\errss}\,.
+	\]
+	Since $\plonkprot$ is special-sound the probability that $\env$ fails in extracting the witness is upper-bounded by some negligible $\eps_\ss$.
+	
+	In the last game, Game $\game{3}$, the environment aborts when it fails to extract the correct witness, hence the adversary $\advse$ cannot win. 
+	Thus, by the game-hoping argument, 
+	\[
+		\abs{\prob{\game{0}} - \prob{\game{3}}} \leq 1 - \left(\frac{\accProb^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \frac{\accProb \cdot (\numberofconstrains + 2)}{2^\secpar}\right) + \epsur + \epsss
+	\]
 	\qed
 \end{proof}
 \begin{proof}[by separation of events]
