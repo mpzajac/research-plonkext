@@ -1006,7 +1006,7 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 			& \crs \gets \kgen(\REL, \secparam),\\
 			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs, \ro} (\REL, \crs) 
 		\end{aligned}
-		\right]\,,
+		\right.\right]\,,
 	\]
 	probability
 	\[
@@ -1022,7 +1022,7 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs, \ro} (\REL, \crs) \\
 			& \wit_\advse \gets \ext_\ss (\trans_{\advse}) 
 		\end{aligned}
-		\right]
+		\right.\right]
 	\]
 	is at at least 
 	\[
@@ -1055,9 +1055,12 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	$\zkproof\range{i}{j}$ to denote all messages of the proof including challenges between rounds $i$ and $j$.
 
 	Without loss of generality, for every acceptable proof $\zkproof_{\advse}$, we
-	assume that whenever $\advse$ outputs in Round $i$ a message $m$, then
+	assume that whenever $\advse$ outputs in Round $i$, $i 
+	> 3$, a message $m$, then
 	$\zkproof_{\advse}\range{1}{i}$ is a fresh query to the random oracle.
 	\michals{22.09}{understand it in the light of a new proof approach}
+	\michals{22.09}{added ", $i 
+	> 3$", for $i \leq 2$ we need to allow the adversary to pick unfresh queries -- as he might randomize the first 2 rounds}
 	In the following we denote the instance and proof output by $\advse$ by $\inp_\advse$ and $\zkproof_\advse$ respectively.
 	
 	\ngame{0} 
