@@ -979,8 +979,19 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 
 \subsection{From special-soundness and unique response property to simulation extractability}
 
+\begin{lemma}[Difference lemma,  cf.~{\cite[Lemma 1]{EPRINT:Shoup04}}]
+	\michals{22.09}{To be moved to preliminaries}
+	\label{lem:difference_lemma}
+	Let $\event{A}, \event{B}, \event{F}$ be events defined in some probability distribution, and suppose that $\event{A} \land \nevent{F} \iff \event{B} \land \nevent{F}$. 
+	Then 
+	\[
+		\abs{\prob{\event{A}} - \prob{\event{B}}} \leq \prob{\event{F}}\,.
+	\]
+\end{lemma}
+
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:simext}
+	\michals{22.09}{To be moved to preliminaries}
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a special-sound HVZK proof and $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$ transformed by the Fiat--Shamir transform. 
 	We say that $\ps_\fs$ is simulation extractable with \emph{extraction error} $\nu$ if for any PPT adversary $\adv$ that is given oracle access to a random oracle $\ro$ and simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with probability
 	$\waccProb$, that is
