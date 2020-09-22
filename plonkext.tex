@@ -978,27 +978,55 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 \end{proof}
 
 \subsection{From special-soundness and unique response property to simulation extractability}
-Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ and computationally special sound.
+
+\begin{definition}[Simulation-extractable NIZK]
+	\label{def:simext}
+	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a special-sound HVZK proof and $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$ transformed by the Fiat--Shamir transform. 
+	We say that $\ps_\fs$ is simulation extractable with \emph{extraction error} $\nu$ if for any PPT adversary $\adv$ that is given oracle access to a random oracle $\ro$ and simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with probability
+	$\waccProb$, that is
+	\[
+		\waccProb = \Pr \left[
+		\begin{aligned}
+			& \verifier_\fs(\REL, \crs, \inp_\advse, \zkproof_\advse) = 1,\\
+			& (\inp_\advse, \zkproof_\advse) \not\in Q
+		\end{aligned}
+		\, \left| \,
+		\begin{aligned}
+			& \crs \gets \kgen(\REL, \secparam),\\
+			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs, \ro} (\REL, \crs) 
+		\end{aligned}
+		\right]\,,
+	\]
+	probability
+	\[
+		\frkProb = \Pr \left[
+		\begin{aligned}
+			& \verifier_\fs(\REL, \crs, \inp_\advse, \zkproof_\advse) = 1,\\
+			& (\inp_\advse, \zkproof_\advse) \not\in Q,\\
+			& \REL(\inp_\advse, \wit_\advse) = 0
+		\end{aligned}
+		\, \left| \,
+		\begin{aligned}
+			& \crs \gets \kgen(\REL, \secparam),\\
+			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs, \ro} (\REL, \crs) \\
+			& \wit_\advse \gets \ext_\ss (\trans_{\advse}) 
+		\end{aligned}
+		\right]
+	\]
+	is at at least 
+	\[
+		\frkProb \geq \frac{1}{\poly} (\waccProb - \nu)^d - \eps(\secpar)\,,
+	\]
+	for some polynomial $\poly$, constant $d$ and negligible $\eps$ whenever $\waccProb \geq \nu$.
+\end{definition}
+
+Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ and computationally special sound we are able to follow \cite{INDOCRYPT:FKMV12} and show that $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
 
 \begin{theorem}[Simulation extractability]
-	Assume that $(\numberofconstrains + 2)$-dlog is $\eps_\dlog(\secpar)$-hard and $\plonkprot$ is $\ur{3}$ with security $\eps_{\ur{3}}(\secpar)$. 
+	Assume that $(\numberofconstrains + 2)$-dlog is $\eps_\dlog(\secpar)$-hard and $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$. 
 	Let $\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. 
-	Let $\advse$ be a PPT adversary that can make up to $q$ random oracle queries and outputs an acceptable proof for $\plonkprotfs$ with probability at least $\widetilde{\accProb}$.
-	% Then the probability that an algebraic, PPT adversary $\advse$ breaks simulation extractability of $\plonkprotfs$ is upper-bounded by 
-	% \michals{16.09}{some numbers will come here}
-	% \michals{16.09}{check what the extraction error is (in FKMV it's Q/h)}
-	Then $\plonkprotfs$ is \hl{simulation-extractable with extraction error} $\eta = \ldots$.
-	% \begin{multline*}
-	% \[
-	% 	1 - \left(
-	% 		\frac{\accProb^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \frac{\accProb \cdot (\numberofconstrains + 2)}{2^\secpar}
-	% 	\right)% +
-	% 	\cdot 
-	% 	\left(
-	% 		1 - (\eps_{\ur{3}} + \epsbatch + \eps_\dlog)
-	% 	\right)
-	% \]
-	% \end{multline*}
+	Let $\advse$ be a PPT adversary that can make up to $q$ random oracle queries and outputs an acceptable proof for $\plonkprotfs$ with probability at least $\waccProb$.
+	Then $\plonkprotfs$ is simulation-extractable with extraction error $\eta = \epsur$.
 \end{theorem}
 \begin{proof}[by game hoping]
 	The proof goes by game hoping. The games are controlled by an environment $\env$ that internally tuns a simulation extractability adversary $\advse$, simulates its with access to a random oracle and simulator, and when necessary rewinds it.
@@ -1106,7 +1134,17 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	\[
 		\left(\frac{\accProb^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \frac{\accProb \cdot (\numberofconstrains + 2)}{2^\secpar}\right) - \epsur - \epsss\,.
 	\]
-	
+	Since $\accProb$ is probability of $\advse$ outputting acceptable transcript that does not break $\ur{3}$-ness of $\plonkprot$, then $\waccProb \leq \accProb + \epsur$, where $\waccProb$ is the probability of $\advse$ outputing an acceptable proof as defined in \cref{def:simext}. It thus holds
+	\[
+		\label{eq:frk}
+		\frkProb \geq \frac{(\waccProb - \epsur)^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \underbrace{\frac{(\waccProb - \epsur) \cdot (\numberofconstrains + 2)}{2^\secpar} - \epsur - \epsss}_{\eps}\,.
+	\]
+	Note that the part of \cref{eq:frk} denoted by $\eps$ is negligible and 
+	\[
+		\frkProb \geq \frac{1}{q^\numberofconstrains + 2} (\waccProb - \epsur)^{\numberofconstrains + 3} -\eps\,.
+	\] 
+	thus
+	$\plonkprot_\fs$ is simulation extractable with extraction error $\epsur$.
 	\qed
 \end{proof}
 \begin{proof}[by separation of events]
