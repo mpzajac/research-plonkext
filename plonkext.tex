@@ -68,10 +68,12 @@
 	\maketitle
 
 \begin{abstract}
-	In this paper we prove that some most-efficient updatable universal zkSNARKs like \plonk{}~\cite{EPRINT:GabWilCio19}  is (non black-box) simulation extractable.
-	To that end, we generalise the result by Faust et al.~\cite{INDOCRYPT:FKMV12} (INDOCRYPT 2012) and show that any witness-extended emulatable is also simulation-extractable if made non-interactive by the Fiat--Shamir transform. We then explain why \plonk{} is has witness-extended emulation and conclude by showing its simulation-extractability.
-	\michals{14.05.20}{Since Sonic is witness-extended emulation then it may be simulation extractable as well. But does it have the unique response property?}
-	\task{15.05}{Check Marlin}
+	In this paper we prove that the most-efficient updatable universal zkSNARK---\plonk{}~\cite{EPRINT:GabWilCio19}---is (non black-box) simulation extractable.
+	To that end, we generalise the result by Faust et al.~\cite{INDOCRYPT:FKMV12} (INDOCRYPT 2012) and show that any special-sound proof of knowledge that has the unique response property is also simulation-extractable if made non-interactive by the Fiat--Shamir transform. 
+	We then explain why \plonk{} meets these requirements and conclude by showing its simulation-extractability.
+	Unfortunately, we also show that relying on rewinding and Fiat--Shamir transform often comes at a great price of inefficient knowledge extraction and the security loss introduced by these techniques should always be taken into account.
+	Because of the inefficiency and loosenes of the reduction we independently show that $\plonk{}$ is simulation-sound. 
+	\task{15.05}{Check Sonic and Bulletproofs}
 \end{abstract}
 
 \section{Introduction}
@@ -91,7 +93,17 @@
 \cite{EPRINT:AtaBag19}
 
 \subsection{Our contribution}
-First of all, we prove that $\plonk$ is simulation-extractable. Although we change the original protocol only little, we had to solve a number of problems in order to show that. The idea of the proof goes as follows.
+First of all, we prove that $\plonk$ is simulation-extractable. Although we do not change the original protocol at all, we had to solve a number of problems in order to show that. The idea of the proof goes as follows.
+
+\paragraph{Special soundness of $\plonkprot$.}
+As presented in \cite{EPRINT:GabWilCio19}, \plonk{} is a non-interactive protocol, which relies on an interactive proof of knowledge and the Fiat--Shamir transform. Thus, we denote the underlying protocol by $\plonkprot$ and the resulting, non-interactive one by $\plonkprot_\fs$. 
+
+To be able to follow \cite{INDOCRYPT:FKMV12} it had to be shown that $\plonkprot$ is special-sound. However the standard definition of special soundness could not be met.
+First of all, the standard definition requires extraction of a witness from merely two transcripts, each containing three messages, that share the first message. For $\plonkprot$ that gives nothing. The definition had to be tuned to cover protocols that have more rounds than just three. 
+Furthermore, the number of transcripts required is much greater---$\numberofconstrains + 3$, where $\numberofconstrains$ is the number of constrains in the proven circuit---to be exact. Hence, we do not have a \emph{pair of transcripts}, but \emph{tree of transcripts}.
+
+Secondly, the protocol has a trapdoor what allows an adversary who knows it to produce multiple proofs even without knowingg the witness.  
+
 
 \paragraph{Witness-extended emulation of \plonk{}.}
 First, we show that $\plonk$ has witness-extended emulation. To that end we show how from a number of accepting transcript a witness can be extracted. Unfortunately, \plonk{} does not to fit well in the standard definitions of witness-extended emulations like by Lindell \cite{JC:Lindell03} or by Groth and Ishai \cite{EC:GroIsh08}. The former does not cover arguments that utilises a CRS; although the latter does, it does not consider giving the CRS trapdoor to the extractor. Thus, we had to modify the definition for the witness-extended emulation.
