@@ -1046,6 +1046,7 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	Without loss of generality, for every acceptable proof $\zkproof_{\advse}$, we
 	assume that whenever $\advse$ outputs in Round $i$ a message $m$, then
 	$\zkproof_{\advse}\range{1}{i}$ is a fresh query to the random oracle.
+	\michals{22.09}{understand it in the light of a new proof approach}
 	In the following we denote the instance and proof output by $\advse$ by $\inp_\advse$ and $\zkproof_\advse$ respectively.
 	
 	\ngame{0} 
@@ -1135,21 +1136,7 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 		\left(\frac{\accProb^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \frac{\accProb \cdot (\numberofconstrains + 2)}{2^\secpar}\right) - \epsur - \epsss\,.
 	\]
 	Since $\accProb$ is probability of $\advse$ outputting acceptable transcript that does not break $\ur{3}$-ness of $\plonkprot$, then $\waccProb \leq \accProb + \epsur$, where $\waccProb$ is the probability of $\advse$ outputing an acceptable proof as defined in \cref{def:simext}. It thus holds
-	\[
-		\label{eq:frk}
-		\frkProb \geq \frac{(\waccProb - \epsur)^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \underbrace{\frac{(\waccProb - \epsur) \cdot (\numberofconstrains + 2)}{2^\secpar} - \epsur - \epsss}_{\eps}\,.
-	\]
-	Note that the part of \cref{eq:frk} denoted by $\eps$ is negligible and 
-	\[
-		\frkProb \geq \frac{1}{q^\numberofconstrains + 2} (\waccProb - \epsur)^{\numberofconstrains + 3} -\eps\,.
-	\] 
-	thus
-	$\plonkprot_\fs$ is simulation extractable with extraction error $\epsur$.
-	\qed
-\end{proof}
 
-% \section{Simulation extractability with special soundness and no AGM}
-	% \task{26.08}{Here the generalised forking lemma could go}
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
 
