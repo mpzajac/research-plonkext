@@ -112,16 +112,27 @@ Consider an interactive $3$-round special-sound protocol $\ps$ and its non-inter
 Since $\plonkprot$ has $10$ rounds and is not special-sound, the forking lemma cannot be used directly. We thus propose its modification that covers protocols that have more rounds and require more transcript than merely two. 
 Unfortunately, when more transcripts is needed the security gap is big. That is, probability that the extractor succeeds diminishes significantly. (That said, we have to note that the security loss is polynomial, albeit huge.)
 
-We observe here that some modern zkSNARKs rely on the Fiat--Shamir transform and the forking lemma heavily. First, an interactive protocol is proposed and its security and special-soundness analysed; second, one uses an argument that the Fiat--Shamir transform can be used to get a protocol that is non-interactive and shares the same security properties. 
-We claim here that such an analysis is not enough and one has to consider the security loss implied by the generalisation of the forking lemma or disclose a transformation that does not suffer from the the generalisation's inefficiency.
+We observe here that some modern zkSNARKs rely on the Fiat--Shamir transform and
+the forking lemma heavily. First, an interactive protocol is proposed and its
+security and special-soundness analysed; second, one uses an argument that the
+Fiat--Shamir transform can be used to get a protocol that is non-interactive and
+shares the same security properties.  We claim here that such an analysis is not
+enough and one has to consider the security loss implied by the generalisation
+of the forking lemma or disclose a transformation that does not suffer from the
+the generalisation's inefficiency.
 
-\subsubsection{Towards simulation-extractability.}
+\subsubsection{Towards simulation-extractability.} Given modified, less
+restrictive, definition for special-soundness and unique response property, and
+generalised forking lemma we are able to show the announced result---simulation
+extractability of $\plonkprot_\fs$. The proof is inspired by simulation-extractability and simulation-soundness proofs from \cite{INDOCRYPT:FKMV12}, with major modifications, which were required as \cite{INDOCRYPT:FKMV12} considers (Fiat--Shamir transformed) sigma-protocols that are undoubtedly simpler protocols than $\plonkprot_\fs$.
+Since the proof highly relies on the (generalised) forking lemma, the security lost it introduces is considerable.
 
 \subsubsection{Efficient simulation-soundness.}
-Given that the security reduction for simulation-extractability 
+Given that the security reduction for simulation-extractability introduces a security gap we also present a proof for $\plonkprot_\fs$ simulation soundness which utilises the algebraic group model and is tight. 
+It remains an open question how to show simulation extractability tightly, e.g.~using AGM.
 
 \subsubsection{Interactive zero knowledge vs non-interactive zero knowledge.}
-Another issue we tackle with is a question whether NIZK proof systems are in fact zero-knowledge, see e.g.~\cite{C:Pass03}. This problem was raised as one could observe that a NIZK proof system has a property alien to interactive proofs---a verifier who obtains a proof $\zkproof$ for a statement $\inp \in \LANG$ inevitably learns how to prove this statement. More precisely, he can just reuse the obtained proof $\zkproof$. This makes the verifier learn undoubtedly more than simply the veracity of the proven statement. On the other hand, the verifier learns a particular proof $\zkproof$ for a concrete CRS $\crs$ only. However, the CRS generator is considered trusted, thus the proof $\zkproof$ could be considered as a proof for $\inp$ universally, regardless the CRS.
+Another issue we tackle with is a question whether NIZK proof systems are in fact zero-knowledge, see e.g.~\cite{C:Pass03}. This problem was raised as one could observe that a NIZK proof system has a property alien to interactive proofs---a verifier who obtains a proof $\zkproof$ for a statement $\inp \in \LANG$ inevitably learns how to prove this statement. More precisely, he can just reuse the obtained proof $\zkproof$. This makes the verifier learn undoubtedly more than simply the veracity of the proven statement. On the other hand, the verifier learns a particular proof $\zkproof$ for a concrete CRS $\crs$ only. However, the CRS generator is considered trusted, thus the proof $\zkproof$ could be considered as a proof for $\inp$ generally, regardless the CRS.
 
 Simulation-extractable updatable NIZKs---and zkSNARKs in particular---tighten
 the gap between interactive zero knowledge and non-interactive zero knowledge in
