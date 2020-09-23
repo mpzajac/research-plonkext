@@ -77,6 +77,7 @@
 \end{abstract}
 
 \section{Introduction}
+\subsection{Motivation}
 \paragraph{The rise of updatable zkSNARKs.}
 \cite{C:GKMMM18}
 \cite{EC:CHMMVW20}
@@ -91,6 +92,11 @@
 \cite{EPRINT:AbdRamSla20}
 \cite{EPRINT:KZMQCP15}
 \cite{EPRINT:AtaBag19}
+
+\paragraph{State of the art---simulation-extractable updatable zkSNARKs.}
+Up to our best knowledge, there are zkSNARKs that are simulation-extractable and zkSNARKs that are updatable, however there is no known zkSNARKs that enjoy both of these properties.
+Given an updatable zkSNARK one could lift it to be simulation-extractable \michals{23.09}{Cite Coco, Lamassu, some Karim's work (?)}, but such lift comes with inevitably efficiency loss.
+On the other hand, there is no known lift that would take a zkSNARK and make it updatable. Since updatable zkSNARKs are quite restrictive regarding format of their CRSs, making such lift seems as a very difficult task. 
 
 \subsection{Our contribution}
 First of all, we prove that $\plonk$ is simulation-extractable. Although we do not change the original protocol at all, we had to solve a number of problems in order to show that. The idea of the proof is presented below. 
@@ -167,6 +173,15 @@ We denote $\pair (\gone{a}, \gtwo{b})$ as $\gone{a} \bullet \gtwo{b}$.
 Thus, $\gone{a} \bullet \gtwo{b} = \gtar{a b}$.
 We freely use the bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \vec{C}$ then $\vec{A} \grpgi{\vec{B}} = \grpgi{\vec{C}}$ and $\gone{\vec{A}}\bullet \gtwo{\vec{B}} = \gtar{\vec{C}}$.
 
+\paragraph{Compuational assumptions.}
+
+\begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]
+	
+\end{definition}
+
+\paragraph{Proofs by Game-Hoping}
+
+
 \subsection{Polynomial commitment}
 \label{sec:poly_com}
 
@@ -190,7 +205,11 @@ We freely use the bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \v
 	\]
 \end{description}
 
+\subsection{Algebraic Group Model}
 
+
+
+\subsection{}
 
 \subsection{Zero knowledge}
 In a zero-knowledge proof or argument system, a prover convinces the verifier of the veracity of a statement without leaking any side information except that the statement is true.
@@ -388,7 +407,7 @@ Both $\tr_1$ and $\tr_2$ have to be \emph{acceptable}, i.e.~$i > 0$ and the prob
 Index $i$ can be interpreted as an index of $h_i$ which was sent as a challenge for $(\inp, a)$, this index has to be guessed by the security reduction. 
 For the sake of extractability, both transcripts have to have the same index $i$, i.e.~the same instance $\inp$ and the first message $a$, but the actual challenges $z = h_i$ and $z' = h'_{i}$ have to differ.
 
-\subsection{Simulation extractability for multi-round protocols}
+\section{Simulation extractability for multi-round protocols}
 Unfortunately, Faust et al.'s result cannot be directly applied in our case since the protocols we consider have more than three rounds of interaction.
 
 \paragraph{Generalised forking lemma.}
