@@ -108,18 +108,30 @@ Secondly, the protocol has a trapdoor what allows an adversary who knows it to p
 Another property that has to be proven for $\plonkprot$ is the unique response property \cite{C:Fischlin05} which states that except the first round, all messages sent by the prover are deterministic. As previously, we also could not use this definition right out of the box as $\plonkprot$ does not follow it---both first and the second prover's messages are randomised. We thus propose a generalisation of the definition which states that a protocol is $\ur{i}$ if the prover is deterministic after sending its $3$-rd message. This property $\plonkprot$ follows.
 
 \subsubsection{Generalisation of the general forking lemma.}
+Consider an interactive $3$-round special-sound protocol $\ps$ and its non-interactive version $\ps_\fs$ obtained by using the Fiat--Shamir transform. The general forking lemma provides an instrumental lower bound for probability of extracting a witness from two proofs for the same statement that share the first message.
+Since $\plonkprot$ has $10$ rounds and is not special-sound, the forking lemma cannot be used directly. We thus propose its modification that covers protocols that have more rounds and require more transcript than merely two. 
+Unfortunately, when more transcripts is needed the security gap is big. That is, probability that the extractor succeeds diminishes significantly. (That said, we have to note that the security loss is polynomial, albeit huge.)
 
+We observe here that some modern zkSNARKs rely on the Fiat--Shamir transform and the forking lemma heavily. First, an interactive protocol is proposed and its security and special-soundness analysed; second, one uses an argument that the Fiat--Shamir transform can be used to get a protocol that is non-interactive and shares the same security properties. 
+We claim here that such an analysis is not enough and one has to consider the security loss implied by the generalisation of the forking lemma or disclose a transformation that does not suffer from the the generalisation's inefficiency.
+
+\subsubsection{Towards simulation-extractability.}
+
+\subsubsection{Efficient simulation-soundness.}
+Given that the security reduction for simulation-extractability 
 
 \subsubsection{Interactive zero knowledge vs non-interactive zero knowledge.}
 Another issue we tackle with is a question whether NIZK proof systems are in fact zero-knowledge, see e.g.~\cite{C:Pass03}. This problem was raised as one could observe that a NIZK proof system has a property alien to interactive proofs---a verifier who obtains a proof $\zkproof$ for a statement $\inp \in \LANG$ inevitably learns how to prove this statement. More precisely, he can just reuse the obtained proof $\zkproof$. This makes the verifier learn undoubtedly more than simply the veracity of the proven statement. On the other hand, the verifier learns a particular proof $\zkproof$ for a concrete CRS $\crs$ only. However, the CRS generator is considered trusted, thus the proof $\zkproof$ could be considered as a proof for $\inp$ universally, regardless the CRS.
 
-Simulation-extractable updatable NIZKs---and zkSNARKs in particular---tighten the gap between interactive zero knowledge and non-interactive zero knowledge in the CRS model.
-First, simulation-extractability assures that no adversary can maul an existing proof and make a fresh one, what limits replay attacks.
-Second, updatable NIZKs does not assume that there is a trusted party that
-provides a CRS, but rather a sequence of parties (called updaters) that modify
-it. The security model is radically different as now one believes in the
-veracity of a proof only if she trusts that there is at least one honest party
-between the updaters. 
+Simulation-extractable updatable NIZKs---and zkSNARKs in particular---tighten
+the gap between interactive zero knowledge and non-interactive zero knowledge in
+the CRS model. First, simulation-extractability assures that no adversary can
+maul an existing proof and make a fresh one, what limits replay attacks. Second,
+updatable NIZKs does not assume that there is a trusted party that provides a
+CRS, but rather a sequence of parties (called updaters) that modify it. The
+security model is radically different as now one believes in the veracity of a
+proof only if she trusts that there is at least one honest party between the
+updaters. 
 
 We believe that our result may be useful for designing new zkSNARKs, especially those based on a polynomial commitment schemes~\cite{AC:KatZavGol10}, as it shows that a careful protocol design may give it a strong security notion for free.
 
@@ -281,61 +293,6 @@ For the sake of completeness we note that many sigma-protocols, like e.g.~Schnor
 
 \paragraph{Zero knowledge proof system in the CRS model.}
 Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on input $\REL$ outputs a common reference string (CRS) $\crs$. The common reference string comes with a corresponding trapdoor $\td$ that allows the simulator to simulate a proof.
-
-\comment{
-\paragraph{Witness-extended emulation.}
-Interactive proofs run in a multi-protocol environment are often required to fulfil a stronger notion of soundness called \emph{witness-extended emulation}~\cite{JC:Lindell03}.
-The following definition is inspired by  \cite{EC:GroIsh08} as their formulation
-of the witness-extended emulation considers proof systems that utilises a CRS.
-However, there are some changes introduced to make it fit better our purpose.
-More precisely, contrary to \cite{EC:GroIsh08,EC:BCCGP16} the extractor in
-\cref{def:wit_ext_em} is given the trapdoor $\td$, thus seems to be bit more
-powerful.\markulf{09.07.20}{This is the simulation trapdoor. There are no
-  extraction trapdoors in our setting.}
-	\michals{09.07.20}{In my first idea for extraction I wanted to extract from polynomial $\p{z}$ that is computed by the prover in Round 2. To do that the extract had to know the simulation trapdoor and no extractability definitions I saw equipped the extractor with it. Anyway, the idea now is to extract the witness from much simpler polynomials evaluated by the prover in Round 4: $\p{a}, \p{b}, \p{c}$. In that case the extractor doesn't need to know the trapdoor.}
-This means that a protocol that has witness-extended emulation in terms of \cite{EC:GroIsh08} has it also according to \cref{def:wit_ext_em} below.
-There, for the sake of succinctness, we denote by $\trans$ a transcript of a conversation between the prover and the verifier extended with verifier's input $(\REL, \inp)$ (or $(\REL, \crs, \inp)$ in case of a proof system with a setup).
-Furthermore, a proof system $\proofsystem$ is \emph{public coin} if the messages the verifier sends are chosen uniformly at random and independently of the messages send by the prover or system parameters.
-
-\begin{definition}[Witness-extended emulation]
-	\label{def:wit_ext_em}
-	We say a public coin proof system $\proofsystem = (\kcrs, \prover, \verifier,
-  \simulator)$ has \emph{witness-extended emulation} if for all $\REL \in
-  \image(\RELGEN)$, and deterministic adversary $\adv_1$ there exists an
-  expected polynomial time extractor $\ext$ such that for all PPT adversaries $\adv_0$ holds
-		\begin{multline*}
-		\Pr\left[\adv_0 (\trans) = 1 \,\left|\,
-		\begin{aligned}
-				& (\td, \crs) \gets \kcrs(\REL), (\inp, \aux_{\adv_1}) \gets \adv_0, \\
-				& \trans \gets \ip{\adv_1(\REL, \crs, \inp, \aux_{\adv_1})}{\verifier(\REL, \crs, \inp)}
-			\end{aligned}
-		\right.
-		\right]
-		 \approx_\secpar \\
-		 \Pr\left[
-			\begin{aligned}
-				& \adv_0 (\trans) = 1\ , \\
-				& \text{if $\trans$ is accepting} \\
-				& \pcind \text{then $\REL(\inp, \wit)$}
-			\end{aligned}\,\left|\,
-			\begin{aligned}
-				& (\td, \crs) \gets \kcrs(\REL), (\inp, \aux_{\adv_0}) \gets \adv_1(\REL), \\
-				& (\trans, \wit )\gets \ext^{\ip{\adv_1(\REL, \crs, \inp, \aux_{\adv_1})}{\verifier(\REL, \crs, \inp)}}(\REL, \inp, \td)
-			\end{aligned}
-			\vphantom{\begin{aligned}
-				\adv (\trans) = 1, \\
-				\text{if $\trans{}$ is accepting} \\
-				\pcind \text{then $\REL(\inp, \wit)$}
-			\end{aligned}}\right.
-			\right]\,,
-\end{multline*}
-\markulf{09.07.20}{fix left of $|$}
-\michals{09.07}{what do you mean?}
-\michals{14.08}{fixed}
-where the extractor $\ext$ can rewind the conversation between the prover and the verifier to a particular round and run it again with a fresh randomness for the verifier.
-\end{definition}
-Although in the definition above the adversary $\adv_1$ is deterministic it obtains an auxiliary input $\aux_{\adv_1}$ that may be used by $\adv_1$ as a source of randomness. Groth and Ishai~\cite{EC:GroIsh08} note that since the protocol is public-coin, verifier's randomness is part of the transcript. Thus combining $\inp, \aux_\adv$ and an accepting transcript $\trans$ gives a view of both the prover and the verifier and thus gives a witness.
-}
 
 \subsection{Simulation extractable NIZKs from sigma protocols}
 Real life applications often require from a NIZK proof system to be non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement $\inp$ should be able to provide a new proof $\zkproof'$ related to $\zkproof$.
@@ -730,45 +687,6 @@ vector of points? $\vec{s}$ vector of evaluation result}
 	\michals{28.08}{See the lemma above}
 	\qed
 \end{proof}
-
-\comment{
-Equipped with \cref{lem:plonkprot_ur} we show the main theorem and prove that $\plonk$ is simulation extractable. The theorem assumes that dlog is hard, the interactive protocol underlying $\plonk$ is knowledge sound and has unique response property (after third round).
-
-The proof goes by contradiction. Below we show some intuitions behind it.
-Let $\advse$ be an adversary that breaks simulation extractability of $\plonkprotfs$ with some non-negligible probability. 
-We show a $\rdv$ which use $\advse$ to either break knowledge soundness of $\plonkprot$ or to break $(\numberofconstrains + 2)$-dlog assumption.
-
-The proof idea is following. First the reduction takes the CRS from a challenger
-$\cdv_\plonkprot$ or $\cdv_\dlog$ \markulf{27.08}{For dlog the CRS needs to be
-  computed from the monomials?}
-	\michals{27.08}{I guess you meant for Plonk---yes, it needs to be computed from the monomials}, where the former represents game where the reduction tries to break soundness of $\plonkprot$ and the latter game of breaking the dlog assumption. We run the reductions in parallel and use $\rdv$ to denote either $\rdvks$ or $\rdvdlog$.
-% For the sake of simiplicity we assume that $\rdv$ picks the challenger randomly. 
-
-Then, the CRS is provided to the simulation extractability adversary. The reduction allows $\advse$ to make calls to a random oracle and get simulated proofs on required statements. All these queries are handled by $\rdv$.
-Note that $\plonkprotfs$ makes $6$ calls to a random oracle to produce a proof
-and for the adversary to be successful, it has to perform at least that number
-of queries to produce its simulation extractability-breaking
-proof.\markulf{27.08}{Why is this obvious? The adversary could randomize a
-  simulated proof without having to make RO queries? I think we need to use the
-  unique response property here.}
-	\michals{27.08}{My idea was to include in these queries also the queries the simulator makes. I.e.~if adversary asks the simulator to produce a proof it, the simulator makes ro queries which are also counted.}
-	 The reduction tries to guess which queries,
-out of all random oracle queries submitted by the adversary
-\markulf{27.08}{Maybe include all oracle queries, not just adversarial ones
-  here? At least one query needs to be adversarial however?},\michals{27.08}{Yes} are going to be used in the final proof. Denote the queries by $h_{i_1}, \ldots, h_{i_6}$. 
-The reduction on query $h_{i_1}$, which contain the first part of the proof and the proven statement $\inp$, engages in a conversation with $\plonkprot.\verifier$ and try to make a convincing proof for $\inp$ and sends $h_{i_1}$ as its first message for $\plonkprot.\verifier$. Given the verifier's challenge it passes the challenge to the adversary as a result of $\ro(h_{i_1})$. 
-Similarly for the rest of the queries $h_{i_2}, \ldots, h_{i_6}$---the reduction passes them to the verifier and responds to the adversary with the verifier's challenges.
-
-In the end, the adversary outputs a proof $\zkproof$ that should be acceptable
-by $\plonkprotfs.\verifier$, thus the proof produced by $\rdv$ with challenges
-from $\plonkprot.\verifier$ should be acceptable as well. Using the fact that
-the adversary is algebraic, the reduction knows coefficients of the CRS elements
-used in the output proof. For the adversary to be successful the proof cannot
-only be acceptable, it should also be impossible to extract a correct witness
-from it. We consider two cases. In the first, the proof is acceptable, but the
-statement is false. This allows $\rdv$ to break the dlog assumption.
-\markulf{27.08}{Guessing this is explained in more detail below.} Another case is when the proof is acceptable, statement is valid, but the witness cannot be extracted. This proof allows $\rdv$ to break knowledge soundness of $\plonkprot$.
-}
 
 \begin{theorem}[Simulation soundness]
 	\michals{29.08}{Proof done similarly to \cite{INDOCRYPT:FKMV12}}
