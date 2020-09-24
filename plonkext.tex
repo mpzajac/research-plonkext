@@ -340,31 +340,73 @@ Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on i
 
 \subsection{Simulation extractable NIZKs from sigma protocols}
 Real life applications often require from a NIZK proof system to be non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement $\inp$ should be able to provide a new proof $\zkproof'$ related to $\zkproof$.
-A strong version of non-malleability is formalized by simulation extractability.
-This notion states that no adversary can produce valid proof without knowning
-the corresponding witness. This must hold even if the adversary is allowed to see polynomially many simulated proofs for any statements she wishes.
+A strong version of non-malleability is formalised by simulation extractability.
+This notion states that no adversary can produce valid proof without knowing
+the corresponding witness. This must hold even if the adversary is allowed to see polynomially many simulated proofs for any statements it wishes.
 
-\begin{definition}[Simulation extractability]
-	A proof system $\proofsystem$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
+\begin{definition}[Simulation-extractable NIZK]
+	\label{def:simext}
+	\michals{22.09}{To be moved to preliminaries}
+	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a special-sound HVZK proof and $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$ transformed by the Fiat--Shamir transform. 
+	We say that $\ps_\fs$ is simulation extractable with \emph{extraction error} $\nu$ if for any PPT adversary $\adv$ that is given oracle access to a random oracle $\ro$ and simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with probability
+	$\waccProb$, that is
 	\[
-	\condprob{
-  \begin{aligned}
-    &(\inp, \wit) \not\in \REL,\\
-		&(\inp, \zkproof) \not\in Q, \\
-    & \verifier (\REL, \crs, \inp, \zkproof) = 1
-  \end{aligned}
-  }
-  {
+		\waccProb = \Pr \left[
 		\begin{aligned}
-		& \REL \gets \RELGEN (\secparam),
-		(\crs, \td) \gets \kgen (\REL), r \sample \RND{\adv},
-		\\ &
-		((\inp, \zkproof)  \|  \wit) \gets (\adv^{\oracleo}  \|  \ext_\adv) (\REL, \crs; r)
+			& \verifier_\fs(\REL, \crs, \inp_\advse, \zkproof_\advse) = 1,\\
+			& (\inp_\advse, \zkproof_\advse) \not\in Q
 		\end{aligned}
-	} \leq \negl \enspace,
+		\, \left| \,
+		\begin{aligned}
+			& \crs \gets \kgen(\REL, \secparam),\\
+			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs, \ro} (\REL, \crs) 
+		\end{aligned}
+		\right.\right]\,,
 	\]
-	where $\oracleo$ on input $\inp'$ returns $\zkproof' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $(\inp', \zkproof')$ to a list $Q$.
+	probability
+	\[
+		\frkProb = \Pr \left[
+		\begin{aligned}
+			& \verifier_\fs(\REL, \crs, \inp_\advse, \zkproof_\advse) = 1,\\
+			& (\inp_\advse, \zkproof_\advse) \not\in Q,\\
+			& \REL(\inp_\advse, \wit_\advse) = 0
+		\end{aligned}
+		\, \left| \,
+		\begin{aligned}
+			& \crs \gets \kgen(\REL, \secparam),\\
+			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs, \ro} (\REL, \crs) \\
+			& \wit_\advse \gets \ext_\ss (\trans_{\advse}) 
+		\end{aligned}
+		\right.\right]
+	\]
+	is at at least 
+	\[
+		\frkProb \geq \frac{1}{\poly} (\waccProb - \nu)^d - \eps(\secpar)\,,
+	\]
+	for some polynomial $\poly$, constant $d$ and negligible $\eps$ whenever $\waccProb \geq \nu$.
 \end{definition}
+
+% \begin{definition}[Simulation extractability]
+% 	A proof system $\proofsystem$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
+% 	\[
+% 	\condprob{
+%   \begin{aligned}
+%     &(\inp, \wit) \not\in \REL,\\
+% 		&(\inp, \zkproof) \not\in Q, \\
+%     & \verifier (\REL, \crs, \inp, \zkproof) = 1
+%   \end{aligned}
+%   }
+%   {
+% 		\begin{aligned}
+% 		& \REL \gets \RELGEN (\secparam),
+% 		(\crs, \td) \gets \kgen (\REL), r \sample \RND{\adv},
+% 		\\ &
+% 		((\inp, \zkproof)  \|  \wit) \gets (\adv^{\oracleo}  \|  \ext_\adv) (\REL, \crs; r)
+% 		\end{aligned}
+% 	} \leq \negl \enspace,
+% 	\]
+% 	where $\oracleo$ on input $\inp'$ returns $\zkproof' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $(\inp', \zkproof')$ to a list $Q$.
+% \end{definition}
 
 % Faust et al.~\cite{INDOCRYPT:FKMV12} show every
 Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
@@ -421,7 +463,7 @@ Both $\tr_1$ and $\tr_2$ have to be \emph{acceptable}, i.e.~$i > 0$ and the prob
 Index $i$ can be interpreted as an index of $h_i$ which was sent as a challenge for $(\inp, a)$, this index has to be guessed by the security reduction. 
 For the sake of extractability, both transcripts have to have the same index $i$, i.e.~the same instance $\inp$ and the first message $a$, but the actual challenges $z = h_i$ and $z' = h'_{i}$ have to differ.
 
-\section{Towards simulation extractability for multi-round protocols}
+\section{Towards simulation extractability for multi-round protocols---definitions and lemmas}
 Unfortunately, Faust et al.'s result cannot be directly applied in our case since the protocols we consider have more than three rounds of interaction, require more than just two transcript for the extractor to work and $\plonkprot$ is not special sound.
 
 \subsection{Generalised forking lemma.}
@@ -633,24 +675,6 @@ This property will be important later in the simulation-extractability proof.
 }
 
 \subsection{Computational special soundness}
-
-\section{Simulation-extactability---the general result}
-
-\section{Simulation extractability} 
-In this section we show that $\plonkprotfs$
-is not only simulation-sound, but also simulation-extractable. To that end, we
-proceed as follows. First we show that the underlying interactive proof scheme
-$\plonkprot$ is (kind of) special-sound. That is, given a number of acceptable
-transcripts which match on the first 3 rounds of the protocol we can either
-reveal a correct witness for the proven statement or use one of the transcripts
-to break the dlog assumption. The latter requires use of the AGM. More
-precisely, we assume that each group element that is published as a part of the
-transcripts comes with a vector of coefficients that represents the element in
-the basis compound of the input group elements, i.e.~$\plonkprot$'s CRS.
-
-Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is simulation-extractable. That is, we build reductions that given a simulation extractability adversary $\advse$ either breaks the protocol's unique response property or breaks the dlog assumption, if extracting a valid witness from a tree of transcripts is impossible.
-
-\subsection{Special soundness of $\plonkprot$}
 Note that the special soundness property (as usually defined) holds for all--- even computationally unbounded---adversaries. Since a simulation trapdoor for $\plonkprot$ exists, it is not special sound in that regard---as an unbounded adversary could reveal the trapdoor and build a number of simulated proofs for a fake statement. 
 Hence, we provide a weaker, yet sufficient, definition of \emph{computational special soundness}. More precisely, we state that an adversary that is able to answer correctly multiple challenges either knows the witness or can be used to break some computational assumption. 
 
@@ -659,6 +683,124 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 	We say that $\proofsystem$ is $(n_1, \ldots, n_k)$-\emph{special sound} if for every PPT adversary $\adv$ that produces an accepting $(n_1, \ldots, n_k)$ tree of transcripts $\tree$ for a statement $\inp$ there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$ with an overwhelming probability.
 \end{definition}
 
+\section{Simulation-extractability---the general result}
+\task{24.09}{Put here a general result -- a special sound, ur protocol is sim. ext after FS}
+
+\section{Simulation extractability of $\plonkprotfs$} 
+In this section we show that $\plonkprotfs$
+is not only simulation-sound, but also simulation-extractable. To that end, we
+proceed as follows. 
+First we show that the version of the KZG polynomial commitment scheme that is proposed in the \plonk{} paper has the unique opening property, cf.~\cref{sec:poly_com} and \cref{lem:kzg_unique_op}. This is next used to show that $\plonkprot$ has $\ur{3}$ property, cf.~\cref{lem:plonkprot_ur}.
+
+Then, we that 
+$\plonkprot$ is (kind of) special-sound. That is, given a number of acceptable
+transcripts which match on the first 3 rounds of the protocol we can either
+reveal a correct witness for the proven statement or use one of the transcripts
+to break the dlog assumption. The latter requires use of the AGM. More
+precisely, we assume that each group element that is published as a part of the
+transcripts comes with a vector of coefficients that represents the element in
+the basis compound of the input group elements, i.e.~$\plonkprot$'s CRS. See \cref{lem:plonkprot_ss}.
+
+Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is simulation-extractable. That is, we build reductions that given a simulation extractability adversary $\advse$ either breaks the protocol's unique response property or breaks the dlog assumption, if extracting a valid witness from a tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
+
+\subsection{Unique response property}
+\begin{lemma}
+	\label{lem:kzg_unique_op}
+	Let $\PCOM$ be a batched version of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19}. Let $k \in \NN$, $\vec{z}, \vec{o} \in \FF_p^2$, $\vec{c}, \vec{s} \in \ZZ_p^k$, then for every PPT adversary $\adv$	
+	\[
+		\Pr
+			\left[
+				\begin{aligned}
+					& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o}), \\
+					& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o'}) \\
+					% & \vec{s'} \neq \vec{s} \lor 
+					&\vec{o'} \neq \vec{o}
+				\end{aligned}
+			\,\left|\,
+			\vphantom{\begin{aligned}
+				& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o}), \\
+				& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o'}) \\
+				% & \vec{s'} \neq \vec{s} \lor 
+				&\vec{o'} \neq \vec{o}
+			\end{aligned}}
+			\begin{aligned}
+				& \crs \gets \PCOM.\kcrs(\secparam), \\
+				&	(\vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}, \vec{o'}) \gets \adv(\crs)
+			\end{aligned}
+			\right.\right]
+		 \leq \negl.
+	\]
+\end{lemma}
+\markulf{30.08}{Explain what $\vec{c}, \vec{z}, \vec{s}, \vec{o}$ are. $\vec{z}$
+vector of points? $\vec{s}$ vector of evaluation result}
+\begin{proof}
+	First, consider a case where the commitment is limited to commit to multiple polynomials which are evaluated at the same point $z$. 
+	As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound
+  the probability of the adversary succeeding using the idealised verification equation, which considers equality between polynomials, instead of the real verification equation, which consider equality of the polynomials' evaluations.
+	
+	For polynomials $\vec{f} = f_1, \ldots, f_k$, evaluation point $z$, evaluation result $\vec{s} = s_1, \ldots, s_k$, and opening $o$ the idealised check verifies that
+	\begin{equation}
+		\sum_{i = 1}^k \gamma^{i - 1} f_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} s_i \equiv o(X) (X - z)\,.
+		\label{eq:pcom_idealised_check}
+	\end{equation}
+	Since $o(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial composition, there is only one $o(X)$ that fulfils the equation above.
+	% If the check holds, then 
+	% \[
+	% 	\sum_{i = 1}^k \gamma^{i - 1} f_i(z) = \sum_{i = 1}^{k} \gamma^{i - 1} s_i\,
+	% \]
+	% and since $\gamma$ has been picked randomly and independently after the polynomials $\vec{f}$ were submitted it also holds 
+	% \(
+	% 	f_i(z) =  s_i,
+	% \)
+	%  for each individual $i \in \range{1}{k}$.
+	\qed
+\end{proof}
+\comment{
+\begin{corollary}
+	Let $\PCOM$ be a modification of the KZG polynomial commitment scheme
+  \cite{AC:KatZavGol10} as presented in \cite{EPRINT:GabWilCio19}. Then $\PCOM$
+  is evaluation binding and has unique opening property.
+\end{corollary}
+}
+
+\begin{lemma}
+	\label{lem:plonkprot_ur}
+	If a polynomial commitment scheme $\PCOM$ is evaluation binding and has unique openings property\michals{28.08}{Property formalised in Sec 2.1}, then $\plonkprot$ is $\ur{3}$.\footnote{An attentive reader may note that $\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required.}
+\end{lemma}
+\begin{proof}
+	Assume the opposite and an adversary $\adv$ that breaks $\ur{3}$-ness of
+  $\plonkprot$. \markulf{30.08}{This is fine. But sounds as if the law of the
+    excluded middle is needed here. I am not sure it is. :) Mostly a
+    philosophical point.}
+	We consider 2 cases, depending on which round $\adv$ is able to provide at
+  least two outputs such that the resulting transcripts are acceptable.
+  \markulf{30.08}{Rewrote this text: that in each of them $\adv$ breaks the
+    evaluation binding property of $\PCOM$.}
+  For the first case we show that $\adv$ breaks the evaluation binding property of $\PCOM$, while for the
+  second case we show that it breaks the unique opening property of $\PCOM$.
+	
+	\case{1}
+	In Round 4 the prover is asked to give evaluations of predefined polynomials at some point $\chz$. Naturally, for the given polynomials only one value at $\chz$ is correct.
+	Assume $\adv$ is able to produce two different outputs in that round: $\vec{r_4} = (\ev{\p{a}}, \ev{\p{b}}, \ev{\p{c}}, \ev{\p{S_{\sigma 1}}}, \ev{\p{S_{\sigma 2}}}, \ev{\p{r}}, \ev{\p{z}})$ and 
+	$\vec{r_4} = (\ev{\p{a}}', \ev{\p{b}}', \ev{\p{c}}', \ev{\p{S_{\sigma 1}}}', \ev{\p{S_{\sigma 2}}}', \ev{\p{r}}', \ev{\p{z}}')$
+	which suppose to be evaluations at $\chz$ of polynomials $\p{a}, \p{b}, \p{c}, \p{S_{\sigma 1}}, \p{S_{\sigma 2}}, \p{r}$ and an evaluation at $\chz \omega$ of $\p{z}$.
+	Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus if both evaluations are acceptable by the $\PCOM.\verify$ then the evaluation binding property of $\PCOM$ is broken.
+	
+	\case{2}
+	In the last round of the protocol the prover provides openings for the polynomial commitments done before. 
+	Assume $\adv$ is able to produce two different polynomial commitment openings pairs: 
+	$\vec{r_5} = (\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and 
+	$\vec{r'_5} = (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
+	% Since \cref{lem:kzg_unique_op}, 
+	Since $\PCOM$ has unique opening property, 
+	one of the openings has to be incorrect and should be rejected by the polynomial commitment verifier. 
+	\michals{28.08}{In this case we also need to show that only one opening for a KZG polynomial commitment is acceptable. This property seems not be covered by the original KZG paper}
+	\michals{28.08}{See the lemma above}
+	\qed
+\end{proof}
+
+
+\subsection{Special soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
 	Let $\adv$ be a PPT algebraic adversary. The probability $\epsss$ that $\adv$ breaks 
@@ -703,51 +845,10 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 
 \subsection{From special-soundness and unique response property to simulation extractability}
 
-\begin{definition}[Simulation-extractable NIZK]
-	\label{def:simext}
-	\michals{22.09}{To be moved to preliminaries}
-	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a special-sound HVZK proof and $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$ transformed by the Fiat--Shamir transform. 
-	We say that $\ps_\fs$ is simulation extractable with \emph{extraction error} $\nu$ if for any PPT adversary $\adv$ that is given oracle access to a random oracle $\ro$ and simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with probability
-	$\waccProb$, that is
-	\[
-		\waccProb = \Pr \left[
-		\begin{aligned}
-			& \verifier_\fs(\REL, \crs, \inp_\advse, \zkproof_\advse) = 1,\\
-			& (\inp_\advse, \zkproof_\advse) \not\in Q
-		\end{aligned}
-		\, \left| \,
-		\begin{aligned}
-			& \crs \gets \kgen(\REL, \secparam),\\
-			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs, \ro} (\REL, \crs) 
-		\end{aligned}
-		\right.\right]\,,
-	\]
-	probability
-	\[
-		\frkProb = \Pr \left[
-		\begin{aligned}
-			& \verifier_\fs(\REL, \crs, \inp_\advse, \zkproof_\advse) = 1,\\
-			& (\inp_\advse, \zkproof_\advse) \not\in Q,\\
-			& \REL(\inp_\advse, \wit_\advse) = 0
-		\end{aligned}
-		\, \left| \,
-		\begin{aligned}
-			& \crs \gets \kgen(\REL, \secparam),\\
-			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs, \ro} (\REL, \crs) \\
-			& \wit_\advse \gets \ext_\ss (\trans_{\advse}) 
-		\end{aligned}
-		\right.\right]
-	\]
-	is at at least 
-	\[
-		\frkProb \geq \frac{1}{\poly} (\waccProb - \nu)^d - \eps(\secpar)\,,
-	\]
-	for some polynomial $\poly$, constant $d$ and negligible $\eps$ whenever $\waccProb \geq \nu$.
-\end{definition}
-
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ and computationally special sound we are able to follow \cite{INDOCRYPT:FKMV12} and show that $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
 
-\begin{theorem}[Simulation extractability]
+\begin{theorem}[Simulation extractability of $\plonkprot_\fs$]
+	\label{thm:plonkprotfs_se}
 	Assume that $(\numberofconstrains + 2)$-dlog is $\eps_\dlog(\secpar)$-hard and $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$. 
 	Let $\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. 
 	Let $\advse$ be a PPT adversary that can make up to $q$ random oracle queries and outputs an acceptable proof for $\plonkprotfs$ with probability at least $\waccProb$.
@@ -866,11 +967,11 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	Since $\accProb$ is probability of $\advse$ outputting acceptable transcript that does not break $\ur{3}$-ness of $\plonkprot$, then $\waccProb \leq \accProb + \epsur$, where $\waccProb$ is the probability of $\advse$ outputing an acceptable proof as defined in \cref{def:simext}. It thus holds
 	\[
  		\label{eq:frk}
- 		\frkProb \geq \frac{(\waccProb - \epsur)^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \underbrace{\frac{(\waccProb - \epsur) \cdot (\numberofconstrains + 2)}{2^\secpar} - \epsur - \epsss}_{\eps}\,.
+ 		\extProb \geq \frac{(\waccProb - \epsur)^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \underbrace{\frac{(\waccProb - \epsur) \cdot (\numberofconstrains + 2)}{2^\secpar} - \epsur - \epsss}_{\eps}\,.
  	\]
  	Note that the part of \cref{eq:frk} denoted by $\eps$ is negligible and 
  	\[
- 		\frkProb \geq \frac{1}{q^\numberofconstrains + 2} (\waccProb - \epsur)^{\numberofconstrains + 3} -\eps\,.
+ 		\extProb \geq \frac{1}{q^\numberofconstrains + 2} (\waccProb - \epsur)^{\numberofconstrains + 3} -\eps\,.
  	\] 
  	thus
  	$\plonkprot_\fs$ is simulation extractable with extraction error $\epsur$.
@@ -880,100 +981,7 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 \section{(Tight) simulation soundness of $\plonk$}
 \task{28.07}{All proofs in this section should be verified}
 \michals{15.09}{As MK noted, this proof holds only for simulation soundness. For extractability we use special soundness (cf the next section)}
-\begin{lemma}
-	\label{lem:kzg_unique_op}
-	Let $\PCOM$ be a batched version of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19}. Let $k \in \NN$, $\vec{z}, \vec{o} \in \FF_p^2$, $\vec{c}, \vec{s} \in \ZZ_p^k$, then for every PPT adversary $\adv$	
-	\[
-		\Pr
-			\left[
-				\begin{aligned}
-					& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o}), \\
-					& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o'}) \\
-					% & \vec{s'} \neq \vec{s} \lor 
-					&\vec{o'} \neq \vec{o}
-				\end{aligned}
-			\,\left|\,
-			\vphantom{\begin{aligned}
-				& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o}), \\
-				& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o'}) \\
-				% & \vec{s'} \neq \vec{s} \lor 
-				&\vec{o'} \neq \vec{o}
-			\end{aligned}}
-			\begin{aligned}
-				& \crs \gets \PCOM.\kcrs(\secparam), \\
-				&	(\vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}, \vec{o'}) \gets \adv(\crs)
-			\end{aligned}
-			\right.\right]
-		 \leq \negl.
-	\]
-\end{lemma}
-\markulf{30.08}{Explain what $\vec{c}, \vec{z}, \vec{s}, \vec{o}$ are. $\vec{z}$
-vector of points? $\vec{s}$ vector of evaluation result}
-\begin{proof}
-	First, consider a case where the commitment is limited to commit to multiple polynomials which are evaluated at the same point $z$. 
-	As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound
-  the probability of the adversary succeeding using the idealised verification equation, which considers equality between polynomials, instead of the real verification equation, which consider equality of the polynomials' evaluations.
-	
-	For polynomials $\vec{f} = f_1, \ldots, f_k$, evaluation point $z$, evaluation result $\vec{s} = s_1, \ldots, s_k$, and opening $o$ the idealised check verifies that
-	\begin{equation}
-		\sum_{i = 1}^k \gamma^{i - 1} f_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} s_i \equiv o(X) (X - z)\,.
-		\label{eq:pcom_idealised_check}
-	\end{equation}
-	Since $o(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial composition, there is only one $o(X)$ that fulfils the equation above.
-	% If the check holds, then 
-	% \[
-	% 	\sum_{i = 1}^k \gamma^{i - 1} f_i(z) = \sum_{i = 1}^{k} \gamma^{i - 1} s_i\,
-	% \]
-	% and since $\gamma$ has been picked randomly and independently after the polynomials $\vec{f}$ were submitted it also holds 
-	% \(
-	% 	f_i(z) =  s_i,
-	% \)
-	%  for each individual $i \in \range{1}{k}$.
-	\qed
-\end{proof}
-\comment{
-\begin{corollary}
-	Let $\PCOM$ be a modification of the KZG polynomial commitment scheme
-  \cite{AC:KatZavGol10} as presented in \cite{EPRINT:GabWilCio19}. Then $\PCOM$
-  is evaluation binding and has unique opening property.
-\end{corollary}
-}
 
-\begin{lemma}
-	\label{lem:plonkprot_ur}
-	If a polynomial commitment scheme $\PCOM$ is evaluation binding and has unique openings property\michals{28.08}{Property formalised in Sec 2.1}, then $\plonkprot$ is $\ur{3}$.\footnote{An attentive reader may note that $\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required.}
-\end{lemma}
-\begin{proof}
-	Assume the opposite and an adversary $\adv$ that breaks $\ur{3}$-ness of
-  $\plonkprot$. \markulf{30.08}{This is fine. But sounds as if the law of the
-    excluded middle is needed here. I am not sure it is. :) Mostly a
-    philosophical point.}
-	We consider 2 cases, depending on which round $\adv$ is able to provide at
-  least two outputs such that the resulting transcripts are acceptable.
-  \markulf{30.08}{Rewrote this text: that in each of them $\adv$ breaks the
-    evaluation binding property of $\PCOM$.}
-  For the first case we show that $\adv$ breaks the evaluation binding property of $\PCOM$, while for the
-  second case we show that it breaks the unique opening property of $\PCOM$.
-	
-	\case{1}
-	In Round 4 the prover is asked to give evaluations of predefined polynomials at some point $\chz$. Naturally, for the given polynomials only one value at $\chz$ is correct.
-	Assume $\adv$ is able to produce two different outputs in that round: $\vec{r_4} = (\ev{\p{a}}, \ev{\p{b}}, \ev{\p{c}}, \ev{\p{S_{\sigma 1}}}, \ev{\p{S_{\sigma 2}}}, \ev{\p{r}}, \ev{\p{z}})$ and 
-	$\vec{r_4} = (\ev{\p{a}}', \ev{\p{b}}', \ev{\p{c}}', \ev{\p{S_{\sigma 1}}}', \ev{\p{S_{\sigma 2}}}', \ev{\p{r}}', \ev{\p{z}}')$
-	which suppose to be evaluations at $\chz$ of polynomials $\p{a}, \p{b}, \p{c}, \p{S_{\sigma 1}}, \p{S_{\sigma 2}}, \p{r}$ and an evaluation at $\chz \omega$ of $\p{z}$.
-	Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus if both evaluations are acceptable by the $\PCOM.\verify$ then the evaluation binding property of $\PCOM$ is broken.
-	
-	\case{2}
-	In the last round of the protocol the prover provides openings for the polynomial commitments done before. 
-	Assume $\adv$ is able to produce two different polynomial commitment openings pairs: 
-	$\vec{r_5} = (\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and 
-	$\vec{r'_5} = (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
-	% Since \cref{lem:kzg_unique_op}, 
-	Since $\PCOM$ has unique opening property, 
-	one of the openings has to be incorrect and should be rejected by the polynomial commitment verifier. 
-	\michals{28.08}{In this case we also need to show that only one opening for a KZG polynomial commitment is acceptable. This property seems not be covered by the original KZG paper}
-	\michals{28.08}{See the lemma above}
-	\qed
-\end{proof}
 
 \begin{theorem}[Simulation soundness]
 	\michals{29.08}{Proof done similarly to \cite{INDOCRYPT:FKMV12}}
