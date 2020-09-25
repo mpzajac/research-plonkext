@@ -648,7 +648,8 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 \michals{25.09}{I think most of the $\plonkprotfs$ sim-ext proof is going to be here. The result for plonk will be a corollary from this theorem + verification that the assumptions of the theorem are met.}
 
 \begin{theorem}[Simulation-extractable multi-round protocols]
-	Let $\ps$ be an interactive $2 \mu$-round protocol, that has $\ur{k}$ property with security $\epsur$. Assume that $\ps$ is $(1, \ldots, 1, n_j, 1, \ldots, 1)$-special sound, where $j > k$.
+	Let $\ps$ be an interactive $2 \mu$-round protocol, that has $\ur{k}$ property with security $\epsur$; let $ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
+	Assume that $\ps$ is $(1, \ldots, 1, n_j, 1, \ldots, 1)$-special sound, where $j > k$.
 	Then $\psfs$ is simulation-extractable with extraction error $\epsur$ against PPT adversaries that makes up up to $q$ random oracle queries and returns an acceptable proof with probability at least $\waccProb$. 
 	The extraction probability $\extProb$ is at least
 	\[
@@ -689,7 +690,7 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 	In the following game hops we upper-bound probability that this happens.
 	
 	\ngame{1}
-	This is identical to $\game{0}$ except that now the game is aborted if there is a simulated proof $\zkproof_\simulator$ such that $\zkproof_\simulator\range{1}{3} = \zkproof_\advse\range{1}{3}$. That is, the adversary in its final proof reuses a part of a simulated proof it saw before and the proof is acceptable.
+	This is identical to $\game{0}$ except that now the game is aborted if there is a simulated proof $\zkproof_\simulator$ such that $\zkproof_\simulator\range{1}{k} = \zkproof_\advse\range{1}{k}$. That is, the adversary in its final proof reuses a part of a simulated proof it saw before and the proof is acceptable.
 	Denote that event by $\event{\errur}$.
 	
 	\ncase{$\game{0} \mapsto \game{1}$}	
@@ -711,15 +712,15 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 		\item The reduction answers both queries to the simulator $\psfs.\simulator$ and to the random oracle. 
 		It also keeps lists $Q$, for the simulated proofs, and $Q_\ro$ for the random oracle queries. 
 		\item When $\advse$ outputs a fake proof $\zkproof_{\advse}$ for  $\inp_\advse$, $\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds 
-		$\zkproof_{\simulator}\range{1}{3}$ such that $\zkproof_{\advse}\range{1}{3} = \zkproof_{\simulator}\range{1}{3}$ and a random oracle query $\zkproof_{\simulator}[3].\ch$ on $\zkproof_{\simulator}\range{1}{3}$.
+		$\zkproof_{\simulator}\range{1}{k}$ such that $\zkproof_{\advse}\range{1}{k} = \zkproof_{\simulator}\range{1}{k}$ and a random oracle query $\zkproof_{\simulator}[k].\ch$ on $\zkproof_{\simulator}\range{1}{k}$.
 		\item $\rdvur$ returns two proofs for $\inp_\advse$:
 		\begin{align*}
-			\zkproof_1 = (\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch, \zkproof_{\simulator}\range{4}{5})\\
-			\zkproof_2 = (\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch, \zkproof_{\advse}\range{4}{5})
+			\zkproof_1 = (\zkproof_{\simulator}\range{1}{k}, \zkproof_{\simulator}[k].\ch, \zkproof_{\simulator}\range{k + 1}{\mu})\\
+			\zkproof_2 = (\zkproof_{\simulator}\range{1}{k}, \zkproof_{\simulator}[k].\ch, \zkproof_{\advse}\range{k + 1}{\mu})
 		\end{align*}
 		\end{itemize}  
 		If $\zkproof_1 = \zkproof_2$, then $\advse$ fails to break simulation extractability, as $\zkproof_2 \in Q$.
-		On the other hand, if the proofs are not equal, then $\rdvur$ breaks $\ur{3}$-ness of $\ps$, what may happen with some negligible probability $\epsur$ only, hence
+		On the other hand, if the proofs are not equal, then $\rdvur$ breaks $\ur{k}$-ness of $\ps$, what may happen with some negligible probability $\epsur$ only, hence
 		\[
 			\prob{\event{\errur}} \leq \epsur\,.
 		\]
@@ -729,7 +730,7 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 	by $\event{\errfrk}$.
 	Note that for every acceptable proof $\zkproof_{\advse}$, we may
 	assume that whenever $\advse$ outputs in Round $i$, $i 
-	> 3$, a message $m$, then
+	> k$, a message $m$, then
 	$\zkproof_{\advse}\range{1}{i}$ is a fresh query to the random oracle. (Otherwise the unique response property would be broken.)
 	
 	\ncase{$\game{1} \mapsto \game{2}$}	
@@ -737,7 +738,7 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 	\[
 		\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \event{\errfrk}\,.
 	\]
-	Denote by $\accProb$ the probability that $\advse$ outputs a proof such that is acceptable and does not break $\ur{3}$-ness of $\ps$. 
+	Denote by $\accProb$ the probability that $\advse$ outputs a proof such that is acceptable and does not break $\ur{k}$-ness of $\ps$. 
 	From the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma}, 
 	\[
 		\prob{\event{\errfrk}} \leq 1 - \left(\frac{\accProb^{n_j}}{q^{n_j - 1}} - \frac{\accProb \cdot (n_j - 1)}{2^\secpar}\right)\,.
