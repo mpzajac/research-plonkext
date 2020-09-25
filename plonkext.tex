@@ -4,8 +4,10 @@
  % \documentclass[runningheads]{amsart}
 \let\spvec\vec
 \let\vec\accentvec
+
 \usepackage{amssymb,amsmath}
 \let\vec\spvec
+\usepackage{lmodern}
 
 \usepackage[T1]{fontenc}
 
@@ -24,7 +26,6 @@
 
 % lncs size (as printed in books, with small margins):
 \usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={13.2cm,20.3cm},centering]{geometry}
-
 
 \newcommand{\ifamsart}[1] {}
 \ifamsart{
@@ -765,7 +766,7 @@ vector of points? $\vec{s}$ vector of evaluation result}
 	 \[
 	 	\epsss \leq \epsbatch + \epsdlog\,,
 	 \] 
-	 where $\epsbatch$ is (negligible) probability that $\plonkprot$'s idealised verification equation $\vereq(X)$ accepts an invalid proof because of batching and $\epsdlog$ is a probability that a PPT algorithm can break $(\numberofconstrains + 2)$-dlog assumption.
+	 where $\epsbatch$ is (negligible) probability that $\plonkprot$'s idealised verification equation $\vereq(X)$ accepts an invalid proof because of batching and $\epsdlog$ is a probability that a PPT algorithm can break $(\numberofconstrains + 2, 1)$-dlog assumption.
 \end{lemma}
 \begin{proof}
 	Let $\crs$ be $\plonkprot$'s CRS and denote by $\crs_1$ all CRS's $\GRP_1$-elements; that is, $\crs_1 = \gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. 
@@ -806,7 +807,7 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 
 \begin{theorem}[Simulation extractability of $\plonkprot_\fs$]
 	\label{thm:plonkprotfs_se}
-	Assume that $(\numberofconstrains + 2)$-dlog is $\eps_\dlog(\secpar)$-hard and $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$. 
+	Assume that $(\numberofconstrains + 2, 1)$-dlog is $\eps_\dlog(\secpar)$-hard and $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$. 
 	Let $\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. 
 	Let $\advse$ be a PPT adversary that can make up to $q$ random oracle queries and outputs an acceptable proof for $\plonkprotfs$ with probability at least $\waccProb$.
 	Then $\plonkprotfs$ is simulation-extractable with extraction error $\eta = \epsur$.
@@ -937,15 +938,14 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 
 \section{(Tight) simulation soundness of $\plonk$}
 \task{28.07}{All proofs in this section should be verified}
-\michals{15.09}{As MK noted, this proof holds only for simulation soundness. For extractability we use special soundness (cf the next section)}
-
+% \michals{15.09}{As MK noted, this proof holds only for simulation soundness. For extractability we use special soundness (cf the next section)}
 
 \begin{theorem}[Simulation soundness]
-	\michals{16.09}{To be change to sim snd proof}
-	Assume that $(\numberofconstrains + 2)$-dlog is $\eps_\dlog(\secpar)$-hard, $\plonkprot$ is sound and $\ur{3}$ with security $\eps_{\ss}(\secpar)$ and $\epsur(\secpar)$ respectively. 
+	% \michals{16.09}{To be change to sim snd proof}
+	Assume that $(\numberofconstrains + 2, 1)$-dlog is $\eps_\dlog(\secpar)$-hard, $\plonkprot$ is sound and $\ur{3}$ with security $\eps_{\ss}(\secpar)$ and $\epsur(\secpar)$ respectively. 
 	Then the probability that an algebraic, PPT adversary $\advss$ breaks simulation soundness of $\plonkprotfs$ is upper-bounded by 
 	\[
-		\epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \eps_{\ss}(\secpar))\,,
+		\epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \epss(\secpar))\,,
 	\]
 	where $q_\ro$ is the total number of queries required by the adversary $\advss$.
 \end{theorem}
@@ -959,7 +959,12 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 			& (\inp_{\advss}, \zkproof_{\advss}) \not\in Q,\\
 			& \inp_\advss \not\in \LANG_\REL 
 		\end{aligned}
-		\,\left|\,
+		\,\left|\, 
+		\vphantom{\begin{aligned}
+			& \plonkprotfs.\verifier(\REL, \crs, \inp, \zkproof_{\advss}),\\
+			& (\inp_{\advss}, \zkproof_{\advss}) \not\in Q,\\
+			& \inp_\advss \not\in \LANG_\REL 
+		\end{aligned}}
 		\begin{aligned}
 			& \crs \gets \plonkprotfs.\kcrs(\REL, \secparam)\\
 			& (\inp_{\advss}, \zkproof_{\advss}) \gets \advss^{\simulator, \ro} (\REL, \crs),		
@@ -967,7 +972,7 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 		\right.\right].
 	\]
 
-In such case, we are able to build reductions $\rdvs$, $\rdvur$, $\rdvdlog$ which using $\advss$ as a black-box, violate either the soundness, unique response properties of the underlying interactive protocol $\plonkprot$, or the $(\numberofconstrains + 2)$-dlog assumption.
+In such case, we are able to build reductions $\rdvs$, $\rdvur$, $\rdvdlog$ which using $\advss$ as a black-box, violate either the soundness, unique response properties of the underlying interactive protocol $\plonkprot$, or the $(\numberofconstrains + 2, 1)$-dlog assumption.
 
 In the following we denote by $\zkproof_{\advss}, \zkproof_{\simulator}$ proofs
 returned by the adversary and the simulator respectively. We use $\zkproof[i]$
@@ -991,8 +996,28 @@ holds that $\vereq(\chi) = 0$, but $\vereq(X) \neq 0$, where $\chi$ is $\plonkpr
 %
 As all these events are mutually exclusive and exhaustive, we have
 \[
-	\eps = \prob{\advss \text{ wins}} = \prob{\advss \text{ wins}, \event{E}} + \prob{\advss \text{ wins}, \nevent{E}_0} + \prob{\adv \text{ wins}, \nevent{E}_1}\,.
+	\eps = \prob{\advss \text{ wins}} = \prob{\advss \text{ wins}, \event{E}} + \prob{\advss \text{ wins}, \nevent{E}_0} + \prob{\advss \text{ wins}, \nevent{E}_1}\,.
 \]
+
+
+Before analysing the events, we make the following observation.
+First of all, we allow reductions $\rdv_\dlog, \rdvur, \rdvs$ to simulate the random oracle and simulator for the adversary $\advss$. We argue that since the reductions in their simulation behaves as real random oracle or simulator would, the chances the adversary breaks simulation soundness does not change. 
+
+Furthermore, we note that since $\advss$ is algebraic, it outputs a proof $\zkproof_\advss$ that can be written as 
+\[
+	\zkproof_\advss = \vec{M} \cdot (\underbrace{1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2}}_{\crs} \| \vec{\tilde{\zkproof}_\simulator}_1^{\top} \| \ldots \| \vec{\tilde{\zkproof}_\simulator}_{q_\simulator}^\top)^\top\,,
+\]
+where $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ are all $\GRP_1$-elements from the CRS of $\plonkprotfs$, $\vec{M}$ is a matrix of coefficients output by $\advss$ aside the proof, $\vec{\tilde{\zkproof}_\simulator}_i$ denote all $\GRP_1$-elements from the simulated proof ${\zkproof_\simulator}_i$, and the adversary makes $q_\simulator$ queries to the simulator. 
+Since the reduction itself provides the simulated proofs, it knows a matrix $\vec{M'}$ such that
+\begin{equation}
+	\label{eq:M_prim}
+	\zkproof_\advss = \vec{M'} \cdot (1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2})^\top\,.
+\end{equation}
+We use this property when analysing the success probability of reductions $\rdvs$ and $\rdvdlog$.
+
+% Before analyzing the events $\nevent{E}_0$ and $\nevent{E}_1$, 
+Also note that a proof $\zkproof$ could be accepted only if the verification equation $\vereq(\chi)$ holds. That is, the verifier plugs-in elements of $\zkproof$ into $\vereq(\chi)$ and checks whether it equals $0$. That is what is called a \emph{real check} in \cite{EPRINT:GabWilCio19}. 
+On the other hand there is an \emph{idealised check}, which verifies whether $\vereq(X) = 0$ \emph{as a polynomial}---with proof elements being polynomials as well.
 
 \ncase{When $\event{E}$ happens}
 We assume that $\inp_{\advss}$ is submitted to the simulator $\simulator$. 
@@ -1004,37 +1029,21 @@ Consider an algorithm $\rdvur$ that runs $\advss$ internally as a black-box:
 	\item The reduction answers both queries to the simulator $\plonkprotfs.\simulator$ and to the random oracle. 
 	It also keeps lists $Q$, for the simulated proofs, and $Q_\ro$ for the random oracle queries. 
 	\item When $\advss$ outputs a fake proof $\zkproof_{\advss}$ for  $\inp_\advss$, $\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds 
-	$\zkproof_{\simulator}\range{1}{3}$ such that $\zkproof_{\advss}\range{1}{2} = \zkproof_{\simulator}\range{1}{2}$ and a random oracle query $\zkproof_{\simulator}[2].\ch$ on $\zkproof_{\simulator}\range{1}{2}$.
+	$\zkproof_{\simulator}\range{1}{3}$ such that $\zkproof_{\advss}\range{1}{2} = \zkproof_{\simulator}\range{1}{3}$ and a random oracle query $\zkproof_{\simulator}[3].\ch$ on $\zkproof_{\simulator}\range{1}{3}$.
 	\item $\rdvur$ returns two proofs for $\inp_\advss$:
 	\begin{align*}
-		\zkproof_1 = (\inp_{\advss},\zkproof_{\simulator}\range{1}{2}, \zkproof_{\simulator}[2].\ch, \zkproof_{\simulator}\range{3}{5})\\
-		\zkproof_2 = (\inp_{\advss}, \zkproof_{\simulator}\range{1}{2}, \zkproof_{\simulator}[2].\ch, \zkproof_{\advss}\range{3}{5})
+		\zkproof_1 = (\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch, \zkproof_{\simulator}\range{4}{5})\\
+		\zkproof_2 = (\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch, \zkproof_{\advss}\range{4}{5})
 	\end{align*}
 	\end{itemize}  
 	If $\zkproof_1 = \zkproof_2$, then $\advss$ fails to break simulation extractability, as $\zkproof_2 \in Q$.
 	On the other hand, if the proofs are not equal, then $\rdvur$ breaks $\ur{3}$-ness of $\plonkprot$. Thus 
 	\[
-		\prob{\adv \text{ wins}, \event{E}} \leq \epsur(\secpar).
+		\prob{\advss \text{ wins}, \event{E}} \leq \epsur(\secpar).
 	\]
-	
-	% Before analyzing the events $\nevent{E}_0$ and $\nevent{E}_1$, we make the following observation:
-	% Since $\advss$ is algebraic, it outputs a proof $\zkproof_\advss$ that can be written as 
-	% \[
-	% 	\zkproof_\advss = \vec{M} \cdot (\underbrace{1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2}}_{\crs} \| \vec{\tilde{\zkproof}_\simulator}_1^{\top} \| \ldots \| \vec{\tilde{\zkproof}_\simulator}_{q_\simulator}^\top)^\top\,,
-	% \]
-	% where $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ are all $\GRP_1$-elements from the CRS of $\plonkprotfs$, $\vec{M}$ is a matrix of coefficients output by $\advss$ aside the proof, and $\vec{\tilde{\zkproof}_\simulator}_i$ denote all $\GRP_1$-elements from the simulated proof ${\zkproof_\simulator}_i$. 
-	% Since the reduction provides the simulated proofs, it knows a matrix $\vec{M'}$ such that
-	% \begin{equation}
-	% 	\label{eq:M_prim}
-	% 	\zkproof_\advss = \vec{M'} \cdot (1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2})^\top\,.
-	% \end{equation}
-	% We use this property when analysing the success probability of reductions $\rdvs$ and $\rdvdlog$.
-	
-	Before analyzing the events $\nevent{E}_0$ and $\nevent{E}_1$, we note that a proof $\zkproof$ could be accepted only if the verification equation $\vereq(\chi)$ holds. That is, the verifier plugs-in elements of $\zkproof$ into $\vereq(\chi)$ and checks whether it equals $0$. That is what is called a \emph{real check} in \cite{EPRINT:GabWilCio19}. 
-	On the other hand there is an \emph{idealised check}, which verifies whether $\vereq(X) = 0$ \emph{as a polynomial} (with proof elements being polynomials as well).
 
 \ncase{When $\nevent{E}_0$ happens}
-In this case the reduction $\rdvs$ uses $\advss$ to break soundness of $\plonkprot$ with probability $\eps_\ks / q_{\ro}^6$, where $q_\ro$ is the number of total random oracle queries performed by the adversary or by $\rdvs$ on behalf of the simulator.
+In this case the reduction $\rdvs$ uses $\advss$ to break soundness of $\plonkprot$ with probability $\epss / q_{\ro}^6$, where $q_\ro$ is the number of total random oracle queries performed by the adversary or by $\rdvs$ on behalf of the simulator.
 As previously, $\rdvs$ runs $\advss$ internally and simulates its environment by answering to its queries to $\plonkprotfs.\simulator$ and $\ro$. The reduction works as follows:
 \begin{itemize}
 \item It guesses indices $i_1, \ldots, i_6$ such that random oracle queries $h_{i_1}, \ldots, h_{i_6}$ are the queries used in $\zkproof_\advss$. This is done with probability at least $1/q_{\ro}^6$ (since there are $6$ challenges from the verifier in $\plonkprot$).
@@ -1043,32 +1052,30 @@ As previously, $\rdvs$ runs $\advss$ internally and simulates its environment by
     y$, sets $\ro(h) = y $ and stores $(h, y)$ in $Q_\ro$ if $h$ is sent to $\ro$ the first time. If that is not the case, $\rdv$ finds $h$ in $Q_\ro$ and returns the corresponding $y$.
 	\item On input $h_{i_j}$ for the $i_j$-th, $i_j \in \smallset{{i_1}, \ldots, {i_6}}$,
     random oracle query, $\rdvs$ parses $h_{i_j}$ as a partial proof transcript
-    $\zkproof[1..j]$ and runs $\plonkprot$ with $\plonkprot.\verifier$ using $\zkproof[j]$ as a $\plonkprot.\prover$'s $j$-th message. The verifier responds with a challenge $\zkproof[j].\ch$. The reduction sets $\ro(h_{i_j}) = \zkproof[j].\ch$
+    $\zkproof[1..j]$ and runs $\plonkprot$ using $\zkproof[j]$ as a $\plonkprot.\prover$'s $j$-th message to $\plonkprot.\verifier$. The verifier responds with a challenge $\zkproof[j].\ch$. The reduction sets $\ro(h_{i_j}) = \zkproof[j].\ch$.
 	\item On query $\inp_\simulator$ to $\simulator$ it runs a simulator
     $\plonkprotfs.\simulator$ internally and returns $\zkproof_\simulator$. If
-    the random oracle query with input $\zkproof_\simulator[j]$, $1 \leq j \leq 3$, of the simulator is the $i_j$-th query,
+    the random oracle query with input $\zkproof_\simulator[j]$, $1 \leq j \leq 2$, of the simulator is the $i_j$-th query,
     generate $\zkproof_\simulator[j].\ch$ by invoking $\plonkprot.\verifier$ on
     $\zkproof_\simulator[j]$ and programming $\ro(h_{i_j}) = \zkproof_\simulator[j].\ch$.
-	\item Answers $\plonkprot.\verifier$'s challenge $\zkproof[j].\ch$ using
-    $\zkproof_\advss[j + 1]$.\markulf{30.08}{I don't understand this last step.}
-		\michals{30.08}{Here I just wanted to say that to respond to $\plonkprot/\verifier$'s challenges $\rdv$ uses the responses from $\advss$}
+	\item Answers $\plonkprot.\verifier$'s challenge $\zkproof[j].\ch$ using the answer given by $\advss$, i.e.~$\zkproof_\advss[j + 1]$.
 \end{itemize}
 
 Assume that the $\plonkprot.\verifier$ accepts $\zkproof_\advss$. We consider a case when the idealised verification equation accepts. (Thus, the real verification accepts as well.) 
-In that case $\rdvs$ extracts from $\vec{M'}$ coefficients of $1, \chi, \ldots, \chi^{\numberofconstrains + 2}$ for polynomials $\p{a}, \p{b}$, and $\p{c}$ and reveals the witness $\wit_\advss$ (as it is encoded in theses polynomials' coefficients).
-If $\REL(\inp_\advss, \wit_\advss)$ holds then $\advss$ failed to break simulation-extractability of $\plonkprotfs$. On the other hand, if that is not the case, then $\rdvs$ breaks soundness of $\plonkprot$.
+In that case $\rdvs$ extracts from $\vec{M'}$ coefficients of $1, \chi, \ldots, \chi^{\numberofconstrains + 2}$ for polynomials $\p{a}(X), \p{b}(X)$, and $\p{c}(X)$ and reveals the witness $\wit_\advss$ (as it is encoded in theses polynomials' coefficients).
+If $\REL(\inp_\advss, \wit_\advss)$ holds then $\advss$ failed to break simulation-soundness of $\plonkprotfs$. On the other hand, if that is not the case, then $\rdvs$ breaks soundness of $\plonkprot$.
 %
 Since the reduction guesses queries $h_{i_1}, \ldots, h_{i_6}$ with probability $1/q_\ro^6$, then 
-\begin{gather*}
-	\prob{\rdvs \text{ wins}} = \prob{\advss \text{ wins}, h_{i_1}, \ldots, h_{i_6} \text{ are guessed correctly}, \nevent{E}_0}, \text{ hence}\\
-	\prob{\advss \text{ wins}, \nevent{E}_0} \leq q_\ro^6 \cdot \eps_{\ks}(\secpar).
-\end{gather*}
-\markulf{30.08}{We might have to extract from $M$ rather than $M'$. :(}
-\michals{30.08}{I think that is fine.
-$\rdvs$ provides the simulated proofs for the adversary so it knows how the polynomials used in the proofs are built (i.e. how to express them using $\gone{1, \chi, ... \chi^{n + 2}}$}
+\[
+	\prob{\rdvs \text{ wins}} = \prob{\advss \text{ wins}, h_{i_1}, \ldots, h_{i_6} \text{ are guessed correctly}, \nevent{E}_0}\,.
+\] 
+Hence,
+\[
+	\prob{\advss \text{ wins}, \nevent{E}_0} \leq q_\ro^6 \cdot \epss(\secpar).
+\]
 
 \ncase{When $\nevent{E}_1$ happens}
-The reduction $\rdvdlog$ runs internally a protocol $\plonkprotfs$, which CRS is computed from the challenge $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}$ from the $(\numberofconstrains + 2)$-dlog assumption challenger. 
+The reduction $\rdvdlog$ runs internally a protocol $\plonkprotfs$, which CRS is computed from the challenge $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}$ from the $(\numberofconstrains + 2, 1)$-dlog assumption challenger. 
 Then it proceeds as $\rdvs$ does, except in the last part, when the adversary provided its proof $\zkproof_\advss$, $\rdvdlog$ uses the fact that the real verification equation holds, but the ideal verification equation does not to break the dlog assumption. 
 
 Since $\vereq(X) \neq 0$, but $\vereq(\chi) = 0$ and $\rdvdlog$ knows
@@ -1082,7 +1089,7 @@ its roots, one of them is the required $\chi$. Hence it holds, by the analogous 
 
 The proof is concluded by observing that the analysis of events $\event{E}, \nevent{E}_0, \nevent{E}_1$ gives
 \[
-	\eps \leq \epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \eps_{\ks}(\secpar))\,,
+	\eps \leq \epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \epss(\secpar))\,,
 \]
 hence $\eps$ is negligible if dlog is hard and $\plonkprot$ is sound and $\ur{3}$.
 \qed
