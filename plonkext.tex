@@ -980,11 +980,12 @@ to denote prover's message in the $i$-th round of the proof, $\zkproof[i].\ch$
 to denote the challenge that is given to the prover after $\zkproof[i]$, and
 $\zkproof\range{i}{j}$ to denote all messages of the proof including challenges between rounds $i$ and $j$.
 
-Without loss of generality, for every acceptable proof $\zkproof_{\advss}$, we
-assume that whenever $\advss$ outputs in Round $i$, $i \geq 3$, a message $m$, then
-$\zkproof_{\advss}\range{1}{i}$ is a fresh query to the random oracle.
-\markulf{30.08}{What does fresh mean here? What about messages coming from the simulator?} 
-\michals{30.08}{I thought that with this assumption we may just consider only queries from $\advss$}
+% Without loss of generality, for every acceptable proof $\zkproof_{\advss}$, we
+% assume that whenever $\advss$ outputs in Round $i$, $i \geq 3$, a message $m$, then
+% $\zkproof_{\advss}\range{1}{i}$ is a fresh query to the random oracle.
+% \markulf{30.08}{What does fresh mean here? What about messages coming from the simulator?} 
+% \michals{30.08}{I thought that with this assumption we may just consider only queries from $\advss$}
+Without loss of generality, we assume that whenever the accepting proof contains a response to a challenge from a random oracle, we assume that the adversary queried the oracle to get it. 
 It is straightforward to transform any adversary that violates this condition into an adversary that makes these additional queries to the random oracle and wins with the same probability.
 
 A crucial observation is that the adversary $\advss$ may have learned $\zkproof_{\advss}\range{1}{3}$ by querying the simulator on $\inp_{\advss}$ or might have computed it itself. We denote the first event by $\event{E}$ and the second by $\nevent{E}$. 
