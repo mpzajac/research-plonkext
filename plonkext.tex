@@ -154,7 +154,7 @@ updaters.
 We believe that our result may be useful for designing new zkSNARKs, especially those based on a polynomial commitment schemes~\cite{AC:KatZavGol10}, as it shows that a careful protocol design may give it a strong security notion for free.
 
 \section{Preliminaries}
-Let PPT denote probabilistic polynomial-time.
+Let $\ppt$ denote probabilistic polynomial-time.
 Let $\secpar \in \NN$ be the security parameter.
 All adversaries will be stateful.
 For an algorithm $\adv$, let $\image (\adv)$ be the image of $\adv$ (the set of valid outputs of $\adv$), let $\RND{\adv}$ denote the random tape of $\adv$ (assuming the given value of $\secpar$), and let $r \sample \RND{\adv}$ denote the random choice of the randomiser $r$ from $\RND{\adv}$.
@@ -164,10 +164,10 @@ Distributions $X$ and $Y$ have \emph{statistical distance} $\SD$ equals $\epsilo
 We write $X \approx_\secpar Y$ if $\SD(X, Y) \leq \negl$, where $\SD$ is the statistical distance between the distributions.
 For values $a$ and $b$ we write $a \approx_\secpar b$ if $\abs{a - b} \leq \negl$.
 
-Denote by $\RELGEN$ a \emph{relation generator}---a PPT algorithm that on input $\secparam$ outputs an $\npol$ relation $\REL$. We assume that if $\RELGEN$ provides any auxiliary input to $\REL$, it is benign. Directly from the description of $\REL$ one learns security parameter $\secpar$ and other necessary information like a description of a group $\GRP$, if the relation is a relation of group elements (as it usually is in case of zkSNARKs).
+Denote by $\RELGEN$ a \emph{relation generator}---a $\ppt$ algorithm that on input $\secparam$ outputs an $\npol$ relation $\REL$. We assume that if $\RELGEN$ provides any auxiliary input to $\REL$, it is benign. Directly from the description of $\REL$ one learns security parameter $\secpar$ and other necessary information like a description of a group $\GRP$, if the relation is a relation of group elements (as it usually is in case of zkSNARKs).
 
 \paragraph{Bilinear groups.}
-A bilinear group generator $\pgen (1^\secpar)$ returns $(p, \GRP_1, \GRP_2, \GRP_T, \pair, \gone{1}, \gtwo{1})$, where $\GRP_1$, $\GRP_2$, and $\GRP_T$ are additive cyclic groups of prime order $p = 2^{\Omega (\secpar)}$, $\gone{1}, \gtwo{1}$ are generators of $\GRP_1$, $\GRP_2$, resp., and $\pair: \GRP_1 \times \GRP_2 \to \GRP_T$ is a non-degenerate PPT-computable bilinear pairing.
+A bilinear group generator $\pgen (1^\secpar)$ returns $(p, \GRP_1, \GRP_2, \GRP_T, \pair, \gone{1}, \gtwo{1})$, where $\GRP_1$, $\GRP_2$, and $\GRP_T$ are additive cyclic groups of prime order $p = 2^{\Omega (\secpar)}$, $\gone{1}, \gtwo{1}$ are generators of $\GRP_1$, $\GRP_2$, resp., and $\pair: \GRP_1 \times \GRP_2 \to \GRP_T$ is a non-degenerate $\ppt$-computable bilinear pairing.
 We assume the bilinear pairing to be Type-3, i.e., that there is no efficient isomorphism from $\GRP_1$ to $\GRP_2$ or from $\GRP_2$ to $\GRP_1$.
 We use the by now standard bracket notation, i.e., we write $\bmap{a}{\gi}$ to denote $a g_{\gi}$ where $g_{\gi}$ is a fixed generator of $\GRP_{\gi}$.
 We denote $\pair (\gone{a}, \gtwo{b})$ as $\gone{a} \bullet \gtwo{b}$.
@@ -177,7 +177,7 @@ We freely use the bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \v
 \paragraph{Compuational assumptions.}
 
 \begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]
-	Let $\adv$ be a PPT adversary that gets as input $\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}}$, for some randomly picked $\chi \in \FF_p$, then
+	Let $\adv$ be a $\ppt$ adversary that gets as input $\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}}$, for some randomly picked $\chi \in \FF_p$, then
 	\[
 		\condprob{\chi \gets \adv(\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2} })}{\chi \sample \FF_p} \leq \negl.
 	\]
@@ -228,7 +228,7 @@ Proofs by \emph{game hoping} is a method of writing proofs popularised by e.g.~S
 
 \subsection{Zero knowledge}
 In a zero-knowledge proof or argument system, a prover convinces the verifier of the veracity of a statement without leaking any side information except that the statement is true.
-Here, a proof (resp., an argument) system guarantees soundness against an unbounded (resp., a PPT) cheating prover.
+Here, a proof (resp., an argument) system guarantees soundness against an unbounded (resp., a $\ppt$) cheating prover.
 The zero-knowledge property is proven by constructing a simulator that can simulate the view of a cheating verifier without knowing the secret information---witness---of the prover.
 
 More precisely, let $\RELGEN(\secparam)$ be a relation generator that outputs an $\npol$ relation $\REL = \smallset{(\inp, \wit)}$. \markulf{09.07.20}{Not too fond of relation
@@ -246,7 +246,7 @@ A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ i
 	\[
 		\prob{\ip{\prover (\REL, \inp, \wit)}{\verifier (\REL, \inp)} = 1} = 1\,.
 	\]
-	\item[Soundness] We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no PPT prover $\adv$ can convince an honest verifier $\verifier$ to accept a proof for a false statement, i.e~for $\inp \not\in\LANG$. More precisely, for all $\REL \gets \RELGEN(\secparam)$
+	\item[Soundness] We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no $\ppt$ prover $\adv$ can convince an honest verifier $\verifier$ to accept a proof for a false statement, i.e~for $\inp \not\in\LANG$. More precisely, for all $\REL \gets \RELGEN(\secparam)$
 	\[
 		\condprob{\ip{\adv(\REL, \inp)}{\verifier(\REL, \inp)} = 1}{\inp \gets \adv(\REL); \inp \not\in \LANG_\REL} \leq \negl\,;
 	\]
@@ -261,7 +261,7 @@ A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ i
 	
 	Sometimes a stronger notion of soundness is required---except requiring that the verifier rejects proofs of statements outside the language, we request from the prover to know a witness corresponding to the proven statement. This property is formalised by the following notion:
 	
-	\item[Knowledge soundness] We call an interactive proof system $\proofsystem$ \emph{knowledge-sound} if for any $\REL \gets \RELGEN(\secparam)$ and a PPT adversary $\adv$
+	\item[Knowledge soundness] We call an interactive proof system $\proofsystem$ \emph{knowledge-sound} if for any $\REL \gets \RELGEN(\secparam)$ and a $\ppt$ adversary $\adv$
 	% \begin{multline*}
 	\[
 	\Pr\left[
@@ -324,10 +324,10 @@ Furthermore sigma protocols are \emph{honest verifier zero-knowledge} (HVZK). Th
 \end{description}
 Although this notion is weaker than a standard zero knowledge it is often sufficient. Furthermore, a HVZK interactive proof system transformed by the Fiat--Shamir transformation is zero-knowledge.
 
-Another property that sigma protocols sometimes have is, introduced by Fischlin \cite{C:Fischlin05}, a unique response property which states that no PPT adversary  can produce two accepting transcripts that differ only on the last element.
+Another property that sigma protocols sometimes have is, introduced by Fischlin \cite{C:Fischlin05}, a unique response property which states that no $\ppt$ adversary  can produce two accepting transcripts that differ only on the last element.
 More precisely,
 \begin{description}
-	\item[Unique response property] Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a standard-model sigma-protocol for relation $\REL \gets \RELGEN(\secparam)$ which proofs compound of three messages $(\alpha, \beta, \gamma)$. We say that $\sigmaprot$ is has a unique response property if for all PPT algorithms $\adv$ holds
+	\item[Unique response property] Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a standard-model sigma-protocol for relation $\REL \gets \RELGEN(\secparam)$ which proofs compound of three messages $(\alpha, \beta, \gamma)$. We say that $\sigmaprot$ is has a unique response property if for all $\ppt$ algorithms $\adv$ holds
 	\[
 	\condprob{\verifier (\alpha, \beta, \gamma) = \verifier (\alpha, \beta, \gamma')  = 1}{(\alpha, \beta, \gamma, \gamma') \gets \adv(\REL)} \leq \negl\,.
 	\]
@@ -349,7 +349,7 @@ the corresponding witness. This must hold even if the adversary is allowed to se
 	\label{def:simext}
 	\michals{22.09}{To be moved to preliminaries}
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a special-sound HVZK proof and $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$ transformed by the Fiat--Shamir transform. 
-	We say that $\ps_\fs$ is simulation extractable with \emph{extraction error} $\nu$ if for any PPT adversary $\adv$ that is given oracle access to a random oracle $\ro$ and simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with probability
+	We say that $\ps_\fs$ is simulation extractable with \emph{extraction error} $\nu$ if for any $\ppt$ adversary $\adv$ that is given oracle access to a random oracle $\ro$ and simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with probability
 	$\waccProb$, that is
 	\[
 		\waccProb = \Pr \left[
@@ -388,7 +388,7 @@ the corresponding witness. This must hold even if the adversary is allowed to se
 \end{definition}
 
 % \begin{definition}[Simulation extractability]
-% 	A proof system $\proofsystem$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NUPPT $\adv$, there exists a NUPPT extractor $\ext_\adv$, s.t.
+% 	A proof system $\proofsystem$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NU$\ppt$ $\adv$, there exists a NU$\ppt$ extractor $\ext_\adv$, s.t.
 % 	\[
 % 	\condprob{
 %   \begin{aligned}
@@ -424,7 +424,7 @@ The theorem relies on the following classical lemma, called \emph{General forkin
 
 \begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12,CCS:BelNev06}]
 	\label{lem:forking_lemma}
-	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\adv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $i \in\range{0}{q}$ and $s$ is called a \emph{side output}.
+	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\adv$ be a $\ppt$ algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $i \in\range{0}{q}$ and $s$ is called a \emph{side output}.
 	Denote by $\ig$ a randomised instance generator.
 	We denote by $\accProb$ the probability
 	\[
@@ -477,7 +477,7 @@ Here we propose a generalisation of the general forking lemma that given probabi
 \begin{lemma}[General forking lemma II]
 	\label{lem:generalised_forking_lemma}
 	Fix $q \in \ZZ$ and set $H$ of size $h \geq m$. 
-	Let $\adv$ be a PPT algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$ where $i \in \range{0}{q}$ and $s$ is called a side output. 
+	Let $\adv$ be a $\ppt$ algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$ where $i \in \range{0}{q}$ and $s$ is called a side output. 
 	Denote by $\ig$ a randomised instance generator. We denote by $\accProb$ the probability
 	\[
 		\condprob{i \neq 0}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.
@@ -638,7 +638,7 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 
 \begin{definition}[Computational special soundness]
 	Let $\proofsystem$ be an $2 \mu$-round zero-knowledge proof system for a relation $\REL$. 
-	We say that $\proofsystem$ is $(n_1, \ldots, n_\mu)$-\emph{special sound} if for every PPT adversary $\adv$ that produces an accepting $(n_1, \ldots, n_\mu)$ tree of transcripts $\tree$ for a statement $\inp$ there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$ with an overwhelming probability.
+	We say that $\proofsystem$ is $(n_1, \ldots, n_\mu)$-\emph{special sound} if for every $\ppt$ adversary $\adv$ that produces an accepting $(n_1, \ldots, n_\mu)$ tree of transcripts $\tree$ for a statement $\inp$ there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$ with an overwhelming probability.
 \end{definition}
 
 \section{Simulation-extractability---the general result}
@@ -650,7 +650,7 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 \begin{theorem}[Simulation-extractable multi-round protocols]
 	Let $\ps$ be an interactive $2 \mu$-round protocol, that has $\ur{k}$ property with security $\epsur$; let $ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
 	Assume that $\ps$ is $(1, \ldots, 1, n_j, 1, \ldots, 1)$-special sound, where $j > k$.
-	Then $\psfs$ is simulation-extractable with extraction error $\epsur$ against PPT adversaries that makes up up to $q$ random oracle queries and returns an acceptable proof with probability at least $\waccProb$. 
+	Then $\psfs$ is simulation-extractable with extraction error $\epsur$ against $\ppt$ adversaries that makes up up to $q$ random oracle queries and returns an acceptable proof with probability at least $\waccProb$. 
 	The extraction probability $\extProb$ is at least
 	\[
 		\extProb \geq \frac{1}{q^{n_j - 1}} (\waccProb - \epsur)^{n_j} -\eps\,,
@@ -797,21 +797,24 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 \subsection{Unique response property}
 \begin{lemma}
 	\label{lem:kzg_unique_op}
-	Let $\PCOM$ be a batched version of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19}. Let $k \in \NN$, $\vec{z}, \vec{o} \in \FF_p^2$, $\vec{c}, \vec{s} \in \ZZ_p^k$, then for every PPT adversary $\adv$	
+	Let $\PCOM$ be a batched version of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19}. Let 
+	$k \in \NN$ be the number of committed polynomials, 
+	$\vec{c} \in \GRP^k$ be the commitments,  
+	$\vec{z} \in \FF_p$ be the two attributes the polynomials are evaluated at, $\vec{s} \in \FF_p^k$ the evaluations, and 
+	$\vec{o} \in \FF_p$ be the commitment openings, 
+	then for every $\ppt$ adversary $\adv$	
 	\[
 		\Pr
 			\left[
 				\begin{aligned}
 					& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o}), \\
 					& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o'}) \\
-					% & \vec{s'} \neq \vec{s} \lor 
 					&\vec{o'} \neq \vec{o}
 				\end{aligned}
 			\,\left|\,
 			\vphantom{\begin{aligned}
 				& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o}), \\
-				& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o'}) \\
-				% & \vec{s'} \neq \vec{s} \lor 
+				& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s'}, \vec{o'}) \\
 				&\vec{o'} \neq \vec{o}
 			\end{aligned}}
 			\begin{aligned}
@@ -822,8 +825,6 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 		 \leq \negl.
 	\]
 \end{lemma}
-\markulf{30.08}{Explain what $\vec{c}, \vec{z}, \vec{s}, \vec{o}$ are. $\vec{z}$
-vector of points? $\vec{s}$ vector of evaluation result}
 \begin{proof}
 	First, consider a case where the commitment is limited to commit to multiple polynomials which are evaluated at the same point $z$. 
 	As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound
@@ -846,13 +847,6 @@ vector of points? $\vec{s}$ vector of evaluation result}
 	%  for each individual $i \in \range{1}{k}$.
 	\qed
 \end{proof}
-\comment{
-\begin{corollary}
-	Let $\PCOM$ be a modification of the KZG polynomial commitment scheme
-  \cite{AC:KatZavGol10} as presented in \cite{EPRINT:GabWilCio19}. Then $\PCOM$
-  is evaluation binding and has unique opening property.
-\end{corollary}
-}
 
 \begin{lemma}
 	\label{lem:plonkprot_ur}
@@ -894,12 +888,12 @@ vector of points? $\vec{s}$ vector of evaluation result}
 \subsection{Special soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
-	Let $\adv$ be a PPT algebraic adversary. The probability $\epsss$ that $\adv$ breaks 
+	Let $\adv$ be a $\ppt$ algebraic adversary. The probability $\epsss$ that $\adv$ breaks 
 	 $(1, 1, 1, \numberofconstrains + 3, 1)$-computational special soundness of $\plonkprot$ is upper-bounded as
 	 \[
 	 	\epsss \leq \epsbatch + \epsdlog\,,
 	 \] 
-	 where $\epsbatch$ is (negligible) probability that $\plonkprot$'s idealised verification equation $\vereq(X)$ accepts an invalid proof because of batching and $\epsdlog$ is a probability that a PPT algorithm can break $(\numberofconstrains + 2, 1)$-dlog assumption.
+	 where $\epsbatch$ is (negligible) probability that $\plonkprot$'s idealised verification equation $\vereq(X)$ accepts an invalid proof because of batching and $\epsdlog$ is a probability that a $\ppt$ algorithm can break $(\numberofconstrains + 2, 1)$-dlog assumption.
 \end{lemma}
 \begin{proof}
 	Let $\crs$ be $\plonkprot$'s CRS and denote by $\crs_1$ all CRS's $\GRP_1$-elements; that is, $\crs_1 = \gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. 
@@ -942,10 +936,10 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	\label{thm:plonkprotfs_se}
 	Assume that  $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$, and coumputational special-sound with security $\epss(\secpar)$.
 	Let $\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. 
-	Let $\advse$ be a PPT adversary that can make up to $q$ random oracle queries and outputs an acceptable proof for $\plonkprotfs$ with probability at least $\waccProb$.
+	Let $\advse$ be a $\ppt$ adversary that can make up to $q$ random oracle queries and outputs an acceptable proof for $\plonkprotfs$ with probability at least $\waccProb$.
 	Then $\plonkprotfs$ is simulation-extractable with extraction error $\eta = \epsur$. The extraction probability $\extProb$ is at least
 	\[
-		\extProb \geq \frac{1}{q^\numberofconstrains + 2} (\waccProb - \epsur)^{\numberofconstrains + 3} -\eps\,,
+		\extProb \geq \frac{1}{q^{\numberofconstrains + 2}} (\waccProb - \epsur)^{\numberofconstrains + 3} -\eps\,,
 	\]
 	for some negligible $\eps$ and $\numberofconstrains$ being the number of contrains in the proven circuit.
 \end{theorem}
@@ -957,41 +951,32 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	\markulf{17.09}{Here we also need the computational special soundness property}
 	\markulf{17.09}{The adversary that is being rewound for special soundness}
 
-	% In the following we assume that a reduction $\rdv$, for $\rdv \in \smallset{\rdvur, \rdv_\ss}$, provides $\advse$ with access to a random oracle and simulator. That is, the reductions provide the adversary with simulated proofs. Also, it rewind the adversary when needed.
 	Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
 	returned by the adversary and the simulator respectively. We use $\zkproof[i]$
 	to denote prover's message in the $i$-th round of the proof, $\zkproof[i].\ch$
 	to denote the challenge that is given to the prover after $\zkproof[i]$, and
-	$\zkproof\range{i}{j}$ to denote all messages of the proof including challenges between rounds $i$ and $j$.
+	$\zkproof\range{i}{i'}$ to denote all messages of the proof including challenges between rounds $i$ and $i'$.
 
-	% Without loss of generality, for every acceptable proof $\zkproof_{\advse}$, we
-	% assume that whenever $\advse$ outputs in Round $i$, $i 
-	% > 3$, a message $m$, then
-	% $\zkproof_{\advse}\range{1}{i}$ is a fresh query to the random oracle.
-	% \michals{22.09}{understand it in the light of a new proof approach}
-	% \michals{22.09}{added ", $i 
-	% > 3$", for $i \leq 2$ we need to allow the adversary to pick unfresh queries -- as he might randomize the first 2 rounds}
-	% In the following we denote the instance and proof output by $\advse$ by $\inp_\advse$ and $\zkproof_\advse$ respectively.
 	Without loss of generality, we assume that whenever the accepting proof contains a response to a challenge from a random oracle, we assume that the adversary queried the oracle to get it. 
 	It is straightforward to transform any adversary that violates this condition into an adversary that makes these additional queries to the random oracle and wins with the same probability.
 	
-	\ngame{0} 
-	This is a simulation extraction game played between an adversary $\advse$ who has given access to a random oracle $\ro$ and simulator $\plonkprotfs.\simulator$. 
-	There is also an extractor $\ext$ that, from the proof $\zkproof_\advse$ for instance $\inp_\advse$ output by the adversary and from a transcripts of $\advse$'s operations, is tasked to extract a witness $\wit_\advse$ such that $\REL(\inp_\advse, \wit_\advse)$ holds.
-	$\advse$ wins if it manages to produce an acceptable proof and the extractor fails to reveal the corresponding witness.
-	In the following game hops we upper-bound probability that this happens.
-	
-	% In this game the environment $\env$ runs the adversary $\advse$ and provides it with access to a random oracle $\ro$ and $\plonkprotfs$ simulator $\plonkprotfs.\simulator$. It picks as input a CRS $\crs$ and inputs it to $\advse$.
-	% \michals{18.09}{Who provides the CRS? Should it be taken "from the outside", i.e.~should the environment be an algorithm gets $\crs$ from some external $\plonkprot$ instance?}
-	% The adversary wins if it provides an acceptable proof $\zkproof_\advse$ for a statement $\inp_\advse$ which it does not know a witness for.
-	% \michals{18.09}{Who extracts the witness? Environment $\env$?}\\
-	% \michals{18.09}{Is the environment here inefficient? (how it check the winning condition)?}\\
-	% \michals{18.09}{Maybe the adversary should win if it gives an acceptable proof for a false statement (and remove the requirement of knowledge of the witness)?}
+	\ngame{0}
+	This is a simulation extraction game played between an adversary $\advse$ who
+	has given access to a random oracle $\ro$ and simulator
+	$\plonkprotfs.\simulator$.  There is also an extractor $\ext$ that, from the
+	proof $\zkproof_\advse$ for instance $\inp_\advse$ output by the adversary and
+	from a transcripts of $\advse$'s operations, is tasked to extract a witness
+	$\wit_\advse$ such that $\REL(\inp_\advse, \wit_\advse)$ holds. $\advse$ wins
+	if it manages to produce an acceptable proof and the extractor fails to reveal
+	the corresponding witness. In the following game hops we upper-bound
+	probability that this happens.
 	
 	\ngame{1}
-	% \michals{17.09}{$\advse$ wins if there is no extractable witness for its proof, break when $\ur{3}$ broken}
-	This is identical to $\game{0}$ except that now the game is aborted if there is a simulated proof $\zkproof_\simulator$ such that $\zkproof_\simulator\range{1}{3} = \zkproof_\advse\range{1}{3}$. That is, the adversary in its final proof reuses a part of a simulated proof it saw before and the proof is acceptable.
-	Denote that event by $\event{\errur}$.
+	This is identical to $\game{0}$ except that now the game is aborted if there
+	is a simulated proof $\zkproof_\simulator$ such that
+	$\zkproof_\simulator\range{1}{3} = \zkproof_\advse\range{1}{3}$. That is, the
+	adversary in its final proof reuses a part of a simulated proof it saw before
+	and the proof is acceptable. Denote that event by $\event{\errur}$.
 	
 	\ncase{$\game{0} \mapsto \game{1}$}	
 	We have, 
@@ -1008,22 +993,26 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	We show a reduction $\rdvur$ that utilises $\advse$, who outputs a valid proof for $\inp_\advse$, to break the $\ur{3}$ property of $\plonkprot$. 
 
 	Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
-	\begin{itemize}
-		\item The reduction answers both queries to the simulator $\plonkprotfs.\simulator$ and to the random oracle. 
-		It also keeps lists $Q$, for the simulated proofs, and $Q_\ro$ for the random oracle queries. 
-		\item When $\advse$ outputs a fake proof $\zkproof_{\advse}$ for  $\inp_\advse$, $\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds 
-		$\zkproof_{\simulator}\range{1}{3}$ such that $\zkproof_{\advse}\range{1}{3} = \zkproof_{\simulator}\range{1}{3}$ and a random oracle query $\zkproof_{\simulator}[3].\ch$ on $\zkproof_{\simulator}\range{1}{3}$.
-		\item $\rdvur$ returns two proofs for $\inp_\advse$:
-		\begin{align*}
-			\zkproof_1 = (\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch, \zkproof_{\simulator}\range{4}{5})\\
-			\zkproof_2 = (\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch, \zkproof_{\advse}\range{4}{5})
-		\end{align*}
-		\end{itemize}  
-		If $\zkproof_1 = \zkproof_2$, then $\advse$ fails to break simulation extractability, as $\zkproof_2 \in Q$.
-		On the other hand, if the proofs are not equal, then $\rdvur$ breaks $\ur{3}$-ness of $\plonkprot$, what may happen with some negligible probability $\epsur$ only, hence
-		\[
-			\prob{\event{\errur}} \leq \epsur\,.
-		\]
+	\begin{itemize} \item The reduction answers both queries to the simulator
+	$\plonkprotfs.\simulator$ and to the random oracle.  It also keeps lists $Q$,
+	for the simulated proofs, and $Q_\ro$ for the random oracle queries.  \item
+	When $\advse$ outputs a fake proof $\zkproof_{\advse}$ for  $\inp_\advse$,
+	$\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds
+	$\zkproof_{\simulator}\range{1}{3}$ such that $\zkproof_{\advse}\range{1}{3} =
+	\zkproof_{\simulator}\range{1}{3}$ and a random oracle query
+	$\zkproof_{\simulator}[3].\ch$ on $\zkproof_{\simulator}\range{1}{3}$. \item
+	$\rdvur$ returns two proofs for $\inp_\advse$: \begin{align*} \zkproof_1 =
+	(\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch,
+	\zkproof_{\simulator}\range{4}{5})\\ \zkproof_2 =
+	(\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch,
+	\zkproof_{\advse}\range{4}{5}) \end{align*} \end{itemize}   If $\zkproof_1 =
+	\zkproof_2$, then $\advse$ fails to break simulation extractability, as
+	$\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then
+	$\rdvur$ breaks $\ur{3}$-ness of $\plonkprot$, what may happen with some
+	negligible probability $\epsur$ only, hence 
+	\[ 
+	\prob{\event{\errur}} \leq \epsur\,. 
+	\]
 		
 	\ngame{2}
 	This is identical to $\game{1}$ except that now the environment aborts also when it fails to build a $(1, 1, 1, \numberofconstrains + 3, 1)$-tree of accepting transcripts $\tree$ by rewinding $\advse$. Denote that event 
@@ -1085,14 +1074,14 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 \begin{theorem}[Simulation soundness]
 	% \michals{16.09}{To be change to sim snd proof}
 	Assume that $(\numberofconstrains + 2, 1)$-dlog is $\eps_\dlog(\secpar)$-hard, $\plonkprot$ is sound and $\ur{3}$ with security $\eps_{\ss}(\secpar)$ and $\epsur(\secpar)$ respectively. 
-	Then the probability that an algebraic, PPT adversary $\advss$ breaks simulation soundness of $\plonkprotfs$ is upper-bounded by 
+	Then the probability that an algebraic, $\ppt$ adversary $\advss$ breaks simulation soundness of $\plonkprotfs$ is upper-bounded by 
 	\[
 		\epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \epss(\secpar))\,,
 	\]
 	where $q_\ro$ is the total number of queries required by the adversary $\advss$.
 \end{theorem}
 \begin{proof}
-	We proceed by contradiction. Suppose there exists a PPT adversary $\advss$ that breaks simulation soundness with non-negligible probability
+	We proceed by contradiction. Suppose there exists a $\ppt$ adversary $\advss$ that breaks simulation soundness with non-negligible probability
 	\[
 	\eps := \Pr
 		\left[
