@@ -119,14 +119,14 @@ Consider an interactive $3$-round special-sound protocol $\ps$ and its non-inter
 Since $\plonkprot$ has $10$ rounds and is not special-sound, the forking lemma cannot be used directly. We thus propose its modification that covers protocols that have more rounds and require more transcript than merely two. 
 Unfortunately, when more transcripts is needed the security gap is big. That is, probability that the extractor succeeds diminishes significantly. (That said, we have to note that the security loss is polynomial, albeit huge.)
 
-We observe here that some modern zkSNARKs rely on the Fiat--Shamir transform and
-the forking lemma heavily. First, an interactive protocol is proposed and its
-security and special-soundness analysed; second, one uses an argument that the
-Fiat--Shamir transform can be used to get a protocol that is non-interactive and
-shares the same security properties.  We claim here that such an analysis is not
-enough and one has to consider the security loss implied by the generalisation
-of the forking lemma or disclose a transformation that does not suffer from the
-the generalisation's inefficiency.
+We observe here that some modern zkSNARKs rely on the Fiat--Shamir transform and the forking
+lemma heavily. First, an interactive protocol is proposed and its security andś
+special-soundness analysed; second, one uses an argument that the Fiat--Shamir
+transform can be used to get a protocol that is non-interactive and shares the
+same security properties.  We claim here that such an analysis is not enough and
+one has to consider the security loss implied by the generalisation of the
+forking lemma or disclose a transformation that does not suffer from the the
+generalisation's inefficiency.
 
 \subsubsection{Towards simulation-extractability.} Given modified, less
 restrictive, definition for special-soundness and unique response property, and
@@ -187,7 +187,6 @@ We freely use the bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \v
 Proofs by \emph{game hoping} is a method of writing proofs popularised by e.g.~Shoup \cite{EPRINT:Shoup04} and Dent \cite{EPRINT:Dent06c}. The method relies on the following lemma.
 
 \begin{lemma}[Difference lemma,  cf.~{\cite[Lemma 1]{EPRINT:Shoup04}}]
-	\michals{22.09}{To be moved to preliminaries}
 	\label{lem:difference_lemma}
 	Let $\event{A}, \event{B}, \event{F}$ be events defined in some probability distribution, and suppose that $\event{A} \land \nevent{F} \iff \event{B} \land \nevent{F}$. 
 	Then 
@@ -198,11 +197,22 @@ Proofs by \emph{game hoping} is a method of writing proofs popularised by e.g.~S
 
 \subsection{Polynomial commitment.}
 \label{sec:poly_com}
-
+In the polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$ the committer $\committer$ can prove to the receiver $\receiver$ that some polynomial $f$ that $\committer$ committed to evaluates to $s$ as some point $z$ chosen by $\receiver$.
+% We require $\PCOM$ to have the following properties:
+One of the properties that is required from $\PCOM$ is
 \begin{description}
-	\item[Evaluation binding]
+	\item[Evaluation binding] a PPT adversary $\adv$ who output a commitment $c$ to a polynomial $f$ and is given an evaluation point $z$ has at most negligible chances to correctly open the commitment to a value different than $f(z)$.
+\end{description}
+	
+We say that $\PCOM$ has unique opening property if the following holds:
+\begin{description}
 	\item[Opening uniqueness] 
-	\michals{24.09}{Do we still need that?}
+	Let 
+	$k \in \NN$ be the number of committed polynomials, 
+	$\vec{c} \in \GRP^k$ be the commitments,  
+	$\vec{z} \in \FF_p^l$ be the two attributes the polynomials are evaluated at, $\vec{s} \in \FF_p^k$ the evaluations, and 
+	$\vec{o} \in \FF_p^l$ be the commitment openings. 
+	Then for every $\ppt$ adversary $\adv$	
 	\[
 		\Pr
 			\left[
@@ -216,13 +226,12 @@ Proofs by \emph{game hoping} is a method of writing proofs popularised by e.g.~S
 				& \crs \gets \kcrs(\secparam),\\
 				& (\vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}, \vec{o'}) \gets \adv(\crs)
 			\end{aligned}
-			\right.\right] \leq \negl
+			\right.\right] \leq \negl\,.
 	\]
 \end{description}
+Intuitively, opening uniqueness assures that there is only one valid opening for the committed polynomial and given evaluation point. This property is crucial in showing simulation-extractability of $\plonk$. We show that the KZG polynomial commitment scheme satisfies this requirement in \cref{lem:kzg_unique_op}.
 
 \subsection{Algebraic Group Model}
-
-
 
 \subsection{}
 
@@ -347,7 +356,6 @@ the corresponding witness. This must hold even if the adversary is allowed to se
 
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:simext}
-	\michals{22.09}{To be moved to preliminaries}
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a special-sound HVZK proof and $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$ transformed by the Fiat--Shamir transform. 
 	We say that $\ps_\fs$ is simulation extractable with \emph{extraction error} $\nu$ if for any $\ppt$ adversary $\adv$ that is given oracle access to a random oracle $\ro$ and simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with probability
 	$\waccProb$, that is
@@ -797,12 +805,14 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 \subsection{Unique response property}
 \begin{lemma}
 	\label{lem:kzg_unique_op}
-	Let $\PCOM$ be a batched version of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19}. Let 
+	Let $\PCOM$ be a batched version of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19} then $\PCOM$ has unique opening property. 
+\end{lemma}
+\begin{proof}
+	Let 
 	$k \in \NN$ be the number of committed polynomials, 
 	$\vec{c} \in \GRP^k$ be the commitments,  
-	$\vec{z} \in \FF_p$ be the two attributes the polynomials are evaluated at, $\vec{s} \in \FF_p^k$ the evaluations, and 
-	$\vec{o} \in \FF_p$ be the commitment openings, 
-	then for every $\ppt$ adversary $\adv$	
+	$\vec{z} \in \FF_p^2$ be the two attributes the polynomials are evaluated at, $\vec{s} \in \FF_p^k$ the evaluations, and 
+	$\vec{o} \in \FF_p^2$ be the commitment openings. We need to show that for every $\ppt$ adversary $\adv$	
 	\[
 		\Pr
 			\left[
@@ -824,8 +834,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 			\right.\right]
 		 \leq \negl.
 	\]
-\end{lemma}
-\begin{proof}
+	
 	First, consider a case where the commitment is limited to commit to multiple polynomials which are evaluated at the same point $z$. 
 	As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound
   the probability of the adversary succeeding using the idealised verification equation, which considers equality between polynomials, instead of the real verification equation, which consider equality of the polynomials' evaluations.
@@ -836,15 +845,8 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 		\label{eq:pcom_idealised_check}
 	\end{equation}
 	Since $o(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial composition, there is only one $o(X)$ that fulfils the equation above.
-	% If the check holds, then 
-	% \[
-	% 	\sum_{i = 1}^k \gamma^{i - 1} f_i(z) = \sum_{i = 1}^{k} \gamma^{i - 1} s_i\,
-	% \]
-	% and since $\gamma$ has been picked randomly and independently after the polynomials $\vec{f}$ were submitted it also holds 
-	% \(
-	% 	f_i(z) =  s_i,
-	% \)
-	%  for each individual $i \in \range{1}{k}$.
+
+	
 	\qed
 \end{proof}
 
