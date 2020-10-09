@@ -809,27 +809,28 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 \end{lemma}
 \begin{proof}
 	Let 
-	$k \in \NN$ be the number of committed polynomials, 
-	$\vec{c} \in \GRP^k$ be the commitments,  
-	$\vec{z} \in \FF_p^2$ be the two attributes the polynomials are evaluated at, $\vec{s} \in \FF_p^k$ the evaluations, and 
-	$\vec{o} \in \FF_p^2$ be the commitment openings. We need to show that for every $\ppt$ adversary $\adv$	
+	$\vec{z} \in \FF_p^2$ be the two attributes the polynomials are evaluated at,
+	$k \in \NN$ be the number of committed polynomials to be evaluated at $z$, and $k' \in \NN$ be the number of committed polynomials to be evaluated at  $z'$,
+	$\vec{c} \in \GRP^k, \vec{c'} \in \GRP^{k'}$ be the commitments,  
+	$\vec{s} \in \FF_p^k, \vec{s'} \in \FF_p^{k'}$ the evaluations, and 
+	$(o, o') \in \FF_p^2$ be the commitment openings. We need to show that for every $\ppt$ adversary $\adv$	
 	\[
 		\Pr
 			\left[
 				\begin{aligned}
-					& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o}), \\
-					& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o'}) \\
-					&\vec{o'} \neq \vec{o}
+					& \PCOM.\verify(\crs, \vec{c}, \vec{c'}, \vec{z}, \vec{s}, \vec{s'}, (o, o')), \\
+					& \PCOM.\verify(\crs, \vec{c}, \vec{c'}, \vec{z}, \vec{\tilde{s}}, \vec{\tilde{s'}}, (\tilde{o}, \tilde{o'})) %\\
+					% &(o, o') \neq (\tilde{o}, \tilde{o'})
 				\end{aligned}
 			\,\left|\,
 			\vphantom{\begin{aligned}
-				& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o}), \\
-				& \PCOM.\verify(\crs, \vec{c}, \vec{z}, \vec{s'}, \vec{o'}) \\
-				&\vec{o'} \neq \vec{o}
+				& \PCOM.\verify(\crs, \vec{c}, \vec{c},\vec{z}, \vec{s}, \vec{s'}, (o, o')), \\
+				& \PCOM.\verify(\crs, \vec{c}, \vec{c},\vec{z}, \vec{s}, \vec{s'}, (\tilde{o}, \tilde{o'})) \\
+				&(o, o') \neq (\tilde{o}, \tilde{o'})
 			\end{aligned}}
 			\begin{aligned}
 				& \crs \gets \PCOM.\kcrs(\secparam), \\
-				&	(\vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}, \vec{o'}) \gets \adv(\crs)
+				&	(\vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{\tilde{s}}, \vec{\tilde{s'}}, (o, o'), (\tilde{o}, \tilde{o'})) \gets \adv(\crs)
 			\end{aligned}
 			\right.\right]
 		 \leq \negl.
@@ -846,13 +847,28 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	\end{equation}
 	Since $o(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial composition, there is only one $o(X)$ that fulfils the equation above.
 
-	
+	Second, consider a case when the polynomials are evaluated on two points $\vec{z} = (z, z')$ and the adversary is asked to provide two openings $\vec{o} = (o, o')$.
+	Similarly, we analyse the case of the ideal verification---verification on polynomials. In that scenario, the verifier checks whether the following equality, for $\gamma, r'$ picked at random, holds:
+	\begin{multline}
+		\label{eq:ver_eq_poly}
+		\sum_{i \in \range{1}{k}} \gamma^{i - 1} \cdot f_i(X) - \sum_{i \in \range{1}{k}} \gamma^{i - 1} \cdot s_i  + r' \left(\sum_{i \in \range{1}{k'}} \gamma'^{i - 1} \cdot f'_i(X) - \sum_{i \in \range{1}{k'}} \gamma'^{i - 1} \cdot s'_i \right) + \\
+		\equiv o(X)(X - z) + r' o'(X)(X- z')
+	\end{multline}
+	Since $r'$ has been picked at random, \cref{eq:ver_eq_poly} holds while either
+	\[
+		\sum_{i \in \range{1}{k}} \gamma^{i - 1} \cdot f_i(X) - \sum_{i \in \range{1}{k}} \gamma^{i - 1} \cdot s_i \equiv o(X)(X - z)
+	\]
+	or 
+	\[
+		\sum_{i \in \range{1}{k}} \gamma'^{i - 1} \cdot f'_i(X) - \sum_{i \in \range{1}{k'}} \gamma'^{i - 1} \cdot s'_i \equiv o'(X)(X - z)
+	\]
+	does not is negligible~\cite{EPRINT:GabWilCio19}.	
 	\qed
 \end{proof}
 
 \begin{lemma}
 	\label{lem:plonkprot_ur}
-	If a polynomial commitment scheme $\PCOM$ is evaluation binding and has unique openings property\michals{28.08}{Property formalised in Sec 2.1}, then $\plonkprot$ is $\ur{3}$.\footnote{An attentive reader may note that $\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required.}
+	If a polynomial commitment scheme $\PCOM$ is evaluation binding and has unique openings property, then $\plonkprot$ is $\ur{3}$.\footnote{An attentive reader may note that $\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required.}
 \end{lemma}
 \begin{proof}
 	Assume the opposite and an adversary $\adv$ that breaks $\ur{3}$-ness of
@@ -950,7 +966,7 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	The games differ by various breaking points, i.e.~points where the environment decides to abort the game. 
 	
 	To show that probability of $\advse$ winning does not change much from game to game we provide reductions $\rdvur$ and $\rdvss$ which seize difference in probabilities to either break $\plonkprot$'s unique response property ($\rdvur$) or its computational special soundness ($\rdvss$).
-	\markulf{17.09}{Here we also need the computational special soundness property}
+	% \markulf{17.09}{Here we also need the computational special soundness property}
 	\markulf{17.09}{The adversary that is being rewound for special soundness}
 
 	Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
