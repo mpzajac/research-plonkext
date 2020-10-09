@@ -1,6 +1,6 @@
 % !TeX spellcheck = en_GB
 \let\accentvec\vec
-\documentclass[runningheads,11pt]{llncs}
+\documentclass[runningheads,10pt]{llncs}
  % \documentclass[runningheads]{amsart}
 \let\spvec\vec
 \let\vec\accentvec
@@ -26,6 +26,7 @@
 
 % lncs size (as printed in books, with small margins):
 \usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={13.2cm,20.3cm},centering]{geometry}
+% \usepackage{fullpage}
 
 \newcommand{\ifamsart}[1] {}
 \ifamsart{
@@ -809,7 +810,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 \end{lemma}
 \begin{proof}
 	Let 
-	$\vec{z} \in \FF_p^2$ be the two attributes the polynomials are evaluated at,
+	$\vec{z} = (z, z') \in \FF_p^2$ be the two attributes the polynomials are evaluated at,
 	$k \in \NN$ be the number of committed polynomials to be evaluated at $z$, and $k' \in \NN$ be the number of committed polynomials to be evaluated at  $z'$,
 	$\vec{c} \in \GRP^k, \vec{c'} \in \GRP^{k'}$ be the commitments,  
 	$\vec{s} \in \FF_p^k, \vec{s'} \in \FF_p^{k'}$ the evaluations, and 
@@ -819,50 +820,50 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 			\left[
 				\begin{aligned}
 					& \PCOM.\verify(\crs, \vec{c}, \vec{c'}, \vec{z}, \vec{s}, \vec{s'}, (o, o')), \\
-					& \PCOM.\verify(\crs, \vec{c}, \vec{c'}, \vec{z}, \vec{\tilde{s}}, \vec{\tilde{s'}}, (\tilde{o}, \tilde{o'})) %\\
-					% &(o, o') \neq (\tilde{o}, \tilde{o'})
+					& \PCOM.\verify(\crs, \vec{c}, \vec{c'}, \vec{z}, \vec{\tilde{s}}, \vec{\tilde{s}'}, (\tilde{o}, \tilde{o}')) %\\
+					% &(o, o') \neq (\tilde{o}, \tilde{o}')
 				\end{aligned}
 			\,\left|\,
 			\vphantom{\begin{aligned}
 				& \PCOM.\verify(\crs, \vec{c}, \vec{c},\vec{z}, \vec{s}, \vec{s'}, (o, o')), \\
-				& \PCOM.\verify(\crs, \vec{c}, \vec{c},\vec{z}, \vec{s}, \vec{s'}, (\tilde{o}, \tilde{o'})) \\
-				&(o, o') \neq (\tilde{o}, \tilde{o'})
+				& \PCOM.\verify(\crs, \vec{c}, \vec{c},\vec{z}, \vec{s}, \vec{s'}, (\tilde{o}, \tilde{o}')) \\
+				&(o, o') \neq (\tilde{o}, \tilde{o}')
 			\end{aligned}}
 			\begin{aligned}
 				& \crs \gets \PCOM.\kcrs(\secparam), \\
-				&	(\vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{\tilde{s}}, \vec{\tilde{s'}}, (o, o'), (\tilde{o}, \tilde{o'})) \gets \adv(\crs)
+				&	(\vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{\tilde{s}}, \vec{\tilde{s}'}, (o, o'), (\tilde{o}, \tilde{o}')) \gets \adv(\crs)
 			\end{aligned}
 			\right.\right]
 		 \leq \negl.
 	\]
 	
-	First, consider a case where the commitment is limited to commit to multiple polynomials which are evaluated at the same point $z$. 
+	\ncase{Step 1} First, consider a case where the commitment is limited to commit to multiple polynomials which are evaluated at the same point $z$. 
 	As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound
-  the probability of the adversary succeeding using the idealised verification equation, which considers equality between polynomials, instead of the real verification equation, which consider equality of the polynomials' evaluations.
+  the probability of the adversary succeeding using the idealised verification equation---which considers equality between polynomials---instead of the real verification equation---which consider equality of the polynomials' evaluations.
 	
-	For polynomials $\vec{f} = f_1, \ldots, f_k$, evaluation point $z$, evaluation result $\vec{s} = s_1, \ldots, s_k$, and opening $o$ the idealised check verifies that
+	For polynomials $\vec{f} = f_1, \ldots, f_k$, evaluation point $z$, evaluation result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $o(X)$ the idealised check verifies that
 	\begin{equation}
 		\sum_{i = 1}^k \gamma^{i - 1} f_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} s_i \equiv o(X) (X - z)\,.
 		\label{eq:pcom_idealised_check}
 	\end{equation}
 	Since $o(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial composition, there is only one $o(X)$ that fulfils the equation above.
 
-	Second, consider a case when the polynomials are evaluated on two points $\vec{z} = (z, z')$ and the adversary is asked to provide two openings $\vec{o} = (o, o')$.
+	\ncase{Step 2} Second, consider a case when the polynomials are evaluated on two points $\vec{z} = (z, z')$ and the adversary is asked to provide two openings $\vec{o} = (o, o')$.
 	Similarly, we analyse the case of the ideal verification---verification on polynomials. In that scenario, the verifier checks whether the following equality, for $\gamma, r'$ picked at random, holds:
 	\begin{multline}
 		\label{eq:ver_eq_poly}
-		\sum_{i \in \range{1}{k}} \gamma^{i - 1} \cdot f_i(X) - \sum_{i \in \range{1}{k}} \gamma^{i - 1} \cdot s_i  + r' \left(\sum_{i \in \range{1}{k'}} \gamma'^{i - 1} \cdot f'_i(X) - \sum_{i \in \range{1}{k'}} \gamma'^{i - 1} \cdot s'_i \right) + \\
+		\sum_{i = 1}^{k} \gamma^{i - 1} \cdot f_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} \cdot s_i  + r' \left(\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot f'_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \right)\\
 		\equiv o(X)(X - z) + r' o'(X)(X- z')
 	\end{multline}
 	Since $r'$ has been picked at random, \cref{eq:ver_eq_poly} holds while either
 	\[
-		\sum_{i \in \range{1}{k}} \gamma^{i - 1} \cdot f_i(X) - \sum_{i \in \range{1}{k}} \gamma^{i - 1} \cdot s_i \equiv o(X)(X - z)
+		\sum_{i = 1}^{k} \gamma^{i - 1} \cdot f_i(X) - \sum_{i = 1}^{k}  \gamma^{i - 1} \cdot s_i \equiv o(X)(X - z)
 	\]
 	or 
 	\[
-		\sum_{i \in \range{1}{k}} \gamma'^{i - 1} \cdot f'_i(X) - \sum_{i \in \range{1}{k'}} \gamma'^{i - 1} \cdot s'_i \equiv o'(X)(X - z)
+		\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot f'_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \equiv o'(X)(X - z)
 	\]
-	does not is negligible~\cite{EPRINT:GabWilCio19}.	
+	does not is negligible~\cite{EPRINT:GabWilCio19}. This brings the proof to Step 1 above. 
 	\qed
 \end{proof}
 
