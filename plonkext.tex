@@ -869,17 +869,19 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 
 \begin{lemma}
 	\label{lem:plonkprot_ur}
-	If a polynomial commitment scheme $\PCOM$ is evaluation binding and has unique openings property, then $\plonkprot$ is $\ur{3}$.\footnote{An attentive reader may note that $\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required.}
+	If a polynomial commitment scheme $\PCOM$ is evaluation binding with parameter $\epsbind$ and has unique openings property with parameter $\epsop$, then $\plonkprot$ is $\ur{3}$\footnote{An attentive reader may note that $\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required.} 
+	with parameter $\epsur \leq \epsbind + \epsop$.
 \end{lemma}
 \begin{proof}
-	Assume the opposite and an adversary $\adv$ that breaks $\ur{3}$-ness of
-  $\plonkprot$. \markulf{30.08}{This is fine. But sounds as if the law of the
-    excluded middle is needed here. I am not sure it is. :) Mostly a
-    philosophical point.}
+	Let $\adv$ be an adversary that breaks $\ur{3}$-ness of
+  $\plonkprot$. 
+	% \markulf{30.08}{This is fine. But sounds as if the law of the
+    % excluded middle is needed here. I am not sure it is. :) Mostly a
+    % philosophical point.}
 	We consider 2 cases, depending on which round $\adv$ is able to provide at
   least two outputs such that the resulting transcripts are acceptable.
-  \markulf{30.08}{Rewrote this text: that in each of them $\adv$ breaks the
-    evaluation binding property of $\PCOM$.}
+  % \markulf{30.08}{Rewrote this text: that in each of them $\adv$ breaks the
+    % evaluation binding property of $\PCOM$.}
   For the first case we show that $\adv$ breaks the evaluation binding property of $\PCOM$, while for the
   second case we show that it breaks the unique opening property of $\PCOM$.
 	
@@ -888,7 +890,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	Assume $\adv$ is able to produce two different outputs in that round: $\vec{r_4} = (\ev{\p{a}}, \ev{\p{b}}, \ev{\p{c}}, \ev{\p{S_{\sigma 1}}}, \ev{\p{S_{\sigma 2}}}, \ev{\p{r}}, \ev{\p{z}})$ and 
 	$\vec{r_4} = (\ev{\p{a}}', \ev{\p{b}}', \ev{\p{c}}', \ev{\p{S_{\sigma 1}}}', \ev{\p{S_{\sigma 2}}}', \ev{\p{r}}', \ev{\p{z}}')$
 	which suppose to be evaluations at $\chz$ of polynomials $\p{a}, \p{b}, \p{c}, \p{S_{\sigma 1}}, \p{S_{\sigma 2}}, \p{r}$ and an evaluation at $\chz \omega$ of $\p{z}$.
-	Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus if both evaluations are acceptable by the $\PCOM.\verify$ then the evaluation binding property of $\PCOM$ is broken.
+	Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus if both evaluations are acceptable by the $\PCOM.\verify$ then the evaluation binding property of $\PCOM$ is broken. This happens with probability upper-bounded by $\epsbind$.
 	
 	\case{2}
 	In the last round of the protocol the prover provides openings for the polynomial commitments done before. 
@@ -897,9 +899,10 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	$\vec{r'_5} = (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
 	% Since \cref{lem:kzg_unique_op}, 
 	Since $\PCOM$ has unique opening property, 
-	one of the openings has to be incorrect and should be rejected by the polynomial commitment verifier. 
-	\michals{28.08}{In this case we also need to show that only one opening for a KZG polynomial commitment is acceptable. This property seems not be covered by the original KZG paper}
-	\michals{28.08}{See the lemma above}
+	one of the openings has to be incorrect and should be rejected by the polynomial commitment verifier. This happens except probability $\epsop$
+	
+	\conclude
+	Hence the probability that $\adv$ breaks $\ur{3}$-property of $\PCOM$ is upper-bounded by $\epsbind + \epsop$.
 	\qed
 \end{proof}
 
@@ -953,7 +956,7 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 
 \begin{theorem}[Simulation extractability of $\plonkprot_\fs$]
 	\label{thm:plonkprotfs_se}
-	Assume that  $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$, and coumputational special-sound with security $\epss(\secpar)$.
+	Assume that  $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$, and computational special-sound with security $\epss(\secpar)$.
 	Let $\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. 
 	Let $\advse$ be a $\ppt$ adversary that can make up to $q$ random oracle queries and outputs an acceptable proof for $\plonkprotfs$ with probability at least $\waccProb$.
 	Then $\plonkprotfs$ is simulation-extractable with extraction error $\eta = \epsur$. The extraction probability $\extProb$ is at least
@@ -1252,13 +1255,104 @@ hence $\eps$ is negligible if dlog is hard and $\plonkprot$ is sound and $\ur{3}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
 
 \appendix
-\section{$\plonk$'s prover explained}
+\section{$\plonk$ protocol rolled out}
 \label{sec:plonk_explained}
 
-\paragraph{\fbox{\normalfont{$\plonk$ prover $\prover(\REL, \crs, \inp, \wit)$}}}
+% \paragraph{\fbox{\normalfont{$\plonk$ prover $\prover(\REL, \crs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \numberofconstrains}})$}}}
 
 
-\paragraph{\fbox{\normalfont{$\plonk$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$}}}\ \newline
+\ncase{$\plonk$ prover $\prover(\REL, \crs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \numberofconstrains}})$}
+\begin{description}
+	\item[Round 1] 
+	Sample $b_1, \ldots, b_9 \sample \FF_\pp$; compute $\p{a}(X), \p{b}(X), \p{c}(X)$ as 
+	\begin{align*}
+		\p{a}(X) &= (b_1 X + b_2)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_i \lag_i(X) \\
+		\p{b}(X) &= (b_3 X + b_4)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_{\numberofconstrains + i} \lag_i(X) \\
+		\p{c}(X) &= (b_5 X + b_6)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_{2 \cdot \numberofconstrains + i} \lag_i(X) 
+	\end{align*}
+	Output $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
+	
+	\item[Round 2]
+	Get challenges $\beta, \gamma \in \FF_\pp$
+	\[
+		\beta = \ro(\trans, 0)\,, \qquad \gamma = \ro(\trans, 1)\,.
+	\]
+	Compute permutation polynomial $\p{z}(X)$
+	\begin{multline*}
+		\p{z}(X) = (b_7 X^2 + b_8 X + b_9)\p{Z_H}(X) + \lag_1(X) + \\
+			+ \sum_{i = 1}^{\numberofconstrains - 1} 
+			\left(\lag_{i + 1} (X) \prod_{j = 1}^{i} 
+			\frac{
+			(\wit_j +\beta \omega^{j - 1} + \gamma)(\wit_{\numberofconstrains + j} + \beta k_1 \omega^{j - 1} + \gamma)(\wit_{2 \numberofconstrains + j} +\beta k_2 \omega^{j- 1} + \gamma)}
+			{(\wit_j+\sigma(j) \beta + \gamma)(\wit_{\numberofconstrains + j} + \sigma(\numberofconstrains + j)\beta + \gamma)(\wit_{2 \numberofconstrains + j} + \sigma(2 \numberofconstrains + j)\beta + \gamma)}\right)
+	\end{multline*}
+	Output $\gone{\p{z}(\chi)}$
+		
+	\item[Round 3]
+	Get the challenge $\alpha = \ro(\trans)$, compute the quotient polynomial 
+	\begin{align*}
+	& \p{t}(X)  = \\
+	& (\p{a}(X) \p{b}(X) \selmulti(X) + \p{a}(X) \selleft(X) + 
+	\p{b}(X)\selright(X) + \p{c}(X)\seloutput(X) + \pubinppoly(X) + \selconst(X)) 
+	\frac{1}{\p{Z_H}(X)} +\\
+	& + ((\p{a}(X) + \beta X + \gamma) (\p{b}(X) + \beta k_1 X + \gamma)(\p{c}(X) 
+	+ \beta k_2 X + \gamma)\p{z}(X)) \frac{\alpha}{\p{Z_H}(X)} \\
+	& - (\p{a}(X) + \beta \p{S_{\sigma 1}}(X) + \gamma)(\p{b}(X) + \beta 
+	\p{S_{\sigma 2}}(X) + \gamma)(\p{c}(X) + \beta \p{S_{\sigma 3}}(X) + 
+	\gamma)\p{z}(X \omega))  \frac{\alpha}{\p{Z_H}(X)} \\
+	& + (\p{z}(X) - 1) \lag_1(X) \frac{\alpha^2}{\p{Z_H}(X)}
+	\end{align*}
+	Split $\p{t}(X)$ into degree less then $\numberofconstrains$ polynomials $\p{t_{lo}}(X), \p{t_{mid}}(X), \p{t_{hi}}(X)$, such that
+	\[
+		\p{t}(X) = \p{t_{lo}}(X) + X^{\numberofconstrains} \p{t_{mid}}(X) + X^{2 \numberofconstrains} \p{t_{hi}}(X)\,.
+	\]
+	Output $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$.
+	
+	\item[Round 4]
+	Get the challenge $\chz \in \FF_\pp$, $\chz = \ro(\trans)$.
+	Compute opening evaluations
+	\begin{align*}
+			\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
+	\end{align*}
+	Compute the linearisation polynomial
+	% \begin{align*}
+	% 	\p{r}(X) & = \p{a}(\chz) \p{b}(\chz) \selmulti(X) + \p{a}(\chz) \selleft(X) + \p{b}(\chz) \selright(X) + \p{c}(\chz) \seloutput(X) + \selconst(X) \\
+	% 	& (\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c}(\chz) + \beta k_2 \chz + \gamma) \p{z}(X) \alpha \\
+	% 	& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma)\beta \p{z}(\chz \omega) \p{S_{\sigma 3}}(X) \alpha \\
+	% 	& + \p{z}(X) \lag_1 (X) \alpha^2\,.
+	% \end{align*}
+	\[
+		\p{r}(X) = 
+		\begin{aligned}
+			& \p{a}(\chz) \p{b}(\chz) \selmulti(X) + \p{a}(\chz) \selleft(X) + \p{b}(\chz) \selright(X) + \p{c}(\chz) \seloutput(X) + \selconst(X) \\
+			& + \alpha \cdot \left( (\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma)(\p{c}(\chz) + \beta k_2 \chz + \gamma) \cdot \p{z}(X)\right) \\
+			& - \alpha \cdot \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma)\beta \p{z}(\chz\omega) \cdot \p{S_{\sigma 3}}(X)\right) \\
+			& + \alpha^2 \cdot \lag_1(\chz) \cdot \p{z}(X)
+		\end{aligned}
+	\]
+	Output $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega), \p{r}(\chz).$
+	
+	\item[Round 5]
+	Compute the opening challenge $v \in \FF_\pp$, $v = \ro(\trans)$.
+	Compute the openings for the polynomial commitment scheme 
+	\begin{align*}
+	& \p{W_\chz}(X) = \frac{1}{X - \chz} \left(
+	\begin{aligned}
+		& \p{t_{lo}}(X) + \chz^\numberofconstrains \p{t_{mid}}(X) + \chz^{2 \numberofconstrains} \p{t_{hi}}(X) - \p{t}(\chz)\\
+		& + v(\p{r}(X) - \p{r}(\chz)) \\
+		& + v^2 (\p{a}(X) - \p{a}(\chz))\\
+		& + v^3 (\p{b}(X) - \p{b}(\chz))\\
+		& + v^4 (\p{c}(X) - \p{c}(\chz))\\
+		& + v^5 (\p{S_{\sigma 1}}(X) - \p{S_{\sigma 1}}(\chz))\\
+		& + v^6 (\p{S_{\sigma 2}}(X) - \p{S_{\sigma 2}}(\chz))
+	\end{aligned}
+	\right)\\
+	& \p{W_{\chz \omega}}(X) = \frac{\p{z}(X) - \p{z}(\chz \omega)}{X - \chz \omega}
+\end{align*}
+	Output $\gone{\p{W_{\chz}}(\chi), \p{W_{\chz \omega}}(\chi)}$.
+\end{description}
+
+\ncase{$\plonk$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$}\ \newline
 The \plonk{} verifier works as follows
 \begin{description}
 	\item[Step 1] Validate all obtained group elements.
@@ -1331,7 +1425,8 @@ The verification equation is a batched version of the verification equation from
 \end{description}
 
 Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the simulator of \plonk{} works, it is presented here.
-\paragraph{\fbox{\normalfont{$\plonk$ simulator $\simulator(\REL, \crs, \td, \inp)$}}}
+
+\ncase{$\plonk$ simulator $\simulator(\REL, \crs, \td, \inp)$}
 % \paragraph{Simulation in \plonk.}
 % The simulator $\simulator$ in $\plonk$ proceeds according to the following steps:
 \begin{description}
