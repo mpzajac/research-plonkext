@@ -670,10 +670,10 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 \begin{proof}		
 	The proof goes by game hoping. The games are controlled by an environment $\env$ that internally tuns a simulation extractability adversary $\advse$, simulates its with access to a random oracle and simulator, and when necessary rewinds it.
 	The games differ by various breaking points, i.e.~points where the environment decides to abort the game. 
-	
-	To show that probability of $\advse$ winning does not change much from game to game we provide reductions $\rdvur$ and $\rdvss$ which seize difference in probabilities to either break $\ps$'s unique response property ($\rdvur$) or its computational special soundness ($\rdvss$).
-	\markulf{17.09}{Here we also need the computational special soundness property}
-	\markulf{17.09}{The adversary that is being rewound for special soundness}
+	% 
+	% To show that probability of $\advse$ winning does not change much from game to game we provide reductions $\rdvur$ and $\rdvss$ which seize difference in probabilities to either break $\ps$'s unique response property ($\rdvur$) or its computational special soundness ($\rdvss$).
+	% \markulf{17.09}{Here we also need the computational special soundness property}
+	% \markulf{17.09}{The adversary that is being rewound for special soundness}
 
 	Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
 	returned by the adversary and the simulator respectively. We use $\zkproof[i]$
@@ -956,6 +956,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ and computationally special sound we are able to follow \cite{INDOCRYPT:FKMV12} and show that $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
 
+\michals{13.10}{The theorem below is going to have a much shorter proof -- for it being just a corollary of Sec.~4}
 \begin{theorem}[Simulation extractability of $\plonkprot_\fs$]
 	\label{thm:plonkprotfs_se}
 	Assume that  $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$, and computational special-sound with security $\epsss(\secpar)$.
@@ -971,9 +972,9 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	The proof goes by game hoping. The games are controlled by an environment $\env$ that internally runs a simulation extractability adversary $\advse$, simulates its with access to a random oracle and simulator, and when necessary rewinds it.
 	The games differ by various breaking points, i.e.~points where the environment decides to abort the game. 
 	
-	To show that probability of $\advse$ winning does not change much from game to game we provide reductions $\rdvur$ and $\rdvss$ which seize difference in probabilities to either break $\plonkprot$'s unique response property ($\rdvur$) or its computational special soundness ($\rdvss$).
+	% To show that probability of $\advse$ winning does not change much from game to game we provide reductions $\rdvur$ and $\rdvss$ which seize difference in probabilities to either break $\plonkprot$'s unique response property ($\rdvur$) or its computational special soundness ($\rdvss$).
 	% \markulf{17.09}{Here we also need the computational special soundness property}
-	\markulf{17.09}{The adversary that is being rewound for special soundness}
+	% \markulf{17.09}{The adversary that is being rewound for special soundness}
 
 	Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
 	returned by the adversary and the simulator respectively. We use $\zkproof[i]$
