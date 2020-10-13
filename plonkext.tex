@@ -647,8 +647,10 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 
 \begin{definition}[Computational special soundness]
 	Let $\proofsystem$ be an $2 \mu$-round zero-knowledge proof system for a relation $\REL$. 
-	We say that $\proofsystem$ is $(n_1, \ldots, n_\mu)$-\emph{special sound} if for every $\ppt$ adversary $\adv$ that produces an accepting $(n_1, \ldots, n_\mu)$ tree of transcripts $\tree$ for a statement $\inp$ there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$ with an overwhelming probability.
+	We say that $\proofsystem$ is $(n_1, \ldots, n_\mu)$-\emph{special sound} if for every $\ppt$ adversary $\adv$ that produces an accepting $(n_1, \ldots, n_\mu)$-tree of transcripts $\tree$ for a statement $\inp$ there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$ with an overwhelming probability.
 \end{definition}
+
+Since we do not utilise the classical special soundness (that holds for all, even unbounded, adversaries) all references to that property should be understood as references to its computational version.
 
 \section{Simulation-extractability---the general result}
 \task{24.09}{Put here a general result -- a special sound, ur protocol is sim. ext after FS}
@@ -1097,7 +1099,7 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 
 \begin{theorem}[Simulation soundness]
 	% \michals{16.09}{To be change to sim snd proof}
-	Assume that $(\numberofconstrains + 2, 1)$-dlog is $\eps_\dlog(\secpar)$-hard, $\plonkprot$ is sound and $\ur{3}$ with security $\eps_{\ss}(\secpar)$ and $\epsur(\secpar)$ respectively. 
+	Assume that $(\numberofconstrains + 2, 1)$-dlog is $\eps_\dlog(\secpar)$-hard, $\plonkprot$ is sound and $\ur{3}$ with security $\epss(\secpar)$ and $\epsur(\secpar)$ respectively. 
 	Then the probability that an algebraic, $\ppt$ adversary $\advss$ breaks simulation soundness of $\plonkprotfs$ is upper-bounded by 
 	\[
 		\epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \epss(\secpar))\,,
@@ -1227,7 +1229,7 @@ Since the reduction guesses queries $h_{i_1}, \ldots, h_{i_6}$ with probability 
 \] 
 Hence,
 \[
-	\prob{\advss \text{ wins}, \nevent{E}_0} \leq q_\ro^6 \cdot \epss(\secpar).
+	\prob{\advss \text{ wins}, \nevent{E}_0} \leq q_\ro^6 \cdot \epsss(\secpar).
 \]
 
 \ncase{When $\nevent{E}_1$ happens}
@@ -1245,7 +1247,7 @@ its roots, one of them is the required $\chi$. Hence it holds, by the analogous 
 
 The proof is concluded by observing that the analysis of events $\event{E}, \nevent{E}_0, \nevent{E}_1$ gives
 \[
-	\eps \leq \epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \epss(\secpar))\,,
+	\eps \leq \epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \epsss(\secpar))\,,
 \]
 hence $\eps$ is negligible if dlog is hard and $\plonkprot$ is sound and $\ur{3}$.
 \qed
@@ -1393,8 +1395,8 @@ The \plonk{} verifier works as follows
 		& + v
 		\left(
 		\begin{aligned}
-			& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
-			& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
+			& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}(\chz)   \gone{\selright} + \p{c}(\chz)  \gone{\seloutput} + \\
+			& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c}(\chz)  + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
 			% &   \\
 			& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
 		\end{aligned}
