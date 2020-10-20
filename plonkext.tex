@@ -1,23 +1,17 @@
 % !TeX spellcheck = en_GB
-\let\accentvec\vec
-\documentclass[runningheads,10pt]{llncs}
+\let\accentvec\vec \documentclass[runningheads,10pt]{llncs}
  % \documentclass[runningheads]{amsart}
-\let\spvec\vec
-\let\vec\accentvec
+\let\spvec\vec \let\vec\accentvec
 
-\usepackage{amssymb,amsmath}
-\let\vec\spvec
-\usepackage{lmodern}
+\usepackage{amssymb,amsmath} \let\vec\spvec \usepackage{lmodern}
 
 \usepackage[T1]{fontenc}
 
-\newcommand{\iflipics}[1] {}
-\newcommand{\iflncs}[1] {#1}
+\newcommand{\iflipics}[1] {} \newcommand{\iflncs}[1] {#1}
 
 \def\vec#1{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
-	{\mbox{\boldmath$\textstyle#1$}}
-	{\mbox{\boldmath$\scriptstyle#1$}}
-	{\mbox{\boldmath$\scriptscriptstyle#1$}}}
+{\mbox{\boldmath$\textstyle#1$}} {\mbox{\boldmath$\scriptstyle#1$}}
+{\mbox{\boldmath$\scriptscriptstyle#1$}}}
 
 \DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
 \DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
@@ -28,29 +22,17 @@
 \usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={13.2cm,20.3cm},centering]{geometry}
 % \usepackage{fullpage}
 
-\newcommand{\ifamsart}[1] {}
-\ifamsart{
-	\newtheorem{theorem}{Theorem}%[section]
-	\newtheorem{proposition}[theorem]{Proposition}
-	\newtheorem{lemma}[theorem]{Lemma}
-	\newtheorem{corollary}[theorem]{Corollary}
-	\theoremstyle{definition}
-	\newtheorem{definition}[theorem]{Definition}
-	\newtheorem{example}[theorem]{Example}
-}
-\usepackage{soul}
-\usepackage{soulutf8}
-\soulregister\cite7
-\soulregister\ref7
-\soulregister\pageref7
-\usepackage{hyperref}
-\usepackage[color=yellow]{todonotes}
-\hypersetup{final}
+\newcommand{\ifamsart}[1] {} \ifamsart{ \newtheorem{theorem}{Theorem}%[section]
+		\newtheorem{proposition}[theorem]{Proposition}
+		\newtheorem{lemma}[theorem]{Lemma}
+		\newtheorem{corollary}[theorem]{Corollary} \theoremstyle{definition}
+		\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example} } \usepackage{soul} \usepackage{soulutf8}
+\soulregister\cite7 \soulregister\ref7 \soulregister\pageref7
+\usepackage{hyperref} \usepackage[color=yellow]{todonotes} \hypersetup{final}
 \usepackage{mathrsfs}
 \usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
-\usepackage[capitalise]{cleveref}
-\usepackage{cite}
-\usepackage{booktabs}
+\usepackage[capitalise]{cleveref} \usepackage{cite} \usepackage{booktabs}
 \usepackage{paralist}
 \usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed}
 
@@ -58,99 +40,181 @@
 
 \title{On Simulation-Extractability of \textsc{Plonk}}
 
-\author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}}
-\iflncs{
-  \institute{University of Edinburgh, Edinburgh, UK \and IOHK \\ \email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London UK \\ \email{m.p.zajac@gmail.com}}
-}
+\author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} \iflncs{
+\institute{University of Edinburgh, Edinburgh, UK \and IOHK \\
+\email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London UK \\
+\email{m.p.zajac@gmail.com}} }
 
 \allowdisplaybreaks
 
-\begin{document}
-	\sloppy
-	\maketitle
+\begin{document} \sloppy \maketitle
 
-\begin{abstract}
-	In this paper we prove that the most-efficient updatable universal zkSNARK---\plonk{}~\cite{EPRINT:GabWilCio19}---is (non black-box) simulation extractable.
-	To that end, we generalise the result by Faust et al.~\cite{INDOCRYPT:FKMV12} (INDOCRYPT 2012) and show that any special-sound proof of knowledge that has the unique response property is also simulation-extractable if made non-interactive by the Fiat--Shamir transform. 
-	We then explain why \plonk{} meets these requirements and conclude by showing its simulation-extractability.
-	Unfortunately, we also show that relying on rewinding and Fiat--Shamir transform often comes at a great price of inefficient knowledge extraction and the security loss introduced by these techniques should always be taken into account.
-	Because of the inefficiency and loosenes of the reduction we independently show that $\plonk{}$ is simulation-sound. 
-	\task{15.05}{Check Sonic and Bulletproofs}
+\begin{abstract} In this paper we prove that the most-efficient updatable
+		universal zkSNARK---\plonk{}~\cite{EPRINT:GabWilCio19}---is (non black-box)
+		simulation extractable.  To that end, we generalise the result by Faust et
+		al.~\cite{INDOCRYPT:FKMV12} (INDOCRYPT 2012) and show that any special-sound
+		proof of knowledge that has the unique response property is also
+		simulation-extractable if made non-interactive by the Fiat--Shamir
+		transform.  We then explain why \plonk{} meets these requirements and
+		conclude by showing its simulation-extractability.  Unfortunately, we also
+		show that relying on rewinding and Fiat--Shamir transform often comes at a
+		great price of inefficient knowledge extraction and the security loss
+		introduced by these techniques should always be taken into account.  Because
+of the inefficiency and loosenes of the reduction we independently show that
+$\plonk{}$ is simulation-sound.  \task{15.05}{Check Sonic and Bulletproofs}
 \end{abstract}
 
-\section{Introduction}
-\subsection{Motivation}
-\paragraph{The rise of updatable zkSNARKs.}
-\cite{C:GKMMM18}
-\cite{EC:CHMMVW20}
-\cite{CCS:MBKM19}
-\cite{EPRINT:GabWilCio19}
-\cite{EPRINT:Gabizon19c}
-\cite{EPRINT:Lipmaa19a}
+\section{Introduction} \subsection{Motivation} \paragraph{The rise of updatable
+zkSNARKs.} \cite{C:GKMMM18} \cite{EC:CHMMVW20} \cite{CCS:MBKM19}
+\cite{EPRINT:GabWilCio19} \cite{EPRINT:Gabizon19c} \cite{EPRINT:Lipmaa19a}
 
-\paragraph{On the importance of the simulation extractability.}
-\cite{AC:DHLW10}
-\cite{AC:Groth07}
-\cite{EPRINT:AbdRamSla20}
-\cite{EPRINT:KZMQCP15}
+\paragraph{On the importance of the simulation extractability.} \cite{AC:DHLW10}
+\cite{AC:Groth07} \cite{EPRINT:AbdRamSla20} \cite{EPRINT:KZMQCP15}
 \cite{EPRINT:AtaBag19}
+Although many zkSNARKs satisfies knowledge soundness definition, we argue that
+simulation-extractability is the property that should be required from zkSNARKs
+used in their natural habitat---as an efficient zero-knowledge proof deployed in
+the real life. This is since in the real life one simply cannot assume that the
+adversary who tries to break security of the system does not have access to any
+proofs provided by other parties using the same zero-knowledge system. On
+contrary, in the most popular applications of zkSNARKs, like privacy-preserving
+blockchains, proofs made by all blockchain-participants are public. Thus it is
+only reasonable to require from a zero-knowledge proof system to be resilient to
+attacks that utilise proofs performed by different parties.
 
-\paragraph{State of the art---simulation-extractable updatable zkSNARKs.}
-Up to our best knowledge, there are zkSNARKs that are simulation-extractable and zkSNARKs that are updatable, however there is no known zkSNARKs that enjoy both of these properties.
-Given an updatable zkSNARK one could lift it to be simulation-extractable \michals{23.09}{Cite Coco, Lamassu, some Karim's work (?)}, but such lift comes with inevitably efficiency loss.
-On the other hand, there is no known lift that would take a zkSNARK and make it updatable. Since updatable zkSNARKs are quite restrictive regarding format of their CRSs, making such lift seems as a very difficult task. 
+There are many results regarding obtaining simulation extractability for NIZKs.
+First, Groth \cite{AC:Groth07} noticed that a (black-box) simulation extractable
+NIZK is UC-secure. Then Dodis et al.~\cite{AC:DHLW10} introduced a notion of
+(black-box) \emph{true simulation extractability} and shown that no NIZK can be
+UC-secure if it does not have this property. 
 
-\subsection{Our contribution}
-First of all, we prove that $\plonk$ is simulation-extractable. Although we do not change the original protocol at all, we had to solve a number of problems in order to show that. The idea of the proof is presented below. 
+In the context of zkSNARKs it is important to mention such works as Kosba's et
+al.~\cite{EPRINT:KZMQCP15} who show a general transformation from a NIZK
+to a black-box SE NIZK. Although their transformation works for zkSNARKs
+as well, succinctness of the proof system is not preserved as the witness
+is encrypted. 
+Abdolmaleki et al.~\cite{EPRINT:AbdRamSla20} shown another transformation that
+obtains non-black-box simulation extractability but also preserves succinctness
+of the argument.
 
-Note that \plonk{}, as presented in \cite{EPRINT:GabWilCio19}, is a non-interactive protocol, which relies on an interactive proof of knowledge and the Fiat--Shamir transform. Thus, we denote the underlying protocol by $\plonkprot$ and the resulting, non-interactive one by $\plonkprot_\fs$. 
+Independently, some authors focused on obtaining simulation extractability of
+some known zkSNARKs, like $\groth$, by modifying the scheme a bit and using
+stronger assumptions \cite{EPRINT:BowGab18,EPRINT:AtaBag19}. Interestingly,
+although such modifications hurt performance of the proof system the resulting
+zkSNARKs are still more efficient than the first SE zkSNARK proposed in
+\cite{C:GroMal17}, see \cite{EPRINT:AtaBag19}. 
 
-\subsubsection{Special soundness of $\plonkprot$.}
-To be able to follow \cite{INDOCRYPT:FKMV12} it had to be shown that $\plonkprot$ is special-sound. However the standard definition of special soundness could not be met.
-First of all, the standard definition requires extraction of a witness from merely two transcripts, each containing three messages, that share the first message. For $\plonkprot$ that gives nothing. The definition had to be tuned to cover protocols that have more rounds than just three. 
-Furthermore, the number of transcripts required is much greater---$\numberofconstrains + 3$, where $\numberofconstrains$ is the number of constrains in the proven circuit---to be exact. Hence, we do not have a \emph{pair of transcripts}, but \emph{tree of transcripts}.
+\paragraph{State of the art---simulation-extractable updatable zkSNARKs.} Up to
+our best knowledge, there are zkSNARKs that are simulation-extractable and
+zkSNARKs that are updatable, however there is no known zkSNARKs that enjoy both
+of these properties.  Given an updatable zkSNARK one could lift it to be
+simulation-extractable using techniques described e.g.~in
+\cite{EPRINT:KZMQCP15,EPRINT:AbdRamSla20}, but such lift comes with inevitably efficiency loss.  On the other hand,
+there is no known lift that would take a zkSNARK and make it updatable. Since
+updatable zkSNARKs are quite restrictive regarding format of their CRSs, making
+such lift seems as a very difficult task. 
 
-Secondly, the protocol has a trapdoor what allows an adversary who knows it to produce multiple proofs even without knowing the witness. Recall that the standard special soundness definition requires witness extraction from \emph{any} pair of acceptable transcripts that share a common root. Thus, the definition cannot be met. However, one could define a weaker version of special soundness, i.e.~a computational special soundness. More precisely, we show that either it is possible to extract a witness from a tree of acceptable transcripts or one could use the adversary that produced the tree to break some underlying computational assumption.
+\subsection{Our contribution} First of all, we prove that $\plonk$ is
+simulation-extractable. Although we do not change the original protocol at all,
+we had to solve a number of problems in order to show that. The idea of the
+proof is presented below. 
 
-\subsubsection{Unique response property of $\plonkprot$.}
-Another property that has to be proven for $\plonkprot$ is the unique response property \cite{C:Fischlin05} which states that except the first round, all messages sent by the prover are deterministic. As previously, we also could not use this definition right out of the box as $\plonkprot$ does not follow it---both first and the second prover's messages are randomised. We thus propose a generalisation of the definition which states that a protocol is $\ur{i}$ if the prover is deterministic after sending its $3$-rd message. This property $\plonkprot$ follows.
+Note that \plonk{}, as presented in \cite{EPRINT:GabWilCio19}, is a
+non-interactive protocol, which relies on an interactive proof of knowledge and
+the Fiat--Shamir transform. Thus, we denote the underlying protocol by
+$\plonkprot$ and the resulting, non-interactive one by $\plonkprot_\fs$. 
+
+\subsubsection{Special soundness of $\plonkprot$.} To be able to follow
+\cite{INDOCRYPT:FKMV12} it had to be shown that $\plonkprot$ is special-sound.
+However the standard definition of special soundness could not be met.  First of
+all, the standard definition requires extraction of a witness from merely two
+transcripts, each containing three messages, that share the first message. For
+$\plonkprot$ that gives nothing. The definition had to be tuned to cover
+protocols that have more rounds than just three.  Furthermore, the number of
+transcripts required is much greater---$\numberofconstrains + 3$, where
+$\numberofconstrains$ is the number of constrains in the proven circuit---to be
+exact. Hence, we do not have a \emph{pair of transcripts}, but \emph{tree of
+transcripts}.
+
+Secondly, the protocol has a trapdoor what allows an adversary who knows it to
+produce multiple proofs even without knowing the witness. Recall that the
+standard special soundness definition requires witness extraction from
+\emph{any} pair of acceptable transcripts that share a common root. Thus, the
+definition cannot be met. However, one could define a weaker version of special
+soundness, i.e.~a computational special soundness. More precisely, we show that
+either it is possible to extract a witness from a tree of acceptable transcripts
+or one could use the adversary that produced the tree to break some underlying
+computational assumption.
+
+\subsubsection{Unique response property of $\plonkprot$.} Another property that
+has to be proven for $\plonkprot$ is the unique response property
+\cite{C:Fischlin05} which states that except the first round, all messages sent
+by the prover are deterministic. As previously, we also could not use this
+definition right out of the box as $\plonkprot$ does not follow it---both first
+and the second prover's messages are randomised. We thus propose a
+generalisation of the definition which states that a protocol is $\ur{i}$ if the
+prover is deterministic after sending its $3$-rd message. This property
+$\plonkprot$ follows.
 
 \subsubsection{Generalisation of the general forking lemma.}
-Consider an interactive $3$-round special-sound protocol $\ps$ and its non-interactive version $\ps_\fs$ obtained by using the Fiat--Shamir transform. The general forking lemma provides an instrumental lower bound for probability of extracting a witness from two proofs for the same statement that share the first message.
-Since $\plonkprot$ has $10$ rounds and is not special-sound, the forking lemma cannot be used directly. We thus propose its modification that covers protocols that have more rounds and require more transcript than merely two. 
-Unfortunately, when more transcripts is needed the security gap is big. That is, probability that the extractor succeeds diminishes significantly. (That said, we have to note that the security loss is polynomial, albeit huge.)
+Consider an interactive $3$-round special-sound protocol $\ps$ and its
+non-interactive version $\ps_\fs$ obtained by using the Fiat--Shamir transform.
+The general forking lemma provides an instrumental lower bound for probability
+of extracting a witness from two proofs for the same statement that share the
+first message.  Since $\plonkprot$ has $10$ rounds and is not special-sound, the
+forking lemma cannot be used directly. We thus propose its modification that
+covers protocols that have more rounds and require more transcript than merely
+two. 
+Unfortunately, when more transcripts is needed the security gap is big. That is,
+probability that the extractor succeeds diminishes significantly. (That said, we
+have to note that the security loss is polynomial, albeit huge.)
 
-We observe here that some modern zkSNARKs rely on the Fiat--Shamir transform and the forking
-lemma heavily. First, an interactive protocol is proposed and its security andś
-special-soundness analysed; second, one uses an argument that the Fiat--Shamir
-transform can be used to get a protocol that is non-interactive and shares the
-same security properties.  We claim here that such an analysis is not enough and
-one has to consider the security loss implied by the generalisation of the
-forking lemma or disclose a transformation that does not suffer from the the
+We observe here that some modern zkSNARKs rely on the Fiat--Shamir transform and
+the forking lemma heavily. First, an interactive protocol is proposed and its
+security and special-soundness analysed; second, one uses an argument that the
+Fiat--Shamir transform can be used to get a protocol that is non-interactive and
+shares the same security properties.  We claim here that such an analysis is not
+enough and one has to consider the security loss implied by the generalisation
+of the forking lemma or disclose a transformation that does not suffer from the
 generalisation's inefficiency.
 
 \subsubsection{Towards simulation-extractability.} Given modified, less
 restrictive, definition for special-soundness and unique response property, and
 generalised forking lemma we are able to show the announced result---simulation
-extractability of $\plonkprot_\fs$. The proof is inspired by simulation-extractability and simulation-soundness proofs from \cite{INDOCRYPT:FKMV12}, with major modifications, which were required as \cite{INDOCRYPT:FKMV12} considers (Fiat--Shamir transformed) sigma-protocols that are undoubtedly simpler protocols than $\plonkprot_\fs$.
-Since the proof highly relies on the (generalised) forking lemma, the security lost it introduces is considerable.
+extractability of $\plonkprot_\fs$. The proof is inspired by
+simulation-extractability and simulation-soundness proofs from
+\cite{INDOCRYPT:FKMV12}, with major modifications, which were required as
+\cite{INDOCRYPT:FKMV12} considers (Fiat--Shamir transformed) sigma-protocols
+that are undoubtedly simpler protocols than $\plonkprot_\fs$.  Since the proof
+highly relies on the (generalised) forking lemma, the security lost it
+introduces is considerable.
 
 \subsubsection{Efficient simulation-soundness.}
 Given that the security reduction for simulation-extractability introduces a security gap we also present a proof for $\plonkprot_\fs$ simulation soundness which utilises the algebraic group model and is tight. 
 It remains an open question how to show simulation extractability tightly, e.g.~using AGM.
 
 \subsubsection{Interactive zero knowledge vs non-interactive zero knowledge.}
-Another issue we tackle with is a question whether NIZK proof systems are in fact zero-knowledge, see e.g.~\cite{C:Pass03}. This problem was raised as one could observe that a NIZK proof system has a property alien to interactive proofs---a verifier who obtains a proof $\zkproof$ for a statement $\inp \in \LANG$ inevitably learns how to prove this statement. More precisely, he can just reuse the obtained proof $\zkproof$. This makes the verifier learn undoubtedly more than simply the veracity of the proven statement. On the other hand, the verifier learns a particular proof $\zkproof$ for a concrete CRS $\crs$ only. However, the CRS generator is considered trusted, thus the proof $\zkproof$ could be considered as a proof for $\inp$ generally, regardless the CRS.
+Another issue we tackle with is a question whether NIZK proof systems are in
+fact zero-knowledge, see e.g.~\cite{C:Pass03}. This problem was raised as one
+could observe that a NIZK proof system has a property alien to interactive
+proofs---a verifier who obtains a proof $\zkproof$ for a statement $\inp \in
+\LANG$ inevitably learns how to prove this statement. More precisely, he can
+just reuse the obtained proof $\zkproof$. This makes the verifier learn
+undoubtedly more than simply the veracity of the proven statement. On the other
+hand, the verifier learns a particular proof $\zkproof$ for a concrete CRS
+$\crs$ only. However, the CRS generator is considered trusted, thus the proof
+$\zkproof$ could be considered as a proof for $\inp$ generally, regardless the
+CRS.
 
 Simulation-extractable updatable NIZKs---and zkSNARKs in particular---tighten
 the gap between interactive zero knowledge and non-interactive zero knowledge in
 the CRS model. First, simulation-extractability assures that no adversary can
-maul an existing proof and make a fresh one, what limits replay attacks. Second,
-updatable NIZKs does not assume that there is a trusted party that provides a
-CRS, but rather a sequence of parties (called updaters) that modify it. The
-security model is radically different as now one believes in the veracity of a
-proof only if she trusts that there is at least one honest party between the
-updaters. 
+maul an existing proof and make a fresh one, what limits replay attacks.
+Second, updatable NIZKs does not assume that there is a trusted party that
+provides a CRS, but rather a sequence of parties (called updaters) that modify
+it. The security model is radically different as now one believes in the
+veracity of a proof only if she trusts that there is at least one honest party
+between the updaters. 
 
 We believe that our result may be useful for designing new zkSNARKs, especially those based on a polynomial commitment schemes~\cite{AC:KatZavGol10}, as it shows that a careful protocol design may give it a strong security notion for free.
 
@@ -165,7 +229,8 @@ Distributions $X$ and $Y$ have \emph{statistical distance} $\SD$ equals $\epsilo
 We write $X \approx_\secpar Y$ if $\SD(X, Y) \leq \negl$, where $\SD$ is the statistical distance between the distributions.
 For values $a$ and $b$ we write $a \approx_\secpar b$ if $\abs{a - b} \leq \negl$.
 
-Denote by $\RELGEN$ a \emph{relation generator}---a $\ppt$ algorithm that on input $\secparam$ outputs an $\npol$ relation $\REL$. We assume that if $\RELGEN$ provides any auxiliary input to $\REL$, it is benign. Directly from the description of $\REL$ one learns security parameter $\secpar$ and other necessary information like a description of a group $\GRP$, if the relation is a relation of group elements (as it usually is in case of zkSNARKs).
+Denote by $\RELGEN = \smallset{\REL}$ a family of relations. We assume that if
+$\REL$ comes with any auxiliary input, it is benign. Directly from the description of $\REL$ one learns security parameter $\secpar$ and other necessary information like a description of a group $\GRP$, if the relation is a relation of group elements (as it usually is in case of zkSNARKs).
 
 \paragraph{Bilinear groups.}
 A bilinear group generator $\pgen (1^\secpar)$ returns $(p, \GRP_1, \GRP_2, \GRP_T, \pair, \gone{1}, \gtwo{1})$, where $\GRP_1$, $\GRP_2$, and $\GRP_T$ are additive cyclic groups of prime order $p = 2^{\Omega (\secpar)}$, $\gone{1}, \gtwo{1}$ are generators of $\GRP_1$, $\GRP_2$, resp., and $\pair: \GRP_1 \times \GRP_2 \to \GRP_T$ is a non-degenerate $\ppt$-computable bilinear pairing.
@@ -175,7 +240,7 @@ We denote $\pair (\gone{a}, \gtwo{b})$ as $\gone{a} \bullet \gtwo{b}$.
 Thus, $\gone{a} \bullet \gtwo{b} = \gtar{a b}$.
 We freely use the bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \vec{C}$ then $\vec{A} \grpgi{\vec{B}} = \grpgi{\vec{C}}$ and $\gone{\vec{A}}\bullet \gtwo{\vec{B}} = \gtar{\vec{C}}$.
 
-\paragraph{Compuational assumptions.}
+\paragraph{Computational assumptions.}
 
 \begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]
 	Let $\adv$ be a $\ppt$ adversary that gets as input $\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}}$, for some randomly picked $\chi \in \FF_p$, then
@@ -237,13 +302,15 @@ Intuitively, opening uniqueness assures that there is only one valid opening for
 \subsection{}
 
 \subsection{Zero knowledge}
-In a zero-knowledge proof or argument system, a prover convinces the verifier of the veracity of a statement without leaking any side information except that the statement is true.
+In a zero-knowledge proof or argument system, a prover convinces the verifier of
+the veracity of a statement without leaking any side information except that the
+statement is true.
 Here, a proof (resp., an argument) system guarantees soundness against an unbounded (resp., a $\ppt$) cheating prover.
 The zero-knowledge property is proven by constructing a simulator that can simulate the view of a cheating verifier without knowing the secret information---witness---of the prover.
 
-More precisely, let $\RELGEN(\secparam)$ be a relation generator that outputs an $\npol$ relation $\REL = \smallset{(\inp, \wit)}$. \markulf{09.07.20}{Not too fond of relation
-  generators, but guess this is more general
-  than family of relations.} Denote by $\LANG_\REL$ the language determined by $\REL$.
+More precisely, let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of
+$\npol$ relations.
+Denote by $\LANG_\REL$ the language determined by $\REL$.
 Let $\prover$ and $\verifier$ be algorithms, the former called \emph{prover} and the latter \emph{verifier}.
 We denote by $\ip{\prover(\REL, \inp, \wit)}{\verifier(\REL, \inp)}$ a transcript of conversation between a $\prover$ with input $(\REL, \inp, \wit)$ and $\verifier$ with input $(\REL, \inp)$.
 We write $\ip{\prover (\REL, \inp, \wit)}{\verifier(\REL, \inp)} = 1$ if in the end of the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the transcript.
@@ -252,15 +319,21 @@ We write $\ip{\prover (\REL, \inp, \wit)}{\verifier(\REL, \inp)} = 1$ if in the 
 \michals{09.07.20}{I am not sure what you meant here. You want to have for all $\inp, \wit \in \REL$ or you doubt these properties make sense for all $\REL \gets \RELGEN$?}
 A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
 \begin{description}
-	\item[Completeness] An interactive proof system $\proofsystem$ is \emph{complete} if an honest prover always convinces an honest verifier, that is for all $\REL \gets \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
+	\item[Completeness] An interactive proof system $\proofsystem$ is
+			\emph{complete} if an honest prover always convinces an honest verifier,
+			that is for all $\REL \in \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
 	\[
 		\prob{\ip{\prover (\REL, \inp, \wit)}{\verifier (\REL, \inp)} = 1} = 1\,.
 	\]
-	\item[Soundness] We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no $\ppt$ prover $\adv$ can convince an honest verifier $\verifier$ to accept a proof for a false statement, i.e~for $\inp \not\in\LANG$. More precisely, for all $\REL \gets \RELGEN(\secparam)$
+	\item[Soundness] We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if
+			no $\ppt$ prover $\adv$ can convince an honest verifier $\verifier$ to
+			accept a proof for a false statement, i.e~for $\inp \not\in\LANG$. More
+			precisely, for all $\REL \in \RELGEN(\secparam)$
 	\[
 		\condprob{\ip{\adv(\REL, \inp)}{\verifier(\REL, \inp)} = 1}{\inp \gets \adv(\REL); \inp \not\in \LANG_\REL} \leq \negl\,;
 	\]
-	\item[Zero knowledge] We call an interactive proof system $\proofsystem$ \emph{zero-knowledge} if for any $\REL \gets \RELGEN(\secparam)$ and adversary $\adv$ there exists a $\ppt$ simulator $\simulator$ such that
+	\item[Zero knowledge] We call an interactive proof system $\proofsystem$
+			\emph{zero-knowledge} if for any $\REL \in \RELGEN(\secparam)$ and adversary $\adv$ there exists a $\ppt$ simulator $\simulator$ such that
 	\begin{multline*}
 	  \left\{\ip{\prover(\REL, \inp, \wit)}{\adv(\REL, \inp, \wit)} \,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
 		\\
@@ -271,7 +344,8 @@ A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ i
 	
 	Sometimes a stronger notion of soundness is required---except requiring that the verifier rejects proofs of statements outside the language, we request from the prover to know a witness corresponding to the proven statement. This property is formalised by the following notion:
 	
-	\item[Knowledge soundness] We call an interactive proof system $\proofsystem$ \emph{knowledge-sound} if for any $\REL \gets \RELGEN(\secparam)$ and a $\ppt$ adversary $\adv$
+	\item[Knowledge soundness] We call an interactive proof system $\proofsystem$
+			\emph{knowledge-sound} if for any $\REL \in \RELGEN(\secparam)$ and a $\ppt$ adversary $\adv$
 	% \begin{multline*}
 	\[
 	\Pr\left[
@@ -303,7 +377,7 @@ to denote the pair of state-sharing simulators $\simulator_\zkproof,
 
 \paragraph{Sigma protocols.}
 A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$  for a relation
-$\REL \gets \RELGEN(\secparam)$  is a special case of an interactive proof which transcript compounds of three messages $(a, b, z)$, the middle being a challenge provided by the verifier.
+$\REL \in \RELGEN(\secparam)$  is a special case of an interactive proof which transcript compounds of three messages $(a, b, z)$, the middle being a challenge provided by the verifier.
 Sigma protocols are specially-sound. That is, there exists an extractor $\ext$ which from two accepting transcripts $(a, b, z)$, $(a, b', z')$ for a statement $\inp$ can recreate the corresponding witness if $b \neq b'$. Formally,
 \begin{description}
 	\item[Special soundness] A sigma protocol $\sigmaprot$ is \emph{specially-sound} if for any adversary $\adv$ the probability
@@ -337,7 +411,8 @@ Although this notion is weaker than a standard zero knowledge it is often suffic
 Another property that sigma protocols sometimes have is, introduced by Fischlin \cite{C:Fischlin05}, a unique response property which states that no $\ppt$ adversary  can produce two accepting transcripts that differ only on the last element.
 More precisely,
 \begin{description}
-	\item[Unique response property] Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a standard-model sigma-protocol for relation $\REL \gets \RELGEN(\secparam)$ which proofs compound of three messages $(\alpha, \beta, \gamma)$. We say that $\sigmaprot$ is has a unique response property if for all $\ppt$ algorithms $\adv$ holds
+	\item[Unique response property] Let $\sigmaprot = (\prover, \verifier,
+			\simulator)$ be a standard-model sigma-protocol for relation $\REL \in \RELGEN(\secparam)$ which proofs compound of three messages $(\alpha, \beta, \gamma)$. We say that $\sigmaprot$ is has a unique response property if for all $\ppt$ algorithms $\adv$ holds
 	\[
 	\condprob{\verifier (\alpha, \beta, \gamma) = \verifier (\alpha, \beta, \gamma')  = 1}{(\alpha, \beta, \gamma, \gamma') \gets \adv(\REL)} \leq \negl\,.
 	\]
