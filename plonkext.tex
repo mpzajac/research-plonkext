@@ -1,4 +1,4 @@
-% !TeX spellcheck = en_GB
+% !TeX spellcheck = en_US
 \let\accentvec\vec \documentclass[runningheads,10pt]{llncs}
  % \documentclass[runningheads]{amsart}
 \let\spvec\vec \let\vec\accentvec
@@ -68,9 +68,7 @@ $\plonk{}$ is simulation-sound.  \task{15.05}{Check Sonic and Bulletproofs}
 zkSNARKs.} \cite{C:GKMMM18} \cite{EC:CHMMVW20} \cite{CCS:MBKM19}
 \cite{EPRINT:GabWilCio19} \cite{EPRINT:Gabizon19c} \cite{EPRINT:Lipmaa19a}
 
-\paragraph{On the importance of the simulation extractability.} \cite{AC:DHLW10}
-\cite{AC:Groth07} \cite{EPRINT:AbdRamSla20} \cite{EPRINT:KZMQCP15}
-\cite{EPRINT:AtaBag19}
+\paragraph{On the importance of the simulation extractability.}
 Although many zkSNARKs satisfies knowledge soundness definition, we argue that
 simulation-extractability is the property that should be required from zkSNARKs
 used in their natural habitat---as an efficient zero-knowledge proof deployed in
@@ -246,6 +244,15 @@ We freely use the bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \v
 	Let $\adv$ be a $\ppt$ adversary that gets as input $\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}}$, for some randomly picked $\chi \in \FF_p$, then
 	\[
 		\condprob{\chi \gets \adv(\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2} })}{\chi \sample \FF_p} \leq \negl.
+	\]
+\end{definition}
+
+\begin{definition}[$(q_1, q_2)\mhyph\ldlog$ assumption]
+		Let $\adv$ be a $\ppt$ adversary that gets as input $\gone{\chi^{-q_1},
+		\ldots, 1, \chi, \ldots, \chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \chi, \ldots, \chi^{q_2}}$, for some randomly picked $\chi \in \FF_p$, then
+	\[
+			\condprob{\chi \gets \adv(\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots,
+			\chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \chi, \ldots, \chi^{q_2} })}{\chi \sample \FF_p} \leq \negl.
 	\]
 \end{definition}
 
@@ -727,6 +734,14 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 
 Since we do not utilise the classical special soundness (that holds for all, even unbounded, adversaries) all references to that property should be understood as references to its computational version.
 
+\subsection{Unique opening property}
+here we show that both the polynomial commitment scheme $\PCOMp$ used in
+$\plonk$ and the polynomial commitment scheme $\PCOMs$ used in $\sonic$ have
+the unique opening property.
+
+
+\subsubsection{Unique opening property of $\PCOMs$}
+
 \section{Simulation-extractability---the general result}
 \task{24.09}{Put here a general result -- a special sound, ur protocol is sim. ext after FS}
 \michals{25.09}{The generalisation of the forking lemma we have may work only for schemes that require rewinding of a single round. That limits the generalisation of the result}
@@ -881,10 +896,11 @@ the basis compound of the input group elements, i.e.~$\plonkprot$'s CRS. See \cr
 
 Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is simulation-extractable. That is, we build reductions that given a simulation extractability adversary $\advse$ either breaks the protocol's unique response property or breaks the dlog assumption, if extracting a valid witness from a tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 
-\subsection{Unique response property}
+\subsection{Unique opening property of $\PCOMp$}
 \begin{lemma}
 	\label{lem:kzg_unique_op}
-	Let $\PCOM$ be a batched version of a KZG polynomial commitment \cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19} then $\PCOM$ has the unique opening property. 
+	Let $\PCOMp$ be a batched version of a KZG polynomial commitment
+	\cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19} then $\PCOMp$ has the unique opening property. 
 \end{lemma}
 \begin{proof}
 	Let 
@@ -945,6 +961,8 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	does not is negligible~\cite{EPRINT:GabWilCio19}. This brings the proof back to Step 1 above. 
 	\qed
 \end{proof}
+
+\subsection{Unique response property}
 
 \begin{lemma}
 	\label{lem:plonkprot_ur}
@@ -1167,6 +1185,159 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
  	$\plonkprot_\fs$ is simulation extractable with extraction error $\epsur$.
  	\qed
  \end{proof}
+
+\section{Simulation extractability of $\sonicprotfs$}
+\subsubsection{Unique opening property of $\PCOMs$}
+\begin{lemma}
+	\label{lem:pcoms_unique_op}
+	Let $\PCOMs$ be a batched version of a KZG polynomial commitment
+	\cite{AC:KatZavGol10} as described in \cite{CCS:MBKM19} then $\PCOMs$ has the unique opening property. 
+\end{lemma}
+\begin{proof}
+	Let 
+	$z \in \FF_p$ be the attribute the polynomial is evaluated at,
+	$c \in \GRP$ be the commitment,  
+	$s \in \FF_p$ the evaluation, and 
+	$o \in \FF_p$ be the commitment opening. 
+	We need to show that for every $\ppt$ adversary $\adv$ probability
+	\[
+		\Pr
+			\left[
+				\begin{aligned}
+					& \verify(\crs, c, z, s, o), \\
+					& \verify(\crs, c, z, \tilde{s}, \tilde{o})
+				\end{aligned}
+			\,\left|\,
+			\vphantom{\begin{aligned}
+				& \verify(\crs, c, z, s, o),\\
+				& \verify(\crs, c, z, \tilde{s}, \tilde{o}) \\
+				&o \neq \tilde{o})
+			\end{aligned}}
+			\begin{aligned}
+				& \crs \gets \kcrs(\secparam), \\
+				&	(c, z, s, \tilde{s}, o, \tilde{o}) \gets \adv(\crs)
+			\end{aligned}
+			\right.\right]
+		 % \leq \negl.
+	\]
+	is at most negligible.
+	
+	As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound
+  the probability of the adversary succeeding using the idealised verification equation---which considers equality between polynomials---instead of the real verification equation---which consider equality of the polynomials' evaluations.
+	
+	For polynomials $\vec{f} = f_1, \ldots, f_k$, evaluation point $z$, evaluation result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $o(X)$ the idealised check verifies that
+	\begin{equation}
+		\sum_{i = 1}^k \gamma^{i - 1} f_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} s_i \equiv o(X) (X - z)\,.
+		\label{eq:pcom_idealised_check}
+	\end{equation}
+	Since $o(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial composition, there is only one $o(X)$ that fulfils the equation above.
+
+	\qed
+\end{proof}
+
+
+\subsection{Unique response property}
+The unique response property of $\sonicprot$ follows from the unique opening
+property of the used polynomial commitment scheme $\PCOMs$.
+\begin{lemma}
+	\label{lem:sonicprot_ur}
+	If a polynomial commitment scheme $\PCOMs$ is evaluation binding with
+	parameter $\epsbind$ and has unique openings property with parameter
+	$\epsop$, then $\sonicprot$ is $\ur{1}$ with parameter $\epsur \leq
+	\epsbind + \epsop$.  
+\end{lemma}
+\begin{proof}
+	Let $\adv$ be an adversary that breaks $\ur{1}$-ness of $\sonicprot$. 
+	We consider two cases, depending on which round $\adv$ is able to provide at
+	least two different outputs such that the resulting transcripts are
+	acceptable.  For the first case we show that $\adv$ breaks the evaluation
+	binding property of $\PCOMs$, while for the
+  second case we show that it breaks the unique opening property of $\PCOMs$.
+	
+	The proof goes similarly to the proof of \cref{lem:plonkprot_ur} thus we
+	provide only draft of it here. 
+	In each Round $i$, for $i > 1$, the prover either commits to some
+	well-defined polynomials (deterministically), evaluates these on some
+	randomly picked points, or shows that the evaluations were performed
+	correctly. 
+	Naturally for a committed polynomial $\p{p}$ evaluated at point $x$ only one
+	value $y = \p{p}(x)$ is correct. If the adversary was able to provide two
+	different values $y$ and $\tilde{y}$ that would be accepted as an evaluation
+	of $\p{p}$ at $x$ then the $\PCOMs$'s evaluation binding would be broken.
+	Alternatively, if $\adv$ was able to provide two openings $\p{W}$ and
+	$\p{\tilde{W}}$ for $y = \p{x}$ then the unique opening property would be
+	broken.
+
+	Hence the probability that $\adv$ breaks $\ur{1}$-property of $\PCOMs$ is
+	upper-bounded by $\epsbind + \epsop$. \michals{22.X}{Do we need to multiply
+	the epsilons by some constant that relates to the number of chances
+	the adversary can break the binding and op properties?} 
+	\qed
+	
+\end{proof}
+
+\subsection{Special soundness}
+\begin{lemma}
+		\label{lem:sonicprot_ss}
+		Let $\adv$ be a $\ppt$ algebraic adversary. The probability $\epsss$ that
+		$\adv$ breaks computational special soundness of $\sonicprot$ is upper-bounded as
+		\[
+				\epsss \leq \epss + \epsdlog\,,
+		\]
+		where $\epss$ is a soundness error of the protocol, and $\epsdlog$ is a probability that a $\ppt$ algorithm can break the
+		$(\dconst, \dconst)$-ldlog assumption.
+\end{lemma}
+\begin{proof}
+		The proof goes similarly to the proof of \cref{lem:plonkprot_ss}.
+
+		Let $\adv$ be an adversary that produces a $(1, 1, \multconstr + \linconstr + 1)$-tree of acceptable
+		transcripts $\tree$ for a statement $\inp$. We consider two disjunctive
+		events $\event{E}$ and $\nevent{E}$. The first corresponds to a case when
+		all transcripts in $\tree$ are acceptable for the ideal verifier,
+		i.e.~$\vereq(X) = 0$. In that case we show an extractor $\extss$ that
+		from $\tree$ extracts a valid witness $\wit$. The second, corresponds to
+		a case when $\tree$ contains a transcript that is acceptable by the
+		real verifier but is not acceptable by the ideal verifier. In that case we
+		show a reduction $\rdvdlog$ that uses $\adv$ to break the $(\dconst,
+		\dconst)$-dlog
+		assumption with at least the same probability.
+
+		\ncase{When $\event{E}$ happens}
+		Since the protocol $\sonicprot$ is sound, for an acceptable proof
+		$\zkproof$ for a statement $\inp$ there exists a witness $\wit$ such that
+		$\REL(\inp, \wit)$ holds except some negligible probability $\epss$. 
+		\michals{21.X}{Update the ss proof for Plonk with $\epss$} Note that
+		witness-carrying polynomial $\p{r}(X, y)$ has degree at most $(\multconstr
+		+ \linconstr)$ and since $\adv$ answered correctly on $(\multconstr +
+		\linconstr + 1)$ different challenges $z$ (for the sake of concreteness
+		let us call them $z_1, \ldots, z_{\multconstr + \linconstr + 1}$) then $(\multconstr +
+		\linconstr + 1)$ evaluations $\p{r}(z_1, y), \ldots, \p{r}(z_{\multconstr +
+		\linconstr + 1}, y)$ of $\p{r}(X, y)$ are
+		known. The extractor $\extss$ interpolates $\p{r}(X, y)$ and reveals the
+		corresponding witness $\wit$.
+
+		\ncase{When $\nevent{E}$ happens} Consider a transcript such that
+		$\vereq(X) \neq 0$, but $\vereq(\chi) = 0$.
+		Since the adversary is algebraic, all group elements included in the tree of
+  	transcripts are extended by their representation as a combination of the input
+  	$\GRP_1$ or $\GRP_2$-elements i.e.~$\gone{1, \chi, \ldots, \chi^{\numberofconstrains +
+    2}}$. Hence all coefficients of the verification equation polynomial
+  	$\vereq(X)$ are known and $\rdvdlog$ can find its zero points. Since
+  	$\vereq(\chi) = 0$, the targeted discrete log value $\chi$ is among them.
+		\qed		
+\end{proof}
+
+\begin{theorem}[Simulation extractability of $\sonicprotfs$]
+	\label{thm:sonicprotfs_se}
+	Assume that  $\sonicprot$ is $\ur{1}$ with security $\epsur(\secpar)$, and
+	computational special-sound with security $\epsss(\secpar)$.  Let $\ro\colon
+	\bin^* \to \bin^\secpar$ be a random oracle. 
+	Let $\advse$ be a $\ppt$ adversary that can make up to $q$ random oracle
+	queries and outputs an acceptable proof for $\sonicprotfs$ with probability
+	at least $\waccProb$.  Then $\sonicprotfs$ is simulation-extractable with
+	extraction error \hl{...}. The extraction probability $\extProb$ is at least
+	\hl{...}.
+\end{theorem}
 
 \section{(Tight) simulation soundness of $\plonk$}
 \task{28.07}{All proofs in this section should be verified}

@@ -35,6 +35,9 @@
 \newcommand{\p}[1]{\pcpolynomialstyle{#1}}
 \newcommand{\ev}[1]{\widetilde{\pcpolynomialstyle{#1}}}
 \newcommand{\numberofconstrains}{\pcvarstyle{n}}
+\newcommand{\dconst}{\pcvarstyle{d}}
+\newcommand{\multconstr}{\pcvarstyle{n}}
+\newcommand{\linconstr}{\pcvarstyle{Q}}
 \newcommand{\expected}[1]{\mathbb{E}\left[#1\right]}
 \newcommand{\infrac}[2]{#1 / #2}
 \newcommand{\eps}{\varepsilon}
@@ -83,8 +86,11 @@
 
 
 %PLONK related
-\newcommand{\plonkprot}{\mathbf{P}}
-\newcommand{\plonkprotfs}{\mathbf{P}_\fs}
+\newcommand{\pcschemestyle}[1]{\mathbf{#1}}
+\newcommand{\plonkprot}{\pcschemestyle{P}}
+\newcommand{\plonkprotfs}{\pcschemestyle{P}_\fs}
+\newcommand{\sonicprot}{\pcschemestyle{S}}
+\newcommand{\sonicprotfs}{\pcschemestyle{S}_\fs}
 \newcommand{\selector}[1]{\pcvarstyle{q_{#1}}}
 \newcommand{\selmulti}{\selector{M}}
 \newcommand{\selleft}{\selector{L}}
@@ -120,9 +126,10 @@
 \newcommand{\vereq}{\p{ve}}
 
 %Commitment schemes
-\newcommand{\pcschemestyle}[1]{\mathbf{#1}}
 \newcommand{\COM}{\pcschemestyle{C}}
 \newcommand{\PCOM}{\pcschemestyle{PC}}
+\newcommand{\PCOMp}{\pcschemestyle{PC}_\plonkprot}
+\newcommand{\PCOMs}{\pcschemestyle{PC}_\sonicprot}
 \newcommand{\com}{\pcalgostyle{Com}}
 \newcommand{\op}{\pcalgostyle{Op}}
 \newcommand{\open}{\op}
@@ -144,6 +151,9 @@
 \newcommand{\maxdegree}{\pcvarstyle{N}}
 
 \newcommand{\dlog}{\pcvarstyle{dlog}}
+\newcommand{\ldlog}{\pcvarstyle{ldlog}}
+
+
 %reductions
 \newcommand{\extss}{\ext_\ss}
 \newcommand{\compass}{\mathtt{C}}
