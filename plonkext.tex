@@ -35,6 +35,8 @@
 \usepackage[capitalise]{cleveref} \usepackage{cite} \usepackage{booktabs}
 \usepackage{paralist}
 \usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \include{macros}
 
@@ -786,8 +788,7 @@ More precisely, we say that a $(2\mu + 1)$-round protocol has \emph{unique respo
 \end{example}
 
 We note that the definition above is independent on whether the proof system $\proofsystem$ utilises CRS (and compounds of the CRS-generating $\kgen$ algorithm) or not.
-% Furthermore it is also blind whether $\proofsystem$ is interactive or not.
-\michals{08.07.20}{Should we change it to "deterministic prover property"?}
+% \michals{08.07.20}{Should we change it to "deterministic prover property"?}
 
 \subsection{Computational special soundness}
 Note that the special soundness property (as usually defined) holds for all--- even computationally unbounded---adversaries. Since a simulation trapdoor for $\plonkprot$ exists, it is not special sound in that regard---as an unbounded adversary could reveal the trapdoor and build a number of simulated proofs for a fake statement. 
@@ -812,6 +813,7 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 \michals{25.09}{I think most of the $\plonkprotfs$ sim-ext proof is going to be here. The result for plonk will be a corollary from this theorem + verification that the assumptions of the theorem are met.}
 
 \begin{theorem}[Simulation-extractable multi-round protocols]
+	\label{thm:se}
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive $2 \mu$-round zero-knowledge proof system that has $\ur{k}$ property with security $\epsur$ that is $(1, \ldots, 1, n_j, 1, \ldots, 1)$-special sound, where $j > k$.
 	Assume that the simulator $\simulator$ does not get as input any trapdoor related to the CRS.
 	Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
@@ -1101,7 +1103,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ and computationally special sound we are able to follow \cite{INDOCRYPT:FKMV12} and show that $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
 
-\michals{13.10}{The theorem below is going to have a much shorter proof -- for it being just a corollary of Sec.~4}
+% \michals{13.10}{The theorem below is going to have a much shorter proof -- for it being just a corollary of Sec.~4}
 \begin{theorem}[Simulation extractability of $\plonkprot_\fs$]
 	\label{thm:plonkprotfs_se}
 	Assume that  $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$, and computational special-sound with security $\epsss(\secpar)$.
@@ -1114,121 +1116,122 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	for some negligible $\eps$ and $\numberofconstrains$ being the number of contrains in the proven circuit.
 \end{theorem}
 \begin{proof}
-	The proof goes by game hoping. The games are controlled by an environment $\env$ that internally runs a simulation extractability adversary $\advse$, simulates its with access to a random oracle and simulator, and when necessary rewinds it.
-	The games differ by various breaking points, i.e.~points where the environment decides to abort the game. 
-
-	Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
-	returned by the adversary and the simulator respectively. We use $\zkproof[i]$
-	to denote prover's message in the $i$-th round of the proof, $\zkproof[i].\ch$
-	to denote the challenge that is given to the prover after $\zkproof[i]$, and
-	$\zkproof\range{i}{i'}$ to denote all messages of the proof exchanged between rounds $i$ and $i'$, i.e.~$\zkproof[i], \zkproof[i].\ch, \ldots, \zkproof[i']$.
-
-	Without loss of generality, we assume that whenever the accepting proof contains a response to a challenge from a random oracle, we assume that the adversary queried the oracle to get it. 
-	It is straightforward to transform any adversary that violates this condition into an adversary that makes these additional queries to the random oracle and wins with the same probability.
-	
-	\ngame{0}
-	This is a simulation extraction game played between an adversary $\advse$ who
-	has given access to a random oracle $\ro$ and simulator
-	$\plonkprotfs.\simulator$.  There is also an extractor $\ext$ that, from the
-	proof $\zkproof_\advse$ for instance $\inp_\advse$ output by the adversary and
-	from a transcripts of $\advse$'s operations, is tasked to extract a witness
-	$\wit_\advse$ such that $\REL(\inp_\advse, \wit_\advse)$ holds. $\advse$ wins
-	if it manages to produce an acceptable proof and the extractor fails to reveal
-	the corresponding witness. In the following game hops we upper-bound
-	probability of this happening.
-	
-	\ngame{1}
-	This is identical to $\game{0}$ except that now the game is aborted if there
-	is a simulated proof $\zkproof_\simulator$ such that
-	$\zkproof_\simulator\range{1}{3} = \zkproof_\advse\range{1}{3}$. That is, the
-	adversary in its final proof reuses a part of a simulated proof it saw before
-	and the proof is acceptable. Denote that event by $\event{\errur}$.
-	
-	\ncase{$\game{0} \mapsto \game{1}$}	
-	We have, 
-	\[
-		\prob{\game{0} \land \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}}
-	\]
-	and, from \cref{lem:difference_lemma}
-	\[
-		\abs{\prob{\game{0}} - \prob{\game{1}}} \leq \event{\errur}\,.
-	\]
-	Thus, to show that the transition from one game to another introduces only minor change in probability of $\advse$ winning it should be shown that $\prob{\event{\errur}}$ is small.
-	
-	Assume that $\advse$ queried the simulator on $\inp_{\advse}$---the instance which $\advse$ outputs. 
-	We show a reduction $\rdvur$ that utilises $\advse$, who outputs a valid proof for $\inp_\advse$, to break the $\ur{3}$ property of $\plonkprot$. 
-
-	Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
-	\begin{itemize} \item The reduction answers both queries to the simulator
-	$\plonkprotfs.\simulator$ and to the random oracle.  It also keeps lists $Q$,
-	for the simulated proofs, and $Q_\ro$ for the random oracle queries.  \item
-	When $\advse$ outputs a fake proof $\zkproof_{\advse}$ for  $\inp_\advse$,
-	$\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds
-	$\zkproof_{\simulator}\range{1}{3}$ such that $\zkproof_{\advse}\range{1}{3} =
-	\zkproof_{\simulator}\range{1}{3}$ and a random oracle query
-	$\zkproof_{\simulator}[3].\ch$ on $\zkproof_{\simulator}\range{1}{3}$. \item
-	$\rdvur$ returns two proofs for $\inp_\advse$: \begin{align*} \zkproof_1 =
-	(\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch,
-	\zkproof_{\simulator}\range{4}{5})\\ \zkproof_2 =
-	(\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch,
-	\zkproof_{\advse}\range{4}{5}) \end{align*} \end{itemize}   If $\zkproof_1 =
-	\zkproof_2$, then $\advse$ fails to break simulation extractability, as
-	$\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then
-	$\rdvur$ breaks $\ur{3}$-ness of $\plonkprot$, what may happen with some
-	negligible probability $\epsur$ only, hence 
-	\[ 
-	\prob{\event{\errur}} \leq \epsur\,. 
-	\]
-		
-	\ngame{2}
-	This is identical to $\game{1}$ except that now the environment aborts also when it fails to build a $(1, 1, 1, \numberofconstrains + 3, 1)$-tree of accepting transcripts $\tree$ by rewinding $\advse$. Denote that event 
-	by $\event{\errfrk}$.
-	Note that for every acceptable proof $\zkproof_{\advse}$, we may
-	assume that whenever $\advse$ outputs in Round $i$, for $i \in \smallset{4, 5}$, a message $\zkproof_{\advse}[i]$, then
-	$\zkproof_{\advse}\range{1}{i}$ is a query to the random oracle that was made by the adversary, not the simulator\footnote{\cite{INDOCRYPT:FKMV12} calls these queries \emph{fresh}.}. 
-	That is, assume that is not true and for some query $\zkproof_{\advse}\range{1}{i}$ holds $\zkproof_{\advse}\range{1}{i} = \zkproof_\simulator\range{1}{i'}$, for $i, i' \in \smallset{4, 5}$, the proof is acceptable and not in $Q$, then the unique response property would be broken.
-		
-	\ncase{$\game{1} \mapsto \game{2}$}	
-	As previously, 
-	\[
-		\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \event{\errfrk}\,.
-	\]
-	Denote by $\accProb$ the probability that $\advse$ outputs a proof which is acceptable and does not break $\ur{3}$-ness of $\plonkprot$. 
-	From the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma}, 
-	\[
-		\prob{\event{\errfrk}} \leq 1 - \left(\frac{\accProb^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \frac{\accProb \cdot (\numberofconstrains + 2)}{2^\secpar}\right)\,.
-	\]
-	
-	\ngame{3}
-	This is identical to $\game{2}$ except that now the environment uses the tree $\tree$ to extract the witness for the proven statement and aborts when it fails. Denote that event by $\event{\errss}$.
-	
-	\ncase{$\game{2} \mapsto \game{3}$}	
-	As previously, 
-	\[
-		\abs{\prob{\game{2}} - \prob{\game{3}}} \leq \event{\errss}\,.
-	\]
-	Since $\plonkprot$ is special-sound the probability that $\env$ fails in extracting the witness is upper-bounded by some negligible $\eps_\ss$.
-	
-	In the last game, Game $\game{3}$, the environment aborts when it fails to extract the correct witness, hence the adversary $\advse$ cannot win. 
-	Thus, by the game-hoping argument, 
-	\[
-		\abs{\prob{\game{0}} - \prob{\game{3}}} \leq 1 - \left(\frac{\accProb^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \frac{\accProb \cdot (\numberofconstrains + 2)}{2^\secpar}\right) + \epsur + \epsss\,.
-	\]
-	Thus the probability that extractor $\extss$ succeeds is at least
-	\[
-		\left(\frac{\accProb^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \frac{\accProb \cdot (\numberofconstrains + 2)}{2^\secpar}\right) - \epsur - \epsss\,.
-	\]
-	Since $\accProb$ is probability of $\advse$ outputting acceptable transcript that does not break $\ur{3}$-ness of $\plonkprot$, then $\waccProb \leq \accProb + \epsur$, where $\waccProb$ is the probability of $\advse$ outputing an acceptable proof as defined in \cref{def:simext}. It thus holds
-	\[
- 		\label{eq:frk}
- 		\extProb \geq \frac{(\waccProb - \epsur)^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \underbrace{\frac{(\waccProb - \epsur) \cdot (\numberofconstrains + 2)}{2^\secpar} - \epsur - \epsss}_{\eps}\,.
- 	\]
- 	Note that the part of \cref{eq:frk} denoted by $\eps$ is negligible and 
- 	\[
- 		\extProb \geq \frac{1}{q^{\numberofconstrains + 2}} (\waccProb - \epsur)^{\numberofconstrains + 3} -\eps\,.
- 	\] 
- 	thus
- 	$\plonkprot_\fs$ is simulation extractable with extraction error $\epsur$.
+	The theorem holds as a corollary to \cref{thm:se}.
+	% The proof goes by game hoping. The games are controlled by an environment $\env$ that internally runs a simulation extractability adversary $\advse$, simulates its with access to a random oracle and simulator, and when necessary rewinds it.
+	% The games differ by various breaking points, i.e.~points where the environment decides to abort the game. 
+	% 
+	% Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
+	% returned by the adversary and the simulator respectively. We use $\zkproof[i]$
+	% to denote prover's message in the $i$-th round of the proof, $\zkproof[i].\ch$
+	% to denote the challenge that is given to the prover after $\zkproof[i]$, and
+	% $\zkproof\range{i}{i'}$ to denote all messages of the proof exchanged between rounds $i$ and $i'$, i.e.~$\zkproof[i], \zkproof[i].\ch, \ldots, \zkproof[i']$.
+	% 
+	% Without loss of generality, we assume that whenever the accepting proof contains a response to a challenge from a random oracle, we assume that the adversary queried the oracle to get it. 
+	% It is straightforward to transform any adversary that violates this condition into an adversary that makes these additional queries to the random oracle and wins with the same probability.
+	% 
+	% \ngame{0}
+	% This is a simulation extraction game played between an adversary $\advse$ who
+	% has given access to a random oracle $\ro$ and simulator
+	% $\plonkprotfs.\simulator$.  There is also an extractor $\ext$ that, from the
+	% proof $\zkproof_\advse$ for instance $\inp_\advse$ output by the adversary and
+	% from a transcripts of $\advse$'s operations, is tasked to extract a witness
+	% $\wit_\advse$ such that $\REL(\inp_\advse, \wit_\advse)$ holds. $\advse$ wins
+	% if it manages to produce an acceptable proof and the extractor fails to reveal
+	% the corresponding witness. In the following game hops we upper-bound
+	% probability of this happening.
+	% 
+	% \ngame{1}
+	% This is identical to $\game{0}$ except that now the game is aborted if there
+	% is a simulated proof $\zkproof_\simulator$ such that
+	% $\zkproof_\simulator\range{1}{3} = \zkproof_\advse\range{1}{3}$. That is, the
+	% adversary in its final proof reuses a part of a simulated proof it saw before
+	% and the proof is acceptable. Denote that event by $\event{\errur}$.
+	% 
+	% \ncase{$\game{0} \mapsto \game{1}$}	
+	% We have, 
+	% \[
+	% 	\prob{\game{0} \land \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}}
+	% \]
+	% and, from \cref{lem:difference_lemma}
+	% \[
+	% 	\abs{\prob{\game{0}} - \prob{\game{1}}} \leq \event{\errur}\,.
+	% \]
+	% Thus, to show that the transition from one game to another introduces only minor change in probability of $\advse$ winning it should be shown that $\prob{\event{\errur}}$ is small.
+	% 
+	% Assume that $\advse$ queried the simulator on $\inp_{\advse}$---the instance which $\advse$ outputs. 
+	% We show a reduction $\rdvur$ that utilises $\advse$, who outputs a valid proof for $\inp_\advse$, to break the $\ur{3}$ property of $\plonkprot$. 
+	% 
+	% Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
+	% \begin{itemize} \item The reduction answers both queries to the simulator
+	% $\plonkprotfs.\simulator$ and to the random oracle.  It also keeps lists $Q$,
+	% for the simulated proofs, and $Q_\ro$ for the random oracle queries.  \item
+	% When $\advse$ outputs a fake proof $\zkproof_{\advse}$ for  $\inp_\advse$,
+	% $\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds
+	% $\zkproof_{\simulator}\range{1}{3}$ such that $\zkproof_{\advse}\range{1}{3} =
+	% \zkproof_{\simulator}\range{1}{3}$ and a random oracle query
+	% $\zkproof_{\simulator}[3].\ch$ on $\zkproof_{\simulator}\range{1}{3}$. \item
+	% $\rdvur$ returns two proofs for $\inp_\advse$: \begin{align*} \zkproof_1 =
+	% (\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch,
+	% \zkproof_{\simulator}\range{4}{5})\\ \zkproof_2 =
+	% (\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch,
+	% \zkproof_{\advse}\range{4}{5}) \end{align*} \end{itemize}   If $\zkproof_1 =
+	% \zkproof_2$, then $\advse$ fails to break simulation extractability, as
+	% $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then
+	% $\rdvur$ breaks $\ur{3}$-ness of $\plonkprot$, what may happen with some
+	% negligible probability $\epsur$ only, hence 
+	% \[ 
+	% \prob{\event{\errur}} \leq \epsur\,. 
+	% \]
+	% 
+	% \ngame{2}
+	% This is identical to $\game{1}$ except that now the environment aborts also when it fails to build a $(1, 1, 1, \numberofconstrains + 3, 1)$-tree of accepting transcripts $\tree$ by rewinding $\advse$. Denote that event 
+	% by $\event{\errfrk}$.
+	% Note that for every acceptable proof $\zkproof_{\advse}$, we may
+	% assume that whenever $\advse$ outputs in Round $i$, for $i \in \smallset{4, 5}$, a message $\zkproof_{\advse}[i]$, then
+	% $\zkproof_{\advse}\range{1}{i}$ is a query to the random oracle that was made by the adversary, not the simulator\footnote{\cite{INDOCRYPT:FKMV12} calls these queries \emph{fresh}.}. 
+	% That is, assume that is not true and for some query $\zkproof_{\advse}\range{1}{i}$ holds $\zkproof_{\advse}\range{1}{i} = \zkproof_\simulator\range{1}{i'}$, for $i, i' \in \smallset{4, 5}$, the proof is acceptable and not in $Q$, then the unique response property would be broken.
+	% 
+	% \ncase{$\game{1} \mapsto \game{2}$}	
+	% As previously, 
+	% \[
+	% 	\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \event{\errfrk}\,.
+	% \]
+	% Denote by $\accProb$ the probability that $\advse$ outputs a proof which is acceptable and does not break $\ur{3}$-ness of $\plonkprot$. 
+	% From the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma}, 
+	% \[
+	% 	\prob{\event{\errfrk}} \leq 1 - \left(\frac{\accProb^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \frac{\accProb \cdot (\numberofconstrains + 2)}{2^\secpar}\right)\,.
+	% \]
+	% 
+	% \ngame{3}
+	% This is identical to $\game{2}$ except that now the environment uses the tree $\tree$ to extract the witness for the proven statement and aborts when it fails. Denote that event by $\event{\errss}$.
+	% 
+	% \ncase{$\game{2} \mapsto \game{3}$}	
+	% As previously, 
+	% \[
+	% 	\abs{\prob{\game{2}} - \prob{\game{3}}} \leq \event{\errss}\,.
+	% \]
+	% Since $\plonkprot$ is special-sound the probability that $\env$ fails in extracting the witness is upper-bounded by some negligible $\eps_\ss$.
+	% 
+	% In the last game, Game $\game{3}$, the environment aborts when it fails to extract the correct witness, hence the adversary $\advse$ cannot win. 
+	% Thus, by the game-hoping argument, 
+	% \[
+	% 	\abs{\prob{\game{0}} - \prob{\game{3}}} \leq 1 - \left(\frac{\accProb^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \frac{\accProb \cdot (\numberofconstrains + 2)}{2^\secpar}\right) + \epsur + \epsss\,.
+	% \]
+	% Thus the probability that extractor $\extss$ succeeds is at least
+	% \[
+	% 	\left(\frac{\accProb^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \frac{\accProb \cdot (\numberofconstrains + 2)}{2^\secpar}\right) - \epsur - \epsss\,.
+	% \]
+	% Since $\accProb$ is probability of $\advse$ outputting acceptable transcript that does not break $\ur{3}$-ness of $\plonkprot$, then $\waccProb \leq \accProb + \epsur$, where $\waccProb$ is the probability of $\advse$ outputing an acceptable proof as defined in \cref{def:simext}. It thus holds
+	% \[
+ 	% 	\label{eq:frk}
+ 	% 	\extProb \geq \frac{(\waccProb - \epsur)^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}} - \underbrace{\frac{(\waccProb - \epsur) \cdot (\numberofconstrains + 2)}{2^\secpar} - \epsur - \epsss}_{\eps}\,.
+ 	% \]
+ 	% Note that the part of \cref{eq:frk} denoted by $\eps$ is negligible and 
+ 	% \[
+ 	% 	\extProb \geq \frac{1}{q^{\numberofconstrains + 2}} (\waccProb - \epsur)^{\numberofconstrains + 3} -\eps\,.
+ 	% \] 
+ 	% thus
+ 	% $\plonkprot_\fs$ is simulation extractable with extraction error $\epsur$.
  	\qed
  \end{proof}
 
