@@ -271,6 +271,97 @@ Proofs by \emph{game hoping} is a method of writing proofs popularised by e.g.~S
 \subsection{Polynomial commitment.}
 \label{sec:poly_com}
 In the polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$ the committer $\committer$ can prove to the receiver $\receiver$ that some polynomial $f$ that $\committer$ committed to evaluates to $s$ as some point $z$ chosen by $\receiver$.
+
+$\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We denote the first by $\PCOMp$ and present in \cref{fig:pcomp} and the latter by $\PCOMs$ and present in \cref{fig:pcoms}.
+
+
+\begin{figure}
+	\begin{pcvstack}[center,boxed]
+		\begin{pchstack}
+			\procedure{$\kgen(\pp, \secparam)$}
+			{
+				\chi \sample \FF^2_p \\
+				\pcreturn \gone{1, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}\\
+				\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
+			}
+			
+			\pchspace
+			
+			\procedure{$\com(\crs, \vec{\p{f}}(X))$}
+			{ 
+				\pcreturn \gone{\vec{c}} = \gone{\vec{\p{f}}(\chi)}
+			}
+		\end{pchstack}
+		% \pcvspace
+		\begin{pchstack}
+			\procedure{$\open(\crs, \vec{\gamma}, \vec{z}, \vec{s}, \vec{f}(X))$}
+			{
+			\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo\\
+			\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}\\
+				\pcreturn \vec{o} = \gone{\vec{\p{o}}(\chi)}
+			}
+			
+			\pchspace
+			
+			\procedure{$\verify(\crs, \gone{c}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
+			{
+				\vec{r} \gets \FF_p^{\abs{\vec{z}}}\\
+				\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo \\
+				\pcind \pcif 
+					\sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j} \gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet \gtwo{1} + \\
+					\pcind \sum_{i = 1}^{\abs{\vec{z}}} r_i z_i o_i
+					\bullet \gtwo{1} \neq 
+					\gone{- \sum_{i = 1}^{\abs{\vec{z}}} r_i o_i } \bullet \gtwo{\chi} \pcthen  \\
+					\pcind \pcreturn 0\\
+				\pcreturn 1.
+			}
+		\end{pchstack}
+	\end{pcvstack}
+	\caption{$\PCOMp$ polynomial commitment scheme}
+	\label{fig:pcomp}
+\end{figure}
+
+\begin{figure}
+	\begin{pcvstack}[center,boxed]
+		\begin{pchstack}
+			\procedure{$\kgen(\pp, \secparam)$}
+			{
+				\alpha, \chi \sample \FF^2_p \\
+				\pcreturn \\
+				\hphantom{\p{o}(X) \gets \frac{\p{f}(X) - \p{f}(z)}{X - z}}
+			}
+			
+			\pchspace
+			
+			\procedure{$\com(\crs, \p{f}(X))$}
+			{
+				\p{c}(X) \gets \alpha \cdot X^{\dconst - \maxconst} \p{f}(X) \\
+				\pcreturn \gone{c} = \gone{\p{c}(\chi)}
+			}
+		\end{pchstack}
+		% \pcvspace
+		\begin{pchstack}
+			\procedure{$\open(\crs, z, s, f(X))$}
+			{
+				\p{o}(X) \gets \frac{\p{f}(X) - \p{f}(z)}{X - z}\\
+				\pcreturn \gone{\p{o}(\chi)}
+			}
+			
+			\pchspace
+			
+			\procedure{$\verify(\crs, \gone{c}, z, s, \gone{\p{o}(\chi)})$}
+			{
+				\pcif \gone{\p{o}(\chi)} \bullet \gtwo{\alpha \chi} + \gone{s - z \p{o}(\chi)} \bullet \gtwo{\alpha} = \\
+				\pcind \gone{c} \bullet \gtwo{\chi^{- \dconst + \maxconst}} \pcthen  \pcreturn 1\\
+				\pcelse \pcreturn 0.
+			}
+		\end{pchstack}
+	\end{pcvstack}
+	
+	\caption{$\PCOMs$ polynomial commitment scheme}
+	\label{fig:pcoms}
+\end{figure}
+
 % We require $\PCOM$ to have the following properties:
 One of the properties that is required from $\PCOM$ is
 \begin{description}
@@ -302,11 +393,9 @@ We say that $\PCOM$ has unique opening property if the following holds:
 			\right.\right] \leq \negl\,.
 	\]
 \end{description}
-Intuitively, opening uniqueness assures that there is only one valid opening for the committed polynomial and given evaluation point. This property is crucial in showing simulation-extractability of $\plonk$. We show that the KZG polynomial commitment scheme satisfies this requirement in \cref{lem:kzg_unique_op}.
+Intuitively, opening uniqueness assures that there is only one valid opening for the committed polynomial and given evaluation point. This property is crucial in showing simulation-extractability of $\plonk$ and $\sonic$. We show that the $\plonk$'s and $\sonic$'s polynomial commitment schemes satisfy this requirement in \cref{lem:pcomp_unique_op} and \cref{lem:pcoms_unique_op} respectively. 
 
 \subsection{Algebraic Group Model}
-
-\subsection{}
 
 \subsection{Zero knowledge}
 In a zero-knowledge proof or argument system, a prover convinces the verifier of
@@ -711,13 +800,10 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 
 Since we do not utilise the classical special soundness (that holds for all, even unbounded, adversaries) all references to that property should be understood as references to its computational version.
 
-\subsection{Unique opening property}
-here we show that both the polynomial commitment scheme $\PCOMp$ used in
-$\plonk$ and the polynomial commitment scheme $\PCOMs$ used in $\sonic$ have
-the unique opening property.
-
-
-\subsubsection{Unique opening property of $\PCOMs$}
+% \subsection{Unique opening property}
+% here we show that both the polynomial commitment scheme $\PCOMp$ used in
+% $\plonk$ and the polynomial commitment scheme $\PCOMs$ used in $\sonic$ have
+% the unique opening property.
 
 \section{Simulation-extractability---the general result}
 \task{24.09}{Put here a general result -- a special sound, ur protocol is sim. ext after FS}
@@ -847,7 +933,7 @@ the unique opening property.
 In this section we show that $\plonkprotfs$
 is not only simulation-sound, but also simulation-extractable. To that end, we
 proceed as follows. 
-First we show that the version of the KZG polynomial commitment scheme that is proposed in the \plonk{} paper has the unique opening property, cf.~\cref{sec:poly_com} and \cref{lem:kzg_unique_op}. This is next used to show that $\plonkprot$ has $\ur{3}$ property, cf.~\cref{lem:plonkprot_ur}.
+First we show that the version of the KZG polynomial commitment scheme that is proposed in the \plonk{} paper has the unique opening property, cf.~\cref{sec:poly_com} and \cref{lem:pcomp_unique_op}. This is next used to show that $\plonkprot$ has $\ur{3}$ property, cf.~\cref{lem:plonkprot_ur}.
 
 Then, we show that 
 $\plonkprot$ is (kind of) special-sound. That is, given a number of acceptable
@@ -862,7 +948,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 
 \subsection{Unique opening property of $\PCOMp$}
 \begin{lemma}
-	\label{lem:kzg_unique_op}
+	\label{lem:pcomp_unique_op}
 	Let $\PCOMp$ be a batched version of a KZG polynomial commitment
 	\cite{AC:KatZavGol10} as described in \cite{EPRINT:GabWilCio19} then $\PCOMp$ has the unique opening property. 
 \end{lemma}
@@ -958,7 +1044,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	Assume $\adv$ is able to produce two different polynomial commitment openings pairs: 
 	$\vec{r_5} = (\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and 
 	$\vec{r'_5} = (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
-	% Since \cref{lem:kzg_unique_op}, 
+	% Since \cref{lem:pcomp_unique_op}, 
 	Since $\PCOM$ has unique opening property, 
 	one of the openings has to be incorrect and should be rejected by the polynomial commitment verifier. This happens except probability $\epsop$
 	
@@ -1185,9 +1271,9 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound
   the probability of the adversary succeeding using the idealised verification equation---which considers equality between polynomials---instead of the real verification equation---which consider equality of the polynomials' evaluations.
 	
-	For polynomials $\vec{f} = f_1, \ldots, f_k$, evaluation point $z$, evaluation result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $o(X)$ the idealised check verifies that
+	For a polynomial $f$, evaluation point $z$, evaluation result $s$, and opening $o(X)$ the idealised check verifies that
 	\begin{equation}
-		\sum_{i = 1}^k \gamma^{i - 1} f_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} s_i \equiv o(X) (X - z)\,.
+		f_i(X) -  s_i \equiv o(X) (X - z)\,.
 		\label{eq:pcom_idealised_check}
 	\end{equation}
 	Since $o(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial composition, there is only one $o(X)$ that fulfils the equation above.
@@ -1474,7 +1560,7 @@ hence $\eps$ is negligible if dlog is hard and $\plonkprot$ is sound and $\ur{3}
 \ncase{$\plonk$ prover $\prover(\REL, \crs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \numberofconstrains}})$}
 \begin{description}
 	\item[Round 1] 
-	Sample $b_1, \ldots, b_9 \sample \FF_\pp$; compute $\p{a}(X), \p{b}(X), \p{c}(X)$ as 
+	Sample $b_1, \ldots, b_9 \sample \FF_p$; compute $\p{a}(X), \p{b}(X), \p{c}(X)$ as 
 	\begin{align*}
 		\p{a}(X) &= (b_1 X + b_2)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_i \lag_i(X) \\
 		\p{b}(X) &= (b_3 X + b_4)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_{\numberofconstrains + i} \lag_i(X) \\
@@ -1483,7 +1569,7 @@ hence $\eps$ is negligible if dlog is hard and $\plonkprot$ is sound and $\ur{3}
 	Output $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
 	
 	\item[Round 2]
-	Get challenges $\beta, \gamma \in \FF_\pp$
+	Get challenges $\beta, \gamma \in \FF_p$
 	\[
 		\beta = \ro(\trans, 0)\,, \qquad \gamma = \ro(\trans, 1)\,.
 	\]
@@ -1519,7 +1605,7 @@ hence $\eps$ is negligible if dlog is hard and $\plonkprot$ is sound and $\ur{3}
 	Output $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$.
 	
 	\item[Round 4]
-	Get the challenge $\chz \in \FF_\pp$, $\chz = \ro(\trans)$.
+	Get the challenge $\chz \in \FF_p$, $\chz = \ro(\trans)$.
 	Compute opening evaluations
 	\begin{align*}
 			\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
@@ -1537,7 +1623,7 @@ hence $\eps$ is negligible if dlog is hard and $\plonkprot$ is sound and $\ur{3}
 	Output $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega), \p{r}(\chz).$
 	
 	\item[Round 5]
-	Compute the opening challenge $v \in \FF_\pp$, $v = \ro(\trans)$.
+	Compute the opening challenge $v \in \FF_p$, $v = \ro(\trans)$.
 	Compute the openings for the polynomial commitment scheme 
 	\begin{align*}
 	& \p{W_\chz}(X) = \frac{1}{X - \chz} \left(
