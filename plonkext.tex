@@ -478,29 +478,6 @@ the corresponding witness. This must hold even if the adversary is allowed to se
 	for some polynomial $\poly$, constant $d$ and negligible $\eps$ whenever $\waccProb \geq \nu$.
 \end{definition}
 
-% \begin{definition}[Simulation extractability]
-% 	A proof system $\proofsystem$ is computationally (adaptively) \emph{strongly simulation-extractable for $\RELGEN$}, if for every NU$\ppt$ $\adv$, there exists a NU$\ppt$ extractor $\ext_\adv$, s.t.
-% 	\[
-% 	\condprob{
-%   \begin{aligned}
-%     &(\inp, \wit) \not\in \REL,\\
-% 		&(\inp, \zkproof) \not\in Q, \\
-%     & \verifier (\REL, \crs, \inp, \zkproof) = 1
-%   \end{aligned}
-%   }
-%   {
-% 		\begin{aligned}
-% 		& \REL \gets \RELGEN (\secparam),
-% 		(\crs, \td) \gets \kgen (\REL), r \sample \RND{\adv},
-% 		\\ &
-% 		((\inp, \zkproof)  \|  \wit) \gets (\adv^{\oracleo}  \|  \ext_\adv) (\REL, \crs; r)
-% 		\end{aligned}
-% 	} \leq \negl \enspace,
-% 	\]
-% 	where $\oracleo$ on input $\inp'$ returns $\zkproof' \gets \simulator(\REL, \crs, \td, \cdot)$ and writes $(\inp', \zkproof')$ to a list $Q$.
-% \end{definition}
-
-% Faust et al.~\cite{INDOCRYPT:FKMV12} show every
 Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
 is specially sound and has a unique response property. Let $\sigmaprot_\fs = (\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the Fiat--Shamir transform to $\sigmaprot$.
 Faust et al.~\cite{INDOCRYPT:FKMV12} show that every such $\sigmaprot_\fs$ is simulation-extractable.
@@ -762,25 +739,12 @@ the unique opening property.
 \begin{proof}		
 	The proof goes by game hoping. The games are controlled by an environment $\env$ that internally tuns a simulation extractability adversary $\advse$, simulates its with access to a random oracle and simulator, and when necessary rewinds it.
 	The games differ by various breaking points, i.e.~points where the environment decides to abort the game. 
-	% 
-	% To show that probability of $\advse$ winning does not change much from game to game we provide reductions $\rdvur$ and $\rdvss$ which seize difference in probabilities to either break $\ps$'s unique response property ($\rdvur$) or its computational special soundness ($\rdvss$).
-	% \markulf{17.09}{Here we also need the computational special soundness property}
-	% \markulf{17.09}{The adversary that is being rewound for special soundness}
 
 	Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
 	returned by the adversary and the simulator respectively. We use $\zkproof[i]$
 	to denote prover's message in the $i$-th round of the proof, $\zkproof[i].\ch$
 	to denote the challenge that is given to the prover after $\zkproof[i]$, and
 	$\zkproof\range{i}{j}$ to denote all messages of the proof including challenges between rounds $i$ and $j$.
-
-	% Without loss of generality, for every acceptable proof $\zkproof_{\advse}$, we
-	% assume that whenever $\advse$ outputs in Round $i$, $i 
-	% > 3$, a message $m$, then
-	% $\zkproof_{\advse}\range{1}{i}$ is a fresh query to the random oracle.
-	% \michals{22.09}{understand it in the light of a new proof approach}
-	% \michals{22.09}{added ", $i 
-	% > 3$", for $i \leq 2$ we need to allow the adversary to pick unfresh queries -- as he might randomize the first 2 rounds}
-	% In the following we denote the instance and proof output by $\advse$ by $\inp_\advse$ and $\zkproof_\advse$ respectively.
 	
 	Without loss of generality, we assume that whenever the accepting proof contains a response to a challenge from a random oracle, we assume that the adversary queried the oracle to get it. 
 	It is straightforward to transform any adversary that violates this condition into an adversary that makes these additional queries to the random oracle and wins with the same probability.
@@ -1066,10 +1030,6 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 \begin{proof}
 	The proof goes by game hoping. The games are controlled by an environment $\env$ that internally runs a simulation extractability adversary $\advse$, simulates its with access to a random oracle and simulator, and when necessary rewinds it.
 	The games differ by various breaking points, i.e.~points where the environment decides to abort the game. 
-	
-	% To show that probability of $\advse$ winning does not change much from game to game we provide reductions $\rdvur$ and $\rdvss$ which seize difference in probabilities to either break $\plonkprot$'s unique response property ($\rdvur$) or its computational special soundness ($\rdvss$).
-	% \markulf{17.09}{Here we also need the computational special soundness property}
-	% \markulf{17.09}{The adversary that is being rewound for special soundness}
 
 	Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
 	returned by the adversary and the simulator respectively. We use $\zkproof[i]$
@@ -1565,12 +1525,6 @@ hence $\eps$ is negligible if dlog is hard and $\plonkprot$ is sound and $\ur{3}
 			\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
 	\end{align*}
 	Compute the linearisation polynomial
-	% \begin{align*}
-	% 	\p{r}(X) & = \p{a}(\chz) \p{b}(\chz) \selmulti(X) + \p{a}(\chz) \selleft(X) + \p{b}(\chz) \selright(X) + \p{c}(\chz) \seloutput(X) + \selconst(X) \\
-	% 	& (\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c}(\chz) + \beta k_2 \chz + \gamma) \p{z}(X) \alpha \\
-	% 	& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma)\beta \p{z}(\chz \omega) \p{S_{\sigma 3}}(X) \alpha \\
-	% 	& + \p{z}(X) \lag_1 (X) \alpha^2\,.
-	% \end{align*}
 	\[
 		\p{r}(X) = 
 		\begin{aligned}
