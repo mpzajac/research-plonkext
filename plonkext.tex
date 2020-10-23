@@ -1276,8 +1276,12 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	
 	For a polynomial $f$, evaluation point $z$, evaluation result $s$, and opening $o(X)$ the idealised check verifies that
 	\begin{equation}
-		f_i(X) -  s_i \equiv o(X) (X - z)\,.
-		\label{eq:pcom_idealised_check}
+		\alpha (X^{\dconst - \maxconst}f(X) \cdot X^{-\dconst + \maxconst} -  s) \equiv \alpha \cdot o(X) (X - z)\,,
+	\end{equation}
+	what is equivalent to 
+	\begin{equation}
+		f(X) -  s \equiv o(X) (X - z)\,.
+		\label{eq:pcoms_idealised_check}
 	\end{equation}
 	Since $o(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial composition, there is only one $o(X)$ that fulfils the equation above.
 
