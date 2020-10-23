@@ -826,7 +826,7 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 	for some negligible $\eps$.	
 \end{theorem}
 \begin{proof}		
-	The proof goes by game hoping. The games are controlled by an environment $\env$ that internally tuns a simulation extractability adversary $\advse$, simulates its with access to a random oracle and simulator, and when necessary rewinds it.
+	The proof goes by game hoping. The games are controlled by an environment $\env$ that internally runs a simulation extractability adversary $\advse$,  provides it with access to a random oracle and simulator, and when necessary rewinds it.
 	The games differ by various breaking points, i.e.~points where the environment decides to abort the game. 
 
 	Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
