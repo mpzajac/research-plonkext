@@ -35,8 +35,9 @@
 \usepackage[capitalise]{cleveref} \usepackage{cite} \usepackage{booktabs}
 \usepackage{paralist}
 \usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed}
-\usepackage{caption}
-\usepackage{subcaption}
+% \usepackage{caption}
+% \usepackage{subcaption}
+\usepackage{bm}
 
 \include{macros}
 
@@ -63,7 +64,7 @@
 		great price of inefficient knowledge extraction and the security loss
 		introduced by these techniques should always be taken into account.  Because
 of the inefficiency and loosenes of the reduction we independently show that
-$\plonk{}$ is simulation-sound.  \task{15.05}{Check Sonic and Bulletproofs}
+$\plonk{}$ is simulation-sound.  
 \end{abstract}
 
 \section{Introduction} \subsection{Motivation} \paragraph{The rise of updatable
@@ -1072,7 +1073,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	Note that in all transcripts the instance $\inp$, proof elements $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and challenges $\alpha, \beta, \gamma$ are common as the transcripts share the first three rounds. 
 	
 	We consider two mutually disjunctive events. 
-	First, $\event{E}$ holds when all of the transcripts are acceptable by the idealised verification equation, i.e.~$\vereq(X) = 0$ 
+	First, $\event{E}$ holds when all of the transcripts are acceptable by the idealised verification equation, i.e.~$\vereq(X) = 0$, cf.~\cref{eq:ver_eq}.
 	Second, $\nevent{E}$ holds when there is a transcript that is acceptable, yet 
 	for some transcript $\vereq(\chi) = 0$, but $\vereq(X) \neq 0$.
 	We build a special extractor $\extss$ which given the tree of transcripts $\tree$ reveals the witness with an overwhelming probability when $\event{E}$ happens. 
@@ -1335,31 +1336,32 @@ property of the used polynomial commitment scheme $\PCOMs$.
 		Let $\adv$ be a $\ppt$ algebraic adversary. The probability $\epsss$ that
 		$\adv$ breaks computational special soundness of $\sonicprot$ is upper-bounded as
 		\[
-				\epsss \leq \epss + \epsdlog\,,
+				\epsss \leq \epss + \epsldlog\,,
 		\]
-		where $\epss$ is a soundness error of the protocol, and $\epsdlog$ is a probability that a $\ppt$ algorithm can break the
+		where $\epss$ is a soundness error of the protocol, and $\epsldlog$ is a probability that a $\ppt$ algorithm can break the
 		$(\dconst, \dconst)$-ldlog assumption.
 \end{lemma}
 \begin{proof}
 		The proof goes similarly to the proof of \cref{lem:plonkprot_ss}.
-
-		Let $\adv$ be an adversary that produces a $(1, 1, \multconstr + \linconstr + 1)$-tree of acceptable
+%
+		Let $\adv$ be an adversary that produces a $(1, 1, \multconstr + \linconstr + 1, 1, 1)$-tree of acceptable
 		transcripts $\tree$ for a statement $\inp$. We consider two disjunctive
 		events $\event{E}$ and $\nevent{E}$. The first corresponds to a case when
 		all transcripts in $\tree$ are acceptable for the ideal verifier,
-		i.e.~$\vereq(X) = 0$. In that case we show an extractor $\extss$ that
+		i.e.~$\vec{\vereq}(X) = \vec{0}$. In that case we show an extractor $\extss$ that
 		from $\tree$ extracts a valid witness $\wit$. The second, corresponds to
 		a case when $\tree$ contains a transcript that is acceptable by the
 		real verifier but is not acceptable by the ideal verifier. In that case we
-		show a reduction $\rdvdlog$ that uses $\adv$ to break the $(\dconst,
-		\dconst)$-dlog
+		show a reduction $\rdvldlog$ that uses $\adv$ to break the $(\dconst,
+		\dconst)$-ldlog
 		assumption with at least the same probability.
 
 		\ncase{When $\event{E}$ happens}
-		Since the protocol $\sonicprot$ is sound, for an acceptable proof
+		Since $\sonicprot$ is sound, for an acceptable proof
 		$\zkproof$ for a statement $\inp$ there exists a witness $\wit$ such that
-		$\REL(\inp, \wit)$ holds except some negligible probability $\epss$. 
-		\michals{21.X}{Update the ss proof for Plonk with $\epss$} Note that
+		$\REL(\inp, \wit)$ holds except some negligible probability $\epss$ and polynomial $\p{r}(X, Y)$ has witness at its coefficients.
+		\michals{21.X}{Update the ss proof for Plonk with $\epss$} 
+		Note that the 
 		witness-carrying polynomial $\p{r}(X, y)$ has degree at most $(\multconstr
 		+ \linconstr)$ and since $\adv$ answered correctly on $(\multconstr +
 		\linconstr + 1)$ different challenges $z$ (for the sake of concreteness
@@ -1369,14 +1371,13 @@ property of the used polynomial commitment scheme $\PCOMs$.
 		known. The extractor $\extss$ interpolates $\p{r}(X, y)$ and reveals the
 		corresponding witness $\wit$.
 
-		\ncase{When $\nevent{E}$ happens} Consider a transcript such that
-		$\vereq(X) \neq 0$, but $\vereq(\chi) = 0$.
+		\ncase{When $\nevent{E}$ happens} Consider a transcript such that for some verification equation
+		$\vereq_i(X) \neq 0$, but $\vereq_i(\chi) = 0$.
 		Since the adversary is algebraic, all group elements included in the tree of
   	transcripts are extended by their representation as a combination of the input
-  	$\GRP_1$ or $\GRP_2$-elements i.e.~$\gone{1, \chi, \ldots, \chi^{\numberofconstrains +
-    2}}$. Hence all coefficients of the verification equation polynomial
-  	$\vereq(X)$ are known and $\rdvdlog$ can find its zero points. Since
-  	$\vereq(\chi) = 0$, the targeted discrete log value $\chi$ is among them.
+  	$\GRP_1$ or $\GRP_2$-elements. Hence all coefficients of the verification equation polynomial
+  	$\vereq_i(X)$ are known and $\rdvdlog$ can find its zero points. Since
+  	$\vereq_i(\chi) = 0$, the targeted discrete log value $\chi$ is among them.
 		\qed		
 \end{proof}
 
@@ -1402,10 +1403,6 @@ Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$ an
 
 \section{$\plonk$ protocol rolled out}
 \label{sec:plonk_explained}
-
-% \paragraph{\fbox{\normalfont{$\plonk$ prover $\prover(\REL, \crs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \numberofconstrains}})$}}}
-
-
 \ncase{$\plonk$ prover $\prover(\REL, \crs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \numberofconstrains}})$}
 \begin{description}
 	\item[Round 1] 
@@ -1548,17 +1545,17 @@ The \plonk{} verifier works as follows
 		}\\
 		 + & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }\,.
 	\end{align*}
-	\item[Step 12] Check whether the verification equation holds
+	\item[Step 12] Check whether the verification $\vereq(\chi)$ equation holds
 	\begin{multline}
 		\label{eq:ver_eq}
 		\left(
 		\gone{\p{W_{\chz}}(\chi)} + u \cdot \gone{\p{W_{\chz \omega}}(\chi)}
 		\right) \bullet
-		\gtwo{\chi} = \\
+		\gtwo{\chi} - \\
 		\left(
 			\chz \cdot \gone{\p{W_{\chz}}(\chi)} + u \chz \omega \cdot \gone{\p{W_{\chz \omega}}(\chi)} + \gone{F} - \gone{E}
 		\right) \bullet
-		\gtwo{1}\,.
+		\gtwo{1} = 0\,.
 	\end{multline}
 The verification equation is a batched version of the verification equation from \cite{AC:KatZavGol10} which allows the verifier to check openings of multiple polynomials in two points (instead of checking an opening of a single polynomial at one point).
 \end{description}

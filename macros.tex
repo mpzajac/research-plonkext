@@ -59,7 +59,7 @@
 \newcommand{\td}{\pcvarstyle{td}}
 \newcommand{\ip}[2]{\left\langle #1, #2\right\rangle}
 \newcommand{\zkproof}{\pi}
-\newcommand{\proofsystem}{\pcalgostyle{\Psi}}
+\newcommand{\proofsystem}{\pcschemestyle{\Psi}}
 \newcommand{\ps}{\proofsystem}
 \newcommand{\psfs}{\proofsystem_\fs}
 % \newcommand{\ps}{\proofsystem}
@@ -87,7 +87,7 @@
 
 
 %PLONK related
-\newcommand{\pcschemestyle}[1]{\mathbf{#1}}
+\newcommand{\pcschemestyle}[1]{\bm{\mathsf{#1}}}
 \newcommand{\plonkprot}{\pcschemestyle{P}}
 \newcommand{\plonkprotfs}{\pcschemestyle{P}_\fs}
 \newcommand{\sonicprot}{\pcschemestyle{S}}
@@ -129,8 +129,8 @@
 %Commitment schemes
 \newcommand{\COM}{\pcschemestyle{C}}
 \newcommand{\PCOM}{\pcschemestyle{PC}}
-\newcommand{\PCOMp}{\pcschemestyle{PC}_\plonkprot}
-\newcommand{\PCOMs}{\pcschemestyle{PC}_\sonicprot}
+\newcommand{\PCOMp}{\pcschemestyle{PC}_{\plonkprot}}
+\newcommand{\PCOMs}{\pcschemestyle{PC}_{\sonicprot}}
 \newcommand{\com}{\pcalgostyle{Com}}
 \newcommand{\op}{\pcalgostyle{Op}}
 \newcommand{\open}{\op}
@@ -163,6 +163,7 @@
 \newcommand{\rdvks}{{\rdv_\ks}}
 \newcommand{\rdvs}{{\rdv_\pcvarstyle{s}}}
 \newcommand{\rdvdlog}{{\rdv_\dlog}}
+\newcommand{\rdvldlog}{{\rdv_\ldlog}}
 \newcommand{\rdvse}{{\rdv_\se}}
 \newcommand{\rdvss}{{\rdv_\ss}}
 \newcommand{\rdvur}{\rdv_\pcvarstyle{ur}}
@@ -179,6 +180,7 @@
 \newcommand{\epss}{\eps_\pcvarstyle{s}}
 \newcommand{\epsbatch}{\eps_\pcvarstyle{btch}}
 \newcommand{\epsdlog}{\eps_\dlog}
+\newcommand{\epsldlog}{\eps_\ldlog}
 
 %errors
 \newcommand{\err}{Err}
