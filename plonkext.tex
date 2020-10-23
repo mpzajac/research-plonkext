@@ -331,8 +331,9 @@ $\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We d
 			{
 				\alpha, \chi \sample \FF^2_p \\
 				\pcreturn \\
-				\hphantom{\p{o}(X) \gets \frac{\p{f}(X) - \p{f}(z)}{X - z}}
-			}
+			%	\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
+				\hphantom{\hspace*{5.5cm}}	
+		}
 			
 			\pchspace
 			
@@ -347,7 +348,8 @@ $\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We d
 			\procedure{$\open(\crs, z, s, f(X))$}
 			{
 				\p{o}(X) \gets \frac{\p{f}(X) - \p{f}(z)}{X - z}\\
-				\pcreturn \gone{\p{o}(\chi)}
+				\pcreturn \gone{\p{o}(\chi)}\\
+				\hphantom{\hspace*{5.5cm}}	
 			}
 			
 			\pchspace
@@ -356,7 +358,8 @@ $\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We d
 			{
 				\pcif \gone{\p{o}(\chi)} \bullet \gtwo{\alpha \chi} + \gone{s - z \p{o}(\chi)} \bullet \gtwo{\alpha} = \\
 				\pcind \gone{c} \bullet \gtwo{\chi^{- \dconst + \maxconst}} \pcthen  \pcreturn 1\\
-				\pcelse \pcreturn 0.
+				\pcelse \pcreturn 0.\\
+				\hphantom{\hspace*{5.5cm}}	
 			}
 		\end{pchstack}
 	\end{pcvstack}
