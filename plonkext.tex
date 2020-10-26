@@ -1384,6 +1384,13 @@ property of the used polynomial commitment scheme $\PCOMs$.
 		\qed		
 \end{proof}
 
+\subsection{Zero knowledge}
+\michals{26.X}{ We need to show that it is possible to simulate the proof using
+a simulator that does not require any trapdoor (simulation by reprogramming
+the oracle, or "zero knowledge in the classical sense", i.e. everybody can
+provide an acceptable simulated transcript}
+\cref{sec:sonic}
+
 \subsection{From special-soundness and unique response property to simulation extractability of $\sonicprotfs$}
 Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$ and computationally special sound we are able to follow \cite{INDOCRYPT:FKMV12} and show that $\sonicprotfs$ is simulation-extractable as defined in \cref{def:simext}.
 
@@ -1602,7 +1609,25 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	\item[Round 5]
 	In this round the simulator proceeds as an honest prover would.
 	\end{description}
-	
+
+	\section{$\sonic$ protocol rolled out}
+	\label{sec:sonic}
+	\ncase{$\sonic$ simulator $\simulator(\REL, \crs, \inp, \zkproof)$}
+	$\sonic$'s simulator proceeds as an honest prover except its behaviour in
+	Round 1 and setting a challenge after that round. Then it picks verifier's
+	challenges randomly and answers them honestly.
+	\begin{description}
+			\item[Round 1] Pick $\vec{a}, \vec{b}$ randomly and set $\vec{c} =
+					\vec{a} \cdot \vec{b}$. Honestly computes polynomials $\p{r}(X, Y),
+					\p{r'}(X, Y), \p{s}(X, Y)$ and $\p{t}(X, Y)$. Commits to $\p{r}(X,
+					1)$ and publishes the commitment. 
+			\item[Round 1 challenge] compute and output as a challenge $y$ such that
+					$\p{t}(X, y)$ is a polynomial with $0$ coefficient next to $X^0$. If
+					$\simulator$ fails to find appropriate $y$, e.g.~because the created
+					polynomial $\p{t}$ has no zero points, then it reverts to Round 1
+					above and picks fresh $\vec{a}$ and $\vec{b}$.
+	\end{description}
+
 	\section{(Tight) simulation soundness of $\plonk$}
 	\task{28.07}{All proofs in this section should be verified}
 	% \michals{15.09}{As MK noted, this proof holds only for simulation soundness. For extractability we use special soundness (cf the next section)}
