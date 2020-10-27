@@ -41,7 +41,7 @@
 
 \include{macros}
 
-\title{On Simulation-Extractability of \textsc{Plonk}}
+\title{On Simulation-Extractability of Updatable Universal zkSNARKs}
 
 \author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} \iflncs{
 \institute{University of Edinburgh, Edinburgh, UK \and IOHK \\
@@ -413,36 +413,52 @@ The zero-knowledge property is proven by constructing a simulator that can simul
 More precisely, let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of
 $\npol$ relations.
 Denote by $\LANG_\REL$ the language determined by $\REL$.
-Let $\prover$ and $\verifier$ be algorithms, the former called \emph{prover} and the latter \emph{verifier}.
-We denote by $\ip{\prover(\REL, \inp, \wit)}{\verifier(\REL, \inp)}$ a transcript of conversation between a $\prover$ with input $(\REL, \inp, \wit)$ and $\verifier$ with input $(\REL, \inp)$.
-We write $\ip{\prover (\REL, \inp, \wit)}{\verifier(\REL, \inp)} = 1$ if in the end of the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the transcript.
+Let $\prover$ and $\verifier$ be algorithms, the former called \emph{prover}
+and the latter \emph{verifier}. We allow our proof system to have a setup,
+i.e.~there is a $\kgen$ algorithm that takes as input the relation $\REL$ and
+outputs a common reference string $\crs$.
+We denote by $\ip{\prover(\REL, \crs, \inp, \wit)}{\verifier(\REL,
+\crs,\inp)}$ a transcript of conversation between a $\prover$ with input
+$(\REL, \crs, \inp, \wit)$ and $\verifier$ with input $(\REL, \crs, \inp)$.
+We write $\ip{\prover (\REL, \crs, \inp, \wit)}{\verifier(\REL, \crs, \inp)} = 1$ if in the end of the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the transcript.
 
 \markulf{09.07.20}{Could also all quantify for Soundness and Zero knowledge?}
 \michals{09.07.20}{I am not sure what you meant here. You want to have for all $\inp, \wit \in \REL$ or you doubt these properties make sense for all $\REL \gets \RELGEN$?}
-A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
+A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
 \begin{description}
 	\item[Completeness] An interactive proof system $\proofsystem$ is
 			\emph{complete} if an honest prover always convinces an honest verifier,
 			that is for all $\REL \in \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
 	\[
-		\prob{\ip{\prover (\REL, \inp, \wit)}{\verifier (\REL, \inp)} = 1} = 1\,.
+		\condprob{\ip{\prover (\REL, \crs, \inp, \wit)}{\verifier (\REL, \crs,
+		\inp)} = 1}{\crs \gets \kgen(\REL)} = 1\,.
 	\]
 	\item[Soundness] We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if
 			no $\ppt$ prover $\adv$ can convince an honest verifier $\verifier$ to
 			accept a proof for a false statement, i.e~for $\inp \not\in\LANG$. More
 			precisely, for all $\REL \in \RELGEN(\secparam)$
 	\[
-		\condprob{\ip{\adv(\REL, \inp)}{\verifier(\REL, \inp)} = 1}{\inp \gets \adv(\REL); \inp \not\in \LANG_\REL} \leq \negl\,;
+		\condprob{\ip{\adv(\REL, \crs, \inp)}{\verifier(\REL, \crs, \inp)} =
+		1}{\crs \gets \kgen(\REL), \inp \gets \adv(\REL, \crs); \inp \not\in \LANG_\REL} \leq \negl\,;
 	\]
 	\item[Zero knowledge] We call an interactive proof system $\proofsystem$
 			\emph{zero-knowledge} if for any $\REL \in \RELGEN(\secparam)$ and adversary $\adv$ there exists a $\ppt$ simulator $\simulator$ such that
 	\begin{multline*}
-	  \left\{\ip{\prover(\REL, \inp, \wit)}{\adv(\REL, \inp, \wit)} \,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
+	  \left\{\ip{\prover(\REL, \crs, \inp, \wit)}{\adv(\REL, \crs, \inp, \wit)} \,\left|\, \crs \gets \kgen(\REL), (\inp, \wit) \gets \adv(\REL, \crs)\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
 		\\
-		\left\{\simulator^{\adv}(\REL, \inp)\,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator^\adv}\right.\right\}\,.
+		\left\{\simulator^{\adv}(\REL, \crs, \inp)\,\left|\, \crs \gets \kgen(\REL), (\inp, \wit) \gets \adv(\REL, \crs)\vphantom{\simulator^\adv}\right.\right\}\,.
 	\end{multline*}
 	%
 	We call zero knowledge \emph{perfect} if the distributions are equal and \emph{computational} if they are indistinguishable for any NUPPT distinguisher.
+
+	Occasionally, a weaker version of zero knowledge is required, so called
+	\emph{honest verifier zero knowledge} (HVZK), where it is assumed that the
+	verifier's challenges are picked at random from some predefined set.
+	Although weaker, this definition suffices in many applications. Especially,
+	an interactive zero-knowledge proof that is HVZK and \emph{public-coin}
+	(i.e.~the verifier outputs as challenges its random coins) can be made
+	non-interactive in the random oracle model by using the Fiat--Shamir
+	transformation. 
 	
 	Sometimes a stronger notion of soundness is required---except requiring that the verifier rejects proofs of statements outside the language, we request from the prover to know a witness corresponding to the proven statement. This property is formalised by the following notion:
 	
@@ -457,7 +473,7 @@ A proof system $\proofsystem = (\prover, \verifier, \simulator)$ for $\RELGEN$ i
 	 \end{aligned}
 	  \,\left|\,
 	 \begin{aligned}
-		 & (\td, \crs) \gets \kcrs(\REL), \inp \gets \adv(\REL,\crs), \\
+		 & \crs \gets \kcrs(\REL), \inp \gets \adv(\REL, \crs), \\
 		 & (\wit, \trans) \gets \ext^{\ip{\adv(\REL, \crs, \inp)}{\verifier(\REL, \crs, \inp)}}(\REL, \inp)
 	 \end{aligned}
 	 \vphantom{\begin{aligned}
@@ -480,7 +496,7 @@ to denote the pair of state-sharing simulators $\simulator_\zkproof,
 \paragraph{Sigma protocols.}
 A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$  for a relation
 $\REL \in \RELGEN(\secparam)$  is a special case of an interactive proof which transcript compounds of three messages $(a, b, z)$, the middle being a challenge provided by the verifier.
-Sigma protocols are specially-sound. That is, there exists an extractor $\ext$ which from two accepting transcripts $(a, b, z)$, $(a, b', z')$ for a statement $\inp$ can recreate the corresponding witness if $b \neq b'$. Formally,
+Sigma protocols are honest verifier zero-knowledge and specially-sound. That is, there exists an extractor $\ext$ which from two accepting transcripts $(a, b, z)$, $(a, b', z')$ for a statement $\inp$ can recreate the corresponding witness if $b \neq b'$. Formally,
 \begin{description}
 	\item[Special soundness] A sigma protocol $\sigmaprot$ is \emph{specially-sound} if for any adversary $\adv$ the probability
 	\[
@@ -500,15 +516,16 @@ Sigma protocols are specially-sound. That is, there exists an extractor $\ext$ w
 	is negligible in $\secpar$.
 \end{description}
 
-Furthermore sigma protocols are \emph{honest verifier zero-knowledge} (HVZK). That is the zero-knowledge property holds only for honest verifiers, what is formalized as follows:
-\begin{description}
-	\item[Honest verifier zero knowledge] A sigma protocol $\sigmaprot$ is \emph{honest verifier zero-knowledge} if for all adversaries $\adv$ holds
-	\begin{multline*}
-		\left\{\ip{\prover(\REL, \inp, \wit)}{\verifier(\REL, \inp)} \,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator_\zkproof^\adv}\right.\right\} \approx_\secpar
-		\left\{\simulator_\zkproof^{\verifier}(\REL, \inp)\,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator^\adv}\right.\right\}\,.
-	\end{multline*}
-\end{description}
-Although this notion is weaker than a standard zero knowledge it is often sufficient. Furthermore, a HVZK interactive proof system transformed by the Fiat--Shamir transformation is zero-knowledge.
+% Furthermore sigma protocols are honest verifier zero-knowledge.
+%That is the zero-knowledge property holds only for honest verifiers, what is
+%formalized as follows: \begin{description}
+%	\item[Honest verifier zero knowledge] A sigma protocol $\sigmaprot$ is \emph{honest verifier zero-knowledge} if for all adversaries $\adv$ holds
+%	\begin{multline*}
+%		\left\{\ip{\prover(\REL, \crs, \inp, \wit)}{\verifier(\REL, \inp)} \,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator_\zkproof^\adv}\right.\right\} \approx_\secpar
+%		\left\{\simulator_\zkproof^{\verifier}(\REL, \inp)\,\left|\, (\inp, \wit) \gets \adv(\REL)\vphantom{\simulator^\adv}\right.\right\}\,.
+%	\end{multline*}
+%\end{description}
+%Although this notion is weaker than a standard zero knowledge it is often sufficient. Furthermore, a HVZK interactive proof system transformed by the Fiat--Shamir transformation is zero-knowledge.
 
 Another property that sigma protocols sometimes have is, introduced by Fischlin \cite{C:Fischlin05}, a unique response property which states that no $\ppt$ adversary  can produce two accepting transcripts that differ only on the last element.
 More precisely,
@@ -1103,6 +1120,10 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	\qed
 \end{proof}
 
+\subsection{Zero knowledge}
+\michals{27.X}{Paste here the description of the simulator from the appendix.
+Explain why the interactive Plonk is zk.}
+
 \subsection{From special-soundness and unique response property to simulation extractability of $\plonkprotfs$}
 
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ and computationally special sound we are able to follow \cite{INDOCRYPT:FKMV12} and show that $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
@@ -1390,7 +1411,11 @@ a simulator that does not require any trapdoor (simulation by reprogramming
 the oracle, or "zero knowledge in the classical sense", i.e. everybody can
 provide an acceptable simulated transcript}
 \cref{sec:sonic}
-Here we show that $\sonic$ is trapdoor-less zero-knowledge.
+\begin{lemma}
+	$\sonic$ is honest verifier trapdoor-less zero-knowledge.	
+\end{lemma}
+% Here we show that $\sonic$ is trapdoor-less zero-knowledge.
+\begin{proof}
 The simulator proceeds as follows
 In the first round, it picks randomly vectors $\vec{a}$, $\vec{b}$ and sets
 \begin{equation}
@@ -1447,7 +1472,16 @@ a root is at least $\infrac{1}{\dconst !}$, see \cref{lem:root_prob} for a
 proof of that bound. Since we assume that $\dconst =
 \poly$, we can say that the polynomial $\ptxsim$ picked by the simulator
 has roots with non-negligible probability. Furthermore, these roots can be
-found. 
+found and are random $\FF_p$ elements. Hence, $y$ picked by the simulator has
+comes from the same distribution as it was picked by an \hl{honest} verifier.
+
+The simulator continues building the transcript by honestly computing prover's
+messages and by picking verifier's challenges at random. This and the fact
+that $\ptxsim$ is indeed $0$ when evaluated at $y$ assures that the transcript
+provided by the simulator is acceptable and comes from the same distribution
+as a transcript prepared by an honest prover and verifier.
+\qed
+\end{proof}
 
 \subsection{From special-soundness and unique response property to simulation extractability of $\sonicprotfs$}
 Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$ and computationally special sound we are able to follow \cite{INDOCRYPT:FKMV12} and show that $\sonicprotfs$ is simulation-extractable as defined in \cref{def:simext}.
