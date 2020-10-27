@@ -1390,6 +1390,64 @@ a simulator that does not require any trapdoor (simulation by reprogramming
 the oracle, or "zero knowledge in the classical sense", i.e. everybody can
 provide an acceptable simulated transcript}
 \cref{sec:sonic}
+Here we show that $\sonic$ is trapdoor-less zero-knowledge.
+The simulator proceeds as follows
+In the first round, it picks randomly vectors $\vec{a}$, $\vec{b}$ and sets
+\begin{equation}
+		\label{eq:ab_eq_c}
+		\vec{c} = \vec{a} \cdot \vec{b}. 
+\end{equation}
+Then it honestly computes polynomials
+$\p{r}(X, Y), \p{r'}(X, Y), \p{s}(X, Y)$ and $\p{t}(X, Y)$ and concludes the
+first round as an honest prover would. 
+
+$\simulator$ computes the first verifier's challenge $y$ such that $\p{t}(X,
+y)$ was a polynomial that has $0$ as a coefficient next to $X^0$.
+As noted in \cite{CCS:MBKM19}, the coefficient next to $X^0$ in $\p{t}(X, Y)$
+equals
+\begin{equation}
+		\label{eq:x0}
+		\ptx (Y) = 
+		\vec{a} \cdot \vec{\p{u}}(Y) + 
+		\vec{b} \cdot \vec{\p{v}}(Y) + 
+		\vec{c} \cdot \vec{\p{w}}(Y) +	
+		\sum_{i = 1}^{\multconstr} a_i b_i (Y^i + Y^{-i}) - \p{k}(Y), 
+\end{equation}
+for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y)$ defined as 
+\begin{align*}
+		\p{u_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} u_{q, i}\\
+		\p{v_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} v_{q, i}\\
+		\p{w_i}(Y) & = -Y^i - Y^{-i}  + \sum_{q = 1}^\linconstr Y^{q +
+		\multconstr} w_{q, i}\\
+		\p{k}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} k_{q}.
+\end{align*}
+Vectors $\vec{u_q}, \vec{v_q}, \vec{w_q}$ are $\multconstr$-elements long
+and correspond to the linear constrains of the proof system. Field element
+$k_{q}$ is
+the instance value. When the proven instance is correct, $\ptx$ is a zero
+polynomial. See \cite{CCS:MBKM19} for  details.
+Also, when \cref{eq:ab_eq_c} holds, that polynomial got simplified to
+\begin{equation}
+		\label{eq:x0_simpl}
+		\ptxsim(Y) = \vec{a} \cdot \vec{\p{u}}(Y) + 
+		\vec{b} \cdot \vec{\p{v}}(Y) + 
+		\vec{c} \cdot \vec{\p{\tilde{w}}}(Y)	
+		- \p{k}(Y), 
+\end{equation}
+where $\vec{\p{\tilde{w}}}(Y)$ is defined as
+\[
+		\p{\tilde{w}_i}(Y) = \sum_{q = 1}^\linconstr Y^{q +
+		\multconstr} w_{q, i}\,.
+\]
+Note that the polynomial from \cref{eq:x0_simpl} is a ``classical'',
+i.e.~non-Laurent, polynomial. Also, since $\vec{a}, \vec{b}$ were picked at
+random, $\p{t}(X, Y)$ is a random polynomial and also $\ptx$ and $\ptxsim$
+are. Probability that a random degree-$\dconst$ polynomial over $\FF_p[Y]$ has
+a root is at least $\infrac{1}{\dconst !}$, see \cref{lem:root_prob} for a
+proof of that bound. Since we assume that $\dconst =
+\poly$, we can say that the polynomial $\ptxsim$ picked by the simulator
+has roots with non-negligible probability. Furthermore, these roots can be
+found. 
 
 \subsection{From special-soundness and unique response property to simulation extractability of $\sonicprotfs$}
 Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$ and computationally special sound we are able to follow \cite{INDOCRYPT:FKMV12} and show that $\sonicprotfs$ is simulation-extractable as defined in \cref{def:simext}.
@@ -1627,6 +1685,37 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 					polynomial $\p{t}$ has no zero points, then it reverts to Round 1
 					above and picks fresh $\vec{a}$ and $\vec{b}$.
 	\end{description}
+
+	\section{Omitted lemmas and proofs}
+	\begin{lemma}
+			\label{lem:root_prob}
+			Let $\p{f}(X)$ be a random degree-$d$ polynomial over $\FF_p[X]$. Then
+			the probability that $\p{f}(X)$ has roots in $\FF_p$ is at least
+			$\infrac{1}{d!}$.
+	\end{lemma}
+	\begin{proof}
+			First observe that there is $p^{d}$ canonical polynomials in $\FF_p[X]$.
+			Each of the polynomials may have up to $d$ roots. Consider polynomials
+			which are reducible to polynomials of degree $1$, i.e.~polynomials that
+			have all $d$ roots. The roots can be picked in $\bar{C}^{p}_{d}$
+			ways, where $\bar{C}^{n}_{k}$ is the number of
+			$k$-elements combinations with 
+			repetitions from $n$-element set. That is,
+			\[
+					\bar{C}^n_k = \binom{n + k - 1}{k}\,.
+			\]
+			Thus, the probability that a randomly picked polynomial has all $d$
+			roots is 
+			\begin{multline*}
+					\frac{\bar{C}^p_d}{p^d} = \frac{\binom{p + d - 1}{d}}{p^d} =
+					\frac{\frac{(p + d - 1)!}{(p + d - 1 - d)! \cdot d!}}{p^d} =
+					\frac{\frac{(p + d - 1) \cdot \ldots \cdot p \cdot (p - 1)!}{(p -
+					1)! \cdot d!}}{p^d} = \frac{\frac{(p + d - 1)\cdot \ldots \cdot
+	p}{d!}}{p^d} 
+					 \geq \frac{\frac{p^d}{d!}}{p^d} = \frac{1}{d!}
+			\end{multline*}
+			\qed
+	\end{proof}
 
 	\section{(Tight) simulation soundness of $\plonk$}
 	\task{28.07}{All proofs in this section should be verified}
