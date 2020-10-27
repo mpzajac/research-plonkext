@@ -147,6 +147,11 @@ either it is possible to extract a witness from a tree of acceptable transcripts
 or one could use the adversary that produced the tree to break some underlying
 computational assumption.
 
+\subsubsection{Unique opening property of polynomial commitment schemes}%
+\label{ssub:unique_opening_property_of_pcom}
+
+
+
 \subsubsection{Unique response property of $\plonkprot$.} Another property that
 has to be proven for $\plonkprot$ is the unique response property
 \cite{C:Fischlin05} which states that except the first round, all messages sent
@@ -156,6 +161,14 @@ and the second prover's messages are randomised. We thus propose a
 generalisation of the definition which states that a protocol is $\ur{i}$ if the
 prover is deterministic after sending its $3$-rd message. This property
 $\plonkprot$ follows.
+
+\subsubsection{HVZK of $\plonkprot$ and $\sonicprot$}%
+\label{ssub:hvzk_of_plonkprot_and_sonicprot_}
+In order to show our result we also show that (interactive) $\plonkprot$ and
+$\sonicprot$ are
+honest verifier zero-knowledge in the standard model, i.e.~the simulator is
+able to produce a transcript indistinguishable from a transcript produced by a
+honest prover and verifier.
 
 \subsubsection{Generalisation of the general forking lemma.}
 Consider an interactive $3$-round special-sound protocol $\ps$ and its
@@ -1494,8 +1507,13 @@ Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$ an
 	Let $\advse$ be a $\ppt$ adversary that can make up to $q$ random oracle
 	queries and outputs an acceptable proof for $\sonicprotfs$ with probability
 	at least $\waccProb$.  Then $\sonicprotfs$ is simulation-extractable with
-	extraction error \hl{...}. The extraction probability $\extProb$ is at least
-	\hl{...}.
+	extraction error $\eta = \epsur$. The extraction probability $\extProb$ is at least
+	\[
+			\extProb  \geq \frac{1}{q^{\multconstr + \linconstr}} (\waccProb - \epsur)^{\multconstr +
+			\linconstr + 1} - \eps.
+	\]
+	for some negligible $\eps$, $\multconstr$ and $\linconstr$ being,
+	respectively, the multiplicative and linear constrains of the system.
 \end{corollary}
 
 \bibliographystyle{alpha}
