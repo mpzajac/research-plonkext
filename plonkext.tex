@@ -462,7 +462,8 @@ A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RE
 		\left\{\simulator^{\adv}(\REL, \crs, \inp)\,\left|\, \crs \gets \kgen(\REL), (\inp, \wit) \gets \adv(\REL, \crs)\vphantom{\simulator^\adv}\right.\right\}\,.
 	\end{multline*}
 	%
-	We call zero knowledge \emph{perfect} if the distributions are equal and \emph{computational} if they are indistinguishable for any NUPPT distinguisher.
+	We call zero knowledge \emph{perfect} if the distributions are equal and
+	\emph{computational} if they are indistinguishable for any $\nuppt$ distinguisher.
 
 	Occasionally, a weaker version of zero knowledge is required, so called
 	\emph{honest verifier zero knowledge} (HVZK), where it is assumed that the
@@ -841,14 +842,15 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 % the unique opening property.
 
 \section{Simulation-extractability---the general result}
-\task{24.09}{Put here a general result -- a special sound, ur protocol is sim. ext after FS}
 \michals{25.09}{The generalisation of the forking lemma we have may work only for schemes that require rewinding of a single round. That limits the generalisation of the result}
-\michals{25.09}{We also need the following property -- the CRS has trapdoor that should be difficult to get and the simulator should be able to proceed without the trapdoor as well.}
-\michals{25.09}{I think most of the $\plonkprotfs$ sim-ext proof is going to be here. The result for plonk will be a corollary from this theorem + verification that the assumptions of the theorem are met.}
 
 \begin{theorem}[Simulation-extractable multi-round protocols]
 	\label{thm:se}
-	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive $2 \mu$-round zero-knowledge proof system that has $\ur{k}$ property with security $\epsur$ that is $(1, \ldots, 1, n_j, 1, \ldots, 1)$-special sound, where $j > k$.
+	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive $2
+	\mu$-round proof system that is honest verifier zero-knowledge in the
+	standard model\footnote{Crucially, we require that one can provide an
+			indistinguishable simulated proof without any additional knowledge, as
+	e.g~knowledge of a CRS trapdoor.}, has $\ur{k}$ property with security $\epsur$ that is $(1, \ldots, 1, n_j, 1, \ldots, 1)$-special sound, where $j > k$.
 	Assume that the simulator $\simulator$ does not get as input any trapdoor related to the CRS.
 	Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
 	Then $\psfs$ is simulation-extractable with extraction error $\epsur$ against $\ppt$ adversaries that makes up up to $q$ random oracle queries and returns an acceptable proof with probability at least $\waccProb$. 
@@ -1134,8 +1136,70 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 \end{proof}
 
 \subsection{Zero knowledge}
-\michals{27.X}{Paste here the description of the simulator from the appendix.
-Explain why the interactive Plonk is zk.}
+\begin{lemma}
+	$\plonk$ is honest verifier zero-knowledge in the standard model.	
+\end{lemma}
+% Here we show that $\sonic$ is trapdoor-less zero-knowledge.
+\begin{proof}
+Since the simulator $\simulator$ does not know a witness $\wit$ for the proven
+statement $\inp$, it cannot compute the output of Round 1 accordingly to the
+protocol. Instead, it picks randomly both the ``blinders'' $b_1, \ldots, b_6$
+and polynomials $\p{a}, \p{b}, \p{c}$ by picking their
+coefficients randomly. Then $\simulator$ outputs $\gone{\p{a}(\chi),
+\p{b}(\chi), \p{c}(\chi)}$. 
+For the first round challenge, the simulator picks permutation argument
+challenges $\beta, \gamma$ randomly.
+
+In the second round, similarly as in the previous one, the simulator cannot
+evaluate the requested polynomial $\p{z}$ honestly as it does not know the
+witness. Thus it picks the polynomial's coefficients randomly and outputs
+$\gone{\p{z}(\chi)}$. Challenge $\alpha$ that should be sent by the verifier
+after Round 2 is picked by the simulator at random.
+
+The next round starts by the simulator picking at random a challenge $\chz$,
+which in the real proof comes as a challenge from the verifier sent after
+Round 3. 
+Then $\simulator$ computes evaluations
+\[\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma
+2}}(\chz), \pubinppoly(\chz), \lag_1(\chz), \p{Z_H}(\chz),\allowbreak
+\p{z}(\chz\omega)\]
+Given the evaluations $\simulator$ computes polynomial $\p{r}(X)$ as an honest
+prover would, i.e.  
+\[
+		\p{r}(X) = 
+		\begin{aligned}
+			& \p{a}(\chz) \p{b}(\chz) \selmulti(X) + \p{a}(\chz) \selleft(X) + \p{b}(\chz) \selright(X) + \p{c}(\chz) \seloutput(X) + \selconst(X) \\
+			& + \alpha \cdot \left( (\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma)(\p{c}(\chz) + \beta k_2 \chz + \gamma) \cdot \p{z}(X)\right) \\
+			& - \alpha \cdot \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma)\beta \p{z}(\chz\omega) \cdot \p{S_{\sigma 3}}(X)\right) \\
+			& + \alpha^2 \cdot \lag_1(\chz) \cdot \p{z}(X)
+		\end{aligned}
+\]
+and evaluates $\p{r}(X)$ at $\chz$. 
+
+Next, the simulator computes $\ev{t}$ as 
+\[
+	\ev{t}  = \frac{1}{\p{Z_H}(\chz)}
+		\Big(
+			\p{r} (\chz) + \pubinppoly(\chz) - (\p{a}(\chz) + \beta \p{S_\sigma 1}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_\sigma 2}(\chz) + \gamma) \\
+			(\p{c}(\chz) +
+			\gamma)\p{z}(\chz \omega) \alpha - \lag_1 (\chz) \alpha^2
+		\Big) \,.
+\]
+Finally, $\simulator$ picks randomly a polynomial $\p{t}$ such that $\p{t}
+(\chz) = \ev{t}$ and concludes this round as an honest prover
+would by dividing $\p{t}$ into $\p{t_{hi}}, \p{t_{mid}}, \p{t_{lo}}$ and
+outputting $\gone{\p{t_{hi}}(\chi), \p{t_{mid}}(\chi), \p{t_{lo}}(\chi)}$. 
+After this round the simulator outputs $\chz$ as a challenge.
+
+In the next round, Round 4, the necessary evaluations at $\chz$ are already
+computed, thus $\simulator$ simply outputs 
+\[
+		\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega)\,.
+\]
+After that it picks randomly the challenge $v$, proceeds in the last round as
+an honest prover would proceed and outputs the final challenge, $u$, by
+picking it at random as well.
+\end{proof}
 
 \subsection{From special-soundness and unique response property to simulation extractability of $\plonkprotfs$}
 
@@ -1425,11 +1489,11 @@ the oracle, or "zero knowledge in the classical sense", i.e. everybody can
 provide an acceptable simulated transcript}
 \cref{sec:sonic}
 \begin{lemma}
-	$\sonic$ is honest verifier trapdoor-less zero-knowledge.	
+	$\sonic$ is honest verifier zero-knowledge in the standard model.	
 \end{lemma}
 % Here we show that $\sonic$ is trapdoor-less zero-knowledge.
 \begin{proof}
-The simulator proceeds as follows
+The simulator proceeds as follows.
 In the first round, it picks randomly vectors $\vec{a}$, $\vec{b}$ and sets
 \begin{equation}
 		\label{eq:ab_eq_c}
@@ -1486,7 +1550,7 @@ proof of that bound. Since we assume that $\dconst =
 \poly$, we can say that the polynomial $\ptxsim$ picked by the simulator
 has roots with non-negligible probability. Furthermore, these roots can be
 found and are random $\FF_p$ elements. Hence, $y$ picked by the simulator has
-comes from the same distribution as it was picked by an \hl{honest} verifier.
+comes from the same distribution as it was picked by an honest verifier.
 
 The simulator continues building the transcript by honestly computing prover's
 messages and by picking verifier's challenges at random. This and the fact
@@ -1527,7 +1591,7 @@ Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$ an
 \begin{description}
 	\item[Round 1] 
 	Sample $b_1, \ldots, b_9 \sample \FF_p$; compute $\p{a}(X), \p{b}(X), \p{c}(X)$ as 
-	\begin{align*}
+	\begin{align*}t t
 		\p{a}(X) &= (b_1 X + b_2)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_i \lag_i(X) \\
 		\p{b}(X) &= (b_3 X + b_4)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_{\numberofconstrains + i} \lag_i(X) \\
 		\p{c}(X) &= (b_5 X + b_6)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_{2 \cdot \numberofconstrains + i} \lag_i(X) 
@@ -1722,21 +1786,21 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 
 	\section{$\sonic$ protocol rolled out}
 	\label{sec:sonic}
-	\ncase{$\sonic$ simulator $\simulator(\REL, \crs, \inp, \zkproof)$}
-	$\sonic$'s simulator proceeds as an honest prover except its behaviour in
-	Round 1 and setting a challenge after that round. Then it picks verifier's
-	challenges randomly and answers them honestly.
-	\begin{description}
-			\item[Round 1] Pick $\vec{a}, \vec{b}$ randomly and set $\vec{c} =
-					\vec{a} \cdot \vec{b}$. Honestly computes polynomials $\p{r}(X, Y),
-					\p{r'}(X, Y), \p{s}(X, Y)$ and $\p{t}(X, Y)$. Commits to $\p{r}(X,
-					1)$ and publishes the commitment. 
-			\item[Round 1 challenge] compute and output as a challenge $y$ such that
-					$\p{t}(X, y)$ is a polynomial with $0$ coefficient next to $X^0$. If
-					$\simulator$ fails to find appropriate $y$, e.g.~because the created
-					polynomial $\p{t}$ has no zero points, then it reverts to Round 1
-					above and picks fresh $\vec{a}$ and $\vec{b}$.
-	\end{description}
+	%\ncase{$\sonic$ simulator $\simulator(\REL, \crs, \inp, \zkproof)$}
+	%$\sonic$'s simulator proceeds as an honest prover except its behaviour in
+	%Round 1 and setting a challenge after that round. Then it picks verifier's
+	%challenges randomly and answers them honestly.
+	%\begin{description}
+	%		\item[Round 1] Pick $\vec{a}, \vec{b}$ randomly and set $\vec{c} =
+	%				\vec{a} \cdot \vec{b}$. Honestly computes polynomials $\p{r}(X, Y),
+	%				\p{r'}(X, Y), \p{s}(X, Y)$ and $\p{t}(X, Y)$. Commits to $\p{r}(X,
+	%				1)$ and publishes the commitment. 
+	%		\item[Round 1 challenge] compute and output as a challenge $y$ such that
+	%				$\p{t}(X, y)$ is a polynomial with $0$ coefficient next to $X^0$. If
+	%				$\simulator$ fails to find appropriate $y$, e.g.~because the created
+	%				polynomial $\p{t}$ has no zero points, then it reverts to Round 1
+	%				above and picks fresh $\vec{a}$ and $\vec{b}$.
+	%\end{description}
 
 	\section{Omitted lemmas and proofs}
 	\begin{lemma}
