@@ -52,19 +52,22 @@
 
 \begin{document} \sloppy \maketitle
 
-\begin{abstract} In this paper we prove that the most-efficient updatable
-		universal zkSNARK---\plonk{}~\cite{EPRINT:GabWilCio19}---is (non black-box)
-		simulation extractable.  To that end, we generalise the result by Faust et
-		al.~\cite{INDOCRYPT:FKMV12} (INDOCRYPT 2012) and show that any special-sound
-		proof of knowledge that has the unique response property is also
-		simulation-extractable if made non-interactive by the Fiat--Shamir
-		transform.  We then explain why \plonk{} meets these requirements and
-		conclude by showing its simulation-extractability.  Unfortunately, we also
-		show that relying on rewinding and Fiat--Shamir transform often comes at a
-		great price of inefficient knowledge extraction and the security loss
-		introduced by these techniques should always be taken into account.  Because
-of the inefficiency and loosenes of the reduction we independently show that
-$\plonk{}$ is simulation-sound.  
+\begin{abstract} 
+	In this paper we prove that two efficient updatable universal
+	zkSNARK---\plonk{}~\cite{EPRINT:GabWilCio19} and
+	$\sonic$~\cite{CCS:MBKM19}---are (non black-box) simulation extractable.  To
+	that end, we generalise the result by Faust et al.~\cite{INDOCRYPT:FKMV12}
+	(INDOCRYPT 2012) and show that any (computationally) special-sound proof of
+	knowledge that has the unique response property and is zero-knowledge in the
+	standard model is also simulation-extractable if made non-interactive by the
+	Fiat--Shamir transform.  We then explain why \plonk{} and \sonic{} meet
+	these requirements and conclude by showing its simulation-extractability.
+	Unfortunately, as a side result we also show that relying on rewinding and
+	Fiat--Shamir transform often comes at a great price of inefficient (yet
+	still polynomial) knowledge extraction and the security loss introduced by
+	these techniques should always be taken into account.  Because of the
+	inefficiency and loosenes of the reduction we independently show that
+	$\plonk{}$ is simulation-sound.  
 \end{abstract}
 
 \section{Introduction} \subsection{Motivation} \paragraph{The rise of updatable
@@ -72,22 +75,23 @@ zkSNARKs.} \cite{C:GKMMM18} \cite{EC:CHMMVW20} \cite{CCS:MBKM19}
 \cite{EPRINT:GabWilCio19} \cite{EPRINT:Gabizon19c} \cite{EPRINT:Lipmaa19a}
 
 \paragraph{On the importance of the simulation extractability.}
-Although many zkSNARKs satisfies knowledge soundness definition, we argue that
-simulation-extractability is the property that should be required from zkSNARKs
-used in their natural habitat---as an efficient zero-knowledge proof deployed in
-the real life. This is since in the real life one simply cannot assume that the
-adversary who tries to break security of the system does not have access to any
-proofs provided by other parties using the same zero-knowledge system. On
-contrary, in the most popular applications of zkSNARKs, like privacy-preserving
-blockchains, proofs made by all blockchain-participants are public. Thus it is
-only reasonable to require from a zero-knowledge proof system to be resilient to
-attacks that utilise proofs performed by different parties.
+Although zkSNARKs satisfy the knowledge soundness definition,
+simulation-extractability is the property that should be required from
+zkSNARKs used in practice---as efficient zero-knowledge proofs deployed in the
+real-life cryptosystems. This is since in the real life one simply cannot
+assume that the adversary who tries to break security of the system does not
+have access to any proofs provided by other parties using the same
+zero-knowledge system. On contrary, in the most popular applications of
+zkSNARKs, like privacy-preserving blockchains, proofs made by all
+blockchain-participants are public. Thus it is only reasonable to require from
+a zero-knowledge proof system to be resilient to attacks that utilise proofs
+performed by different parties.
 
-There are many results regarding obtaining simulation extractability for NIZKs.
-First, Groth \cite{AC:Groth07} noticed that a (black-box) simulation extractable
-NIZK is UC-secure. Then Dodis et al.~\cite{AC:DHLW10} introduced a notion of
-(black-box) \emph{true simulation extractability} and shown that no NIZK can be
-UC-secure if it does not have this property. 
+There are many results regarding obtaining simulation extractability for
+NIZKs.  First, Groth \cite{AC:Groth07} noticed that a (black-box) simulation
+extractable NIZK is UC-secure. Then Dodis et al.~\cite{AC:DHLW10} introduced a
+notion of (black-box) \emph{true simulation extractability} and shown that no
+NIZK can be UC-secure if it does not have this property. 
 
 In the context of zkSNARKs it is important to mention such works as Kosba's et
 al.~\cite{EPRINT:KZMQCP15} who show a general transformation from a NIZK
@@ -99,35 +103,40 @@ obtains non-black-box simulation extractability but also preserves succinctness
 of the argument.
 
 Independently, some authors focused on obtaining simulation extractability of
-some known zkSNARKs, like $\groth$, by modifying the scheme a bit and using
+ known zkSNARKs, like $\groth$, by introducing minor modifications and using
 stronger assumptions \cite{EPRINT:BowGab18,EPRINT:AtaBag19}. Interestingly,
 although such modifications hurt performance of the proof system the resulting
 zkSNARKs are still more efficient than the first SE zkSNARK proposed in
 \cite{C:GroMal17}, see \cite{EPRINT:AtaBag19}. 
 
-\paragraph{State of the art---simulation-extractable updatable zkSNARKs.} Up to
-our best knowledge, there are zkSNARKs that are simulation-extractable and
-zkSNARKs that are updatable, however there is no known zkSNARKs that enjoy both
-of these properties.  Given an updatable zkSNARK one could lift it to be
-simulation-extractable using techniques described e.g.~in
-\cite{EPRINT:KZMQCP15,EPRINT:AbdRamSla20}, but such lift comes with inevitably efficiency loss.  On the other hand,
-there is no known lift that would take a zkSNARK and make it updatable. Since
-updatable zkSNARKs are quite restrictive regarding format of their CRSs, making
-such lift seems as a very difficult task. 
+\paragraph{State of the art---simulation-extractable updatable zkSNARKs.} 
+Up to our best knowledge, there are zkSNARKs that are simulation-extractable
+and zkSNARKs that are updatable, however there is no known zkSNARKs that enjoy
+both of these properties out-of-the-box. Obviously, given an updatable zkSNARK
+one could lift it to be simulation-extractable using techniques described
+e.g.~in \cite{EPRINT:KZMQCP15,EPRINT:AbdRamSla20}, but such lift comes with
+inevitably efficiency loss.  On the other hand, there is no known lift that
+would take a zkSNARK and make it updatable. Since updatable zkSNARKs are quite
+restrictive regarding format of their CRSs, making such lift seems as a very
+difficult task. 
 
-\subsection{Our contribution} First of all, we prove that $\plonk$ is
-simulation-extractable. Although we do not change the original protocol at all,
-we had to solve a number of problems in order to show that. The idea of the
-proof is presented below. 
+\subsection{Our contribution} 
+First of all, we prove that $\plonk$ and $\sonic$ are simulation-extractable. Although we do
+not change these protocols at all, we had to solve a number of problems
+in order to show that. The idea of the proof is presented below. 
 
-Note that \plonk{}, as presented in \cite{EPRINT:GabWilCio19}, is a
-non-interactive protocol, which relies on an interactive proof of knowledge and
-the Fiat--Shamir transform. Thus, we denote the underlying protocol by
-$\plonkprot$ and the resulting, non-interactive one by $\plonkprot_\fs$. 
+Note that these protocols, as originally presented in
+\cite{EPRINT:GabWilCio19} and \cite{CCS:MBMK19}, are
+non-interactive protocols built using the Fiat--Shamir transform on an
+interactive proof of knowledge. In the following, we denote the underlying
+protocols by $\plonkprot$ (for $\plonk$) and $\sonicprot$ (for $\sonic$) and
+the resulting, non-interactive ones by $\plonkprotfs$ and $\sonicprotfs$,
+respectively. 
 
-\subsubsection{Special soundness of $\plonkprot$.} To be able to follow
-\cite{INDOCRYPT:FKMV12} it had to be shown that $\plonkprot$ is special-sound.
-However the standard definition of special soundness could not be met.  First of
+\subsubsection{Special soundness of $\plonkprot$ and $\sonicprot$.} 
+To be able to follow \cite{INDOCRYPT:FKMV12} it had to be shown that
+$\plonkprot$ and $\sonicprot$ are special-sound.  However the standard definition of special
+soundness could not be met.  First of
 all, the standard definition requires extraction of a witness from merely two
 transcripts, each containing three messages, that share the first message. For
 $\plonkprot$ that gives nothing. The definition had to be tuned to cover
@@ -1114,7 +1123,8 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	We build a special extractor $\extss$ which given the tree of transcripts $\tree$ reveals the witness with an overwhelming probability when $\event{E}$ happens. 
 	We show a reduction $\rdvdlog$ that, when $\nevent{E}$ happens, breaks the dlog assumption. 
 	
-	\ncase{When $\event{E}$ happens}  Since the protocol $\plonkprot$ is sound,
+	\ncase{When $\event{E}$ happens}  Since the protocol $\plonkprot$,
+	instantiated with the idealised verification equation, is perfectly sound,
 	except probability of batching failure $\epsbatch$, for a valid proof
 	$\zkproof$ of a statement $\inp$ there exists a witness $\wit$, such that
 	$\REL(\inp, \wit)$ holds.  Note that witness-carrying polynomials $\p{a}(X),
@@ -1168,7 +1178,7 @@ $\p{a}, \p{b}, \p{c}, \p{z}$ the constraint system is not satisfied
 $\p{\tilde{t}}(X)$
 is a rational function, not a polynomial (as constraint polynomials are not
 divisible by $\p{Z_H}(X)$. The simulator evaluates $\p{\tilde{t}}(X)$ at
-$\chz$ and picks randomly a degree-$\numberofconstrains + 2$ polynomial
+$\chz$ and picks randomly a degree-$(\numberofconstrains + 2)$ polynomial
 $\p{t}(X)$ such that $\p{t}(\chz) = \p{\tilde{t}}(\chz)$ and publishes a
 commitment to $\p{t}(X)$ as an honest prover would.
 After this round the simulator outputs $\chz$ as a challenge.
@@ -1206,7 +1216,7 @@ $\p{a}(X), \p{b}(X), \p{c}(X)$ and $\p{z}(X)$. Hence, a commitment to
 $\p{t}(X)$ picked randomly by the simulator is indistinguishable from a
 commitment to a real-proof $\p{t}(X)$. 
 Furthermore, since $\p{t}(X)$ is evaluated at $\chz$ according to the
-prover's, the rest of the proof, that utilises $\p{t}(\chz)$ can be computed
+prover's, the rest of the proof that utilises $\p{t}(\chz)$ can be computed
 honestly as well.
 \qed
 \end{proof}
@@ -1468,19 +1478,17 @@ property of the used polynomial commitment scheme $\PCOMs$.
 		assumption with at least the same probability.
 
 		\ncase{When $\event{E}$ happens}
-		Since $\sonicprot$ is sound, for an acceptable proof
-		$\zkproof$ for a statement $\inp$ there exists a witness $\wit$ such that
-		$\REL(\inp, \wit)$ holds except some negligible probability $\epss$ and polynomial $\p{r}(X, Y)$ has witness at its coefficients.
-		\michals{21.X}{Update the ss proof for Plonk with $\epss$} 
-		Note that the 
-		witness-carrying polynomial $\p{r}(X, y)$ has degree at most $(\multconstr
-		+ \linconstr)$ and since $\adv$ answered correctly on $(\multconstr +
-		\linconstr + 1)$ different challenges $z$ (for the sake of concreteness
-		let us call them $z_1, \ldots, z_{\multconstr + \linconstr + 1}$) then $(\multconstr +
-		\linconstr + 1)$ evaluations $\p{r}(z_1, y), \ldots, \p{r}(z_{\multconstr +
-		\linconstr + 1}, y)$ of $\p{r}(X, y)$ are
-		known. The extractor $\extss$ interpolates $\p{r}(X, y)$ and reveals the
-		corresponding witness $\wit$.
+		Since $\sonicprot$ is perfectly sound regarding the ideal verifier, for an
+		acceptable proof $\zkproof$ for a statement $\inp$ there exists a witness
+		$\wit$ such that $\REL(\inp, \wit)$ holds and the polynomial $\p{r}(X, Y)$
+		contains witness at its coefficients.  Note that the witness-carrying
+		polynomial $\p{r}(X, y)$ has degree at most $(\multconstr + \linconstr)$
+		and since $\adv$ answered correctly on $(\multconstr + \linconstr + 1)$
+		different challenges $z$ (for the sake of concreteness let us call them
+		$z_1, \ldots, z_{\multconstr + \linconstr + 1}$) then $(\multconstr +
+		\linconstr + 1)$ evaluations $\p{r}(z_1, y), \ldots, \p{r}(z_{\multconstr
+		+ \linconstr + 1}, y)$ of $\p{r}(X, y)$ are known. The extractor $\extss$
+		interpolates $\p{r}(X, y)$ and reveals the corresponding witness $\wit$.
 
 		\ncase{When $\nevent{E}$ happens} Consider a transcript such that for some verification equation
 		$\vereq_i(X) \neq 0$, but $\vereq_i(\chi) = 0$.
@@ -1493,11 +1501,6 @@ property of the used polynomial commitment scheme $\PCOMs$.
 \end{proof}
 
 \subsection{Zero knowledge}
-\michals{26.X}{ We need to show that it is possible to simulate the proof using
-a simulator that does not require any trapdoor (simulation by reprogramming
-the oracle, or "zero knowledge in the classical sense", i.e. everybody can
-provide an acceptable simulated transcript}
-% \cref{sec:sonic}
 \begin{lemma}
 	$\sonic$ is honest verifier zero-knowledge in the standard model.	
 \end{lemma}
@@ -1564,7 +1567,7 @@ comes from the same distribution as it was picked by an honest verifier.
 
 The simulator continues building the transcript by honestly computing prover's
 messages and by picking verifier's challenges at random. This and the fact
-that $\ptxsim$ is indeed $0$ when evaluated at $y$ assures that the transcript
+that $\ptxsim(y) = 0$ assures that the transcript
 provided by the simulator is acceptable and comes from the same distribution
 as a transcript prepared by an honest prover and verifier.
 \qed
