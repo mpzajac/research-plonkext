@@ -785,14 +785,27 @@ Unfortunately, Faust et al.'s result cannot be directly applied in our case sinc
 
 \subsection{Generalised forking lemma.}
 First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not
-general enough for our purpose as it useful only for protocols that extract
-witness from two transcripts.  To be able to extract a witness from, say, a
-$\plonkprot$ execution we need to obtain at least $\numberofconstrains + 3$
-transcripts.  Fortunately, since the witness can be extracted by repeating
-only one round of the protocol, we can proceed similarly as in a protocol that
-utilises only one challenge.
+general enough for our purpose as it useful only for protocols where witness
+can be extracted from just two transcripts.  To be able to extract a witness
+from, say, a $\plonkprot$ execution we need to obtain at least
+$\numberofconstrains + 3$ transcripts.  
+Here we propose a generalisation of the general forking lemma that given
+probability $\accProb$ gives a lower bound on the probability of generating a
+\emph{tree of accepting transcripts} $\tree$, which could be used to extract a
+witness. 
 
-Here we propose a generalisation of the general forking lemma that given probability $\accProb$ gives a lower bound on the probability of generating a \emph{tree of accepting transcripts}, which could be used to extract a witness. 
+Consider a $(2\mu + 1)$-round interactive proof system $\ps$, a
+$(n_1, \ldots, n_\mu)$-tree of accepting transcript is a set of
+$N = \prod_{i = 1}^\mu n_i$ acceptable transcripts such that after prover's
+$i$-th message the verifier is run and rewound as many times as it is
+necessary to produce $n_{i + 1}$ distinct challenges (since $N = \poly$ the
+number of rewinds is also expected to be polynomial) which are then answered
+by the prover. We note that the general forking lemma proposed in
+\cref{lem:generalised_forking_lemma} works for protocols which have
+extractable witness from a $(1, \ldots, 1, n_\mu, 1, \ldots, 1)$-tree of
+acceptable transcripts. This limitation however does not affect the main
+result of this paper, i.e.~showing that both $\plonk$ and $\sonic$ are
+simulation extractable. 
 
 \begin{lemma}[General forking lemma II]
 	\label{lem:generalised_forking_lemma}
