@@ -664,15 +664,25 @@ For the sake of completeness we note that many sigma-protocols, like e.g.~Schnor
 % Many proof systems additionally compounds of a setup algorithm $\kcrs$ that on input $\REL$ outputs a common reference string (CRS) $\crs$. The common reference string comes with a corresponding trapdoor $\td$ that allows the simulator to simulate a proof.
 
 \subsection{Simulation extractable NIZKs from sigma protocols}
-Real life applications often require from a NIZK proof system to be non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement $\inp$ should be able to provide a new proof $\zkproof'$ related to $\zkproof$.
-A strong version of non-malleability is formalised by simulation extractability.
-This notion states that no adversary can produce valid proof without knowing
-the corresponding witness. This must hold even if the adversary is allowed to see polynomially many simulated proofs for any statements it wishes.
+Real life applications often require from a NIZK proof system to be
+non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement
+$\inp$ should be able to provide a new proof $\zkproof'$ related to
+$\zkproof$.  A strong version of non-malleability is formalised by simulation
+extractability.  This notion states that no adversary can produce valid proof
+without knowing the corresponding witness. This must hold even if the
+adversary is allowed to see polynomially many simulated proofs for any
+statements it wishes.
 
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:simext}
-	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a special-sound HVZK proof and $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$ transformed by the Fiat--Shamir transform. 
-	We say that $\ps_\fs$ is simulation extractable with \emph{extraction error} $\nu$ if for any $\ppt$ adversary $\adv$ that is given oracle access to a random oracle $\ro$ and simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with probability
+	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a
+	computationally special-sound HVZK proof and $\ps_\fs = (\kgen_\fs,
+	\prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$ transformed by the
+	Fiat--Shamir transform.  We say that $\ps_\fs$ is simulation extractable
+	with \emph{extraction error} $\nu$ if for any $\ppt$ adversary $\adv$ that
+	is given oracle access to a random oracle $\ro$ and simulator
+	$\simulator_\fs$, and produces an accepting transcript of $\ps$ with
+	probability
 	$\waccProb$, that is
 	\[
 		\waccProb = \Pr \left[
@@ -682,7 +692,7 @@ the corresponding witness. This must hold even if the adversary is allowed to se
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
-			& \crs \gets \kgen(\REL, \secparam),\\
+			& \crs \gets \kgen(\REL),\\
 			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs, \ro} (\REL, \crs) 
 		\end{aligned}
 		\right.\right]\,,
@@ -697,7 +707,7 @@ the corresponding witness. This must hold even if the adversary is allowed to se
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
-			& \crs \gets \kgen(\REL, \secparam),\\
+			& \crs \gets \kgen(\REL),\\
 			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs, \ro} (\REL, \crs) \\
 			& \wit_\advse \gets \ext_\ss (\trans_{\advse}) 
 		\end{aligned}
@@ -739,7 +749,7 @@ The theorem relies on the following classical lemma, called \emph{General forkin
 		\frkProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
 	\]
 	%
-	\begin{figure}
+	\begin{figure}[t]
 		\centering
 		\fbox{
 		\procedure{$\forking_\adv (y)$}
@@ -758,19 +768,29 @@ The theorem relies on the following classical lemma, called \emph{General forkin
 \end{figure}
 \end{lemma}
 %
-In case of a sigma protocol, the probability $\frkProb$ can be interpreted as a lower bound for a successful witness extraction from two transcripts.
-Let $\tr_1 = (\inp, a, z, \gamma)$ and $\tr_2 = (\inp, a, z', \gamma')$ be the transcripts.
-Both $\tr_1$ and $\tr_2$ have to be \emph{acceptable}, i.e.~$i > 0$ and the probability that $\adv$ makes an acceptable transcript is denoted by $\accProb$. 
-Index $i$ can be interpreted as an index of $h_i$ which was sent as a challenge for $(\inp, a)$, this index has to be guessed by the security reduction. 
-For the sake of extractability, both transcripts have to have the same index $i$, i.e.~the same instance $\inp$ and the first message $a$, but the actual challenges $z = h_i$ and $z' = h'_{i}$ have to differ.
+In case of a sigma protocol, the probability $\frkProb$ can be interpreted as
+a lower bound for a successful witness extraction from two transcripts.  Let
+$\trans_1 = (\inp, a, b, z)$ and $\trans_2 = (\inp, a, b', z')$ be the
+transcripts.  Both $\trans_1$ and $\trans_2$ have to be \emph{acceptable},
+i.e.~$i > 0$ and the probability that $\adv$ makes an acceptable transcript is
+denoted by $\accProb$.  Index $i$ can be interpreted as an index of $h_i$
+which was sent as a challenge for $(\inp, a)$, this index has to be guessed by
+the security reduction.  For the sake of extractability, both transcripts have
+to have the same index $i$, i.e.~the same instance $\inp$ and the first
+message $a$, but the actual challenges $b = h_i$ and $b' = h'_{i}$ have to
+differ.
 
 \section{Towards simulation extractability for multi-round protocols---definitions and lemmas}
 Unfortunately, Faust et al.'s result cannot be directly applied in our case since the protocols we consider have more than three rounds of interaction, require more than just two transcript for the extractor to work and $\plonkprot$ is not special sound.
 
 \subsection{Generalised forking lemma.}
-First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not general enough for our purpose as it useful only for protocols that extract witness from two transcripts. 
-To be able to extract a witness from a $\plonkprot$ execution we need to obtain at least $\numberofconstrains + 3$ transcripts.
-Fortunately, since the witness can be extracted by repeating only one round of the protocol, we can proceed similarly as in a protocol that utilises only one challenge.
+First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not
+general enough for our purpose as it useful only for protocols that extract
+witness from two transcripts.  To be able to extract a witness from, say, a
+$\plonkprot$ execution we need to obtain at least $\numberofconstrains + 3$
+transcripts.  Fortunately, since the witness can be extracted by repeating
+only one round of the protocol, we can proceed similarly as in a protocol that
+utilises only one challenge.
 
 Here we propose a generalisation of the general forking lemma that given probability $\accProb$ gives a lower bound on the probability of generating a \emph{tree of accepting transcripts}, which could be used to extract a witness. 
 
