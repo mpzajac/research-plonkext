@@ -121,100 +121,113 @@ restrictive regarding format of their CRSs, making such lift seems as a very
 difficult task. 
 
 \subsection{Our contribution} 
-First of all, we prove that $\plonk$ and $\sonic$ are simulation-extractable. Although we do
-not change these protocols at all, we had to solve a number of problems
-in order to show that. The idea of the proof is presented below. 
+First of all, we prove that $\plonk$ and $\sonic$ are simulation-extractable.
+Although we do not change these protocols at all, we had to solve a number of
+problems in order to show that. The idea of the proof is presented below. 
 
 Note that these protocols, as originally presented in
-\cite{EPRINT:GabWilCio19} and \cite{CCS:MBMK19}, are
-non-interactive protocols built using the Fiat--Shamir transform on an
-interactive proof of knowledge. In the following, we denote the underlying
-protocols by $\plonkprot$ (for $\plonk$) and $\sonicprot$ (for $\sonic$) and
-the resulting, non-interactive ones by $\plonkprotfs$ and $\sonicprotfs$,
-respectively. 
+\cite{EPRINT:GabWilCio19} and \cite{CCS:MBKM19}, are non-interactive protocols
+built using the Fiat--Shamir transform on an interactive proof of knowledge.
+In the following, we denote the underlying protocols by $\plonkprot$ (for
+$\plonk$) and $\sonicprot$ (for $\sonic$) and the resulting, non-interactive
+ones, by $\plonkprotfs$ and $\sonicprotfs$, respectively. 
 
-\subsubsection{Special soundness of $\plonkprot$ and $\sonicprot$.} 
+\subsubsection{Special soundness.} 
 To be able to follow \cite{INDOCRYPT:FKMV12} it had to be shown that
 $\plonkprot$ and $\sonicprot$ are special-sound.  However the standard definition of special
 soundness could not be met.  First of
-all, the standard definition requires extraction of a witness from merely two
+all, the standard definition requires extraction of a witness from just two
 transcripts, each containing three messages, that share the first message. For
-$\plonkprot$ that gives nothing. The definition had to be tuned to cover
+$\plonkprot$ and $\sonicprot$ that gives nothing. The definition had to be tuned to cover
 protocols that have more rounds than just three.  Furthermore, the number of
 transcripts required is much greater---$\numberofconstrains + 3$, where
-$\numberofconstrains$ is the number of constrains in the proven circuit---to be
-exact. Hence, we do not have a \emph{pair of transcripts}, but \emph{tree of
-transcripts}.
+$\numberofconstrains$ is the number of constrains in the proven circuit, for
+$\plonkprot$ and $\multconstr + \linconstr + 1$, where $\multconstr$ and
+$\linconstr$ are the numbers of multiplicative and linear constraints,
+for$\sonicprot$. Hence, we do not have a \emph{pair of transcripts}, but \emph{tree of transcripts}.
 
-Secondly, the protocol has a trapdoor what allows an adversary who knows it to
+Secondly,both protocols rely on common reference strings which have trapdoors
+that allow an adversary who knows them to
 produce multiple proofs even without knowing the witness. Recall that the
 standard special soundness definition requires witness extraction from
 \emph{any} pair of acceptable transcripts that share a common root. Thus, the
-definition cannot be met. However, one could define a weaker version of special
+definition cannot be met. Fortunately, one could define a weaker version of special
 soundness, i.e.~a computational special soundness. More precisely, we show that
 either it is possible to extract a witness from a tree of acceptable transcripts
 or one could use the adversary that produced the tree to break some underlying
 computational assumption.
 
-\subsubsection{Unique opening property of polynomial commitment schemes}%
-\label{ssub:unique_opening_property_of_pcom}
+% \subsubsection{Unique opening property of polynomial commitment schemes}%
+% \label{ssub:unique_opening_property_of_pcom}
+% Another
 
-
-
-\subsubsection{Unique response property of $\plonkprot$.} Another property that
-has to be proven for $\plonkprot$ is the unique response property
-\cite{C:Fischlin05} which states that except the first round, all messages sent
+\subsubsection{Unique response property.} Another property that
+has to be proven for the protocols is the unique response property
+which states, as expressed in \cite{C:Fischlin05}, that except the first round, all messages sent
 by the prover are deterministic. As previously, we also could not use this
 definition right out of the box as $\plonkprot$ does not follow it---both first
 and the second prover's messages are randomised. We thus propose a
 generalisation of the definition which states that a protocol is $\ur{i}$ if the
-prover is deterministic after sending its $3$-rd message. This property
-$\plonkprot$ follows.
+prover is deterministic after sending its $i$-th message. This property is
+fulfilled by $\plonkprot$ with $i = 3$.
 
-\subsubsection{HVZK of $\plonkprot$ and $\sonicprot$}%
-\label{ssub:hvzk_of_plonkprot_and_sonicprot_}
+To be able to show the unique response property (for both of he protocols) we
+also had to show that the modifications of the KZG \cite{AC:KatZavGol10}
+proposed in \cite{EPRINT:GabWilCio19,CCS:MBKM19} have a \emph{unique opening
+property}. More precisely, for a polynomial $\p{f}(X)$ evaluated at some
+point $z$ it should be infeasible for any PPT adversary to provide
+two different but acceptable openings of the commitment.
+
+\subsubsection{HVZK.}%
 In order to show our result we also show that (interactive) $\plonkprot$ and
 $\sonicprot$ are
 honest verifier zero-knowledge in the standard model, i.e.~the simulator is
 able to produce a transcript indistinguishable from a transcript produced by a
-honest prover and verifier.
+honest prover and verifier without any additional knowledge.
+Although both $\sonic$ and $\plonk$ are shown to be zero-knowledge, the proofs
+provided by their authors rely on CRS's trapdoors. For our reduction to work,
+we cannot assume any additional power of the simulator. That is, any PPT
+party should be able to produce a simulated proof. (Note that this property
+does not necessary break soundness of the protocol as the simulator is
+required only to produce a transcript and is not involved in a real
+conversation with a real verifier).
 
 \subsubsection{Generalisation of the general forking lemma.}
 Consider an interactive $3$-round special-sound protocol $\ps$ and its
-non-interactive version $\ps_\fs$ obtained by using the Fiat--Shamir transform.
-The general forking lemma provides an instrumental lower bound for probability
-of extracting a witness from two proofs for the same statement that share the
-first message.  Since $\plonkprot$ has $10$ rounds and is not special-sound, the
-forking lemma cannot be used directly. We thus propose its modification that
-covers protocols that have more rounds and require more transcript than merely
-two. 
-Unfortunately, when more transcripts is needed the security gap is big. That is,
-probability that the extractor succeeds diminishes significantly. (That said, we
-have to note that the security loss is polynomial, albeit huge.)
+non-interactive version $\ps_\fs$ obtained by using the Fiat--Shamir
+transform.  The general forking lemma provides an instrumental lower bound for
+probability of extracting a witness from two proofs for the same statement
+that share the first message.  Since $\plonkprot$ and $\sonicprot$ have more
+than $3$ rounds and are not special-sound, the forking lemma cannot be used
+directly. We thus propose its modification that covers protocols that have
+more rounds and require more transcript than merely two.  Unfortunately, the
+security gap grows with the number of transcript and probability that the
+extractor succeeds diminishes significantly. (That said, we have to note that
+the security loss is polynomial, albeit big.)
 
-We observe here that some modern zkSNARKs rely on the Fiat--Shamir transform and
-the forking lemma heavily. First, an interactive protocol is proposed and its
-security and special-soundness analysed; second, one uses an argument that the
-Fiat--Shamir transform can be used to get a protocol that is non-interactive and
-shares the same security properties.  We claim here that such an analysis is not
-enough and one has to consider the security loss implied by the generalisation
-of the forking lemma or disclose a transformation that does not suffer from the
-generalisation's inefficiency.
+We observe here that some modern zkSNARKs rely on the Fiat--Shamir transform
+and the forking lemma heavily. First, an interactive protocol is proposed and
+its security and special-soundness analysed; second, one uses an argument that
+the Fiat--Shamir transform can be used to get a protocol that is
+non-interactive and shares the same security properties.  We claim here that
+such an analysis is not enough and one has to consider the security loss
+implied by the generalisation of the forking lemma or disclose a
+transformation that does not suffer from the generalisation inefficiency.
 
 \subsubsection{Towards simulation-extractability.} Given modified, less
-restrictive, definition for special-soundness and unique response property, and
+restrictive, definition for special-soundness and the unique response property, and
 generalised forking lemma we are able to show the announced result---simulation
-extractability of $\plonkprot_\fs$. The proof is inspired by
+extractability of $\plonkprotfs$ and $\sonicprotfs$. The proof is inspired by
 simulation-extractability and simulation-soundness proofs from
 \cite{INDOCRYPT:FKMV12}, with major modifications, which were required as
 \cite{INDOCRYPT:FKMV12} considers (Fiat--Shamir transformed) sigma-protocols
-that are undoubtedly simpler protocols than $\plonkprot_\fs$.  Since the proof
-highly relies on the (generalised) forking lemma, the security lost it
-introduces is considerable.
+that are undoubtedly simpler protocols than the considered proof systems.
+% Since the proof highly relies on the (generalised) forking lemma, the security
+% lost it introduces is considerable.
 
-\subsubsection{Efficient simulation-soundness.}
-Given that the security reduction for simulation-extractability introduces a security gap we also present a proof for $\plonkprot_\fs$ simulation soundness which utilises the algebraic group model and is tight. 
-It remains an open question how to show simulation extractability tightly, e.g.~using AGM.
+% \subsubsection{Efficient simulation-soundness.}
+% Given that the security reduction for simulation-extractability introduces a security gap we also present a proof for $\plonkprot_\fs$ simulation soundness which utilises the algebraic group model and is tight. 
+% It remains an open question how to show simulation extractability tightly, e.g.~using AGM.
 
 \subsubsection{Interactive zero knowledge vs non-interactive zero knowledge.}
 Another issue we tackle with is a question whether NIZK proof systems are in
