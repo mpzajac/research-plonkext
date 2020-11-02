@@ -780,36 +780,41 @@ to have the same index $i$, i.e.~the same instance $\inp$ and the first
 message $a$, but the actual challenges $b = h_i$ and $b' = h'_{i}$ have to
 differ.
 
-\section{Towards simulation extractability for multi-round protocols---definitions and lemmas}
+\section{Towards simulation extractability for multi-round
+protocols, definitions and lemmas}
 Unfortunately, Faust et al.'s result cannot be directly applied in our case
 since the protocols we consider have more than three rounds of interaction,
-require more than just two transcript for the extractor to work and are not 
-special-sound. 
+require more than just two transcript for the extractor to work and are not special sound.
 
 \subsection{Generalised forking lemma.}
 First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not
 general enough for our purpose as it is useful only for protocols where witness
 can be extracted from just two transcripts.  To be able to extract a witness
-from, say, a $\plonkprot$ execution we need to obtain at least
-$\numberofconstrains + 3$ transcripts.  
+from, say, an execution of $\plonkprot$ we need to obtain at least
+$\numberofconstrains + 3$ valid proofs.  
 Here we propose a generalisation of the general forking lemma that given
-probability $\accProb$ gives a lower bound on the probability of generating a
-\emph{tree of accepting transcripts} $\tree$, which could be used to extract a
-witness. 
+probability of producing an accepting transcript $\accProb$ lower-bounds the
+probability of generating a \emph{tree of accepting transcripts} $\tree$,
+which allows to extract a witness. 
 
-Consider a $(2\mu + 1)$-round interactive proof system $\ps$, a
-$(n_1, \ldots, n_\mu)$-tree of accepting transcript is a set of
-$N = \prod_{i = 1}^\mu n_i$ acceptable transcripts such that after prover's
-$i$-th message the verifier is run and rewound as many times as it is
-necessary to produce $n_{i + 1}$ distinct challenges (since $N = \poly$ the
-number of rewinds is also expected to be polynomial) which are then answered
-by the prover. We note that the general forking lemma proposed in
+\begin{definition}[Tree of accepting transcripts]
+	\label{def:tree_of_accepting_transcripts}
+	Consider a $(2\mu + 1)$-round interactive proof system $\ps$. A $(n_1,
+	\ldots, n_\mu)$-tree of accepting transcript is a tree where each node on
+	depth $i$, for $i \in \range{1}{\mu}$, is an $i$-th prover's message in an
+	acceptable transcripts; edges between the nodes are labeled with verifier's
+	challenges; and each node on depth $i$ has $(n_{i} - 1)$ siblings and $n_{i + 1}$ children.
+	Altogether, the tree consists of $N = \prod_{i = 1}^\mu n_i$ branches, which
+	makes $N$ acceptable transcripts. We require $N = \poly$.
+\end{definition}
+
+We note that the general forking lemma proposed in
 \cref{lem:generalised_forking_lemma} works for protocols which have
-extractable witness from a $(1, \ldots, 1, n_\mu, 1, \ldots, 1)$-tree of
+extractable witness from a $(1, \ldots, 1, n_i, 1, \ldots, 1)$-tree of
 acceptable transcripts. This limitation however does not affect the main
 result of this paper, i.e.~showing that both $\plonk$ and $\sonic$ are
 simulation extractable. 
-\hl{ended here}
+
 \begin{lemma}[General forking lemma II]
 	\label{lem:generalised_forking_lemma}
 	Fix $q \in \ZZ$ and set $H$ of size $h \geq m$. 
@@ -1286,7 +1291,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 \begin{proof}
 Since the simulator $\simulator$ does not know a witness $\wit$ for the proven
 statement $\inp$, it cannot compute the output of Round 1 accordingly to the
-protocol. Instead, it picks randomly both the ``blinders'' $b_1, \ldots, b_6$
+protocol. Instead, it picks randomly both the randomisers $b_1, \ldots, b_6$
 and polynomials $\p{a}, \p{b}, \p{c}$ by picking their
 coefficients randomly. Then $\simulator$ outputs $\gone{\p{a}(\chi),
 \p{b}(\chi), \p{c}(\chi)}$. 
@@ -1737,7 +1742,7 @@ Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$ an
 \begin{description}
 	\item[Round 1] 
 	Sample $b_1, \ldots, b_9 \sample \FF_p$; compute $\p{a}(X), \p{b}(X), \p{c}(X)$ as 
-	\begin{align*}t t
+	\begin{align*}
 		\p{a}(X) &= (b_1 X + b_2)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_i \lag_i(X) \\
 		\p{b}(X) &= (b_3 X + b_4)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_{\numberofconstrains + i} \lag_i(X) \\
 		\p{c}(X) &= (b_5 X + b_6)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_{2 \cdot \numberofconstrains + i} \lag_i(X) 
@@ -1897,7 +1902,9 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 % The simulator $\simulator$ in $\plonk$ proceeds according to the following steps:
 \begin{description}
 	\item[Round 1]
-	Since the simulator does not know a witness $\wit$ for the proven statement $\inp$, $\simulator$ cannot compute the output of this round accordingly to the protocol. Instead, it picks randomly both the "blinders" $b_1, \ldots, b_6$ and evaluations of polynomials $\p{a}, \p{b}, \p{c}$ by picking their coefficients randomly and outputting $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
+	Since the simulator does not know a witness $\wit$ for the proven statement
+	$\inp$, $\simulator$ cannot compute the output of this round accordingly to
+	the protocol. Instead, it picks randomly both the randomisers $b_1, \ldots, b_6$ and evaluations of polynomials $\p{a}, \p{b}, \p{c}$ by picking their coefficients randomly and outputting $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
 	\item[Round 2]
 	The simulator takes permutation argument challenges $\beta, \gamma$ as a random oracle output in the ongoing proof.
 	Similarly as in the previous round, the simulator cannot evaluate the requested polynomial $\p{z}$ honestly as it does not know the witness, picks its coefficients randomly and outputs $\gone{\p{z}(\chi)}$.
