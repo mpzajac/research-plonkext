@@ -781,11 +781,14 @@ message $a$, but the actual challenges $b = h_i$ and $b' = h'_{i}$ have to
 differ.
 
 \section{Towards simulation extractability for multi-round protocols---definitions and lemmas}
-Unfortunately, Faust et al.'s result cannot be directly applied in our case since the protocols we consider have more than three rounds of interaction, require more than just two transcript for the extractor to work and $\plonkprot$ is not special sound.
+Unfortunately, Faust et al.'s result cannot be directly applied in our case
+since the protocols we consider have more than three rounds of interaction,
+require more than just two transcript for the extractor to work and are not 
+special-sound. 
 
 \subsection{Generalised forking lemma.}
 First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not
-general enough for our purpose as it useful only for protocols where witness
+general enough for our purpose as it is useful only for protocols where witness
 can be extracted from just two transcripts.  To be able to extract a witness
 from, say, a $\plonkprot$ execution we need to obtain at least
 $\numberofconstrains + 3$ transcripts.  
