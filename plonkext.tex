@@ -895,7 +895,7 @@ simulation extractable.
 	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\adv} \times
 	H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
 h_{\iota - 1})$ to \[
-		\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, \vec{s}) \gets \adv(y, h_1, \ldots, h_q; \rho)} 
+		\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \adv(y, h_1, \ldots, h_q; \rho)} 
 	\] 
 	for all $\rho \in \RND{\adv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider $X_\iota$ as a random variable over the uniform distribution on its domain. 
 	Then
@@ -944,7 +944,7 @@ h_{\iota - 1})$ to \[
 	H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
 h_{\iota - 1})$ to 
 	\[
-		\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, \vec{s}) \gets \adv(y, h_1, \ldots, h_q; \rho)} 
+		\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \adv(y, h_1, \ldots, h_q; \rho)} 
 	\] 
 	for all $\rho \in \RND{\adv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider $X_\iota$ as a random variable over the uniform distribution on its domain. 
 	Then $\expected{X_\iota^m} \geq \expected{X_\iota}^m$.
