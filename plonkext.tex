@@ -32,7 +32,7 @@
 \usepackage{hyperref} \usepackage[color=yellow]{todonotes} \hypersetup{final}
 \usepackage{mathrsfs}
 \usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
-\pcbodylinesep=0.15\baselineskip
+%\pcbodylinesep=0.15\baselineskip % MK: got an undefined control sequence error
 
 \usepackage[capitalise]{cleveref} \usepackage{cite} \usepackage{booktabs}
 \usepackage{paralist}
@@ -43,6 +43,7 @@
 %\captionsetup[figure]{font={stretch=2}}
 % \usepackage{subcaption}
 \usepackage{bm}
+\usepackage{url}
 
 \include{macros}
 
@@ -79,6 +80,9 @@
 zkSNARKs.} \cite{C:GKMMM18} \cite{EC:CHMMVW20} \cite{CCS:MBKM19}
 \cite{EPRINT:GabWilCio19} \cite{EPRINT:Gabizon19c} \cite{EPRINT:Lipmaa19a}
 
+\markulf{03.11.2020}{Better to introduce abbreviations such as NIZK and SNARK,
+  UC ... even if they seem obvious to us.}
+
 \paragraph{On the importance of the simulation extractability.}
 Although zkSNARKs satisfy the knowledge soundness definition,
 simulation-extractability is the property that should be required from
@@ -86,16 +90,16 @@ zkSNARKs used in practice---as efficient zero-knowledge proofs deployed in the
 real-life cryptosystems. This is since in the real life one simply cannot
 assume that the adversary who tries to break security of the system does not
 have access to any proofs provided by other parties using the same
-zero-knowledge system. On contrary, in the most popular applications of
+zero-knowledge system. On the contrary, in the most popular applications of
 zkSNARKs, like privacy-preserving blockchains, proofs made by all
-blockchain-participants are public. Thus it is only reasonable to require from
+blockchain-participants are public. Thus it is only reasonable to require 
 a zero-knowledge proof system to be resilient to attacks that utilise proofs
 performed by different parties.
 
-There are many results regarding obtaining simulation extractability for
+There are many results on simulation extractability for
 NIZKs.  First, Groth \cite{AC:Groth07} noticed that a (black-box) simulation
 extractable NIZK is UC-secure. Then Dodis et al.~\cite{AC:DHLW10} introduced a
-notion of (black-box) \emph{true simulation extractability} and shown that no
+notion of (black-box) \emph{true simulation extractability} and showed that no
 NIZK can be UC-secure if it does not have this property. 
 
 In the context of zkSNARKs it is important to mention such works as Kosba's et
@@ -112,11 +116,12 @@ Independently, some authors focused on obtaining simulation extractability of
 stronger assumptions \cite{EPRINT:BowGab18,EPRINT:AtaBag19}. Interestingly,
 although such modifications hurt performance of the proof system the resulting
 zkSNARKs are still more efficient than the first SE zkSNARK proposed in
-\cite{C:GroMal17}, see \cite{EPRINT:AtaBag19}. 
+\cite{C:GroMal17}, see \cite{EPRINT:AtaBag19}.  \markulf{03.10.2020}{Cite weakSE e-print
+  paper?}
 
 \paragraph{State of the art---simulation-extractable updatable zkSNARKs.} 
 Up to our best knowledge, there are zkSNARKs that are simulation-extractable
-and zkSNARKs that are updatable, however there is no known zkSNARKs that enjoy
+and zkSNARKs that are updatable, however there are no known zkSNARKs that enjoy
 both of these properties out-of-the-box. Obviously, given an updatable zkSNARK
 one could lift it to be simulation-extractable using techniques described
 e.g.~in \cite{EPRINT:KZMQCP15,EPRINT:AbdRamSla20}, but such lift comes with
@@ -149,7 +154,7 @@ transcripts required is much greater---$\numberofconstrains + 3$, where
 $\numberofconstrains$ is the number of constrains in the proven circuit, for
 $\plonkprot$ and $\multconstr + \linconstr + 1$, where $\multconstr$ and
 $\linconstr$ are the numbers of multiplicative and linear constraints,
-for$\sonicprot$. Hence, we do not have a \emph{pair of transcripts}, but \emph{tree of transcripts}.
+for$\sonicprot$. Hence, we do not have a \emph{pair of transcripts}, but a \emph{tree of transcripts}.
 
 Secondly,both protocols rely on common reference strings which have trapdoors
 that allow an adversary who knows them to
@@ -168,7 +173,7 @@ computational assumption.
 
 \subsubsection{Unique response property.} Another property that
 has to be proven for the protocols is the unique response property
-which states, as expressed in \cite{C:Fischlin05}, that except the first round, all messages sent
+which states, as expressed in \cite{C:Fischlin05}, that except for the first round, all messages sent
 by the prover are deterministic. As previously, we also could not use this
 definition right out of the box as $\plonkprot$ does not follow it---both first
 and the second prover's messages are randomised. We thus propose a
@@ -206,7 +211,7 @@ that share the first message.  Since $\plonkprot$ and $\sonicprot$ have more
 than $3$ rounds and are not special-sound, the forking lemma cannot be used
 directly. We thus propose its modification that covers protocols that have
 more rounds and require more transcript than merely two.  Unfortunately, the
-security gap grows with the number of transcript and probability that the
+security gap grows with the number of transcripts and the probability that the
 extractor succeeds diminishes significantly. (That said, we have to note that
 the security loss is polynomial, albeit big.)
 
@@ -214,18 +219,23 @@ We observe here that some modern zkSNARKs rely on the Fiat--Shamir transform
 and the forking lemma heavily. First, an interactive protocol is proposed and
 its security and special-soundness analysed; second, one uses an argument that
 the Fiat--Shamir transform can be used to get a protocol that is
-non-interactive and shares the same security properties.  We claim here that
-such an analysis is not enough and one has to consider the security loss
-implied by the generalisation of the forking lemma or disclose a
-transformation that does not suffer from the generalisation inefficiency.
+non-interactive and shares the same security properties.
 
-\subsubsection{Towards simulation-extractability.} Given modified, less
+\markulf{03.10.2020}{I rephrased this a bit, as it seemed to hurt us as well.
+  Does knowledge soundness have the same tightness?}
+We see our generalized forking lemma as contributing to a critical assessment of
+this approach. The analysis of the interactive protocol is not enough and one
+has to consider the security loss implied by the generalisation of the forking
+lemma or disclose a transformation that does not suffer from the generalisation
+inefficiency.
+
+\subsubsection{Towards simulation-extractability.} Given our modified, less
 restrictive, definition for special-soundness and the unique response property, and
-generalised forking lemma we are able to show the announced result---simulation
+our generalised forking lemma we are able to show the announced result---simulation
 extractability of $\plonkprotfs$ and $\sonicprotfs$. The proof is inspired by
 simulation-extractability and simulation-soundness proofs from
 \cite{INDOCRYPT:FKMV12}, with major modifications, which were required as
-\cite{INDOCRYPT:FKMV12} considers (Fiat--Shamir transformed) sigma-protocols
+\cite{INDOCRYPT:FKMV12} considers (Fiat--Shamir transformed) $\Sigma$-protocols
 that are undoubtedly simpler protocols than the considered proof systems.
 % Since the proof highly relies on the (generalised) forking lemma, the security
 % lost it introduces is considerable.
@@ -235,7 +245,7 @@ that are undoubtedly simpler protocols than the considered proof systems.
 % It remains an open question how to show simulation extractability tightly, e.g.~using AGM.
 
 \subsubsection{Interactive zero knowledge vs non-interactive zero knowledge.}
-Another issue we tackle with is a question whether NIZK proof systems are in
+Another issue we tackle is a question whether NIZK proof systems are in
 fact zero-knowledge, see e.g.~\cite{C:Pass03}. This problem was raised as one
 could observe that a NIZK proof system has a property alien to interactive
 proofs---a verifier who obtains a proof $\zkproof$ for a statement $\inp \in
@@ -244,7 +254,7 @@ just reuse the obtained proof $\zkproof$. This makes the verifier learn
 undoubtedly more than simply the veracity of the proven statement. On the other
 hand, the verifier learns a particular proof $\zkproof$ for a concrete CRS
 $\crs$ only. However, the CRS generator is considered trusted, thus the proof
-$\zkproof$ could be considered as a proof for $\inp$ generally, regardless the
+$\zkproof$ could be considered as a proof for $\inp$ generally, regardless of the
 CRS.
 
 Simulation-extractable updatable NIZKs---and zkSNARKs in particular---tighten
@@ -263,7 +273,7 @@ We believe that our result may be useful for designing new zkSNARKs, especially 
 Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
 security parameter.  All adversaries are stateful.  For an algorithm $\adv$,
 let $\image (\adv)$ be the image of $\adv$ (the set of valid outputs of
-$\adv$), let $\RND{\adv}$ denote the random tape of $\adv$ (assuming the given
+$\adv$), let $\RND{\adv}$ denote the set of random tapes of correct length for $\adv$ (assuming the given
 value of $\secpar$), and let $r \sample \RND{\adv}$ denote the random choice
 of the randomiser $r$ from $\RND{\adv}$.  We denote by $\negl$ ($\poly$) an
 arbitrary negligible (resp.~polynomial) function.
@@ -273,6 +283,9 @@ $\epsilon$ if $\sum_{a \in \supp{X \cup Y}} \abs{\prob{X = a} - \prob{Y = a}}
 = \epsilon$.  We write $X \approx_\secpar Y$ if $\SD(X, Y) \leq \negl$, where
 $\SD$ is the statistical distance between the distributions.  For values $a$
 and $b$ we write $a \approx_\secpar b$ if $\abs{a - b} \leq \negl$.
+\markulf{03.11.2020}{This requires probability ensembles and $\secpar$ dependent
+  values. Which notation do you
+  want to use? I am ok with light, just would like to hint at us being aware of this.}
 
 Denote by $\RELGEN = \smallset{\REL}$ a family of relations. We assume that if
 $\REL$ comes with any auxiliary input, it is benign. Directly from the
@@ -335,6 +348,9 @@ Proofs by \emph{game hoping} is a method of writing proofs popularised by e.g.~S
 		\abs{\prob{\event{A}} - \prob{\event{B}}} \leq \prob{\event{F}}\,.
 	\]
 \end{lemma}
+\markulf{03.11.2020}{This somewhat relies on both games being defined over the
+  same probability space, e.g. only their winning conditions but none of the
+  sampling differs.}
 
 \subsection{Polynomial commitment.}
 \label{sec:poly_com}
@@ -368,6 +384,7 @@ $\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We d
 			}
 		\end{pchstack}
 		% \pcvspace
+    
 		\begin{pchstack}
 			\procedure{$\open(\crs, \vec{\gamma}, \vec{z}, \vec{s}, \vec{f}(X))$}
 			{
@@ -403,7 +420,7 @@ $\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We d
 			\procedure{$\kgen(\secparam)$}
 			{
 				\alpha, \chi \sample \FF^2_p \\ [\myskip]
-				\pcreturn \\
+				\pcreturn \markulf{03.11.2020}{} \\
 			%	\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
 				\hphantom{\hspace*{5.5cm}}	
 		}
@@ -420,7 +437,8 @@ $\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We d
 				\gtwo{1} + }
 			}
 		\end{pchstack}
-		%\pcvspace
+		% \pcvspace
+    
 		\begin{pchstack}
 			\procedure{$\open(\crs, z, s, f(X))$}
 			{
@@ -455,7 +473,33 @@ $\PCOM$:
 	\item[Evaluation binding] a PPT adversary $\adv$ who output a commitment $c$
 		to a polynomial $\p{f}$ and is given an evaluation point $z$ has at most
 negligible chances to correctly open the commitment to a value different than
-$\p{f}(z)$. 
+$\p{f}(z)$.
+
+\markulf{03.10.2020}{Make sure we mean the right thing. In the following
+  definition based on KZG, the adversary does not necessarily need to know $f$:}
+	Let 
+	$k \in \NN$ be the number of committed polynomials,
+	$l \in \NN$ number of evaluation points,
+	$\vec{c} \in \GRP^k$ be the commitments,  
+	$\vec{z},\vec{z}' \in \FF_p^l$ be the attributes the polynomials are evaluated at, $\vec{s},\vec{s}' \in \FF_p^k$ the evaluations, and 
+	$\vec{o},\vec{o}' \in \FF_p^l$ be the commitment openings. 
+	Then for every $\ppt$ adversary $\adv$	
+	\[
+		\Pr
+			\left[
+			\begin{aligned}
+				& \verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o}),  \\ 
+				& \verify(\crs, \vec{c}, \vec{z}', \vec{s}', \vec{o}'), \\
+				& \vec{s} \neq \vec{s}'
+			\end{aligned}
+			\,\left|\,
+			\begin{aligned}
+				& \crs \gets \kcrs(\secparam),\\
+				& (\vec{c}, \vec{z}, \vec{s}, \vec{s}', \vec{o}, \vec{o}') \gets \adv(\crs)
+			\end{aligned}
+			\right.\right] \leq \negl\,.
+	\]
+
 \end{description}
 	
 We say that $\PCOM$ has unique opening property if the following holds:
@@ -489,7 +533,9 @@ for the committed polynomial and given evaluation point. This property is
 crucial in showing simulation-extractability of $\plonk$ and $\sonic$. We show
 that the $\plonk$'s and $\sonic$'s polynomial commitment schemes satisfy this
 requirement in \cref{lem:pcomp_unique_op} and \cref{lem:pcoms_unique_op}
-respectively. 
+respectively.
+\markulf{03.11.2020}{The two definitions could be combined into what I would
+  call strong evaluation binding.}
 
 \subsection{Algebraic Group Model}
 The algebraic group model (AGM) introduced in \cite{C:FucKilLos18} lies
@@ -530,7 +576,11 @@ say that $\verifier$ accepts the transcript. We sometimes abuse notation and
 write $\verifier(\trans) = 1$ to denote a fact that $\trans$ is accepted by
 the verifier. 
 
-\markulf{09.07.20}{Could also all quantify for Soundness and Zero knowledge?}
+\markulf{09.07.20}{Could also all quantify for Soundness and Zero knowledge?
+  Yes, I meant the first, forall $\inp, \wit \in \REL$. But I also agree that
+  for $\REL \gets \RELGEN$ the probabilities do not define a negligible
+  function, but a specific value in $[0,1]$. We could call $\RELGEN$ an NP
+  relations generator from which we sample. Does the notation get too heavy?}
 \michals{09.07.20}{I am not sure what you meant here. You want to have for all $\inp, \wit \in \REL$ or you doubt these properties make sense for all $\REL \gets \RELGEN$?}
 A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
 \begin{description}
@@ -825,7 +875,8 @@ simulation extractable.
 	\[
 		\condprob{i \neq 0}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.
 	\]
-	Let $\genforking_\adv$ denote the algorithm described in \cref{fig:genforking_lemma} then the probability $\frkProb := \condprob{b = 1}{y \gets \ig;\ (b, \vec{s}) \gets \genforking_\adv(y)}$ is at least 
+	Let $\genforking_\adv$ \markulf{03.11.2020}{Add a $m$ parameter as superscript
+  to $\genforking$?} denote the algorithm described in \cref{fig:genforking_lemma} then the probability $\frkProb := \condprob{b = 1}{y \gets \ig;\ (b, \vec{s}) \gets \genforking_\adv(y)}$ is at least 
 	\[
 		\frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)
 	\]
@@ -844,7 +895,8 @@ simulation extractable.
 			\pcif \forall j, j'  \in \range{1}{m}\colon (i_{j} = i_{j'}) \land (h_{i_j} \neq h_{i_{j'}})\ \pcreturn (1, \vec{s})\\
 			\pcind \pcelse \pcreturn (0, \bot, \bot)
 		}}
-		\caption{Generalised forking algorithm $\genforking_\adv$}
+		\caption{Generalised forking algorithm $\genforking_\adv$
+      \markulf{03.11.2020}{How is $i$ picked. Shall we improve this algorithm together?}}
 		\label{fig:genforking_lemma}
 \end{figure}
 \end{lemma}
@@ -976,10 +1028,10 @@ We walk around these obstacles by providing a generalised notion of the unique r
 More precisely, we say that a $(2\mu + 1)$-round protocol has \emph{unique responses after $i$} and is called a $\ur{i}$-protocol if
 \begin{definition}[$\ur{i}$-protocol]
 	\label{def:wiur}
-	Let $\proofsystem$ be a multi-round proof system.
+	Let $\proofsystem$ be a $2\mu$-round proof system.
 	Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier.
 	We say that $\proofsystem$ has \emph{unique responses after $i$}
-	if after submitting its $i$-th message the prover is a deterministic function. That is, it does not use his randomness tape and deterministically answers verifier's challenges.
+	if after submitting its $i$-th message $a_i$ the prover is a deterministic function. That is, it does not use his randomness tape and deterministically answers verifier's challenges.
 \end{definition}
 \begin{example}
 	The Schnorr protocol is $\ur{1}$. That is, after submitting his first message $a$, the prover is a deterministic function of the instance, $a$, and the verifier's challenge.
@@ -993,9 +1045,12 @@ Note that the special soundness property (as usually defined) holds for all--- e
 Hence, we provide a weaker, yet sufficient, definition of \emph{computational special soundness}. More precisely, we state that an adversary that is able to answer correctly multiple challenges either knows the witness or can be used to break some computational assumption. 
 
 \begin{definition}[Computational special soundness]
-	Let $\proofsystem$ be an $2 \mu$-round zero-knowledge proof system for a relation $\REL$. 
+	Let $\proofsystem$ be an $2 \mu$-round proof system for a relation $\REL$. 
 	We say that $\proofsystem$ is $(n_1, \ldots, n_\mu)$-\emph{special sound} if for every $\ppt$ adversary $\adv$ that produces an accepting $(n_1, \ldots, n_\mu)$-tree of transcripts $\tree$ for a statement $\inp$ there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$ with an overwhelming probability.
 \end{definition}
+\markulf{03.11.2020}{Do we need to provide more details on the execution
+  environment of $\adv$? It is given an honestly generated CRS and a relation as
+  input but nothing else?}
 
 Since we do not utilise the classical special soundness (that holds for all, even unbounded, adversaries) all references to that property should be understood as references to its computational version.
 
@@ -1016,7 +1071,7 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 	e.g~knowledge of a CRS trapdoor.}, has $\ur{k}$ property with security $\epsur$ that is $(1, \ldots, 1, n_j, 1, \ldots, 1)$-special sound, where $j > k$.
 	Assume that the simulator $\simulator$ does not get as input any trapdoor related to the CRS.
 	Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
-	Then $\psfs$ is simulation-extractable with extraction error $\epsur$ against $\ppt$ adversaries that makes up up to $q$ random oracle queries and returns an acceptable proof with probability at least $\waccProb$. 
+	Then $\psfs$ is simulation-extractable with extraction error $\epsur$ against $\ppt$ adversaries that makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\waccProb$. 
 	The extraction probability $\extProb$ is at least
 	\[
 		\extProb \geq \frac{1}{q^{n_j - 1}} (\waccProb - \epsur)^{n_j} -\eps\,,
@@ -1040,7 +1095,7 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 	This is a simulation extraction game played between an adversary $\advse$ who has given access to a random oracle $\ro$ and simulator $\psfs.\simulator$. 
 	There is also an extractor $\ext$ that, from the proof $\zkproof_\advse$ for instance $\inp_\advse$ output by the adversary and from a transcripts of $\advse$'s operations, is tasked to extract a witness $\wit_\advse$ such that $\REL(\inp_\advse, \wit_\advse)$ holds.
 	$\advse$ wins if it manages to produce an acceptable proof and the extractor fails to reveal the corresponding witness.
-	In the following game hops we upper-bound probability that this happens.
+	In the following game hops we upper-bound the probability that this happens.
 	
 	\ngame{1}
 	This is identical to $\game{0}$ except that now the game is aborted if there is a simulated proof $\zkproof_\simulator$ such that $\zkproof_\simulator\range{1}{k} = \zkproof_\advse\range{1}{k}$. That is, the adversary in its final proof reuses a part of a simulated proof it saw before and the proof is acceptable.
@@ -1053,7 +1108,7 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 	\]
 	and, from the difference lemma, cf.~\cref{lem:difference_lemma}
 	\[
-		\abs{\prob{\game{0}} - \prob{\game{1}}} \leq \event{\errur}\,.
+		\abs{\prob{\game{0}} - \prob{\game{1}}} \leq \prob{\event{\errur}}\,.
 	\]
 	Thus, to show that the transition from one game to another introduces only minor change in probability of $\advse$ winning it should be shown that $\prob{\event{\errur}}$ is small.
 	
@@ -1089,9 +1144,11 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 	\ncase{$\game{1} \mapsto \game{2}$}	
 	As previously, 
 	\[
-		\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \event{\errfrk}\,.
+		\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}}\,.
 	\]
-	Denote by $\accProb$ the probability that $\advse$ outputs a proof such that is acceptable and does not break $\ur{k}$-ness of $\ps$. 
+	Denote by $\accProb$ the probability that $\advse$ outputs a proof that is
+  accepted and does not break $\ur{k}$-ness of $\ps$.
+  \markulf{03.11.2020}{Recall here why we need UR to use forking lemma.}
 	From the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma}, 
 	\[
 		\prob{\event{\errfrk}} \leq 1 -
