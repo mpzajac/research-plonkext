@@ -315,9 +315,9 @@ state that each protocol starts with generating these parameters by $\pgen$.
 
 \paragraph{Computational assumptions.}
 Security of $\plonk$ and $\sonic$ rely on two discrete-log based security
-assumptions---$(q_1, q_2)$-dlog assumption and its extended with
+assumptions---$(q_1, q_2)$-$\dlog$ assumption and its extended with
 negative exponents version $(q_1,
-q_2)$-ldlog assumption\footnote{Note that \cite{CCS:MBKM19} dubs their
+q_2)$-$\ldlog$ assumption\footnote{Note that \cite{CCS:MBKM19} dubs their
 	assumption \emph{a dlog assumption}. We changed that name to distinct it
 from the more standard dlog assumption used in \cite{EPRINT:GabWilCio19}.
 ``l'' in \emph{ldlog} relates to use of Laurent polynomials in the assumption.}.
@@ -1220,20 +1220,23 @@ For the sake of simplicity we loose this approximation a bit and state
 
 \section{Simulation extractability of $\plonkprotfs$} 
 In this section we show that $\plonkprotfs$
-is not only simulation-sound, but also simulation-extractable. To that end, we
+is simulation-extractable. To that end, we
 proceed as follows. 
-First we show that the version of the KZG polynomial commitment scheme that is proposed in the \plonk{} paper has the unique opening property, cf.~\cref{sec:poly_com} and \cref{lem:pcomp_unique_op}. This is next used to show that $\plonkprot$ has $\ur{3}$ property, cf.~\cref{lem:plonkprot_ur}.
+First we show that the version of the KZG polynomial commitment scheme that is
+proposed in the \plonk{} paper has the unique opening property,
+cf.~\cref{sec:poly_com} and \cref{lem:pcomp_unique_op}. This is then used to
+show that $\plonkprot$ has the $\ur{3}$ property, cf.~\cref{lem:plonkprot_ur}.
 
-Then, we show that 
-$\plonkprot$ is (kind of) special-sound. That is, given a number of acceptable
+Next, we show that 
+$\plonkprot$ is computational special-sound. That is, given a number of acceptable
 transcripts which match on the first 3 rounds of the protocol we can either
 reveal a correct witness for the proven statement or use one of the transcripts
-to break the dlog assumption. The latter requires use of the AGM. More
-precisely, we assume that each group element that is published as a part of the
+to break the $\dlog$ assumption. The latter requires the AGM. More
+precisely, we assume that each group element included in the
 transcripts comes with a vector of coefficients that represents the element in
 the basis compound of the input group elements, i.e.~$\plonkprot$'s CRS. See \cref{lem:plonkprot_ss}.
 
-Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is simulation-extractable. That is, we build reductions that given a simulation extractability adversary $\advse$ either breaks the protocol's unique response property or breaks the dlog assumption, if extracting a valid witness from a tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
+Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is simulation-extractable. That is, we build reductions that given a simulation extractability adversary $\advse$ either breaks the protocol's unique response property or breaks the $\dlog$ assumption, if extracting a valid witness from a tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 
 \subsection{Unique opening property of $\PCOMp$}
 \begin{lemma}
@@ -1351,7 +1354,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	 \[
 	 	\epsss \leq \epsbatch + \epsdlog\,,
 	 \] 
-	 where $\epsbatch$ is (negligible) probability that $\plonkprot$'s idealised verification equation $\vereq(X)$ accepts an invalid proof because of batching and $\epsdlog$ is a probability that a $\ppt$ algorithm can break $(\numberofconstrains + 2, 1)$-dlog assumption.
+	 where $\epsbatch$ is (negligible) probability that $\plonkprot$'s idealised verification equation $\vereq(X)$ accepts an invalid proof because of batching and $\epsdlog$ is a probability that a $\ppt$ algorithm can break $(\numberofconstrains + 2, 1)$-$\dlog$ assumption.
 \end{lemma}
 \begin{proof}
 	Let $\crs$ be $\plonkprot$'s CRS and denote by $\crs_1$ all CRS's $\GRP_1$-elements; that is, $\crs_1 = \gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. 
@@ -1363,7 +1366,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	Second, $\nevent{E}$ holds when there is a transcript that is acceptable, yet 
 	for some transcript $\vereq(\chi) = 0$, but $\vereq(X) \neq 0$.
 	We build a special extractor $\extss$ which given the tree of transcripts $\tree$ reveals the witness with an overwhelming probability when $\event{E}$ happens. 
-	We show a reduction $\rdvdlog$ that, when $\nevent{E}$ happens, breaks the dlog assumption. 
+	We show a reduction $\rdvdlog$ that, when $\nevent{E}$ happens, breaks the $\dlog$ assumption. 
 	
 	\ncase{When $\event{E}$ happens}  Since the protocol $\plonkprot$,
 	instantiated with the idealised verification equation, is perfectly sound,
@@ -1702,7 +1705,7 @@ property of the used polynomial commitment scheme $\PCOMs$.
 				\epsss \leq \epss + \epsldlog\,,
 		\]
 		where $\epss$ is a soundness error of the protocol, and $\epsldlog$ is a probability that a $\ppt$ algorithm can break the
-		$(\dconst, \dconst)$-ldlog assumption.
+		$(\dconst, \dconst)$-$\ldlog$ assumption.
 \end{lemma}
 \begin{proof}
 		The proof goes similarly to the proof of \cref{lem:plonkprot_ss}.
@@ -1716,7 +1719,7 @@ property of the used polynomial commitment scheme $\PCOMs$.
 		a case when $\tree$ contains a transcript that is acceptable by the
 		real verifier but is not acceptable by the ideal verifier. In that case we
 		show a reduction $\rdvldlog$ that uses $\adv$ to break the $(\dconst,
-		\dconst)$-ldlog
+		\dconst)$-$\ldlog$
 		assumption with at least the same probability.
 
 		\ncase{When $\event{E}$ happens}
@@ -2096,7 +2099,7 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 
 	\begin{theorem}[Simulation soundness]
 		% \michals{16.09}{To be change to sim snd proof}
-		Assume that $(\numberofconstrains + 2, 1)$-dlog is $\eps_\dlog(\secpar)$-hard, $\plonkprot$ is sound and $\ur{3}$ with security $\epss(\secpar)$ and $\epsur(\secpar)$ respectively. 
+		Assume that $(\numberofconstrains + 2, 1)$-$\dlog$ is $\eps_\dlog(\secpar)$-hard, $\plonkprot$ is sound and $\ur{3}$ with security $\epss(\secpar)$ and $\epsur(\secpar)$ respectively. 
 		Then the probability that an algebraic, $\ppt$ adversary $\advss$ breaks simulation soundness of $\plonkprotfs$ is upper-bounded by 
 		\[
 			\epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \epss(\secpar))\,,
@@ -2126,7 +2129,7 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 			\right.\right].
 		\]
 
-	In such case, we are able to build reductions $\rdvs$, $\rdvur$, $\rdvdlog$ which using $\advss$ as a black-box, violate either the soundness, unique response properties of the underlying interactive protocol $\plonkprot$, or the $(\numberofconstrains + 2, 1)$-dlog assumption.
+	In such case, we are able to build reductions $\rdvs$, $\rdvur$, $\rdvdlog$ which using $\advss$ as a black-box, violate either the soundness, unique response properties of the underlying interactive protocol $\plonkprot$, or the $(\numberofconstrains + 2, 1)$-$\dlog$ assumption.
 
 	In the following we denote by $\zkproof_{\advss}, \zkproof_{\simulator}$ proofs
 	returned by the adversary and the simulator respectively. We use $\zkproof[i]$
@@ -2230,8 +2233,8 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	\]
 
 	\ncase{When $\nevent{E}_1$ happens}
-	The reduction $\rdvdlog$ runs internally a protocol $\plonkprotfs$, which CRS is computed from the challenge $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}$ from the $(\numberofconstrains + 2, 1)$-dlog assumption challenger. 
-	Then it proceeds as $\rdvs$ does, except in the last part, when the adversary provided its proof $\zkproof_\advss$, $\rdvdlog$ uses the fact that the real verification equation holds, but the ideal verification equation does not to break the dlog assumption. 
+	The reduction $\rdvdlog$ runs internally a protocol $\plonkprotfs$, which CRS is computed from the challenge $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}$ from the $(\numberofconstrains + 2, 1)$-$\dlog$ assumption challenger. 
+	Then it proceeds as $\rdvs$ does, except in the last part, when the adversary provided its proof $\zkproof_\advss$, $\rdvdlog$ uses the fact that the real verification equation holds, but the ideal verification equation does not to break the $\dlog$ assumption. 
 
 	Since $\vereq(X) \neq 0$, but $\vereq(\chi) = 0$ and $\rdvdlog$ knows
 	$\vec{M'}$, as defined in \cref{eq:M_prim}, it can recreate all the polynomials
@@ -2246,7 +2249,7 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	\[
 		\eps \leq \epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \epsss(\secpar))\,,
 	\]
-	hence $\eps$ is negligible if dlog is hard and $\plonkprot$ is sound and $\ur{3}$.
+	hence $\eps$ is negligible if $\dlog$ is hard and $\plonkprot$ is sound and $\ur{3}$.
 	\qed
 	\end{proof}
 \end{document}
