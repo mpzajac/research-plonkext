@@ -1246,18 +1246,19 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 \end{lemma}
 \begin{proof}
 	Let 
-	$\vec{z} = (z, z') \in \FF_p^2$ be the two attributes the polynomials are evaluated at,
+	$\vec{z} = (z, z') \in \FF_p^2$ be the two points the polynomials are evaluated at,
 	$k \in \NN$ be the number of the committed polynomials to be evaluated at $z$, and $k' \in \NN$ be the number of the committed polynomials to be evaluated at  $z'$,
 	$\vec{c} \in \GRP^k, \vec{c'} \in \GRP^{k'}$ be the commitments,  
 	$\vec{s} \in \FF_p^k, \vec{s'} \in \FF_p^{k'}$ the evaluations, and 
-	$\vec{o} = (o, o') \in \FF_p^2$ be the commitment openings. We need to show that for every $\ppt$ adversary $\adv$ probability
+	$\vec{o} = (o, o') \in \FF_p^2$ be the commitment openings. We need to show
+  that for every $\ppt$ adversary $\adv$ the probability
 	\[
 		\Pr
 			\left[
 				\begin{aligned}
 					& \verify(\crs, \vec{c}, \vec{c'}, (z, z'), \vec{s}, \vec{s'}, \vec{o}), \\
-					& \verify(\crs, \vec{c}, \vec{c'}, (z, z'), \vec{\tilde{s}}, \vec{\tilde{s}'}, \vec{\tilde{o}}) %\\
-					% &(o, o') \neq (\tilde{o}, \tilde{o}')
+					& \verify(\crs, \vec{c}, \vec{c'}, (z, z'), \vec{\tilde{s}}, \vec{\tilde{s}'}, \vec{\tilde{o}}) \\
+					& \vec{o} \neq \vec{\tilde{o}}
 				\end{aligned}
 			\,\left|\,
 			\vphantom{\begin{aligned}
@@ -1332,13 +1333,15 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus if both evaluations are acceptable by the $\PCOM.\verify$ then the evaluation binding property of $\PCOM$ is broken. This happens with probability upper-bounded by $\epsbind$.
 	
 	\case{2}
-	In the last round of the protocol the prover provides openings for the polynomial commitments done before. 
+	In the last round of the protocol the prover provides openings for the
+  polynomial commitment evaluations done before. 
 	Assume $\adv$ is able to produce two different polynomial commitment openings pairs: 
 	$\vec{r_5} = (\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and 
 	$\vec{r'_5} = (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
 	% Since \cref{lem:pcomp_unique_op}, 
 	Since $\PCOM$ has unique opening property, 
-	one of the openings has to be incorrect and should be rejected by the polynomial commitment verifier. This happens except probability $\epsop$
+	one of the openings has to be incorrect and should be rejected by the
+  polynomial commitment verifier. This happens except with probability $\epsop$
 	
 	\conclude
 	Hence the probability that $\adv$ breaks $\ur{3}$-property of $\PCOM$ is upper-bounded by $\epsbind + \epsop$.
@@ -1346,7 +1349,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 \end{proof}
 
 
-\subsection{Special soundness}
+\subsection{Computational Special soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
 	Let $\adv$ be a $\ppt$ algebraic adversary. The probability $\epsss$ that $\adv$ breaks 
@@ -1370,14 +1373,16 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	
 	\ncase{When $\event{E}$ happens}  Since the protocol $\plonkprot$,
 	instantiated with the idealised verification equation, is perfectly sound,
-	except probability of batching failure $\epsbatch$, for a valid proof
+	except with probability of batching failure $\epsbatch$, for a valid proof
 	$\zkproof$ of a statement $\inp$ there exists a witness $\wit$, such that
 	$\REL(\inp, \wit)$ holds.  Note that witness-carrying polynomials $\p{a}(X),
 	\p{b}(X), \p{c}(X)$ have degree $(\numberofconstrains + 2)$ and since $\adv$
 	answered honestly on $(\numberofconstrains + 3)$ different challenges $\chz$
 	then $(\numberofconstrains + 3)$ evaluations of these polynomials (at
 	different points) are known. The extractor $\extss$ interpolates the
-	polynomials and reveals the corresponding witness $\wit$. 
+	polynomials and reveals the corresponding witness $\wit$.
+  \markulf{03.11.2020}{What is definition of witness-carrying and what
+    guarantees this property?}
 	
 	\ncase{When $\nevent{E}$ happens} Consider a transcript that such that
 	$\vereq(X) \neq 0$, but $\vereq(\chi) = 0$.
@@ -1390,7 +1395,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	\qed
 \end{proof}
 
-\subsection{Zero knowledge}
+\subsection{Honest Verifier Zero-knowledge}
 \begin{lemma}
 	$\plonk$ is honest verifier zero-knowledge in the standard model.	
 \end{lemma}
@@ -1456,19 +1461,23 @@ picking it at random as well.
 The proof provided by the simulator is indistinguishable from the real proof
 since the simulator picks the messages as an honest prover or verifier would
 except how the message output in Round 3 are computed. However,
-real-proof polynomial $\p{t}(X)$ is random since random are polynomials
-$\p{a}(X), \p{b}(X), \p{c}(X)$ and $\p{z}(X)$. Hence, a commitment to
+real-proof polynomial $\p{t}(X)$ is random since the polynomials
+$\p{a}(X), \p{b}(X), \p{c}(X)$ and $\p{z}(X)$ are random. Hence, a commitment to
 $\p{t}(X)$ picked randomly by the simulator is indistinguishable from a
 commitment to a real-proof $\p{t}(X)$. 
 Furthermore, since $\p{t}(X)$ is evaluated at $\chz$ according to the
 prover's, the rest of the proof that utilises $\p{t}(\chz)$ can be computed
-honestly as well.
+honestly as well. \markulf{03.11.2020}{Not sure about the definition of random
+  polynomials here. What is the argument?}
 \qed
 \end{proof}
 
 \subsection{From special-soundness and unique response property to simulation extractability of $\plonkprotfs$}
 
-Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ and computationally special sound we are able to follow \cite{INDOCRYPT:FKMV12} and show that $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
+Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$
+and computationally special sound. We now 
+\markulf{03.11.2020}{cut: follow \cite{INDOCRYPT:FKMV12}. Don't give those guys too much credit, instead: } make use
+of \cref{thm:se} and show that $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
 
 % \michals{13.10}{The theorem below is going to have a much shorter proof -- for it being just a corollary of Sec.~4}
 \begin{corollary}[Simulation extractability of $\plonkprot_\fs$]
@@ -1482,7 +1491,11 @@ Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$ an
 	\]
 	for some negligible $\eps$ and $\numberofconstrains$ being the number of contrains in the proven circuit.
 \end{corollary}
-% \begin{proof}
+
+\markulf{03.11.2020}{Comment again at this being huge? Maybe mention
+  simulation-soundness result?}
+
+%\begin{proof}
 % 	The theorem holds as a corollary to \cref{thm:se}.
 	% The proof goes by game hoping. The games are controlled by an environment $\env$ that internally runs a simulation extractability adversary $\advse$, simulates its with access to a random oracle and simulator, and when necessary rewinds it.
 	% The games differ by various breaking points, i.e.~points where the environment decides to abort the game. 
@@ -1696,7 +1709,7 @@ property of the used polynomial commitment scheme $\PCOMs$.
 	
 \end{proof}
 
-\subsection{Special soundness}
+\subsection{Computational Special soundness}
 \begin{lemma}
 		\label{lem:sonicprot_ss}
 		Let $\adv$ be a $\ppt$ algebraic adversary. The probability $\epsss$ that
@@ -1745,7 +1758,7 @@ property of the used polynomial commitment scheme $\PCOMs$.
 		\qed		
 \end{proof}
 
-\subsection{Zero knowledge}
+\subsection{Honest Verifier Zero-knowledge}
 \begin{lemma}
 	$\sonic$ is honest verifier zero-knowledge in the standard model.	
 \end{lemma}
@@ -1807,8 +1820,8 @@ a root is at least $\infrac{1}{\dconst !}$, see \cref{lem:root_prob} for a
 proof of that bound. Since we assume that $\dconst =
 \poly$, we can say that the polynomial $\ptxsim$ picked by the simulator
 has roots with non-negligible probability. Furthermore, these roots can be
-found and are random $\FF_p$ elements. Hence, $y$ picked by the simulator has
-comes from the same distribution as it was picked by an honest verifier.
+found and are random $\FF_p$ elements. Hence, the $y$ picked by the simulator
+comes from the same distribution as if it was picked by an honest verifier.
 
 The simulator continues building the transcript by honestly computing prover's
 messages and by picking verifier's challenges at random. This and the fact
@@ -1819,7 +1832,9 @@ as a transcript prepared by an honest prover and verifier.
 \end{proof}
 
 \subsection{From special-soundness and unique response property to simulation extractability of $\sonicprotfs$}
-Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$ and computationally special sound we are able to follow \cite{INDOCRYPT:FKMV12} and show that $\sonicprotfs$ is simulation-extractable as defined in \cref{def:simext}.
+Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$
+and computationally special sound. We now make use
+of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defined in \cref{def:simext}.
 
 \begin{corollary}[Simulation extractability of $\sonicprotfs$]
 	\label{thm:sonicprotfs_se}
