@@ -968,12 +968,23 @@ h_{\iota - 1})$ to
 \subsection{Unique-response protocols.}
 Another problem comes with another assumption required by Faust et al. That is, the unique response property of the transformed sigma protocol.
 Fischlin's formulation, although perfectly fine for applications presented in \cite{C:Fischlin05}, is not enough in our case.
-First of all, the property assumes that the protocol has three rounds, with the middle being the challenge from the verifier. That is not the case we consider here. Second, it is not entirely clear how to generalize the property. Should one require that after the first challenge from the verifier the responses are fixed? That could not work since if there is more challenges then they are random.
-Another problem rises when the protocol contains some round---obviously, except the first one---where the prover randomises his message. In that case unique-responsiveness can not hold as well.
-Last but not least, the protocol we consider here most, \plonk, is not in a standard-model, but utilises CRS. That also complicates things considerably.
+First of all, the property assumes that the protocol has three rounds, with
+the middle being the challenge from the verifier. That is not the case we
+consider here. Second, it is not entirely clear how to generalize the
+property. Should one require that after the first challenge from the verifier
+the prover's responses are fixed? That could not work since if there is more
+challenges the prover's messages has to respond to them.  Another problem rises when the protocol
+contains some round---obviously, except the first one---where the prover
+randomises its message. In that case unique-responsiveness can not hold as
+well.  Last but not least, the protocols we consider here are not designed to
+be in the standard model, but utilises CRS. That also complicates things
+considerably.
 
-We walk around these obstacles by providing a generalised notion of the unique response property.
-More precisely, we say that a $(2\mu + 1)$-round protocol has \emph{unique responses after $i$} and is called a $\ur{i}$-protocol if
+We walk around these obstacles by providing a generalised notion of the unique
+response property.  More precisely, we say that a $(2\mu + 1)$-round protocol
+has \emph{unique responses after $i$} and is called a $\ur{i}$-protocol if it
+follows the definition below:
+
 \begin{definition}[$\ur{i}$-protocol]
 	\label{def:wiur}
 	Let $\proofsystem$ be a multi-round proof system.
