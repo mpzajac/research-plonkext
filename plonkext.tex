@@ -917,20 +917,26 @@ simulation extractable.
 		\procedure{$\genforking_{\adv}^{m} (y)$}
 		{
 			r \sample \RND{\adv}\\
-			h_1, \ldots, h_{q} \sample H\\
-			(i, s_1) \gets \adv(y, h_1, \ldots, h_{q}; r)\\
-			(h_{i_1}, \ldots, h_{q_1}) \gets (h_i, \ldots, h_{q})\\
+			h_1^{1}, \ldots, h_{q}^{1} \sample H\\
+			(i_1, s_1) \gets \adv(y, h_1^{1}, \ldots, h_{q}^{1}; r)\\
+			\pcif i_1 = 0\ \pcreturn (0, \bot, \bot)\\
 			\pcfor j \in \range{2}{m}\\
-			\pcind h_{i_j}, \ldots, h_{q_j} \sample H\\
-			\pcind (i_j, s_j) \gets \adv(y, h_1, \ldots, h_{i - 1}, h_{i_j}, \ldots, h_{q_j}; r)\\
-			\pcind \pcif i = 0\ \pcreturn (0, \bot, \bot)\\
-			\pcif \forall j, j'  \in \range{1}{m}\colon (i_{j} = i_{j'}) \land (h_{i_j} \neq h_{i_{j'}})\ \pcreturn (1, \vec{s})\\
-			\pcind \pcelse \pcreturn (0, \bot, \bot)
+			\pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
+			h_{i - 1}^{j - 1}\\
+			\pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
+			\pcind (i_j, s_j) \gets \adv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
+			\ldots, h_{q}^{j}; r)\\
+			\pcind \pcif i_j = 0 \lor i_{j} \neq i_{j - 1}\ \pcreturn (0, \bot, \bot)\\
+			\pcif \exists (k, j), (k', j') \in \range{1}{q} \times
+		\range{1}{m} \land (h_{k}^{j} = h_{k'}^{j'})\
+			\pcreturn (0, \bot, \bot)\\
+			\pcelse \pcreturn (1, \vec{s})
 		}}
 		\caption{Generalised forking algorithm $\genforking_{\adv}^{m}$
       \markulf{03.11.2020}{How is $i$ picked. Shall we improve this algorithm together?}}
 			\michals{4.11}{Yes, that would be great. (also, currently working on
 			that}
+			\michals{4.11}{Check now}
 		\label{fig:genforking_lemma}
 \end{figure}
 \end{lemma}
