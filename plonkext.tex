@@ -325,7 +325,7 @@ Since every algorithm $\adv$ takes as input the public parameters we
 skip them when describing $\adv$'s input. Similarly, we do not explicitly
 state that each protocol starts with generating these parameters by $\pgen$.
 
-\paragraph{Computational assumptions.}
+\subsection{Computational assumptions.}
 Security of $\plonk$ and $\sonic$ rely on two discrete-log based security
 assumptions---$(q_1, q_2)$-$\dlog$ assumption and its extended with
 negative exponents version $(q_1,
@@ -347,6 +347,24 @@ from the more standard dlog assumption used in \cite{EPRINT:GabWilCio19}.
 			\condprob{\chi \gets \adv(\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots,
 			\chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \chi, \ldots, \chi^{q_2} })}{\chi \sample \FF_p} \leq \negl.
 	\]
+\end{definition}
+
+Also, to be able to show computational honest verifier zero knowledge of
+$\plonk$ in the standard model, what is required by our reduction, we use the
+following \emph{uber assumption} introduced by Boneh et
+al.~\cite{EC:BonBoyGoh05}.
+
+\begin{definition}{Uber assumption}
+	Let $\p{f} \in \FF_p[X]$, $F = \smallset{\p{f_0} = 1, \ldots, \p{f_n}}$,
+	$\p{f_i} \in \FF_p[X]$ and $\p{f} \not\in \SPAN (\smallset{\p{f}_i \cdot
+		\p{f}_j / \p{f}_k}_{i, j, k})$. Let $\GRP$ be a bilinear group of order
+		$p$. Then for any $\ppt$ adversary $\adv$, random $\chi$ and $y$
+		\begin{multline*}
+			\condprob{\adv(\gnone{1, \p{f_1}(\chi), \ldots, \p{f_n}(\chi),
+			\p{f}(\chi)}) = 0}{\chi \sample \FF_p} \approx_\secpar\\
+			\condprob{\adv(\gnone{1, \p{f_1}(\chi), \ldots, \p{f_n}(\chi),
+			y})}{\chi \sample \FF_p, y \sample \FF_p}\,.
+		\end{multline*}
 \end{definition}
 
 \paragraph{Proofs by Game-Hoping.}
@@ -1440,8 +1458,8 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	instantiated with the idealised verification equation, is perfectly sound,
 	except with probability of batching failure $\epsbatch$, for a valid proof
 	$\zkproof$ of a statement $\inp$ there exists a witness $\wit$, such that
-	$\REL(\inp, \wit)$ holds.  Note that witness-carrying polynomials $\p{a}(X),
-	\p{b}(X), \p{c}(X)$ have degree $(\numberofconstrains + 2)$ and since $\adv$
+	$\REL(\inp, \wit)$ holds.  Note that the polynomials $\p{a}(X),
+	\p{b}(X), \p{c}(X)$, which contain witness in their coefficients, have degree $(\numberofconstrains + 2)$ and since $\adv$
 	answered honestly on $(\numberofconstrains + 3)$ different challenges $\chz$
 	then $(\numberofconstrains + 3)$ evaluations of these polynomials (at
 	different points) are known. The extractor $\extss$ interpolates the
@@ -1451,6 +1469,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 		\michals{4.11}{Witness-carrying is not a well defined term, I used it to
 			express that the coefficients of the polynomials constitutes the witness
 		for the relation. I will rephrase if you find it misleading.}
+		\michals{4.11}{Rephrased}
 	\ncase{When $\nevent{E}$ happens} Consider a transcript that such that
 	$\vereq(X) \neq 0$, but $\vereq(\chi) = 0$.
 	Since the adversary is algebraic, all group elements included in the tree of
@@ -1528,7 +1547,7 @@ picking it at random as well.
 The proof provided by the simulator is indistinguishable from the real proof
 since the simulator picks the messages as an honest prover or verifier would
 except how the message output in Round 3 are computed. However,
-real-proof polynomial $\p{t}(X)$ is random since the polynomials
+the real-proof polynomial $\p{t}(X)$ is random since the polynomials
 $\p{a}(X), \p{b}(X), \p{c}(X)$ and $\p{z}(X)$ are random. Hence, a commitment to
 $\p{t}(X)$ picked randomly by the simulator is indistinguishable from a
 commitment to a real-proof $\p{t}(X)$. 
