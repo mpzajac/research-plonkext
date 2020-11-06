@@ -379,24 +379,43 @@ Similarly for applying $f$ to $\p{S}$ and $\p{T}$.
 	$\p{f} \in \FF_p[X_1, \ldots, X_c]$ is \emph{dependent} on $\p{R}, \p{S},
 	\p{T}$ if there exists $rs + t$ constants $a_{i, j}, b_k$ such that 
 	\[
-		\p{f} = \sum_{i = 1}^{r} \sum_{j = 1}^{s} a_{i, j} \p{r}_i \cdot \p{s}_j +
+		\p{f} = \sum_{i = 1}^{r} \sum_{j = 1}^{s} a_{i, j} \p{r}_i \p{s}_j +
 		\sum_{k = 1}^{t} b_k \p{t}_k.
 	\]
 	We say that $\p{f}$ is \emph{independent} if it is not dependent.
 \end{definition}
 
-\begin{definition}[BBG05 Uber assumption]
+The original (decisional) uber assumption by Boneh et al.~states that for
+type-III pairings:
+
+\begin{definition}[$(\p{R}, \p{S}, \p{T}, \p{f})$-original uber assumption]
+	\label{def:uber_assumption_orig}
+	Let $\p{R}, \p{S}, \p{T}$, $(x', x_1, \ldots, x_c) \sample \FF_p^{c + 1}$ and let
+	$\p{f}$ be independent on $(\p{R}, \p{S}, \p{T})$.
+	Then, for any $\ppt$ adversary $\adv$
+	\begin{multline*}
+		\prob{\adv(\gone{\p{R}(x_1, \ldots x_c)}, \gtwo{\p{S}(x_1, \ldots, x_c)},
+		\gtar{\p{T}(x_1, \ldots, x_c)}, \gtar{\p{f}(x_1, \ldots, x_c)}) = 1} \approx_\secpar \\ 
+		\prob{\adv(\gone{\p{R}(x_1, \ldots x_c)}, \gtwo{\p{S}(x_1, \ldots, x_c)},
+		\gtar{\p{T}(x_1, \ldots, x_c)}, \gtar{x'}) = 1}  
+	\end{multline*}
+\end{definition}
+
+For the sake of this paper we modify the assumption slightly, i.e.~we require
+not target group $\GRP_T$ elements to be indistinguishable, but elements of
+$\GRP_1$, more precisely we require 
+
+\begin{definition}[$(\p{R}, \p{S}, \p{T}, \p{f})$-uber assumption]
 	\label{def:uber_assumption}
-	Let $\p{f} \in \FF_p[X]$, $F = \smallset{\p{f_0} = 1, \ldots, \p{f_n}}$,
-	$\p{f_i} \in \FF_p[X]$ and $\p{f} \not\in \SPAN (\smallset{\p{f}_i \cdot
-		\p{f}_j / \p{f}_k}_{i, j, k})$. Let $\GRP$ be a bilinear group of order
-		$p$. Then for any $\ppt$ adversary $\adv$, random $\chi$ and $y$
-		\begin{multline*}
-			\condprob{\adv(\gnone{1, \p{f_1}(\chi), \ldots, \p{f_n}(\chi),
-			\p{f}(\chi)}) = 0}{\chi \sample \FF_p} \approx_\secpar\\
-			\condprob{\adv(\gnone{1, \p{f_1}(\chi), \ldots, \p{f_n}(\chi),
-			y})}{\chi \sample \FF_p, y \sample \FF_p}\,.
-		\end{multline*}
+	Let $\p{R}, \p{S}, \p{T}$, $(x', x_1, \ldots, x_c) \sample \FF_p^{c + 1}$ and let
+	$\p{f}$ be independent on $(\p{R}, \p{S}, \p{T})$.
+	Then, for any $\ppt$ adversary $\adv$
+	\begin{multline*}
+		\prob{\adv(\gone{\p{R}(x_1, \ldots x_c)}, \gtwo{\p{S}(x_1, \ldots, x_c)},
+		\gtar{\p{T}(x_1, \ldots, x_c)}, \gone{\p{f}(x_1, \ldots, x_c)}) = 1} \approx_\secpar \\ 
+		\prob{\adv(\gone{\p{R}(x_1, \ldots x_c)}, \gtwo{\p{S}(x_1, \ldots, x_c)},
+		\gtar{\p{T}(x_1, \ldots, x_c)}, \gone{x'}) = 1}  
+	\end{multline*}
 \end{definition}
 
 \paragraph{Proofs by Game-Hoping.}
