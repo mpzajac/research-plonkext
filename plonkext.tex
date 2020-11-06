@@ -1595,21 +1595,43 @@ an honest prover would proceed and outputs the final challenge, $u$, by
 picking it at random as well.
 
 Now we argue why for a $\ppt$ adversary a proof provided by the simulator is
-indistinguishable from a real proof. To that end we show a reduction to the
+indistinguishable from a real proof. We do that indirectly and rely on
+$\plonk$'s simulator that \emph{knows} the CRS trapdoor $\chi$. That is, we
+show that a proof provided by our simulator $\simulator$ is
+indistinguishable from a proof provided by $\simulator_\chi$,
+cf.~\cref{sec:plonk_simulator}.
+To that end we show a reduction to the
 BBG uber assumption as presented in \cref{def:uber_assumption}. That is, we
-show that if the adversary was able to distinguish the proof, then it could be
+show that if the adversary was able to distinguish the proofs, then it could be
 used to break the assumption.
 
-\michals{6.11}{Need to take care of the fact that the distinguisher should
-know evaluations of the polynomials in some points}
+% \michals{6.11}{Need to take care of the fact that the distinguisher should
+% know evaluations of the polynomials in some points}
 Let $\cdv$ be the $(\pR, \pS, \pT, \p{f})$-uber assumption challenger for
-$\pR, \pS, \pT \in \FF_p[B_1, \ldots, B_9]$, where
+$\pR, \pS, \pT \in \FF_p[\vec{B}]$, for $\vec{B} = (B_1, \ldots, B_9, A, B, \Gamma, \Delta, V)$, and
 \begin{align*}
-	\pR & = (\pa(\vB), \pb(\vB), \pc(\vB), \pz(\vB), \crs_1) 
+	\pR & = \smallset{\pta(\vB), \ptb(\vB), \ptc(\vB), \ptz(\vB), \crs_1,
+	\pta_\chz(\vB), \ptb_\chz(\vB), \ptc_\chz(\vB), \ptz_{\omega \chz} (\vB)}\\
+	\pS & = \smallset{\chi}\\
+	\pT & = \smallset{1}
 \end{align*}
-for $\vB = (B_1, \ldots, B_9)$ and all polynomials expressed as polynomials in
-the randomisers, with $\chi$ being just a constant, e.g.~$\pa(\vB) = (B_1 \chi
-+ B_2)\pZH + \sum_{i = 1}^{\numberofconstrains} \wit_i \lag_i (\chi)$.
+The only difference between ``tilded'' and ``non-tilded'' polynomials are that
+the former take randomisers $\vB$ and challenges $A, B, \Gamma, \Delta, V$ as
+variables with $\chi$ just being a constant, while the latter are over variable $X$. Also ``tilded''
+polynomials have set all $\wit_i$ inputs to $0$.
+
+Polynomials are expressed as polynomials in
+randomisers and challenges, where all $\wit_i$, $i \in
+\range{1}{3\numberofconstrains}$ are set to $0$, with $\chi$ being just a
+constant, e.g.~$\pta(\vB) = (B_1 \chi
++ B_2)\ptZH + \sum_{i = 1}^{\numberofconstrains} 0 \cdot \lag_i (\chi) = (B_1
+\chi + B_2) \ptZH$.
+For a polynomial $\p{p} \in \pR$ polynomial $\p{p}_x$ is a polynomial where
+every occurrence of $\chi$ has been substituted by value $x$. E.g.~ 
+\[
+	\pta_\chz(\vB) = (B_1 \chz + B_2)\ptZH.
+\]
+
 
 \michals{6.11}{OLD proof begins}
 Now we argue why for a $\ppt$ adversary the proof provided by the simulator is
