@@ -357,27 +357,27 @@ al.~\cite{EC:BonBoyGoh05} as presented by Boyen in \cite{PAIRING:Boyen08}.
 % Here we present not in its whole generality but rather fitted to our purpose.
 
 Let $r, s, t, c \in \NN \setminus \smallset{0}$, Consider tuples of
-polynomials $\p{R}
-\in \FF_p[X_1, \ldots, X_c]^r$, $\p{S} \in \FF_p[X_1, \ldots, X_c]^s$ and
-$\p{T} 
-\in \FF_p[X_1, \ldots, X_c]^t$. Write $\p{R} = \langle \p{r}_1, \ldots,
-\p{r}_r \rangle$,
-$\p{S} = \langle \p{s}_1, \ldots, \p{s}_s \rangle$ and $\p{T} = \langle \p{t}_1, \ldots,
-\p{t}_r \rangle$ for polynomials $\p{r}_i, \p{s}_j, \p{t}_k$. 
+polynomials $\pR
+\in \FF_p[X_1, \ldots, X_c]^r$, $\pS \in \FF_p[X_1, \ldots, X_c]^s$ and
+$\pT 
+\in \FF_p[X_1, \ldots, X_c]^t$. Write $\pR = \left( \p{r}_1, \ldots,
+\p{r}_r \right)$,
+$\pS = \left( \p{s}_1, \ldots, \p{s}_s \right)$ and $\pT = \left( \p{t}_1, \ldots,
+\p{t}_r \right)$ for polynomials $\p{r}_i, \p{s}_j, \p{t}_k$. 
 
-For a function $f$ and a vector $(x_1, \ldots, x_c)$ we write $f(\p{R})$ to
-denote application of $f$ to each element of $\p{R}$, i.e.
+For a function $f$ and a vector $(x_1, \ldots, x_c)$ we write $f(\pR)$ to
+denote application of $f$ to each element of $\pR$, i.e.
 \[
-	f(\p{R}) = \langle f(\p{r}_1 (x_1, \ldots, x_c), \ldots, f(\p{r}_r
-	(x_1, \ldots, x_c) \rangle.
+	f(\pR) = \left( f(\p{r}_1 (x_1, \ldots, x_c), \ldots, f(\p{r}_r
+	(x_1, \ldots, x_c) \right).
 \]
-Similarly for applying $f$ to $\p{S}$ and $\p{T}$.
+Similarly for applying $f$ to $\pS$ and $\pT$.
 
-\begin{definition}[Independence of $\p{R}, \p{S}, \p{T}$]
+\begin{definition}[Independence of $\pR, \pS, \pT$]
 	\label{def:independence}
-	Let $\p{R}, \p{S}, \p{T}$ be defined as above. We say that polynomial
-	$\p{f} \in \FF_p[X_1, \ldots, X_c]$ is \emph{dependent} on $\p{R}, \p{S},
-	\p{T}$ if there exists $rs + t$ constants $a_{i, j}, b_k$ such that 
+	Let $\pR, \pS, \pT$ be defined as above. We say that polynomial
+	$\p{f} \in \FF_p[X_1, \ldots, X_c]$ is \emph{dependent} on $\pR, \pS,
+	\pT$ if there exists $rs + t$ constants $a_{i, j}, b_k$ such that 
 	\[
 		\p{f} = \sum_{i = 1}^{r} \sum_{j = 1}^{s} a_{i, j} \p{r}_i \p{s}_j +
 		\sum_{k = 1}^{t} b_k \p{t}_k.
@@ -388,33 +388,33 @@ Similarly for applying $f$ to $\p{S}$ and $\p{T}$.
 The original (decisional) uber assumption by Boneh et al.~states that for
 type-III pairings:
 
-\begin{definition}[$(\p{R}, \p{S}, \p{T}, \p{f})$-original uber assumption]
+\begin{definition}[$(\pR, \pS, \pT, \p{f})$-original uber assumption]
 	\label{def:uber_assumption_orig}
-	Let $\p{R}, \p{S}, \p{T}$, $(x', x_1, \ldots, x_c) \sample \FF_p^{c + 1}$ and let
-	$\p{f}$ be independent on $(\p{R}, \p{S}, \p{T})$.
+	Let $\pR, \pS, \pT$, $(x', x_1, \ldots, x_c) \sample \FF_p^{c + 1}$ and let
+	$\p{f}$ be independent on $(\pR, \pS, \pT)$.
 	Then, for any $\ppt$ adversary $\adv$
 	\begin{multline*}
-		\prob{\adv(\gone{\p{R}(x_1, \ldots x_c)}, \gtwo{\p{S}(x_1, \ldots, x_c)},
-		\gtar{\p{T}(x_1, \ldots, x_c)}, \gtar{\p{f}(x_1, \ldots, x_c)}) = 1} \approx_\secpar \\ 
-		\prob{\adv(\gone{\p{R}(x_1, \ldots x_c)}, \gtwo{\p{S}(x_1, \ldots, x_c)},
-		\gtar{\p{T}(x_1, \ldots, x_c)}, \gtar{x'}) = 1}  
+		\prob{\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
+		\gtar{\pT(x_1, \ldots, x_c)}, \gtar{\p{f}(x_1, \ldots, x_c)}) = 1} \approx_\secpar \\ 
+		\prob{\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
+		\gtar{\pT(x_1, \ldots, x_c)}, \gtar{x'}) = 1}.  
 	\end{multline*}
 \end{definition}
 
 For the sake of this paper we modify the assumption slightly, i.e.~we require
 not target group $\GRP_T$ elements to be indistinguishable, but elements of
-$\GRP_1$, more precisely we require 
+$\GRP_1$, more precisely we require: 
 
-\begin{definition}[$(\p{R}, \p{S}, \p{T}, \p{f})$-uber assumption]
+\begin{definition}[$(\pR, \pS, \pT, \p{f})$-uber assumption]
 	\label{def:uber_assumption}
-	Let $\p{R}, \p{S}, \p{T}$, $(x', x_1, \ldots, x_c) \sample \FF_p^{c + 1}$ and let
-	$\p{f}$ be independent on $(\p{R}, \p{S}, \p{T})$.
+	Let $\pR, \pS, \pT$, $(x', x_1, \ldots, x_c) \sample \FF_p^{c + 1}$ and let
+	$\p{f}$ be independent on $(\pR, \pS, \pT)$.
 	Then, for any $\ppt$ adversary $\adv$
 	\begin{multline*}
-		\prob{\adv(\gone{\p{R}(x_1, \ldots x_c)}, \gtwo{\p{S}(x_1, \ldots, x_c)},
-		\gtar{\p{T}(x_1, \ldots, x_c)}, \gone{\p{f}(x_1, \ldots, x_c)}) = 1} \approx_\secpar \\ 
-		\prob{\adv(\gone{\p{R}(x_1, \ldots x_c)}, \gtwo{\p{S}(x_1, \ldots, x_c)},
-		\gtar{\p{T}(x_1, \ldots, x_c)}, \gone{x'}) = 1}  
+		\prob{\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
+		\gtar{\pT(x_1, \ldots, x_c)}, \gone{\p{f}(x_1, \ldots, x_c)}) = 1} \approx_\secpar \\ 
+		\prob{\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
+		\gtar{\pT(x_1, \ldots, x_c)}, \gone{x'}) = 1}.  
 	\end{multline*}
 \end{definition}
 
@@ -1594,6 +1594,24 @@ After that it picks randomly the challenge $v$, proceeds in the last round as
 an honest prover would proceed and outputs the final challenge, $u$, by
 picking it at random as well.
 
+Now we argue why for a $\ppt$ adversary a proof provided by the simulator is
+indistinguishable from a real proof. To that end we show a reduction to the
+BBG uber assumption as presented in \cref{def:uber_assumption}. That is, we
+show that if the adversary was able to distinguish the proof, then it could be
+used to break the assumption.
+
+\michals{6.11}{Need to take care of the fact that the distinguisher should
+know evaluations of the polynomials in some points}
+Let $\cdv$ be the $(\pR, \pS, \pT, \p{f})$-uber assumption challenger for
+$\pR, \pS, \pT \in \FF_p[B_1, \ldots, B_9]$, where
+\begin{align*}
+	\pR & = (\pa(\vB), \pb(\vB), \pc(\vB), \pz(\vB), \crs_1) 
+\end{align*}
+for $\vB = (B_1, \ldots, B_9)$ and all polynomials expressed as polynomials in
+the randomisers, with $\chi$ being just a constant, e.g.~$\pa(\vB) = (B_1 \chi
++ B_2)\pZH + \sum_{i = 1}^{\numberofconstrains} \wit_i \lag_i (\chi)$.
+
+\michals{6.11}{OLD proof begins}
 Now we argue why for a $\ppt$ adversary the proof provided by the simulator is
 indistinguishable from the real proof. Observe that the simulator picks the
 messages as an honest prover or verifier would except how the message output
@@ -1617,6 +1635,7 @@ for $\p{f_i}, \p{f_j}, \p{f_k} \in \smallset{\p{a}, \p{b}, \p{c}, \p{z},
   polynomials here. What is the argument?}
 	\michals{5.11}{Corrected, moved to computational zk, check now}
 \qed
+\michals{6.11}{OLD proof ends}
 \end{proof}
 
 \subsection{From special-soundness and unique response property to simulation extractability of $\plonkprotfs$}
