@@ -349,12 +349,43 @@ from the more standard dlog assumption used in \cite{EPRINT:GabWilCio19}.
 	\]
 \end{definition}
 
+\paragraph{BBG uber assumption}
 Also, to be able to show computational honest verifier zero knowledge of
 $\plonk$ in the standard model, what is required by our reduction, we use the
-following \emph{uber assumption} introduced by Boneh et
-al.~\cite{EC:BonBoyGoh05}.
+\emph{uber assumption} introduced by Boneh et
+al.~\cite{EC:BonBoyGoh05} as presented by Boyen in \cite{PAIRING:Boyen08}.
+% Here we present not in its whole generality but rather fitted to our purpose.
 
-\begin{definition}{Uber assumption}
+Let $r, s, t, c \in \NN \setminus \smallset{0}$, Consider tuples of
+polynomials $\p{R}
+\in \FF_p[X_1, \ldots, X_c]^r$, $\p{S} \in \FF_p[X_1, \ldots, X_c]^s$ and
+$\p{T} 
+\in \FF_p[X_1, \ldots, X_c]^t$. Write $\p{R} = \langle \p{r}_1, \ldots,
+\p{r}_r \rangle$,
+$\p{S} = \langle \p{s}_1, \ldots, \p{s}_s \rangle$ and $\p{T} = \langle \p{t}_1, \ldots,
+\p{t}_r \rangle$ for polynomials $\p{r}_i, \p{s}_j, \p{t}_k$. 
+
+For a function $f$ and a vector $(x_1, \ldots, x_c)$ we write $f(\p{R})$ to
+denote application of $f$ to each element of $\p{R}$, i.e.
+\[
+	f(\p{R}) = \langle f(\p{r}_1 (x_1, \ldots, x_c), \ldots, f(\p{r}_r
+	(x_1, \ldots, x_c) \rangle.
+\]
+Similarly for applying $f$ to $\p{S}$ and $\p{T}$.
+
+\begin{definition}[Independence of $\p{R}, \p{S}, \p{T}$]
+	\label{def:independence}
+	Let $\p{R}, \p{S}, \p{T}$ be defined as above. We say that polynomial
+	$\p{f} \in \FF_p[X_1, \ldots, X_c]$ is \emph{dependent} on $\p{R}, \p{S},
+	\p{T}$ if there exists $rs + t$ constants $a_{i, j}, b_k$ such that 
+	\[
+		\p{f} = \sum_{i = 1}^{r} \sum_{j = 1}^{s} a_{i, j} \p{r}_i \cdot \p{s}_j +
+		\sum_{k = 1}^{t} b_k \p{t}_k.
+	\]
+	We say that $\p{f}$ is \emph{independent} if it is not dependent.
+\end{definition}
+
+\begin{definition}[BBG05 Uber assumption]
 	\label{def:uber_assumption}
 	Let $\p{f} \in \FF_p[X]$, $F = \smallset{\p{f_0} = 1, \ldots, \p{f_n}}$,
 	$\p{f_i} \in \FF_p[X]$ and $\p{f} \not\in \SPAN (\smallset{\p{f}_i \cdot
@@ -1856,7 +1887,7 @@ property of the used polynomial commitment scheme $\PCOMs$.
 		\qed		
 \end{proof}
 
-\subsection{Honest Verifier Zero-knowledge}
+\subsection{Honest Verifier Zero-Knowledge}
 \begin{lemma}
 	$\sonic$ is honest verifier zero-knowledge in the standard model.	
 \end{lemma}
