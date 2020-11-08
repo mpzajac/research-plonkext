@@ -1534,11 +1534,16 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 
 \subsection{Honest Verifier Zero-knowledge}
 \begin{lemma}
-	$\plonk$ is honest verifier zero-knowledge and its simulator does not
+	$\plonk$ is honest verifier zero-knowledge and its simulator $\simulator$ does not
 	require a CRS trapdoor.\footnote{The simulator works as a simulator for
 	proofs that are zero-knowledge in the standard model. However, we do not
 say that $\plonk$ is HVZK in the standard model as proof of that
-\emph{requires} the CRS simulator.}	
+\emph{requires} the CRS simulator.} More precisely, assume that $\plonk$'s CRS
+simulator $\simulator_\chi$ produces a proof that is at most $\epszk$ far from
+a real proof, and $(\pR, \pS, \pT, \pf)$-uber assumption for $\pR, \pS, \pT,
+\pf$ as defined in \cref{eq:uber} is $\epsuber$-secure. Then for any $\ppt$
+adversary $\adv$ its advantage in telling a proof produced by $\simulator$
+from a real proof is upper-bounded by $\epszk + \epsuber$.
 \end{lemma}
 % Here we show that $\sonic$ is trapdoor-less zero-knowledge.
 \begin{proof}
@@ -1576,7 +1581,10 @@ say that $\plonk$ is HVZK in the standard model as proof of that
 	
 	\ncase{$\game{1} \mapsto \game{2}$} 
 	Since $\plonk$ is zero-knowledge, probability that $\adv$ outputs a
-	different bit in both games is negligible.
+	different bit in both games is negligible. Hence
+	\[
+		\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epszk.
+	\]
 
 	\ngame{3} In this game $\adv(\REL, \crs)$ picks an
 	instance--witness pair $(\inp, \wit)$ and gets a proof $\zkproof$ simulated
@@ -1648,30 +1656,33 @@ picking it at random as well.
 % precisely, we show that any adversary $\adv$ that is able to distinguish these
 % two games with non-negligible probability can be used to break \hl{the ... uber assumption}.
 %
-We now describe the reduction $\rdv$.
+We now describe the reduction $\rdv$ which relies on the $(\pR, \pS, \pT,
+\pf)$-uber assumption where $\pR, \pS, \pT, \pf$ are polynomials over
+variables $\vB = B_1, \ldots B_9$ and are defined as follows.
 Let $D = \smallset{\smallset{1, 2}, \smallset{3, 4}, \smallset{5, 6},
 \smallset{7, 8, 9}}$.
 Let 
-\begin{multline*}
-	\pR = \smallset{b_i \mid i \in A,\ A \in D} \cup \smallset{b_i b_j \mid i \in
+\begin{align}
+	\label{eq:uber}
+	\pR(\vB) & = \smallset{B_i \mid i \in A,\ A \in D} \cup \smallset{B_i B_j \mid i \in
 A, j \in B,\ A \neq B,\ A, B \in D} \cup \\ 
-\smallset{b_i b_j b_k \mid i \in A,\ j \in
-B,\ k \in C,\ A \neq B \neq C \neq A,\ A, B, C \in D} \setminus \smallset{b_1 b_3 b_5 b_7}.
-\end{multline*}
-%\cup \smallset{b_i b_j} \cup
-%\smallset{b_{i'} b_{j'} b_{k'}}$,
-%_{(i, j) \in
-%\smallset{1, 2} \times \smallset{3, 4} \cup } b_1 b_3, b_1 b_4, b_1 b_5, b_1 b_6,
-%	b_1 b_7 b_2 b_3, b_2 b_4,
-%b_1 b_}$ \hl{continue}.
-%where $(i, j)$ 
-That is, the elements of $\pR$ are all singletons, pairs and triplets of $b_i$
-elements that occur in polynomial $\pt$ except the challenge element $b_1
-b_3 b_5 b_7$.
-Furthermore we set $\pS = \pT = \emptyset$.
+			& \smallset{B_i B_j B_k \mid i \in A,\ j \in
+B,\ k \in C,\ A \neq B \neq C \neq A,\ A, B, C \in D} \setminus \smallset{B_1
+B_3 B_5 B_7}.\notag \\
+	\pS(\vB) & = \emptyset \notag \\
+	\pT(\vB) & = \emptyset \notag \\
+	\pf(\vB) & = B_1 B_3 B_5 B_7 \notag.
+\end{align}
+That is, the elements of $\pR$ are all singletons, pairs and triplets of $B_i$
+variables that occur in polynomial $\pt(\vB)$ except the
+challenge element $\pf(\vB) = B_1
+B_3 B_5 B_7$.
+Variables $B_1, \ldots B_9$ are evaluated to randomly picked $b_1, \ldots
+b_9$.
 
 The reduction $\rdv$ learns $\gone{\pR}$ and challenge $\gone{w}$
-where $w$ is either $b_1 b_3 b_4 b_7$ or a random value. Then it picks $\chi$, $\chz$,
+where $w$ is either $b_1 b_3 b_4 b_7$ or a random value. Then it picks $\chi$,
+$\chz$,
 computes the CRS $\crs$ from $\chi$ and sets
 \[
 	\gone{\tb_i} =  (\chi - \chz)(\chi - \ochz) \gone{b_i} + \xi_i (\chi - \chz)
@@ -1695,11 +1706,13 @@ instance--witness pair $(\inp, \wit)$. $\rdv$ now prepares a simulated proof.
 	\item[Round 2] $\rdv$ computes $\gone{\pz(\chi)}$ using $\tb_7, \tb_8,
 		\tb_9$ and publishes it. Then it picks randomly the challenge $\alpha$.
 	\item[Round 3] The reduction computes $\gone{\pt(\chi)}$ using $\tw$ as it
-		was equal $\tb_A \tb_B \tb_C$. That is, if $w = b_A b_B b_C$ then
+		was equal $\tb_1 \tb_3 \tb_5 \tb_7$. That is, if $w = b_1 b_3 b_5 b_7$ then
 		$\pt(\chi)$ is as computed by the simulator $\simulator_\chi$, otherwise,
 		if $w$ is random then $\pt(\chi)$ is random as well, thus it is computed
-		as $\simulator$ would compute.\michals{7.11}{How to divide $\pt$ into
-		$\pt_{low}, \pt_{mid}, \pt_{hi}$.?}
+		as $\simulator$ would compute. The reduction computes and outputs
+		$\gone{\ptlo(\chi), \ptmid(\chi), \pthi(\chi)}$ such that $\pt(X) =
+		\ptlo(X) + X^\numberofconstrains \ptmid(X) + X^{2\numberofconstrains}
+		\pthi(X)$.
 		Eventually, $\rdv$ outputs $\chz$.
 	\item[Round 4] The reduction outputs $\pa(\chz), \pb(\chz), \pc(\chz),
 		\p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2} (\chz)}, \pt(\chz), \pz(\ochz)$.
@@ -1711,6 +1724,16 @@ instance--witness pair $(\inp, \wit)$. $\rdv$ now prepares a simulated proof.
 	\item[Round 5] $\rdv$ computes the openings of the polynomial commitments
 		assuring that evaluations at $\chz$ it provided were computed honestly. 
 \end{description}
+Is the adversary $\adv$'s output distribution differ in Game $\game{2}$ and
+$\game{3}$ then the reduction uses it to distinguish between $w = b_1 b_3
+b_5 b_7$ and $w$ being random, thus
+\[	
+	\abs{\prob{\game{2}} - \prob{\game{3}}} \leq \epsuber.
+\]
+Eventually 
+\[
+	\abs{\prob{\game{1}} - \prob{\game{3}}} \leq \epszk + \epsuber.
+\]
 \qed
 \end{proof}
 
