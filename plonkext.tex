@@ -1668,20 +1668,20 @@ Let
 A, j \in B,\ A \neq B,\ A, B \in D} \cup \\ 
 			& \smallset{B_i B_j B_k \mid i \in A,\ j \in
 B,\ k \in C,\ A \neq B \neq C \neq A,\ A, B, C \in D} \setminus \smallset{B_1
-B_3 B_5 B_7}.\notag \\
-	\pS(\vB) & = \emptyset \notag \\
-	\pT(\vB) & = \emptyset \notag \\
-	\pf(\vB) & = B_1 B_3 B_5 B_7 \notag.
+B_3 B_5 B_7}\,,\notag \\
+	\pS(\vB) & = \emptyset \notag\,, \\
+	\pT(\vB) & = \emptyset \notag\,, \\
+	\pf(\vB) & = B_1 B_3 B_5 B_7 \notag\,.
 \end{align}
 That is, the elements of $\pR$ are all singletons, pairs and triplets of $B_i$
 variables that occur in polynomial $\pt(\vB)$ except the
 challenge element $\pf(\vB) = B_1
 B_3 B_5 B_7$.
-Variables $B_1, \ldots B_9$ are evaluated to randomly picked $b_1, \ldots
+Variables $\vB$ are evaluated to randomly picked $\vb = b_1, \ldots
 b_9$.
 
 The reduction $\rdv$ learns $\gone{\pR}$ and challenge $\gone{w}$
-where $w$ is either $b_1 b_3 b_4 b_7$ or a random value. Then it picks $\chi$,
+where $w$ is either $\pf(\vb) = b_1 b_3 b_4 b_7$ or a random value. Then it picks $\chi$,
 $\chz$,
 computes the CRS $\crs$ from $\chi$ and sets
 \[
@@ -1689,11 +1689,10 @@ computes the CRS $\crs$ from $\chi$ and sets
 	\gone{1} + \zeta (\chi - \ochz) \gone{1}, % \text{ for } i \in
 %	\range{1}{9}, u_1 \sample \FF_p
 \]
-for $i \in \range{1}{9}$ and $\xi_i, \zeta_i \sample \FF_p$. Then it sets
-$\gone{\tw}
-= \gone{\tb_1 \tb_3 \tb_5 \tb_7}$, where $\gone{b_1 b_3 b_5 b_7}$ is
-substituted by $\gone{w}$.
-Then it computes all $\gone{\tb_i \tb_j}, \gone{\tb_i \tb_j \tb_k} \in \pR$.
+for $i \in \range{1}{9}$ and $\xi_i, \zeta_i \sample \FF_p$. 
+Then it computes all $\gone{\tb_i \tb_j}, \gone{\tb_i \tb_j \tb_k} \in \pR$
+and sets $\gone{\tw} = \gone{\tb_1 \tb_3 \tb_5 \tb_7}$, where $\gone{b_1
+b_3 b_5 b_7}$ is substituted by $\gone{w}$.
 Next it runs the adversary $\adv(\REL, \crs)$ and obtains from $\adv$ an
 instance--witness pair $(\inp, \wit)$. $\rdv$ now prepares a simulated proof.
 \begin{description}
