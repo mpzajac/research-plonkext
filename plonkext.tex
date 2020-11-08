@@ -1711,74 +1711,7 @@ instance--witness pair $(\inp, \wit)$. $\rdv$ now prepares a simulated proof.
 	\item[Round 5] $\rdv$ computes the openings of the polynomial commitments
 		assuring that evaluations at $\chz$ it provided were computed honestly. 
 \end{description}
-
-\comment{
-Now we argue why for a $\ppt$ adversary a proof provided by the simulator is
-indistinguishable from a real proof. We do that indirectly and rely on
-$\plonk$'s simulator that \emph{knows} the CRS trapdoor $\chi$. That is, we
-show that a proof provided by our simulator $\simulator$ is
-indistinguishable from a proof provided by $\simulator_\chi$,
-cf.~\cref{sec:plonk_simulator}.
-To that end we show a reduction to the
-BBG uber assumption as presented in \cref{def:uber_assumption}. That is, we
-show that if the adversary was able to distinguish the proofs, then it could be
-used to break the assumption.
-
-% \michals{6.11}{Need to take care of the fact that the distinguisher should
-% know evaluations of the polynomials in some points}
-Let $\cdv$ be the $(\pR, \pS, \pT, \p{f})$-uber assumption challenger for
-$\pR, \pS, \pT \in \FF_p[\vec{B}]$, for $\vec{B} = (B_1, \ldots, B_9, A, B, \Gamma, \Delta, V)$, and
-\begin{align*}
-	\pR & = \smallset{\pta(\vB), \ptb(\vB), \ptc(\vB), \ptz(\vB), \crs_1,
-	\pta_\chz(\vB), \ptb_\chz(\vB), \ptc_\chz(\vB), \ptz_{\omega \chz} (\vB)}\\
-	\pS & = \smallset{\chi}\\
-	\pT & = \smallset{1}
-\end{align*}
-The only difference between ``tilded'' and ``non-tilded'' polynomials are that
-the former take randomisers $\vB$ and challenges $A, B, \Gamma, \Delta, V$ as
-variables with $\chi$ just being a constant, while the latter are over variable $X$. Also ``tilded''
-polynomials have set all $\wit_i$ inputs to $0$.
-
-Polynomials are expressed as polynomials in
-randomisers and challenges, where all $\wit_i$, $i \in
-\range{1}{3\numberofconstrains}$ are set to $0$, with $\chi$ being just a
-constant, e.g.~$\pta(\vB) = (B_1 \chi
-+ B_2)\ptZH + \sum_{i = 1}^{\numberofconstrains} 0 \cdot \lag_i (\chi) = (B_1
-\chi + B_2) \ptZH$.
-For a polynomial $\p{p} \in \pR$ polynomial $\p{p}_x$ is a polynomial where
-every occurrence of $\chi$ has been substituted by value $x$. E.g.~ 
-\[
-	\pta_\chz(\vB) = (B_1 \chz + B_2)\ptZH.
-\]
-}
-
-\comment{
-\michals{6.11}{OLD proof begins}
-Now we argue why for a $\ppt$ adversary the proof provided by the simulator is
-indistinguishable from the real proof. Observe that the simulator picks the
-messages as an honest prover or verifier would except how the message output
-in Round 3 are computed. We thus focus on showing that in both real and
-simulated proof the outputs of that round are indistinguishable. For that end
-we observe that 
-\begin{equation}
-	\label{eq:p_not_in_SPAN}
-	\p{t} \not\in \SPAN\smallset{\p{f_i} \cdot \p{f_j} / \p{f_k}}
-\end{equation}
-for $\p{f_i}, \p{f_j}, \p{f_k} \in \smallset{\p{a}, \p{b}, \p{c}, \p{z},
-	\p{S_{\sigma 1}}, \p{S_{\sigma 2}}, \p{S_{\sigma 3}}, \lag_1, \p{Z_{H}},
-\selmulti, \selleft, \selright, \selconst, \seloutput, \pubinppoly}$. Hence,
-	the requirements for the uber assumption, cf.~\cref{def:uber_assumption},
-	are met and the simulator can replace an honestly computed
-	$\gone{\p{t}(\chi)}$ by a random $\p{\tilde{t}}(\chi)$ and the change would
-	not be noticed for a $\ppt$ adversary.  
-	Furthermore, since $\p{\tilde{t}}(\chz) = \p{t}(\chz)$, the rest of the
-	proof that utilises $\p{t}(\chz)$ can be computed honestly as well.
-	\markulf{03.11.2020}{Not sure about the definition of random
-  polynomials here. What is the argument?}
-	\michals{5.11}{Corrected, moved to computational zk, check now}
 \qed
-\michals{6.11}{OLD proof ends}
-}
 \end{proof}
 
 \subsection{From special-soundness and unique response property to simulation extractability of $\plonkprotfs$}
