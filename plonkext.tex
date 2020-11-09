@@ -539,7 +539,7 @@ $\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We d
 			
 			\pchspace
 			
-			\procedure{$\verify(\crs, \gone{c}, z, s, \gone{\p{o}(\chi)})$}
+			\procedure{$\verify(\crs, \gone{c}, \maxconst, z, s, \gone{\p{o}(\chi)})$}
 			{
 				\pcif \gone{\p{o}(\chi)} \bullet \gtwo{\alpha \chi} + \gone{s - z \p{o}(\chi)} \bullet \gtwo{\alpha} = \\ [\myskip]
 				\pcind \gone{c} \bullet \gtwo{\chi^{- \dconst + \maxconst}} \pcthen  \pcreturn 1\\ [\myskip]
@@ -2037,19 +2037,8 @@ equals
 		\vec{c} \cdot \vec{\p{w}}(Y) +	
 		\sum_{i = 1}^{\multconstr} a_i b_i (Y^i + Y^{-i}) - \p{k}(Y), 
 \end{equation}
-for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ defined as 
-\begin{equation}
-	\begin{split}
-		\p{u_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} u_{q, i}\,,\\
-		\p{v_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} v_{q, i}\,,\\
-	\end{split}
-	\qquad
-	\begin{split}
-		\p{w_i}(Y) & = -Y^i - Y^{-i}  + \sum_{q = 1}^\linconstr Y^{q +
-		\multconstr} w_{q, i}\,,\\
-		\p{k}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} k_{q}.
-	\end{split}
-\end{equation}
+for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ defined
+as in \cref{sec:sonic_constraint_system}.
 % \begin{align*}
 % 		\p{u_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} u_{q, i}\\
 % 		\p{v_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} v_{q, i}\\
@@ -2323,8 +2312,43 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	In this round the simulator proceeds as an honest prover would.
 	\end{description}
 
-	\section{$\sonic$ protocol rolled out}
+	\section{$\sonic$ explained}
 	\label{sec:sonic_explained}
+	\subsection{The constraint system}
+	\label{sec:sonic_constraint_system}
+	\sonic's system of constraints composes of three $\multconstr$-long vectors
+	$\va, \vb, \vc$ which corresponds to left and right inputs to multiplication
+	gates and their outputs. It hence holds $\va \cdot \vb = \vc$. 
+
+	There is also $\linconstr$ linear constrains of the form 
+	\[
+		\va \vec{u_q} + \vb \vec{v_q} + \vc \vec{w_q} = k_q,
+	\]
+	where $\vec{u_q}, \vec{v_q}, \vec{w_q}$ are vectors for the $q$-th linear
+	constraint with instance value $k_q \in \FF_p$. Furthermore define polynomials
+\begin{equation}
+	\begin{split}
+		\p{u_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} u_{q, i}\,,\\
+		\p{v_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} v_{q, i}\,,\\
+	\end{split}
+	\qquad
+	\begin{split}
+		\p{w_i}(Y) & = -Y^i - Y^{-i}  + \sum_{q = 1}^\linconstr Y^{q +
+		\multconstr} w_{q, i}\,,\\
+		\p{k}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} k_{q}.
+	\end{split}
+\end{equation}
+In \sonic{} we will use commitments to the following polynomials.
+\begin{align*}
+	\pr(X, Y) & = \sum_{i = 1}^{\multconstr} \left(a_i X^i Y^i + b_i X^{-i} Y^{-i}
+	+ c_i X^{-i - \multconstr} Y^{-i - \multconstr}\right) \\
+	\p{s}(X, Y) & = \sum_{i = 1}^{\multconstr} \left( u_i (Y) X^{-i} +
+	v_i(Y) X^i + w_i(Y) X^{i + \multconstr}\right)\\
+		\pr'(X, Y) & = \pr(X, Y) + \p{s}(X, Y) \\
+		\pt(X, Y) & = \pr(X, 1) \pr'(X, Y) - \p{k}(Y)\,.
+\end{align*}
+	
+	\subsection{Algorithms rolled out}
 	\ncase{$\sonic$ prover $\prover(\REL, \crs, \inp, \wit=\va, \vb,
 	\vc)$}
 \begin{description}
@@ -2344,12 +2368,41 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 			W_b & = \open(\crs, yz, \pr(yz, 1), \pr(X, 1)) \\
 			W_t & = \open(\crs, z, \pt(z, y), \pt(X, y)) 
 		\end{align*}
-		Then it engages in the signature of correct computation
-	\item[Round 4]
-	\item[Round 5]
+		along with evaluations $a = \pr(z, 1), b = \pr(y, z), t = \pt(z, y)$.
+		Then it engages in the signature of correct computation playing the role of
+		the helper, i.e.~it commits to $\p{s}(X, y)$ and sends the commitment $S$.
+		Then it obtains a challenge $u$ from the verifier.
+	\item[Round 4] In the next round the prover computes $C \gets \com(\crs,
+		\dconst, \p{s}(u, x)) \cdot \gone{\p{s}(u, x)}$ and compute commitments'
+		openings 
+		\begin{align*}
+			W & = \open(\crs, u, \p{s}(X, y)), \\
+			Q & = \open(\crs, y, \p{s}(u, Y)),
+		\end{align*}
+		and returns $W, Q, \p{s}(u, y)$. Eventually the prover gets the last
+		challenge from the verifier---$z$.
+	\item[Round 5] In the final round, $\prover$ computes opening $Q_z =
+		\open(\crs, z, \p{s}(u, X))$ and outputs $Q_z$ and $\p{s}(u, z)$. 
 \end{description}
-	\ncase{$\sonic$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$}
 
+	\ncase{$\sonic$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$}
+	The verifier in \sonic{} runs as subroutines the verifier for the polynomial
+	commitment. That is it sets $t = a(b + s) - \p{k}(y)$ and checks the following:
+	\begin{equation*}
+		\begin{split}
+		&\PCOMs.\verifier(\crs, \multconstr, R, z, a, W_a), \\
+		&\PCOMs.\verifier(\crs, \multconstr, R, z, a, W_a),\\
+		&\PCOMs.\verifier(\crs, \dconst, T, z, t, W_t),\\	
+		\end{split}
+		\qquad
+		\begin{split}
+		&\PCOMs.\verifier(\crs, \dconst, S, u, s, W),\\
+		&\PCOMs.\verifier(\crs, \dconst, C, y, s, Q),\\
+		&\PCOMs.\verifier(\crs, \dconst, C, z, s_z, Q_z),
+		\end{split}
+	\end{equation*}
+	and accepts the proof iff all the checks holds.
+	
 	\section{Omitted lemmas and proofs}
 	\begin{lemma}
 			\label{lem:root_prob}
