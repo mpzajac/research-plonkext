@@ -517,7 +517,7 @@ $\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We d
 			
 			\pchspace
 			
-			\procedure{$\com(\crs, \p{f}(X))$}
+			\procedure{$\com(\crs, \maxconst, \p{f}(X))$}
 			{
 				\p{c}(X) \gets \alpha \cdot X^{\dconst - \maxconst} \p{f}(X) \\ [\myskip]
 				\pcreturn \gone{c} = \gone{\p{c}(\chi)}\\ [\myskip]
@@ -2037,14 +2037,26 @@ equals
 		\vec{c} \cdot \vec{\p{w}}(Y) +	
 		\sum_{i = 1}^{\multconstr} a_i b_i (Y^i + Y^{-i}) - \p{k}(Y), 
 \end{equation}
-for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y)$ defined as 
-\begin{align*}
-		\p{u_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} u_{q, i}\\
-		\p{v_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} v_{q, i}\\
+for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ defined as 
+\begin{equation}
+	\begin{split}
+		\p{u_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} u_{q, i}\,,\\
+		\p{v_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} v_{q, i}\,,\\
+	\end{split}
+	\qquad
+	\begin{split}
 		\p{w_i}(Y) & = -Y^i - Y^{-i}  + \sum_{q = 1}^\linconstr Y^{q +
-		\multconstr} w_{q, i}\\
+		\multconstr} w_{q, i}\,,\\
 		\p{k}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} k_{q}.
-\end{align*}
+	\end{split}
+\end{equation}
+% \begin{align*}
+% 		\p{u_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} u_{q, i}\\
+% 		\p{v_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} v_{q, i}\\
+% 		\p{w_i}(Y) & = -Y^i - Y^{-i}  + \sum_{q = 1}^\linconstr Y^{q +
+% 		\multconstr} w_{q, i}\\
+% 		\p{k}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} k_{q}.
+% \end{align*}
 Vectors $\vec{u_q}, \vec{v_q}, \vec{w_q}$ are $\multconstr$-elements long
 and correspond to the linear constrains of the proof system. Field element
 $k_{q}$ is
@@ -2071,7 +2083,7 @@ a root is at least $\infrac{1}{\dconst !}$, see \cref{lem:root_prob} for a
 proof of that bound. Since we assume that $\dconst =
 \poly$, we can say that the polynomial $\ptxsim$ picked by the simulator
 has roots with non-negligible probability. Furthermore, these roots can be
-found and are random $\FF_p$ elements. Hence, the $y$ picked by the simulator
+found and are random $\FF_p$ elements. Hence, the challenge $y$ picked by the simulator
 comes from the same distribution as if it was picked by an honest verifier.
 
 The simulator continues building the transcript by honestly computing prover's
@@ -2270,13 +2282,13 @@ The verification equation is a batched version of the verification equation from
 
 Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the simulator of \plonk{} works, it is presented here.
 
-\ncase{$\plonk$ simulator $\simulator(\REL, \crs, \td, \inp)$}
+\ncase{$\plonk$ simulator $\simulator_\chi(\REL, \crs, \td, \inp)$}
 % \paragraph{Simulation in \plonk.}
 % The simulator $\simulator$ in $\plonk$ proceeds according to the following steps:
 \begin{description}
 	\item[Round 1]
 	Since the simulator does not know a witness $\wit$ for the proven statement
-	$\inp$, $\simulator$ cannot compute the output of this round accordingly to
+	$\inp$, $\simulator_\chi$ cannot compute the output of this round accordingly to
 	the protocol. Instead, it picks randomly both the randomisers $b_1, \ldots, b_6$ and evaluations of polynomials $\p{a}, \p{b}, \p{c}$ by picking their coefficients randomly and outputting $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
 	\item[Round 2]
 	The simulator takes permutation argument challenges $\beta, \gamma$ as a random oracle output in the ongoing proof.
@@ -2285,7 +2297,7 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	In this round the simulator starts by picking at random a challenge $\chz$ that will be later used to program a random oracle.
 	Then it computes evaluations $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \pubinppoly(\chz), \lag_1(\chz), \p{Z_H}(\chz),\allowbreak \p{z}(\chz\omega)$
 	
-	Given the evaluations $\simulator$ computes polynomial $\p{r}(X)$ honestly, i.e.
+	Given the evaluations $\simulator_\chi$ computes polynomial $\p{r}(X)$ honestly, i.e.
 	\[
 		\p{r}(X) = 
 		\begin{aligned}
@@ -2298,11 +2310,12 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	and evaluates $\p{r}(X)$ at $\chz$.
 	
 	In the next step the simulator computes $\ev{t}$ as the verifier would compute in Step 8.
-	Next, $\simulator$ picks randomly a polynomial $\p{t}$ such that $\p{t} (\chz) = \ev{t}$.
+	Next, $\simulator_\chi$ picks randomly a polynomial $\p{t}$ such that $\p{t} (\chz) = \ev{t}$.
 	The simulator concludes this round as an honest prover would by dividing $\p{t}$ into $\p{t_{hi}}, \p{t_{mid}}, \p{t_{lo}}$ and outputting $\gone{\p{t_{hi}}(\chi), \p{t_{mid}}(\chi), \p{t_{lo}}(\chi)}$. 
 	\item[Round 4]
 	The simulator program random oracle to return $\chz$ when queried on the current state of the transcript. 
-	Since the necessary evaluations at $\chz$ are already computed, $\simulator$ simply outputs 
+	Since the necessary evaluations at $\chz$ are already computed,
+	$\simulator_\chi$ simply outputs 
 	\[
 		\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega)\,.
 	\]
@@ -2311,22 +2324,31 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	\end{description}
 
 	\section{$\sonic$ protocol rolled out}
-	\label{sec:sonic}
-	%\ncase{$\sonic$ simulator $\simulator(\REL, \crs, \inp, \zkproof)$}
-	%$\sonic$'s simulator proceeds as an honest prover except its behaviour in
-	%Round 1 and setting a challenge after that round. Then it picks verifier's
-	%challenges randomly and answers them honestly.
-	%\begin{description}
-	%		\item[Round 1] Pick $\vec{a}, \vec{b}$ randomly and set $\vec{c} =
-	%				\vec{a} \cdot \vec{b}$. Honestly computes polynomials $\p{r}(X, Y),
-	%				\p{r'}(X, Y), \p{s}(X, Y)$ and $\p{t}(X, Y)$. Commits to $\p{r}(X,
-	%				1)$ and publishes the commitment. 
-	%		\item[Round 1 challenge] compute and output as a challenge $y$ such that
-	%				$\p{t}(X, y)$ is a polynomial with $0$ coefficient next to $X^0$. If
-	%				$\simulator$ fails to find appropriate $y$, e.g.~because the created
-	%				polynomial $\p{t}$ has no zero points, then it reverts to Round 1
-	%				above and picks fresh $\vec{a}$ and $\vec{b}$.
-	%\end{description}
+	\label{sec:sonic_explained}
+	\ncase{$\sonic$ prover $\prover(\REL, \crs, \inp, \wit=\va, \vb,
+	\vc)$}
+\begin{description}
+	\item[Round 1]
+		The prover picks randomly randomisers $c_{\multconstr + 1}, c_{\multconstr + 2},
+		c_{\multconstr + 3}, c_{\multconstr + 4} \sample \FF_p$. Set $\pr(X, Y)
+		\gets \pr(X, Y) + \sum_{i = 1}^4 c_{\multconstr + i} X^{- 2 \multconstr -
+		i}$. Commit to $\pr(X, 1)$ by setting and outputting $R \gets \com(\crs, \multconstr,
+		\pr(X, 1))$.
+		Then it gets challenge $y$ from the verifier.
+	\item[Round 2] $\prover$ commits to $\pt(X, y)$ by setting and outputting $T
+		\gets \com(\crs, \dconst, \pt(X, y))$. Then it gets a challenge $z$ from
+		the verifier.
+	\item[Round 3] The prover computes commitment openings. That is, it outputs
+		\begin{align*}
+			W_a & = \open(\crs, z, \pr(z, 1), \pr(X, 1)) \\
+			W_b & = \open(\crs, yz, \pr(yz, 1), \pr(X, 1)) \\
+			W_t & = \open(\crs, z, \pt(z, y), \pt(X, y)) 
+		\end{align*}
+		Then it engages in the signature of correct computation
+	\item[Round 4]
+	\item[Round 5]
+\end{description}
+	\ncase{$\sonic$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$}
 
 	\section{Omitted lemmas and proofs}
 	\begin{lemma}
