@@ -540,7 +540,7 @@ $\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We d
 			
 			\pchspace
 			
-			\procedure{$\verify(\crs, \gone{c}, \maxconst, z, s, \gone{\p{o}(\chi)})$}
+			\procedure{$\verify(\crs, \maxconst, \gone{c}, z, s, \gone{\p{o}(\chi)})$}
 			{
 				\pcif \gone{\p{o}(\chi)} \bullet \gtwo{\alpha \chi} + \gone{s - z \p{o}(\chi)} \bullet \gtwo{\alpha} = \\ [\myskip]
 				\pcind \gone{c} \bullet \gtwo{\chi^{- \dconst + \maxconst}} \pcthen  \pcreturn 1\\ [\myskip]
@@ -1412,7 +1412,13 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	
 	\ncase{Step 1} First, consider a case where the commitment is limited to commit to multiple polynomials which are evaluated at the same point $z$. 
 	As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound
-  the probability of the adversary succeeding using the idealised verification equation---which considers equality between polynomials---instead of the real verification equation---which consider equality of the polynomials' evaluations.
+  the probability of the adversary succeeding using the idealised verification
+	equation---which considers equality between polynomials---instead of the
+	real verification equation---which consider equality of the polynomials'
+	evaluations. This holds since an adversary that manages to provide a
+	commitment opening that holds for the real verifier, but does not hold for
+	the idealised verifier can be used to break the dlog assumption and reveal
+	the secret trapdoor used to produce the commitment's CRS. 
 	
 	For polynomials $\vec{f} = f_1, \ldots, f_k$, evaluation point $z$, evaluation result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $o(X)$ the idealised check verifies that
 	\begin{equation}
@@ -1677,7 +1683,8 @@ computes the CRS $\crs$ from $\chi$ and sets
 %	\range{1}{9}, u_1 \sample \FF_p
 \]
 for $i \in \range{1}{9}$ and $\xi_i, \zeta_i \sample \FF_p$. 
-Then it computes all $\gone{\tb_i \tb_j}, \gone{\tb_i \tb_j \tb_k} \in \pR$
+Then it computes all $\gone{\tb_i \tb_j}, \gone{\tb_i \tb_j \tb_k}$ such that
+$\gone{B_i B_j, B_i B_j B_k} \in \pR$
 and sets $\gone{\tw} = \gone{\tb_1 \tb_3 \tb_5 \tb_7}$, where $\gone{b_1
 b_3 b_5 b_7}$ is substituted by $\gone{w}$.
 Next it runs the adversary $\adv(\REL, \crs)$ and obtains from $\adv$ an
@@ -1906,7 +1913,7 @@ $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
 	As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound
   the probability of the adversary succeeding using the idealised verification equation---which considers equality between polynomials---instead of the real verification equation---which consider equality of the polynomials' evaluations.
 	
-	For a polynomial $f$, evaluation point $z$, evaluation result $s$, and opening $o(X)$ the idealised check verifies that
+	For a polynomial $f$, its degree upper bound $\maxconst$, evaluation point $z$, evaluation result $s$, and opening $o(X)$ the idealised check verifies that
 	\begin{equation}
 		\alpha (X^{\dconst - \maxconst}f(X) \cdot X^{-\dconst + \maxconst} -  s) \equiv \alpha \cdot o(X) (X - z)\,,
 	\end{equation}
@@ -2287,6 +2294,7 @@ The verification equation is a batched version of the verification equation from
 
 Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the simulator of \plonk{} works, it is presented here.
 
+\COMMENT{
 \ncase{$\plonk$ simulator $\simulator_\chi(\REL, \crs, \td, \inp)$}
 % \paragraph{Simulation in \plonk.}
 % The simulator $\simulator$ in $\plonk$ proceeds according to the following steps:
@@ -2327,6 +2335,7 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	\item[Round 5]
 	In this round the simulator proceeds as an honest prover would.
 	\end{description}
+}
 
 	\section{$\sonic$ protocol rolled out}
 	\label{sec:sonic_explained}
