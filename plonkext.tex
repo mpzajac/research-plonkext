@@ -388,7 +388,8 @@ Similarly for applying $f$ to $\pS$ and $\pT$.
 The original (decisional) uber assumption by Boneh et al.~states that for
 type-III pairings:
 
-\begin{definition}[$(\pR, \pS, \pT, \p{f})$-original uber assumption]
+\begin{definition}[$(\pR, \pS, \pT, \p{f})$-uber assumption
+	\cite{EC:BonBoyGoh05}]
 	\label{def:uber_assumption_orig}
 	Let $\pR, \pS, \pT$, $(x', x_1, \ldots, x_c) \sample \FF_p^{c + 1}$ and let
 	$\p{f}$ be independent on $(\pR, \pS, \pT)$.
@@ -2112,6 +2113,21 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
 
 \section{$\plonk$ protocol rolled out}
 \label{sec:plonk_explained}
+\ncase{$\plonk$ CRS generating algorithm $\kgen(\secparam)$}
+For the sake of simplicity of security reductions presented in this paper, we
+describe here a simplified CRS generating algorithm which produces only
+these CRS elements that cannot be computed without knowing the secret trapdoor
+$\chi$. The rest of the preprocessed input, as it is called in
+\cite{EPRINT:GabWilCio}, can be computed using these CRS elements thus we leave
+them to be computed by the prover, verifier, and simulator. 
+
+The CRS generating algorithm picks at random $\chi \sample \FF_p$, computes
+and outputs
+\[
+	\crs = \left(\gone{\smallset{\chi^i}_{i = 0}^{\numberofconstrains + 2}},
+	\gtwo{\chi} \right).
+\]
+
 \ncase{$\plonk$ prover $\prover(\REL, \crs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \numberofconstrains}})$}
 \begin{description}
 	\item[Round 1] 
@@ -2312,7 +2328,7 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the 
 	In this round the simulator proceeds as an honest prover would.
 	\end{description}
 
-	\section{$\sonic$ explained}
+	\section{$\sonic$ protocol rolled out}
 	\label{sec:sonic_explained}
 	\subsection{The constraint system}
 	\label{sec:sonic_constraint_system}
@@ -2349,6 +2365,15 @@ In \sonic{} we will use commitments to the following polynomials.
 \end{align*}
 	
 	\subsection{Algorithms rolled out}
+	\ncase{$\sonic$ CRS generation $\kgen(\secparam)$}
+	The CRS generating algorithm picks randomly $\alpha, \chi \sample \FF_p$ and
+	outputs 
+	\[
+		\crs = \left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
+			\smallset{\alpha \chi^i}_{i = -\dconst, i \neq 0}^{\dconst}},
+			\gtwo{\smallset{\chi^i, \alpha \chi^i}_{i = - \dconst}^{\dconst}},
+		\gtar{\alpha} \right)
+	\]
 	\ncase{$\sonic$ prover $\prover(\REL, \crs, \inp, \wit=\va, \vb,
 	\vc)$}
 \begin{description}
