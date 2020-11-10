@@ -1215,11 +1215,31 @@ follows the definition below:
 
 \begin{definition}[$\ur{i}$-protocol]
 	\label{def:wiur}
-	Let $\proofsystem$ be a $2\mu$-round proof system.
+	Let $\proofsystem$ be a $2\mu$-round proof system $\ps = (\kgen, \prover,
+	\verifier, \simulator)$.
 	Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier.
 	We say that $\proofsystem$ has \emph{unique responses after $i$}
-	if after submitting its $i$-th message $a_i$ the prover is a deterministic
-	function. That is, it does not use its randomness tape and deterministically answers verifier's challenges.
+	if 
+	\[
+		\prob{
+			\begin{aligned}
+			&	(a_0, b_0, \ldots, a_j, b_j, a_\mu), (a'_0, b'_0, \ldots, a'_j,
+		b'_j a'_\mu) \gets \adv(\REL, \crs) \\
+			& b_k = b'_k, k \in \range{1, \mu - 1}, a_l = a'_l, l \in
+		\range{1}{j}, j > i 
+			\end{aligned}
+			\left\ |\  
+		\vphantom{\begin{aligned}
+		&	(a_0, b_0, \ldots, a_j, b_j, a_\mu), (a'_0, b'_0, \ldots, a'_j,
+	b'_j a'_\mu) \gets \adv(\REL, \crs) \\
+		& b_k = b'_k, k \in \range{1, \mu - 1}, a_l = a'_l, l \in
+	\range{1}{j}, j > i 
+		\end{aligned}}
+		\crs \gets \kgen(\REL) \right.
+	} \leq \negl
+	\]
+% 	if after submitting its $i$-th message $a_i$ the prover is a deterministic
+% 	function. That is, it does not use its randomness tape and deterministically answers verifier's challenges.
 \end{definition}
 \begin{example}
 	The Schnorr protocol is $\ur{1}$. That is, after submitting its first message $a$, the prover is a deterministic function of the instance, $a$, and the verifier's challenge.
