@@ -1030,18 +1030,16 @@ simulation extractable.
 	\label{lem:generalised_forking_lemma}
 	Fix $q \in \ZZ$ and set $H$ of size $h \geq m$. 
 	Let $\adv$ be a $\ppt$ algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$ where $i \in \range{0}{q}$ and $s$ is called a side output. 
-	Denote by $\ig$ a randomised instance generator. We denote by $\waccProb$ the probability
+	Denote by $\ig$ a randomised instance generator. We denote by $\accProb$ the probability
 	\[
 		\condprob{i \neq 0}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.
 	\]
-	Let $\genforking_{\adv}^{m}$ \markulf{03.11.2020}{Add a $m$ parameter as superscript
-  to $\genforking$?} 
-	\michals{4.11}{Done}
+	Let $\genforking_{\adv}^{m}$ 
 	denote the algorithm described in
 	\cref{fig:genforking_lemma} then the probability $\frkProb := \condprob{b =
 	1}{y \gets \ig;\ (b, \vec{s}) \gets \genforking_{\adv}^{m}(y)}$ is at least 
 	\[
-		\frac{\waccProb^m}{q^{m - 1}} - \waccProb \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)
+		\frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)
 	\]
 		
 	\begin{figure}[t]
@@ -1077,9 +1075,9 @@ simulation extractable.
 	\michals{3.08.20}{DISCLAIMER: This proof is a naive generalisation of the general forking lemma from Bellare and Neven 06. Need to check that all (in)equalities hold!}
 	We proceed similarly as in \cite{CCS:BelNev06} (with some parts taken almost verbatim).
 	
-	First let denote by $\waccProb(y)$ and $\frkProb(y)$ the following probabilities
+	First let denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
 	\begin{align*}
-		\waccProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.\\
+	\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.\\
 		\frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
 	\genforking_{\adv}^{m}(y)}\,.
 	\end{align*}
@@ -1087,23 +1085,23 @@ simulation extractable.
 	We start by claiming that for all $y$ 
 	\begin{equation}\label{eq:frkProb_y}
 		\frkProb(y) \geq 
-		\frac{\waccProb(y)^m}{q^{m - 1}} - \waccProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)
+		\frac{\accProb(y)^m}{q^{m - 1}} - \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)
 		\end{equation}
 	Then with the expectation taken over $y \sample \ig$, we have
 	\begin{align}
 		\frkProb & = \expected{\frkProb(y)} \geq
-		\expected{\frac{\waccProb(y)^m}{q^{m - 1}} -  \waccProb(y) \cdot \left(1 -
+		\expected{\frac{\accProb(y)^m}{q^{m - 1}} -  \accProb(y) \cdot \left(1 -
 		\frac{h!}{(h - m)! \cdot h^m}\right)} \label{eq:use_eq1}\\
-						 & = \frac{\expected{\waccProb(y)^m}}{q^{m - 1}} -
-						 \expected{\waccProb(y)} \cdot  \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right) \\
-		& \geq \frac{\expected{\waccProb(y)}^m}{q^{m - 1}} -
-		\expected{\waccProb(y)} \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right) \label{eq:by_lemma_jensen}\\
-		& = \frac{\waccProb^m}{q^{m - 1}} -  \waccProb \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\label{eq:by_accProb}\,.
+						 & = \frac{\expected{\accProb(y)^m}}{q^{m - 1}} -
+						 \expected{\accProb(y)} \cdot  \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right) \\
+		& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} -
+		\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right) \label{eq:by_lemma_jensen}\\
+		& = \frac{\accProb^m}{q^{m - 1}} -  \accProb \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\label{eq:by_accProb}\,.
 	\end{align}
 	Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
 	\cref{eq:by_lemma_jensen} comes from \cref{lem:jensen}; and
-	\cref{eq:by_accProb} holds by the fact that $\expected{\waccProb(y)} =
-	\waccProb$.
+	\cref{eq:by_accProb} holds by the fact that $\expected{\accProb(y)} =
+	\accProb$.
 	
 	We now show \cref{eq:frkProb_y}.
 	Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$. 
@@ -1117,10 +1115,10 @@ $\genforking_{\adv}^{m}$ we have
 		\prob{i_j \geq 1} \cdot 
 		\left(1 - \frac{h!}{(h - m)! \cdot h^m}\right) \\ 
 		& = \prob{i_j = i_{j'} \land
-		i_j \geq 1 \text{ for } (j, j') \in J} - \waccProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
+		i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
 	\end{align*}
 	It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for }
-	(j, j') \in J} \geq \infrac{\waccProb(y)^m}{q^{m - 1}}$.
+	(j, j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$.
 	Let $\RND{\adv}$ denote the set from which $\adv$ picks its coins at random.
 	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\adv} \times
 	H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
@@ -1136,7 +1134,7 @@ h_{\iota - 1})$ to \[
 		& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota} (\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\adv}} \cdot \abs{H}^{\iota - 1}}
 		= \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
 	\end{align*}
-	Importantly, $\sum_{\iota = 1}^q \expected{X_{\iota}} = \waccProb(y)$.
+	Importantly, $\sum_{\iota = 1}^q \expected{X_{\iota}} = \accProb(y)$.
 	
 	By \cref{lem:jensen} we get
 	\[
@@ -1148,12 +1146,12 @@ h_{\iota - 1})$ to \[
 	\begin{gather}
 		\sum_{i = 1}^{q} \expected{X_i}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right)^{\frac{1}{m}} \cdot \left(\sum_{i = 1}^{q} 1^\frac{m}{m - 1}\right)^{\frac{m - 1}{m}} \label{eq:tightness} \\
 		\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
-		\frac{1}{q^{m - 1}} \cdot \waccProb(y)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
+		\frac{1}{q^{m - 1}} \cdot \accProb(y)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
 	\end{gather}
 	Finally, we get
 	\[
-		\frkProb(y) \geq \frac{\waccProb(y)^m}{q^{m - 1}} - 
-		 \waccProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
+		\frkProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
+		 \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
 	\]
 	\qed
 \end{proof}
