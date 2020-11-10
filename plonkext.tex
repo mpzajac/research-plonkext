@@ -44,7 +44,7 @@
 % \usepackage{subcaption}
 \usepackage{bm}
 \usepackage{url}
-
+\usepackage{dirtytalk}
 \include{macros}
 
 \title{On Simulation-Extractability of Updatable Universal zkSNARKs}
@@ -76,9 +76,71 @@
 	$\plonk{}$ is simulation-sound.  
 \end{abstract}
 
-\section{Introduction} \subsection{Motivation} \paragraph{The rise of updatable
-zkSNARKs.} \cite{C:GKMMM18} \cite{EC:CHMMVW20} \cite{CCS:MBKM19}
-\cite{EPRINT:GabWilCio19} \cite{EPRINT:Gabizon19c} \cite{EPRINT:Lipmaa19a}
+\section{Introduction} 
+\subsection{Motivation} 
+\paragraph{The rise of updatable
+zkSNARKs.} 
+Recent years shown indisputable progress in building efficient zero-knowledge
+proof systems,
+e.g.~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16}
+to name a few. Special attention has been devoted to design new
+\emph{zero-knowledge succinct arguments of knowledge} (zkSNARKs) which are
+especially useful for their short (usually constant-length) proofs.
+That property makes zkSNARKs especially useful in real-life system deployment,
+e.g.~\hl{cite zerocash, zexe, celo}. This is turn risen a question---\emph{Are
+ zkSNARKs' security models useful in the real life?} This question is
+especially valid when we realise that all zkSNARKs that have constant-sized
+proofs are shown secure in the common reference string (CRS) model where the
+CRS used by the parties, i.e.~a prover that shows veracity of a statement
+using his private input called \emph{witness} and
+a verifier that verifies it, comes with a trapdoor which can be used to
+convince the verifier to accept a false statement or to accept a statement
+which the prover does not know the witness for. Hence crucial is a
+question---How can the parties be sure that the trapdoor has not leaked? Who
+is the party that generates the CRS? Can this party be trusted? The security
+model requires that as otherwise that CRS-generating party may leak the
+trapdoor. This questions are especially important in zero knowledge proofs
+used in distributed systems, like e.g.~blockchains, where assumption that a
+trusted party generates the CRS may be a step too far and subvert the
+whole purpose of a decentralised system. 
+
+First who tackled this question were Bellare et al.~\cite{AC:BelFucSca16} who
+proposed notions of \emph{subversion zero knowledge} and \emph{subversion
+soundness}. The former states that zero knowledge property persists even when
+the CRS is produced by a malicious party, the latter states that the proof
+system remain sound in the same situation. Importantly, Bellare et al.~shown
+that no system can be mutually subversion zero-knowledge and subversion-sound.
+Abdolmaleki et al.~\cite{AC:ABLZ17}, and independently Fuchsbauer
+\cite{PKC:Fuchsbauer18}, shown that the most
+efficient zkSNARK for QAP\footnote{QAP stands for Quadratic Arithmetic
+Program. QAP is currently the most efficient representation of arithmetic
+circuits for showing their validity.} by Groth \cite{EC:Groth16} can be made
+subversion zero-knowledge by making minor modifications to its CRS and without
+sacrificing its efficiency.
+
+Although efficient, Groth's zkSNARK comes with a drawback---the CRS is
+relation-dependent. That is, if one wants to show that two arithmetic circuits
+have been evaluated correctly, it has to do that using two different CRS-s. We
+say that such a zkSNARK is not universal. Since CRS generation is a
+troublesome process it is desired to have it been performed once, not every
+time a new circuit validity has to be shown. One of the first universal
+zkSNARK was proposed by Groth et al.~\cite{C:GKMMM18}. This particular proof
+system also introduced a new security property, i.e.~updatable soundness.
+Since \cite{AC:BelFucSca16} impossibility result holds, one cannot wish for a
+system that is simultaneously subversion zero-knowledge and subversion-sound.
+Groth et al.~work around this problem by proposing a notion which allows
+zkSNARK provers to \emph{update} the CRS, i.e.~take an old CRS and modify it
+in a well-defined way to obtain a new CRS. If at least one of the CRS-updating
+parties  is honest then the CRS assures soundness. Furthermore, the system
+proposed is subversion zero-knowledge. Although inefficient, as the CRS length
+is quadratic to the size of the proven statements, \cite{C:GKMMM18} sets a new
+paradigm for designing zkSNARKs.
+
+The first zkSNARK that had updatable and short CRS and was universal was
+$\sonic$ proposed by Maller et al.~in \cite{CCS:MBKM19} (the scheme was later
+improved by Gabizon in \cite{EPRINT:Gabizon19c}) 
+
+\cite{EC:CHMMVW20} \cite{EPRINT:GabWilCio19} 
 
 \markulf{03.11.2020}{Better to introduce abbreviations such as NIZK and SNARK,
   UC ... even if they seem obvious to us.}
@@ -103,24 +165,24 @@ extractable NIZK is universally-composable (UC) secure
 notion of (black-box) \emph{true simulation extractability} and showed that no
 NIZK can be UC-secure if it does not have this property. 
 
-In the context of zkSNARKs it is important to mention such works as Kosba's et
-al.~\cite{EPRINT:KZMQCP15} who show a general transformation from a NIZK
-to a black-box SE NIZK. Although their transformation works for zkSNARKs
-as well, succinctness of the proof system is not preserved as the witness
-is encrypted. 
+In the context of zkSNARKs it is important to mention such works the first
+simulation-extractable zkSNARK by Groth and Maller \cite{C:GroMal17} and SE
+zkSNARK for QAP by Lipmaa \cite{EPRINT:Lipmaa19a}. Kosba's et
+al.~\cite{EPRINT:KZMQCP15} shown a general transformation from a NIZK to a
+black-box SE NIZK. Although their transformation works for zkSNARKs as well,
+succinctness of the proof system is not preserved as the witness is encrypted.
 Abdolmaleki et al.~\cite{EPRINT:AbdRamSla20} shown another transformation that
-obtains non-black-box simulation extractability but also preserves succinctness
-of the argument.
+obtains non-black-box simulation extractability but also preserves
+succinctness of the argument.
 
 Independently, some authors focused on obtaining simulation extractability of
  known zkSNARKs, like $\groth$, by introducing minor modifications and using
 stronger assumptions \cite{EPRINT:BowGab18,EPRINT:AtaBag19}. Interestingly,
 although such modifications hurt performance of the proof system the resulting
-zkSNARKs are still more efficient than the first SE zkSNARK proposed in
-\cite{C:GroMal17}, see \cite{EPRINT:AtaBag19}.  
-Recently, \cite{EPRINT:BKSV20} shown that the original Groth's proof
-system from \cite{EC:Groth16} is weakly SE and randomisable.  
-\markulf{03.11.2020}{Cite weakSE e-print
+zkSNARKs are still more efficient than the first SE zkSNARK \cite{C:GroMal17},
+see \cite{EPRINT:AtaBag19}. Recently, \cite{EPRINT:BKSV20} shown that the
+original Groth's proof system from \cite{EC:Groth16} is weakly SE and
+randomisable.  \markulf{03.11.2020}{Cite weakSE e-print
 paper?}\michals{4.11.20}{Done}
 
 \paragraph{State of the art---simulation-extractable updatable zkSNARKs.} 
@@ -1562,6 +1624,7 @@ from a real proof is upper-bounded by $\epszk + \epsuber$.
 
 	\ngame{0} In this game $\adv(\REL, \crs)$ picks an instance--witness
 	pair $(\inp, \wit)$ and gets a real proof $\zkproof$ for it.
+	
 	\ngame{1} In this game for $\adv(\REL, \crs)$ picks an instance--witness
 	pair $(\inp, \wit)$ and gets a proof $\zkproof$ that is simulated by a simulator
 	$\simulator_\chi$ that utilises for the simulation the CRS trapdoor and
@@ -1674,12 +1737,12 @@ Variables $\vB$ are evaluated to randomly picked $\vb = b_1, \ldots
 b_9$.
 
 The reduction $\rdv$ learns $\gone{\pR}$ and challenge $\gone{w}$
-where $w$ is either $\pf(\vb) = b_1 b_3 b_4 b_7$ or a random value. Then it picks $\chi$,
+where $w$ is either $\pf(\vb) = b_1 b_3 b_5 b_7$ or a random value. Then it picks $\chi$,
 $\chz$,
 computes the CRS $\crs$ from $\chi$ and sets
 \[
 	\gone{\tb_i} =  (\chi - \chz)(\chi - \ochz) \gone{b_i} + \xi_i (\chi - \chz)
-	\gone{1} + \zeta (\chi - \ochz) \gone{1}, % \text{ for } i \in
+	\gone{1} + \zeta_i (\chi - \ochz) \gone{1}, % \text{ for } i \in
 %	\range{1}{9}, u_1 \sample \FF_p
 \]
 for $i \in \range{1}{9}$ and $\xi_i, \zeta_i \sample \FF_p$. 
