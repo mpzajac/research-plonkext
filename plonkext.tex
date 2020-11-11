@@ -2146,7 +2146,8 @@ property of the used polynomial commitment scheme $\PCOMs$.
 
 \subsection{Honest Verifier Zero-Knowledge}
 \begin{lemma}
-	$\sonic$ is honest verifier zero-knowledge in the standard model.	
+	$\sonic$ is honest verifier
+	zero-knowledge.	
 \end{lemma}
 % Here we show that $\sonic$ is trapdoor-less zero-knowledge.
 \begin{proof}
@@ -2156,11 +2157,15 @@ In the first round, it picks randomly vectors $\vec{a}$, $\vec{b}$ and sets
 		\label{eq:ab_eq_c}
 		\vec{c} = \vec{a} \cdot \vec{b}. 
 \end{equation}
-Then it honestly computes polynomials
+Then it pick randomisers $c_{\multconstr + 1}, \ldots, c_{\multconstr
++ 4}$, honestly computes polynomials
 $\p{r}(X, Y), \p{r'}(X, Y), \p{s}(X, Y)$ and $\p{t}(X, Y)$ and concludes the
-first round as an honest prover would. 
+first round as an honest prover would. Because of the randomisers used
+polynomial $\pr(X, Y)$ computed by the simulator is indistinguishable from a
+polynomial provided by an honest user for a distinguisher that has less than
+three evaluations of $\pr(X, Y)$. 
 
-$\simulator$ computes the first verifier's challenge $y$ such that $\p{t}(X,
+Next, $\simulator$ computes the first verifier's challenge $y$ such that $\p{t}(X,
 y)$ was a polynomial that has $0$ as a coefficient next to $X^0$.
 As noted in \cite{CCS:MBKM19}, the coefficient next to $X^0$ in $\p{t}(X, Y)$
 equals
@@ -2201,14 +2206,18 @@ where $\vec{\p{\tilde{w}}}(Y)$ is defined as
 \]
 Note that the polynomial from \cref{eq:x0_simpl} is a ``classical'',
 i.e.~non-Laurent, polynomial. Also, since $\vec{a}, \vec{b}$ were picked at
-random, $\p{t}(X, Y)$ is a random polynomial and also $\ptx$ and $\ptxsim$
-are. Probability that a random degree-$\dconst$ polynomial over $\FF_p[Y]$ has
-a root is at least $\infrac{1}{\dconst !}$, see \cref{lem:root_prob} for a
-proof of that bound. Since we assume that $\dconst =
-\poly$, we can say that the polynomial $\ptxsim$ picked by the simulator
+random, $\ptxsim(Y)$ is a polynomial of degree $\linconstr +
+\multconstr$ with $0$ coefficients for $Y^{i}$, for $i \in
+\range{0}{\multconstr}$. Also, $\ptxsim(Y) / Y^{\multconstr + 1}$ is
+a degree-$(\linconstr - 1)$ polynomial of random coefficients. Probability
+that a random degree-$(\linconstr - 1)$ polynomial over $\FF_p[Y]$ has a root is at
+least $\infrac{1}{(\linconstr - 1) !}$, see \cref{lem:root_prob} for a
+proof of that bound. Since we assume that $\linconstr =
+\poly$, we can say that the polynomial $\ptxsim$ as picked by the simulator
 has roots with non-negligible probability. Furthermore, these roots can be
-found and are random $\FF_p$ elements. Hence, the challenge $y$ picked by the simulator
-comes from the same distribution as if it was picked by an honest verifier.
+found and are random $\FF_p$ elements. Hence, the challenge $y$ picked by the
+simulator comes from the same distribution as if it was picked by an honest
+verifier.
 
 The simulator continues building the transcript by honestly computing prover's
 messages and by picking verifier's challenges at random. This and the fact
