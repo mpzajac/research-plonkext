@@ -34,7 +34,11 @@
 \usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
 %\pcbodylinesep=0.15\baselineskip % MK: got an undefined control sequence error
 
-\usepackage[capitalise]{cleveref} \usepackage{cite} \usepackage{booktabs}
+\usepackage[capitalise]{cleveref}
+\crefname{appendix}{Supp.~Mat.}{Sup.~Mat.}
+\Crefname{appendix}{Supp.~Mat.}{Sup.~Mat.}
+\usepackage{cite} 
+\usepackage{booktabs}
 \usepackage{paralist}
 \usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed}
 %\usepackage{setspace}
@@ -2251,9 +2255,9 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
-
+\clearpage
 \appendix
-
+{\Huge{Supplementary Material}}
 \section{$\plonk$ protocol rolled out}
 \label{sec:plonk_explained}
 \ncase{$\plonk$ CRS generating algorithm $\kgen(\secparam)$}
