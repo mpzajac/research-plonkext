@@ -310,7 +310,11 @@ We see our generalized forking lemma as contributing to a critical assessment of
 this approach. The analysis of the interactive protocol is not enough and one
 has to consider the security loss implied by the generalisation of the forking
 lemma or disclose a transformation that does not suffer from the generalisation
-inefficiency.
+inefficiency. We note that the security loss may also apply when knowledge
+soundness is proven. That is the case for $\sonic$, which security proof
+relies on so-called witness-extended emulation. Authors of $\plonk$ worked
+around this problem by showing their protocol secure directly in the algebraic
+group model.
 
 \subsubsection{Towards simulation-extractability.} Given our modified, less
 restrictive, definition for special-soundness and the unique response property, and
@@ -732,7 +736,7 @@ information---witness---of the prover.
 More precisely, let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of
 $\npol$ relations.
 Denote by $\LANG_\REL$ the language determined by $\REL$.
-Let $\prover$ and $\verifier$ be I$\ppt$ algorithms, the former called \emph{prover}
+Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
 and the latter \emph{verifier}. We allow our proof system to have a setup,
 i.e.~there is a $\kgen$ algorithm that takes as input the relation $\REL$ and
 outputs a common reference string $\crs$.
@@ -760,7 +764,7 @@ A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RE
 			that is for all $\REL \in \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
 	\[
 		\condprob{\ip{\prover (\REL, \crs, \inp, \wit)}{\verifier (\REL, \crs,
-		\inp)} = 1}{\crs \gets \kgen(\REL)} = 1\,.
+		\inp)} = 1}{\crs \gets \kgen(\secparam)} = 1\,.
 	\]
 	\item[Soundness] We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if
 			no $\ppt$ prover $\adv$ can convince an honest verifier $\verifier$ to
@@ -768,18 +772,18 @@ A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RE
 			precisely, for all $\REL \in \RELGEN(\secparam)$
 	\[
 		\condprob{\ip{\adv(\REL, \crs, \inp)}{\verifier(\REL, \crs, \inp)} =
-		1}{\crs \gets \kgen(\REL), \inp \gets \adv(\REL, \crs); \inp \not\in \LANG_\REL} \leq \negl\,;
+		1}{\crs \gets \kgen(\secparam), \inp \gets \adv(\REL, \crs); \inp \not\in \LANG_\REL} \leq \negl\,;
 	\]
 	\item[Zero knowledge] We call an interactive proof system $\proofsystem$
 		\emph{zero-knowledge} if for any $\REL \in \RELGEN(\secparam)$, $(\inp,
 		\wit) \in \REL$, and adversary $\adv$ there exists a $\ppt$ simulator $\simulator$ such that
 	\begin{multline*}
 	  \left\{\ip{\prover(\REL, \crs, \inp, \wit)}{\adv(\REL, \crs, \inp, \wit)}
-	\,\left|\, \crs \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
+			\,\left|\, \crs \gets \kgen(\secparam)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
 \crs)}\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
 		\\
 		\left\{\simulator^{\adv}(\REL, \crs, \inp)\,\left|\, \crs \gets
-\kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
+			\kgen(\secparam)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
 \crs)}\vphantom{\simulator^\adv}\right.\right\}\,.  
 \end{multline*}
 	%
@@ -913,7 +917,7 @@ statements it wishes.
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
-			& \crs \gets \kgen(\REL),\\
+			& \crs \gets \kgen(\secparam),\\
 			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs,
 			\ro} (\REL, \crs) 
 		\end{aligned}
@@ -929,7 +933,7 @@ statements it wishes.
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
-			& \crs \gets \kgen(\REL),\\
+			& \crs \gets \kgen(\secparam),\\
 			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs,
 			\ro} (\REL, \crs) \\
 			& \wit_\advse \gets \ext_\ss (\trans_{\advse}) 
@@ -1248,7 +1252,7 @@ follows the definition below:
 		& b_k = b'_k, k \in \range{1, \mu - 1}, a_l = a'_l, l \in
 	\range{1}{j}, j > i 
 		\end{aligned}}
-		\crs \gets \kgen(\REL) \right.
+	\crs \gets \kgen(\secparam) \right.
 	} \leq \negl
 	\]
 % 	if after submitting its $i$-th message $a_i$ the prover is a deterministic
@@ -1269,7 +1273,7 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an $(2 \mu + 1)$-round proof system for a relation $\REL$. 
 	We say that $\proofsystem$ is $(n_1, \ldots, n_\mu)$-\emph{special sound} if
 	for every $\ppt$ adversary $\adv(\REL, \crs)$, where $\crs \gets
-	\kgen(\REL)$, that produces an accepting $(n_1, \ldots, n_\mu)$-tree of transcripts $\tree$ for a statement $\inp$ there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$ with an overwhelming probability.
+	\kgen(\secparam)$, that produces an accepting $(n_1, \ldots, n_\mu)$-tree of transcripts $\tree$ for a statement $\inp$ there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$ with an overwhelming probability.
 \end{definition}
 \markulf{03.11.2020}{Do we need to provide more details on the execution
   environment of $\adv$? It is given an honestly generated CRS and a relation as
@@ -1592,7 +1596,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 \end{proof}
 
 
-\subsection{Computational Special soundness}
+\subsection{Computational special soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
 	Let $\adv$ be a $\ppt$ algebraic adversary. The probability $\epsss$ that $\adv$ breaks 
@@ -1641,7 +1645,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	\qed
 \end{proof}
 
-\subsection{Honest Verifier Zero-knowledge}
+\subsection{Honest verifier zero-knowledge}
 \begin{lemma}
 	$\plonk$ is honest verifier zero-knowledge and its simulator $\simulator$ does not
 	require a CRS trapdoor.\footnote{The simulator works as a simulator for
@@ -2099,7 +2103,7 @@ property of the used polynomial commitment scheme $\PCOMs$.
 	
 \end{proof}
 
-\subsection{Computational Special soundness}
+\subsection{Computational special soundness}
 \begin{lemma}
 		\label{lem:sonicprot_ss}
 		Let $\adv$ be a $\ppt$ algebraic adversary. The probability $\epsss$ that
@@ -2148,7 +2152,7 @@ property of the used polynomial commitment scheme $\PCOMs$.
 		\qed		
 \end{proof}
 
-\subsection{Honest Verifier Zero-Knowledge}
+\subsection{Honest verifier zero-knowledge}
 \begin{lemma}
 	$\sonic$ is honest verifier
 	zero-knowledge.	
@@ -2164,13 +2168,14 @@ In the first round, it picks randomly vectors $\vec{a}$, $\vec{b}$ and sets
 Then it pick randomisers $c_{\multconstr + 1}, \ldots, c_{\multconstr
 + 4}$, honestly computes polynomials
 $\p{r}(X, Y), \p{r'}(X, Y), \p{s}(X, Y)$ and $\p{t}(X, Y)$ and concludes the
-first round as an honest prover would. Because of the randomisers used
+first round as an honest prover would. Because of the randomisers
 polynomial $\pr(X, Y)$ computed by the simulator is indistinguishable from a
 polynomial provided by an honest user for a distinguisher that has less than
 three evaluations of $\pr(X, Y)$. 
 
 Next, $\simulator$ computes the first verifier's challenge $y$ such that $\p{t}(X,
-y)$ was a polynomial that has $0$ as a coefficient next to $X^0$.
+y)$ is a polynomial that has $0$ as a coefficient next to $X^0$. I.e.~$\pt(0,
+y) = 0$.
 As noted in \cite{CCS:MBKM19}, the coefficient next to $X^0$ in $\p{t}(X, Y)$
 equals
 \begin{equation}
@@ -2181,8 +2186,7 @@ equals
 		\vec{c} \cdot \vec{\p{w}}(Y) +	
 		\sum_{i = 1}^{\multconstr} a_i b_i (Y^i + Y^{-i}) - \p{k}(Y), 
 \end{equation}
-for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ defined
-as in \cref{sec:sonic_constraint_system}.
+for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ as defined in \cref{sec:sonic_constraint_system}.
 % \begin{align*}
 % 		\p{u_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} u_{q, i}\\
 % 		\p{v_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} v_{q, i}\\
@@ -2195,7 +2199,7 @@ and correspond to the linear constrains of the proof system. Field element
 $k_{q}$ is
 the instance value. When the proven instance is correct, $\ptx$ is a zero
 polynomial. See \cite{CCS:MBKM19} for  details.
-Also, when \cref{eq:ab_eq_c} holds, that polynomial got simplified to
+Also, when \cref{eq:ab_eq_c} holds, that polynomial simplifies to
 \begin{equation}
 		\label{eq:x0_simpl}
 		\ptxsim(Y) = \vec{a} \cdot \vec{\p{u}}(Y) + 
@@ -2210,8 +2214,8 @@ where $\vec{\p{\tilde{w}}}(Y)$ is defined as
 \]
 Note that the polynomial from \cref{eq:x0_simpl} is a ``classical'',
 i.e.~non-Laurent, polynomial. Also, since $\vec{a}, \vec{b}$ were picked at
-random, $\ptxsim(Y)$ is a polynomial of degree $\linconstr +
-\multconstr$ with $0$ coefficients for $Y^{i}$, for $i \in
+random, $\ptxsim(Y)$ is a polynomial of degree $(\linconstr +
+\multconstr)$ with $0$ coefficients for $Y^{i}$, for $i \in
 \range{0}{\multconstr}$. Also, $\ptxsim(Y) / Y^{\multconstr + 1}$ is
 a degree-$(\linconstr - 1)$ polynomial of random coefficients. Probability
 that a random degree-$(\linconstr - 1)$ polynomial over $\FF_p[Y]$ has a root is at
@@ -2252,6 +2256,8 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
 	for some negligible $\eps$, $\multconstr$ and $\linconstr$ being,
 	respectively, the multiplicative and linear constrains of the system.
 \end{corollary}
+
+\section{Further work}
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
