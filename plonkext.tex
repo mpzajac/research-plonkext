@@ -2170,8 +2170,10 @@ Then it pick randomisers $c_{\multconstr + 1}, \ldots, c_{\multconstr
 $\p{r}(X, Y), \p{r'}(X, Y), \p{s}(X, Y)$ and $\p{t}(X, Y)$ and concludes the
 first round as an honest prover would. Because of the randomisers
 polynomial $\pr(X, Y)$ computed by the simulator is indistinguishable from a
-polynomial provided by an honest user for a distinguisher that has less than
-three evaluations of $\pr(X, Y)$. 
+polynomial provided by an honest user for a distinguisher that only learns
+$R,T,a,b$ from the proof (the other proof elements are fixed by these elements
+and the public information). See~\cref{sec:sonic_constraint_system}.
+%less than three evaluations of $\pr(X, Y)$. 
 
 Next, $\simulator$ computes the first verifier's challenge $y$ such that $\p{t}(X,
 y)$ is a polynomial that has $0$ as a coefficient next to $X^0$. I.e.~$\pt(0,
@@ -2180,13 +2182,13 @@ As noted in \cite{CCS:MBKM19}, the coefficient next to $X^0$ in $\p{t}(X, Y)$
 equals
 \begin{equation}
 		\label{eq:x0}
-		\ptx (Y) = 
+		t(0,Y) = 
 		\vec{a} \cdot \vec{\p{u}}(Y) + 
 		\vec{b} \cdot \vec{\p{v}}(Y) + 
 		\vec{c} \cdot \vec{\p{w}}(Y) +	
 		\sum_{i = 1}^{\multconstr} a_i b_i (Y^i + Y^{-i}) - \p{k}(Y), 
 \end{equation}
-for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ as defined in \cref{sec:sonic_constraint_system}.
+for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ as defined in \cref{sec:sonic_constraint_system}
 % \begin{align*}
 % 		\p{u_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} u_{q, i}\\
 % 		\p{v_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} v_{q, i}\\
@@ -2194,15 +2196,15 @@ for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ as defined
 % 		\multconstr} w_{q, i}\\
 % 		\p{k}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} k_{q}.
 % \end{align*}
-Vectors $\vec{u_q}, \vec{v_q}, \vec{w_q}$ are $\multconstr$-elements long
-and correspond to the linear constrains of the proof system. Field element
+(Vectors $\vec{u_q}, \vec{v_q}, \vec{w_q}$ are $\multconstr$-elements long
+and correspond to the $Q$ linear constrains of the proof system. Field element
 $k_{q}$ is
-the instance value. When the proven instance is correct, $\ptx$ is a zero
+the instance value). When the proven instance is correct, $t(0,Y)$ is a zero
 polynomial. See \cite{CCS:MBKM19} for  details.
 Also, when \cref{eq:ab_eq_c} holds, that polynomial simplifies to
 \begin{equation}
 		\label{eq:x0_simpl}
-		\ptxsim(Y) = \vec{a} \cdot \vec{\p{u}}(Y) + 
+		t(0,Y) = \vec{a} \cdot \vec{\p{u}}(Y) + 
 		\vec{b} \cdot \vec{\p{v}}(Y) + 
 		\vec{c} \cdot \vec{\p{\tilde{w}}}(Y)	
 		- \p{k}(Y), 
@@ -2213,26 +2215,29 @@ where $\vec{\p{\tilde{w}}}(Y)$ is defined as
 		\multconstr} w_{q, i}\,.
 \]
 Note that the polynomial from \cref{eq:x0_simpl} is a ``classical'',
-i.e.~non-Laurent, polynomial. Also, since $\vec{a}, \vec{b}$ were picked at
-random, $\ptxsim(Y)$ is a polynomial of degree $(\linconstr +
+i.e.~non-Laurent, polynomial. Also,  $t(0,Y)$ is a polynomial of degree $(\linconstr +
 \multconstr)$ with $0$ coefficients for $Y^{i}$, for $i \in
-\range{0}{\multconstr}$. Also, $\ptxsim(Y) / Y^{\multconstr + 1}$ is
-a degree-$(\linconstr - 1)$ polynomial of random coefficients. Probability
-that a random degree-$(\linconstr - 1)$ polynomial over $\FF_p[Y]$ has a root is at
-least $\infrac{1}{(\linconstr - 1) !}$, see \cref{lem:root_prob} for a
-proof of that bound. Since we assume that $\linconstr =
-\poly$, we can say that the polynomial $\ptxsim$ as picked by the simulator
-has roots with non-negligible probability. Furthermore, these roots can be
-found and are random $\FF_p$ elements. Hence, the challenge $y$ picked by the
-simulator comes from the same distribution as if it was picked by an honest
-verifier.
+\range{0}{\multconstr}$. Also, since $\vec{a}, \vec{b}$ were picked at
+random, $t(0,Y) / Y^{\multconstr + 1}$ is
+a degree-$(\linconstr - 1)$ polynomial of random coefficients. Recall, that the
+view of the adversary is independent of $\vec{a}, \vec{b}$ because of randomisers $c_{\multconstr + 1}, \ldots, c_{\multconstr
+  + 4}$.
 
-The simulator continues building the transcript by honestly computing prover's
-messages and by picking verifier's challenges at random. This and the fact
-that $\ptxsim(y) = 0$ assures that the transcript
-provided by the simulator is acceptable and comes from the same distribution
-as a transcript prepared by an honest prover and verifier.
-\qed
+The probability that a random degree-$(\linconstr - 1)$ polynomial over
+$\FF_p[Y]$ has a root is at least $\infrac{1}{(\linconstr - 1) !}$, see
+\cref{lem:root_prob} for a proof of that bound. Since we assume that $\linconstr
+= \poly$, we can say that the polynomial $t(0,Y)$ as computed by the simulator
+has roots with non-negligible probability. Furthermore, these roots can be found
+and the simulator picks fresh $\vec{a}, \vec{b}$ until $t(0,Y)$ has a root. As
+the roots of a random polynomial are themselves random $\FF_p$ element, the
+challenge $y$ picked by the simulator comes from the same distribution as if it
+was picked by an honest verifier.
+
+The simulator continues building the transcript by honestly computing the
+prover's messages and by picking verifier's challenges at random. This and the
+fact that $t(0,y) = 0$ guarantees that the transcript provided by the simulator is
+acceptable and comes from the same distribution as a transcript of an honest
+prover and verifier. \qed
 \end{proof}
 
 \subsection{From special-soundness and unique response property to simulation extractability of $\sonicprotfs$}
@@ -2571,7 +2576,7 @@ In \sonic{} we will use commitments to the following polynomials.
 	\begin{equation*}
 		\begin{split}
 		&\PCOMs.\verifier(\crs, \multconstr, R, z, a, W_a), \\
-		&\PCOMs.\verifier(\crs, \multconstr, R, z, a, W_a),\\
+		&\PCOMs.\verifier(\crs, \multconstr, R, yz, b, W_b),\\
 		&\PCOMs.\verifier(\crs, \dconst, T, z, t, W_t),\\	
 		\end{split}
 		\qquad
