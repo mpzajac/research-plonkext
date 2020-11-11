@@ -63,21 +63,18 @@
 \begin{document} \sloppy \maketitle
 
 \begin{abstract} 
-	In this paper we prove that two efficient updatable universal
+	In this paper we show that a wide class of (computationally) special-sound
+	proofs of knowledge which have unique response property and are
+	standard-model zero-knowledge are (non-black-box) simulation-extractable
+	when made non-interactive by the Fiat--Shamir transform.  This allows us to
+	prove that that two efficient updatable universal
 	zkSNARK---\plonk{}~\cite{EPRINT:GabWilCio19} and
-	$\sonic$~\cite{CCS:MBKM19}---are (non black-box) simulation extractable.  To
-	that end, we generalise the result by Faust et al.~\cite{INDOCRYPT:FKMV12}
-	(INDOCRYPT 2012) and show that any (computationally) special-sound proof of
-	knowledge that has the unique response property and is zero-knowledge in the
-	standard model is also simulation-extractable if made non-interactive by the
-	Fiat--Shamir transform.  We then explain why \plonk{} and \sonic{} meet
-	these requirements and conclude by showing its simulation-extractability.
-	Unfortunately, as a side result we also show that relying on rewinding and
-	Fiat--Shamir transform often comes at a great price of inefficient (yet
-	still polynomial) knowledge extraction and the security loss introduced by
-	these techniques should always be taken into account.  Because of the
-	inefficiency and loosenes of the reduction we independently show that
-	$\plonk{}$ is simulation-sound.  
+	$\sonic$~\cite{CCS:MBKM19}---meet these requirements and conclude by
+	showing their simulation-extractability.  As a side result we also show that
+	relying security on rewinding and Fiat--Shamir transform often comes at a
+	great price of inefficient (yet still polynomial time) knowledge extraction
+	and the security loss introduced by these techniques should always be taken
+	into account. 
 \end{abstract}
 
 \section{Introduction} 
@@ -1242,8 +1239,8 @@ follows the definition below:
 			\begin{aligned}
 			&	(a_0, b_0, \ldots, a_j, b_j, a_\mu), (a'_0, b'_0, \ldots, a'_j,
 		b'_j a'_\mu) \gets \adv(\REL, \crs) \\
-			& b_k = b'_k, k \in \range{1, \mu - 1}, a_l = a'_l, l \in
-		\range{1}{j}, j > i 
+			& b_k = b'_k, k \in \range{1}{\mu - 1},\ a_l = a'_l,\ l \in
+		\range{1}{j},\ j > i 
 			\end{aligned}
 			\ \left|\  
 		\vphantom{\begin{aligned}
@@ -1735,15 +1732,13 @@ from a real proof is upper-bounded by $\epszk + \epsuber$.
 
 In the next round, the simulator computes polynomial $\p{r}(X)$ as an honest
 prover would, i.e.  
-\[
+\begin{align*}
 		\p{r}(X) = 
-		\begin{aligned}
 			& \p{a}(\chz) \p{b}(\chz) \selmulti(X) + \p{a}(\chz) \selleft(X) + \p{b}(\chz) \selright(X) + \p{c}(\chz) \seloutput(X) + \selconst(X) \\
 			& + \alpha \cdot \left( (\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma)(\p{c}(\chz) + \beta k_2 \chz + \gamma) \cdot \p{z}(X)\right) \\
 			& - \alpha \cdot \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma)\beta \p{z}(\chz\omega) \cdot \p{S_{\sigma 3}}(X)\right) \\
 			& + \alpha^2 \cdot \lag_1(\chz) \cdot \p{z}(X)
-		\end{aligned}
-\]
+\end{align*}
 and evaluates $\p{r}(X)$ at $\chz$. 
 
 The rest of the evaluations are already computed, thus 
