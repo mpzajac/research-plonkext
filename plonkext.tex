@@ -83,34 +83,36 @@
 zkSNARKs.} 
 Recent years shown indisputable progress in building efficient zero-knowledge
 proof systems,
-e.g.~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16}
+e.g.~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16,SP:BBBPWM18}
 to name a few. Special attention has been devoted to design new
-\emph{zero-knowledge succinct arguments of knowledge} (zkSNARKs) which are
+\emph{zero-knowledge succinct non-interactive arguments of knowledge} (zkSNARKs) which are
 especially useful for their short (usually constant-length) proofs.
 That property makes zkSNARKs especially useful in real-life system deployment,
-e.g.~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}. This is turn risen a question---\emph{Are
- zkSNARKs' security models useful in the real life?} This question is
-especially valid when we realise that all zkSNARKs that have constant-sized
-proofs are shown secure in the common reference string (CRS) model where the
-CRS used by the parties, i.e.~a prover that shows veracity of a statement
-using its private input called \emph{witness} and
-a verifier that verifies it, comes with a trapdoor which can be used to
-convince the verifier to accept a false statement or to accept a statement
-which the prover does not know the witness for. Hence crucial is a
-question---How can the parties be sure that the trapdoor has not leaked? Who
-is the party that generates the CRS? Can this party be trusted? The security
-model requires that as otherwise that CRS-generating party may leak the
-trapdoor. This questions are especially important in zero knowledge proofs
-used in distributed systems, like e.g.~blockchains, where assumption that a
-trusted party generates the CRS may be a step too far and subvert the
-whole purpose of a decentralised system. 
+e.g.~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}.
+This is turn risen a question---\emph{Are zkSNARKs' security models useful in
+the real life?} This question becomes especially important when one realises that all
+zkSNARKs with constant-sized proofs are shown secure in the common
+reference string (CRS) model where the CRS used by the parties---i.e.~a prover
+that shows veracity of a statement using its private input called
+\emph{witness} and a verifier that verifies it---comes with a trapdoor which
+can be used to break security of the scheme. That is, convince the verifier to
+accept a false statement or a statement which the prover does not
+know the witness for. Hence before a real-life deployment of zkSNARKs one has
+to answer a number of questions---\emph{How can the parties be sure that the
+trapdoor has not leaked?} \emph{Who is the party that generates the CRS?}
+\emph{Can this party be trusted?} The last question has to be answered
+positively, as otherwise the CRS-generating party may leak the trapdoor. The
+questions are especially important in zero knowledge proofs used in
+distributed systems, like e.g.~blockchains, where assuming that a trusted
+party generates the CRS may be a step too far and subvert the whole purpose of
+a decentralised system. 
 
-First who tackled this question were Bellare et al.~\cite{AC:BelFucSca16} who
+One of the first who tackled this question were Bellare et al.~\cite{AC:BelFucSca16} who
 proposed notions of \emph{subversion zero knowledge} and \emph{subversion
 soundness}. The former states that zero knowledge property persists even when
-the CRS is produced by a malicious party, the latter states that the proof
-system remain sound in the same situation. Importantly, Bellare et al.~shown
-that no system can be mutually subversion zero-knowledge and subversion-sound.
+the CRS is produced by a malicious party. The latter states that the proof
+system remains sound in the same situation. Importantly, Bellare et al.~shown
+that no system can be simultaneously subversion zero-knowledge and subversion-sound.
 Abdolmaleki et al.~\cite{AC:ABLZ17}, and independently Fuchsbauer
 \cite{PKC:Fuchsbauer18}, shown that the most
 efficient zkSNARK for QAP\footnote{QAP stands for Quadratic Arithmetic
@@ -120,22 +122,25 @@ subversion zero-knowledge by making minor modifications to its CRS and without
 sacrificing its efficiency.
 
 Although efficient, Groth's zkSNARK comes with a drawback---the CRS is
-relation-dependent. That is, if one wants to show that two arithmetic circuits
-have been evaluated correctly, it has to do that using two different CRS-s. We
-say that such a zkSNARK is not universal. Since CRS generation is a
-troublesome process it is desired to have it been performed once, not every
-time a new circuit validity has to be shown. One of the first universal
+relation-dependent. That is, if one wants to show that two different arithmetic circuits
+have been evaluated correctly, it has to do that using two different CRS-s. 
+% We say that such a zkSNARK is not universal. 
+Since CRS generation is a
+troublesome process, it is desired to have it performed once, not every
+time a new circuit validity has to be shown. zkSNARKs that utilise a single
+CRS for all circuits of given size are called \emph{universal}. One of the first universal
 zkSNARK was proposed by Groth et al.~\cite{C:GKMMM18}. This particular proof
-system also introduced a new security property, i.e.~updatable soundness.
-Since \cite{AC:BelFucSca16} impossibility result holds, one cannot wish for a
+system also introduced a novel security property called \emph{updatable
+soundness}.
+Because of the  \cite{AC:BelFucSca16} impossibility result, one cannot wish for a
 system that is simultaneously subversion zero-knowledge and subversion-sound.
 Groth et al.~work around this problem by proposing a notion which allows
-zkSNARK provers to \emph{update} the CRS, i.e.~take an old CRS and modify it
-in a well-defined way to obtain a new CRS. If at least one of the CRS-updating
-parties  is honest then the CRS assures soundness. Furthermore, the system
-proposed is subversion zero-knowledge. Although inefficient, as the CRS length
-is quadratic to the size of the proven statements, \cite{C:GKMMM18} sets a new
-paradigm for designing zkSNARKs.
+zkSNARK provers and verifiers to \emph{update} the CRS, i.e.~to take a CRS and modify it
+in a well-defined and verifiable way to obtain a new CRS. Updates guarantee 
+that if at least one of the CRS-updating
+parties is honest then the proof system is (knowledge) sound. Although inefficient, as the CRS length
+is quadratic to the size of the proven statements, \cite{C:GKMMM18} set a new
+paradigm for designing zkSNARKs.\michals{11.11}{Ended here}
 
 The first zkSNARK that had updatable and short CRS and was universal was
 $\sonic$ proposed by Maller et al.~in \cite{CCS:MBKM19}. This scheme was later
