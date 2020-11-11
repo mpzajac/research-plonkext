@@ -141,7 +141,7 @@ $\sonic$ proposed by Maller et al.~in \cite{CCS:MBKM19}. This scheme was later
 improved by Gabizon in \cite{EPRINT:Gabizon19c}. Eventually Gabizon et
 al.~designed $\plonk$ \cite{EPRINT:GabWilCio19} which currently is the
 most efficient updatable universal zkSNARK. Independently, Chiesa et
-al.~\cite{EC:CHMMVW20} proposed $\pcvarstylescheme{Marlin}$ which efficiency
+al.~\cite{EC:CHMMVW20} proposed $\textsf{Marlin}$ which efficiency
 is comparable to $\plonk$'s.
 
 All these protocols utilise strong cryptographic assumptions like the
@@ -154,9 +154,6 @@ In this paper we provide a framework which shows that any zero-knowledge proof
 that fulfils some well-defined requirements is simulation-extractable. To show
 that the set of matching protocols is not empty we prove that both $\plonk$
 and $\sonic$ are simulation-extractable. 
-
-\markulf{03.11.2020}{Better to introduce abbreviations such as NIZK and SNARK,
-  UC ... even if they seem obvious to us.}
 
 \paragraph{On the importance of the simulation extractability.}
 Although zkSNARKs satisfy the knowledge soundness definition,
@@ -195,8 +192,7 @@ although such modifications hurt performance of the proof system the resulting
 zkSNARKs are still more efficient than the first SE zkSNARK \cite{C:GroMal17},
 see \cite{EPRINT:AtaBag19}. Recently, \cite{EPRINT:BKSV20} shown that the
 original Groth's proof system from \cite{EC:Groth16} is weakly SE and
-randomisable.  \markulf{03.11.2020}{Cite weakSE e-print
-paper?}\michals{4.11.20}{Done}
+randomisable.  
 
 \paragraph{State of the art---simulation-extractable updatable zkSNARKs.} 
 Up to our best knowledge, there are zkSNARKs that are simulation-extractable
