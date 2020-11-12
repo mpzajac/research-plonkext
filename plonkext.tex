@@ -67,11 +67,11 @@
 	proofs of knowledge which have unique response property and are
 	standard-model zero-knowledge are (non-black-box) simulation-extractable
 	when made non-interactive by the Fiat--Shamir transform.  This allows us to
-	prove that that two efficient updatable universal
+	prove that two efficient updatable universal
 	zkSNARK---\plonk{}~\cite{EPRINT:GabWilCio19} and
 	$\sonic$~\cite{CCS:MBKM19}---meet these requirements and conclude by
 	showing their simulation-extractability.  As a side result we also show that
-	relying security on rewinding and Fiat--Shamir transform often comes at a
+	basing security on rewinding and Fiat--Shamir transform often comes at a
 	great price of inefficient (yet still polynomial time) knowledge extraction
 	and the security loss introduced by these techniques should always be taken
 	into account. 
@@ -81,13 +81,12 @@
 \subsection{Motivation} 
 \paragraph{The rise of updatable
 zkSNARKs.} 
-Recent years shown indisputable progress in building efficient zero-knowledge
+In recent years we have seen indisputable progress in building efficient zero-knowledge
 proof systems,
 e.g.~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16,SP:BBBPWM18}
-to name a few. Special attention has been devoted to design new
-\emph{zero-knowledge succinct non-interactive arguments of knowledge} (zkSNARKs) which are
-especially useful for their short (usually constant-length) proofs.
-That property makes zkSNARKs especially useful in real-life system deployment,
+to name a few. Special attention has been devoted to the design of new
+\emph{zero-knowledge succinct non-interactive arguments of knowledge} (zkSNARKs) with short (usually constant-length) proofs.
+This property makes zkSNARKs especially useful in real-life system deployment,
 e.g.~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}.
 This is turn risen a question---\emph{Are zkSNARKs' security models useful in
 the real life?} This question becomes especially important when one realises that all
@@ -95,9 +94,9 @@ zkSNARKs with constant-sized proofs are shown secure in the common
 reference string (CRS) model where the CRS used by the parties---i.e.~a prover
 that shows veracity of a statement using its private input called
 \emph{witness} and a verifier that verifies it---comes with a trapdoor which
-can be used to break security of the scheme. That is, convince the verifier to
-accept a false statement or a statement which the prover does not
-know the witness for. Hence before a real-life deployment of zkSNARKs one has
+can be used to break (knowledge) soundness. That is, convince the verifier to
+accept a false statement or a statement for which the prover does not
+know the witness. Hence for secure a real-life deployment of zkSNARKs one has
 to answer a number of questions---\emph{How can the parties be sure that the
 trapdoor has not leaked?} \emph{Who is the party that generates the CRS?}
 \emph{Can this party be trusted?} The last question has to be answered
@@ -107,7 +106,7 @@ distributed systems, like e.g.~blockchains, where assuming that a trusted
 party generates the CRS may be a step too far and subvert the whole purpose of
 a decentralised system. 
 
-One of the first who tackled this question were Bellare et al.~\cite{AC:BelFucSca16} who
+One of the first to tackled this question were Bellare et al.~\cite{AC:BelFucSca16} who
 proposed notions of \emph{subversion zero knowledge} and \emph{subversion
 soundness}. The former states that zero knowledge property persists even when
 the CRS is produced by a malicious party. The latter states that the proof
@@ -119,11 +118,11 @@ efficient zkSNARK for QAP\footnote{QAP stands for Quadratic Arithmetic
 Program. QAP is currently the most efficient representation of arithmetic
 circuits for showing their validity.} by Groth \cite{EC:Groth16} can be made
 subversion zero-knowledge by making minor modifications to its CRS and without
-sacrificing its efficiency.
+sacrificing its efficiency. \markulf{12/11/2020}{Not actually related to soundness.}
 
 Although efficient, Groth's zkSNARK comes with a drawback---the CRS is
 relation-dependent. That is, if one wants to show that two different arithmetic circuits
-have been evaluated correctly, it has to do that using two different CRS-s. 
+have been evaluated correctly, one has to do that using two different CRS-s. 
 % We say that such a zkSNARK is not universal. 
 Since CRS generation is a
 troublesome process, it is desired to have it performed once, not every
@@ -142,20 +141,21 @@ parties is honest then the proof system is (knowledge) sound. Although inefficie
 is quadratic to the size of the proven statements, \cite{C:GKMMM18} set a new
 paradigm for designing zkSNARKs.
 
-The first zkSNARK that had updatable and short CRS and was universal was
+The first zkSNARK that has updatable and short CRS and is universal is
 $\sonic$ proposed by Maller et al.~in \cite{CCS:MBKM19} which was later
 made more efficient by Gabizon in \cite{EPRINT:Gabizon19c}. Eventually, Gabizon et
 al.~designed $\plonk$ \cite{EPRINT:GabWilCio19} which currently is the
 most efficient updatable universal zkSNARK. Independently, Chiesa et
-al.~\cite{EC:CHMMVW20} proposed $\textsf{Marlin}$ which efficiency
-is comparable to $\plonk$'s.
+al.~\cite{EC:CHMMVW20} proposed $\textsf{Marlin}$ with comparable efficiency to
+$\plonk$.
+%
 All these protocols utilise strong cryptographic assumptions like the
-algebraic group model (AGM) and random oracle model (ROM) to show their
+algebraic group model (AGM) and the random oracle model (ROM) to show their
 security. They also use their own representation of circuits instead of the
-``standard'' QAP. However, these protocols are also one of the  most interesting schemes
-for practitioners for their practicality which comes from efficient
-proving and verification, and universality of the CRS, as well as for their
-security model that diminishes the requirement of the trusted party to provide
+``standard'' quadratic arithmetic programs (QAP). However, these protocols are also one of the  most interesting schemes
+for practitioners due to their practicality stemming from the efficient
+proving and verification algorithms, and the universality of the CRS, as well as for their
+security model that diminishes the need for a trusted party to provide
 a CRS.
 
 % In this paper we provide a framework which shows that any zero-knowledge proof
@@ -164,10 +164,10 @@ a CRS.
 % and $\sonic$ are simulation-extractable. 
 
 \paragraph{On the importance of the simulation extractability.}
-Although zkSNARKs satisfy the knowledge soundness definition,
+Although zkSNARKs are shown to satisfy a (standard) knowledge soundness definition,
 simulation-extractability (SE) is the property that should be required from
-zkSNARKs used in practice, i.e.~as efficient zero-knowledge proofs deployed in
-the real-life cryptosystems. This is since in the real life one simply cannot
+zkSNARKs used in practice, i.e.~from efficient zero-knowledge proofs deployed in
+the real-life cryptosystems. This is since, arguably, in the real life one simply cannot
 assume that the adversary who tries to break security of the system does not
 have access to any proofs provided by other parties using the same
 zero-knowledge system. On the contrary, in the most popular applications of
@@ -187,10 +187,10 @@ In the context of zkSNARKs it is important to mention such works as the first
 simulation-extractable zkSNARK by Groth and Maller \cite{C:GroMal17} and SE
 zkSNARK for QAP by Lipmaa \cite{EPRINT:Lipmaa19a}. 
 Kosba's et
-al.~\cite{EPRINT:KZMQCP15} shown a general transformation from a NIZK to a
+al.~\cite{EPRINT:KZMQCP15} give a general transformation from a NIZK to a
 black-box SE NIZK. Although their transformation works for zkSNARKs as well,
 succinctness of the proof system is not preserved as the statement's witness is encrypted.
-Recently, Abdolmaleki et al.~\cite{CCS:AbdRamSla20} shown another transformation that
+Recently, Abdolmaleki et al.~\cite{CCS:AbdRamSla20} showed another transformation that
 obtains non-black-box simulation extractability but also preserves
 succinctness of the argument.
 
@@ -199,7 +199,7 @@ known zkSNARKs, like $\groth$ \cite{EC:Groth16}, by introducing minor modificati
 stronger assumptions \cite{EPRINT:BowGab18,EPRINT:AtaBag19}. Interestingly,
 although such modifications hurt performance of the proof system, the resulting
 zkSNARKs are still more efficient than the first SE zkSNARK \cite{C:GroMal17},
-see \cite{EPRINT:AtaBag19}. Recently, \cite{EPRINT:BKSV20} shown that the
+see \cite{EPRINT:AtaBag19}. Recently, \cite{EPRINT:BKSV20} showed that the
 original Groth's proof system from \cite{EC:Groth16} is weakly SE and
 randomisable.  
 
@@ -215,21 +215,25 @@ restrictive regarding format of their CRSs, making such lift seems as a very
 difficult task. 
 The same applies for updatable zkSNARKs. No SE updatable zkSNARKs are
 currently known and there is no transformation that could take a SE zkSNARK
-and make it updatable.
+and make it updatable.\markulf{12/11/2020}{arguably there is a transformation
+  that takes a snark and makes it universal: compute the reference string for a
+  universal circuit. There is also an optimized transformation for a variant of
+  Groth16, called Mirage. There is a SE transformation that preserves updateabilit}
 
 \subsection{Our contribution}
 First of all, we show that a class of computationally special-sound proofs of
-knowledge that are zero-knowledge in the standard model and has unique
-response property \emph{is simulation extractable out-of-the box} when made
+knowledge that are zero-knowledge \markulf{12/11/2020}{Should this be HVZK, also
+in abstract?} in the standard model and have a unique
+response property \emph{are simulation extractable out-of-the box} when made
 non-interactive by the Fiat--Shamir transform. Although this problem has been
 already tackled by Faust et al.~\cite{INDOCRYPT:FKMV12}, we extend it to a
 much wider class of protocols, e.g.~our result is not restricted to
 $3$-message protocols only.
 
-To show that our result is useful we prove that one of the most efficient updatable and universal
+To show that our result is useful we prove that two of the most efficient updatable and universal
 zkSNARKs---$\plonk$ and $\sonic$---are simulation-extractable.
-Although we do not change these protocols at all, we had to solve a number of
-problems in order to show that which are explained below. 
+Although---or arguably because---we do not change these protocols at all, we had to solve a number of
+problems in order to obtain this result which are explained below. 
 
 Before we continue, we note that \plonk{} and \sonic{}---as originally
 presented in \cite{EPRINT:GabWilCio19} and \cite{CCS:MBKM19}---are interactive
