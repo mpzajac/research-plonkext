@@ -208,7 +208,7 @@ Up to our best knowledge, there are zkSNARKs that are simulation-extractable
 and zkSNARKs that are universal, however there are no known zkSNARKs that enjoy
 both of these properties out-of-the-box. Obviously, given a universal zkSNARK
 one could lift it to be simulation-extractable using techniques described
-e.g.~in \cite{EPRINT:KZMQCP15,EPRINT:AbdRamSla20}, but such lift comes with
+e.g.~in \cite{EPRINT:KZMQCP15,CCS:AbdRamSla20}, but such lift comes with
 inevitably efficiency loss.  On the other hand, there is no known lift that
 would take a zkSNARK and make it universal. Since updatable zkSNARKs are quite
 restrictive regarding format of their CRSs, making such lift seems as a very
@@ -328,9 +328,8 @@ its security and special-soundness analysed; second, one uses an argument that
 the Fiat--Shamir transform can be used to get a protocol that is
 non-interactive and shares the same security properties. 
 
-\markulf{03.11.2020}{I rephrased this a bit, as it seemed to hurt us as well.
-  Does knowledge soundness have the same tightness?}
-	\michals{4.11.20}{Thanks it looks better now, re ks -- that depends. For
+  
+	\michals{4.11.20}{ Does knowledge soundness have the same tightness? For
 		plonk there is no such issue with ks as its ks is shown in the algebraic
 		group model; sonic uses both witness extended emulation and the AGM, thus
 	I guess it is affected}
@@ -400,11 +399,6 @@ $\epsilon(\secpar)$ if $\sum_{a \in \supp{X_\secpar \cup Y_\secpar}}
 write $X \approx_\secpar Y$ if $\SD(X_\secpar, Y_\secpar) \leq \negl$.  
 For values $a(\secpar)$ and $b(\secpar)$ we write $a(\secpar) \approx_\secpar
 b(\secpar)$ if $\abs{a(\secpar) - b(\secpar)} \leq \negl$.  
-\markulf{03.11.2020}{This requires probability ensembles and
-	$\secpar$ dependent
-  values. Which notation do you
-  want to use? I am ok with light, just would like to hint at us being aware of this.}
-	\michals{4.11}{Check now}
 
 Denote by $\RELGEN = \smallset{\REL}$ a family of relations. We assume that if
 $\REL$ comes with any auxiliary input, it is benign. Directly from the
@@ -538,12 +532,6 @@ Proofs by \emph{game hoping} is a method of writing proofs popularised by e.g.~S
 		\abs{\prob{\event{A}} - \prob{\event{B}}} \leq \prob{\event{F}}\,.
 	\]
 \end{lemma}
-\markulf{03.11.2020}{This somewhat relies on both games being defined over the
-  same probability space, e.g. only their winning conditions but none of the
-  sampling differs.}
-	\michals{4.11.20}{Changed "probability distribution" to "probability space".
-	"Prob. dist" was used in the original Schoup's paper, but I think
-prob.~space makes more sense here.}
 
 \subsection{Polynomial commitment.}
 \label{sec:poly_com}
@@ -671,12 +659,10 @@ $\PCOM$:
 	\item[Evaluation binding] a PPT adversary $\adv$ who output a commitment $c$
 		to a polynomial $\p{f}$ and is given an evaluation point $z$ has at most
 negligible chances to correctly open the commitment to a value different than
-$\p{f}(z)$.
+$\p{f}(z)$. \markulf{12/11/2020}{The definition below, which I believe is the
+  standard one, does not really match up with the informal description above.
+  There is no $f$ or $z$.}
 
-\markulf{03.11.2020}{Make sure we mean the right thing. In the following
-  definition based on KZG, the adversary does not necessarily need to know $f$:}
-	\michals{4.11}{Right, I think the knowledge component has been shown
-	independently in Sonic and Plonk (for their versions of the polcom).}
 	Let 
 	$k \in \NN$ be the number of committed polynomials,
 	$l \in \NN$ number of evaluation points,
@@ -778,13 +764,6 @@ say that $\verifier$ accepts the transcript. We sometimes abuse notation and
 write $\verifier(\trans) = 1$ to denote a fact that $\trans$ is accepted by
 the verifier. 
 
-\markulf{09.07.20}{Could also all quantify for Soundness and Zero knowledge?
-  Yes, I meant the first, forall $\inp, \wit \in \REL$. But I also agree that
-  for $\REL \gets \RELGEN$ the probabilities do not define a negligible
-  function, but a specific value in $[0,1]$. We could call $\RELGEN$ an NP
-  relations generator from which we sample. Does the notation get too heavy?}
-\michals{09.07.20}{I am not sure what you meant here. You want to have for all $\inp, \wit \in \REL$ or you doubt these properties make sense for all $\REL \gets \RELGEN$?}
-\michals{4.11.20}{Update: now we have $\REL \in \RELGEN(\secparam)$}
 A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
 \begin{description}
 	\item[Completeness] An interactive proof system $\proofsystem$ is
@@ -1108,10 +1087,7 @@ simulation extractable.
 		\pcreturn (0, \bot)\\
 			\pcelse \pcreturn (1, \vec{s})
 		}}
-		\caption{Generalised forking algorithm $\genforking_{\adv}^{m}$
-      \markulf{03.11.2020}{How is $i$ picked. Shall we improve this algorithm together?}}
-			\michals{4.11}{Yes, that would be great. (also, currently working on
-			that}
+		\caption{Generalised forking algorithm $\genforking_{\adv}^{m}$}
 			\michals{4.11}{Check now}
 		\label{fig:genforking_lemma}
 \end{figure}
@@ -1303,10 +1279,6 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 	for every $\ppt$ adversary $\adv(\REL, \crs)$, where $\crs \gets
 	\kgen(\secparam)$, that produces an accepting $(n_1, \ldots, n_\mu)$-tree of transcripts $\tree$ for a statement $\inp$ there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$ with an overwhelming probability.
 \end{definition}
-\markulf{03.11.2020}{Do we need to provide more details on the execution
-  environment of $\adv$? It is given an honestly generated CRS and a relation as
-  input but nothing else?}
-	\michals{4.11}{check now}
 
 Since we do not utilise the classical special soundness (that holds for all, even unbounded, adversaries) all references to that property should be understood as references to its computational version.
 
@@ -1422,7 +1394,10 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 	a simulated proof it saw, it would end up with exactly the same proof
 	which can not break simulation extractability.
 	\markulf{03.11.2020}{Recall here why we need UR to use forking lemma.}
-	\michals{4.11}{Check the explanation above}
+	\michals{4.11}{Check the explanation above}\markulf{12/11/2020}{This is a good
+    informal explanation, but I was looking for a formal reason why the forking
+    lemma only works with that condition. Suspect it has to do with hash values
+    having to come from adversary}
 	From the generalised forking lemma,
 	cf.~\cref{lem:generalised_forking_lemma}, \[
 		\prob{\event{\errfrk}} \leq 1 -
@@ -1656,12 +1631,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	then $(\numberofconstrains + 3)$ evaluations of these polynomials (at
 	different points) are known. The extractor $\extss$ interpolates the
 	polynomials and reveals the corresponding witness $\wit$.
-  \markulf{03.11.2020}{What is definition of witness-carrying and what
-    guarantees this property?}
-		\michals{4.11}{Witness-carrying is not a well defined term, I used it to
-			express that the coefficients of the polynomials constitutes the witness
-		for the relation. I will rephrase if you find it misleading.}
-		\michals{4.11}{Rephrased}
+
 	\ncase{When $\nevent{E}$ happens} Consider a transcript that such that
 	$\vereq(X) \neq 0$, but $\vereq(\chi) = 0$.
 	Since the adversary is algebraic, all group elements included in the tree of
@@ -1890,8 +1860,7 @@ instance--witness pair $(\inp, \wit)$.  $\rdv$ now prepares a simulated proof.
 
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$
 and computationally special sound. We now 
-\markulf{03.11.2020}{cut: follow \cite{INDOCRYPT:FKMV12}. Don't give those
-guys too much credit, instead: }\michals{4.11}{I am fine with that} make use of \cref{thm:se} and show that
+ make use of \cref{thm:se} and show that
 $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
 
 % \michals{13.10}{The theorem below is going to have a much shorter proof -- for it being just a corollary of Sec.~4}
