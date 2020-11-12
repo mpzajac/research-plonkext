@@ -452,9 +452,9 @@ from the more standard dlog assumption used in \cite{EPRINT:GabWilCio19}.
 	\]
 \end{definition}
 
-\paragraph{BBG uber assumption}
+\paragraph{BBG uber assumption.}
 Also, to be able to show computational honest verifier zero knowledge of
-$\plonk$ in the standard model, what is required by our reduction, we use the
+$\plonk$ in the standard model, what is required by our reduction, we rely the
 \emph{uber assumption} introduced by Boneh et
 al.~\cite{EC:BonBoyGoh05} as presented by Boyen in \cite{PAIRING:Boyen08}.
 % Here we present not in its whole generality but rather fitted to our purpose.
@@ -468,7 +468,7 @@ $\pT
 $\pS = \left( \p{s}_1, \ldots, \p{s}_s \right)$ and $\pT = \left( \p{t}_1, \ldots,
 \p{t}_r \right)$ for polynomials $\p{r}_i, \p{s}_j, \p{t}_k$. 
 
-For a function $f$ and a vector $(x_1, \ldots, x_c)$ we write $f(\pR)$ to
+For a function $f$ and vector $(x_1, \ldots, x_c)$ we write $f(\pR)$ to
 denote application of $f$ to each element of $\pR$, i.e.
 \[
 	f(\pR) = \left( f(\p{r}_1 (x_1, \ldots, x_c), \ldots, f(\p{r}_r
@@ -494,7 +494,7 @@ type-III pairings:
 \begin{definition}[$(\pR, \pS, \pT, \p{f})$-uber assumption
 	\cite{EC:BonBoyGoh05}]
 	\label{def:uber_assumption_orig}
-	Let $\pR, \pS, \pT$, $(x', x_1, \ldots, x_c) \sample \FF_p^{c + 1}$ and let
+	Let $\pR, \pS, \pT$ be defined as above, $(x', x_1, \ldots, x_c) \sample \FF_p^{c + 1}$ and let
 	$\p{f}$ be independent on $(\pR, \pS, \pT)$.
 	Then, for any $\ppt$ adversary $\adv$
 	\begin{multline*}
@@ -511,7 +511,7 @@ $\GRP_1$, more precisely we require:
 
 \begin{definition}[$(\pR, \pS, \pT, \p{f})$-uber assumption]
 	\label{def:uber_assumption}
-	Let $\pR, \pS, \pT$, $(x', x_1, \ldots, x_c) \sample \FF_p^{c + 1}$ and let
+	Let $\pR, \pS, \pT$ be defined as above, $(x', x_1, \ldots, x_c) \sample \FF_p^{c + 1}$ and let
 	$\p{f}$ be independent on $(\pR, \pS, \pT)$.
 	Then, for any $\ppt$ adversary $\adv$
 	\begin{multline*}
@@ -525,7 +525,7 @@ $\GRP_1$, more precisely we require:
 \paragraph{Proofs by Game-Hoping.}
 Proofs by \emph{game hoping} is a method of writing proofs popularised by e.g.~Shoup \cite{EPRINT:Shoup04} and Dent \cite{EPRINT:Dent06c}. The method relies on the following lemma.
 
-\begin{lemma}[Difference lemma,  cf.~{\cite[Lemma 1]{EPRINT:Shoup04}}]
+\begin{lemma}[Difference lemma,~{\cite[Lemma 1]{EPRINT:Shoup04}}]
 	\label{lem:difference_lemma}
 	Let $\event{A}, \event{B}, \event{F}$ be events defined in some probability
 	space, and suppose that $\event{A} \land \nevent{F} \iff \event{B}
@@ -544,16 +544,17 @@ prob.~space makes more sense here.}
 \subsection{Polynomial commitment.}
 \label{sec:poly_com}
 In the polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$
-the committer $\committer$ can prove to the receiver $\receiver$ that some
-polynomial $\p{f}$ that $\committer$ committed to evaluates to $s$ as some point
+the committer $\committer$ can prove  the receiver $\receiver$ that some
+polynomial $\p{f}$ which $\committer$ committed to evaluates to $s$ at some point
 $z$ chosen by $\receiver$.
-
-$\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We denote the first by $\PCOMp$ and present in \cref{fig:pcomp} and the latter by $\PCOMs$ and present in \cref{fig:pcoms}.
-
+$\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We
+denote the first by $\PCOMp$, presented in \cref{fig:pcomp}, and the latter by
+$\PCOMs$, presented in \cref{fig:pcoms}.
+%
 \begin{figure}[t!]
 	\begin{pcvstack}[center,boxed]
 		\begin{pchstack}
-			\procedure{$\kgen(\secparam)$}
+			\procedure{$\kgen(\REL)$}
 			{
 			\chi \sample \FF^2_p \\ [\myskip]
 			\pcreturn \gone{1, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}\\ [\myskip]
@@ -602,11 +603,11 @@ $\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We d
 	\caption{$\PCOMp$ polynomial commitment scheme}
 	\label{fig:pcomp}
 \end{figure}
-
+%
 \begin{figure}[t!]
 	\begin{pcvstack}[center,boxed]
 		\begin{pchstack}
-			\procedure{$\kgen(\secparam)$}
+			\procedure{$\kgen(\REL)$}
 			{
 				\alpha, \chi \sample \FF^2_p \\ [\myskip]
 				\pcreturn \gone{\smallset{\chi^i}_{i = -\multconstr}^{\multconstr},
@@ -659,16 +660,15 @@ $\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We d
 	\caption{$\PCOMs$ polynomial commitment scheme}
 	\label{fig:pcoms}
 \end{figure}
-
+%
 % We require $\PCOM$ to have the following properties:
 We emphasize the following properties of a secure polynomial commitment
 $\PCOM$:
 \begin{description}
-	\item[Evaluation binding] a PPT adversary $\adv$ who output a commitment $c$
+	\item[Evaluation binding] a $\ppt$ adversary $\adv$ which outputs a commitment $c$
 		to a polynomial $\p{f}$ and is given an evaluation point $z$ has at most
-negligible chances to correctly open the commitment to a value different than
+negligible chances to open the commitment to a value different than
 $\p{f}(z)$.
-
 \markulf{03.11.2020}{Make sure we mean the right thing. In the following
   definition based on KZG, the adversary does not necessarily need to know $f$:}
 	\michals{4.11}{Right, I think the knowledge component has been shown
@@ -677,7 +677,7 @@ $\p{f}(z)$.
 	$k \in \NN$ be the number of committed polynomials,
 	$l \in \NN$ number of evaluation points,
 	$\vec{c} \in \GRP^k$ be the commitments,  
-	$\vec{z},\vec{z}' \in \FF_p^l$ be the attributes the polynomials are evaluated at, $\vec{s},\vec{s}' \in \FF_p^k$ the evaluations, and 
+	$\vec{z},\vec{z}' \in \FF_p^l$ be the arguments the polynomials are evaluated at, $\vec{s},\vec{s}' \in \FF_p^k$ the evaluations, and 
 	$\vec{o},\vec{o}' \in \FF_p^l$ be the commitment openings. 
 	Then for every $\ppt$ adversary $\adv$	
 	\[
@@ -685,7 +685,7 @@ $\p{f}(z)$.
 			\left[
 			\begin{aligned}
 				& \verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o}),  \\ 
-				& \verify(\crs, \vec{c}, \vec{z}', \vec{s}', \vec{o}'), \\
+				& \verify(\crs, \vec{c}, \vec{z}, \vec{s}', \vec{o}'), \\
 				& \vec{s} \neq \vec{s}'
 			\end{aligned}
 			\,\left|\,
@@ -705,7 +705,7 @@ We say that $\PCOM$ has the unique opening property if the following holds:
 	$k \in \NN$ be the number of committed polynomials,
 	$l \in \NN$ number of evaluation points,
 	$\vec{c} \in \GRP^k$ be the commitments,  
-	$\vec{z} \in \FF_p^l$ be the attributes the polynomials are evaluated at, $\vec{s} \in \FF_p^k$ the evaluations, and 
+	$\vec{z} \in \FF_p^l$ be the arguments the polynomials are evaluated at, $\vec{s} \in \FF_p^k$ the evaluations, and 
 	$\vec{o} \in \FF_p^l$ be the commitment openings. 
 	Then for every $\ppt$ adversary $\adv$	
 	\[
@@ -744,28 +744,31 @@ elements given to $\adv$ as input. It is further assumed, that $\adv$ knows
 how to ``build'' $\gnone{y}$ from that elements. More precisely, the AGM
 requires that whenever $\adv(\gnone{\vec{x}})$ outputs a group element
 $\gnone{y}$ then it also outputs $\vec{c}$ such that $\gnone{y} = \vec{c}^\top
-\cdot \gnone{\vec{x}}$.  It is worth to note that both $\plonk$ and $\sonic$
+\cdot \gnone{\vec{x}}$. Both $\plonk$ and $\sonic$
 have been shown secure using the AGM. 
 
 \subsection{Zero knowledge}
 In a zero-knowledge proof system, a prover convinces the verifier of
-the veracity of a statement without leaking any side information except that the
-statement is true.
-Here, we focus on proof systems that guarantee soundness against a $\ppt$
-cheating prover.
+ veracity of a statement without leaking any other information. 
 The zero-knowledge property is proven by constructing a simulator that can
 simulate the view of a cheating verifier without knowing the secret
 information---witness---of the prover.
+ A proof system
+ has to be sound as well, i.e.~for a malicious prover it should be infeasible
+ to convince a verifier on a false statement.
+Here, we focus on proof systems that guarantee soundness against $\ppt$
+malicious provers.
 
 More precisely, let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of
 $\npol$ relations.
 Denote by $\LANG_\REL$ the language determined by $\REL$.
 Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
 and the latter \emph{verifier}. We allow our proof system to have a setup,
-i.e.~there is a $\kgen$ algorithm that takes as input the relation $\REL$ and
+i.e.~there is a $\kgen$ algorithm that takes as input the relation
+description $\REL$ and
 outputs a common reference string $\crs$.
 We denote by $\ip{\prover(\REL, \crs, \inp, \wit)}{\verifier(\REL,
-\crs,\inp)}$ a transcript $\trans$ (or, proof $\pi$--we use these two
+\crs,\inp)}$ a transcript $\trans$ (or, proof $\zkproof$---we use these two
 alternatively) of a conversation between a $\prover$ with input
 $(\REL, \crs, \inp, \wit)$ and $\verifier$ with input $(\REL, \crs, \inp)$.
 We write $\ip{\prover (\REL, \crs, \inp, \wit)}{\verifier(\REL, \crs, \inp)} =
@@ -788,7 +791,7 @@ A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RE
 			that is for all $\REL \in \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
 	\[
 		\condprob{\ip{\prover (\REL, \crs, \inp, \wit)}{\verifier (\REL, \crs,
-		\inp)} = 1}{\crs \gets \kgen(\secparam)} = 1\,.
+		\inp)} = 1}{\crs \gets \kgen(\REL)} = 1\,.
 	\]
 	\item[Soundness] We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if
 			no $\ppt$ prover $\adv$ can convince an honest verifier $\verifier$ to
@@ -796,33 +799,40 @@ A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RE
 			precisely, for all $\REL \in \RELGEN(\secparam)$
 	\[
 		\condprob{\ip{\adv(\REL, \crs, \inp)}{\verifier(\REL, \crs, \inp)} =
-		1}{\crs \gets \kgen(\secparam), \inp \gets \adv(\REL, \crs); \inp \not\in \LANG_\REL} \leq \negl\,;
+		1}{\crs \gets \kgen(\REL), \inp \gets \adv(\REL, \crs); \inp \not\in \LANG_\REL} \leq \negl\,;
 	\]
 	\item[Zero knowledge] We call an interactive proof system $\proofsystem$
 		\emph{zero-knowledge} if for any $\REL \in \RELGEN(\secparam)$, $(\inp,
 		\wit) \in \REL$, and adversary $\adv$ there exists a $\ppt$ simulator $\simulator$ such that
 	\begin{multline*}
 	  \left\{\ip{\prover(\REL, \crs, \inp, \wit)}{\adv(\REL, \crs, \inp, \wit)}
-			\,\left|\, \crs \gets \kgen(\secparam)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
+			\,\left|\, \crs \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
 \crs)}\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
 		\\
 		\left\{\simulator^{\adv}(\REL, \crs, \inp)\,\left|\, \crs \gets
-			\kgen(\secparam)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
+			\kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
 \crs)}\vphantom{\simulator^\adv}\right.\right\}\,.  
 \end{multline*}
 	%
 	We call zero knowledge \emph{perfect} if the distributions are equal and
 	\emph{computational} if they are indistinguishable for any $\nuppt$ distinguisher.
 
+\end{description}
+	A CRS $\crs$ may come with a secret string called \emph{trapdoor} $\td$ that allows the simulator to
+	simulate. 
+	In this paper we distinguish simulators that requires a trapdoor to be able
+	to provide an indistinguishable proof and those that do not. We call the
+	former \emph{CRS-simulators} and denote by $\simulator_\td$ for trapdoor
+	$\td$.
+
 	Occasionally, a weaker version of zero knowledge is required, so called
-	\emph{honest verifier zero knowledge} (HVZK), where it is assumed that the
+	\emph{honest verifier zero knowledge} (HVZK) which assumes that the
 	verifier's challenges are picked at random from some predefined set.
 	Although weaker, this definition suffices in many applications. Especially,
 	an interactive zero-knowledge proof that is HVZK and \emph{public-coin}
 	(i.e.~the verifier outputs as challenges its random coins) can be made
 	non-interactive in the random oracle model by using the Fiat--Shamir
 	transformation.
-\end{description}
 	
 	Sometimes a stronger notion of soundness is required---except requiring that the verifier rejects proofs of statements outside the language, we request from the prover to know a witness corresponding to the proven statement. This property is formalised by the following notion:
 \begin{description}
@@ -837,7 +847,7 @@ A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RE
 	 \end{aligned}
 	  \,\left|\,
 	 \begin{aligned}
-		 & \crs \gets \kcrs(\REL), \inp \gets \adv(\REL, \crs), \\
+		 & \crs \gets \kgen(\REL), \inp \gets \adv(\REL, \crs), \\
 		 & (\wit, \trans) \gets \ext^{\ip{\adv(\REL, \crs, \inp)}{\verifier(\REL, \crs, \inp)}}(\REL, \inp)
 	 \end{aligned}
 	 \vphantom{\begin{aligned}
@@ -851,7 +861,7 @@ A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RE
 \end{description}
 
 \paragraph{NIZKs in the Random Oracle Model.}
-In NIZKs in the Random Oracle Model we distinguish, for the sake of clarity, two simulators, one denoted by $\simulator_\zkproof$ that is responsible for providing simulated proofs and $\simulator_\ro$ that picks a random oracle instantiation and takes care of all parties' queries to $\ro$.
+In this setting we distinguish, for the sake of clarity, two simulators, one denoted by $\simulator_\zkproof$ that is responsible for providing simulated proofs and $\simulator_\ro$ that picks a random oracle instantiation and takes care of all parties' queries to $\ro$.
 % \michals{9.06}{Should we distinguish two simulators or just pack everything into a single one?}
 For the sake of consistency (with random oracle-free NIZKs) we use $\simulator$
 to denote the pair of state-sharing simulators $\simulator_\zkproof,
@@ -860,7 +870,7 @@ to denote the pair of state-sharing simulators $\simulator_\zkproof,
 \paragraph{Sigma protocols.}
 A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$  for a relation
 $\REL \in \RELGEN(\secparam)$  is a special case of an interactive proof which transcript compounds of three messages $(a, b, z)$, the middle being a challenge provided by the verifier.
-Sigma protocols are honest verifier zero-knowledge and specially-sound. That
+Sigma protocols are honest verifier zero-knowledge in the standard model and specially-sound. That
 is, there exists an extractor $\ext$ which given two accepting transcripts $(a, b, z)$, $(a, b', z')$ for a statement $\inp$ can recreate the corresponding witness if $b \neq b'$. Formally,
 \begin{description}
 	\item[Special soundness] A sigma protocol $\sigmaprot$ is \emph{specially-sound} if for any adversary $\adv$ the probability
@@ -876,9 +886,8 @@ is, there exists an extractor $\ext$ which given two accepting transcripts $(a, 
 			& \verifier(\REL, \inp, (a, b, z)) = \\
 			& \qquad = \verifier(\REL, \inp, (a, b', z')) = 1, \\
 		\end{aligned}
-		\right.\right]
+		\right.\right] \leq  \negl\,.
 	\]
-	is negligible in $\secpar$.
 \end{description}
 
 % Furthermore sigma protocols are honest verifier zero-knowledge.
@@ -892,8 +901,9 @@ is, there exists an extractor $\ext$ which given two accepting transcripts $(a, 
 %\end{description}
 %Although this notion is weaker than a standard zero knowledge it is often sufficient. Furthermore, a HVZK interactive proof system transformed by the Fiat--Shamir transformation is zero-knowledge.
 
-Another property that sigma protocols sometimes have is, introduced by Fischlin \cite{C:Fischlin05}, a unique response property which states that no $\ppt$ adversary  can produce two accepting transcripts that differ only on the last element.
-More precisely,
+Another property that sigma protocols sometimes have is a unique response property \cite{C:Fischlin05} which states that no
+$\ppt$ adversary  can produce two accepting transcripts that differ only on
+the last element.  More precisely,
 \begin{description}
 	\item[Unique response property] Let $\sigmaprot = (\prover, \verifier,
 			\simulator)$ be a sigma-protocol for $\REL \in \RELGEN(\secparam)$ which
@@ -905,7 +915,7 @@ More precisely,
 				z') \gets \adv(\REL)} \leq \negl\,.
 			\]
 \end{description}
-(If the unique response property holds even against unbounded adversaries, we call it \emph{strict}, cf.~\cite{INDOCRYPT:FKMV12}.)
+If this property holds even against unbounded adversaries, it is called \emph{strict}, cf.~\cite{INDOCRYPT:FKMV12}.
 Later on we often call protocols that follows this notion \emph{ur-protocols}.
 For the sake of completeness we note that many sigma-protocols, like e.g.~Schnorr's protocol \cite{C:Schnorr89}, fulfil this requirement.
 
@@ -917,7 +927,7 @@ Real life applications often require from a NIZK proof system to be
 non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement
 $\inp$ should be able to provide a new proof $\zkproof'$ related to
 $\zkproof$.  A strong version of non-malleability is formalised by simulation
-extractability.  This notion states that no adversary can produce valid proof
+extractability which assures that no adversary can produce valid proof
 without knowing the corresponding witness. This must hold even if the
 adversary is allowed to see polynomially many simulated proofs for any
 statements it wishes.
@@ -927,7 +937,8 @@ statements it wishes.
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a
 	computationally special-sound HVZK proof and $\ps_\fs = (\kgen_\fs,
 	\prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$ transformed by the
-	Fiat--Shamir transform.  We say that $\ps_\fs$ is simulation extractable
+	Fiat--Shamir transform.  We say that $\ps_\fs$ is
+	\emph{simulation-extractable}
 	with \emph{extraction error} $\nu$ if for any $\ppt$ adversary $\adv$ that
 	is given oracle access to a random oracle $\ro$ and simulator
 	$\simulator_\fs$, and produces an accepting transcript of $\ps$ with
@@ -941,7 +952,7 @@ statements it wishes.
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
-			& \crs \gets \kgen(\secparam),\\
+			& \crs \gets \kgen(\REL),\\
 			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs,
 			\ro} (\REL, \crs) 
 		\end{aligned}
@@ -957,7 +968,7 @@ statements it wishes.
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
-			& \crs \gets \kgen(\secparam),\\
+			& \crs \gets \kgen(\REL),\\
 			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs,
 			\ro} (\REL, \crs) \\
 			& \wit_\advse \gets \ext_\ss (\trans_{\advse}) 
@@ -969,7 +980,9 @@ statements it wishes.
 		\frkProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
 	\]
 	for some polynomial $\poly$, constant $d$ and negligible $\eps$ whenever
-	$\accProb \geq \nu$.
+	$\accProb \geq \nu$. List $Q$ contains all $(\inp, \zkproof)$ pairs where
+	$\inp$ is an instance provided to the simulator by the adversary and
+	$\zkproof$ is the simulator's answer. 
 \end{definition}
 
 Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
@@ -977,7 +990,7 @@ is specially sound and has a unique response property. Let $\sigmaprot_\fs = (\p
 Faust et al.~\cite{INDOCRYPT:FKMV12} show that every such $\sigmaprot_\fs$ is simulation-extractable.
 
 \begin{theorem}[Simulation extractability of the Fiat--Shamir transform \cite{INDOCRYPT:FKMV12}]
-	Let $\sigmaprot = (\prover, \verifier, \simulator_\zkproof)$ be a non-trivial sigma protocol with unique responses for a language $\LANG \in \npol$.
+	Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a non-trivial sigma protocol with unique responses for a language $\LANG \in \npol$.
 	In the random oracle model, the NIZK proof system $\sigmaprot_\fs = (\prover_\fs, \verifier_\fs, \simulator_{\fs})$ resulting by applying the Fiat--Shamir transform to $\sigmaprot$ is simulation extractable with extraction error $\eta = q/h$ for the simulator $\simulator$. Here, $q$ is the number of random oracle queries and $h$ is the number of elements in the range of $\ro$.
 	% Furthermore, the extractor $\ext_\adv$ needs to run $\adv^{\simulator_{\fs, \ro}}, \adv^{\simulator_{\fs, \zkproof}}$ twice.
 \end{theorem}
@@ -1276,7 +1289,7 @@ follows the definition below:
 		& b_k = b'_k, k \in \range{1, \mu - 1}, a_l = a'_l, l \in
 	\range{1}{j}, j > i 
 		\end{aligned}}
-	\crs \gets \kgen(\secparam) \right.
+	\crs \gets \kgen(\REL) \right.
 	} \leq \negl
 	\]
 % 	if after submitting its $i$-th message $a_i$ the prover is a deterministic
@@ -1297,7 +1310,7 @@ Hence, we provide a weaker, yet sufficient, definition of \emph{computational sp
 	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an $(2 \mu + 1)$-round proof system for a relation $\REL$. 
 	We say that $\proofsystem$ is $(n_1, \ldots, n_\mu)$-\emph{special sound} if
 	for every $\ppt$ adversary $\adv(\REL, \crs)$, where $\crs \gets
-	\kgen(\secparam)$, that produces an accepting $(n_1, \ldots, n_\mu)$-tree of transcripts $\tree$ for a statement $\inp$ there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$ with an overwhelming probability.
+	\kgen(\REL)$, that produces an accepting $(n_1, \ldots, n_\mu)$-tree of transcripts $\tree$ for a statement $\inp$ there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$ with an overwhelming probability.
 \end{definition}
 \markulf{03.11.2020}{Do we need to provide more details on the execution
   environment of $\adv$? It is given an honestly generated CRS and a relation as
@@ -2308,7 +2321,7 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
 {\Huge{Supplementary Material}}
 \section{$\plonk$ protocol rolled out}
 \label{sec:plonk_explained}
-\ncase{$\plonk$ CRS generating algorithm $\kgen(\secparam)$}
+\ncase{$\plonk$ CRS generating algorithm $\kgen(\REL)$}
 For the sake of simplicity of security reductions presented in this paper, we
 describe here a simplified CRS generating algorithm which produces only
 these CRS elements that cannot be computed without knowing the secret trapdoor
@@ -2562,7 +2575,7 @@ In \sonic{} we will use commitments to the following polynomials.
 \end{align*}
 	
 	\subsection{Algorithms rolled out}
-	\ncase{$\sonic$ CRS generation $\kgen(\secparam)$}
+	\ncase{$\sonic$ CRS generation $\kgen(\REL)$}
 	The CRS generating algorithm picks randomly $\alpha, \chi \sample \FF_p$ and
 	outputs 
 	\[
