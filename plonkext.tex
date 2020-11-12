@@ -1210,32 +1210,6 @@ h_{\iota - 1})$ to \[
 	\end{gather*}
 \end{remark}
 
-\begin{lemma}\label{lem:jensen}
-	Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
-	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times
-	H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
-h_{\iota - 1})$ to 
-	\[
-		\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)} 
-	\] 
-	for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider $X_\iota$ as a random variable over the uniform distribution on its domain. 
-	Then $\expected{X_\iota^m} \geq \expected{X_\iota}^m$.
-\end{lemma}
-\begin{proof}
-	First we recall the Jensen inequality \cite{W:Weissten20}, if for some random variable $X$ holds $\abs{\expected{X}} \leq \infty$ and $f$ is a Borel convex function then 
-	\[
-		f(\expected{X}) \leq \expected{f(X)}\,.
-	\] 
-	Finally, we note that $\abs{\expected{X}} \leq \infty$ and taking to the $m$-th power is a Borel convex function on $[0, 1]$ interval. 
-	\qed
-\end{proof}
-
-\begin{lemma}[H\"older's inequality. Simplified.]\label{lem:holder}
-	Let $x_i, y_i$, for $i \in \range{1}{q}$, and $p, q$ be real numbers such that $1/p + 1/q = 1$. Then
-	\[
-		\sum_{i = 1}^{q} x_i y_i \leq \left(\sum_{i = 1}^{q} x_i^p\right)^{\frac{1}{p}} \cdot \left(\sum_{i = 1}^{q} y_i^p\right)^{\frac{1}{q}}\,.
-	\]
-\end{lemma}
 
 We use the generalised forking lemma as follows in our
 simulation-extractability proof. Let $\advse$ be the simulation-extractability
@@ -1256,7 +1230,7 @@ that picks also the first set of random oracle queries' responses $h^1_1,
 \ldots, h^1_q$. We however note that this difference is only notational as
 random oracle queries' responses provided in $Q_\ro$ are random as well. (For
 the sake of completeness, we allow $\genforking_\zdv$ to pick $h^i_{k + 1}, \ldots,
-h^1_q$ responses if $Q_\ro$ has only $k$ elements.
+h^1_q$ responses if $Q_\ro$ has only $k < q$ elements).
 Then, after the first run of $\advse$ is done, $\zdv$ rewinds it
 to a point
 just after before $\advse$ is about to ask its $i$-th random oracle query and
@@ -1287,7 +1261,7 @@ follows the definition below:
 
 \begin{definition}[$\ur{i}$-protocol]
 	\label{def:wiur}
-	Let $\proofsystem$ be a $2\mu$-round proof system $\ps = (\kgen, \prover,
+	Let $\proofsystem$ be a $(2\mu + 1)$-message proof system $\ps = (\kgen, \prover,
 	\verifier, \simulator)$.
 	Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier.
 	We say that $\proofsystem$ has \emph{unique responses after $i$}
@@ -1308,11 +1282,16 @@ follows the definition below:
 	\range{1}{j}, j > i 
 		\end{aligned}}
 	\crs \gets \kgen(\REL) \right.
-	} \leq \negl
+	} \leq \negl.
 	\]
 % 	if after submitting its $i$-th message $a_i$ the prover is a deterministic
 % 	function. That is, it does not use its randomness tape and deterministically answers verifier's challenges.
 \end{definition}
+Intuitively, a protocol is $\ur{i}$ if after $i$-th prover's message, all
+$\prover$'s  further messages are determined by the witness it knows, the
+messages it already send and received and the future challenges from the
+verifier.
+
 \begin{example}
 	The Schnorr protocol is $\ur{1}$. That is, after submitting its first message $a$, the prover is a deterministic function of the instance, $a$, and the verifier's challenge.
 \end{example}
@@ -2330,6 +2309,64 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
 \clearpage
 \appendix
 {\Huge{Supplementary Material}}
+\section{Omitted lemmas and proofs}
+\begin{lemma}\label{lem:jensen}
+	Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
+	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times
+	H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
+h_{\iota - 1})$ to 
+	\[
+		\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)} 
+	\] 
+	for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider $X_\iota$ as a random variable over the uniform distribution on its domain. 
+	Then $\expected{X_\iota^m} \geq \expected{X_\iota}^m$.
+\end{lemma}
+\begin{proof}
+	First we recall the Jensen inequality \cite{W:Weissten20}, if for some random variable $X$ holds $\abs{\expected{X}} \leq \infty$ and $f$ is a Borel convex function then 
+	\[
+		f(\expected{X}) \leq \expected{f(X)}\,.
+	\] 
+	Finally, we note that $\abs{\expected{X}} \leq \infty$ and taking to the $m$-th power is a Borel convex function on $[0, 1]$ interval. 
+	\qed
+\end{proof}
+
+\begin{lemma}[H\"older's inequality. Simplified.]\label{lem:holder}
+	Let $x_i, y_i$, for $i \in \range{1}{q}$, and $p, q$ be real numbers such that $1/p + 1/q = 1$. Then
+	\[
+		\sum_{i = 1}^{q} x_i y_i \leq \left(\sum_{i = 1}^{q} x_i^p\right)^{\frac{1}{p}} \cdot \left(\sum_{i = 1}^{q} y_i^p\right)^{\frac{1}{q}}\,.
+	\]
+\end{lemma}
+	\begin{lemma}
+			\label{lem:root_prob}
+			Let $\p{f}(X)$ be a random degree-$d$ polynomial over $\FF_p[X]$. Then
+			the probability that $\p{f}(X)$ has roots in $\FF_p$ is at least
+			$\infrac{1}{d!}$.
+	\end{lemma}
+	\begin{proof}
+			First observe that there is $p^{d}$ canonical polynomials in $\FF_p[X]$.
+			Each of the polynomials may have up to $d$ roots. Consider polynomials
+			which are reducible to polynomials of degree $1$, i.e.~polynomials that
+			have all $d$ roots. The roots can be picked in $\bar{C}^{p}_{d}$
+			ways, where $\bar{C}^{n}_{k}$ is the number of
+			$k$-elements combinations with 
+			repetitions from $n$-element set. That is,
+			\[
+					\bar{C}^n_k = \binom{n + k - 1}{k}\,.
+			\]
+			Thus, the probability that a randomly picked polynomial has all $d$
+			roots is 
+			\begin{multline*}
+			p^{-d} \cdot \bar{C}^p_d = p^{-d} \cdot \binom{p + d - 1}{d} =
+					 p^{-d} \cdot \frac{(p + d - 1)!}{(p + d - 1 - d)! \cdot d!} = \\
+					 p^{-d} \cdot \frac{(p + d - 1) \cdot \ldots \cdot p \cdot (p -
+						 1)!}{(p - 1)! \cdot d!} =  p^{-d} \cdot \frac{(p + d - 1)\cdot
+							 \ldots \cdot p}{d!} \\
+					 \geq  p^{-d} \cdot {\frac{p^d}{d!}} = \frac{1}{d!}
+			\end{multline*}
+			\qed
+	\end{proof}
+
+
 \section{$\plonk$ protocol rolled out}
 \label{sec:plonk_explained}
 \ncase{$\plonk$ CRS generating algorithm $\kgen(\REL)$}
@@ -2649,36 +2686,6 @@ In \sonic{} we will use commitments to the following polynomials.
 	\end{equation*}
 	and accepts the proof iff all the checks holds.
 	
-	\section{Omitted lemmas and proofs}
-	\begin{lemma}
-			\label{lem:root_prob}
-			Let $\p{f}(X)$ be a random degree-$d$ polynomial over $\FF_p[X]$. Then
-			the probability that $\p{f}(X)$ has roots in $\FF_p$ is at least
-			$\infrac{1}{d!}$.
-	\end{lemma}
-	\begin{proof}
-			First observe that there is $p^{d}$ canonical polynomials in $\FF_p[X]$.
-			Each of the polynomials may have up to $d$ roots. Consider polynomials
-			which are reducible to polynomials of degree $1$, i.e.~polynomials that
-			have all $d$ roots. The roots can be picked in $\bar{C}^{p}_{d}$
-			ways, where $\bar{C}^{n}_{k}$ is the number of
-			$k$-elements combinations with 
-			repetitions from $n$-element set. That is,
-			\[
-					\bar{C}^n_k = \binom{n + k - 1}{k}\,.
-			\]
-			Thus, the probability that a randomly picked polynomial has all $d$
-			roots is 
-			\begin{multline*}
-			p^{-d} \cdot \bar{C}^p_d = p^{-d} \cdot \binom{p + d - 1}{d} =
-					 p^{-d} \cdot \frac{(p + d - 1)!}{(p + d - 1 - d)! \cdot d!} = \\
-					 p^{-d} \cdot \frac{(p + d - 1) \cdot \ldots \cdot p \cdot (p -
-						 1)!}{(p - 1)! \cdot d!} =  p^{-d} \cdot \frac{(p + d - 1)\cdot
-							 \ldots \cdot p}{d!} \\
-					 \geq  p^{-d} \cdot {\frac{p^d}{d!}} = \frac{1}{d!}
-			\end{multline*}
-			\qed
-	\end{proof}
 
 	\end{document}
 	\section{(Tight) simulation soundness of $\plonk$}
