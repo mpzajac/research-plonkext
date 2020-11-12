@@ -2154,6 +2154,7 @@ property of the used polynomial commitment scheme $\PCOMs$.
 
 \subsection{Honest verifier zero-knowledge}
 \begin{lemma}
+	\label{lem:sonic_hvzk}
 	$\sonic$ is honest verifier
 	zero-knowledge.	
 \end{lemma}
@@ -2218,7 +2219,7 @@ Note that the polynomial from \cref{eq:x0_simpl} is a ``classical'',
 i.e.~non-Laurent, polynomial. Also,  $t(0,Y)$ is a polynomial of degree $(\linconstr +
 \multconstr)$ with $0$ coefficients for $Y^{i}$, for $i \in
 \range{0}{\multconstr}$. Also, since $\vec{a}, \vec{b}$ were picked at
-random, $t(0,Y) / Y^{\multconstr + 1}$ is
+random, $\pt(0,Y) / Y^{\multconstr + 1}$ is
 a degree-$(\linconstr - 1)$ polynomial of random coefficients. Recall, that the
 view of the adversary is independent of $\vec{a}, \vec{b}$ because of randomisers $c_{\multconstr + 1}, \ldots, c_{\multconstr
   + 4}$.
@@ -2226,19 +2227,33 @@ view of the adversary is independent of $\vec{a}, \vec{b}$ because of randomiser
 The probability that a random degree-$(\linconstr - 1)$ polynomial over
 $\FF_p[Y]$ has a root is at least $\infrac{1}{(\linconstr - 1) !}$, see
 \cref{lem:root_prob} for a proof of that bound. Since we assume that $\linconstr
-= \poly$, we can say that the polynomial $t(0,Y)$ as computed by the simulator
+= \poly$, we can say that the polynomial $\pt(0,Y)$ as computed by the simulator
 has roots with non-negligible probability. Furthermore, these roots can be found
-and the simulator picks fresh $\vec{a}, \vec{b}$ until $t(0,Y)$ has a root. As
+and the simulator picks fresh $\vec{a}, \vec{b}$ until $\pt(0,Y)$ has a root. As
 the roots of a random polynomial are themselves random $\FF_p$ element, the
 challenge $y$ picked by the simulator comes from the same distribution as if it
 was picked by an honest verifier.
 
 The simulator continues building the transcript by honestly computing the
 prover's messages and by picking verifier's challenges at random. This and the
-fact that $t(0,y) = 0$ guarantees that the transcript provided by the simulator is
+fact that $\pt(0,y) = 0$ guarantees that the transcript provided by the simulator is
 acceptable and comes from the same distribution as a transcript of an honest
 prover and verifier. \qed
 \end{proof}
+
+\begin{remark} 
+	As noted in \cite{CCS:MBKM19}, $\sonic$ is statistically
+	subversion-zero knowledge (Sub-ZK). As noted in \cite{AC:ABLZ17}, one way to
+	achieve subversion zero knowledge is to utilise an extractor that extracts a
+	CRS trapdoor from a CRS-generator. Unfortunately, a NIZK made subversion
+	zero-knowledge by this approach cannot achieve perfect Sub-ZK as one has to
+	count in the probability of extraction failure. However, with the simulation
+	presented in \cref{sonic_hvzk}, the trapdoor is not required for the
+	simulator as it is able to simulate the execution of the protocol just by
+	picking appropriate (honest) verifier's challenges. This result transfers to
+	$\sonicprotfs$, where the simulator can program the random oracle to provide
+	challenges that fits it.
+\end{remark}
 
 \subsection{From special-soundness and unique response property to simulation extractability of $\sonicprotfs$}
 Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$
