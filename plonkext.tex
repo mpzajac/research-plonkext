@@ -118,7 +118,8 @@ efficient zkSNARK for QAP\footnote{QAP stands for Quadratic Arithmetic
 Program. QAP is currently the most efficient representation of arithmetic
 circuits for showing their validity.} by Groth \cite{EC:Groth16} can be made
 subversion zero-knowledge by making minor modifications to its CRS and without
-sacrificing its efficiency. \markulf{12/11/2020}{Not actually related to soundness.}
+sacrificing its efficiency. 
+%\markulf{12/11/2020}{Not actually related to soundness.}
 
 Although efficient, Groth's zkSNARK comes with a drawback---the CRS is
 relation-dependent. That is, if one wants to show that two different arithmetic circuits
@@ -209,21 +210,27 @@ and zkSNARKs that are universal, however there are no known zkSNARKs that enjoy
 both of these properties out-of-the-box. Obviously, given a universal zkSNARK
 one could lift it to be simulation-extractable using techniques described
 e.g.~in \cite{EPRINT:KZMQCP15,CCS:AbdRamSla20}, but such lift comes with
-inevitably efficiency loss.  On the other hand, there is no known lift that
-would take a zkSNARK and make it universal. Since updatable zkSNARKs are quite
-restrictive regarding format of their CRSs, making such lift seems as a very
-difficult task. 
-The same applies for updatable zkSNARKs. No SE updatable zkSNARKs are
+inevitably efficiency loss.  
+%On the other hand, there is no known lift that
+%would take a zkSNARK and make it universal. Since updatable zkSNARKs are quite
+%restrictive regarding format of their CRSs, making such lift seems as a very
+%difficult task. 
+The same applies for updatable zkSNARKs. No out-of-the-box
+simulation-extractable updatable zkSNARKs are
 currently known and there is no transformation that could take a SE zkSNARK
-and make it updatable.\markulf{12/11/2020}{arguably there is a transformation
-  that takes a snark and makes it universal: compute the reference string for a
-  universal circuit. There is also an optimized transformation for a variant of
-  Groth16, called Mirage. There is a SE transformation that preserves updateabilit}
+and make it updatable (even though transformations like \cite{CCS:AbdRamSla20}
+preserves updatability).
+%\markulf{12/11/2020}{arguably there is a transformation
+%  that takes a snark and makes it universal: compute the reference string for a
+%  universal circuit. There is also an optimized transformation for a variant of
+%  Groth16, called Mirage. There is a SE transformation that preserves updateabilit}
 
 \subsection{Our contribution}
 First of all, we show that a class of computationally special-sound proofs of
-knowledge that are zero-knowledge \markulf{12/11/2020}{Should this be HVZK, also
-in abstract?} in the standard model and have a unique
+knowledge that are zero-knowledge 
+%\markulf{12/11/2020}{Should this be HVZK, also
+% in abstract?} 
+in the standard model and have a unique
 response property \emph{are simulation extractable out-of-the box} when made
 non-interactive by the Fiat--Shamir transform. Although this problem has been
 already tackled by Faust et al.~\cite{INDOCRYPT:FKMV12}, we extend it to a
@@ -329,10 +336,10 @@ the Fiat--Shamir transform can be used to get a protocol that is
 non-interactive and shares the same security properties. 
 
   
-	\michals{4.11.20}{ Does knowledge soundness have the same tightness? For
-		plonk there is no such issue with ks as its ks is shown in the algebraic
-		group model; sonic uses both witness extended emulation and the AGM, thus
-	I guess it is affected}
+	% \michals{4.11.20}{ Does knowledge soundness have the same tightness? For
+	% 	plonk there is no such issue with ks as its ks is shown in the algebraic
+	% 	group model; sonic uses both witness extended emulation and the AGM, thus
+	% I guess it is affected}
 We see our generalized forking lemma as contributing to a critical assessment of
 this approach. The analysis of the interactive protocol is not enough and one
 has to consider the security loss implied by the generalisation of the forking
@@ -359,7 +366,8 @@ that are undoubtedly simpler protocols than the considered proof systems.
 % It remains an open question how to show simulation extractability tightly, e.g.~using AGM.
 
 \subsubsection{Interactive zero knowledge vs non-interactive zero knowledge.}
-\michals{12.11}{I am not sure that section is needed}Another issue we tackle is a question whether NIZK proof systems are in
+%\michals{12.11}{I am not sure that section is needed}
+Another issue we tackle is a question whether NIZK proof systems are in
 fact zero-knowledge, see e.g.~\cite{C:Pass03}. This problem was raised as one
 could observe that a NIZK proof system has a property alien to interactive
 proofs---a verifier who obtains a proof $\zkproof$ for a statement $\inp \in
@@ -657,18 +665,14 @@ $\PCOMs$, presented in \cref{fig:pcoms}.
 We emphasize the following properties of a secure polynomial commitment
 $\PCOM$:
 \begin{description}
-	\item[Evaluation binding] a $\ppt$ adversary $\adv$ which outputs a commitment $c$
-		to a polynomial $\p{f}$ and is given an evaluation point $z$ has at most
-negligible chances to correctly open the commitment to a value different than
-$\p{f}(z)$. \markulf{12/11/2020}{The definition below, which I believe is the
-  standard one, does not really match up with the informal description above.
-  There is no $f$ or $z$.}
-
-	Let 
+	\item[Evaluation binding] a $\ppt$ adversary $\adv$ which outputs a
+		commitment $\vec{c}$ and evaluation points $\vec{z}$ has at most
+		negligible chances open the commitment to two different evaluations
+		$\vec{s}, \vec{s'}$. That is, let 
 	$k \in \NN$ be the number of committed polynomials,
 	$l \in \NN$ number of evaluation points,
 	$\vec{c} \in \GRP^k$ be the commitments,  
-	$\vec{z},\vec{z}' \in \FF_p^l$ be the arguments the polynomials are evaluated at, $\vec{s},\vec{s}' \in \FF_p^k$ the evaluations, and 
+	$\vec{z} \in \FF_p^l$ be the arguments the polynomials are evaluated at, $\vec{s},\vec{s}' \in \FF_p^k$ the evaluations, and 
 	$\vec{o},\vec{o}' \in \FF_p^l$ be the commitment openings. 
 	Then for every $\ppt$ adversary $\adv$	
 	\[
@@ -721,10 +725,6 @@ crucial in showing simulation-extractability of $\plonk$ and $\sonic$. We show
 that the $\plonk$'s and $\sonic$'s polynomial commitment schemes satisfy this
 requirement in \cref{lem:pcomp_unique_op} and \cref{lem:pcoms_unique_op}
 respectively.
-\markulf{03.11.2020}{The two definitions could be combined into what I would
-  call strong evaluation binding.}
-	\michals{4.11}{Noted, let me check whether it is more convenient to use
-	one or two separate properties later}
 
 \subsection{Algebraic Group Model}
 The algebraic group model (AGM) introduced in \cite{C:FucKilLos18} lies
@@ -936,9 +936,9 @@ statements it wishes.
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
-			& \crs \gets \kgen(\REL),\\
+			& \crs \gets \kgen(\REL), r \sample \RND{\advse}, \\
 			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs,
-			\ro} (\REL, \crs) 
+			\ro} (\REL, \crs; r) 
 		\end{aligned}
 		\right.\right]\,,
 	\]
@@ -952,10 +952,11 @@ statements it wishes.
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
-			& \crs \gets \kgen(\REL),\\
+			& \crs \gets \kgen(\REL), r \sample \RND{\advse},\\
 			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs,
-			\ro} (\REL, \crs) \\
-			& \wit_\advse \gets \ext_\ss (\trans_{\advse}) 
+			\ro} (\REL, \crs; r) \\
+			& \wit_\advse \gets \ext_\ss (\REL, \crs, \advse, r, \inp_{\advse}, \zkproof_\advse,
+			Q, Q_\ro,) 
 		\end{aligned}
 		\right.\right]
 	\]
@@ -966,7 +967,8 @@ statements it wishes.
 	for some polynomial $\poly$, constant $d$ and negligible $\eps$ whenever
 	$\accProb \geq \nu$. List $Q$ contains all $(\inp, \zkproof)$ pairs where
 	$\inp$ is an instance provided to the simulator by the adversary and
-	$\zkproof$ is the simulator's answer. 
+	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+	queries to $\ro$ and $\ro$'s answers. 
 \end{definition}
 
 Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
@@ -983,15 +985,17 @@ The theorem relies on the following classical lemma, called \emph{General forkin
 
 \begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12,CCS:BelNev06}]
 	\label{lem:forking_lemma}
-	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\adv$ be a $\ppt$ algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $i \in\range{0}{q}$ and $s$ is called a \emph{side output}.
+	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\zdv$ be a $\ppt$ algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $i \in\range{0}{q}$ and $s$ is called a \emph{side output}.
 	Denote by $\ig$ a randomised instance generator.
 	We denote by $\accProb$ the probability
 	\[
-		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_q \sample H; (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.
+		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_q \sample H; (i, s) \gets
+		\zdv(y, h_1, \ldots, h_q)}\,.
 	\]
-	Let $\forking_\adv(y)$ denote the algorithm described in \cref{fig:forking_lemma}, then the probability $\frkProb$ defined as
+	Let $\forking_\zdv(y)$ denote the algorithm described in \cref{fig:forking_lemma}, then the probability $\frkProb$ defined as
 	$
-		\frkProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\adv}(y)}
+		\frkProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets
+		\forking_{\zdv}(y)}
 	$
 	holds
 	\[
@@ -1001,29 +1005,35 @@ The theorem relies on the following classical lemma, called \emph{General forkin
 	\begin{figure}[t]
 		\centering
 		\fbox{
-		\procedure{$\forking_\adv (y)$}
+		\procedure{$\forking_\zdv (y)$}
 		{
-			r \sample \RND{\adv}\\
+			r \sample \RND{\zdv}\\
 			h_1, \ldots, h_q \sample H\\
-			(i, s) \gets \adv(y, h_1, \ldots, h_q; r)\\
+			(i, s) \gets \zdv(y, h_1, \ldots, h_q; r)\\
 			\pcif i = 0\ \pcreturn (0, \bot, \bot)\\
 			h'_{i}, \ldots, h'_{q} \sample H\\
-			(i', s') \gets \adv(y, h_1, \ldots, h_{i - 1}, h'_{i} h'_{q}; r)\\
+			(i', s') \gets \zdv(y, h_1, \ldots, h_{i - 1}, h'_{i}, \ldots,  h'_{q}; r)\\
 			\pcif (i = i') \land (h_{i} \neq h'_{i})\ \pcreturn (1, s, s')\\
 			\pcind \pcelse \pcreturn (0, \bot, \bot)
 		}}
-		\caption{Forking algorithm $\forking_\adv$}
+		\caption{Forking algorithm $\forking_\zdv$}
 		\label{fig:forking_lemma}
 \end{figure}
 \end{lemma}
 %
-In case of a sigma protocol, the probability $\frkProb$ can be interpreted as
+In case of a sigma protocol, $\zdv$ may be interpreted as a pack of algorithms
+---the adversary $\adv$ that produces acceptable transcripts which we extract
+the witness from and the simulator $\simulator_\ro$ that provides $\adv$ with
+random oracle access.
+The probability $\frkProb$ can be interpreted as
 a lower bound for a successful witness extraction from two transcripts.  Let
 $\trans_1 = (\inp, a, b, z)$ and $\trans_2 = (\inp, a, b', z')$ be the
 transcripts.  Both $\trans_1$ and $\trans_2$ have to be \emph{acceptable},
-i.e.~$i > 0$ and the probability that $\adv$ makes an acceptable transcript is
-denoted by $\accProb$.  Index $i$ can be interpreted as an index of $h_i$
-which was sent as a challenge for $(\inp, a)$, this index has to be guessed by
+i.e.~$i > 0$ and the probability that $\zdv$ accepts a transcript is
+denoted by $\accProb$. Index $i$ can be interpreted as an index of $h_i$
+which was sent as a challenge for $(\inp, a)$, i.e~the index of a random
+oracle query that has been used to produce prover's message in the point the
+proof branches (regarding the random oracle queries). This index has to be guessed by
 the security reduction.  For the sake of extractability, both transcripts have
 to have the same index $i$, i.e.~the same instance $\inp$ and the first
 message $a$, but the actual challenges $b = h_i$ and $b' = h'_{i}$ have to
@@ -1067,15 +1077,16 @@ simulation extractable.
 \begin{lemma}[General forking lemma II]
 	\label{lem:generalised_forking_lemma}
 	Fix $q \in \ZZ$ and set $H$ of size $h \geq m$. 
-	Let $\adv$ be a $\ppt$ algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$ where $i \in \range{0}{q}$ and $s$ is called a side output. 
+	Let $\zdv$ be a $\ppt$ algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$ where $i \in \range{0}{q}$ and $s$ is called a side output. 
 	Denote by $\ig$ a randomised instance generator. We denote by $\accProb$ the probability
 	\[
-		\condprob{i \neq 0}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.
+		\condprob{i \neq 0}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (i, s)
+		\gets \zdv(y, h_1, \ldots, h_q)}\,.
 	\]
-	Let $\genforking_{\adv}^{m}$ 
+	Let $\genforking_{\zdv}^{m}$ 
 	denote the algorithm described in
 	\cref{fig:genforking_lemma} then the probability $\frkProb := \condprob{b =
-	1}{y \gets \ig;\ (b, \vec{s}) \gets \genforking_{\adv}^{m}(y)}$ is at least 
+	1}{y \gets \ig;\ (b, \vec{s}) \gets \genforking_{\zdv}^{m}(y)}$ is at least 
 	\[
 		\frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)
 	\]
@@ -1083,17 +1094,17 @@ simulation extractable.
 	\begin{figure}[t]
 		\centering
 		\fbox{
-		\procedure{$\genforking_{\adv}^{m} (y)$}
+		\procedure{$\genforking_{\zdv}^{m} (y)$}
 		{
-			r \sample \RND{\adv}\\
+			r \sample \RND{\zdv}\\
 			h_1^{1}, \ldots, h_{q}^{1} \sample H\\
-			(i_1, s_1) \gets \adv(y, h_1^{1}, \ldots, h_{q}^{1}; r)\\
+			(i_1, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; r)\\
 			\pcif i_1 = 0\ \pcreturn (0, \bot)\\
 			\pcfor j \in \range{2}{m}\\
 			\pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
 			h_{i - 1}^{j - 1}\\
 			\pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
-			\pcind (i_j, s_j) \gets \adv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
+			\pcind (i_j, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
 			\ldots, h_{q}^{j}; r)\\
 			\pcind \pcif i_j = 0 \lor i_{j} \neq i_{j - 1}\ \pcreturn (0, \bot)\\
 			\pcif \exists (k, j), (k', j') \in \range{1}{q} \times
@@ -1101,20 +1112,17 @@ simulation extractable.
 		\pcreturn (0, \bot)\\
 			\pcelse \pcreturn (1, \vec{s})
 		}}
-		\caption{Generalised forking algorithm $\genforking_{\adv}^{m}$}
-			\michals{4.11}{Check now}
+		\caption{Generalised forking algorithm $\genforking_{\zdv}^{m}$}
 		\label{fig:genforking_lemma}
 \end{figure}
 \end{lemma}
 \begin{proof}
-	\michals{3.08.20}{DISCLAIMER: This proof is a naive generalisation of the general forking lemma from Bellare and Neven 06. Need to check that all (in)equalities hold!}
-	We proceed similarly as in \cite{CCS:BelNev06} (with some parts taken almost verbatim).
-	
 	First let denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
 	\begin{align*}
-	\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s) \gets \adv(y, h_1, \ldots, h_q)}\,.\\
+	\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s)
+	\gets \zdv(y, h_1, \ldots, h_q)}\,.\\
 		\frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
-	\genforking_{\adv}^{m}(y)}\,.
+	\genforking_{\zdv}^{m}(y)}\,.
 	\end{align*}
 	
 	We start by claiming that for all $y$ 
@@ -1141,7 +1149,7 @@ simulation extractable.
 	We now show \cref{eq:frkProb_y}.
 	Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$. 
 	For any input $y$, with probabilities taken over the coin tosses of
-$\genforking_{\adv}^{m}$ we have
+$\genforking_{\zdv}^{m}$ we have
 	\begin{align*}
 		\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land h_{i_j} \neq h_{i_{j'}} \text{ for } (j, j') \in J}	\\
 		& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \\
@@ -1154,19 +1162,20 @@ $\genforking_{\adv}^{m}$ we have
 	\end{align*}
 	It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for }
 	(j, j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$.
-	Let $\RND{\adv}$ denote the set from which $\adv$ picks its coins at random.
-	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\adv} \times
+	Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
+	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times
 	H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
 h_{\iota - 1})$ to \[
-		\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \adv(y, h_1, \ldots, h_q; \rho)} 
+		\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)} 
 	\] 
-	for all $\rho \in \RND{\adv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider $X_\iota$ as a random variable over the uniform distribution on its domain. 
+	for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider $X_\iota$ as a random variable over the uniform distribution on its domain. 
 	Then
 	\begin{align*}
 		& \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} 
 		 = \sum_{\iota = 1}^{q} \prob{i_1 = \iota \land \ldots \land i_m = \iota} \\
 		& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota} \cdot \condprob{i_2 = \iota}{i_1 = \iota} \cdot \ldots \cdot \condprob{i_m = \iota}{i_1 = \ldots = i_{m - 1} = \iota} \\
-		& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota} (\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\adv}} \cdot \abs{H}^{\iota - 1}}
+		& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota}
+		(\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\iota - 1}}
 		= \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
 	\end{align*}
 	Importantly, $\sum_{\iota = 1}^q \expected{X_{\iota}} = \accProb(y)$.
@@ -1202,14 +1211,14 @@ h_{\iota - 1})$ to \[
 \end{remark}
 
 \begin{lemma}\label{lem:jensen}
-	Let $\RND{\adv}$ denote the set from which $\adv$ picks its coins at random.
-	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\adv} \times
+	Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
+	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times
 	H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
 h_{\iota - 1})$ to 
 	\[
-		\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \adv(y, h_1, \ldots, h_q; \rho)} 
+		\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)} 
 	\] 
-	for all $\rho \in \RND{\adv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider $X_\iota$ as a random variable over the uniform distribution on its domain. 
+	for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider $X_\iota$ as a random variable over the uniform distribution on its domain. 
 	Then $\expected{X_\iota^m} \geq \expected{X_\iota}^m$.
 \end{lemma}
 \begin{proof}
@@ -1227,6 +1236,34 @@ h_{\iota - 1})$ to
 		\sum_{i = 1}^{q} x_i y_i \leq \left(\sum_{i = 1}^{q} x_i^p\right)^{\frac{1}{p}} \cdot \left(\sum_{i = 1}^{q} y_i^p\right)^{\frac{1}{q}}\,.
 	\]
 \end{lemma}
+
+We use the generalised forking lemma as follows in our
+simulation-extractability proof. Let $\advse$ be the simulation-extractability
+adversary that produces an acceptable proof $\zkproof_\advse$ for
+instance $\inp_\advse$; $r$ its randomness; $Q$ list of the queries submitted
+by $\advse$ along with simulator's $\simulator_\zkproof$ answers; and $Q_\ro$
+be the list of all random oracle queries made by $\advse$. All of these are
+given to the extractor $\ext$ that internally runs the forking algorithm
+$\genforking_\zdv$.  
+Algorithm $\zdv$ takes $\advse, \inp_\advse, \zkproof_\advse, Q, Q_\ro, \crs$
+as input $y$ and proceeds as follows: it runs internally $\advse(\REL, \crs;
+r)$ and respond to its random oracle and simulator queries by using $Q_\ro$
+and $Q$. Note that the $\advse$ makes the same queries as it did before it
+output $(\inp_\advse, \zkproof_\advse)$ as it is run on the same random tape
+and with the same answers from the simulator and random oracle. We also note
+that we differ here from the description of the $\genforking_\zdv$ algorithm
+that picks also the first set of random oracle queries' responses $h^1_1,
+\ldots, h^1_q$. We however note that this difference is only notational as
+random oracle queries' responses provided in $Q_\ro$ are random as well. (For
+the sake of completeness, we allow $\genforking_\zdv$ to pick $h^i_{k + 1}, \ldots,
+h^1_q$ responses if $Q_\ro$ has only $k$ elements.
+Then, after the first run of $\advse$ is done, $\zdv$ rewinds it
+to a point
+just after before $\advse$ is about to ask its $i$-th random oracle query and
+picks fresh random oracle responses $h^2_i, \ldots h^2_q$. If the adversary   
+\michals{12.11}{CONTINUE HERE}
+\michals{13.11}{that should be placed below, in the end of the section? In the
+proof?}
 
 \subsection{Unique-response protocols.}
 Another problem comes with another assumption required by Faust et al. That is, the unique response property of the transformed sigma protocol.
@@ -1302,7 +1339,7 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 % the unique opening property.
 
 \section{Simulation-extractability---the general result}
-\michals{25.09}{The generalisation of the forking lemma we have may work only for schemes that require rewinding of a single round. That limits the generalisation of the result}
+% \michals{25.09}{The generalisation of the forking lemma we have may work only for schemes that require rewinding of a single round. That limits the generalisation of the result}
 
 \begin{theorem}[Simulation-extractable multi-round protocols]
 	\label{thm:se}
@@ -1892,8 +1929,8 @@ $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
 	for some negligible $\eps$ and $\numberofconstrains$ being the number of contrains in the proven circuit.
 \end{corollary}
 
-\markulf{03.11.2020}{Comment again at this being huge? Maybe mention
-  simulation-soundness result?}
+%\markulf{03.11.2020}{Comment again at this being huge? Maybe mention
+%  simulation-soundness result?}
 
 %\begin{proof}
 % 	The theorem holds as a corollary to \cref{thm:se}.
@@ -2643,6 +2680,7 @@ In \sonic{} we will use commitments to the following polynomials.
 			\qed
 	\end{proof}
 
+	\end{document}
 	\section{(Tight) simulation soundness of $\plonk$}
 	\task{28.07}{All proofs in this section should be verified}
 	% \michals{15.09}{As MK noted, this proof holds only for simulation soundness. For extractability we use special soundness (cf the next section)}
