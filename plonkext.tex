@@ -68,12 +68,11 @@
 	In this paper we show that a wide class of (computationally) special-sound
 	proofs of knowledge which have unique response property and are
 	standard-model zero-knowledge are (non-black-box) simulation-extractable
-	when made non-interactive by the Fiat--Shamir transform.  This allows us to
-	prove that two efficient updatable universal
-	zkSNARK---\plonk{}~\cite{EPRINT:GabWilCio19} and
-	$\sonic$~\cite{CCS:MBKM19}---meet these requirements and conclude by
+	when made non-interactive by the Fiat--Shamir transform.  We prove that two
+	efficient updatable universal zkSNARKs---\plonk{}~\cite{EPRINT:GabWilCio19}
+	and $\sonic$~\cite{CCS:MBKM19}---meet these requirements and conclude by
 	showing their simulation-extractability.  As a side result we also show that
-	basing security on rewinding and Fiat--Shamir transform often comes at a
+	relying security on rewinding and Fiat--Shamir transform often comes at a
 	great price of inefficient (yet still polynomial time) knowledge extraction
 	and the security loss introduced by these techniques should always be taken
 	into account. 
@@ -91,15 +90,15 @@ to name a few. Special attention has been devoted to the design of new
 This property makes zkSNARKs especially useful in real-life system deployment,
 e.g.~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}.
 This is turn risen a question---\emph{Are zkSNARKs' security models useful in
-the real life?} This question becomes especially important when one realises that all
+ real life?} Answering that becomes especially important when one realises that all
 zkSNARKs with constant-sized proofs are shown secure in the common
 reference string (CRS) model where the CRS used by the parties---i.e.~a prover
 that shows veracity of a statement using its private input called
 \emph{witness} and a verifier that verifies it---comes with a trapdoor which
-can be used to break (knowledge) soundness. That is, convince the verifier to
+can be used to break (knowledge) soundness; that is, convince the verifier to
 accept a false statement or a statement for which the prover does not
-know the witness. Hence for secure a real-life deployment of zkSNARKs one has
-to answer a number of questions---\emph{How can the parties be sure that the
+know the witness. Hence for secure real-life deployment of zkSNARKs
+requires answering to the number of questions---\emph{How can the parties be sure that the
 trapdoor has not leaked?} \emph{Who is the party that generates the CRS?}
 \emph{Can this party be trusted?} The last question has to be answered
 positively, as otherwise the CRS-generating party may leak the trapdoor. The
@@ -130,11 +129,11 @@ have been evaluated correctly, one has to do that using two different CRS-s.
 Since CRS generation is a
 troublesome process, it is desired to have it performed once, not every
 time a new circuit validity has to be shown. zkSNARKs that utilise a single
-CRS for all circuits of given size are called \emph{universal}. One of the first universal
+CRS for all circuits of a given size are called \emph{universal}. One of the first universal
 zkSNARK was proposed by Groth et al.~\cite{C:GKMMM18}. This particular proof
 system also introduced a novel security property called \emph{updatable
 soundness}.
-Because of the  \cite{AC:BelFucSca16} impossibility result, one cannot wish for a
+Because of the Bellare et al.~\cite{AC:BelFucSca16} impossibility result, one cannot wish for a
 system that is simultaneously subversion zero-knowledge and subversion-sound.
 Groth et al.~work around this problem by proposing a notion which allows
 zkSNARK provers and verifiers to \emph{update} the CRS, i.e.~to take a CRS and modify it
@@ -144,7 +143,7 @@ parties is honest then the proof system is (knowledge) sound. Although inefficie
 is quadratic to the size of the proven statements, \cite{C:GKMMM18} set a new
 paradigm for designing zkSNARKs.
 
-The first zkSNARK that has updatable and short CRS and is universal is
+The first universal zkSNARK with updatable and short CRS was
 $\sonic$ proposed by Maller et al.~in \cite{CCS:MBKM19}. Eventually, Gabizon et
 al.~designed $\plonk$ \cite{EPRINT:GabWilCio19} which currently is the
 most efficient updatable universal zkSNARK. Independently, Chiesa et
@@ -168,13 +167,12 @@ a CRS.
 \paragraph{On the importance of the simulation extractability.}
 Although zkSNARKs are shown to satisfy a (standard) knowledge soundness definition,
 simulation-extractability (SE) is the property that should be required from
-zkSNARKs used in practice, i.e.~from efficient zero-knowledge proofs deployed in
-the real-life cryptosystems. This is since, arguably, in the real life one simply cannot
-assume that the adversary who tries to break security of the system does not
+zkSNARKs used in practice. This is since, arguably, in the real life one simply cannot
+assume that the adversary who tries to break security of a system does not
 have access to any proofs provided by other parties using the same
-zero-knowledge system. On the contrary, in the most popular applications of
+zero-knowledge scheme. On the contrary, in the most popular applications of
 zkSNARKs, like privacy-preserving blockchains, proofs made by all
-blockchain-participants are public. Thus, it is only reasonable to require 
+blockchain-participants are usually public. Thus, it is only reasonable to require 
 a zero-knowledge proof system to be resilient to attacks that utilise proofs
 generated by different parties.
 
@@ -232,13 +230,13 @@ knowledge that are zero-knowledge
 %\markulf{12/11/2020}{Should this be HVZK, also
 % in abstract?} 
 in the standard model and have a unique
-response property \emph{are simulation extractable out-of-the box} when made
-non-interactive by the Fiat--Shamir transform. Although this problem has been
+response property \emph{are simulation-extractable out-of-the box} when the
+Fiat--Shamir transformation is applied to them. Although a similar problem has been
 already tackled by Faust et al.~\cite{INDOCRYPT:FKMV12}, we extend it to a
 much wider class of protocols, e.g.~our result is not restricted to
 $3$-message protocols only.
 
-To show that our result is useful we prove that two of the most efficient updatable and universal
+To show that our result is useful and practical we prove that two of the most efficient updatable and universal
 zkSNARKs---$\plonk$ and $\sonic$---are simulation-extractable.
 Although---or arguably because---we do not change these protocols at all, we had to solve a number of
 problems in order to obtain this result which are explained below. 
@@ -252,15 +250,15 @@ the resulting, non-interactive ones, by $\plonkprotfs$ and $\sonicprotfs$,
 respectively. 
 
 \subsubsection{Special soundness.} 
-To be able to follow \cite{INDOCRYPT:FKMV12} it had to be shown that
+First, following \cite{INDOCRYPT:FKMV12}, we need to show that
 $\plonkprot$ and $\sonicprot$ are special-sound.  However the standard definition of special
 soundness could not be met.  First of
 all, the  definition requires extraction of a witness from any two
-transcripts, each containing three messages and that share the first message. For 
+transcripts, each containing three messages and sharing the first message. For 
 $\plonkprot$ and $\sonicprot$ that gives nothing. The definition had to be tuned to cover
 protocols that have more messages than just three.  Furthermore, the number of
 transcripts required is much greater---$(\numberofconstrains + 3)$---where
-$\numberofconstrains$ is the number of constrains in the proven circuit---for
+$\numberofconstrains$ is the number of constraints in the proven circuit---for
 $\plonkprot$ and $(\multconstr + \linconstr + 1)$--where $\multconstr$ and
 $\linconstr$ are the numbers of multiplicative and linear constraints---
 for $\sonicprot$. Hence, we do not have a \emph{pair of transcripts}, but a \emph{tree of transcripts}.
@@ -269,7 +267,7 @@ Secondly, both protocols rely on common reference strings which come with trapdo
 that allow an adversary who knows them to produce multiple valid proofs even without
 knowing the witness or for false statements. Recall that the standard special soundness definition
 requires witness extraction from \emph{any} pair of acceptable transcripts
-that share a common root. Thus, the definition cannot be met. Fortunately, one
+that share a common root. Fortunately, one
 could define a weaker version of special soundness, i.e.~a computational
 special soundness. That is, we show that either it is possible to
 extract a witness from a tree of acceptable transcripts or one could use the
@@ -280,17 +278,17 @@ assumption.
 has to be proven is the unique response property
 which states, as expressed in \cite{C:Fischlin05}, that except for the first
 message, all messages sent
-by the prover are deterministic. As previously, we also could not use this
+by the prover are deterministic (intuitively,~the prover does not use its randomness
+except from the first message). As previously, we also could not use this
 definition right out of the box simply because $\plonkprot$ does not follow it---both first
 and the second prover's messages are randomised. We thus propose a
 generalisation of the definition which states that a protocol is $\ur{i}$ if the
 prover is deterministic after sending its $i$-th message. This property is
-fulfilled by $\plonkprot$ with $i = 2$. (Although we show that for $i = 3$, we
-also prove that this is sufficient).
+fulfilled by $\plonkprot$ with $i = 2$. 
 
 To be able to show the unique response property (for both of the protocols) we
-also had to show that the modified KZG polynomial commitment scheme \cite{AC:KatZavGol10}
-proposed in \cite{EPRINT:GabWilCio19,CCS:MBKM19} have a \emph{unique opening
+also had to show that the modified KZG polynomial commitment schemes \cite{AC:KatZavGol10}
+proposed in \cite{EPRINT:GabWilCio19} and \cite{CCS:MBKM19} have a \emph{unique opening
 property} which states that for a polynomial $\p{f}(X)$ evaluated at some
 point $z$ it should be infeasible for any PPT adversary to provide
 two different (even honest) but acceptable openings of the commitment. 
@@ -299,13 +297,14 @@ two different (even honest) but acceptable openings of the commitment.
 In order to show our result we also show that (interactive) $\plonkprot$ and
 $\sonicprot$ are
 honest verifier zero-knowledge in the standard model, i.e.~the simulator is
-able to produce a transcript indistinguishable from a transcript produced by a
+able to produce a transcript indistinguishable from a transcript produced by
+an
 honest prover and verifier without any additional knowledge, esp.~without
 knowing the CRS trapdoor.
 Although both $\sonic$ and $\plonk$ are shown to be zero-knowledge, the proofs
-provided by their authors rely on trapdoors. For our reduction to work,
+provided by their authors utilise trapdoors. For our reduction to work,
 we need simulators that provide indistinguishable proofs relying only on
-rearranging the order of messages and picking suitable verifier's challenges. 
+rearranging the ordering of messages and picking suitable verifier's challenges. 
 That is, any PPT
 party should be able to produce a simulated proof by its own. (Note that this property
 does not necessary break soundness of the protocol as the simulator is
@@ -323,7 +322,7 @@ that share the first message. Since $\plonkprot$ and $\sonicprot$ have more
 than $3$ messages and are not special-sound, the forking lemma, as known from
 \cite{CCS:BelNev06}, cannot be used
 directly. We thus propose a modification that covers multi-message protocols
-and where witness extraction require more transcripts than merely two.
+where witness extraction requires more transcripts than merely two.
 Unfortunately, we also observe that the security gap grows with the number of transcripts and the
 probability that the
 extractor succeeds diminishes significantly. (That said, we have to note that
@@ -367,6 +366,7 @@ that are undoubtedly simpler protocols than the considered proof systems.
 % Given that the security reduction for simulation-extractability introduces a security gap we also present a proof for $\plonkprot_\fs$ simulation soundness which utilises the algebraic group model and is tight. 
 % It remains an open question how to show simulation extractability tightly, e.g.~using AGM.
 
+\COMMENT{
 \subsubsection{Interactive zero knowledge vs non-interactive zero knowledge.}
 %\michals{12.11}{I am not sure that section is needed}
 Another issue we tackle is a question whether NIZK proof systems are in
@@ -392,14 +392,15 @@ veracity of a proof only if it trusts that there is at least one honest party
 between the updaters. 
 
 We believe that our result may be useful for designing new zkSNARKs, especially those based on a polynomial commitment schemes~\cite{AC:KatZavGol10}, as it shows that a careful protocol design may give it a strong security notion for free.
+}
 
 \subsection{Structure of the paper}
 In the next section we present necessary preliminaries.
-Section 3 compounds on new notions and theorems that instantiate our
+Section 3 compounds of new notions and theorems that instantiate our
 framework. Then, in Section 4, we show our main result, that is a proof of
-simulation-soundess of a wide class of zero-knowledge proofs. In Section 5 we
+simulation-soundness for a class of zero-knowledge proofs of knowledge. In Section 5 we
 show that $\plonk$ fulfils requirements of our framework and in fact is
-simulation extractable. Due to the lack of space, the similar result for
+simulation extractable. Due to the lack of space, the analogous result for
 $\sonic$ has been moved to \cref{sec:sonic}.
 
 \section{Preliminaries}
@@ -533,11 +534,64 @@ polynomial $\p{f}$ which $\committer$ committed to evaluates to $s$ at some poin
 $z$ chosen by $\receiver$.
 $\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme. We
 denote the first by $\PCOMp$, presented in \cref{fig:pcomp}, and the latter by
-$\PCOMs$, presented in \cref{fig:pcoms}. (Due to the lack of space, the
-figures were moved to \cref{sec:additional_preliminaries}.)
+$\PCOMs$, presented in \cref{fig:pcoms}. (Due to the lack of space,
+\cref{fig:pcoms} was moved to \cref{sec:additional_preliminaries}.)
 %
 %
 % We require $\PCOM$ to have the following properties:
+\begin{figure}[t!]
+	\begin{pcvstack}[center,boxed]
+		\begin{pchstack}
+			\procedure{$\kgen(\REL)$}
+			{
+			\chi \sample \FF^2_p \\ [\myskip]
+			\pcreturn \gone{1, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}\\ [\myskip]
+				\hphantom{\hspace*{5.5cm}}	
+				%\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
+			}
+			
+			\pchspace
+			
+			\procedure{$\com(\crs, \vec{\p{f}}(X))$}
+			{ 
+				\pcreturn \gone{\vec{c}} = \gone{\vec{\p{f}}(\chi)}\\ [\myskip]
+				\hphantom{\pcind \pcif 
+					\sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j}
+					\gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet
+				\gtwo{1} + }
+			}
+		\end{pchstack}
+		% \pcvspace
+    
+		\begin{pchstack}
+			\procedure{$\open(\crs, \vec{\gamma}, \vec{z}, \vec{s}, \vec{f}(X))$}
+			{
+			\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo\\ [\myskip]
+			\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}\\ [\myskip]
+				\pcreturn \vec{o} = \gone{\vec{\p{o}}(\chi)}\\ [\myskip]
+				\hphantom{\hspace*{5.5cm}}	
+			}
+			
+			\pchspace
+			
+			\procedure{$\verify(\crs, \gone{c}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
+			{
+				\vec{r} \gets \FF_p^{\abs{\vec{z}}}\\ [\myskip]
+				\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo \\ [\myskip]
+				\pcind \pcif 
+					\sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j} \gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet \gtwo{1} + \\ [\myskip]
+					\pcind \sum_{i = 1}^{\abs{\vec{z}}} r_i z_i o_i
+					\bullet \gtwo{1} \neq 
+					\gone{- \sum_{i = 1}^{\abs{\vec{z}}} r_i o_i } \bullet \gtwo{\chi} \pcthen  \\
+					\pcind \pcreturn 0\\ [\myskip]
+					\pcreturn 1.
+			}
+		\end{pchstack}
+	\end{pcvstack}
+	\caption{$\PCOMp$ polynomial commitment scheme}
+	\label{fig:pcomp}
+\end{figure}
+%
 We emphasize the following properties of a secure polynomial commitment
 $\PCOM$:
 \begin{description}
@@ -739,11 +793,11 @@ A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RE
 \end{description}
 
 \paragraph{NIZKs in the Random Oracle Model.}
-In this setting we distinguish, for the sake of clarity, two simulators, one denoted by $\simulator_\zkproof$ that is responsible for providing simulated proofs and $\simulator_\ro$ that picks a random oracle instantiation and takes care of all parties' queries to $\ro$.
-% \michals{9.06}{Should we distinguish two simulators or just pack everything into a single one?}
-For the sake of consistency (with random oracle-free NIZKs) we use $\simulator$
-to denote the pair of state-sharing simulators $\simulator_\zkproof,
-\simulator_\ro$.
+%In this setting we distinguish, for the sake of clarity, two simulators, one denoted by $\simulator_\zkproof$ that is responsible for providing simulated proofs and $\simulator_\ro$ that picks a random oracle instantiation and takes care of all parties' queries to $\ro$.
+%% \michals{9.06}{Should we distinguish two simulators or just pack everything into a single one?}
+%For the sake of consistency (with random oracle-free NIZKs) we use $\simulator$
+%to denote the pair of state-sharing simulators $\simulator_\zkproof,
+%\simulator_\ro$.
 
 \paragraph{Sigma protocols.}
 A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$  for a relation
@@ -1060,8 +1114,13 @@ just after before $\advse$ is about to ask its $i$-th random oracle query and
 picks fresh random oracle responses $h^2_i, \ldots h^2_q$. If the adversary   
 %\michals{12.11}{CONTINUE HERE}
 %\michals{13.11}{that should be placed below, in the end of the section? In the
-proof?}
+%proof?}
 }
+
+We note that in the original forking lemma the forking algorithm $\forking$
+cf.~\cref{fig:forking_lemma} gets only as input $y$ and elements $h^1_1, \ldots, h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming that
+$h^1_1, \ldots, h^1_q$ are random oracle responses, thus are random, makes our
+change only notational.
 
 \subsection{Unique-response protocols.}
 Another problem comes with another assumption required by Faust et al. That is, the unique response property of the transformed sigma protocol.
@@ -1365,7 +1424,7 @@ Thus the probability that extractor $\extss$ succeeds is at least
 \waccProb - \epsur - \epsss\,.
 \]
 Since $\waccProb$ is probability of $\advse$ outputting acceptable
-transcript that does not break $\ur{3}$-ness of $\ps$, then $\waccProb \geq
+transcript that does not break $\ur{k}$-ness of $\ps$, then $\waccProb \geq
 \accProb - \epsur$, where $\accProb$ is the probability of $\advse$ outputing an acceptable proof as defined in \cref{def:simext}. It thus holds
 \[
 	\label{eq:frk}
@@ -1393,7 +1452,7 @@ proceed as follows.
 First we show that the version of the KZG polynomial commitment scheme that is
 proposed in the \plonk{} paper has the unique opening property,
 cf.~\cref{sec:poly_com} and \cref{lem:pcomp_unique_op}. This is then used to
-show that $\plonkprot$ has the $\ur{3}$ property, cf.~\cref{lem:plonkprot_ur}.
+show that $\plonkprot$ has the $\ur{2}$ property, cf.~\cref{lem:plonkprot_ur}.
 
 Next, we show that 
 $\plonkprot$ is computational special-sound. That is, given a number of acceptable
@@ -1404,7 +1463,8 @@ precisely, we assume that each group element included in the
 transcripts comes with a vector of coefficients that represents the element in
 the basis compound of the input group elements, i.e.~$\plonkprot$'s CRS. See \cref{lem:plonkprot_ss}.
 
-Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is simulation-extractable. That is, we build reductions that given a simulation extractability adversary $\advse$ either breaks the protocol's unique response property or breaks the $\dlog$ assumption, if extracting a valid witness from a tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
+Given special-soundness of $\plonkprot$, we use the fact that it is also
+$\ur{2}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is simulation-extractable. That is, we build reductions that given a simulation extractability adversary $\advse$ either breaks the protocol's unique response property or breaks the $\dlog$ assumption, if extracting a valid witness from a tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 
 \subsection{Unique opening property of $\PCOMp$}
 \begin{lemma}
@@ -1545,11 +1605,13 @@ upper-bounded by
 \COMMENT{
 \begin{lemma}
 \label{lem:plonkprot_ur}
-If a polynomial commitment scheme $\PCOM$ is evaluation binding with parameter $\epsbind$ and has unique openings property with parameter $\epsop$, then $\plonkprot$ is $\ur{3}$\footnote{An attentive reader may note that $\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required.} 
+If a polynomial commitment scheme $\PCOM$ is evaluation binding with parameter
+$\epsbind$ and has unique openings property with parameter $\epsop$, then
+$\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required. 
 with parameter $\epsur \leq \epsbind + \epsop$.
 \end{lemma}
 \begin{proof}
-Let $\adv$ be an adversary that breaks $\ur{3}$-ness of
+Let $\adv$ be an adversary that breaks $\ur{2}$-ness of
 $\plonkprot$. 
 % \markulf{30.08}{This is fine. But sounds as if the law of the
 	% excluded middle is needed here. I am not sure it is. :) Mostly a
@@ -1580,7 +1642,7 @@ one of the openings has to be incorrect and should be rejected by the
 polynomial commitment verifier. This happens except with probability $\epsop$
 
 \conclude
-Hence the probability that $\adv$ breaks $\ur{3}$-property of $\PCOM$ is upper-bounded by $\epsbind + \epsop$.
+Hence the probability that $\adv$ breaks $\ur{2}$-property of $\plonkprot$ is upper-bounded by $\epsbind + \epsop$.
 \qed
 \end{proof}
 }
@@ -1839,7 +1901,7 @@ between $w = b_1 b_3 b_5 b_7$ and $w$ being random, thus \(
 
 \subsection{From special-soundness and unique response property to simulation extractability of $\plonkprotfs$}
 
-Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$
+Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$
 and computationally special sound. We now 
 make use of \cref{thm:se} and show that
 $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
@@ -1847,7 +1909,7 @@ $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
 % \michals{13.10}{The theorem below is going to have a much shorter proof -- for it being just a corollary of Sec.~4}
 \begin{corollary}[Simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
-Assume that  $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$, and computational special-sound with security $\epsss(\secpar)$.
+Assume that  $\plonkprot$ is $\ur{2}$ with security $\epsur(\secpar)$, and computational special-sound with security $\epsss(\secpar)$.
 Let $\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. 
 Let $\advse$ be a $\ppt$ adversary that can make up to $q$ random oracle
 queries and outputs an acceptable proof for $\plonkprotfs$ with probability
@@ -1987,10 +2049,10 @@ for some negligible $\eps$ and $\numberofconstrains$ being the number of contrai
 
 
 \section{Further work}
-We identify a number of problems which we leave as further work. First of all,
+We identify a number of problems which we left as further work. First of all,
 the generalised version of the forking lemma presented in this paper can be
-generalised even further, to include protocols where $(n_1, \ldots,
-n_\mu)$-special soundness hold for more than one $n_j > 1$. I.e.~to include
+generalised even further to include protocols where $(n_1, \ldots,
+n_\mu)$-special soundness holds for more than one $n_j > 1$. I.e.~to include
 protocols that for witness extraction require transcripts that branch at more
 than one point.
 
@@ -1999,6 +2061,19 @@ not limited to CRS-based NIZKs. Thus, it would be interesting to apply it to
 known so-called transparent zkSNARKs like Bulletproofs \cite{SP:BBBPWM18},
 Aurora \cite{EC:BCRSVW19} or AuroraLight \cite{EPRINT:Gabizon19a}.
 
+Since the rewinding technique and the forking lemma used to show simulation
+extractability of $\plonkprotfs$ and $\sonicprotfs$ come with security loss,
+it would be interesting to show SE of these protocols directly in the
+algebraic group model.
+
+Although we focused here only on zkSNARKs, it is worth to
+investigating other protocols that may benefit from our framework, like
+e.g.~identification schemes.
+
+Last, but not least, this paper would benefit greatly if a more tight version
+of the generalised forking lemma was provided. However, we have to note here
+that some of the inequalities used in the proof are already tight, i.e.~for
+specific adversaries, some of the inequalities are already equalities.
 \bibliographystyle{abbrv}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
 \clearpage
@@ -2048,58 +2123,6 @@ Polynomial commitment schemes used in this paper has been presented in
 \cref{fig:pcomp}, for $\plonk$'s PC, and in \cref{fig:pcoms}, for $\sonic$'s
 PC.
 
-\begin{figure}[t!]
-	\begin{pcvstack}[center,boxed]
-		\begin{pchstack}
-			\procedure{$\kgen(\REL)$}
-			{
-			\chi \sample \FF^2_p \\ [\myskip]
-			\pcreturn \gone{1, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}\\ [\myskip]
-				\hphantom{\hspace*{5.5cm}}	
-				%\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
-			}
-			
-			\pchspace
-			
-			\procedure{$\com(\crs, \vec{\p{f}}(X))$}
-			{ 
-				\pcreturn \gone{\vec{c}} = \gone{\vec{\p{f}}(\chi)}\\ [\myskip]
-				\hphantom{\pcind \pcif 
-					\sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j}
-					\gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet
-				\gtwo{1} + }
-			}
-		\end{pchstack}
-		% \pcvspace
-    
-		\begin{pchstack}
-			\procedure{$\open(\crs, \vec{\gamma}, \vec{z}, \vec{s}, \vec{f}(X))$}
-			{
-			\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo\\ [\myskip]
-			\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}\\ [\myskip]
-				\pcreturn \vec{o} = \gone{\vec{\p{o}}(\chi)}\\ [\myskip]
-				\hphantom{\hspace*{5.5cm}}	
-			}
-			
-			\pchspace
-			
-			\procedure{$\verify(\crs, \gone{c}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
-			{
-				\vec{r} \gets \FF_p^{\abs{\vec{z}}}\\ [\myskip]
-				\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo \\ [\myskip]
-				\pcind \pcif 
-					\sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j} \gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet \gtwo{1} + \\ [\myskip]
-					\pcind \sum_{i = 1}^{\abs{\vec{z}}} r_i z_i o_i
-					\bullet \gtwo{1} \neq 
-					\gone{- \sum_{i = 1}^{\abs{\vec{z}}} r_i o_i } \bullet \gtwo{\chi} \pcthen  \\
-					\pcind \pcreturn 0\\ [\myskip]
-					\pcreturn 1.
-			}
-		\end{pchstack}
-	\end{pcvstack}
-	\caption{$\PCOMp$ polynomial commitment scheme}
-	\label{fig:pcomp}
-\end{figure}
 %
 \begin{figure}[t!]
 	\begin{pcvstack}[center,boxed]
@@ -2908,7 +2931,8 @@ In \sonic{} we will use commitments to the following polynomials.
 
 	\begin{theorem}[Simulation soundness]
 		% \michals{16.09}{To be change to sim snd proof}
-		Assume that $(\numberofconstrains + 2, 1)$-$\dlog$ is $\eps_\dlog(\secpar)$-hard, $\plonkprot$ is sound and $\ur{3}$ with security $\epss(\secpar)$ and $\epsur(\secpar)$ respectively. 
+		Assume that $(\numberofconstrains + 2, 1)$-$\dlog$ is
+		$\eps_\dlog(\secpar)$-hard, $\plonkprot$ is sound and $\ur{2}$ with security $\epss(\secpar)$ and $\epsur(\secpar)$ respectively. 
 		Then the probability that an algebraic, $\ppt$ adversary $\advss$ breaks simulation soundness of $\plonkprotfs$ is upper-bounded by 
 		\[
 			\epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \epss(\secpar))\,,
@@ -2988,8 +3012,10 @@ In \sonic{} we will use commitments to the following polynomials.
 
 	\ncase{When $\event{E}$ happens}
 	We assume that $\inp_{\advss}$ is submitted to the simulator $\simulator$. 
-	We show how $\rdvur$ utilizes $\advss$, that makes use of $\inp_\advss, \zkproof_{\advss}\range{1}{3}$, to break the $\ur{3}$ property of $\plonkprot$. 
-	This way we bound the probability $\prob{\adv \text{ wins}, \event{E}}$ by the probability of $\rdvur$ being able to win in the $\ur{3}$ game.
+	We show how $\rdvur$ utilizes $\advss$, that makes use of $\inp_\advss,
+	\zkproof_{\advss}\range{1}{3}$, to break the $\ur{2}$ property of $\plonkprot$. 
+	This way we bound the probability $\prob{\adv \text{ wins}, \event{E}}$ by
+	the probability of $\rdvur$ being able to win in the $\ur{2}$ game.
 
 	Consider an algorithm $\rdvur$ that runs $\advss$ internally as a black-box:
 	\begin{itemize}
@@ -3004,7 +3030,8 @@ In \sonic{} we will use commitments to the following polynomials.
 		\end{align*}
 		\end{itemize}  
 		If $\zkproof_1 = \zkproof_2$, then $\advss$ fails to break simulation extractability, as $\zkproof_2 \in Q$.
-		On the other hand, if the proofs are not equal, then $\rdvur$ breaks $\ur{3}$-ness of $\plonkprot$. Thus 
+		On the other hand, if the proofs are not equal, then $\rdvur$ breaks
+		$\ur{2}$-ness of $\plonkprot$. Thus 
 		\[
 			\prob{\advss \text{ wins}, \event{E}} \leq \epsur(\secpar).
 		\]
@@ -3058,7 +3085,8 @@ In \sonic{} we will use commitments to the following polynomials.
 	\[
 		\eps \leq \epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \epsss(\secpar))\,,
 	\]
-	hence $\eps$ is negligible if $\dlog$ is hard and $\plonkprot$ is sound and $\ur{3}$.
+	hence $\eps$ is negligible if $\dlog$ is hard and $\plonkprot$ is sound and
+	$\ur{2}$.
 	\qed
 	\end{proof}
 \end{document}
