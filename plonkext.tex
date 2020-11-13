@@ -1262,34 +1262,37 @@ considerably.
 
 We walk around these obstacles by providing a generalised notion of the unique
 response property.  More precisely, we say that a $(2\mu + 1)$-message protocol
-has \emph{unique responses after $i$} and is called a $\ur{i}$-protocol if it
+has \emph{unique responses after $i$}, and called it an $\ur{i}$-protocol, if it
 follows the definition below:
 
 \begin{definition}[$\ur{i}$-protocol]
 	\label{def:wiur}
 	Let $\proofsystem$ be a $(2\mu + 1)$-message proof system $\ps = (\kgen, \prover,
-	\verifier, \simulator)$.
-	Denote by $a_0, b_0, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_{\mu}$ the consecutive messages exchanged in the protocol, where messages $a_i$ come from the prover and $b_i$ from the verifier.
-	We say that $\proofsystem$ has \emph{unique responses after $i$}
-	if 
+	\verifier, \simulator)$. Let $\proofsystem_\fs$ be $\proofsystem$ after
+	Fiat--Shamir transform,
+	Denote by $a_0, \ldots, a_{\mu}$ protocol messages output by the prover, 
+	We say that $\proofsystem$ has \emph{unique responses after $i$} if for any
+	$\ppt$ adversary $\adv$: 
 	\[
 		\prob{
 			\begin{aligned}
-			&	(a_0, b_0, \ldots, a_j, b_j, a_\mu), (a'_0, b'_0, \ldots, a'_j,
-		b'_j a'_\mu) \gets \adv(\REL, \crs) \\
-			& b_k = b'_k, k \in \range{1}{\mu - 1},\ a_l = a'_l,\ l \in
-		\range{1}{j},\ j > i 
+			&	\vec{a} = (a_0, \ldots, a_\mu), \vec{a'} = (a'_0, \ldots, a'_\mu)
+			\gets \adv^\ro(\REL, \crs), \vec{a} \neq \vec{a'} \\
+			& \verifier^\ro_\fs (\REL, \crs, \inp, \vec{a}) =
+			\verifier^\ro_\fs(\REL, \crs, \inp, \vec{a'}) = 1,\\
+			& a_{j} = a'_{j},\ j \in \range{1}{i + 1}
 			\end{aligned}
 			\ \left|\  
 		\vphantom{\begin{aligned}
-		&	(a_0, b_0, \ldots, a_j, b_j, a_\mu), (a'_0, b'_0, \ldots, a'_j,
-	b'_j a'_\mu) \gets \adv(\REL, \crs) \\
-		& b_k = b'_k, k \in \range{1, \mu - 1}, a_l = a'_l, l \in
+		&	\vec{a} = (a_0, b_0, \ldots, a_j, b_j, a_\mu), \vec{a'} = (a'_0, b'_0, \ldots, a'_j,
+		b'_j a'_\mu) \gets \adv(\REL, \crs), \vec{a} \neq \vec{a'}, \\
+		& b_k = b'_k, k \in \range{1, \mu - 1},\\ a_l = a'_l, l \in
 	\range{1}{j}, j > i 
 		\end{aligned}}
-	\crs \gets \kgen(\REL) \right.
-	} \leq \negl.
+	\crs \gets \kgen_\fs(\REL) \right.
+}
 	\]
+	is at most negligible at $\secpar$.
 % 	if after submitting its $i$-th message $a_i$ the prover is a deterministic
 % 	function. That is, it does not use its randomness tape and deterministically answers verifier's challenges.
 \end{definition}
@@ -1301,9 +1304,9 @@ We note that the definition above is independent on whether the proof system
 $\proofsystem$ utilises CRS (and compounds of the CRS-generating $\kgen$
 algorithm) or not.
 
-\begin{example}
-	The Schnorr protocol is $\ur{1}$. That is, after submitting its first message $a$, the prover is a deterministic function of the instance, $a$, and the verifier's challenge.
-\end{example}
+% \begin{example}
+% 	The Schnorr protocol is $\ur{1}$. That is, after submitting its first message $a$, the prover is a deterministic function of the instance, $a$, and the verifier's challenge.
+% \end{example}
 
 % \michals{08.07.20}{Should we change it to "deterministic prover property"?}
 
@@ -1380,8 +1383,8 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 	\ngame{1}
 	This is identical to $\game{0}$ except that now the game is aborted if there
 	is a simulated proof $\zkproof_\simulator$ for $\inp_\advse$ such that
-	$(\inp_\advse, \zkproof_\simulator\range{1}{k + 1}) = (\inp_\advse,
-	\zkproof_\advse\range{1}{k+ 1})$. That is, the adversary in its final proof reuses a part of a simulated proof it saw before and the proof is acceptable.
+	$(\inp_\advse, \zkproof_\simulator\range{1}{k}) = (\inp_\advse,
+	\zkproof_\advse\range{1}{k})$. That is, the adversary in its final proof reuses a part of a simulated proof it saw before and the proof is acceptable.
 	Denote that event by $\event{\errur}$.
 	
 	\ncase{$\game{0} \mapsto \game{1}$}	
@@ -1397,23 +1400,23 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 	
 	Assume that $\advse$ queried the simulator on the instance it wishes to
 	outputs $\inp_{\advse}$. 
-	We show a reduction $\rdvur$ that utilises $\advse$, who outputs a valid proof for $\inp_\advse$, to break the $\ur{3}$ property of $\ps$. 
+	We show a reduction $\rdvur$ that utilises $\advse$, who outputs a valid
+	proof for $\inp_\advse$, to break the $\ur{k}$ property of $\ps$. 
 Let $\rdvur$ run $\advse$ internally as a black-box:
 	\begin{itemize}
 		\item The reduction answers both queries to the simulator $\psfs.\simulator$ and to the random oracle. 
 		It also keeps lists $Q$, for the simulated proofs, and $Q_\ro$ for the random oracle queries. 
 		\item When $\advse$ outputs a fake proof $\zkproof_{\advse}$ for  $\inp_\advse$, $\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds 
-		$\zkproof_{\simulator}\range{0}{k + 1}$ such that
-		$\zkproof_{\advse}\range{0}{k + 1} = \zkproof_{\simulator}\range{0}{k +
-		1}$ and a random oracle query $\zkproof_{\simulator}[k + 1].\ch$ on
-		$\zkproof_{\simulator}\range{0}{k + 1}$.
+		$\zkproof_{\simulator}\range{0}{k}$ such that
+		$\zkproof_{\advse}\range{0}{k} = \zkproof_{\simulator}\range{0}{k}$ and a random oracle query $\zkproof_{\simulator}[k].\ch$ on
+		$\zkproof_{\simulator}\range{0}{k}$.
 		\item $\rdvur$ returns two proofs for $\inp_\advse$:
 		\begin{align*}
-			\zkproof_1 = (\zkproof_{\simulator}\range{1}{k + 1},
-			\zkproof_{\simulator}[k + 1].\ch, \zkproof_{\simulator}\range{k +
-			2}{\mu})\\
-			\zkproof_2 = (\zkproof_{\simulator}\range{1}{k + 1},
-			\zkproof_{\simulator}[k + 1].\ch, \zkproof_{\advse}\range{k + 2}{\mu})
+			\zkproof_1 = (\zkproof_{\simulator}\range{1}{k},
+			\zkproof_{\simulator}[k].\ch, \zkproof_{\simulator}\range{k +
+			1}{\mu})\\
+			\zkproof_2 = (\zkproof_{\simulator}\range{1}{k},
+			\zkproof_{\simulator}[k].\ch, \zkproof_{\advse}\range{k + 1}{\mu})
 		\end{align*}
 		\end{itemize}  
 		If $\zkproof_1 = \zkproof_2$, then $\advse$ fails to break simulation extractability, as $\zkproof_2 \in Q$.
@@ -1424,14 +1427,17 @@ Let $\rdvur$ run $\advse$ internally as a black-box:
 		
 	\ngame{2}
 	This is identical to $\game{1}$ except that now the environment aborts also
-	when it fails to build a $(1, 1, 1, n_j, 1)$-tree of accepting transcripts
+	when it fails to build a $(1, \ldots,  1, n_j, 1, \ldots, 1)$-tree of accepting transcripts
 	$\tree$ by rewinding $\advse$. Denote that event by $\event{\errfrk}$.
 	Note that for every acceptable proof $\zkproof_{\advse}$, we may
-	assume that whenever $\advse$ outputs in Round $i$, for $i > k$, a message
-	$\zkproof_{\advse}[i]$, then $\zkproof_{\advse}\range{1}{i}$ is a query to
-	the random oracle that was made by the adversary, not the
+	assume that whenever $\advse$ outputs in Round $k + 1$, a message
+	$\zkproof_{\advse}[k + 1]$, then $(\inp_\advse,
+	\zkproof_{\advse}\range{1}{k + 1})$ random oracle query that was made by the
+	adversary, not the
 	simulator\footnote{\cite{INDOCRYPT:FKMV12} calls these queries
-	\emph{fresh}.}.  That is, assume that is not true and for some query
+	\emph{fresh}.}. Otherwise, the game would be already interrupted by the
+	error  
+	That is, assume that is not true and for some query
 	$\zkproof_{\advse}\range{1}{i}$ holds $\zkproof_{\advse}\range{1}{i} =
 	\zkproof_\simulator\range{1}{i'}$, for $i, i' > k$, the proof is acceptable
 	and not in $Q$, then the unique response property would be broken.
@@ -1615,7 +1621,66 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 \end{proof}
 
 \subsection{Unique response property}
+\begin{lemma}
+	Let $\PCOMp$ be commitment of knowledge with security $\epsk$,
+	$\epsbind$-binding and has unique opening property with security
+	$\epsop$, then probability that a $\ppt$ adversary $\adv$ breaks
+	$\plonkprot$'s $\ur{2}$ property is at most $\epsk + 2\cdot\epsbind + \epsop$.% assuming the polynomial commitment scheme $\PCOMp$
+	%is of knowledge.
+\end{lemma}
+\begin{proof}[sketch]
+	Let $\adv(\REL,\crs = (\gone{1, \chi, \ldots, \chi^{\numberofconstrains
+	+ 2}}, \gtwo{\chi}))$ be an adversary trying to break the $\ur{2}$-ness of
+	$\plonkprot$.
+	It is sufficient to observe that the first 2 rounds of the protocol
+	determines, along with the verifiers challenges, the rest of it. 
+	In Round 3 the adversary outputs a commitment to
+	polynomial $\pt(X)$ which assures that all constraints of
+	the system are fulfilled. Since the commitment scheme is deterministic,
+	there is only one value $c$ that is a commitment to $\pt(X)$. 
+	Assume that $\adv$ outputs $c' \neq c$ and is later able to open $c'$ to
+	$y = \pt(\chz)$, where $\chz$ is a random point determined later.
+	Using AGM and arguments similar to \cite{CCS:MBKM19}, we argue that $\PCOMp$
+	is a commitment of knowledge. That is, a AGM adversary $\adv$ that outputs a
+	commitment $c'$ which it can later open, knows a polynomial $\p{f}$ such that
+	$\gone{\p{f}(\chi)} = c'$.
+	Thus if $c' \neq c$ and the commitment scheme is evaluation binding then
+	$\adv$ when picking $c'$ picks it as a commitment to $\p{f}$ which evaluates
+	at $\chz$ to $\pt{\chz}$. Probability of that is negligible as $\chz$
+	remains random for $\adv$ when it computes $c'$. Hence, probability that
+	$\adv$ is able to produce two different outputs of Round 3 is upper-bounded
+	by $\epsk + \epsbind$.
 
+	In Round 4 the prover is asked to give evaluations of predefined polynomials at some point $\chz$. Naturally, for the given polynomials only one value at $\chz$ is correct.
+	Assume $\adv$ is able to produce two different outputs in that round: $\vec{r_4} = (\ev{\p{a}}, \ev{\p{b}}, \ev{\p{c}}, \ev{\p{S_{\sigma 1}}}, \ev{\p{S_{\sigma 2}}}, \ev{\p{r}}, \ev{\p{z}})$ and 
+	$\vec{r_4} = (\ev{\p{a}}', \ev{\p{b}}', \ev{\p{c}}', \ev{\p{S_{\sigma 1}}}', \ev{\p{S_{\sigma 2}}}', \ev{\p{r}}', \ev{\p{z}}')$
+	which suppose to be evaluations at $\chz$ of polynomials $\p{a}, \p{b}, \p{c}, \p{S_{\sigma 1}}, \p{S_{\sigma 2}}, \p{r}$ and an evaluation at $\chz \omega$ of $\p{z}$.
+	Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus if both evaluations are acceptable by the $\PCOM.\verify$ then the evaluation binding property of $\PCOM$ is broken. This happens with probability upper-bounded by $\epsbind$.
+	
+	In the last round of the protocol the prover provides openings for the
+  polynomial commitment evaluations done before. 
+	Assume $\adv$ is able to produce two different polynomial commitment openings pairs: 
+	$\vec{r_5} = (\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and 
+	$\vec{r'_5} = (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
+	% Since \cref{lem:pcomp_unique_op}, 
+	Since $\PCOM$ has unique opening property, 
+	one of the openings has to be incorrect and should be rejected by the
+  polynomial commitment verifier. This happens except with probability $\epsop$
+
+	Hence, the probability that after fixing the two first rounds, the adversary
+	is able to produce two different outputs in one of the following rounds is
+	upper-bounded by
+	\[
+		\epsk + 2 \cdot \epsbind + \epsop\,.
+	\]
+	\qed
+
+	%That is possible only if   
+	%polynomial $\pt'(X)$
+	%Since the commitment is deterministic, there is
+	%only one correct commitment for a 
+\end{proof}
+\COMMENT{
 \begin{lemma}
 	\label{lem:plonkprot_ur}
 	If a polynomial commitment scheme $\PCOM$ is evaluation binding with parameter $\epsbind$ and has unique openings property with parameter $\epsop$, then $\plonkprot$ is $\ur{3}$\footnote{An attentive reader may note that $\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required.} 
@@ -1656,7 +1721,7 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	Hence the probability that $\adv$ breaks $\ur{3}$-property of $\PCOM$ is upper-bounded by $\epsbind + \epsop$.
 	\qed
 \end{proof}
-
+}
 
 \subsection{Computational special soundness}
 \begin{lemma}
