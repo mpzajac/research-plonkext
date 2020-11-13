@@ -754,7 +754,8 @@ how to ``build'' $\gnone{y}$ from that elements. More precisely, the AGM
 requires that whenever $\adv(\gnone{\vec{x}})$ outputs a group element
 $\gnone{y}$ then it also outputs $\vec{c}$ such that $\gnone{y} = \vec{c}^\top
 \cdot \gnone{\vec{x}}$. Both $\plonk$ and $\sonic$
-have been shown secure using the AGM. 
+have been shown secure using the AGM. An adversary that works in the AGM is
+called \emph{algebraic}. 
 
 \subsection{Zero knowledge}
 In a zero-knowledge proof system, a prover convinces the verifier of
@@ -1025,12 +1026,13 @@ The theorem relies on the following classical lemma, called \emph{General forkin
 		\fbox{
 		\procedure{$\forking_\zdv (y)$}
 		{
-			r \sample \RND{\zdv}\\
+			\rho \sample \RND{\zdv}\\
 			h_1, \ldots, h_q \sample H\\
-			(i, s) \gets \zdv(y, h_1, \ldots, h_q; r)\\
+			(i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)\\
 			\pcif i = 0\ \pcreturn (0, \bot, \bot)\\
 			h'_{i}, \ldots, h'_{q} \sample H\\
-			(i', s') \gets \zdv(y, h_1, \ldots, h_{i - 1}, h'_{i}, \ldots,  h'_{q}; r)\\
+			(i', s') \gets \zdv(y, h_1, \ldots, h_{i - 1}, h'_{i}, \ldots,  h'_{q};
+			\rho)\\
 			\pcif (i = i') \land (h_{i} \neq h'_{i})\ \pcreturn (1, s, s')\\
 			\pcind \pcelse \pcreturn (0, \bot, \bot)
 		}}
@@ -1126,16 +1128,16 @@ simulation extractable.
 		\fbox{
 		\procedure{$\genforking_{\zdv}^{m} (y)$}
 		{
-			r \sample \RND{\zdv}\\
+			\rho \sample \RND{\zdv}\\
 			h_1^{1}, \ldots, h_{q}^{1} \sample H\\
-			(i_1, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; r)\\
+			(i_1, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; \rho)\\
 			\pcif i_1 = 0\ \pcreturn (0, \bot)\\
 			\pcfor j \in \range{2}{m}\\
 			\pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
 			h_{i - 1}^{j - 1}\\
 			\pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
 			\pcind (i_j, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
-			\ldots, h_{q}^{j}; r)\\
+			\ldots, h_{q}^{j}; \rho)\\
 			\pcind \pcif i_j = 0 \lor i_{j} \neq i_{j - 1}\ \pcreturn (0, \bot)\\
 			\pcif \exists (k, j), (k', j') \in \range{1}{q} \times
 		\range{1}{m} \land (h_{k}^{j} = h_{k'}^{j'})\
@@ -2464,6 +2466,10 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
 \end{corollary}
 
 \section{Further work}
+We identify a number of problems which we leave as further work. First of all,
+the generalised version of the forking lemma presented in this paper can be
+generalised even further, to include protocols where $(n_1, \ldots,
+n_\mu)$-special soundness hold for more than one $n_j > 1$. 
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
