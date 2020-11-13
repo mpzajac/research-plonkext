@@ -727,6 +727,23 @@ that the $\plonk$'s and $\sonic$'s polynomial commitment schemes satisfy this
 requirement in \cref{lem:pcomp_unique_op} and \cref{lem:pcoms_unique_op}
 respectively.
 
+\begin{description}
+	\item[Commitment of knowledge] For every $\ppt$ adversary $\adv$ there
+		exists a $\ppt$ extractor $\ext$ such that 
+\[
+	\condprob{\p{f} = \ext_\adv(\crs, c), c = \com(\crs, \p{f})}{\crs \gets
+	\kgen, c \gets \adv(\crs)} \geq 1 -
+	\epsk(\secpar)
+\]
+In that case we say that $\PCOM$ is $\epsk$-knowledge.
+\end{description}
+		Intuitively when a commitment scheme is a commitment of knowledge then if
+		an adversary produces a (valid) commitment $c$, which it can open,
+		then it also knows the underlying polynomial $\p{f}$ which commits to that
+		value. \cite{CCS:MBKM19} shows in AGM that $\PCOMs$ is a commitment of
+		knowledge. The same reasoning could be used to show that $\PCOMp$ is. We
+		skip a proof for that fact due to the lack of space. 
+
 \subsection{Algebraic Group Model}
 The algebraic group model (AGM) introduced in \cite{C:FucKilLos18} lies
 between the standard model and generic bilinear group model. In the AGM it is
