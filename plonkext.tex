@@ -1479,7 +1479,47 @@ Let $\rdvur$ run $\advse$ internally as a black-box:
 	a simulated proof it saw, it would end up with exactly the same proof
 	which can not break simulation extractability.
 
-	%More precisely, the  
+	To explain importance of the unique response property we describe our
+	extractor here. The extractor takes as input relation $\REL$, CRS $\crs$,
+	$\advse$'s code, its randomness $r$, the output instance and proof
+	$\inp_\advse, \zkproof_\advse$ as well as the list $Q$ of simulated proofs
+	$\advse$ required and list of random oracle queries and responses $Q_\ro$. 
+	Then, $\ext$ starts a forking algorithm $\genforking^{n_j + 1}_\zdv(y)$ for $y =
+  \advse, r, \inp_\advse, \zkproof_\advse, Q, Q_\ro$ however
+	with minor modification---instead of randomly picking $h^1_1, \ldots, h^1_q$
+	inside $\genforking$ we set $h^1_1, \ldots, h^1_q$ to be the consecutive
+	queries from list $Q_\ro$. In fact, that change does not change any
+	probability of success of $\genforking$ as elements in $Q_\ro$ are random
+	oracle responses, thus are random as required. 
+	We run $\advse$ internally in $\zdv$.
+	
+	To assure that the adversary
+	$\advse$ produces the in the first execution of $\zdv$ the same transcript
+	as it produces with $r$, $Q$, $Q_\ro$, and outputs the same $\inp_\advse,
+	\zkproof_\advse$ algorithm $\zdv$ provides $\advse$ with randomness $r$ and
+	on its queries to the random oracle and simulator answers with responses
+	already contained in $Q_\ro$ and $Q$. Note, that since the view of the
+	adversary run inside $\zdv$ is the same as its view with access to real
+	random oracle and simulator, it produces exactly the same output. After the
+	first run is done, $\zdv$ outputs the index of a random oracle query that
+	was used by $\advse$ to compute the challenge
+	$\ro(\zkproof_\advse\range{0}{j - 1}.\ch)$ it had to answer in the $j$-th
+	round and adversary's transcript, in $\genforking$ description denoted by
+	$s_1$. Then a new random oracle responses are picked and the adversary is
+	rewound to the point just prior he gets answer for query on
+	$(\zkproof_\advse\range{0}{j - 1})$. The adversary gets a random oracle
+	response from a new set of responses $h^2_1, \ldots, h^2_q$. If the
+	adversary needs a simulated proof for an instance $\inp$ that is not in $Q$
+	then $\zdv$ picks the simulated proof by its own. Eventually, $\zdv$ outputs
+	index $i_2$ of a query that was used by the adversary to compute
+	$\ro(\zkproof_\advse\range{0}{j - 1})$, and a new transcript form the
+	adversary $s_2$. $\zdv$ is run with different random oracle responses till
+	$n_j + 1$ transcripts are collected.
+
+	If the unique response property does
+	not hold then in the $j$-th execution of $\zdv$ the adversary could reuse a challenge that it learnt from observing
+	proofs in $Q$. In that case, $\zdv$ would not be able to output $i_j$ and
+	have to output $0$, what would make extractor fail.
 
 	\markulf{03.11.2020}{Recall here why we need UR to use forking lemma.}
 	\michals{4.11}{Check the explanation above}\markulf{12/11/2020}{This is a good
