@@ -1400,8 +1400,8 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 	\ngame{1}
 	This is identical to $\game{0}$ except that now the game is aborted if there
 	is a simulated proof $\zkproof_\simulator$ for $\inp_\advse$ such that
-	$(\inp_\advse, \zkproof_\simulator\range{1}{k}) = (\inp_\advse,
-	\zkproof_\advse\range{1}{k})$. That is, the adversary in its final proof reuses a part of a simulated proof it saw before and the proof is acceptable.
+	$(\inp_\advse, \zkproof_\simulator\range{1}{k + 1}) = (\inp_\advse,
+	\zkproof_\advse\range{1}{k + 1})$. That is, the adversary in its final proof reuses a part of a simulated proof it saw before and the proof is acceptable.
 	Denote that event by $\event{\errur}$.
 	
 	\ncase{$\game{0} \mapsto \game{1}$}	
@@ -1424,16 +1424,17 @@ Let $\rdvur$ run $\advse$ internally as a black-box:
 		\item The reduction answers both queries to the simulator $\psfs.\simulator$ and to the random oracle. 
 		It also keeps lists $Q$, for the simulated proofs, and $Q_\ro$ for the random oracle queries. 
 		\item When $\advse$ outputs a fake proof $\zkproof_{\advse}$ for  $\inp_\advse$, $\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds 
-		$\zkproof_{\simulator}\range{0}{k}$ such that
-		$\zkproof_{\advse}\range{0}{k} = \zkproof_{\simulator}\range{0}{k}$ and a random oracle query $\zkproof_{\simulator}[k].\ch$ on
-		$\zkproof_{\simulator}\range{0}{k}$.
+		$\zkproof_{\simulator}\range{0}{k + 1}$ such that
+		$\zkproof_{\advse}\range{0}{k + 1} = \zkproof_{\simulator}\range{0}{k +
+		1}$ and a random oracle query $\zkproof_{\simulator}[k + 1].\ch$ on
+		$\zkproof_{\simulator}\range{0}{k + 1}$.
 		\item $\rdvur$ returns two proofs for $\inp_\advse$:
 		\begin{align*}
-			\zkproof_1 = (\zkproof_{\simulator}\range{1}{k},
-			\zkproof_{\simulator}[k].\ch, \zkproof_{\simulator}\range{k +
-			1}{\mu})\\
-			\zkproof_2 = (\zkproof_{\simulator}\range{1}{k},
-			\zkproof_{\simulator}[k].\ch, \zkproof_{\advse}\range{k + 1}{\mu})
+			\zkproof_1 = (\zkproof_{\simulator}\range{1}{k + 1},
+			\zkproof_{\simulator}[k + 1].\ch, \zkproof_{\simulator}\range{k +
+			2}{\mu})\\
+			\zkproof_2 = (\zkproof_{\simulator}\range{1}{k + 1},
+			\zkproof_{\simulator}[k + 1].\ch, \zkproof_{\advse}\range{k + 2}{\mu})
 		\end{align*}
 		\end{itemize}  
 		If $\zkproof_1 = \zkproof_2$, then $\advse$ fails to break simulation extractability, as $\zkproof_2 \in Q$.
@@ -1452,12 +1453,14 @@ Let $\rdvur$ run $\advse$ internally as a black-box:
 	\zkproof_{\advse}\range{1}{k + 1})$ random oracle query that was made by the
 	adversary, not the
 	simulator\footnote{\cite{INDOCRYPT:FKMV12} calls these queries
-	\emph{fresh}.}. Otherwise, the game would be already interrupted by the
-	error  
-	That is, assume that is not true and for some query
-	$\zkproof_{\advse}\range{1}{i}$ holds $\zkproof_{\advse}\range{1}{i} =
-	\zkproof_\simulator\range{1}{i'}$, for $i, i' > k$, the proof is acceptable
-	and not in $Q$, then the unique response property would be broken.
+	\emph{fresh}.}, i.e.~there is no simulated proof $\zkproof_\simulator$ on
+	$\inp_\simulator$ such that $(\inp_\advse, \zkproof_\advse \range{1}{k + 1})
+	= (\inp_\simulator, \zkproof_\simulator \range{1}{k + 1})$. Otherwise, the game would be already interrupted by the
+	error event in Game $\game{1}$.
+	% That is, assume that is not true and for some query
+	% $\zkproof_{\advse}\range{1}{i}$ holds $\zkproof_{\advse}\range{1}{i} =
+	% \zkproof_\simulator\range{1}{i'}$, for $i, i' > k$, the proof is acceptable
+	% and not in $Q$, then the unique response property would be broken.
 	
 	\ncase{$\game{1} \mapsto \game{2}$}	
 	As previously, 
@@ -1475,6 +1478,9 @@ Let $\rdvur$ run $\advse$ internally as a black-box:
 	response property takes care of that. If an adversary would like to reuse
 	a simulated proof it saw, it would end up with exactly the same proof
 	which can not break simulation extractability.
+
+	%More precisely, the  
+
 	\markulf{03.11.2020}{Recall here why we need UR to use forking lemma.}
 	\michals{4.11}{Check the explanation above}\markulf{12/11/2020}{This is a good
     informal explanation, but I was looking for a formal reason why the forking
