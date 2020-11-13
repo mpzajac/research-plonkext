@@ -257,7 +257,7 @@ soundness could not be met.  First of
 all, the  definition requires extraction of a witness from any two
 transcripts, each containing three messages and that share the first message. For 
 $\plonkprot$ and $\sonicprot$ that gives nothing. The definition had to be tuned to cover
-protocols that have more rounds than just three.  Furthermore, the number of
+protocols that have more messages than just three.  Furthermore, the number of
 transcripts required is much greater---$(\numberofconstrains + 3)$---where
 $\numberofconstrains$ is the number of constrains in the proven circuit---for
 $\plonkprot$ and $(\multconstr + \linconstr + 1)$--where $\multconstr$ and
@@ -277,7 +277,8 @@ assumption.
 
 \subsubsection{Unique response property.} Another property that
 has to be proven is the unique response property
-which states, as expressed in \cite{C:Fischlin05}, that except for the first round, all messages sent
+which states, as expressed in \cite{C:Fischlin05}, that except for the first
+message, all messages sent
 by the prover are deterministic. As previously, we also could not use this
 definition right out of the box simply because $\plonkprot$ does not follow it---both first
 and the second prover's messages are randomised. We thus propose a
@@ -313,14 +314,14 @@ This property allows us to build simulators for $\plonkprotfs$ and
 $\sonicprotfs$ that rely only on programmability of the random oracle.
 
 \subsubsection{Generalisation of the general forking lemma.}
-Consider an interactive $3$-round special-sound protocol $\ps$ and its
+Consider an interactive $3$-message special-sound protocol $\ps$ and its
 non-interactive version $\ps_\fs$ obtained by the Fiat--Shamir
 transform.  The general forking lemma provides an instrumental lower bound for
 probability of extracting a witness from two proofs for the same statement
 that share the first message. Since $\plonkprot$ and $\sonicprot$ have more
-than $3$ rounds and are not special-sound, the forking lemma, as known from
+than $3$ messages and are not special-sound, the forking lemma, as known from
 \cite{CCS:BelNev06}, cannot be used
-directly. We thus propose a modification that covers multi-round protocols
+directly. We thus propose a modification that covers multi-message protocols
 and where witness extraction require more transcripts than merely two.
 Unfortunately, we also observe that the security gap grows with the number of transcripts and the
 probability that the
@@ -1051,10 +1052,10 @@ reduction, cf.~\cite{CCS:BelNev06}.
 % message $a$, but the actual challenges $b = h_i$ and $b' = h'_{i}$ have to
 % differ.
 
-\section{Towards simulation extractability for multi-round
+\section{Towards simulation extractability for multi-message
 protocols, definitions and lemmas}
 Unfortunately, Faust et al.'s result cannot be directly applied in our case
-since the protocols we consider have more than three rounds of interaction,
+since the protocols we consider have more than three messages,
 require more than just two transcript for the extractor to work and are not special sound.
 
 \subsection{Generalised forking lemma.}
@@ -1070,7 +1071,7 @@ which allows to extract a witness.
 
 \begin{definition}[Tree of accepting transcripts]
 	\label{def:tree_of_accepting_transcripts}
-	Consider a $(2\mu + 1)$-round interactive proof system $\ps$. A $(n_1,
+	Consider a $(2\mu + 1)$-message interactive proof system $\ps$. A $(n_1,
 	\ldots, n_\mu)$-tree of accepting transcript is a tree where each node on
 	depth $i$, for $i \in \range{1}{\mu}$, is an $i$-th prover's message in an
 	acceptable transcripts; edges between the nodes are labeled with verifier's
@@ -1213,7 +1214,7 @@ h_{\iota - 1})$ to \[
 \end{proof}
 
 
-
+\COMMENT{
 We use the generalised forking lemma as follows in our
 simulation-extractability proof. Let $\advse$ be the simulation-extractability
 adversary that produces an acceptable proof $\zkproof_\advse$ for
@@ -1241,24 +1242,26 @@ picks fresh random oracle responses $h^2_i, \ldots h^2_q$. If the adversary
 \michals{12.11}{CONTINUE HERE}
 \michals{13.11}{that should be placed below, in the end of the section? In the
 proof?}
+}
 
 \subsection{Unique-response protocols.}
 Another problem comes with another assumption required by Faust et al. That is, the unique response property of the transformed sigma protocol.
-Fischlin's formulation, although perfectly fine for applications presented in \cite{C:Fischlin05}, is not enough in our case.
-First of all, the property assumes that the protocol has three rounds, with
+Fischlin's formulation, although perfectly fine for applications presented in
+\cite{C:Fischlin05,INDOCRYPT:FKMV12}, is not enough in our case.  First of all, the property
+assumes that the protocol has three messages, with
 the middle being the challenge from the verifier. That is not the case we
 consider here. Second, it is not entirely clear how to generalize the
 property. Should one require that after the first challenge from the verifier
 the prover's responses are fixed? That could not work since if there is more
 challenges the prover's messages has to respond to them.  Another problem rises when the protocol
-contains some round---obviously, except the first one---where the prover
+contains some message---obviously, except the first one---where the prover
 randomises its message. In that case unique-responsiveness can not hold as
 well.  Last but not least, the protocols we consider here are not designed to
 be in the standard model, but utilises CRS. That also complicates things
 considerably.
 
 We walk around these obstacles by providing a generalised notion of the unique
-response property.  More precisely, we say that a $(2\mu + 1)$-round protocol
+response property.  More precisely, we say that a $(2\mu + 1)$-message protocol
 has \emph{unique responses after $i$} and is called a $\ur{i}$-protocol if it
 follows the definition below:
 
@@ -1294,20 +1297,30 @@ Intuitively, a protocol is $\ur{i}$ if after $i$-th prover's message, all
 $\prover$'s  further messages are determined by the witness it knows, the
 messages it already send and received and the future challenges from the
 verifier.
+We note that the definition above is independent on whether the proof system
+$\proofsystem$ utilises CRS (and compounds of the CRS-generating $\kgen$
+algorithm) or not.
 
 \begin{example}
 	The Schnorr protocol is $\ur{1}$. That is, after submitting its first message $a$, the prover is a deterministic function of the instance, $a$, and the verifier's challenge.
 \end{example}
 
-We note that the definition above is independent on whether the proof system $\proofsystem$ utilises CRS (and compounds of the CRS-generating $\kgen$ algorithm) or not.
 % \michals{08.07.20}{Should we change it to "deterministic prover property"?}
 
 \subsection{Computational special soundness}
-Note that the special soundness property (as usually defined) holds for all--- even computationally unbounded---adversaries. Since a simulation trapdoor for $\plonkprot$ exists, it is not special sound in that regard---as an unbounded adversary could reveal the trapdoor and build a number of simulated proofs for a fake statement. 
-Hence, we provide a weaker, yet sufficient, definition of \emph{computational special soundness}. More precisely, we state that an adversary that is able to answer correctly multiple challenges either knows the witness or can be used to break some computational assumption. 
+Note that the special soundness property (as usually defined) holds for
+all---even computationally unbounded---adversaries. Since a simulation
+trapdoor for $\plonkprot$ exists, it is not special sound in that regard---as
+an unbounded
+adversary could reveal the trapdoor and build a number of simulated proofs for
+a fake statement.  Hence, we provide a weaker, yet sufficient, definition of
+\emph{computational special soundness}. More precisely, we state that an
+adversary that is able to answer correctly multiple challenges either knows
+the witness or can be used to break some computational assumption. 
 
 \begin{definition}[Computational special soundness]
-	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an $(2 \mu + 1)$-round proof system for a relation $\REL$. 
+	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an $(2 \mu +
+	1)$-message proof system for a relation $\REL$. 
 	We say that $\proofsystem$ is $(n_1, \ldots, n_\mu)$-\emph{special sound} if
 	for every $\ppt$ adversary $\adv(\REL, \crs)$, where $\crs \gets
 	\kgen(\REL)$, that produces an accepting $(n_1, \ldots, n_\mu)$-tree of transcripts $\tree$ for a statement $\inp$ there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$ with an overwhelming probability.
@@ -1323,14 +1336,14 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 \section{Simulation-extractability---the general result}
 % \michals{25.09}{The generalisation of the forking lemma we have may work only for schemes that require rewinding of a single round. That limits the generalisation of the result}
 
-\begin{theorem}[Simulation-extractable multi-round protocols]
+\begin{theorem}[Simulation-extractable multi-message protocols]
 	\label{thm:se}
-	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive $2
-	\mu$-round proof system that is honest verifier zero-knowledge in the
+	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive $(2
+	\mu + 1)$-message proof system that is honest verifier zero-knowledge in the
 	standard model\footnote{Crucially, we require that one can provide an
 			indistinguishable simulated proof without any additional knowledge, as
 	e.g~knowledge of a CRS trapdoor.}, has $\ur{k}$ property with security $\epsur$ that is $(1, \ldots, 1, n_j, 1, \ldots, 1)$-special sound, where $j > k$.
-	Assume that the simulator $\simulator$ does not get as input any trapdoor related to the CRS.
+% 	Assume that the simulator $\simulator$ does not get as input any trapdoor related to the CRS.
 	Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
 	Then $\psfs$ is simulation-extractable with extraction error $\epsur$
 	against $\ppt$ adversaries that makes up to $q$ random oracle queries and
@@ -1347,9 +1360,13 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 
 	Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
 	returned by the adversary and the simulator respectively. We use $\zkproof[i]$
-	to denote prover's message in the $i$-th round of the proof, $\zkproof[i].\ch$
-	to denote the challenge that is given to the prover after $\zkproof[i]$, and
-	$\zkproof\range{i}{j}$ to denote all messages of the proof including challenges between rounds $i$ and $j$.
+	to denote prover's message in the $i$-th round of the proof,
+	i.e.~$(2i - 1)$-th message exchanged in the protocol. $\zkproof[i].\ch$
+	denotes the challenge that is given to the prover after $\zkproof[i]$, and
+	$\zkproof\range{i}{j}$ to denote all messages of the proof including
+	challenges between rounds $i$ and $j$, but not challenge $\zkproof[j].\ch$. When it is not explicitly stated we
+	denote the proven instance $\inp$ by $\zkproof[0]$ (however, there is no
+	following challenge $\zkproof[0].\ch$).
 	
 	Without loss of generality, we assume that whenever the accepting proof contains a response to a challenge from a random oracle, we assume that the adversary queried the oracle to get it. 
 	It is straightforward to transform any adversary that violates this condition into an adversary that makes these additional queries to the random oracle and wins with the same probability.
@@ -1361,7 +1378,10 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 	In the following game hops we upper-bound the probability that this happens.
 	
 	\ngame{1}
-	This is identical to $\game{0}$ except that now the game is aborted if there is a simulated proof $\zkproof_\simulator$ such that $\zkproof_\simulator\range{1}{k} = \zkproof_\advse\range{1}{k}$. That is, the adversary in its final proof reuses a part of a simulated proof it saw before and the proof is acceptable.
+	This is identical to $\game{0}$ except that now the game is aborted if there
+	is a simulated proof $\zkproof_\simulator$ for $\inp_\advse$ such that
+	$(\inp_\advse, \zkproof_\simulator\range{1}{k + 1}) = (\inp_\advse,
+	\zkproof_\advse\range{1}{k+ 1})$. That is, the adversary in its final proof reuses a part of a simulated proof it saw before and the proof is acceptable.
 	Denote that event by $\event{\errur}$.
 	
 	\ncase{$\game{0} \mapsto \game{1}$}	
@@ -1375,19 +1395,25 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 	\]
 	Thus, to show that the transition from one game to another introduces only minor change in probability of $\advse$ winning it should be shown that $\prob{\event{\errur}}$ is small.
 	
-	Assume that $\advse$ queried the simulator on $\inp_{\advse}$---the instance which $\advse$ outputs. 
+	Assume that $\advse$ queried the simulator on the instance it wishes to
+	outputs $\inp_{\advse}$. 
 	We show a reduction $\rdvur$ that utilises $\advse$, who outputs a valid proof for $\inp_\advse$, to break the $\ur{3}$ property of $\ps$. 
-
-	Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
+Let $\rdvur$ run $\advse$ internally as a black-box:
 	\begin{itemize}
 		\item The reduction answers both queries to the simulator $\psfs.\simulator$ and to the random oracle. 
 		It also keeps lists $Q$, for the simulated proofs, and $Q_\ro$ for the random oracle queries. 
 		\item When $\advse$ outputs a fake proof $\zkproof_{\advse}$ for  $\inp_\advse$, $\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds 
-		$\zkproof_{\simulator}\range{1}{k}$ such that $\zkproof_{\advse}\range{1}{k} = \zkproof_{\simulator}\range{1}{k}$ and a random oracle query $\zkproof_{\simulator}[k].\ch$ on $\zkproof_{\simulator}\range{1}{k}$.
+		$\zkproof_{\simulator}\range{0}{k + 1}$ such that
+		$\zkproof_{\advse}\range{0}{k + 1} = \zkproof_{\simulator}\range{0}{k +
+		1}$ and a random oracle query $\zkproof_{\simulator}[k + 1].\ch$ on
+		$\zkproof_{\simulator}\range{0}{k + 1}$.
 		\item $\rdvur$ returns two proofs for $\inp_\advse$:
 		\begin{align*}
-			\zkproof_1 = (\zkproof_{\simulator}\range{1}{k}, \zkproof_{\simulator}[k].\ch, \zkproof_{\simulator}\range{k + 1}{\mu})\\
-			\zkproof_2 = (\zkproof_{\simulator}\range{1}{k}, \zkproof_{\simulator}[k].\ch, \zkproof_{\advse}\range{k + 1}{\mu})
+			\zkproof_1 = (\zkproof_{\simulator}\range{1}{k + 1},
+			\zkproof_{\simulator}[k + 1].\ch, \zkproof_{\simulator}\range{k +
+			2}{\mu})\\
+			\zkproof_2 = (\zkproof_{\simulator}\range{1}{k + 1},
+			\zkproof_{\simulator}[k + 1].\ch, \zkproof_{\advse}\range{k + 2}{\mu})
 		\end{align*}
 		\end{itemize}  
 		If $\zkproof_1 = \zkproof_2$, then $\advse$ fails to break simulation extractability, as $\zkproof_2 \in Q$.
