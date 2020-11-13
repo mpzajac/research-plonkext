@@ -1020,24 +1020,36 @@ The theorem relies on the following classical lemma, called \emph{General forkin
 		\label{fig:forking_lemma}
 \end{figure}
 \end{lemma}
-%
-In case of a sigma protocol, $\zdv$ may be interpreted as a pack of algorithms
----the adversary $\adv$ that produces acceptable transcripts which we extract
-the witness from and the simulator $\simulator_\ro$ that provides $\adv$ with
-random oracle access.
-The probability $\frkProb$ can be interpreted as
-a lower bound for a successful witness extraction from two transcripts.  Let
-$\trans_1 = (\inp, a, b, z)$ and $\trans_2 = (\inp, a, b', z')$ be the
-transcripts.  Both $\trans_1$ and $\trans_2$ have to be \emph{acceptable},
-i.e.~$i > 0$ and the probability that $\zdv$ accepts a transcript is
-denoted by $\accProb$. Index $i$ can be interpreted as an index of $h_i$
-which was sent as a challenge for $(\inp, a)$, i.e~the index of a random
-oracle query that has been used to produce prover's message in the point the
-proof branches (regarding the random oracle queries). This index has to be guessed by
-the security reduction.  For the sake of extractability, both transcripts have
-to have the same index $i$, i.e.~the same instance $\inp$ and the first
-message $a$, but the actual challenges $b = h_i$ and $b' = h'_{i}$ have to
-differ.
+
+In case of a NIZK obtained by applying the Fiat--Shamir transform to a sigma protocol, forking lemma could be used as follows.
+Let $\ext$ be an extractor tasked to reveal the witness from $\adv$ who
+provides an acceptable proofs for a picked statement. $\ext$ gets as input adversary's
+code and its randomness, this is also the input $y$ passed to the forking
+algorithm $\forking$. Algorithm $\zdv$ runs the code of the adversary on a
+given random oracle responses $h_1, \ldots, h_q$ and returns adversary's
+state $s$, which contains an instance $\inp$ and its proof $\zkproof$, and index $i$ of the random oracle query that was random oracle's
+response to query $(\inp, a)$ used in $\zkproof$. Then the first $i - 1$
+random oracle responses remain the same, fresh $h'_i, \ldots, h'_q$ are
+picked and the adversary is run again. Since the adversary is run on the same
+randomness $r$ and it sees the same random oracle responses up to the index $i
+- 1$, it behaves exactly the same as in the previous run (up to the point). It
+is then presented with a new random oracle responses and finally outputs a new
+state $s'$. We also require that the adversary uses the query of the same
+index $i$ to ask about $\ro(\inp, a)$ what is needed for the security
+reduction, cf.~\cite{CCS:BelNev06}.
+
+% Probability $\frkProb$ is a lower bound for a successful witness extraction from two transcripts.  Let
+% $\trans_1 = (\inp, a, b, z)$ and $\trans_2 = (\inp, a, b', z')$ be the
+% transcripts.  Both $\trans_1$ and $\trans_2$ have to be \emph{acceptable},
+% i.e.~$i > 0$ and the probability that $\zdv$ accepts a transcript is
+% denoted by $\accProb$. Index $i$ can be interpreted as an index of $h_i$
+% which was sent as a challenge for $(\inp, a)$, i.e~the index of a random
+% oracle query that has been used to produce prover's message in the point the
+% proof branches (regarding the random oracle queries). This index has to be guessed by
+% the security reduction.  For the sake of extractability, both transcripts have
+% to have the same index $i$, i.e.~the same instance $\inp$ and the first
+% message $a$, but the actual challenges $b = h_i$ and $b' = h'_{i}$ have to
+% differ.
 
 \section{Towards simulation extractability for multi-round
 protocols, definitions and lemmas}
@@ -1200,15 +1212,6 @@ h_{\iota - 1})$ to \[
 	\qed
 \end{proof}
 
-\begin{remark}[Tightness of \cref{eq:tightness}]
-	In is important to note that Inequality (\ref{eq:tightness}) is tight. More precisely, for $\expected{X_i} = x$, $i \in \range{1}{q}$ we have
-	\begin{gather*}
-		\sum_{i = 1}^q x = \left(\sum_{i = 1}^{q} x^m\right)^\frac{1}{m} \cdot \left(\sum_{i = 1}^{q} 1^{\frac{m}{m - 1}}\right)^{\frac{m - 1}{m}} \\
-		qx = \left(qx^m\right)^\frac{1}{m} \cdot q^{\frac{m - 1}{m}} \\
-		(qx)^m = qx^m \cdot q^{m - 1} \\
-		(qx)^m = (qx)^m\,.
-	\end{gather*}
-\end{remark}
 
 
 We use the generalised forking lemma as follows in our
@@ -2197,7 +2200,7 @@ $\p{r}(X, Y), \p{r'}(X, Y), \p{s}(X, Y)$ and $\p{t}(X, Y)$ and concludes the
 first round as an honest prover would. Because of the randomisers
 polynomial $\pr(X, Y)$ computed by the simulator is indistinguishable from a
 polynomial provided by an honest user for a distinguisher that only learns
-$R,T,a,b$ from the proof (the other proof elements are fixed by these elements
+$\pR,\pT,\pa,\pb$ from the proof (the other proof elements are fixed by these elements
 and the public information). See~\cref{sec:sonic_constraint_system}.
 %less than three evaluations of $\pr(X, Y)$. 
 
@@ -2208,7 +2211,7 @@ As noted in \cite{CCS:MBKM19}, the coefficient next to $X^0$ in $\p{t}(X, Y)$
 equals
 \begin{equation}
 		\label{eq:x0}
-		t(0,Y) = 
+		\pt(0,Y) = 
 		\vec{a} \cdot \vec{\p{u}}(Y) + 
 		\vec{b} \cdot \vec{\p{v}}(Y) + 
 		\vec{c} \cdot \vec{\p{w}}(Y) +	
@@ -2225,7 +2228,7 @@ for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ as defined
 (Vectors $\vec{u_q}, \vec{v_q}, \vec{w_q}$ are $\multconstr$-elements long
 and correspond to the $Q$ linear constrains of the proof system. Field element
 $k_{q}$ is
-the instance value). When the proven instance is correct, $t(0,Y)$ is a zero
+the instance value). When the proven instance is correct, $\pt(0,Y)$ is a zero
 polynomial. See \cite{CCS:MBKM19} for  details.
 Also, when \cref{eq:ab_eq_c} holds, that polynomial simplifies to
 \begin{equation}
@@ -2309,6 +2312,8 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
 \clearpage
 \appendix
 {\Huge{Supplementary Material}}
+\section{Additional preliminaries}
+
 \section{Omitted lemmas and proofs}
 \begin{lemma}\label{lem:jensen}
 	Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
@@ -2336,6 +2341,17 @@ h_{\iota - 1})$ to
 		\sum_{i = 1}^{q} x_i y_i \leq \left(\sum_{i = 1}^{q} x_i^p\right)^{\frac{1}{p}} \cdot \left(\sum_{i = 1}^{q} y_i^p\right)^{\frac{1}{q}}\,.
 	\]
 \end{lemma}
+
+\begin{remark}[Tightness of the H\"older inequality]
+	In is important to note that Inequality (\ref{eq:tightness}) is tight. More precisely, for $\expected{X_i} = x$, $i \in \range{1}{q}$ we have
+	\begin{gather*}
+		\sum_{i = 1}^q x = \left(\sum_{i = 1}^{q} x^m\right)^\frac{1}{m} \cdot \left(\sum_{i = 1}^{q} 1^{\frac{m}{m - 1}}\right)^{\frac{m - 1}{m}} \\
+		qx = \left(qx^m\right)^\frac{1}{m} \cdot q^{\frac{m - 1}{m}} \\
+		(qx)^m = qx^m \cdot q^{m - 1} \\
+		(qx)^m = (qx)^m\,.
+	\end{gather*}
+\end{remark}
+
 	\begin{lemma}
 			\label{lem:root_prob}
 			Let $\p{f}(X)$ be a random degree-$d$ polynomial over $\FF_p[X]$. Then
