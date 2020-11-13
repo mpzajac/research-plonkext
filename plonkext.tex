@@ -686,7 +686,7 @@ $\PCOM$:
 			\end{aligned}
 			\,\left|\,
 			\begin{aligned}
-				& \crs \gets \kcrs(\secparam),\\
+				& \crs \gets \kgen(\secparam),\\
 				& (\vec{c}, \vec{z}, \vec{s}, \vec{s}', \vec{o}, \vec{o}') \gets \adv(\crs)
 			\end{aligned}
 			\right.\right] \leq \negl\,.
@@ -714,7 +714,7 @@ We say that $\PCOM$ has the unique opening property if the following holds:
 			\end{aligned}
 			\,\left|\,
 			\begin{aligned}
-				& \crs \gets \kcrs(\secparam),\\
+				& \crs \gets \kgen(\secparam),\\
 				& (\vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}, \vec{o'}) \gets \adv(\crs)
 			\end{aligned}
 			\right.\right] \leq \negl\,.
@@ -1642,7 +1642,7 @@ that for every $\ppt$ adversary $\adv$ the probability
 			&\vec{o} \neq \vec{\tilde{o}})
 		\end{aligned}}
 		\begin{aligned}
-			& \crs \gets \kcrs(\secparam), \\
+			& \crs \gets \kgen(\secparam), \\
 			&	(\vec{c}, \vec{c'}, \vec{z}, \vec{s}, \vec{s'}, \vec{\tilde{s}}, \vec{\tilde{s}'}, \vec{o}, \vec{\tilde{o}}) \gets \adv(\crs)
 		\end{aligned}
 		\right.\right]
@@ -2226,7 +2226,7 @@ We need to show that for every $\ppt$ adversary $\adv$ probability
 			&o \neq \tilde{o})
 		\end{aligned}}
 		\begin{aligned}
-			& \crs \gets \kcrs(\secparam), \\
+			& \crs \gets \kgen(\secparam), \\
 			&	(c, z, s, \tilde{s}, o, \tilde{o}) \gets \adv(\crs)
 		\end{aligned}
 		\right.\right]
@@ -2899,7 +2899,7 @@ In \sonic{} we will use commitments to the following polynomials.
 				& \inp_\advss \not\in \LANG_\REL 
 			\end{aligned}}
 			\begin{aligned}
-				& \crs \gets \plonkprotfs.\kcrs(\REL, \secparam)\\
+				& \crs \gets \plonkprotfs.\kgen(\REL, \secparam)\\
 				& (\inp_{\advss}, \zkproof_{\advss}) \gets \advss^{\simulator, \ro} (\REL, \crs),		
 			\end{aligned}
 			\right.\right].
