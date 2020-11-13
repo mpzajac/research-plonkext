@@ -1116,7 +1116,7 @@ simulation extractable.
 	Let $\genforking_{\zdv}^{m}$ 
 	denote the algorithm described in
 	\cref{fig:genforking_lemma} then the probability $\frkProb := \condprob{b =
-	1}{y \gets \ig;\ (b, \vec{s}) \gets \genforking_{\zdv}^{m}(y)}$ is at least 
+	1}{y \gets \ig;\ h_1, \ldots, h_{q} \sample H;\ (b, \vec{s}) \gets \genforking_{\zdv}^{m}(y)}$ is at least 
 	\[
 		\frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)
 	\]
@@ -1124,19 +1124,18 @@ simulation extractable.
 	\begin{figure}[t]
 		\centering
 		\fbox{
-		\procedure{$\genforking_{\zdv}^{m} (y)$}
+		\procedure{$\genforking_{\zdv}^{m} (y,h_1^{1}, \ldots, h_{q}^{1})$}		
 		{
 			r \sample \RND{\zdv}\\
-			h_1^{1}, \ldots, h_{q}^{1} \sample H\\
-			(i_1, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; r)\\
-			\pcif i_1 = 0\ \pcreturn (0, \bot)\\
+			(i, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; r)\\
+			\pcif i = 0\ \pcreturn (0, \bot)\\
 			\pcfor j \in \range{2}{m}\\
 			\pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
 			h_{i - 1}^{j - 1}\\
 			\pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
-			\pcind (i_j, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
+			\pcind (i', s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
 			\ldots, h_{q}^{j}; r)\\
-			\pcind \pcif i_j = 0 \lor i_{j} \neq i_{j - 1}\ \pcreturn (0, \bot)\\
+			\pcind \pcif i' = 0 \lor i' \neq i\ \pcreturn (0, \bot)\\
 			\pcif \exists (k, j), (k', j') \in \range{1}{q} \times
 		\range{1}{m} \land (h_{k}^{j} = h_{k'}^{j'})\
 		\pcreturn (0, \bot)\\
@@ -1474,24 +1473,26 @@ Let $\rdvur$ run $\advse$ internally as a black-box:
 	could, say, rerandomise a proof $\zkproof$ it obtained from a simulator,
 	then it would be able to provide a tree of accepting transcripts out of a
 	single $\zkproof$. Since $\zkproof$ comes from a simulator expecting that an
-	extractor can extract from it a valid witness is futile. The unique
+	extractor can extract from it a valid witness is futile. \markulf{13/11/20}{We
+  need multiple proofs with the same first messages but different challenges.} The unique
 	response property takes care of that. If an adversary would like to reuse
 	a simulated proof it saw, it would end up with exactly the same proof
 	which can not break simulation extractability.
 
 	To explain importance of the unique response property we describe our
 	extractor here. The extractor takes as input relation $\REL$, CRS $\crs$,
-	$\advse$'s code, its randomness $r$, the output instance and proof
-	$\inp_\advse, \zkproof_\advse$ as well as the list $Q$ of simulated proofs
-	$\advse$ required and list of random oracle queries and responses $Q_\ro$. 
+	$\advse$'s code, its randomness $r$, the output instance $\inp_\advse$ and proof
+	$\zkproof_\advse$, as well as the list $Q$ of simulated proofs (and their
+  instances) and the list of random oracle queries and responses $Q_\ro$. 
 	Then, $\ext$ starts a forking algorithm $\genforking^{n_j + 1}_\zdv(y)$ for $y =
-  \advse, r, \inp_\advse, \zkproof_\advse, Q, Q_\ro$ however
+  (\advse, r, \inp_\advse, \zkproof_\advse, Q, Q_\ro)$ however
 	with minor modification---instead of randomly picking $h^1_1, \ldots, h^1_q$
 	inside $\genforking$ we set $h^1_1, \ldots, h^1_q$ to be the consecutive
-	queries from list $Q_\ro$. In fact, that change does not change any
+	queries from list $Q_\ro$. In fact, that change does not affect any
 	probability of success of $\genforking$ as elements in $Q_\ro$ are random
-	oracle responses, thus are random as required. 
-	We run $\advse$ internally in $\zdv$.
+	oracle responses and thus are random as required. 
+	We run $\advse$ internally in $\zdv$. \markulf{13/11/20}{They are random but
+    correlated with $Q_\ro$, maybe we have to say something about this.}
 	
 	To assure that the adversary
 	$\advse$ produces the in the first execution of $\zdv$ the same transcript
