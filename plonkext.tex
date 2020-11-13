@@ -1709,8 +1709,9 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	$\gone{\p{f}(\chi)} = c'$.
 	Thus if $c' \neq c$ and the commitment scheme is evaluation binding then
 	$\adv$ when picking $c'$ picks it as a commitment to $\p{f}$ which evaluates
-	at $\chz$ to $\pt{\chz}$. Probability of that is negligible as $\chz$
-	remains random for $\adv$ when it computes $c'$. Hence, probability that
+	at $\chz$ to $\pt(\chz)$. The probability of that is negligible as there can
+  only be degree of $\pt$ many overlapping points and $\chz$
+	remains random for $\adv$ when it computes $c'$. Hence, the probability that
 	$\adv$ is able to produce two different outputs of Round 3 is upper-bounded
 	by $\epsk + \epsbind$.
 
@@ -1794,7 +1795,10 @@ Given special-soundness of $\plonkprot$, we use the fact that it is also $\ur{3}
 	 \[
 	 	\epsss \leq \epsbatch + \epsdlog\,,
 	 \] 
-	 where $\epsbatch$ is (negligible) probability that $\plonkprot$'s idealised verification equation $\vereq(X)$ accepts an invalid proof because of batching and $\epsdlog$ is a probability that a $\ppt$ algorithm can break $(\numberofconstrains + 2, 1)$-$\dlog$ assumption.
+	 where $\epsbatch$ is the (negligible) probability that $\plonkprot$'s
+   idealised verification equation $\vereq(X)$ accepts an invalid proof because
+   of batching and $\epsdlog$ is a probability that a $\ppt$ algorithm can break
+   the $(\numberofconstrains + 2, 1)$-$\dlog$ assumption.
 \end{lemma}
 \begin{proof}
 	Let $\crs$ be $\plonkprot$'s CRS and denote by $\crs_1$ all CRS's $\GRP_1$-elements; that is, $\crs_1 = \gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$. 
