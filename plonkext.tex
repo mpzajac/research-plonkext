@@ -1,5 +1,5 @@
 % !TeX spellcheck = en_US
-\let\accentvec\vec \documentclass[runningheads,10pt]{llncs}
+\let\accentvec\vec \documentclass[runningheads]{llncs}
  % \documentclass[runningheads]{amsart}
 \let\spvec\vec \let\vec\accentvec
 
@@ -19,7 +19,7 @@
 \DeclareMathAccent{\widebar}{0}{mathx}{"73}
 
 % lncs size (as printed in books, with small margins):
-\usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={13.2cm,20.3cm},centering]{geometry}
+% \usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={13.2cm,20.3cm},centering]{geometry}
 % \usepackage{fullpage}
 
 \newcommand{\ifamsart}[1] {} \ifamsart{ \newtheorem{theorem}{Theorem}%[section]
@@ -53,10 +53,12 @@
 
 \title{On Simulation-Extractability of Universal zkSNARKs}
 
-\author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} \iflncs{
-\institute{University of Edinburgh, Edinburgh, UK \and IOHK \\
-\email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London UK \\
-\email{m.p.zajac@gmail.com}} }
+\author{Anonymous submission to PKC}
+%\author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} 
+%\iflncs{
+%\institute{University of Edinburgh, Edinburgh, UK \and IOHK \\
+%\email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London UK \\
+%\email{m.p.zajac@gmail.com}} }
 
 \allowdisplaybreaks
 
@@ -391,6 +393,9 @@ veracity of a proof only if it trusts that there is at least one honest party
 between the updaters. 
 
 We believe that our result may be useful for designing new zkSNARKs, especially those based on a polynomial commitment schemes~\cite{AC:KatZavGol10}, as it shows that a careful protocol design may give it a strong security notion for free.
+
+\subsection{Structure of the paper}
+In the next section we present necessary preliminaries.
 
 \section{Preliminaries}
 Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
@@ -1688,6 +1693,7 @@ does not is negligible~\cite{EPRINT:GabWilCio19}. This brings the proof back to 
 
 \subsection{Unique response property}
 \begin{lemma}
+	\label{lem:plonkprot_ur}
 Let $\PCOMp$ be commitment of knowledge with security $\epsk$,
 $\epsbind$-binding and has unique opening property with security
 $\epsop$, then probability that a $\ppt$ adversary $\adv$ breaks
@@ -2470,7 +2476,13 @@ extraction error $\eta = \epsur$. The extraction probability $\extProb$ is at le
 We identify a number of problems which we leave as further work. First of all,
 the generalised version of the forking lemma presented in this paper can be
 generalised even further, to include protocols where $(n_1, \ldots,
-n_\mu)$-special soundness hold for more than one $n_j > 1$. 
+n_\mu)$-special soundness hold for more than one $n_j > 1$. I.e.~to include
+protocols that for witness extraction require transcripts that branch at more
+than one point.
+
+Although we picked $\plonk$ and $\sonic$ as examples for our framework, it is
+not limited to CRS-based NIZKs. Thus, it would be interesting to apply it to
+known so-called transparent zkSNARKs like Bulletproofs \cite{SP:BBBPWM18}.
 
 \bibliographystyle{alpha}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
