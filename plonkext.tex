@@ -2210,6 +2210,24 @@ for some negligible $\eps$ and $\numberofconstrains$ being the number of contrai
 % 	\qed
 % \end{proof}
 
+
+\section{Further work}
+We identify a number of problems which we leave as further work. First of all,
+the generalised version of the forking lemma presented in this paper can be
+generalised even further, to include protocols where $(n_1, \ldots,
+n_\mu)$-special soundness hold for more than one $n_j > 1$. I.e.~to include
+protocols that for witness extraction require transcripts that branch at more
+than one point.
+
+Although we picked $\plonk$ and $\sonic$ as examples for our framework, it is
+not limited to CRS-based NIZKs. Thus, it would be interesting to apply it to
+known so-called transparent zkSNARKs like Bulletproofs \cite{SP:BBBPWM18}.
+
+\bibliographystyle{alpha}
+\bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
+\clearpage
+\appendix
+{\Huge{Supplementary Material}}
 \section{Simulation extractability of $\sonicprotfs$}
 \subsection{Unique opening property of $\PCOMs$}
 \begin{lemma}
@@ -2478,23 +2496,7 @@ extraction error $\eta = \epsur$. The extraction probability $\extProb$ is at le
 	respectively, the multiplicative and linear constrains of the system.
 \end{corollary}
 
-\section{Further work}
-We identify a number of problems which we leave as further work. First of all,
-the generalised version of the forking lemma presented in this paper can be
-generalised even further, to include protocols where $(n_1, \ldots,
-n_\mu)$-special soundness hold for more than one $n_j > 1$. I.e.~to include
-protocols that for witness extraction require transcripts that branch at more
-than one point.
 
-Although we picked $\plonk$ and $\sonic$ as examples for our framework, it is
-not limited to CRS-based NIZKs. Thus, it would be interesting to apply it to
-known so-called transparent zkSNARKs like Bulletproofs \cite{SP:BBBPWM18}.
-
-\bibliographystyle{alpha}
-\bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
-\clearpage
-\appendix
-{\Huge{Supplementary Material}}
 \section{Additional preliminaries}
 
 \section{Omitted lemmas and proofs}
