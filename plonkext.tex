@@ -669,8 +669,9 @@ In that case we say that $\PCOM$ is $\epsk$-knowledge.
 		Intuitively when a commitment scheme is a commitment of knowledge then if
 		an adversary produces a (valid) commitment $c$, which it can open,
 		then it also knows the underlying polynomial $\p{f}$ which commits to that
-		value. \cite{CCS:MBKM19} shows in AGM that $\PCOMs$ is a commitment of
-		knowledge. The same reasoning could be used to show that $\PCOMp$ is. We
+		value. \cite{CCS:MBKM19} shows, using AGM, that $\PCOMs$ is a commitment of
+		knowledge. The same reasoning could be used to show that property for
+		$\PCOMp$. We
 		skip a proof for that fact due to the lack of space. 
 
 \subsection{Algebraic Group Model}
@@ -942,7 +943,7 @@ probability of producing an accepting transcript $\waccProb$ lower-bounds the
 probability of generating a \emph{tree of accepting transcripts} $\tree$,
 which allows to extract a witness. 
 
-\begin{definition}[Tree of accepting transcripts]
+\begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
 	\label{def:tree_of_accepting_transcripts}
 	Consider a $(2\mu + 1)$-message interactive proof system $\ps$. A $(n_1,
 	\ldots, n_\mu)$-tree of accepting transcript is a tree where each node on
