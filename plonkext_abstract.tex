@@ -1,0 +1,180 @@
+% !TeX spellcheck = en_GB
+\let\accentvec\vec
+\documentclass[runningheads,10pt]{llncs}
+ % \documentclass[runningheads]{amsart}
+\let\spvec\vec
+\let\vec\accentvec
+\usepackage{amssymb,amsmath}
+\let\vec\spvec
+
+\usepackage[T1]{fontenc}
+
+\newcommand{\iflipics}[1] {}
+\newcommand{\iflncs}[1] {#1}
+
+\def\vec#1{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
+    {\mbox{\boldmath$\textstyle#1$}}
+    {\mbox{\boldmath$\scriptstyle#1$}}
+    {\mbox{\boldmath$\scriptscriptstyle#1$}}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\widebar}{0}{mathx}{"73}
+
+% lncs size (as printed in books, with small margins):
+% \usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={13.2cm,20.3cm},centering]{geometry}
+
+
+% \newcommand{\ifamsart}[1] {}
+% \ifamsart{
+%   \newtheorem{theorem}{Theorem}%[section]
+%   \newtheorem{proposition}[theorem]{Proposition}
+%   \newtheorem{lemma}[theorem]{Lemma}
+%   \newtheorem{corollary}[theorem]{Corollary}
+%   \theoremstyle{definition}
+%   \newtheorem{definition}[theorem]{Definition}
+%   \newtheorem{example}[theorem]{Example}
+% }
+\usepackage{fullpage}
+\usepackage{soul}
+\usepackage{soulutf8}
+\soulregister\cite7
+\soulregister\ref7
+\soulregister\pageref7
+\usepackage{hyperref}
+\usepackage[color=yellow]{todonotes}
+\hypersetup{final}
+\usepackage{mathrsfs}
+\usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
+\usepackage[capitalise]{cleveref}
+\usepackage{cite}
+\usepackage{booktabs}
+\usepackage{paralist}
+\usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed}
+
+% \usepackage{fouriernc}
+
+\include{macros}
+
+% \title{On Simulation-Extractability of \textsc{Plonk}, abstract}
+\title{On the Non-malleability of Real-world SNARKs}
+
+\author{Markulf Kohlweiss\inst{1,2} \and Mikhail Volkhov\inst{1} \and Michał Zając\inst{3}}
+\iflncs{
+  \institute{University of Edinburgh, Edinburgh, UK \and IOHK \\ \email{mkohlwei@inf.ed.ac.uk}, \email{mikhail.volkhov@ed.ac.uk} \and Clearmatics, London UK \\ \email{m.p.zajac@gmail.com}}
+}
+
+\begin{document}
+    \maketitle
+
+    We initiate research on the non-malleability of real-world zkSNARKs and
+    establish the non-malleability of two popular proof systems---\groth{}  \cite{EC:Groth16}, the most efficient zkSNARK for QAP, and \plonk{} \cite{EPRINT:GabWilCio19}, less efficient than \groth{} but universal and updatable.
+    We show that the former is (weakly) simulation-extractable while the latter is simulation-sound.
+    Additionally, we show how to generalize these results to cover a broader
+    class of specially-sound protocols, generalizing~\cite{INDOCRYPT:FKMV12} and paving the way for analyzing the
+    non-malleability of other proof systems such as Bulletproofs~\cite{SP:BBBPWM18}.
+
+    Importantly, our security proofs do not require any modification to the proof system.
+    Hence, there is no computational overhead compared to other works that took
+    an existing zkSNARK and apply a transformation resulting in added
+    implementation complexity and
+    efficiency loss---either because the final proof is longer
+    \cite{EPRINT:BowGab18}, the prover proves a more complicated statement
+    \cite{ASIACCS:DerSla18,EPRINT:AbdRamSla20}, or the arithmetisation is less efficient \cite{C:GroMal17}.
+
+
+    \subsubsection*{On the importance of simulation extractability.}
+    Arguably, the strongest non-malleability property for SNARK systems are
+  \emph{simulation soundness} (SS) and \emph{simulation extractability} (SE)
+  \cite{FOCS:Sahai99,C:DDOPS01}---security notions that extends soundness (for
+  SS) and knowledge soundness (for SE) by allowing the adversary to also access the simulation oracle and learn simulated proofs.
+    %
+    One of the important properties of simulation extractability is that its
+    straight-line, blackbox variant is necessary to achieve Universally Composable~(UC~\cite{FOCS:Canetti01}) security, as shown more generally in  \cite{STOC:CLOS02,AC:Groth06,EC:GroOstSah06} for non-interactive zero-knowledge (NIZK) proof systems. Moreover, it is also needed in game-hopping style proofs~\cite{EPRINT:Shoup04} in which one game hop
+    introduces the simulator and a subsequent game hop relies on knowledge
+    soundness~\cite{SP:KMSWP16,CCS:CamDriDub17}.
+    %
+    Compared to just sound NIZKs, simulation sound NIZKs allow for more efficient transformation to black-box simulation-extractable and universally composable (UC) NIZKs \cite{AFRICACRYPT:Baghery19}.
+
+  This is crucial for efficiently realizing protocols such as Hawk~\cite{SP:KMSWP16} and
+  Crypsinous~\cite{SP:KKKZ19} that employ the UC composition theorem in their analysis. However,
+  non-malleability is important beyond UC security. As is well known, the
+  malleability of bitcoin's ECDSA signatures, resulted in inconvenience and
+  attacks~\footnote{\url{https://bitcointalk.org/index.php?topic=8392.msg1245898\#msg1245898}.}
+  against bitcoin transactions.
+  In turn, the security properties of \texttt{Zerocash}~\cite{SP:BCGGMT14}, the precursor of
+  \texttt{Zcash}, require transaction non-malleability. While ad-hoc solutions
+  such as those employed by \texttt{Zcash} exist, simulation
+  extractability is the gold standard for non-malleable proof systems that support both
+  simulation (zero-knowledge) and extraction (proof of knowledge).
+
+    \subsubsection*{\groth{} as the most efficient zkSNARK.}
+    Due to its simplicity, succinctness, and performance, \groth{} is
+  currently the most widely deployed succinct (zero-knowledge) argument of
+  knowledge (SNARK) system. \groth{} is known to be perfectly zero-knowledge and knowledge sound in the generic (and algebraic) group model. However, the existing security arguments for \groth{} are silent about the soundness of the proof system in the presence of simulated proofs---a common requirement for both the composable security and game-hopping style security analysis of protocols built using such argument systems. This important gap let to a line of work on simulation-extractable, also called simulation knowledge sound, succinct proof systems. \groth{} itself cannot satisfy the strongest
+  notion of simulation-extractability that implies proof
+  non-malleability---in fact proofs are perfectly randomizable.
+
+  Surprisingly, we show that \groth{} does satisfy a weaker notion of
+  simulation-extractability implying statement non-malleability (but
+  that allows proof randomization). This property is often sufficient
+  for typical applications that motivate the use of strong
+  simulation-extractability. Notably, one can obtain UC security using
+  efficient compilers.
+
+  Our proof is a reduction from weak simulation extractability to
+  knowledge-soundness, that is based on the basic AGM technique
+  for \groth{} explored by Fuchsbauer~\cite{C:FucKilLos18}, and was
+  inspired by the similar reductions of the
+  Groth-Maller~\cite{C:GroMal17} and Lipmaa's~\cite{EPRINT:Lipmaa19b}
+  SNARKs. Our reduction is only technically distinct, and does not
+  require any additional assumptions, but we use the QAP linear
+  independence assumption as in \cite{C:GroMal17}. More details on
+  this result can be found in \cite{EPRINT:KohVol20}.
+
+    \subsubsection*{$\plonk$ as an efficient universal zkSNARK.}
+    Although efficient, the \groth{} proof system has limitations. First of all,
+  its CRS is relation-dependent and must be regenerated whenever the relation
+  changes. Such secure CRS generation is a troublesome task and requires
+  either a trusted (by everyone) third party or computationally costly multi
+  party computations.  In contract, $\plonk$ can be used to prove correct evaluation
+  of any circuit (up to a given size). Hence, we call \plonk{} \emph{universal}.
+
+    Similarly, \plonk{} relies on a milder trust assumption.
+    Although \groth{} can be shown to be \emph{subversion zero-knowledge} (i.e.~the zero knowledge property holds even if the CRS is subverted, e.g.~by the verifier), it is not sound if some untrusted party computed the CRS.
+    On the other hand, \plonk{} is \emph{updatable sound}. That is, the parties using the proof system can (verifiably) update the CRS; the security guarantee is that the system remains sound if at least one of the updating parties is honest.
+
+    Last, but not least $\plonk$ is efficient. Although it does not use QAP for arithmetisation it is able to achieve similar proving times as \groth{}. (However the number of proof elements is considerably bigger).
+    It is arguably the most efficient updatable and universal zkSNARK up to date,
+  especially when one considers implementations\footnote{We exclude \sonic{} with helpers
+  from this comparison.}.
+
+    We were able to show simulation soundness of $\plonk$ by providing three reductions, where each one is able to break some assumption if the proof system does not have the desired security property.
+    More precisely, we show that if there exists a simulation extractability-breaking adversary $\advse$ then one can either break:
+    \begin{compactenum}
+        \item \label{it:ks} knowledge soundness of the interactive protocol underlying $\plonk$;
+        \item \label{it:dlog} unique response property (after $3$-rd round) of $\plonk$; or
+        \item \label{it:ur} an $(\numberofconstrains + 2)$ discrete log assumption, for $\numberofconstrains$ being a number of constrain in the proven statement.
+    \end{compactenum}
+
+    We believe, although it is for the further work, that the result can be generalised to other protocols which relies on Fiat--Shamir transform and are shown to be knowledge sound in AGM.
+
+    % \subsubsection*{Simulation extractability of \bulletproofs{}.}
+    % Independently on the previous result we also show that transparent zero-knowledge proofs like \bulletproofs{} are satisfy the simulation extractability property when made non-interactive using the Fiat--Shamir transform.
+
+    % \comment{
+    \subsubsection*{Simulation-extractability of special-sound protocols. Generalised forking lemma.}
+    Independently on the previous results, we also show that a broad class of protocols is simulation extractable.
+    Following protocols like \cite{EPRINT:GabWilCio19,CCS:MBKM19,EC:CHMMVW20} we focus on \emph{interactive} proofs of knowledge that are made non-interactive using random oracle and the Fiat--Shamir transform. For our reduction to work we require the underlying interactive protocol to
+    \begin{compactenum}
+        \item be special-sound, that is given a tree of acceptable transcripts, which share some root, it is feasible to extract a witness; and
+        \item have unique response property.
+    \end{compactenum}
+    For that end, we prove a generalisation of the general forking lemma which applies to proofs that require more than two transcript for witness extraction and follow the template given by \cite{INDOCRYPT:FKMV12} who showed that any special-sound sigma protocol that has unique response property is simulation-extractable when transformed using the Fiat--Shamir transform.
+    % }
+
+    % \clearpage
+    \bibliographystyle{abbrv}
+    \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
+\end{document}
