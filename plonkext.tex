@@ -483,6 +483,17 @@ relies on the following lemma.
 		\abs{\prob{\event{A}} - \prob{\event{B}}} \leq \prob{\event{F}}\,.
 	$
 \end{lemma}
+\subsection{Algebraic Group Model}
+The algebraic group model (AGM) introduced in \cite{C:FucKilLos18} lies between
+the standard model and generic bilinear group model. In the AGM it is assumed
+that an adversary $\adv$ can output a group element $\gnone{y} \in \GRP$ if
+$\gnone{y}$ has been computed by applying group operations to group elements
+given to $\adv$ as input. It is further assumed, that $\adv$ knows how to
+``build'' $\gnone{y}$ from that elements. More precisely, the AGM requires that
+whenever $\adv(\gnone{\vec{x}})$ outputs a group element $\gnone{y}$ then it
+also outputs $\vec{c}$ such that $\gnone{y} = \vec{c}^\top \cdot
+\gnone{\vec{x}}$. Both $\plonk$ and $\sonic$ have been shown secure using the
+AGM. An adversary that works in the AGM is called \emph{algebraic}.
 
 \subsection{Polynomial commitment.}
 \label{sec:poly_com}
@@ -699,17 +710,6 @@ knows the underlying polynomial $\p{f}$ which commits to that value.
 The same reasoning could be used to show that property for $\PCOMp$. We skip a
 proof for that fact due to the lack of space.
 
-\subsection{Algebraic Group Model}
-The algebraic group model (AGM) introduced in \cite{C:FucKilLos18} lies between
-the standard model and generic bilinear group model. In the AGM it is assumed
-that an adversary $\adv$ can output a group element $\gnone{y} \in \GRP$ if
-$\gnone{y}$ has been computed by applying group operations to group elements
-given to $\adv$ as input. It is further assumed, that $\adv$ knows how to
-``build'' $\gnone{y}$ from that elements. More precisely, the AGM requires that
-whenever $\adv(\gnone{\vec{x}})$ outputs a group element $\gnone{y}$ then it
-also outputs $\vec{c}$ such that $\gnone{y} = \vec{c}^\top \cdot
-\gnone{\vec{x}}$. Both $\plonk$ and $\sonic$ have been shown secure using the
-AGM. An adversary that works in the AGM is called \emph{algebraic}.
 
 \subsection{Zero knowledge}
 In a zero-knowledge proof system, a prover convinces the verifier of veracity of
