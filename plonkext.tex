@@ -732,8 +732,11 @@ conversation between a $\prover$ with input $(\REL, \crs, \inp, \wit)$ and
 $\verifier$ with input $(\REL, \crs, \inp)$. We write $\ip{\prover (\REL, \crs,
   \inp, \wit)}{\verifier(\REL, \crs, \inp)} = 1$ if in the end of the transcript
 the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the
-transcript. We sometimes abuse notation and write $\verifier(\trans) = 1$ to
-denote a fact that $\trans$ is accepted by the verifier.
+transcript. We sometimes abuse notation and write $\verifier(\REL, \crs, \inp, \zkproof) = 1$ to
+denote a fact that $\zkproof$ is accepted by the verifier. (This is especially
+handy when the proof system is non-interactive, i.e.~the whole conversation
+between the prover and verifier consists of a single message $\zkproof$ sent by
+$\prover$.
 
 A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
 \begin{description}
@@ -746,20 +749,20 @@ A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RE
 	\]
 \item[Soundness] We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no
   $\ppt$ prover $\adv$ can convince an honest verifier $\verifier$ to accept a
-  proof for a false statement, i.e~for $\inp \not\in\LANG$. More precisely, for
+  proof for a false statement $\inp \not\in\LANG$. More precisely, for
   all $\REL \in \RELGEN(\secparam)$
 	\[
-		\condprob{\ip{\adv(\REL, \crs, \inp)}{\verifier(\REL, \crs, \inp)} = 1}{\crs
-      \gets \kgen(\REL), \inp \gets \adv(\REL, \crs); \inp \not\in \LANG_\REL}
-    \leq \negl\,;
+      \condprob{\ip{\adv(\REL, \crs, \inp)}{\verifier(\REL, \crs, \inp)} =
+        1}{\crs \gets \kgen(\REL), \inp \gets \adv(\REL, \crs); \inp \not\in
+        \LANG_\REL} \leq \negl\,;
 	\]
-\item[Zero knowledge] We call an interactive proof system $\proofsystem$
+\item[Zero knowledge] We call a proof system $\proofsystem$
   \emph{zero-knowledge} if for any $\REL \in \RELGEN(\secparam)$, $(\inp, \wit)
   \in \REL$, and adversary $\adv$ there exists a $\ppt$ simulator $\simulator$
   such that
 	\begin{multline*}
 	  \left\{\ip{\prover(\REL, \crs, \inp, \wit)}{\adv(\REL, \crs, \inp, \wit)}
-      \,\left|\, \crs \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
+      \,\left|\, \crs) \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
           \crs)}\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
 		\\
 		\left\{\simulator^{\adv}(\REL, \crs, \inp)\,\left|\, \crs \gets
@@ -773,18 +776,20 @@ distinguisher.
 
 \end{description}
 A CRS $\crs$ may come with a secret string called \emph{trapdoor} $\td$ that
-allows the simulator to simulate. In this paper we distinguish simulators that
-requires a trapdoor to be able to provide an indistinguishable proof and those
+allows the simulator to produce a simulated proof. Tn that case algorithm
+$\kgen(\REL)$ outputs $(\crs, \td)$ and $\td$ is given to the simulator. In this
+paper we distinguish simulators that requires a trapdoor to simulate and those
 that do not. We call the former \emph{CRS-simulators} and denote by
 $\simulator_\td$ for trapdoor $\td$.
 
-Occasionally, a weaker version of zero knowledge is required, so called
-\emph{honest verifier zero knowledge} (HVZK) which assumes that the verifier's
+Occasionally, a weaker version of zero knowledge is sufficient. So called
+\emph{honest verifier zero knowledge} (HVZK) assumes that the verifier's
 challenges are picked at random from some predefined set. Although weaker, this
 definition suffices in many applications. Especially, an interactive
 zero-knowledge proof that is HVZK and \emph{public-coin} (i.e.~the verifier
-outputs as challenges its random coins) can be made non-interactive in the
-random oracle model by using the Fiat--Shamir transformation.
+outputs as challenges its random coins) can be made non-interactive and
+zero-knowledge in the random oracle model by using the Fiat--Shamir
+transformation. \michals{23.12}{Add description of the Fiat--Shamir transformation}
 	
 Sometimes a stronger notion of soundness is required---except requiring that the
 verifier rejects proofs of statements outside the language, we request from the
@@ -835,9 +840,10 @@ Formally,
 		\end{aligned}
 		\,\left|\,
 		\begin{aligned}
-			& (\inp, (a, b, z), (a, b', z')) \gets \adv(\REL), \\
-			& \verifier(\REL, \inp, (a, b, z)) = \\
-			& \qquad = \verifier(\REL, \inp, (a, b', z')) = 1, \\
+          & (\inp, (a, b, z), (a, b', z')) \gets \adv(\REL), \\
+          & b \neq b',  \\
+          & \verifier(\REL, \inp, (a, b, z)) = \\
+          & \qquad = \verifier(\REL, \inp, (a, b', z')) = 1, \\
 		\end{aligned}
 		\right.\right] \leq  \negl\,.
 	\]
@@ -853,21 +859,23 @@ two accepting transcripts that differ only on the last element. More precisely,
   a unique response property if for all $\ppt$ algorithms $\adv$ holds
 			\[
 				\condprob{\verifier (a, b, z) = \verifier (a, b, z')  = 1}{(a, b, z,
-				z') \gets \adv(\REL)} \leq \negl\,.
+				z') \gets \adv(\REL), z \neq z'} \leq \negl\,.
 			\]
 \end{description}
 If this property holds even against unbounded adversaries, it is called
-\emph{strict}, cf.~\cite{INDOCRYPT:FKMV12}. Later on we often call protocols
+\emph{strict}, cf.~\cite{INDOCRYPT:FKMV12}. Later on we call protocols
 that follows this notion \emph{ur-protocols}. For the sake of completeness we
-note that many sigma-protocols, like e.g.~Schnorr's protocol \cite{C:Schnorr89},
-fulfil this requirement.
+note that many sigma protocols, like e.g.~Schnorr's protocol \cite{C:Schnorr89},
+fulfill this property.
+
+\subsection{From interactive to non-interactive---Fiat--Shamir transformation}
 
 \subsection{Simulation extractable NIZKs from sigma protocols}
 Real life applications often require from a NIZK proof system to be
 non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement
 $\inp$ should be able to provide a new proof $\zkproof'$ related to $\zkproof$.
 A strong version of non-malleability is formalised by simulation extractability
-which assures that no adversary can produce valid proof without knowing the
+which assures that no adversary can produce a valid proof without knowing the
 corresponding witness. This must hold even if the adversary is allowed to see
 polynomially many simulated proofs for any statements it wishes.
 
