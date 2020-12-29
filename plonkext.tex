@@ -513,8 +513,9 @@ commitment scheme \cite{AC:KatZavGol10}. We denote the first by $\PCOMp$, presen
 			\chi \sample \FF^2_p \\ [\myskip]
 			\pcreturn \gone{1, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}\\ [\myskip]
 				\hphantom{\hspace*{5.5cm}}	
-				%\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
-			}
+        %\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1}
+        %\frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
+      }
 			
 			\pchspace
 			
@@ -533,8 +534,9 @@ commitment scheme \cite{AC:KatZavGol10}. We denote the first by $\PCOMp$, presen
 			\procedure{$\open(\crs, \vec{\gamma}, \vec{z}, \vec{s}, \vec{f}(X))$}
 			{
 			\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo\\ [\myskip]
-			\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}\\ [\myskip]
-				\pcreturn \vec{o} = \gone{\vec{\p{o}}(\chi)}\\ [\myskip]
+      \pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1}
+      \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}\\ [\myskip] \pcreturn
+      \vec{o} = \gone{\vec{\p{o}}(\chi)}\\ [\myskip]
 				\hphantom{\hspace*{5.5cm}}	
 			}
 			
@@ -545,10 +547,12 @@ commitment scheme \cite{AC:KatZavGol10}. We denote the first by $\PCOMp$, presen
 				\vec{r} \gets \FF_p^{\abs{\vec{z}}}\\ [\myskip]
 				\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo \\ [\myskip]
 				\pcind \pcif 
-					\sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j} \gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet \gtwo{1} + \\ [\myskip]
-					\pcind \sum_{i = 1}^{\abs{\vec{z}}} r_i z_i o_i
-					\bullet \gtwo{1} \neq 
-					\gone{- \sum_{i = 1}^{\abs{\vec{z}}} r_i o_i } \bullet \gtwo{\chi} \pcthen  \\
+          \sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j}
+          \gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet
+          \gtwo{1} + \\ [\myskip] \pcind \sum_{i = 1}^{\abs{\vec{z}}} r_i z_i
+          o_i
+          \bullet \gtwo{1} \neq \gone{- \sum_{i = 1}^{\abs{\vec{z}}} r_i o_i }
+          \bullet \gtwo{\chi} \pcthen  \\
 					\pcind \pcreturn 0\\ [\myskip]
 					\pcreturn 1.
 			}
@@ -596,9 +600,11 @@ commitment scheme \cite{AC:KatZavGol10}. We denote the first by $\PCOMp$, presen
 			
 			\procedure{$\verify(\crs, \maxconst, \gone{c}, z, s, \gone{\p{o}(\chi)})$}
       {
-				\pcif \gone{\p{o}(\chi)} \bullet \gtwo{\alpha \chi} + \gone{s - z \p{o}(\chi)} \bullet \gtwo{\alpha} = \\ [\myskip]
-				\pcind \gone{c} \bullet \gtwo{\chi^{- \dconst + \maxconst}} \pcthen  \pcreturn 1\\ [\myskip]
-				\rlap{\pcelse \pcreturn 0.} \hphantom{\pcind \pcif \sum_{i =
+        \pcif \gone{\p{o}(\chi)} \bullet \gtwo{\alpha \chi} + \gone{s - z
+        \p{o}(\chi)} \bullet \gtwo{\alpha} = \\ [\myskip] \pcind \gone{c}
+        \bullet \gtwo{\chi^{- \dconst + \maxconst}} \pcthen  \pcreturn 1\\
+        [\myskip]
+        \rlap{\pcelse \pcreturn 0.} \hphantom{\pcind \pcif \sum_{i =
             1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j} \gamma_i^{j -
               1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet \gtwo{1} + } }
 		\end{pchstack}
@@ -682,8 +688,8 @@ respectively.
 \[
   \Pr \left[
     \begin{aligned}
-      & \p{f} = \ext_\adv(\crs, c)\\
-      & c = \com(\crs, \p{f})\\
+      & \p{f} = \ext_\adv(\crs, c),\\
+      & c = \com(\crs, \p{f}),\\
       & \verify(\crs, c, z, s, o) = 1
     \end{aligned}
     \,\left|\,
@@ -695,7 +701,7 @@ respectively.
         \end{aligned}
         }
     \begin{aligned}
-      & \crs \gets \kgen(\secparam)\\
+      & \crs \gets \kgen(\secparam),\\
       & (c, z, s, o) \gets \adv(\crs)
     \end{aligned}
   \right.\right]
@@ -728,7 +734,7 @@ i.e.~there is a $\kgen$ algorithm that takes as input the relation description
 $\REL$ and outputs a common reference string $\crs$. We denote by
 $\ip{\prover(\REL, \crs, \inp, \wit)}{\verifier(\REL, \crs,\inp)}$ a transcript
 $\trans$ (or, proof $\zkproof$---we use these two alternatively) of a
-conversation between a $\prover$ with input $(\REL, \crs, \inp, \wit)$ and
+conversation between $\prover$ with input $(\REL, \crs, \inp, \wit)$ and
 $\verifier$ with input $(\REL, \crs, \inp)$. We write $\ip{\prover (\REL, \crs,
   \inp, \wit)}{\verifier(\REL, \crs, \inp)} = 1$ if in the end of the transcript
 the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the
@@ -736,7 +742,7 @@ transcript. We sometimes abuse notation and write $\verifier(\REL, \crs, \inp, \
 denote a fact that $\zkproof$ is accepted by the verifier. (This is especially
 handy when the proof system is non-interactive, i.e.~the whole conversation
 between the prover and verifier consists of a single message $\zkproof$ sent by
-$\prover$.
+$\prover$).
 
 A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
 \begin{description}
@@ -762,7 +768,7 @@ A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RE
   such that
 	\begin{multline*}
 	  \left\{\ip{\prover(\REL, \crs, \inp, \wit)}{\adv(\REL, \crs, \inp, \wit)}
-      \,\left|\, \crs) \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
+      \,\left|\, \crs \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
           \crs)}\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
 		\\
 		\left\{\simulator^{\adv}(\REL, \crs, \inp)\,\left|\, \crs \gets
@@ -776,7 +782,7 @@ distinguisher.
 
 \end{description}
 A CRS $\crs$ may come with a secret string called \emph{trapdoor} $\td$ that
-allows the simulator to produce a simulated proof. Tn that case algorithm
+allows the simulator to produce a simulated proof. In that case algorithm
 $\kgen(\REL)$ outputs $(\crs, \td)$ and $\td$ is given to the simulator. In this
 paper we distinguish simulators that requires a trapdoor to simulate and those
 that do not. We call the former \emph{CRS-simulators} and denote by
@@ -794,7 +800,7 @@ transformation. \michals{23.12}{Add description of the Fiat--Shamir transformati
 Sometimes a stronger notion of soundness is required---except requiring that the
 verifier rejects proofs of statements outside the language, we request from the
 prover to know a witness corresponding to the proven statement. This property is
-formalised by the following notion:
+formalised by the so-called \emph{knowledge soundness}.
 \begin{description}
 \item[Knowledge soundness] We call an interactive proof system $\proofsystem$
   \emph{knowledge-sound} if for any $\REL \in \RELGEN(\secparam)$ and a $\ppt$
@@ -803,8 +809,8 @@ formalised by the following notion:
 	\[
 	\Pr\left[
 		\begin{aligned}
-			& \verifier(\REL, \crs, \inp, \trans) = 1 \\
-			& \land \REL(\inp, \wit) = 0
+			& \verifier(\REL, \crs, \inp, \trans) = 1, \\
+			& \REL(\inp, \wit) = 0
 	 \end{aligned}
 	  \,\left|\,
 	 \begin{aligned}
@@ -849,7 +855,7 @@ Formally,
 	\]
 \end{description}
 
-Another property that sigma protocols sometimes have is a unique response
+Another property that sigma protocols may have is a unique response
 property \cite{C:Fischlin05} which states that no $\ppt$ adversary can produce
 two accepting transcripts that differ only on the last element. More precisely,
 \begin{description}
@@ -858,7 +864,7 @@ two accepting transcripts that differ only on the last element. More precisely,
   proofs compound of three messages $(a, b, z)$. We say that $\sigmaprot$ is has
   a unique response property if for all $\ppt$ algorithms $\adv$ holds
 			\[
-				\condprob{\verifier (a, b, z) = \verifier (a, b, z')  = 1}{(a, b, z,
+        \condprob{\verifier (\REL, \inp, (a, b, z)) = \verifier (\REL, \inp, (a, b, z'))  = 1}{(\inp, a, b, z,
 				z') \gets \adv(\REL), z \neq z'} \leq \negl\,.
 			\]
 \end{description}
@@ -869,6 +875,35 @@ note that many sigma protocols, like e.g.~Schnorr's protocol \cite{C:Schnorr89},
 fulfill this property.
 
 \subsection{From interactive to non-interactive---Fiat--Shamir transformation}
+Consider a $(2\mu + 1)$-message, public-coin, honest verifier zero-knowledge interactive proof system $\proofsystem =
+(\kgen, \prover, \verifier, \simulator)$ for $\REL \in
+\RELGEN(\secparam)$. Let $\zkproof$ be a proof
+performed by the prover $\prover$ and verifier $\verifier$ compound of
+messages $(a_1, b_1, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_\mu)$, where
+$a_i$ comes from $\prover$ and $b_i$ comes from $\verifier$.
+Denote by $\ro$ a random
+oracle. 
+Let $\proofsystem_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs,
+\simulator_\fs)$ be a proof system such that
+\begin{itemize}
+  \item $\kgen_\fs$ behaves as $\kgen$.
+  \item $\prover_\fs$ behaves as $\prover$ except after sending message
+    $a_i$, $i \in \range{1}{\mu - 1}$, the prover does not wait for
+    the message from the verifier but computes it locally setting $b_i
+    = \ro(\zkproof[0..i])$, where $\zkproof[0..j] = (\inp, a_1, b_1, \ldots,
+    a_{j - 1}, b_{j - 1}, a_j)$. (Importantly, $\zkproof[0..\mu] =
+    (\inp, \zkproof)$).
+  \item $\verifier_\fs$ behaves as $\verifier$ but does not provide
+    challenges to the prover's proof. Instead it computes the
+    challenges locally as $\prover_\fs$ does. Then it verifies the
+    resulting transcript $\zkproof$ as the verifier $\verifier$ would. 
+  \item $\simulator_\fs$ behaves as $\simulator$, except when
+    $\simulator$ picks challenge $b_i$, $\simulator_\fs$ programs the
+    random oracle to output $b_i$ on $\zkproof[0, i]$.
+  \end{itemize}
+
+Fiat--Shamir heuristic states that $\proofsystem_\fs$ is zero-knowledge
+non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
 
 \subsection{Simulation extractable NIZKs from sigma protocols}
 Real life applications often require from a NIZK proof system to be
