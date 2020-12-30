@@ -1023,7 +1023,7 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
     \genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}$ is at least
 	\[
 		\frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 -
-    \frac{h!}{(h - mq)! \cdot h^{mq}}\right)
+    \frac{h!}{(h - m)! \cdot h^{m}}\right)
 	\]
 		
 	\begin{figure}[t]
@@ -1033,16 +1033,16 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
 		{
 		\rho \sample \RND{\zdv}\\
 		(i, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; \rho)\\
+    i_1 \gets i\\
 		\pcif i = 0\ \pcreturn (0, \bot)\\
 		\pcfor j \in \range{2}{m}\\
 		\pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
 		h_{i - 1}^{j - 1}\\
 		\pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
-		\pcind (i', s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
+		\pcind (i_j, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
 		\ldots, h_{q}^{j}; \rho)\\
-		\pcind \pcif i' = 0 \lor i' \neq i\ \pcreturn (0, \bot)\\
-		\pcif \exists (k, j), (k', j') \in \range{1}{q} \times
-    \range{1}{m} : (h_{k}^{j} = h_{k'}^{j'})\
+		\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
+    \pcif \exists (j, j') \in \range{1}{m}^2 : (h_{i}^{j} = h_{i}^{j'})\
 	\pcreturn (0, \bot)\\
 		\pcelse \pcreturn (1, \vec{s})
 	}}
@@ -1063,18 +1063,18 @@ We start by claiming that for all $y$
 \begin{equation}\label{eq:frkProb_y}
 	\frkProb(y) \geq 
 	\frac{\accProb(y)^m}{q^{m - 1}} - \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - mq)! \cdot h^{mq}}\right)
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)
 	\end{equation}
 Then with the expectation taken over $y \sample \ig$, we have
 \begin{align}
 	\frkProb & = \expected{\frkProb(y)} \geq
 	\expected{\frac{\accProb(y)^m}{q^{m - 1}} -  \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - mq)! \cdot h^{mq}}\right)} \label{eq:use_eq1}\\
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)} \label{eq:use_eq1}\\
 	& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} -
-	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - mq)! \cdot
-  h^{mq}}\right) \label{eq:by_lemma_jensen}\\
+	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - m)! \cdot
+  h^{m}}\right) \label{eq:by_lemma_jensen}\\
 	& = \frac{\accProb^m}{q^{m - 1}} -  \accProb \cdot \left(1 -
-  \frac{h!}{(h - mq)! \cdot h^{mq}}\right)\label{eq:by_accProb}\,.
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)\label{eq:by_accProb}\,.
 \end{align}
 Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
 \cref{eq:by_lemma_jensen} comes from linearity of expected value and \cref{lem:jensen}; and
@@ -1086,16 +1086,29 @@ Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$.
 For any input $y$, with probabilities taken over the coin tosses of
 $\genforking_{\zdv}^{m}$ we have
 \begin{align*}
-	\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land h_{i_j} \neq h_{i_{j'}} \text{ for } (j, j') \in J}	\\
+	\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land
+h_{i_j}^{j} \neq h_{i_{j'}}^{j'} \text{ for } (j, j') \in J}	\\
 	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \\
-	& \qquad - \prob{i_j \geq 1 \land h_{i_j} = h_{i_{j'}} \text{ for some } (j, j') \in J}\\
+  & \qquad - \prob{i_j \geq 1 \land h_{i_j}^{j} = h_{i_{j'}}^{j'} \text{ for some } (j, j') \in J}\\
 	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} -
 	\prob{i_j \geq 1} \cdot 
-  \left(1 - \frac{h!}{(h - mq)! \cdot h^{mq}}\right) \\ 
+  \left(1 - \frac{h!}{(h - m)! \cdot h^{m}}\right) \\ 
 	& = \prob{i_j = i_{j'} \land
 	i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 -
-\frac{h!}{(h - mq)! \cdot h^{mq}}\right)\,.
+\frac{h!}{(h - m)! \cdot h^{m}}\right)\,.
 \end{align*}
+
+Probability that for some $(j, j') \in J$ and $i_j = i_{j'}$ holds
+$h_{i_j}^{j} \neq h_{i_{j'}}^{j'}$ equals 
+\[
+  \frac{h \cdot (h - 1)
+\cdot \ldots \cdot (h - m - 1)}{h^m} = \frac{h!}{(h - m)! \cdot h^m}.
+\]
+That is, it equals the number
+of all $m$-element strings where each element is different divided by
+the number of all $m$-element strings, where elements are taken from a
+set of size $h$. 
+
 It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for }
 (j, j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$.
 Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
