@@ -795,7 +795,7 @@ definition suffices in many applications. Especially, an interactive
 zero-knowledge proof that is HVZK and \emph{public-coin} (i.e.~the verifier
 outputs as challenges its random coins) can be made non-interactive and
 zero-knowledge in the random oracle model by using the Fiat--Shamir
-transformation. \michals{23.12}{Add description of the Fiat--Shamir transformation}
+transformation.
 	
 Sometimes a stronger notion of soundness is required---except requiring that the
 verifier rejects proofs of statements outside the language, we request from the
@@ -1201,14 +1201,14 @@ the change only notational.
 
 We also note that the general forking lemma proposed in
 \cref{lem:generalised_forking_lemma} works for protocols which have extractable
-witness from a $(1, \ldots, 1, n_i, 1, \ldots, 1)$-tree of acceptable
+witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of acceptable
 transcripts. This limitation however does not affect the main result of this
 paper, i.e.~showing that both $\plonk$ and $\sonic$ are simulation extractable.
 
 \subsection{Unique-response protocols.}
-Another problem comes with another assumption required by Faust et al. That is,
-the unique response property of the transformed sigma protocol. Fischlin's
-formulation, although perfectly fine for applications presented in
+Another problem comes with another assumption required by Faust et al.---the
+unique response property of the transformed sigma protocol. Fischlin's
+formulation, although suitable for applications presented in
 \cite{C:Fischlin05,INDOCRYPT:FKMV12}, is not enough in our case. First of all,
 the property assumes that the protocol has three messages, with the middle being
 the challenge from the verifier. That is not the case we consider here. Second,
@@ -1223,13 +1223,13 @@ model, but utilises CRS. That also complicates things considerably.
 
 We walk around these obstacles by providing a generalised notion of the unique
 response property. More precisely, we say that a $(2\mu + 1)$-message protocol
-has \emph{unique responses after $i$}, and called it an $\ur{i}$-protocol, if it
+has \emph{unique responses after $i$}, and call it an $\ur{i}$-protocol, if it
 follows the definition below:
 
 \begin{definition}[$\ur{i}$-protocol]
 \label{def:wiur}
 Let $\proofsystem$ be a $(2\mu + 1)$-message proof system $\ps = (\kgen,
-\prover, \verifier, \simulator)$. Let $\proofsystem_\fs$ be $\proofsystem$ after
+\prover, \verifier, \simulator)$. Let $\proofsystem_\fs$ be $\proofsystem$ after the
 Fiat--Shamir transform, Denote by $a_0, \ldots, a_{\mu}$ protocol messages
 output by the prover, We say that $\proofsystem$ has \emph{unique responses
   after $i$} if for any $\ppt$ adversary $\adv$:
@@ -1240,7 +1240,7 @@ output by the prover, We say that $\proofsystem$ has \emph{unique responses
 		\gets \adv^\ro(\REL, \crs), \vec{a} \neq \vec{a'} \\
 		& \verifier^\ro_\fs (\REL, \crs, \inp, \vec{a}) =
 		\verifier^\ro_\fs(\REL, \crs, \inp, \vec{a'}) = 1,\\
-		& a_{j} = a'_{j},\ j \in \range{1}{i + 1}
+		& a_{j} = a'_{j},\ j \in \range{1}{i}
 		\end{aligned}
 		\ \left|\  
 	\vphantom{\begin{aligned}
@@ -1252,7 +1252,7 @@ output by the prover, We say that $\proofsystem$ has \emph{unique responses
 \crs \gets \kgen_\fs(\REL) \right.
 }
 \]
-is at most negligible at $\secpar$.
+is at most negligible in $\secpar$.
 \end{definition}
 Intuitively, a protocol is $\ur{i}$ if after $i$-th prover's message, all
 $\prover$'s further messages are determined by the witness it knows, the
@@ -1263,13 +1263,14 @@ algorithm) or not.
 
 \subsection{Computational special soundness}
 Note that the special soundness property (as usually defined) holds for
-all---even computationally unbounded---adversaries. Since a simulation trapdoor
-for $\plonkprot$ exists, it is not special sound in that regard---as an
-unbounded adversary could reveal the trapdoor and build a number of simulated
-proofs for a fake statement. Hence, we provide a weaker, yet sufficient,
-definition of \emph{computational special soundness}. More precisely, we state
-that an adversary that is able to answer correctly multiple challenges either
-knows the witness or can be used to break some computational assumption.
+all---even computationally unbounded---adversaries. Unfortunately, since a
+simulation trapdoor for $\plonkprot$ exists, the protocol is not special sound
+in that regard. This comes since an unbounded adversary could reveal the
+trapdoor and build a number of simulated proofs for a fake statement. Hence, we
+provide a weaker, yet sufficient, definition of \emph{computational special
+  soundness}. More precisely, we state that an adversary that is able to answer
+correctly multiple challenges either knows the witness or can be used to break
+some computational assumption.
 
 \begin{definition}[Computational special soundness]
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an $(2 \mu +
@@ -1287,12 +1288,13 @@ Since we do not utilise the classical special soundness (that holds for all, eve
 
 \begin{theorem}[Simulation-extractable multi-message protocols]
 \label{thm:se}
-Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive $(2
-\mu + 1)$-message proof system that is honest verifier zero-knowledge in the
-standard model\footnote{Crucially, we require that one can provide an
-		indistinguishable simulated proof without any additional knowledge, as
-e.g~knowledge of a CRS trapdoor.}, has $\ur{k}$ property with security
-$\epsur$, is $(1, \ldots, 1, n_j, 1, \ldots, 1)$-special sound, for some $j > k$.
+Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
+$(2 \mu + 1)$-message proof system for $\RELGEN(\secparam)$ that is honest
+verifier zero-knowledge in the standard model\footnote{Crucially, we require
+  that one can provide an indistinguishable simulated proof without any
+  additional knowledge, as e.g~knowledge of a CRS trapdoor.}, has $\ur{k}$
+property with security $\epsur$, is $(1, \ldots, 1, n_j, 1, \ldots, 1)$-special
+sound, for some $j > k$.
 % 	Assume that the simulator $\simulator$ does not get as input any trapdoor related to the CRS.
 
 Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
