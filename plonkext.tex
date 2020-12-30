@@ -3013,9 +3013,235 @@ In \sonic{} we will use commitments to the following polynomials.
 		&\PCOMs.\verifier(\crs, \dconst, C, y, s, Q),\\
 		&\PCOMs.\verifier(\crs, \dconst, C, z, s_z, Q_z),
 		\end{split}
-	\end{equation*}
+      \end{equation*}
 	and accepts the proof iff all the checks holds.
-	
+
+	\section{More generalised forking lemma}
+    \subsection{Generalised forking lemma.}
+First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not
+general enough for our purpose as it is useful only for protocols where witness
+can be extracted from just two transcripts. To be able to extract a witness
+from, say, an execution of $\plonkprot$ we need to obtain at least
+$\numberofconstrains + 3$ valid proofs. Here we propose a generalisation of the
+general forking lemma that given probability of producing an accepting
+transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
+  of accepting transcripts} $\tree$, which allows to extract a witness.
+
+\begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
+	\label{def:tree_of_accepting_transcripts}
+	Consider a $(2\mu + 1)$-message interactive proof system $\ps$. An $(n_1,
+  \ldots, n_\mu)$-tree of accepting transcript is a tree where each node on
+  depth $i$, for $i \in \range{1}{\mu}$, is an $i$-th prover's message in an
+  acceptable transcript; edges between the nodes are labeled with verifier's
+  challenges, such that no two edges on the same depth have the same
+  label; and each node on depth $i$ has $(n_{i} - 1)$ siblings and $n_{i +
+    1}$ children. Altogether, the tree consists of $N = \prod_{i = 1}^\mu n_i$
+  branches, which makes $N$ acceptable transcripts. We require $N = \poly$.
+\end{definition}
+
+
+\begin{lemma}[General forking lemma II]
+	\label{lem:generalised_forking_lemma}
+	Fix $q \in \ZZ$ and set $H$ of size $h \geq m$. Let $\zdv$ be a $\ppt$
+  algorithm that on input $y, h_1, \ldots, h_q$ returns $(\vec{i}, s)$ where
+  $\vec{i} = (\vec{i}[1], \ldots, \vec{i}[q']) \in
+  \range{0}{q}^{q'}$ and $s$ is called a side output. Denote by $\ig$ a randomised
+  instance generator. We denote by $\accProb$ the probability
+	\[
+      \condprob{\vec{i} \neq \vec{0}}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (\vec{i}, s)
+		\gets \zdv(y, h_1, \ldots, h_q)}\,.
+	\]
+	Let $\genforking_{\zdv}^{m}$ denote the algorithm described in
+  \cref{fig:genforking_lemma} then the probability $\frkProb := \condprob{b =
+    1}{y \gets \ig;\ h_1, \ldots, h_{q} \sample H;\ (b, \vec{s}) \gets
+    \genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}$ is at least
+	\[
+		\frac{\accProb^m}{q^{q'(m - 1)}} - \accProb \cdot \left(1 -
+    \frac{h!}{(h - mq')! \cdot h^{mq'}}\right).
+	\]
+		
+	\begin{figure}[t]
+		\centering
+		\fbox{
+		\procedure{$\genforking_{\zdv}^{m} (y,h_1^{1}, \ldots, h_{q}^{1})$}		
+		{
+		\rho \sample \RND{\zdv}\\
+		(\vec{i}, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; \rho)
+        \pccomment{$\vec{i} = i[1], \ldots, i[q']$}\\
+    \vec{i_1} \gets \vec{i}\\
+		\pcif \vec{i} = \vec{0}\ \pcreturn (0, \bot)\\
+		\pcfor j \in \range{2}{m}\\
+		\pcind h_{1}^{j}, \ldots, h_{i[1] - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
+		h_{i[1] - 1}^{j - 1}\\
+		\pcind h_{i[1]}^{j}, \ldots, h_{q}^{j} \sample H\\
+		\pcind (\vec{i_j}, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{q}^{j}; \rho)\\
+		\pcind \pcif \vec{i_j} = 0 \lor \vec{i_j} \neq \vec{i}\ \pcreturn (0, \bot)\\
+    \pcif \exists (j, j') \in \range{1}{m}^2, k \in \range{1}{q'} : (h_{i[k]}^{j} = h_{i[k]}^{j'})\
+	\pcreturn (0, \bot)\\
+		\pcelse \pcreturn (1, \vec{s})
+	}}
+	\caption{Generalised forking algorithm $\genforking_{\zdv}^{m}$}
+	\label{fig:genforking_lemma}
+\end{figure}
+\end{lemma}
+\begin{proof}
+First let denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
+\begin{align*}
+\accProb(y) & =  \condprob{\vec{i} \neq \vec{0}}{h_1, \ldots, h_q \sample H;\ (\vec{i}, s)
+\gets \zdv(y, h_1, \ldots, h_q)}\,.\\
+	\frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
+\genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}\,.
+\end{align*}
+
+We start by claiming that for all $y$ 
+\begin{equation}\label{eq:frkProb_y}
+	\frkProb(y) \geq 
+	\frac{\accProb(y)^m}{q^{q'(m - 1)}} - \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)
+	\end{equation}
+Then with the expectation taken over $y \sample \ig$, we have
+\begin{align}
+	\frkProb & = \expected{\frkProb(y)} \geq
+	\expected{\frac{\accProb(y)^m}{q^{q'(m - 1)}} -  \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)} \label{eq:use_eq1}\\
+	& \geq \frac{\expected{\accProb(y)}^m}{q^{q'(m - 1)}} -
+	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - mq')! \cdot
+  h^{mq'}}\right) \label{eq:by_lemma_jensen}\\
+	& = \frac{\accProb^m}{q^{q'(m - 1)}} -  \accProb \cdot \left(1 -
+  \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)\label{eq:by_accProb}\,.
+\end{align}
+Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
+\cref{eq:by_lemma_jensen} comes from linearity of expected value and \cref{lem:jensen}; and
+\cref{eq:by_accProb} holds by the fact that $\expected{\accProb(y)} =
+\accProb$.
+
+We now show \cref{eq:frkProb_y}.
+Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$. 
+For any input $y$, with probabilities taken over the coin tosses of
+$\genforking_{\zdv}^{m}$ we have
+\begin{align*}
+  \frkProb (y) & = \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j} \neq \vec{0} \land
+                 h_{\vec{i_j}[1]}^{j} \neq h_{\vec{i_{j'}}[1]}^{j'}, \ldots, h_{\vec{i_j}[q']}^{j} \neq h_{\vec{i_{j'}}[q']}^{j'} \text{ for } (j, j') \in J}	\\
+               & \geq \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j} \neq \vec{0} \text{ for } (j, j') \in J} \\
+               & \qquad - \prob{\vec{i_j} \neq \vec{0} \land
+                 h_{\vec{i_j}[k]}^{j} = h_{\vec{i_{j'}}[k]}^{j'} \text{ for some
+                 } (j, j') \in J, k \in \range{1}{q'}}\\
+               & = \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j} \neq \vec{0} \text{ for } (j, j') \in J} -
+                 \prob{\vec{i_j} \neq 0} \cdot 
+                 \left(1 - \frac{h!}{(h - mq')! \cdot h^{mq'}}\right) \\ 
+               & = \prob{\vec{i_j} = \vec{i_{j'}} \land
+                 \vec{i_j} \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 -
+                 \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)\,.
+\end{align*}
+
+Probability that for some $(j, j') \in J$ and $\vec{i_j} = \vec{i_{j'}}$ holds
+$h_{\vec{i_j}[k]}^{j} \neq h_{\vec{i_{j'}}[k]}^{j'}$, for $k \in \range{1}{q'}$ equals 
+\[
+  \frac{h \cdot (h - 1)
+\cdot \ldots \cdot (h - mq' - 1)}{h^{mq'}} = \frac{h!}{(h - mq')! \cdot h^{mq'}}.
+\]
+That is, it equals the number
+of all $mq'$-element strings where each element is different divided by
+the number of all $mq'$-element strings, where elements are taken from a
+set of size $h$. 
+
+It remains to show that $\prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j} \neq 0 \text{ for }
+(j, j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$.
+Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
+For each $\vec{\iota} \in \range{1}{q}^{q'}$ let $X_{\vec{\iota}} \colon \RND{\zdv} \times
+H^{\vec{\iota}[1] - 1} \to [0, 1]$ be defined by setting $X_{\vec{\iota}}(\rho, h_1, \ldots,
+h_{\vec{\iota}[1] - 1})$ to
+\[
+	\condprob{\vec{i} = \vec{\iota}}{h_{\vec{\iota}[1]}, \ldots, h_q \sample H; (\vec{i}, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)} 
+\] 
+for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\vec{\iota}[1] - 1} \in H$. Consider $X_{\vec{\iota}}$ as a random variable over the uniform distribution on its domain. 
+Then
+\begin{align*}
+	& \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j} \neq \vec{0} \text{ for } (j, j') \in J} 
+	 = \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \prob{\vec{i_1} = \vec{\iota} \land \ldots \land \vec{i_m} = \vec{\iota}} \\
+	& = \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \prob{\vec{i_1} = \vec{\iota}} \cdot \condprob{\vec{i_2} = \vec{\iota}}{\vec{i_1} = \vec{\iota}} \cdot \ldots \cdot \condprob{\vec{i_m} = \vec{\iota}}{\vec{i_1} = \ldots = \vec{i_{m - 1}} = \vec{\iota}} \\
+	& = \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \sum_{\rho, h_1, \ldots, h_{\vec{\iota}[1] - 1}} X_{\vec{\iota}}
+	(\rho, h_1, \ldots, h_{\vec{\iota}[1] - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\vec{\iota}[1] - 1}}
+	= \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{\iota}}^m} \,.
+\end{align*}
+Importantly, $\sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{\iota}}} = \accProb(y)$.
+
+By \cref{lem:jensen} we get
+\[
+	\sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{\iota}}^m} \geq \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_\iota}^m\,.
+\]
+Note that for e.g.~$X_{\vec{i}} = 1$, $\vec{i} \in \range{1}{q}^{q'}$ the inequality becomes equality, that is, it is tight.
+ 
+We now use the H\"older inequality, cf.~\cref{lem:holder}, for $x_{\vec{i}} = \expected{X_{\vec{i}}}$, $y_{\vec{i}} = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
+\begin{gather}
+	\left(\sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{i}}}\right)^{m}  \leq \left(\sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{i}}}^m\right) \cdot q^{q'(m - 1)}\\
+	\frac{1}{q^{q'(m - 1)}} \cdot \accProb(y)^{m} \leq \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{i}}}^m\,.
+\end{gather}
+Finally, we get
+\[
+	\frkProb(y) \geq \frac{\accProb(y)^m}{q^{q'(m - 1)}}} - 
+	 \accProb(y) \cdot \left(1 - \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)\,.
+\]
+\qed
+\end{proof}
+
+To highlight importance of the generalised forking lemma we describe how we use
+it in our simulation-extractability proof. Let $\advse$ be the
+simulation-extractability adversary that outputs an acceptable proof with
+probability at least $\accProb$. (Although we use the same $\accProb$ to denote
+probability of $\zdv$ outputing a non-zero $i$ and probability of $\advse$
+outputing an acceptable proof we claim that these probabilities are exactly the
+same what comes from how we define $\zdv$.) 
+Let $\advse$ produce an acceptable proof
+$\zkproof_{\advse}$ for instance $\inp_{\advse}$; $r$ be $\advse$'s randomness; $Q$ the list of
+queries submitted by $\advse$ along with simulator's $\simulator_\zkproof$
+answers; and $Q_\ro$ be the list of all random oracle queries made by $\advse$.
+All of these are given to the extractor $\ext$ that internally runs the forking
+algorithm $\genforking_\zdv$.  Algorithm $\zdv$ takes $(\REL, \crs, \advse, 
+%\inp_\advse,
+%\zkproof_\advse, 
+Q, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
+h_q^1$. 
+(For the sake of completeness, we allow $\genforking_\zdv$ to
+pick $h^1_{k + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $k < q$
+elements.)  
+
+Next, $\zdv$ runs
+internally $\advse(\REL, \crs; r)$ and responds to its random oracle and
+simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes the
+same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$ as it
+is run on the same random tape and with the same answers from the simulator and
+random oracle. After $\advse$ finishes its acceptable proof $\zkproof_{\advse}$,
+algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where $i$ is the index of a random
+oracle query required to get the challenge after $k$-th message from the prover,
+where $k$ is the index of a message where the tree of
+transcripts branches. 
+%We also note that we differ here from the description of the
+%$\genforking_\zdv$ algorithm provided
+%e.g.~in~\cite{INDOCRYPT:FKMV12,CCS:BelNev06} where the algorithm also picks the first set of random oracle
+%queries' responses $h^1_1, \ldots, h^1_q$. We however note that this difference
+%is only notational as random oracle queries' responses provided in $Q_\ro$ are
+%random as well. 
+Then, after the first run of $\advse$ is done, the extractor runs $\zdv$ again,
+but this time it provides a fresh random oracle responses $h^2_i, \ldots,
+h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
+before $\advse$ is about to ask its $i$-th random oracle
+query. Probability that the adversary produces an acceptable transcript with the
+fresh random oracle responses is at least $\accProb$. This continues until the
+required number of transcripts is obtained. 
+
+We note that in the original forking lemma the forking algorithm $\forking$
+cf.~\cref{fig:forking_lemma} gets only as input $y$ and elements $h^1_1, \ldots,
+h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
+that $h^1_1, \ldots, h^1_q$ are random oracle responses, thus are random, makes
+the change only notational.
+
+We also note that the general forking lemma proposed in
+\cref{lem:generalised_forking_lemma} works for protocols which have extractable
+witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of acceptable
+transcripts. This limitation however does not affect the main result of this
+paper, i.e.~showing that both $\plonk$ and $\sonic$ are simulation extractable.
+
 
 	\end{document}
 	\section{(Tight) simulation soundness of $\plonk$}
@@ -3215,24 +3441,26 @@ In \sonic{} we will use commitments to the following polynomials.
   equation holds, but the ideal verification equation does not to break the
   $\dlog$ assumption.
 
-	Since $\vereq(X) \neq 0$, but $\vereq(\chi) = 0$ and $\rdvdlog$ knows
+  Since $\vereq(X) \neq 0$, but $\vereq(\chi) = 0$ and $\rdvdlog$ knows
   $\vec{M'}$, as defined in \cref{eq:M_prim}, it can recreate all the
   polynomials submitted by $\advss$ as part of the proof and included in
   $\vereq(X)$. This way, it knows all coefficients of $\vereq(X)$. Thus it can
   factorise it and find its roots, one of them is the required $\chi$. Hence it
   holds, by the analogous analysis as in the previous case, that
 	\[
-		\prob{\advss \text{ wins}, \nevent{E}_1} \leq q_\ro^6 \cdot \eps_{\dlog}(\secpar).
+      \prob{\advss \text{ wins}, \nevent{E}_1} \leq q_\ro^6 \cdot
+      \eps_{\dlog}(\secpar).
 	\]
 
-	The proof is concluded by observing that the analysis of events $\event{E},
-  \nevent{E}_0, \nevent{E}_1$ gives
+	The proof is concluded by observing that the analysis of events
+    $\event{E}, \nevent{E}_0, \nevent{E}_1$ gives
 	\[
-		\eps \leq \epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \epsss(\secpar))\,,
+      \eps \leq \epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) +
+      \epsss(\secpar))\,,
 	\]
 	hence $\eps$ is negligible if $\dlog$ is hard and $\plonkprot$ is sound and
-	$\ur{2}$.
-	\qed
-	\end{proof}
-\end{document}
+    $\ur{2}$.  \qed
+  \end{proof}
+
+ \end{document}
 
