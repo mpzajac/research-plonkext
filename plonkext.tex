@@ -856,33 +856,34 @@ Formally,
 \end{description}
 
 Another property that sigma protocols may have is a unique response
-property \cite{C:Fischlin05} which states that no $\ppt$ adversary can produce
-two accepting transcripts that differ only on the last element. More precisely,
-\begin{description}
-\item[Unique response property] Let $\sigmaprot = (\prover, \verifier,
-  \simulator)$ be a sigma-protocol for $\REL \in \RELGEN(\secparam)$ which
-  proofs compound of three messages $(a, b, z)$. We say that $\sigmaprot$ is has
-  a unique response property if for all $\ppt$ algorithms $\adv$ holds
-			\[
-        \condprob{\verifier (\REL, \inp, (a, b, z)) = \verifier (\REL, \inp, (a, b, z'))  = 1}{(\inp, a, b, z,
-				z') \gets \adv(\REL), z \neq z'} \leq \negl\,.
-			\]
-\end{description}
-If this property holds even against unbounded adversaries, it is called
-\emph{strict}, cf.~\cite{INDOCRYPT:FKMV12}. Later on we call protocols
-that follows this notion \emph{ur-protocols}. For the sake of completeness we
-note that many sigma protocols, like e.g.~Schnorr's protocol \cite{C:Schnorr89},
-fulfill this property.
+property \cite{C:Fischlin05} which states that no $\ppt$ adversary can
+produce two accepting transcripts that differ only on the last
+element. More precisely, 
+\begin{description} 
+  \item[Unique response
+  property] Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a
+  sigma-protocol for $\REL \in \RELGEN(\secparam)$ which proofs
+  compound of three messages $(a, b, z)$. We say that $\sigmaprot$ is
+  has a unique response property if for all $\ppt$ algorithms $\adv$
+  holds \[ \condprob{\verifier (\REL, \inp, (a, b, z)) = \verifier
+    (\REL, \inp, (a, b, z'))  = 1}{(\inp, a, b, z, z') \gets
+  \adv(\REL), z \neq z'} \leq \negl\,.  \] 
+\end{description} 
+If this
+  property holds even against unbounded adversaries, it is called
+  \emph{strict}, cf.~\cite{INDOCRYPT:FKMV12}. Later on we call
+  protocols that follows this notion \emph{ur-protocols}. For the sake
+  of completeness we note that many sigma protocols, like
+  e.g.~Schnorr's protocol \cite{C:Schnorr89}, fulfil this property.
 
 \subsection{From interactive to non-interactive---Fiat--Shamir transformation}
-Consider a $(2\mu + 1)$-message, public-coin, honest verifier zero-knowledge interactive proof system $\proofsystem =
-(\kgen, \prover, \verifier, \simulator)$ for $\REL \in
-\RELGEN(\secparam)$. Let $\zkproof$ be a proof
-performed by the prover $\prover$ and verifier $\verifier$ compound of
-messages $(a_1, b_1, \ldots, a_{\mu - 1}, b_{\mu - 1}, a_\mu)$, where
-$a_i$ comes from $\prover$ and $b_i$ comes from $\verifier$.
-Denote by $\ro$ a random
-oracle. 
+Consider a $(2\mu + 1)$-message, public-coin, honest verifier
+zero-knowledge interactive proof system $\proofsystem = (\kgen,
+\prover, \verifier, \simulator)$ for $\REL \in \RELGEN(\secparam)$.
+Let $\zkproof$ be a proof performed by the prover $\prover$ and
+verifier $\verifier$ compound of messages $(a_1, b_1, \ldots, a_{\mu -
+1}, b_{\mu - 1}, a_\mu)$, where $a_i$ comes from $\prover$ and $b_i$
+comes from $\verifier$.  Denote by $\ro$ a random oracle. 
 Let $\proofsystem_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs,
 \simulator_\fs)$ be a proof system such that
 \begin{itemize}
@@ -909,7 +910,7 @@ non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
 Real life applications often require from a NIZK proof system to be
 non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement
 $\inp$ should be able to provide a new proof $\zkproof'$ related to $\zkproof$.
-A strong version of non-malleability is formalised by simulation extractability
+A strong version of non-malleability is formalised by so-called \emph{simulation extractability}
 which assures that no adversary can produce a valid proof without knowing the
 corresponding witness. This must hold even if the adversary is allowed to see
 polynomially many simulated proofs for any statements it wishes.
@@ -943,7 +944,7 @@ polynomially many simulated proofs for any statements it wishes.
 		\begin{aligned}
 			& \verifier_\fs(\REL, \crs, \inp_\advse, \zkproof_\advse) = 1,\\
 			& (\inp_\advse, \zkproof_\advse) \not\in Q,\\
-			& \REL(\inp_\advse, \wit_\advse) = 0
+			& \REL(\inp_\advse, \wit_\advse) = 1
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
@@ -974,11 +975,14 @@ show that every such $\sigmaprot_\fs$ is simulation-extractable. This result is
 presented in \cref{sec:forking_lemma} along with the instrumental forking lemma,
 cf.~\cite{CCS:BelNev06}.
 
-\section{Towards simulation extractability for multi-message protocols,
+\section{Towards simulation extractability of multi-message protocols,
   definitions and lemmas}
 Unfortunately, Faust et al.'s result cannot be directly applied in our case
 since the protocols we consider have more than three messages, require more than
-just two transcript for the extractor to work and are not special sound.
+just two transcripts for the extractor to work and are not special
+sound. In this part we generalise the forking lemm, special
+soundness, and the unique response property to make them compatible with
+multi-message protocols.
 
 \subsection{Generalised forking lemma.}
 First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not
@@ -987,25 +991,21 @@ can be extracted from just two transcripts. To be able to extract a witness
 from, say, an execution of $\plonkprot$ we need to obtain at least
 $\numberofconstrains + 3$ valid proofs. Here we propose a generalisation of the
 general forking lemma that given probability of producing an accepting
-transcript $\waccProb$ lower-bounds the probability of generating a \emph{tree
+transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
   of accepting transcripts} $\tree$, which allows to extract a witness.
 
 \begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
 	\label{def:tree_of_accepting_transcripts}
-	Consider a $(2\mu + 1)$-message interactive proof system $\ps$. A $(n_1,
+	Consider a $(2\mu + 1)$-message interactive proof system $\ps$. An $(n_1,
   \ldots, n_\mu)$-tree of accepting transcript is a tree where each node on
   depth $i$, for $i \in \range{1}{\mu}$, is an $i$-th prover's message in an
-  acceptable transcripts; edges between the nodes are labeled with verifier's
-  challenges; and each node on depth $i$ has $(n_{i} - 1)$ siblings and $n_{i +
+  acceptable transcript; edges between the nodes are labeled with verifier's
+  challenges, such that no two edges on the same depth have the same
+  label; and each node on depth $i$ has $(n_{i} - 1)$ siblings and $n_{i +
     1}$ children. Altogether, the tree consists of $N = \prod_{i = 1}^\mu n_i$
   branches, which makes $N$ acceptable transcripts. We require $N = \poly$.
 \end{definition}
 
-We note that the general forking lemma proposed in
-\cref{lem:generalised_forking_lemma} works for protocols which have extractable
-witness from a $(1, \ldots, 1, n_i, 1, \ldots, 1)$-tree of acceptable
-transcripts. This limitation however does not affect the main result of this
-paper, i.e.~showing that both $\plonk$ and $\sonic$ are simulation extractable.
 
 \begin{lemma}[General forking lemma II]
 	\label{lem:generalised_forking_lemma}
@@ -1041,7 +1041,7 @@ paper, i.e.~showing that both $\plonk$ and $\sonic$ are simulation extractable.
 		\ldots, h_{q}^{j}; \rho)\\
 		\pcind \pcif i' = 0 \lor i' \neq i\ \pcreturn (0, \bot)\\
 		\pcif \exists (k, j), (k', j') \in \range{1}{q} \times
-	\range{1}{m} \land (h_{k}^{j} = h_{k'}^{j'})\
+    \range{1}{m} : (h_{k}^{j} = h_{k'}^{j'})\
 	\pcreturn (0, \bot)\\
 		\pcelse \pcreturn (1, \vec{s})
 	}}
@@ -1164,6 +1164,12 @@ cf.~\cref{fig:forking_lemma} gets only as input $y$ and elements $h^1_1, \ldots,
 h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
 that $h^1_1, \ldots, h^1_q$ are random oracle responses, thus are random, makes
 our change only notational.
+
+We note that the general forking lemma proposed in
+\cref{lem:generalised_forking_lemma} works for protocols which have extractable
+witness from a $(1, \ldots, 1, n_i, 1, \ldots, 1)$-tree of acceptable
+transcripts. This limitation however does not affect the main result of this
+paper, i.e.~showing that both $\plonk$ and $\sonic$ are simulation extractable.
 
 \subsection{Unique-response protocols.}
 Another problem comes with another assumption required by Faust et al. That is,
