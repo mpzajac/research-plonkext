@@ -927,13 +927,13 @@ polynomially many simulated proofs for any statements it wishes.
 	\[
 		\accProb = \Pr \left[
 		\begin{aligned}
-			& \verifier_\fs(\REL, \crs, \inp_\advse, \zkproof_\advse) = 1,\\
-			& (\inp_\advse, \zkproof_\advse) \not\in Q
+			& \verifier_\fs(\REL, \crs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
+			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
 			& \crs \gets \kgen(\REL), r \sample \RND{\advse}, \\
-			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs,
+			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
 			\ro} (\REL, \crs; r) 
 		\end{aligned}
 		\right.\right]\,,
@@ -942,16 +942,16 @@ polynomially many simulated proofs for any statements it wishes.
 	\[
 		\frkProb = \Pr \left[
 		\begin{aligned}
-			& \verifier_\fs(\REL, \crs, \inp_\advse, \zkproof_\advse) = 1,\\
-			& (\inp_\advse, \zkproof_\advse) \not\in Q,\\
-			& \REL(\inp_\advse, \wit_\advse) = 1
+			& \verifier_\fs(\REL, \crs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
+			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+			& \REL(\inp_{\advse}, \wit_{\advse}) = 1
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
 			& \crs \gets \kgen(\REL), r \sample \RND{\advse},\\
-			& (\inp_\advse, \zkproof_\advse) \gets \advse^{\simulator_\fs,
+			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
 			\ro} (\REL, \crs; r) \\
-			& \wit_\advse \gets \ext_\ss (\REL, \crs, \advse, r, \inp_{\advse}, \zkproof_\advse,
+			& \wit_{\advse} \gets \ext_\ss (\REL, \crs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
 			Q, Q_\ro,) 
 		\end{aligned}
 		\right.\right]
@@ -1156,7 +1156,7 @@ probability of $\zdv$ outputing a non-zero $i$ and probability of $\advse$
 outputing an acceptable proof we claim that these probabilities are exactly the
 same what comes from how we define $\zdv$.) 
 Let $\advse$ produce an acceptable proof
-$\zkproof_\advse$ for instance $\inp_\advse$; $r$ be $\advse$'s randomness; $Q$ the list of
+$\zkproof_{\advse}$ for instance $\inp_{\advse}$; $r$ be $\advse$'s randomness; $Q$ the list of
 queries submitted by $\advse$ along with simulator's $\simulator_\zkproof$
 answers; and $Q_\ro$ be the list of all random oracle queries made by $\advse$.
 All of these are given to the extractor $\ext$ that internally runs the forking
@@ -1172,10 +1172,10 @@ elements.)
 Next, $\zdv$ runs
 internally $\advse(\REL, \crs; r)$ and responds to its random oracle and
 simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes the
-same queries as it did before it output $(\inp_\advse, \zkproof_\advse)$ as it
+same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$ as it
 is run on the same random tape and with the same answers from the simulator and
-random oracle. After $\advse$ finishes its acceptable proof $\zkproof_\advse$,
-algorithm $\zdv$ outputs $(i, \zkproof_\advse)$, where $i$ is the index of a random
+random oracle. After $\advse$ finishes its acceptable proof $\zkproof_{\advse}$,
+algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where $i$ is the index of a random
 oracle query required to get the challenge after $k$-th message from the prover,
 where $k$ is the index of a message where the tree of
 transcripts branches. 
@@ -1190,7 +1190,8 @@ but this time it provides a fresh random oracle responses $h^2_i, \ldots,
 h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
 before $\advse$ is about to ask its $i$-th random oracle
 query. Probability that the adversary produces an acceptable transcript with the
-fresh random oracle responses is at least $\accProb$. 
+fresh random oracle responses is at least $\accProb$. This continues until the
+required number of transcripts is obtained. 
 
 We note that in the original forking lemma the forking algorithm $\forking$
 cf.~\cref{fig:forking_lemma} gets only as input $y$ and elements $h^1_1, \ldots,
@@ -1330,17 +1331,17 @@ for some negligible $\eps$.
   \ngame{0} This is a simulation extraction game played between an adversary
   $\advse$ who has given access to a random oracle $\ro$ and simulator
   $\psfs.\simulator$. There is also an extractor $\ext$ that, from the proof
-  $\zkproof_\advse$ for instance $\inp_\advse$ output by the adversary and from
+  $\zkproof_{\advse}$ for instance $\inp_{\advse}$ output by the adversary and from
   a transcripts of $\advse$'s operations, is tasked to extract a witness
-  $\wit_\advse$ such that $\REL(\inp_\advse, \wit_\advse)$ holds. $\advse$ wins
+  $\wit_{\advse}$ such that $\REL(\inp_{\advse}, \wit_{\advse})$ holds. $\advse$ wins
   if it manages to produce an acceptable proof and the extractor fails to reveal
   the corresponding witness. In the following game hops we upper-bound the
   probability that this happens.
 
   \ngame{1} This is identical to $\game{0}$ except that now the game is aborted
-  if there is a simulated proof $\zkproof_\simulator$ for $\inp_\advse$ such
-  that $(\inp_\advse, \zkproof_\simulator\range{1}{k + 1}) = (\inp_\advse,
-  \zkproof_\advse\range{1}{k + 1})$. That is, the adversary in its final proof
+  if there is a simulated proof $\zkproof_\simulator$ for $\inp_{\advse}$ such
+  that $(\inp_{\advse}, \zkproof_\simulator\range{1}{k + 1}) = (\inp_{\advse},
+  \zkproof_{\advse}\range{1}{k + 1})$. That is, the adversary in its final proof
   reuses a part of a simulated proof it saw before and the proof is acceptable.
   Denote that event by $\event{\errur}$.
 
@@ -1354,18 +1355,18 @@ for some negligible $\eps$.
 
   Assume that $\advse$ queried the simulator on the instance it wishes to
   outputs $\inp_{\advse}$. We show a reduction $\rdvur$ that utilises $\advse$,
-  who outputs a valid proof for $\inp_\advse$, to break the $\ur{k}$ property of
+  who outputs a valid proof for $\inp_{\advse}$, to break the $\ur{k}$ property of
   $\ps$. Let $\rdvur$ run $\advse$ internally as a black-box:
 \begin{itemize}
 	\item The reduction answers both queries to the simulator $\psfs.\simulator$ and to the random oracle. 
 	It also keeps lists $Q$, for the simulated proofs, and $Q_\ro$ for the random oracle queries. 
-\item When $\advse$ outputs a fake proof $\zkproof_{\advse}$ for $\inp_\advse$,
+\item When $\advse$ outputs a fake proof $\zkproof_{\advse}$ for $\inp_{\advse}$,
   $\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds
   $\zkproof_{\simulator}\range{0}{k + 1}$ such that
   $\zkproof_{\advse}\range{0}{k + 1} = \zkproof_{\simulator}\range{0}{k + 1}$
   and a random oracle query $\zkproof_{\simulator}[k + 1].\ch$ on
   $\zkproof_{\simulator}\range{0}{k + 1}$.
-	\item $\rdvur$ returns two proofs for $\inp_\advse$:
+	\item $\rdvur$ returns two proofs for $\inp_{\advse}$:
 	\begin{align*}
 		\zkproof_1 = (\zkproof_{\simulator}\range{1}{k + 1},
 		\zkproof_{\simulator}[k + 1].\ch, \zkproof_{\simulator}\range{k +
@@ -1385,12 +1386,12 @@ for some negligible $\eps$.
     1)$-tree of accepting transcripts $\tree$ by rewinding $\advse$. Denote that
     event by $\event{\errfrk}$. Note that for every acceptable proof
     $\zkproof_{\advse}$, we may assume that whenever $\advse$ outputs in Round
-    $k + 1$, a message $\zkproof_{\advse}[k + 1]$, then $(\inp_\advse,
+    $k + 1$, a message $\zkproof_{\advse}[k + 1]$, then $(\inp_{\advse},
     \zkproof_{\advse}\range{1}{k + 1})$ random oracle query that was made by the
     adversary, not the simulator\footnote{\cite{INDOCRYPT:FKMV12} calls these
       queries \emph{fresh}.}, i.e.~there is no simulated proof
-    $\zkproof_\simulator$ on $\inp_\simulator$ such that $(\inp_\advse,
-    \zkproof_\advse \range{1}{k + 1}) = (\inp_\simulator, \zkproof_\simulator
+    $\zkproof_\simulator$ on $\inp_\simulator$ such that $(\inp_{\advse},
+    \zkproof_{\advse} \range{1}{k + 1}) = (\inp_\simulator, \zkproof_\simulator
     \range{1}{k + 1})$. Otherwise, the game would be already interrupted by the
     error event in Game $\game{1}$.
 % That is, assume that is not true and for some query
@@ -1419,16 +1420,16 @@ which can also can not break simulation extractability, thus $\waccProb=\waccPro
 
 To explain importance of the unique response property we describe our extractor
 here. The extractor takes as input relation $\REL$, CRS $\crs$, $\advse$'s code,
-its randomness $r$, the output instance $\inp_\advse$ and proof
-$\zkproof_\advse$, as well as the list $Q$ of simulated proofs (and their
+its randomness $r$, the output instance $\inp_{\advse}$ and proof
+$\zkproof_{\advse}$, as well as the list $Q$ of simulated proofs (and their
 instances) and the list of random oracle queries and responses $Q_\ro$. Then,
 $\ext$ starts a forking algorithm $\genforking^{n_j + 1}_\zdv(y,h_1, \ldots,
-h_q)$ for $y = (\advse, r, \inp_\advse, \zkproof_\advse, Q)$ where we set $h_1,
+h_q)$ for $y = (\advse, r, \inp_{\advse}, \zkproof_{\advse}, Q)$ where we set $h_1,
 \ldots, h_q$ to be the consecutive queries from list $Q_\ro$. We run $\advse$
 internally in $\zdv$.
 
 To assure that in the first execution of $\zdv$ the adversary $\advse$ produce
-the same $\inp_\advse, \zkproof_\advse$ as in the extraction game, $\zdv$
+the same $\inp_{\advse}, \zkproof_{\advse}$ as in the extraction game, $\zdv$
 provides $\advse$ with the same randomness $r$ and answers queries to the random
 oracle and simulator with responses pre-recorded responses in $Q_\ro$ and $Q$.
 %
@@ -1436,15 +1437,15 @@ Note, that since the view of the adversary run inside $\zdv$ is the same as its
 view with access to real random oracle and simulator, it produces exactly the
 same output. After the first run, $\zdv$ outputs the index of a random oracle
 query that was used by $\advse$ to compute the challenge
-$\ro(\zkproof_\advse\range{0}{j - 1}.\ch)$ it had to answer in the $j$-th round
+$\ro(\zkproof_{\advse}\range{0}{j - 1}.\ch)$ it had to answer in the $j$-th round
 and adversary's transcript, in $\genforking$ description denoted by $s_1$. Then
 new random oracle responses are picked and the adversary is rewound to the point
-just prior the response to RO query $(\zkproof_\advse\range{0}{j - 1})$. The
+just prior the response to RO query $(\zkproof_{\advse}\range{0}{j - 1})$. The
 adversary gets a random oracle response from a new set of responses $h^2_i,
 \ldots, h^2_q$. If the adversary requests a simulated proof after seeing $h^2_i$
 then $\zdv$ computes the simulated proof on its own. Eventually, $\zdv$ outputs
 index $i'$ of a query that was used by the adversary to compute
-$\ro(\zkproof_\advse\range{0}{j - 1})$, and a new transcript form the adversary
+$\ro(\zkproof_{\advse}\range{0}{j - 1})$, and a new transcript form the adversary
 $s_2$. $\zdv$ is run with different random oracle responses till $n_j + 1$ valid
 transcripts are collected.
 
