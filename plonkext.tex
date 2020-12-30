@@ -1022,7 +1022,8 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
     1}{y \gets \ig;\ h_1, \ldots, h_{q} \sample H;\ (b, \vec{s}) \gets
     \genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}$ is at least
 	\[
-		\frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)
+		\frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 -
+    \frac{h!}{(h - mq)! \cdot h^{mq}}\right)
 	\]
 		
 	\begin{figure}[t]
@@ -1061,18 +1062,19 @@ First let denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
 We start by claiming that for all $y$ 
 \begin{equation}\label{eq:frkProb_y}
 	\frkProb(y) \geq 
-	\frac{\accProb(y)^m}{q^{m - 1}} - \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)
+	\frac{\accProb(y)^m}{q^{m - 1}} - \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - mq)! \cdot h^{mq}}\right)
 	\end{equation}
 Then with the expectation taken over $y \sample \ig$, we have
 \begin{align}
 	\frkProb & = \expected{\frkProb(y)} \geq
 	\expected{\frac{\accProb(y)^m}{q^{m - 1}} -  \accProb(y) \cdot \left(1 -
-	\frac{h!}{(h - m)! \cdot h^m}\right)} \label{eq:use_eq1}\\
-					 %& = \frac{\expected{\accProb(y)^m}}{q^{m - 1}} -
-					 %\expected{\accProb(y)} \cdot  \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right) \\
+  \frac{h!}{(h - mq)! \cdot h^{mq}}\right)} \label{eq:use_eq1}\\
 	& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} -
-	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right) \label{eq:by_lemma_jensen}\\
-	& = \frac{\accProb^m}{q^{m - 1}} -  \accProb \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\label{eq:by_accProb}\,.
+	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - mq)! \cdot
+  h^{mq}}\right) \label{eq:by_lemma_jensen}\\
+	& = \frac{\accProb^m}{q^{m - 1}} -  \accProb \cdot \left(1 -
+  \frac{h!}{(h - mq)! \cdot h^{mq}}\right)\label{eq:by_accProb}\,.
 \end{align}
 Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
 \cref{eq:by_lemma_jensen} comes from linearity of expected value and \cref{lem:jensen}; and
@@ -1089,9 +1091,10 @@ $\genforking_{\zdv}^{m}$ we have
 	& \qquad - \prob{i_j \geq 1 \land h_{i_j} = h_{i_{j'}} \text{ for some } (j, j') \in J}\\
 	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} -
 	\prob{i_j \geq 1} \cdot 
-	\left(1 - \frac{h!}{(h - m)! \cdot h^m}\right) \\ 
+  \left(1 - \frac{h!}{(h - mq)! \cdot h^{mq}}\right) \\ 
 	& = \prob{i_j = i_{j'} \land
-	i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
+	i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 -
+\frac{h!}{(h - mq)! \cdot h^{mq}}\right)\,.
 \end{align*}
 It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for }
 (j, j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$.
