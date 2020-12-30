@@ -1023,7 +1023,7 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
     \genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}$ is at least
 	\[
 		\frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 -
-    \frac{h!}{(h - m)! \cdot h^{m}}\right)
+    \frac{h!}{(h - m)! \cdot h^{m}}\right).
 	\]
 		
 	\begin{figure}[t]
@@ -1135,9 +1135,8 @@ By \cref{lem:jensen} we get
 \]
 Note that for e.g.~$X_i = 1$, $i \in \range{1}{q}$ the inequality becomes equality, that is, it is tight.
  
-We now use the H\"older inequality from \cref{lem:holder} where we set  $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
+We now use the H\"older inequality, cf.~\cref{lem:holder}, for $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
 \begin{gather}
-	%\sum_{i = 1}^{q} \expected{X_i}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right)^{\frac{1}{m}} \cdot \left(\sum_{i = 1}^{q} 1^\frac{m}{m - 1}\right)^{\frac{m - 1}{m}} \label{eq:tightness} \\
 	\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
 	\frac{1}{q^{m - 1}} \cdot \accProb(y)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
 \end{gather}
@@ -1149,39 +1148,57 @@ Finally, we get
 \qed
 \end{proof}
 
+To highlight importance of the generalised forking lemma we describe how we use
+it in our simulation-extractability proof. Let $\advse$ be the
+simulation-extractability adversary that outputs an acceptable proof with
+probability at least $\accProb$. (Although we use the same $\accProb$ to denote
+probability of $\zdv$ outputing a non-zero $i$ and probability of $\advse$
+outputing an acceptable proof we claim that these probabilities are exactly the
+same what comes from how we define $\zdv$.) 
+Let $\advse$ produce an acceptable proof
+$\zkproof_\advse$ for instance $\inp_\advse$; $r$ be $\advse$'s randomness; $Q$ the list of
+queries submitted by $\advse$ along with simulator's $\simulator_\zkproof$
+answers; and $Q_\ro$ be the list of all random oracle queries made by $\advse$.
+All of these are given to the extractor $\ext$ that internally runs the forking
+algorithm $\genforking_\zdv$.  Algorithm $\zdv$ takes $(\REL, \crs, \advse, 
+%\inp_\advse,
+%\zkproof_\advse, 
+Q, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
+h_q^1$. 
+(For the sake of completeness, we allow $\genforking_\zdv$ to
+pick $h^1_{k + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $k < q$
+elements.)  
 
-We use the generalised forking lemma as follows in our
-simulation-extractability proof. Let $\advse$ be the simulation-extractability
-adversary that produces an acceptable proof $\zkproof_\advse$ for
-instance $\inp_\advse$; $r$ its randomness; $Q$ list of the queries submitted
-by $\advse$ along with simulator's $\simulator_\zkproof$ answers; and $Q_\ro$
-be the list of all random oracle queries made by $\advse$. All of these are
-given to the extractor $\ext$ that internally runs the forking algorithm
-$\genforking_\zdv$.  
-Algorithm $\zdv$ takes $\advse, \inp_\advse, \zkproof_\advse, Q, Q_\ro, \crs$
-as input $y$ and proceeds as follows: it runs internally $\advse(\REL, \crs;
-r)$ and respond to its random oracle and simulator queries by using $Q_\ro$
-and $Q$. Note that the $\advse$ makes the same queries as it did before it
-output $(\inp_\advse, \zkproof_\advse)$ as it is run on the same random tape
-and with the same answers from the simulator and random oracle. We also note
-that we differ here from the description of the $\genforking_\zdv$ algorithm
-that picks also the first set of random oracle queries' responses $h^1_1,
-\ldots, h^1_q$. We however note that this difference is only notational as
-random oracle queries' responses provided in $Q_\ro$ are random as well. (For
-the sake of completeness, we allow $\genforking_\zdv$ to pick $h^i_{k + 1}, \ldots,
-h^1_q$ responses if $Q_\ro$ has only $k < q$ elements).
-Then, after the first run of $\advse$ is done, $\zdv$ rewinds it
-to a point
-just after before $\advse$ is about to ask its $i$-th random oracle query and
-picks fresh random oracle responses $h^2_i, \ldots h^2_q$. If the adversary   
+Next, $\zdv$ runs
+internally $\advse(\REL, \crs; r)$ and responds to its random oracle and
+simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes the
+same queries as it did before it output $(\inp_\advse, \zkproof_\advse)$ as it
+is run on the same random tape and with the same answers from the simulator and
+random oracle. After $\advse$ finishes its acceptable proof $\zkproof_\advse$,
+algorithm $\zdv$ outputs $(i, \zkproof_\advse)$, where $i$ is the index of a random
+oracle query required to get the challenge after $k$-th message from the prover,
+where $k$ is the index of a message where the tree of
+transcripts branches. 
+%We also note that we differ here from the description of the
+%$\genforking_\zdv$ algorithm provided
+%e.g.~in~\cite{INDOCRYPT:FKMV12,CCS:BelNev06} where the algorithm also picks the first set of random oracle
+%queries' responses $h^1_1, \ldots, h^1_q$. We however note that this difference
+%is only notational as random oracle queries' responses provided in $Q_\ro$ are
+%random as well. 
+Then, after the first run of $\advse$ is done, the extractor runs $\zdv$ again,
+but this time it provides a fresh random oracle responses $h^2_i, \ldots,
+h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
+before $\advse$ is about to ask its $i$-th random oracle
+query. Probability that the adversary produces an acceptable transcript with the
+fresh random oracle responses is at least $\accProb$. 
 
 We note that in the original forking lemma the forking algorithm $\forking$
 cf.~\cref{fig:forking_lemma} gets only as input $y$ and elements $h^1_1, \ldots,
 h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
 that $h^1_1, \ldots, h^1_q$ are random oracle responses, thus are random, makes
-our change only notational.
+the change only notational.
 
-We note that the general forking lemma proposed in
+We also note that the general forking lemma proposed in
 \cref{lem:generalised_forking_lemma} works for protocols which have extractable
 witness from a $(1, \ldots, 1, n_i, 1, \ldots, 1)$-tree of acceptable
 transcripts. This limitation however does not affect the main result of this
