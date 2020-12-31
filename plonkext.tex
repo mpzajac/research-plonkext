@@ -984,7 +984,7 @@ sound. In this part we generalise the forking lemm, special
 soundness, and the unique response property to make them compatible with
 multi-message protocols.
 
-\subsection{Generalised forking lemma.}
+    \subsection{Generalised forking lemma.}
 First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not
 general enough for our purpose as it is useful only for protocols where witness
 can be extracted from just two transcripts. To be able to extract a witness
@@ -1009,12 +1009,13 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
 
 \begin{lemma}[General forking lemma II]
 	\label{lem:generalised_forking_lemma}
-	Fix $q \in \ZZ$ and set $H$ of size $h \geq m$. Let $\zdv$ be a $\ppt$
-  algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$ where $i \in
-  \range{0}{q}$ and $s$ is called a side output. Denote by $\ig$ a randomised
+	Fix $q \in \ZZ$ and set $H$ of size $h \geq mq'$. Let $\zdv$ be a $\ppt$
+  algorithm that on input $y, h_1, \ldots, h_q$ returns $(\vec{i}, s)$ where
+  $\vec{i} = (\vec{i}[1], \ldots, \vec{i}[q']) \in
+  \range{0}{q}^{q'}$ and $s$ is called a side output. Denote by $\ig$ a randomised
   instance generator. We denote by $\accProb$ the probability
 	\[
-		\condprob{i \neq 0}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (i, s)
+      \condprob{\vec{i} \neq \vec{0}}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (\vec{i}, s)
 		\gets \zdv(y, h_1, \ldots, h_q)}\,.
 	\]
 	Let $\genforking_{\zdv}^{m}$ denote the algorithm described in
@@ -1022,8 +1023,8 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
     1}{y \gets \ig;\ h_1, \ldots, h_{q} \sample H;\ (b, \vec{s}) \gets
     \genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}$ is at least
 	\[
-		\frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 -
-    \frac{h!}{(h - m)! \cdot h^{m}}\right).
+		\frac{\accProb^m}{q^{q'(m - 1)}} - \accProb \cdot \left(1 -
+    \frac{h!}{(h - mq')! \cdot h^{mq'}}\right).
 	\]
 		
 	\begin{figure}[t]
@@ -1032,17 +1033,17 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
 		\procedure{$\genforking_{\zdv}^{m} (y,h_1^{1}, \ldots, h_{q}^{1})$}		
 		{
 		\rho \sample \RND{\zdv}\\
-		(i, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; \rho)\\
-    i_1 \gets i\\
-		\pcif i = 0\ \pcreturn (0, \bot)\\
+		(\vec{i}, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; \rho)
+        \pccomment{$\vec{i} = i[1], \ldots, i[q']$}\\
+    \vec{i_1} \gets \vec{i}\\
+		\pcif \vec{i} = \vec{0}\ \pcreturn (0, \bot)\\
 		\pcfor j \in \range{2}{m}\\
-		\pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
-		h_{i - 1}^{j - 1}\\
-		\pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
-		\pcind (i_j, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
-		\ldots, h_{q}^{j}; \rho)\\
-		\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
-    \pcif \exists (j, j') \in \range{1}{m}^2 : (h_{i}^{j} = h_{i}^{j'})\
+		\pcind h_{1}^{j}, \ldots, h_{i[1] - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
+		h_{i[1] - 1}^{j - 1}\\
+		\pcind h_{i[1]}^{j}, \ldots, h_{q}^{j} \sample H\\
+		\pcind (\vec{i_j}, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{q}^{j}; \rho)\\
+		\pcind \pcif \vec{i_j} = 0 \lor \vec{i_j} \neq \vec{i}\ \pcreturn (0, \bot)\\
+    \pcif \exists (j, j') \in \range{1}{m}^2, k \in \range{1}{q'} : (h_{i[k]}^{j} = h_{i[k]}^{j'})\
 	\pcreturn (0, \bot)\\
 		\pcelse \pcreturn (1, \vec{s})
 	}}
@@ -1053,28 +1054,28 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
 \begin{proof}
 First let denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
 \begin{align*}
-\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s)
-\gets \zdv(y, h_1, \ldots, h_q)}\,.\\
-	\frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
-\genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}\,.
+  \accProb(y) & =  \condprob{\forall k \in \range{1}{q'} : \vec{i}[k] \neq 0}{h_1, \ldots, h_q \sample H;\ (\vec{i}, s)
+                \gets \zdv(y, h_1, \ldots, h_q)}\,.\\
+  \frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
+                \genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}\,.
 \end{align*}
 
 We start by claiming that for all $y$ 
 \begin{equation}\label{eq:frkProb_y}
 	\frkProb(y) \geq 
-	\frac{\accProb(y)^m}{q^{m - 1}} - \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - m)! \cdot h^{m}}\right)
+	\frac{\accProb(y)^m}{q^{q'(m - 1)}} - \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)
 	\end{equation}
 Then with the expectation taken over $y \sample \ig$, we have
 \begin{align}
 	\frkProb & = \expected{\frkProb(y)} \geq
-	\expected{\frac{\accProb(y)^m}{q^{m - 1}} -  \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - m)! \cdot h^{m}}\right)} \label{eq:use_eq1}\\
-	& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} -
-	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - m)! \cdot
-  h^{m}}\right) \label{eq:by_lemma_jensen}\\
-	& = \frac{\accProb^m}{q^{m - 1}} -  \accProb \cdot \left(1 -
-  \frac{h!}{(h - m)! \cdot h^{m}}\right)\label{eq:by_accProb}\,.
+	\expected{\frac{\accProb(y)^m}{q^{q'(m - 1)}} -  \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)} \label{eq:use_eq1}\\
+	& \geq \frac{\expected{\accProb(y)}^m}{q^{q'(m - 1)}} -
+	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - mq')! \cdot
+  h^{mq'}}\right) \label{eq:by_lemma_jensen}\\
+	& = \frac{\accProb^m}{q^{q'(m - 1)}} -  \accProb \cdot \left(1 -
+  \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)\label{eq:by_accProb}\,.
 \end{align}
 Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
 \cref{eq:by_lemma_jensen} comes from linearity of expected value and \cref{lem:jensen}; and
@@ -1086,64 +1087,74 @@ Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$.
 For any input $y$, with probabilities taken over the coin tosses of
 $\genforking_{\zdv}^{m}$ we have
 \begin{align*}
-	\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land
-h_{i_j}^{j} \neq h_{i_{j'}}^{j'} \text{ for } (j, j') \in J}	\\
-	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \\
-  & \qquad - \prob{i_j \geq 1 \land h_{i_j}^{j} = h_{i_{j'}}^{j'} \text{ for some } (j, j') \in J}\\
-	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} -
-	\prob{i_j \geq 1} \cdot 
-  \left(1 - \frac{h!}{(h - m)! \cdot h^{m}}\right) \\ 
-	& = \prob{i_j = i_{j'} \land
-	i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 -
-\frac{h!}{(h - m)! \cdot h^{m}}\right)\,.
+  \frkProb (y) & = \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j}[k] \neq 0 \land
+                 h_{\vec{i_j}[l]}^{j} \neq h_{\vec{i_{j'}}[l]}^{j'} \text{ for
+                 } (j, j') \in J, k, l \in \range{1}{q'}}	\\
+               & \geq \prob{\vec{i_j} = \vec{i_{j'}} \land  \vec{i_j}[k] \neq 0
+                 \text{ for } (j, j') \in J,  k \in \range{1}{q'}} \\
+               & \quad - \prob{\vec{i_j}[k] \neq 0 \land
+                 h_{\vec{i_j}[l]}^{j} = h_{\vec{i_{j'}}[l]}^{j'} \text{ for all
+                 } k \in \range{1}{q'} \text{ and for some
+                 } (j, j') \in J, l \in \range{1}{q'}}\\
+               & = \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j}[k] \neq 0 \text{ for } (j, j') \in
+                 J,  k \in \range{1}{q'}} - \\
+               & \quad  \prob{\vec{i_j}[k] \neq 0 \text{ for } k \in \range{1}{q'}} \cdot 
+                 \left(1 - \frac{h!}{(h - mq')! \cdot h^{mq'}}\right) \\ 
+               & = \prob{\vec{i_j} = \vec{i_{j'}} \land
+                 \vec{i_j}[k] \neq 0 \text{ for
+                 } (j, j') \in J,  k \in \range{1}{q'}} - \\
+               & \quad \accProb(y) \cdot \left(1 -
+                 \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)\,.
 \end{align*}
 
-Probability that for some $(j, j') \in J$ and $i_j = i_{j'}$ holds
-$h_{i_j}^{j} \neq h_{i_{j'}}^{j'}$ equals 
+Probability that for some $(j, j') \in J$, $k \in \range{1}{q'}$ and $\vec{i_j} = \vec{i_{j'}}$ holds
+$h_{\vec{i_j}[k]}^{j} \neq h_{\vec{i_{j'}}[k]}^{j'}$, equals 
 \[
   \frac{h \cdot (h - 1)
-\cdot \ldots \cdot (h - m - 1)}{h^m} = \frac{h!}{(h - m)! \cdot h^m}.
+\cdot \ldots \cdot (h - mq' - 1)}{h^{mq'}} = \frac{h!}{(h - mq')! \cdot h^{mq'}}.
 \]
 That is, it equals the number
-of all $m$-element strings where each element is different divided by
-the number of all $m$-element strings, where elements are taken from a
+of all $mq'$-element strings where each element is different divided by
+the number of all $mq'$-element strings, where elements are taken from a
 set of size $h$. 
 
-It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for }
-(j, j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$.
+It remains to show that $\prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j}[k] \neq 0 \text{ for }
+(j, j') \in J, k \in \range{1}{q'}} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$.
 Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
-For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times
-H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
-h_{\iota - 1})$ to \[
-	\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)} 
+For each $\vec{\iota} \in \range{1}{q}^{q'}$ let $X_{\vec{\iota}} \colon \RND{\zdv} \times
+H^{\vec{\iota}[1] - 1} \to [0, 1]$ be defined by setting $X_{\vec{\iota}}(\rho, h_1, \ldots,
+h_{\vec{\iota}[1] - 1})$ to
+\[
+	\condprob{\vec{i} = \vec{\iota}}{h_{\vec{\iota}[1]}, \ldots, h_q \sample H; (\vec{i}, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)} 
 \] 
-for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider $X_\iota$ as a random variable over the uniform distribution on its domain. 
+for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\vec{\iota}[1] - 1} \in H$. Consider $X_{\vec{\iota}}$ as a random variable over the uniform distribution on its domain. 
 Then
 \begin{align*}
-	& \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} 
-	 = \sum_{\iota = 1}^{q} \prob{i_1 = \iota \land \ldots \land i_m = \iota} \\
-	& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota} \cdot \condprob{i_2 = \iota}{i_1 = \iota} \cdot \ldots \cdot \condprob{i_m = \iota}{i_1 = \ldots = i_{m - 1} = \iota} \\
-	& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota}
-	(\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\iota - 1}}
-	= \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
+	& \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j}[k] \neq \vec{0} \text{ for
+   } (j, j') \in J, k \in \range{1}{q'}} 
+	 = \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \prob{\vec{i_1} = \vec{\iota} \land \ldots \land \vec{i_m} = \vec{\iota}} \\
+	& = \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \prob{\vec{i_1} = \vec{\iota}} \cdot \condprob{\vec{i_2} = \vec{\iota}}{\vec{i_1} = \vec{\iota}} \cdot \ldots \cdot \condprob{\vec{i_m} = \vec{\iota}}{\vec{i_1} = \ldots = \vec{i_{m - 1}} = \vec{\iota}} \\
+	& = \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \sum_{\rho, h_1, \ldots, h_{\vec{\iota}[1] - 1}} X_{\vec{\iota}}
+	(\rho, h_1, \ldots, h_{\vec{\iota}[1] - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\vec{\iota}[1] - 1}}
+	= \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{\iota}}^m} \,.
 \end{align*}
-Importantly, $\sum_{\iota = 1}^q \expected{X_{\iota}} = \accProb(y)$.
+Importantly, $\sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{\iota}}} = \accProb(y)$.
 
 By \cref{lem:jensen} we get
 \[
-	\sum_{\iota = 1}^{q} \expected{X_\iota^m} \geq \sum_{\iota = 1}^{q} \expected{X_\iota}^m\,.
+	\sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{\iota}}^m} \geq \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_\iota}^m\,.
 \]
-Note that for e.g.~$X_i = 1$, $i \in \range{1}{q}$ the inequality becomes equality, that is, it is tight.
+Note that for e.g.~$X_{\vec{i}} = 1$, $\vec{i} \in \range{1}{q}^{q'}$ the inequality becomes equality, that is, it is tight.
  
-We now use the H\"older inequality, cf.~\cref{lem:holder}, for $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
+We now use the H\"older inequality, cf.~\cref{lem:holder}, for $x_{\vec{i}} = \expected{X_{\vec{i}}}$, $y_{\vec{i}} = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
 \begin{gather}
-	\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
-	\frac{1}{q^{m - 1}} \cdot \accProb(y)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
+	\left(\sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{i}}}\right)^{m}  \leq \left(\sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{i}}}^m\right) \cdot q^{q'(m - 1)}\\
+	\frac{1}{q^{q'(m - 1)}} \cdot \accProb(y)^{m} \leq \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{i}}}^m\,.
 \end{gather}
 Finally, we get
 \[
-	\frkProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
-	 \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
+	\frkProb(y) \geq \frac{\accProb(y)^m}{q^{q'(m - 1)}} - 
+	 \accProb(y) \cdot \left(1 - \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)\,.
 \]
 \qed
 \end{proof}
@@ -1151,18 +1162,19 @@ Finally, we get
 To highlight importance of the generalised forking lemma we describe how we use
 it in our simulation-extractability proof.  Let $\proofsystem$ be a
 computationally special sound proof system where for an instance $\inp$ the
-corresponding witness can be extracted from an
-$(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\advse$
-be the simulation-extractability adversary that outputs an acceptable proof with
-probability at least $\accProb$. (Although we use the same $\accProb$ to denote
-probability of $\zdv$ outputing a non-zero $i$ and probability of $\advse$
-outputing an acceptable proof we claim that these probabilities are exactly the
-same what comes from how we define $\zdv$.)  Let $\advse$ produce an acceptable
-proof $\zkproof_{\advse}$ for instance $\inp_{\advse}$; $r$ be $\advse$'s
-randomness; $Q$ the list of queries submitted by $\advse$ along with simulator's
-$\simulator_\zkproof$ answers; and $Q_\ro$ be the list of all random oracle
-queries made by $\advse$.  All of these are given to the extractor $\ext$ that
-internally runs the forking algorithm $\genforking_\zdv$.  Algorithm $\zdv$
+corresponding witness can be extracted from an $(n_1, \ldots, n_\mu)$-tree of
+accepting transcripts, where $q'$ elements $n_j$, $j \in \range{1}{\mu}$, are
+bigger than $1$. Denote the set of indices $j$ such that $n_j > 1$ by $B$. Let
+$\advse$ be the simulation-extractability adversary that outputs an acceptable
+proof with probability at least $\accProb$. (Although we use the same $\accProb$
+to denote probability of $\zdv$ outputing a non-zero $\vec{i}$ and probability
+of $\advse$ outputing an acceptable proof we claim that these probabilities are
+exactly the same what comes from how we define $\zdv$.)  Let $\advse$ produce an
+acceptable proof $\zkproof_{\advse}$ for instance $\inp_{\advse}$; $r$ be
+$\advse$'s randomness; $Q$ the list of queries submitted by $\advse$ along with
+simulator's $\simulator_\zkproof$ answers; and $Q_\ro$ be the list of all random
+oracle queries made by $\advse$.  All of these are given to the extractor $\ext$
+that internally runs the forking algorithm $\genforking_\zdv$.  Algorithm $\zdv$
 takes $(\REL, \crs, \advse,
 %\inp_\advse,
 %\zkproof_\advse, 
@@ -1178,10 +1190,10 @@ simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes the
 same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$ as it
 is run on the same random tape and with the same answers from the simulator and
 random oracle. After $\advse$ finishes its acceptable proof $\zkproof_{\advse}$,
-algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where $i$ is the index of a random
+algorithm $\zdv$ outputs $(\vec{i}, \zkproof_{\advse})$, where $\vec{i}$ is the
+vector of indices of a random
 oracle query required to get the challenge after $k$-th message from the prover,
-where $k$ is the index of a message where the tree of
-transcripts branches. 
+for $k \in B$.
 %We also note that we differ here from the description of the
 %$\genforking_\zdv$ algorithm provided
 %e.g.~in~\cite{INDOCRYPT:FKMV12,CCS:BelNev06} where the algorithm also picks the first set of random oracle
@@ -1189,9 +1201,9 @@ transcripts branches.
 %is only notational as random oracle queries' responses provided in $Q_\ro$ are
 %random as well. 
 Then, after the first run of $\advse$ is done, the extractor runs $\zdv$ again,
-but this time it provides a fresh random oracle responses $h^2_i, \ldots,
+but this time it provides a fresh random oracle responses $h^2_{\vec{i}[1]}, \ldots,
 h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
-before $\advse$ is about to ask its $i$-th random oracle
+before $\advse$ is about to ask its $\vec{i}[1]$-th random oracle
 query. Probability that the adversary produces an acceptable transcript with the
 fresh random oracle responses is at least $\accProb$. This continues until the
 required number of transcripts is obtained. 
@@ -1203,10 +1215,17 @@ that $h^1_1, \ldots, h^1_q$ are random oracle responses, thus are random, makes
 the change only notational.
 
 We also note that the general forking lemma proposed in
-\cref{lem:generalised_forking_lemma} works for protocols which have extractable
-witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of acceptable
-transcripts. This limitation however does not affect the main result of this
-paper, i.e.~showing that both $\plonk$ and $\sonic$ are simulation extractable.
+\cref{lem:generalised_forking_lemma} is more general than we actually need to
+show simulation extractability of $\plonk$ and $\sonic$. More precisely, it
+would be enough to show its variant which allows for extraction from
+$(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of acceptable transcripts, i.e.~for $q'
+= 1$. Setting $q' = 1$ also considerably improves the probability bounds for
+$\frkProb$, which is now
+\[
+  \frkProb = \frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 -
+    \frac{h!}{(h - m)! \cdot h^m}\right)\enspace.
+\]
+
 
 \subsection{Unique-response protocols.}
 Another problem comes with another assumption required by Faust et al.---the
@@ -3019,7 +3038,7 @@ In \sonic{} we will use commitments to the following polynomials.
       \end{equation*}
 	and accepts the proof iff all the checks holds.
 
-	\section{More generalised forking lemma}
+	\section{Generalised forking lemma for single branching point}
     \subsection{Generalised forking lemma.}
 First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not
 general enough for our purpose as it is useful only for protocols where witness
@@ -3046,12 +3065,11 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
 \begin{lemma}[General forking lemma II]
 	\label{lem:generalised_forking_lemma}
 	Fix $q \in \ZZ$ and set $H$ of size $h \geq m$. Let $\zdv$ be a $\ppt$
-  algorithm that on input $y, h_1, \ldots, h_q$ returns $(\vec{i}, s)$ where
-  $\vec{i} = (\vec{i}[1], \ldots, \vec{i}[q']) \in
-  \range{0}{q}^{q'}$ and $s$ is called a side output. Denote by $\ig$ a randomised
+  algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$ where $i \in
+  \range{0}{q}$ and $s$ is called a side output. Denote by $\ig$ a randomised
   instance generator. We denote by $\accProb$ the probability
 	\[
-      \condprob{\vec{i} \neq \vec{0}}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (\vec{i}, s)
+		\condprob{i \neq 0}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (i, s)
 		\gets \zdv(y, h_1, \ldots, h_q)}\,.
 	\]
 	Let $\genforking_{\zdv}^{m}$ denote the algorithm described in
@@ -3059,8 +3077,8 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
     1}{y \gets \ig;\ h_1, \ldots, h_{q} \sample H;\ (b, \vec{s}) \gets
     \genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}$ is at least
 	\[
-		\frac{\accProb^m}{q^{q'(m - 1)}} - \accProb \cdot \left(1 -
-    \frac{h!}{(h - mq')! \cdot h^{mq'}}\right).
+		\frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 -
+    \frac{h!}{(h - m)! \cdot h^{m}}\right).
 	\]
 		
 	\begin{figure}[t]
@@ -3069,17 +3087,17 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
 		\procedure{$\genforking_{\zdv}^{m} (y,h_1^{1}, \ldots, h_{q}^{1})$}		
 		{
 		\rho \sample \RND{\zdv}\\
-		(\vec{i}, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; \rho)
-        \pccomment{$\vec{i} = i[1], \ldots, i[q']$}\\
-    \vec{i_1} \gets \vec{i}\\
-		\pcif \vec{i} = \vec{0}\ \pcreturn (0, \bot)\\
+		(i, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; \rho)\\
+    i_1 \gets i\\
+		\pcif i = 0\ \pcreturn (0, \bot)\\
 		\pcfor j \in \range{2}{m}\\
-		\pcind h_{1}^{j}, \ldots, h_{i[1] - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
-		h_{i[1] - 1}^{j - 1}\\
-		\pcind h_{i[1]}^{j}, \ldots, h_{q}^{j} \sample H\\
-		\pcind (\vec{i_j}, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{q}^{j}; \rho)\\
-		\pcind \pcif \vec{i_j} = 0 \lor \vec{i_j} \neq \vec{i}\ \pcreturn (0, \bot)\\
-    \pcif \exists (j, j') \in \range{1}{m}^2, k \in \range{1}{q'} : (h_{i[k]}^{j} = h_{i[k]}^{j'})\
+		\pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
+		h_{i - 1}^{j - 1}\\
+		\pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
+		\pcind (i_j, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
+		\ldots, h_{q}^{j}; \rho)\\
+		\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
+    \pcif \exists (j, j') \in \range{1}{m}^2 : (h_{i}^{j} = h_{i}^{j'})\
 	\pcreturn (0, \bot)\\
 		\pcelse \pcreturn (1, \vec{s})
 	}}
@@ -3090,7 +3108,7 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
 \begin{proof}
 First let denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
 \begin{align*}
-\accProb(y) & =  \condprob{\vec{i} \neq \vec{0}}{h_1, \ldots, h_q \sample H;\ (\vec{i}, s)
+\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s)
 \gets \zdv(y, h_1, \ldots, h_q)}\,.\\
 	\frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
 \genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}\,.
@@ -3099,19 +3117,19 @@ First let denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
 We start by claiming that for all $y$ 
 \begin{equation}\label{eq:frkProb_y}
 	\frkProb(y) \geq 
-	\frac{\accProb(y)^m}{q^{q'(m - 1)}} - \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)
+	\frac{\accProb(y)^m}{q^{m - 1}} - \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)
 	\end{equation}
 Then with the expectation taken over $y \sample \ig$, we have
 \begin{align}
 	\frkProb & = \expected{\frkProb(y)} \geq
-	\expected{\frac{\accProb(y)^m}{q^{q'(m - 1)}} -  \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)} \label{eq:use_eq1}\\
-	& \geq \frac{\expected{\accProb(y)}^m}{q^{q'(m - 1)}} -
-	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - mq')! \cdot
-  h^{mq'}}\right) \label{eq:by_lemma_jensen}\\
-	& = \frac{\accProb^m}{q^{q'(m - 1)}} -  \accProb \cdot \left(1 -
-  \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)\label{eq:by_accProb}\,.
+	\expected{\frac{\accProb(y)^m}{q^{m - 1}} -  \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)} \label{eq:use_eq1}\\
+	& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} -
+	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - m)! \cdot
+  h^{m}}\right) \label{eq:by_lemma_jensen}\\
+	& = \frac{\accProb^m}{q^{m - 1}} -  \accProb \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)\label{eq:by_accProb}\,.
 \end{align}
 Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
 \cref{eq:by_lemma_jensen} comes from linearity of expected value and \cref{lem:jensen}; and
@@ -3123,67 +3141,64 @@ Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$.
 For any input $y$, with probabilities taken over the coin tosses of
 $\genforking_{\zdv}^{m}$ we have
 \begin{align*}
-  \frkProb (y) & = \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j} \neq \vec{0} \land
-                 h_{\vec{i_j}[1]}^{j} \neq h_{\vec{i_{j'}}[1]}^{j'}, \ldots, h_{\vec{i_j}[q']}^{j} \neq h_{\vec{i_{j'}}[q']}^{j'} \text{ for } (j, j') \in J}	\\
-               & \geq \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j} \neq \vec{0} \text{ for } (j, j') \in J} \\
-               & \qquad - \prob{\vec{i_j} \neq \vec{0} \land
-                 h_{\vec{i_j}[k]}^{j} = h_{\vec{i_{j'}}[k]}^{j'} \text{ for some
-                 } (j, j') \in J, k \in \range{1}{q'}}\\
-               & = \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j} \neq \vec{0} \text{ for } (j, j') \in J} -
-                 \prob{\vec{i_j} \neq 0} \cdot 
-                 \left(1 - \frac{h!}{(h - mq')! \cdot h^{mq'}}\right) \\ 
-               & = \prob{\vec{i_j} = \vec{i_{j'}} \land
-                 \vec{i_j} \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 -
-                 \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)\,.
+	\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land
+h_{i_j}^{j} \neq h_{i_{j'}}^{j'} \text{ for } (j, j') \in J}	\\
+	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \\
+  & \qquad - \prob{i_j \geq 1 \land h_{i_j}^{j} = h_{i_{j'}}^{j'} \text{ for some } (j, j') \in J}\\
+	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} -
+	\prob{i_j \geq 1} \cdot 
+  \left(1 - \frac{h!}{(h - m)! \cdot h^{m}}\right) \\ 
+	& = \prob{i_j = i_{j'} \land
+	i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 -
+\frac{h!}{(h - m)! \cdot h^{m}}\right)\,.
 \end{align*}
 
-Probability that for some $(j, j') \in J$ and $\vec{i_j} = \vec{i_{j'}}$ holds
-$h_{\vec{i_j}[k]}^{j} \neq h_{\vec{i_{j'}}[k]}^{j'}$, for $k \in \range{1}{q'}$ equals 
+Probability that for some $(j, j') \in J$ and $i_j = i_{j'}$ holds
+$h_{i_j}^{j} \neq h_{i_{j'}}^{j'}$ equals 
 \[
   \frac{h \cdot (h - 1)
-\cdot \ldots \cdot (h - mq' - 1)}{h^{mq'}} = \frac{h!}{(h - mq')! \cdot h^{mq'}}.
+\cdot \ldots \cdot (h - m - 1)}{h^m} = \frac{h!}{(h - m)! \cdot h^m}.
 \]
 That is, it equals the number
-of all $mq'$-element strings where each element is different divided by
-the number of all $mq'$-element strings, where elements are taken from a
+of all $m$-element strings where each element is different divided by
+the number of all $m$-element strings, where elements are taken from a
 set of size $h$. 
 
-It remains to show that $\prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j} \neq 0 \text{ for }
+It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for }
 (j, j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$.
 Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
-For each $\vec{\iota} \in \range{1}{q}^{q'}$ let $X_{\vec{\iota}} \colon \RND{\zdv} \times
-H^{\vec{\iota}[1] - 1} \to [0, 1]$ be defined by setting $X_{\vec{\iota}}(\rho, h_1, \ldots,
-h_{\vec{\iota}[1] - 1})$ to
-\[
-	\condprob{\vec{i} = \vec{\iota}}{h_{\vec{\iota}[1]}, \ldots, h_q \sample H; (\vec{i}, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)} 
+For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times
+H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
+h_{\iota - 1})$ to \[
+	\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)} 
 \] 
-for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\vec{\iota}[1] - 1} \in H$. Consider $X_{\vec{\iota}}$ as a random variable over the uniform distribution on its domain. 
+for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider $X_\iota$ as a random variable over the uniform distribution on its domain. 
 Then
 \begin{align*}
-	& \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j} \neq \vec{0} \text{ for } (j, j') \in J} 
-	 = \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \prob{\vec{i_1} = \vec{\iota} \land \ldots \land \vec{i_m} = \vec{\iota}} \\
-	& = \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \prob{\vec{i_1} = \vec{\iota}} \cdot \condprob{\vec{i_2} = \vec{\iota}}{\vec{i_1} = \vec{\iota}} \cdot \ldots \cdot \condprob{\vec{i_m} = \vec{\iota}}{\vec{i_1} = \ldots = \vec{i_{m - 1}} = \vec{\iota}} \\
-	& = \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \sum_{\rho, h_1, \ldots, h_{\vec{\iota}[1] - 1}} X_{\vec{\iota}}
-	(\rho, h_1, \ldots, h_{\vec{\iota}[1] - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\vec{\iota}[1] - 1}}
-	= \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{\iota}}^m} \,.
+	& \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} 
+	 = \sum_{\iota = 1}^{q} \prob{i_1 = \iota \land \ldots \land i_m = \iota} \\
+	& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota} \cdot \condprob{i_2 = \iota}{i_1 = \iota} \cdot \ldots \cdot \condprob{i_m = \iota}{i_1 = \ldots = i_{m - 1} = \iota} \\
+	& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota}
+	(\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\iota - 1}}
+	= \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
 \end{align*}
-Importantly, $\sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{\iota}}} = \accProb(y)$.
+Importantly, $\sum_{\iota = 1}^q \expected{X_{\iota}} = \accProb(y)$.
 
 By \cref{lem:jensen} we get
 \[
-	\sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{\iota}}^m} \geq \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_\iota}^m\,.
+	\sum_{\iota = 1}^{q} \expected{X_\iota^m} \geq \sum_{\iota = 1}^{q} \expected{X_\iota}^m\,.
 \]
-Note that for e.g.~$X_{\vec{i}} = 1$, $\vec{i} \in \range{1}{q}^{q'}$ the inequality becomes equality, that is, it is tight.
+Note that for e.g.~$X_i = 1$, $i \in \range{1}{q}$ the inequality becomes equality, that is, it is tight.
  
-We now use the H\"older inequality, cf.~\cref{lem:holder}, for $x_{\vec{i}} = \expected{X_{\vec{i}}}$, $y_{\vec{i}} = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
+We now use the H\"older inequality, cf.~\cref{lem:holder}, for $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
 \begin{gather}
-	\left(\sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{i}}}\right)^{m}  \leq \left(\sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{i}}}^m\right) \cdot q^{q'(m - 1)}\\
-	\frac{1}{q^{q'(m - 1)}} \cdot \accProb(y)^{m} \leq \sum_{\vec{\iota} \in \range{1}{q}^{q'}} \expected{X_{\vec{i}}}^m\,.
+	\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
+	\frac{1}{q^{m - 1}} \cdot \accProb(y)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
 \end{gather}
 Finally, we get
 \[
-	\frkProb(y) \geq \frac{\accProb(y)^m}{q^{q'(m - 1)}} - 
-	 \accProb(y) \cdot \left(1 - \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)\,.
+	\frkProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
+	 \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
 \]
 \qed
 \end{proof}
@@ -3191,19 +3206,18 @@ Finally, we get
 To highlight importance of the generalised forking lemma we describe how we use
 it in our simulation-extractability proof.  Let $\proofsystem$ be a
 computationally special sound proof system where for an instance $\inp$ the
-corresponding witness can be extracted from an $(n_1, \ldots, n_\mu)$-tree of
-accepting transcripts, where $q'$ elements $n_j$, $j \in \range{1}{\mu}$, are
-bigger than $1$. Denote the set of indices $j$ such that $n_j > 1$ by $B$. Let
-$\advse$ be the simulation-extractability adversary that outputs an acceptable
-proof with probability at least $\accProb$. (Although we use the same $\accProb$
-to denote probability of $\zdv$ outputing a non-zero $\vec{i}$ and probability
-of $\advse$ outputing an acceptable proof we claim that these probabilities are
-exactly the same what comes from how we define $\zdv$.)  Let $\advse$ produce an
-acceptable proof $\zkproof_{\advse}$ for instance $\inp_{\advse}$; $r$ be
-$\advse$'s randomness; $Q$ the list of queries submitted by $\advse$ along with
-simulator's $\simulator_\zkproof$ answers; and $Q_\ro$ be the list of all random
-oracle queries made by $\advse$.  All of these are given to the extractor $\ext$
-that internally runs the forking algorithm $\genforking_\zdv$.  Algorithm $\zdv$
+corresponding witness can be extracted from an
+$(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\advse$
+be the simulation-extractability adversary that outputs an acceptable proof with
+probability at least $\accProb$. (Although we use the same $\accProb$ to denote
+probability of $\zdv$ outputing a non-zero $i$ and probability of $\advse$
+outputing an acceptable proof we claim that these probabilities are exactly the
+same what comes from how we define $\zdv$.)  Let $\advse$ produce an acceptable
+proof $\zkproof_{\advse}$ for instance $\inp_{\advse}$; $r$ be $\advse$'s
+randomness; $Q$ the list of queries submitted by $\advse$ along with simulator's
+$\simulator_\zkproof$ answers; and $Q_\ro$ be the list of all random oracle
+queries made by $\advse$.  All of these are given to the extractor $\ext$ that
+internally runs the forking algorithm $\genforking_\zdv$.  Algorithm $\zdv$
 takes $(\REL, \crs, \advse,
 %\inp_\advse,
 %\zkproof_\advse, 
@@ -3219,10 +3233,10 @@ simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes the
 same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$ as it
 is run on the same random tape and with the same answers from the simulator and
 random oracle. After $\advse$ finishes its acceptable proof $\zkproof_{\advse}$,
-algorithm $\zdv$ outputs $(\vec{i}, \zkproof_{\advse})$, where $\vec{i}$ is the
-vector of indices of a random
+algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where $i$ is the index of a random
 oracle query required to get the challenge after $k$-th message from the prover,
-for $k \in B$.
+where $k$ is the index of a message where the tree of
+transcripts branches. 
 %We also note that we differ here from the description of the
 %$\genforking_\zdv$ algorithm provided
 %e.g.~in~\cite{INDOCRYPT:FKMV12,CCS:BelNev06} where the algorithm also picks the first set of random oracle
@@ -3230,9 +3244,9 @@ for $k \in B$.
 %is only notational as random oracle queries' responses provided in $Q_\ro$ are
 %random as well. 
 Then, after the first run of $\advse$ is done, the extractor runs $\zdv$ again,
-but this time it provides a fresh random oracle responses $h^2_{\vec{i}[1]}, \ldots,
+but this time it provides a fresh random oracle responses $h^2_i, \ldots,
 h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
-before $\advse$ is about to ask its $\vec{i}[1]$-th random oracle
+before $\advse$ is about to ask its $i$-th random oracle
 query. Probability that the adversary produces an acceptable transcript with the
 fresh random oracle responses is at least $\accProb$. This continues until the
 required number of transcripts is obtained. 
@@ -3248,7 +3262,6 @@ We also note that the general forking lemma proposed in
 witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of acceptable
 transcripts. This limitation however does not affect the main result of this
 paper, i.e.~showing that both $\plonk$ and $\sonic$ are simulation extractable.
-
 
 	\end{document}
 	\section{(Tight) simulation soundness of $\plonk$}
