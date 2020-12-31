@@ -1255,12 +1255,12 @@ Let $\proofsystem$ be a $(2\mu + 1)$-message proof system $\ps = (\kgen,
 \prover, \verifier, \simulator)$. Let $\proofsystem_\fs$ be $\proofsystem$ after the
 Fiat--Shamir transform, Denote by $a_0, \ldots, a_{\mu}$ protocol messages
 output by the prover, We say that $\proofsystem$ has \emph{unique responses
-  after $i$} if for any $\ppt$ adversary $\adv$:
+  on $I$} if for any $\ppt$ adversary $\adv$:
 \[
 	\prob{
 		\begin{aligned}
 		&	\vec{a} = (a_0, \ldots, a_\mu), \vec{a'} = (a'_0, \ldots, a'_\mu)
-		\gets \adv^\ro(\REL, \crs), \vec{a} \neq \vec{a'} \\
+		\gets \adv^\ro(\REL, \crs), a_i\vec{a} \neq \vec{a'} \\
 		& \verifier^\ro_\fs (\REL, \crs, \inp, \vec{a}) =
 		\verifier^\ro_\fs(\REL, \crs, \inp, \vec{a'}) = 1,\\
 		& a_{j} = a'_{j},\ j \in \range{1}{i}
@@ -1275,6 +1275,7 @@ output by the prover, We say that $\proofsystem$ has \emph{unique responses
 \crs \gets \kgen_\fs(\REL) \right.
 }
 \]
+\michals{31.12.20}{Do I need to assume that the first $i$ elements is the same?}
 is at most negligible in $\secpar$.
 \end{definition}
 Intuitively, a protocol is $\ur{i}$ if after $i$-th prover's message, all
