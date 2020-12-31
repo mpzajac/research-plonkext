@@ -1204,7 +1204,8 @@ Then, after the first run of $\advse$ is done, the extractor runs $\zdv$ again,
 but this time it provides a fresh random oracle responses $h^2_{\vec{i}[1]}, \ldots,
 h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
 before $\advse$ is about to ask its $\vec{i}[1]$-th random oracle
-query. Probability that the adversary produces an acceptable transcript with the
+query. (We rewind to a point where the tree of accepting transcripts branches
+for the first time.) Probability that the adversary produces an acceptable transcript with the
 fresh random oracle responses is at least $\accProb$. This continues until the
 required number of transcripts is obtained. 
 
@@ -1315,8 +1316,8 @@ $(2 \mu + 1)$-message proof system for $\RELGEN(\secparam)$ that is honest
 verifier zero-knowledge in the standard model\footnote{Crucially, we require
   that one can provide an indistinguishable simulated proof without any
   additional knowledge, as e.g~knowledge of a CRS trapdoor.}, has $\ur{k}$
-property with security $\epsur$, is $(1, \ldots, 1, n_j, 1, \ldots, 1)$-special
-sound, for some $j > k$.
+property with security $\epsur$, is $(n_1, \ldots, n_\mu)$-special
+sound and $q'$ elements from $\smallset{n_1, \ldots, n_\mu}$ are not $1$.
 % 	Assume that the simulator $\simulator$ does not get as input any trapdoor related to the CRS.
 
 Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
@@ -1325,9 +1326,9 @@ against $\ppt$ algebraic adversaries that makes up to $q$ random oracle queries 
 returns an acceptable proof with probability at least $\accProb$. 
 The extraction probability $\extProb$ is at least
 \[
-	\extProb \geq \frac{1}{q^{n_j - 1}} (\accProb - \epsur)^{n_j} -\eps\,,
+	\extProb \geq \frac{1}{q^{N - 1}} (\accProb - \epsur)^{N} -\eps\,,
 \]
-for some negligible $\eps$.	
+for $N = \prod_{k = 1}^{\mu} n_k$ and some negligible $\eps$.	
 \end{theorem}
 \begin{proof}		
   The proof goes by game hoping. The games are controlled by an environment
