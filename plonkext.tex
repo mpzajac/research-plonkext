@@ -980,11 +980,11 @@ cf.~\cite{CCS:BelNev06}.
 Unfortunately, Faust et al.'s result cannot be directly applied in our case
 since the protocols we consider have more than three messages, require more than
 just two transcripts for the extractor to work and are not special
-sound. In this part we generalise the forking lemm, special
+sound. In this part we generalize the forking lemma, special
 soundness, and the unique response property to make them compatible with
 multi-message protocols.
 
-    \subsection{Generalised forking lemma.}
+\subsection{Generalised forking lemma.}
 First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not
 general enough for our purpose as it is useful only for protocols where witness
 can be extracted from just two transcripts. To be able to extract a witness
@@ -1042,7 +1042,7 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
 		\pcind (i_j, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
 		\ldots, h_{q}^{j}; \rho)\\
 		\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
-    \pcif \exists (j, j') \in \range{1}{m}^2 : (h_{i}^{j} = h_{i}^{j'})\
+    \pcif \exists (j, j') \in \range{1}{m}^2, j \neq j' : (h_{i}^{j} = h_{i}^{j'})\
 	\pcreturn (0, \bot)\\
 		\pcelse \pcreturn (1, \vec{s})
 	}}
@@ -1109,23 +1109,24 @@ of all $m$-element strings where each element is different divided by
 the number of all $m$-element strings, where elements are taken from a
 set of size $h$. 
 
-It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for }
-(j, j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$.
-Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
-For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times
-H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
-h_{\iota - 1})$ to \[
-	\condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)} 
-\] 
-for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider $X_\iota$ as a random variable over the uniform distribution on its domain. 
-Then
+It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j,
+  j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$. Let $\RND{\zdv}$ denote
+the set from which $\zdv$ picks its coins at random. For each $\iota \in
+\range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times H^{\iota - 1} \to [0, 1]$ be
+defined by setting $X_\iota(\rho, h_1, \ldots, h_{\iota - 1})$ to
+\[
+  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
+    \ldots, h_q; \rho)}
+\]
+for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
+$X_\iota$ be a random variable over the uniform distribution on its domain. Then
 \begin{align*}
 	& \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} 
 	 = \sum_{\iota = 1}^{q} \prob{i_1 = \iota \land \ldots \land i_m = \iota} \\
 	& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota} \cdot \condprob{i_2 = \iota}{i_1 = \iota} \cdot \ldots \cdot \condprob{i_m = \iota}{i_1 = \ldots = i_{m - 1} = \iota} \\
 	& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota}
-	(\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\iota - 1}}
-	= \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
+   (\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\iota - 1}}
+   = \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
 \end{align*}
 Importantly, $\sum_{\iota = 1}^q \expected{X_{\iota}} = \accProb(y)$.
 
@@ -1169,19 +1170,18 @@ takes $(\REL, \crs, \advse,
 Q, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
 h_q^1$. 
 (For the sake of completeness, we allow $\genforking_\zdv$ to
-pick $h^1_{k + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $k < q$
+pick $h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$
 elements.)  
 
-Next, $\zdv$ runs
-internally $\advse(\REL, \crs; r)$ and responds to its random oracle and
-simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes the
-same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$ as it
-is run on the same random tape and with the same answers from the simulator and
-random oracle. After $\advse$ finishes its acceptable proof $\zkproof_{\advse}$,
-algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where $i$ is the index of a random
-oracle query required to get the challenge after $k$-th message from the prover,
-where $k$ is the index of a message where the tree of
-transcripts branches. 
+Next, $\zdv$ runs internally $\advse(\REL, \crs; r)$ and responds to its random
+oracle and simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes
+the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
+as it is run on the same random tape and with the same answers from the
+simulator and random oracle. After $\advse$ finishes its acceptable proof
+$\zkproof_{\advse}$, algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where
+$i$ is the index of a random oracle query required to get the challenge after
+$k$-th message from the prover--- a message where the tree of transcripts
+branches.
 %We also note that we differ here from the description of the
 %$\genforking_\zdv$ algorithm provided
 %e.g.~in~\cite{INDOCRYPT:FKMV12,CCS:BelNev06} where the algorithm also picks the first set of random oracle
@@ -1241,7 +1241,8 @@ output by the prover, We say that $\proofsystem$ has \emph{unique responses
 		\begin{aligned}
 		&	\inp, \vec{a} = (a_0, \ldots, a_\mu), \vec{a'} = (a'_0, \ldots, a'_\mu)
 		\gets \adv^\ro(\REL, \crs), \\
-        & \vec{a} \neq \vec{a'}, \vec{a}[0..i + 1] = \vec{a'}[0..i + 1] \\
+    & \vec{a} \neq \vec{a'}, a_0, \ldots, a_{i + 1} = a'_0,
+    \ldots, a_{i + 1}, \\
 		& \verifier^\ro_\fs (\REL, \crs, \inp, \vec{a}) =
 		\verifier^\ro_\fs(\REL, \crs, \inp, \vec{a'}) = 1
 		\end{aligned}
@@ -1253,7 +1254,7 @@ output by the prover, We say that $\proofsystem$ has \emph{unique responses
 \range{1}{j}, j > i 
 	\end{aligned}}
 \crs \gets \kgen_\fs(\REL) \right.
-}
+} \leq \negl.
 \]
 \end{definition}
 Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary
@@ -3047,7 +3048,7 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
 
 
 \begin{lemma}[General forking lemma II]
-	\label{lem:generalised_forking_lemma}
+	\label{lem:generalised_forking_lemma_gen}
 	Fix $q \in \ZZ$ and set $H$ of size $h \geq mq'$. Let $\zdv$ be a $\ppt$
   algorithm that on input $y, h_1, \ldots, h_q$ returns $(\vec{i}, s)$ where
   $\vec{i} = (\vec{i}[1], \ldots, \vec{i}[q']) \in
@@ -3087,7 +3088,7 @@ transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
 		\pcelse \pcreturn (1, \vec{s})
 	}}
 	\caption{Generalised forking algorithm $\genforking_{\zdv}^{m}$}
-	\label{fig:genforking_lemma}
+	\label{fig:genforking_lemma_gen}
 \end{figure}
 \end{lemma}
 \begin{proof}
@@ -3100,7 +3101,7 @@ First let denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
 \end{align*}
 
 We start by claiming that for all $y$ 
-\begin{equation}\label{eq:frkProb_y}
+\begin{equation}\label{eq:frkProb_y_gen}
 	\frkProb(y) \geq 
 	\frac{\accProb(y)^m}{q^{q'(m - 1)}} - \accProb(y) \cdot \left(1 -
   \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)
@@ -3109,16 +3110,16 @@ Then with the expectation taken over $y \sample \ig$, we have
 \begin{align}
 	\frkProb & = \expected{\frkProb(y)} \geq
 	\expected{\frac{\accProb(y)^m}{q^{q'(m - 1)}} -  \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)} \label{eq:use_eq1}\\
+  \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)} \label{eq:use_eq1_gen}\\
 	& \geq \frac{\expected{\accProb(y)}^m}{q^{q'(m - 1)}} -
 	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - mq')! \cdot
-  h^{mq'}}\right) \label{eq:by_lemma_jensen}\\
+  h^{mq'}}\right) \label{eq:by_lemma_jensen_gen}\\
 	& = \frac{\accProb^m}{q^{q'(m - 1)}} -  \accProb \cdot \left(1 -
-  \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)\label{eq:by_accProb}\,.
+  \frac{h!}{(h - mq')! \cdot h^{mq'}}\right)\label{eq:by_accProb_gen}\,.
 \end{align}
-Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
-\cref{eq:by_lemma_jensen} comes from linearity of expected value and \cref{lem:jensen}; and
-\cref{eq:by_accProb} holds by the fact that $\expected{\accProb(y)} =
+Where \cref{eq:use_eq1_gen} comes from \cref{eq:frkProb_y_gen};
+\cref{eq:by_lemma_jensen_gen} comes from linearity of expected value and \cref{lem:jensen}; and
+\cref{eq:by_accProb_gen} holds by the fact that $\expected{\accProb(y)} =
 \accProb$.
 
 We now show \cref{eq:frkProb_y}.
