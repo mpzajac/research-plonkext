@@ -1535,7 +1535,7 @@ In this section we show that $\plonkprotfs$ is simulation-extractable. To that
 end, we proceed as follows. First we show that the version of the KZG polynomial
 commitment scheme that is proposed in the \plonk{} paper has the unique opening
 property, cf.~\cref{sec:poly_com} and \cref{lem:pcomp_unique_op}. This is then
-used to show that $\plonkprot$ has the $\ur{2}$ property,
+used to show that $\plonkprot$ has the $\ur{3}$ property,
 cf.~\cref{lem:plonkprot_ur}.
 
 Next, we show that $\plonkprot$ is computational special-sound. That is, given a
@@ -1548,7 +1548,7 @@ the basis compound of the input group elements, i.e.~$\plonkprot$'s CRS. See
 \cref{lem:plonkprot_ss}.
 
 Given special-soundness of $\plonkprot$, we use the fact that it is also
-$\ur{2}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is
+$\ur{3}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is
 simulation-extractable. That is, we build reductions that given a simulation
 extractability adversary $\advse$ either breaks the protocol's unique response
 property or breaks the $\dlog$ assumption, if extracting a valid witness from a
@@ -1592,16 +1592,16 @@ has the unique opening property in the AGM.
 \]
 is at most negligible.
 
-\ncase{Step 1} First, consider a case where the commitment is limited to commit
-to multiple polynomials which are evaluated at the same point $z$. As noted in
-\cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the probability
-of the adversary succeeding using the idealised verification equation---which
-considers equality between polynomials---instead of the real verification
-equation---which consider equality of the polynomials' evaluations. This holds
-since an adversary that manages to provide a commitment opening that holds for
-the real verifier, but does not hold for the idealised verifier can be used to
-break the dlog assumption and reveal the secret trapdoor used to produce the
-commitment's CRS.
+\ncase{Step 1} First, consider a case where the commitment is limited to
+commit to multiple polynomials which are evaluated at the same point $z$. As
+noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the
+probability of the adversary succeeding using the idealised verification
+equation---which considers equality between polynomials---instead of the real
+verification equation---which consider equality of the polynomials' evaluations.
+This holds since an adversary that manages to provide a commitment opening that
+holds for the real verifier, but does not hold for the idealised verifier can be
+used to break the dlog assumption and reveal the secret trapdoor used to produce
+the commitment's CRS.
 
 For polynomials $\vec{f} = f_1, \ldots, f_k$, evaluation point $z$, evaluation
 result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $o(X)$ the
@@ -1624,13 +1624,13 @@ $\gamma, r'$ picked at random, holds:
 \end{multline}
 Since $r'$ has been picked at random, \cref{eq:ver_eq_poly} holds while either
 \[
-	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot f_i(X) - \sum_{i = 1}^{k}  \gamma^{i - 1} \cdot s_i \equiv o(X)(X - z)
+	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot f_i(X) - \sum_{i = 1}^{k}  \gamma^{i - 1} \cdot s_i \not\equiv o(X)(X - z)
 \]
 or 
 \[
-	\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot f'_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \equiv o'(X)(X - z')
+	\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot f'_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \not\equiv o'(X)(X - z')
 \]
-does not is negligible~\cite{EPRINT:GabWilCio19}. This brings the proof back to
+is negligible~\cite{EPRINT:GabWilCio19}. This brings the proof back to
 Step 1 above. \qed
 \end{proof}
 
@@ -1639,7 +1639,7 @@ Step 1 above. \qed
 	\label{lem:plonkprot_ur}
   Let $\PCOMp$ be commitment of knowledge with security $\epsk$,
   $\epsbind$-binding and has unique opening property with security $\epsop$,
-  then probability that a $\ppt$ adversary $\adv$ breaks $\plonkprot$'s $\ur{2}$
+  then probability that a $\ppt$ adversary $\adv$ breaks $\plonkprot$'s $\ur{3}$
   property is at most $\epsk + 2\cdot\epsbind +
   \epsop$.% assuming the polynomial commitment scheme $\PCOMp$
 %is of knowledge.
