@@ -1646,7 +1646,7 @@ Step 1 above. \qed
 \end{lemma}
 \begin{proof}[sketch]
   Let $\adv(\REL,\crs = (\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}},
-  \gtwo{\chi}))$ be an adversary trying to break the $\ur{2}$-ness of
+  \gtwo{\chi}))$ be an adversary tasked to break the $\ur{3}$-ness of
   $\plonkprot$. It is sufficient to observe that the first 2 rounds of the
   protocol determines, along with the verifiers challenges, the rest of it. In
   Round 3 the adversary outputs a commitment to polynomial $\pt(X)$ which
@@ -1655,7 +1655,7 @@ Step 1 above. \qed
   $\pt(X)$. Assume that $\adv$ outputs $c' \neq c$ and is later able to open
   $c'$ to $y = \pt(\chz)$, where $\chz$ is a random point determined later.
   Using AGM and arguments similar to \cite{CCS:MBKM19}, we argue that $\PCOMp$
-  is a commitment of knowledge. That is, a AGM adversary $\adv$ that outputs a
+  is a commitment of knowledge. That is, an AGM adversary $\adv$ that outputs a
   commitment $c'$ which it can later open, knows a polynomial $\p{f}$ such that
   $\gone{\p{f}(\chi)} = c'$. Thus if $c' \neq c$ and the commitment scheme is
   evaluation binding then $\adv$ when picking $c'$ picks it as a commitment to
@@ -1757,7 +1757,7 @@ $\plonkprot$ is upper-bounded by $\epsbind + \epsop$. \qed
 \begin{lemma}
 \label{lem:plonkprot_ss}
 Let $\adv$ be a $\ppt$ algebraic adversary. The probability $\epsss$ that $\adv$
-breaks $(1, 1, 1, \numberofconstrains + 3, 1)$-computational special soundness
+breaks $(1, 1, \numberofconstrains + 3, 1)$-computational special soundness
 of $\plonkprot$ is upper-bounded as
  \[
 	\epsss \leq \epsbatch + \epsdlog\,,
@@ -1799,7 +1799,7 @@ of $\plonkprot$ is upper-bounded as
   polynomials (at different points) are known. The extractor $\extss$
   interpolates the polynomials and reveals the corresponding witness $\wit$.
 
-  \ncase{When $\nevent{E}$ happens} Consider a transcript that such that
+  \ncase{When $\nevent{E}$ happens} Consider a transcript such that
   $\vereq(X) \neq 0$, but $\vereq(\chi) = 0$. Since the adversary is algebraic,
   all group elements included in the tree of transcripts are extended by their
   representation as a combination of the input $\GRP_1$-elements i.e.~$\gone{1,
@@ -2008,7 +2008,7 @@ between $w = b_1 b_3 b_5 b_7$ and $w$ being random, thus \(
 
 \subsection{From special-soundness and unique response property to simulation extractability of $\plonkprotfs$}
 
-Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$
+Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$
 and computationally special sound. We now 
 make use of \cref{thm:se} and show that
 $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
@@ -2016,7 +2016,7 @@ $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
 % \michals{13.10}{The theorem below is going to have a much shorter proof -- for it being just a corollary of Sec.~4}
 \begin{corollary}[Simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
-Assume that $\plonkprot$ is $\ur{2}$ with security $\epsur(\secpar)$, and
+Assume that $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$, and
 computational special-sound with security $\epsss(\secpar)$. Let $\ro\colon
 \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$ adversary
 that can make up to $q$ random oracle queries and outputs an acceptable proof
