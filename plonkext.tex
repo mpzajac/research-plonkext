@@ -3221,39 +3221,27 @@ accepting transcripts, where $m'$ elements $n_j$, $j \in \range{1}{\mu}$, are
 bigger than $1$. Denote the set of indices $j$ such that $n_j > 1$ by $B$. Let
 $\advse$ be the simulation-extractability adversary that outputs an acceptable
 proof with probability at least $\accProb$. (Although we use the same $\accProb$
-to denote probability of $\zdv$ outputing a non-zero $\vec{i}$ and probability
-of $\advse$ outputing an acceptable proof we claim that these probabilities are
-exactly the same what comes from how we define $\zdv$.)  Let $\advse$ produce an
-acceptable proof $\zkproof_{\advse}$ for instance $\inp_{\advse}$; $r$ be
-$\advse$'s randomness; $Q$ the list of queries submitted by $\advse$ along with
-simulator's $\simulator_\zkproof$ answers; and $Q_\ro$ be the list of all random
-oracle queries made by $\advse$.  All of these are given to the extractor $\ext$
-that internally runs the forking algorithm $\genforking_\zdv$.  Algorithm $\zdv$
-takes $(\REL, \crs, \advse,
-%\inp_\advse,
-%\zkproof_\advse, 
-Q, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
-h_q^1$. 
-(For the sake of completeness, we allow $\genforking_\zdv$ to
-pick $h^1_{k + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $k < q$
-elements.)  
+to denote probability of $\zdv$ outputing a $\vec{i}$ which has no $0$ entry and
+probability of $\advse$ outputing an acceptable proof we claim that these
+probabilities are exactly the same what comes from how we define $\zdv$.)  Let
+$\advse$ produce an acceptable proof $\zkproof_{\advse}$ for instance
+$\inp_{\advse}$; $r$ be $\advse$'s randomness; $Q$ the list of queries submitted
+by $\advse$ along with simulator's $\simulator_\zkproof$ answers; and $Q_\ro$ be
+the list of all random oracle queries made by $\advse$.  All of these are given
+to the extractor $\ext$ that internally runs the forking algorithm
+$\genforking_\zdv$.  Algorithm $\zdv$ takes $(\REL, \crs, \advse, Q, r)$ as
+input $y$ and $Q_\ro$ as input $h_1^1, \ldots, h_q^1$.  (For the sake of
+completeness, we allow $\genforking_\zdv$ to pick $h^1_{k + 1}, \ldots, h^1_q$
+responses if $Q_\ro$ has only $k < q$ elements.)
 
-Next, $\zdv$ runs
-internally $\advse(\REL, \crs; r)$ and responds to its random oracle and
-simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes the
-same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$ as it
-is run on the same random tape and with the same answers from the simulator and
-random oracle. After $\advse$ finishes its acceptable proof $\zkproof_{\advse}$,
-algorithm $\zdv$ outputs $(\vec{i}, \zkproof_{\advse})$, where $\vec{i}$ is the
-vector of indices of a random
-oracle query required to get the challenge after $k$-th message from the prover,
-for $k \in B$.
-%We also note that we differ here from the description of the
-%$\genforking_\zdv$ algorithm provided
-%e.g.~in~\cite{INDOCRYPT:FKMV12,CCS:BelNev06} where the algorithm also picks the first set of random oracle
-%queries' responses $h^1_1, \ldots, h^1_q$. We however note that this difference
-%is only notational as random oracle queries' responses provided in $Q_\ro$ are
-%random as well. 
+Next, $\zdv$ runs internally $\advse(\REL, \crs; r)$ and responds to its random
+oracle and simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes
+the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
+as it is run on the same random tape and with the same answers from the
+simulator and random oracle. After $\advse$ finishes its acceptable proof
+$\zkproof_{\advse}$, algorithm $\zdv$ outputs $(\vec{i}, \zkproof_{\advse})$,
+where $\vec{i}$ is the vector of indices of random oracle queries that make
+challenges after $k$-th messages from the prover, for $k \in B$.
 Then, after the first run of $\advse$ is done, the extractor runs $\zdv$ again,
 but this time it provides a fresh random oracle responses $h^2_{\vec{i}[1]}, \ldots,
 h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
@@ -3264,18 +3252,18 @@ fresh random oracle responses is at least $\accProb$. This continues until the
 required number of transcripts is obtained. 
 
 We note that in the original forking lemma the forking algorithm $\forking$
-cf.~\cref{fig:forking_lemma} gets only as input $y$ and elements $h^1_1, \ldots,
+cf.~\cref{fig:genforking_lemma_gen} gets only as input $y$ and elements $h^1_1, \ldots,
 h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
 that $h^1_1, \ldots, h^1_q$ are random oracle responses, thus are random, makes
 the change only notational.
 
 We also note that the general forking lemma proposed in
-\cref{lem:generalised_forking_lemma} is more general than we actually need to
+\cref{lem:generalised_forking_lemma_gen} is more general than we actually need to
 show simulation extractability of $\plonk$ and $\sonic$. More precisely, it
 would be enough to show its variant which allows for extraction from
 $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of acceptable transcripts, i.e.~for $m'
 = 1$. Setting $m' = 1$ also considerably improves the probability bounds for
-$\frkProb$, which is now
+$\frkProb$, which becomes
 \[
   \frkProb = \frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 -
     \frac{h!}{(h - m)! \cdot h^m}\right)\enspace.
