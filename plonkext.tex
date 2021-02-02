@@ -24,14 +24,13 @@
  %\usepackage{fullpage}
 
 \newcommand{\ifamsart}[1] {} \ifamsart{ \newtheorem{theorem}{Theorem}%[section]
-		\newtheorem{proposition}[theorem]{Proposition}
-		\newtheorem{lemma}[theorem]{Lemma}
-		\newtheorem{corollary}[theorem]{Corollary} \theoremstyle{definition}
-		\newtheorem{definition}[theorem]{Definition}
-\newtheorem{example}[theorem]{Example} } \usepackage{soul} \usepackage{soulutf8}
-\soulregister\cite7 \soulregister\ref7 \soulregister\pageref7
-\usepackage{hyperref} \usepackage[color=yellow]{todonotes} \hypersetup{final}
-\usepackage{mathrsfs}
+  \newtheorem{proposition}[theorem]{Proposition}
+  \newtheorem{lemma}[theorem]{Lemma} \newtheorem{corollary}[theorem]{Corollary}
+  \theoremstyle{definition} \newtheorem{definition}[theorem]{Definition}
+  \newtheorem{example}[theorem]{Example} } \usepackage{soul}
+\usepackage{soulutf8} \soulregister\cite7 \soulregister\ref7
+\soulregister\pageref7 \usepackage{hyperref}
+\usepackage[color=yellow]{todonotes} \hypersetup{final} \usepackage{mathrsfs}
 \usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
 %\pcbodylinesep=0.15\baselineskip % MK: got an undefined control sequence error
 
@@ -2241,7 +2240,7 @@ specific adversaries, some of the inequalities are already equalities.
 	\]
 \end{definition}
 
-\paragraph{BBG uber assumption}
+\paragraph{BBG uber assumption.}
 The original (decisional) uber assumption by Boneh et al.~states that for
 type-III pairings:
 
@@ -2320,38 +2319,26 @@ The theorem relies on the following \emph{general forking lemma} \cite{JC:PoiSte
 \end{figure}
 \end{lemma}
 
-In case of a NIZK obtained by applying the Fiat--Shamir transform to a sigma
-protocol, forking lemma could be used as follows.  Let $\ext$ be an extractor
-tasked to reveal the witness from $\adv$ who
-provides an acceptable proofs for a picked statement. $\ext$ gets as input
-the adversary's code and its randomness, this is also the input $y$ passed to the
-forking algorithm $\forking$. Algorithm $\zdv$ runs the code of the adversary
-on a
-given random oracle responses $h_1, \ldots, h_q$ and returns adversary's
-state $s$, which contains an instance $\inp$ and its proof $\zkproof$, and
-index $i$ of the random oracle query such that $h_i$ was random oracle's response to
-query $(\inp, a)$ used in $\zkproof$. Then the first $i - 1$
-random oracle responses remain the same and fresh $h'_i, \ldots, h'_q$. 
-The adversary is run again on the same
-randomness $r$ and it sees the same random oracle responses up to the index $i
-- 1$. Thus, it behaves exactly the same as in the previous run (up to the point). It
-is then presented with a new random oracle responses and finally outputs a new
-state $s'$. We also require that the adversary uses the query of the same
-index $i$ to ask about $\ro(\inp, a)$ what is needed for the security
-reduction, cf.~\cite{CCS:BelNev06}.
+% In case of a NIZK obtained by applying the Fiat--Shamir transform to a sigma
+% protocol, forking lemma could be used as follows.  Let $\ext$ be an extractor
+% tasked to reveal the witness from $\adv$ who
+% provides an acceptable proofs for a picked statement. $\ext$ gets as input
+% the adversary's code and its randomness, this is also the input $y$ passed to the
+% forking algorithm $\forking$. Algorithm $\zdv$ runs the code of the adversary
+% on a
+% given random oracle responses $h_1, \ldots, h_q$ and returns adversary's
+% state $s$, which contains an instance $\inp$ and its proof $\zkproof$, and
+% index $i$ of the random oracle query such that $h_i$ was random oracle's response to
+% query $(\inp, a)$ used in $\zkproof$. Then the first $i - 1$
+% random oracle responses remain the same and fresh $h'_i, \ldots, h'_q$. 
+% The adversary is run again on the same
+% randomness $r$ and it sees the same random oracle responses up to the index $i
+% - 1$. Thus, it behaves exactly the same as in the previous run (up to the point). It
+% is then presented with a new random oracle responses and finally outputs a new
+% state $s'$. We also require that the adversary uses the query of the same
+% index $i$ to ask about $\ro(\inp, a)$ what is needed for the security
+% reduction, cf.~\cite{CCS:BelNev06}.
 
-% Probability $\frkProb$ is a lower bound for a successful witness extraction
-% from two transcripts. Let $\trans_1 = (\inp, a, b, z)$ and $\trans_2 = (\inp,
-% a, b', z')$ be the transcripts. Both $\trans_1$ and $\trans_2$ have to be
-% \emph{acceptable}, i.e.~$i > 0$ and the probability that $\zdv$ accepts a
-% transcript is denoted by $\accProb$. Index $i$ can be interpreted as an index
-% of $h_i$ which was sent as a challenge for $(\inp, a)$, i.e~the index of a
-% random oracle query that has been used to produce prover's message in the
-% point the proof branches (regarding the random oracle queries). This index has
-% to be guessed by the security reduction. For the sake of extractability, both
-% transcripts have to have the same index $i$, i.e.~the same instance $\inp$ and
-% the first message $a$, but the actual challenges $b = h_i$ and $b' = h'_{i}$
-% have to differ.
 
 
 
@@ -2374,8 +2361,8 @@ We need to show that for every $\ppt$ adversary $\adv$ probability
 	\Pr
 		\left[
 			\begin{aligned}
-				& \verify(\crs, c, z, s, o), \\
-				& \verify(\crs, c, z, \tilde{s}, \tilde{o})
+				& \verify(\crs, c, z, s, o) = 1, \\
+				& \verify(\crs, c, z, \tilde{s}, \tilde{o}) = 1
 			\end{aligned}
 		\,\left|\,
 		\vphantom{\begin{aligned}
@@ -2421,11 +2408,11 @@ property of the used polynomial commitment scheme $\PCOMs$.
 \label{lem:sonicprot_ur}
 If a polynomial commitment scheme $\PCOMs$ is evaluation binding with
 parameter $\epsbind$ and has unique openings property with parameter
-$\epsop$, then $\sonicprot$ is $\ur{1}$ with parameter $\epsur \leq
+$\epsop$, then $\sonicprot$ is $\ur{2}$ with parameter $\epsur \leq
 \epsbind + \epsop$.  
 \end{lemma}
 \begin{proof}
-Let $\adv$ be an adversary that breaks $\ur{1}$-ness of $\sonicprot$. 
+Let $\adv$ be an adversary that breaks $\ur{2}$-ness of $\sonicprot$. 
 We consider two cases, depending on which round $\adv$ is able to provide at
 least two different outputs such that the resulting transcripts are
 acceptable.  For the first case we show that $\adv$ breaks the evaluation
@@ -2446,11 +2433,8 @@ Alternatively, if $\adv$ was able to provide two openings $\p{W}$ and
 $\p{\tilde{W}}$ for $y = \p{x}$ then the unique opening property would be
 broken.
 
-Hence the probability that $\adv$ breaks $\ur{1}$-property of $\PCOMs$ is
+Hence the probability that $\adv$ breaks $\ur{2}$-property of $\PCOMs$ is
 upper-bounded by $\epsbind + \epsop$. 
-% \michals{22.X}{Do we need to multiply
-% the epsilons by some constant that relates to the number of chances
-% the adversary can break the binding and op properties?} 
 \qed
 
 \end{proof}
@@ -2527,7 +2511,6 @@ indistinguishable from a polynomial provided by an honest user for a
 distinguisher that only learns $\pR,\pT,\pa,\pb$ from the proof (the other proof
 elements are fixed by these elements and the public information).
 See~\cref{sec:sonic_constraint_system}.
-%less than three evaluations of $\pr(X, Y)$. 
 
 Next, $\simulator$ computes the first verifier's challenge $y$ such that
 $\p{t}(X, y)$ is a polynomial that has $0$ as a coefficient next to $X^0$.
@@ -2541,19 +2524,12 @@ $X^0$ in $\p{t}(X, Y)$ equals
 	\vec{c} \cdot \vec{\p{w}}(Y) +	
 	\sum_{i = 1}^{\multconstr} a_i b_i (Y^i + Y^{-i}) - \p{k}(Y), 
 \end{equation}
-for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ as defined in \cref{sec:sonic_constraint_system}
-% \begin{align*}
-% 		\p{u_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} u_{q, i}\\
-% 		\p{v_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} v_{q, i}\\
-% 		\p{w_i}(Y) & = -Y^i - Y^{-i}  + \sum_{q = 1}^\linconstr Y^{q +
-% 		\multconstr} w_{q, i}\\
-% 		\p{k}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} k_{q}.
-% \end{align*}
-(Vectors $\vec{u_q}, \vec{v_q}, \vec{w_q}$ are $\multconstr$-elements long and
-correspond to the $Q$ linear constrains of the proof system. Field element
-$k_{q}$ is the instance value). When the proven instance is correct, $\pt(0,Y)$
-is a zero polynomial. See \cite{CCS:MBKM19} for details. Also, when
-\cref{eq:ab_eq_c} holds, that polynomial simplifies to
+for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ as defined
+in \cref{sec:sonic_constraint_system} (Vectors $\vec{u_q}, \vec{v_q}, \vec{w_q}$
+are $\multconstr$-elements long and correspond to the $Q$ linear constrains of
+the proof system. Field element $k_{q}$ is the instance value). When the proven
+instance is correct, $\pt(0,Y)$ is a zero polynomial. See \cite{CCS:MBKM19} for
+details. Also, when \cref{eq:ab_eq_c} holds, that polynomial simplifies to
 \begin{equation}
 	\label{eq:x0_simpl}
 	t(0,Y) = \vec{a} \cdot \vec{\p{u}}(Y) + 
@@ -2607,13 +2583,13 @@ prover and verifier. \qed
 \end{remark}
 
 \subsection{From special-soundness and unique response property to simulation extractability of $\sonicprotfs$}
-Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$
+Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{2}$
 and computationally special sound. We now make use
 of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defined in \cref{def:simext}.
 
 \begin{corollary}[Simulation extractability of $\sonicprotfs$]
   \label{thm:sonicprotfs_se}
-  Assume that $\sonicprot$ is $\ur{1}$ with security $\epsur(\secpar)$, and
+  Assume that $\sonicprot$ is $\ur{2}$ with security $\epsur(\secpar)$, and
   computational special-sound with security $\epsss(\secpar)$. Let $\ro\colon
   \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$
   adversary that can make up to $q$ random oracle queries and outputs an
