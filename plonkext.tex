@@ -358,6 +358,44 @@ that are undoubtedly simpler protocols than the considered proof systems.
 % which utilises the algebraic group model and is tight. It remains an open
 % question how to show simulation extractability tightly, e.g.~using AGM.
 
+\subsection{Comparison with Bootle et al.~\cite{EC:BCCGP16}}
+\newcommand{\treefinder}{\pcadvstyle{T}}
+\newcommand{\provers}{\prover^*}
+Bootle et al.~\cite{EC:BCCGP16} provides a ``forking lemma'' showing that a
+protocol which has an extractor $\ext$ able to extract a witness from a tree of
+acceptable transcripts follows also notion of witness-extended emulation.
+An interestin question is whether their version of the forking lemma could be
+used to show security of protocols which were made non-interactive by the
+Fiat--Shamir transformation. We provide a simple adversary which shows that the
+answer is---not directly. \hl{In the following part of the paper we show that
+  allowing for some efficiency loss the result of Bootle et al.~\emph{can} be
+  used for non-interactive protocols.}
+
+\michals{15.02}{This lemma is here only temporarily}
+
+\begin{lemma}
+  Let $\proofsystem$ be an $(2\mu + 1)$ public-coin interactive proofsystem and
+  $\proofsystem_\fs$ be Fiat--Shamir transformed $\proofsystem$, $\ext$ be a
+  witness extraction algorithm which always succeeds to extract a witness from a
+  $(n_1, \ldots, n_\mu)$-tree of accepting transcripts and $\provers$ be a
+  (possibly malicious) prover for $\proofsystem_\fs$.
+  Then the tree finding algorithm $\treefinder$ presented at \cite[Lemma
+  1]{EC:BCCGP16} builds a tree of accepting transcript with probability $0$.
+\end{lemma}
+\begin{proof}
+Let $\provers$ be an adversary who proceeds as follows. On input $(inp, \wit)
+\in \REL$ it computes first $i$ rounds of the protocol correctly, then it breaks
+and start the protocol over. With the second run, it finishes and outputs an
+honest proof for $\inp$ using $\wit$.
+
+Next, we analyse the probability that the tree-finder $\treefinder$ outputs a
+tree of accepting transcripts by rewinding $\provers$ and providing it with
+fresh challenges.
+
+  \qed
+\end{proof}
+
+
 \subsection{Structure of the paper}
 In the next section we present necessary preliminaries. Section 3 compounds of
 new notions and theorems that instantiate our framework. Then, in Section 4, we
@@ -3147,13 +3185,14 @@ the number of all $m m'$-element strings, where elements are taken from a
 set of size $h$. 
 
 It remains to show that
-$\prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j}[k] \neq 0 \text{ for all } (j,
-  j') \in J, k \in \range{1}{m'}} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$.  Let
-$\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.  For
-each $\vec{\iota} \in \range{1}{q}^{m'}$ let
-$X_{\vec{\iota}} \colon \RND{\zdv} \times H^{\vec{\iota}[1] - 1} \to [0, 1]$ be
-defined by setting $X_{\vec{\iota}}(\rho, h_1, \ldots, h_{\vec{\iota}[1] - 1})$
-to
+\[
+  \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j}[k] \neq 0 \text{ for all } (j,
+    j') \in J, k \in \range{1}{m'}} \geq \infrac{\accProb(y)^m}{q^{m - 1}}.
+[]\]
+Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random. For
+each $\vec{\iota} \in \range{1}{q}^{m'}$ let $X_{\vec{\iota}} \colon \RND{\zdv}
+\times H^{\vec{\iota}[1] - 1} \to [0, 1]$ be defined by setting
+$X_{\vec{\iota}}(\rho, h_1, \ldots, h_{\vec{\iota}[1] - 1})$ to
 \[
   \condprob{\vec{i} = \vec{\iota}}{h_{\vec{\iota}[1]}, \ldots, h_q \sample H;
     (\vec{i}, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)}
@@ -3167,8 +3206,8 @@ distribution on its domain.  Then
     = \sum_{\vec{\iota} \in \range{1}{q}^{m'}} \prob{\vec{i_1} = \vec{\iota} \land \ldots \land \vec{i_m} = \vec{\iota}} \\
   & = \sum_{\vec{\iota} \in \range{1}{q}^{m'}} \prob{\vec{i_1} = \vec{\iota}} \cdot \condprob{\vec{i_2} = \vec{\iota}}{\vec{i_1} = \vec{\iota}} \cdot \ldots \cdot \condprob{\vec{i_m} = \vec{\iota}}{\vec{i_1} = \ldots = \vec{i_{m - 1}} = \vec{\iota}} \\
   & = \sum_{\vec{\iota} \in \range{1}{q}^{m'}} \sum_{\rho, h_1, \ldots, h_{\vec{\iota}[1] - 1}} X_{\vec{\iota}}
-	(\rho, h_1, \ldots, h_{\vec{\iota}[1] - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\vec{\iota}[1] - 1}}
-	= \sum_{\vec{\iota} \in \range{1}{q}^{m'}} \expected{X_{\vec{\iota}}^m} \,.
+    (\rho, h_1, \ldots, h_{\vec{\iota}[1] - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\vec{\iota}[1] - 1}}
+    = \sum_{\vec{\iota} \in \range{1}{q}^{m'}} \expected{X_{\vec{\iota}}^m} \,.
 \end{align*}
 Importantly, $\sum_{\vec{\iota} \in \range{1}{q}^{m'}} \expected{X_{\vec{\iota}}} = \accProb(y)$.
 
@@ -3412,7 +3451,6 @@ $\zdv$ the adversary could reuse a challenge that it learnt from observing
 proofs in $Q$. In that case, $\zdv$ would not be able to output $\vec{i}$ with
 no zero entries, what would make extractor fail.
 
-\michals{30.01}{ended here}
 From the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma_gen},
 \[ \prob{\event{\errfrk}} \leq 1 - \waccProb \cdot \left(\frac{\waccProb^{m -
         1}}{q^{m'(m - 1)}} + \frac{(2^\secpar) !}{(2^\secpar - m' m)! \cdot
