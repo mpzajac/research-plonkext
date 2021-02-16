@@ -358,42 +358,42 @@ that are undoubtedly simpler protocols than the considered proof systems.
 % which utilises the algebraic group model and is tight. It remains an open
 % question how to show simulation extractability tightly, e.g.~using AGM.
 
-\subsection{Comparison with Bootle et al.~\cite{EC:BCCGP16}}
-\newcommand{\treefinder}{\pcadvstyle{T}}
-\newcommand{\provers}{\prover^*}
-Bootle et al.~\cite{EC:BCCGP16} provides a ``forking lemma'' showing that a
-protocol which has an extractor $\ext$ able to extract a witness from a tree of
-acceptable transcripts follows also notion of witness-extended emulation.
-An interestin question is whether their version of the forking lemma could be
-used to show security of protocols which were made non-interactive by the
-Fiat--Shamir transformation. We provide a simple adversary which shows that the
-answer is---not directly. \hl{In the following part of the paper we show that
-  allowing for some efficiency loss the result of Bootle et al.~\emph{can} be
-  used for non-interactive protocols.}
+% \subsection{Comparison with Bootle et al.~\cite{EC:BCCGP16}}
+% \newcommand{\treefinder}{\pcadvstyle{T}}
+% \newcommand{\provers}{\prover^*}
+% Bootle et al.~\cite{EC:BCCGP16} provides a ``forking lemma'' showing that a
+% protocol which has an extractor $\ext$ able to extract a witness from a tree of
+% acceptable transcripts follows also notion of witness-extended emulation.
+% An interestin question is whether their version of the forking lemma could be
+% used to show security of protocols which were made non-interactive by the
+% Fiat--Shamir transformation. We provide a simple adversary which shows that the
+% answer is---not directly. \hl{In the following part of the paper we show that
+%   allowing for some efficiency loss the result of Bootle et al.~\emph{can} be
+%   used for non-interactive protocols.}
 
-\michals{15.02}{This lemma is here only temporarily}
+% \michals{15.02}{This lemma is here only temporarily}
 
-\begin{lemma}
-  Let $\proofsystem$ be an $(2\mu + 1)$ public-coin interactive proofsystem and
-  $\proofsystem_\fs$ be Fiat--Shamir transformed $\proofsystem$, $\ext$ be a
-  witness extraction algorithm which always succeeds to extract a witness from a
-  $(n_1, \ldots, n_\mu)$-tree of accepting transcripts and $\provers$ be a
-  (possibly malicious) prover for $\proofsystem_\fs$.
-  Then the tree finding algorithm $\treefinder$ presented at \cite[Lemma
-  1]{EC:BCCGP16} builds a tree of accepting transcript with probability $0$.
-\end{lemma}
-\begin{proof}
-Let $\provers$ be an adversary who proceeds as follows. On input $(inp, \wit)
-\in \REL$ it computes first $i$ rounds of the protocol correctly, then it breaks
-and start the protocol over. With the second run, it finishes and outputs an
-honest proof for $\inp$ using $\wit$.
+% \begin{lemma}
+%   Let $\proofsystem$ be an $(2\mu + 1)$ public-coin interactive proofsystem and
+%   $\proofsystem_\fs$ be Fiat--Shamir transformed $\proofsystem$, $\ext$ be a
+%   witness extraction algorithm which always succeeds to extract a witness from a
+%   $(n_1, \ldots, n_\mu)$-tree of accepting transcripts and $\provers$ be a
+%   (possibly malicious) prover for $\proofsystem_\fs$.
+%   Then the tree finding algorithm $\treefinder$ presented at \cite[Lemma
+%   1]{EC:BCCGP16} builds a tree of accepting transcript with probability $0$.
+% \end{lemma}
+% \begin{proof}
+% Let $\provers$ be an prover who proceeds as follows. On input $(\inp, \wit)
+% \in \REL$ it computes the first $i$ rounds of the protocol honestly, then it breaks
+% and start the protocol over. With the second run, it finishes and outputs an
+% honest proof for $\inp$ using $\wit$.
 
-Next, we analyse the probability that the tree-finder $\treefinder$ outputs a
-tree of accepting transcripts by rewinding $\provers$ and providing it with
-fresh challenges.
+% Next, we analyse the probability that the tree-finder $\treefinder$ outputs a
+% tree of accepting transcripts by rewinding $\provers$ and providing it with
+% fresh challenges.
 
-  \qed
-\end{proof}
+%   \qed
+% \end{proof}
 
 
 \subsection{Structure of the paper}
@@ -3513,7 +3513,101 @@ $\psfs$ is simulation extractable with extraction error $\epsur$.
 \qed
 \end{proof}
 
-	\end{document}
+\section{On Bootle et al.~\cite{EC:BCCGP16}}
+\newcommand{\treefind}{\pcalgostyle{tFind}}
+\newcommand{\findwitness}{\pcalgostyle{wFind}}
+\newcommand{\validtree}{\pcalgostyle{VT}}
+
+
+%\subsection{Building tree of acceptable transcripts and extracting the witness}
+We denote by $\validtree(\tree)$ an algorithm that takes an $(n_1, \ldots,
+n_\mu)$ tree of transcripts and reutrns $1$ if it is valid and $0$ otherwise.
+Let $\findwitness(\tree)$ an algorithm that given a valid $(n_1,
+\ldots, n_\mu)$-tree of accepting transcripts for statements $\inp$ extracts a
+witness $\wit$ such that $\REL(\inp, \wit) = 1$.
+
+\begin{figure}
+  \centering
+  \fbox{
+    \procedure{$\ext_\adv(\REL, \crs, \inp; r)$}{
+      (\inp, \zkproof, \tree) \gets \treefind(1)\\
+      %\pcif \tree \text{ is not valid $(n_1, \ldots, n_\mu)$-tree of accepting
+      % transcripts} \pcthen \\
+      \pcif \validtree(\tree) = 0 \pcthen \\
+      \pcind \pcreturn (\zkproof, \bot)\\
+      \pcelse \wit \gets \findwitness(\REL, \crs, \inp, \tree) \\
+      \pcreturn \wit
+    }
+  }
+  \vspace*{1cm}
+  \fbox{
+    \procedure{$\treefind(i)$}{
+      \pcif i = \mu + 1 \pcthen\\
+      \pcind (\inp, \zkproof) \gets \adv(\REL, \crs)\\
+      \pcind \pcif \verifier(\REL, \crs, \inp, \zkproof) = 1 \pcthen\\
+      \pcind \pcind \pcreturn (\inp, \zkproof, \tree)\\
+      \pcind \pcelse \pcreturn (\inp, \zkproof, \bot)\\
+      %
+      \text{run $\adv$ up to and including its $(i + 1)$-th message}\\
+      (\inp, \zkproof, \tree) \gets \treefind(i + 1)\\
+      \pcif \tree = \bot \pcthen \pcreturn (\inp, \zkproof, \bot)\\
+      \counter \gets 1\\
+      \pcwhile \counter < n_i\\
+      \pcind \text{rewind $\adv$ just before it gets it computes the $i$-th challenge}\\
+      \pcind(\inp, \zkproof', \tree') \gets \pcind \treefind(i + 1)\\
+      \pcind \pcif \tree' \neq \bot \pcthen \\
+      \pcind \pcind \tree \gets (\tree, \tree') \pccomment{append $\tree'$ to $\tree$}\\
+      \pcind \pcind \counter \gets \counter + 1\\
+      \pcreturn (\inp, \zkproof, \tree)
+    }
+  }
+  \caption{Extractor and tree finding algorithm}
+  \label{fig:extractor_and_tree_finding_algorithm}
+\end{figure}
+
+\paragraph{Bootle et al.'s tree finding algorithm and Fiat--Shamir
+  transformation}
+We note that although the result of building a tree of transcripts presented in
+\cite{EC:BCCGP16} is dubbed ``forking lemma'' it differs from forking lemmas
+known from e.g.~\cite{JC:PoiSte00,CCS:BelNev06}.
+%
+First of all forking lemmas in these papers analyse probability of building a
+tree of acceptable transcripts for Fiat--Shamir based non-interactive proof
+systems, while the protocol presented by Bootle et al.~works for interactive
+proof systems. (It can however be adjusted to work with NIZKs as well as
+presented on \cref{fig:extractor_and_tree_finding_algorithm}.)
+Importantly, the result of Bootle et al.~does not analyse security of
+Fiat--Shamir transformation applied to the original interactive protocol.
+Obviously, one could just assume that the Fiat--Shamir transformation is secure,
+however it remains unclear how much security loss it introduces.
+
+For example consider a (folklore, e.g.~see~\cite{JC:PoiSte00}) reduction $\rdv$
+showing soundness of a Fiat--Shamir transformed non-interactive proof
+$\proofsystem_\fs$ relying on soundness of its interactive version
+$\proofsystem$. The reduction breaks soundness of $\proofsystem$ by running an
+adversary $\adv$ who successfully breaks $\proofsystem_\fs$. Say that
+$\proofsystem$ compounds of $(2\mu + 1)$ messages and, for an instance $\inp$,
+the corresponding witness can be extracted from a $(n_1, \ldots, n_\mu)$-tree of
+interactive transcripts. Let $q$ be the total number of random oracle queries
+asked by $\adv$. Reduction $\rdv$ proceeds as follows.
+
+First it guesses indices $(i_1, \ldots, i_\mu)$ of $\adv$'s random oracle queries
+used as challenges to a proof $\zkproof$ output by the adversary. Then it picks
+randomly $q$ random oracle responses $h_1, \ldots, h_q$.
+
+Next the reduction starts its interaction with $\proofsystem.\verifier$ playing
+the role of a prover, and with the adversary $\adv$ providing it with the random
+oracle responses; that is, on $i$-th random oracle query from the adversary the
+reduction responds with $h_i$, except for $i \in \smallset{i_1, \ldots, i_\mu}$.
+When the adversary provides instance $\inp$ it tries to prove, the same instance
+is provided to $\proofsystem.\verifier$. When the adversary sends its $i_j$-th
+random oracle query the reduction passes the query to the verifier as its $j$-th
+message. The $j$-th challenge from the verifier is sent back to the adversary as
+the random oracle response. In the end, the successful adversary returns a valid
+proof for an invalid statement, that way, the reduction convinces the
+$\proofsystem$'s verifier on a false statement.
+
+\end{document}
 	\section{(Tight) simulation soundness of $\plonk$}
 	\task{28.07}{All proofs in this section should be verified} %
 \michals{15.09}{As MK noted, this proof holds only for simulation soundness. For extractability we use special soundness (cf the next section)}
