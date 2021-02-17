@@ -3554,7 +3554,7 @@ witness $\wit$ such that $\REL(\inp, \wit) = 1$.
       \counter \gets 1\\
       \pcwhile \counter < n_i\\
       \pcind \text{rewind $\adv$ just before it gets it computes the $i$-th challenge}\\
-      \pcind(\inp, \zkproof', \tree') \gets \pcind \treefind(i + 1)\\
+      \pcind(\inp, \zkproof', \tree') \gets \treefind(i + 1)\\
       \pcind \pcif \tree' \neq \bot \pcthen \\
       \pcind \pcind \tree \gets (\tree, \tree') \pccomment{append $\tree'$ to $\tree$}\\
       \pcind \pcind \counter \gets \counter + 1\\
