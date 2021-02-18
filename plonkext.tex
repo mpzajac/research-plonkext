@@ -27,7 +27,7 @@
   \newtheorem{proposition}[theorem]{Proposition}
   \newtheorem{lemma}[theorem]{Lemma} \newtheorem{corollary}[theorem]{Corollary}
   \theoremstyle{definition} \newtheorem{definition}[theorem]{Definition}
-  \newtheorem{example}[theorem]{Example} } \usepackage{soul}
+  \newtheorem{example}[theorem]{Example} }
 \usepackage{soulutf8} \soulregister\cite7 \soulregister\ref7
 \soulregister\pageref7 \usepackage{hyperref}
 \usepackage[color=yellow]{todonotes} \hypersetup{final} \usepackage{mathrsfs}
@@ -51,6 +51,7 @@
 \usepackage{dirtytalk}
 \usepackage[a4paper]{geometry}
 \usepackage{fullpage}
+\usepackage{ulem}
 
 \include{macros}
 
@@ -3541,27 +3542,39 @@ witness $\wit$ such that $\REL(\inp, \wit) = 1$.
   }
   \vspace*{1cm}
   \fbox{
-    \procedure{$\treefind(i)$}{
+    \procedure[linenumbering]{$\treefind(i, (h_1, \ldots, h_q))$}{
       \pcif i = \mu + 1 \pcthen\\
-      \pcind (\inp, \zkproof) \gets \adv(\REL, \crs)\\
+      \pcind (\inp, \zkproof) \gets \adv^{\ro}(\REL, \crs)\\
       \pcind \pcif \verifier(\REL, \crs, \inp, \zkproof) = 1 \pcthen\\
       \pcind \pcind \pcreturn (\inp, \zkproof, \tree)\\
       \pcind \pcelse \pcreturn (\inp, \zkproof, \bot)\\
       %
       \text{run $\adv$ up to and including its $(i + 1)$-th message}\\
-      (\inp, \zkproof, \tree) \gets \treefind(i + 1)\\
+       (\inp, \zkproof, \tree) \gets \treefind(i + 1, (h_1, \ldots, h_q))\\
       \pcif \tree = \bot \pcthen \pcreturn (\inp, \zkproof, \bot)\\
       \counter \gets 1\\
       \pcwhile \counter < n_i\\
-      \pcind \text{rewind $\adv$ just before it gets it computes the $i$-th challenge}\\
-      \pcind(\inp, \zkproof', \tree') \gets \treefind(i + 1)\\
+      \pcind \text{rewind $\adv$ just before it computes the $i$-th challenge}\\
+      \pcind \text{let $j$ be index of a random oracle query used by $\adv$ to
+        compute the $i$-th challenge}\\
+      \pcind (h'_{j}, \ldots, h'_q) \sample H^{q - j + 1}\\ 
+      \label{line:branching}\pcind(\inp, \zkproof', \tree') \gets \treefind(i + 1, (h_1, \ldots, h_{j
+        - 1}, h'_j, \ldots, h'_q))\\
       \pcind \pcif \tree' \neq \bot \pcthen \\
       \pcind \pcind \tree \gets (\tree, \tree') \pccomment{append $\tree'$ to $\tree$}\\
       \pcind \pcind \counter \gets \counter + 1\\
       \pcreturn (\inp, \zkproof, \tree)
     }
   }
-  \caption{Extractor and tree finding algorithm}
+  \caption{Extractor and tree finding algorithm. \michals{18.02}{The problem
+      with current write up --- The adversary seeing $h'_j$ may decide to stop
+      current trial to make a proof and start making the proof over. In that
+      case, he would continue using ro queries from sequence $(h'_j, \ldots,
+      h'_q)$. Hence, he would produce a proof that may be totally different from
+    the previous one, i.e. even the instance may differ, thus the proof cannoit
+    be joined to the tree. (Even when we force the adversary to use the same
+    instance, he can change all the following messages. In that case the proof
+    probably cannot be joined to the tree as well.)}}
   \label{fig:extractor_and_tree_finding_algorithm}
 \end{figure}
 
@@ -3574,12 +3587,35 @@ known from e.g.~\cite{JC:PoiSte00,CCS:BelNev06}.
 First of all forking lemmas in these papers analyse probability of building a
 tree of acceptable transcripts for Fiat--Shamir based non-interactive proof
 systems, while the protocol presented by Bootle et al.~works for interactive
-proof systems. (It can however be adjusted to work with NIZKs as well as
-presented on \cref{fig:extractor_and_tree_finding_algorithm}.)
-Importantly, the result of Bootle et al.~does not analyse security of
-Fiat--Shamir transformation applied to the original interactive protocol.
-Obviously, one could just assume that the Fiat--Shamir transformation is secure,
-however it remains unclear how much security loss it introduces.
+proof systems. \xout{(It can however be adjusted to work with NIZKs as well as
+  presented on \mbox{\cref{fig:extractor_and_tree_finding_algorithm}}.)}
+
+It is also not obvious how the result of Bootle et al.~can be used to show
+security of non-interactive protocols. At
+\cref{fig:extractor_and_tree_finding_algorithm} we present a ``natural''
+approach of making Bootle et al.'s extractor and tree finder work for a
+non-interactive proof system. Unfortunately, there is a crucial problem with
+such approach. Namely, the adversary is not fixed to show a proof for any
+concrete instance and can change the proven instance on the fly, e.g.~after
+seeing a number of random oracle responses. More precisely, at
+\cref{fig:extractor_and_tree_finding_algorithm}, line \ref{line:branching}, there is a first
+branch of the tree already built and the algorithm tries to find another one by
+presenting the adversary with a new set of challenges. The problem is that when
+$\adv$ sees $h'_j$ then it may decide to start the proof over \emph{with a new
+  instance}. In that case the resulting proof cannot be joined to the existing
+one (to make a tree) simply because it is for a different instance. Obviously,
+the adversary cannot change the instances indefinitely, so there is a chance
+that the tree will be finally build; however, it is far fgrom obvious and
+requires additional analysis.
+
+This problem could be solved as follows \michals{18.2}{Describe how guessing the
+  first adversary's ro query can solve the problem.}
+\michals{18.2}{Maybe we could guess only the first ro query?! That would be splendid.}
+
+% Importantly, the result of Bootle et al.~does not analyse security of
+% Fiat--Shamir transformation applied to the original interactive protocol.
+% Obviously, one could just assume that the Fiat--Shamir transformation is secure,
+% however it remains unclear how much security loss it introduces.
 
 For example consider a (folklore, e.g.~see~\cite{JC:PoiSte00}) reduction $\rdv$
 showing soundness of a Fiat--Shamir transformed non-interactive proof
@@ -3610,7 +3646,8 @@ $\proofsystem$'s verifier on a false statement.
 \end{document}
 	\section{(Tight) simulation soundness of $\plonk$}
 	\task{28.07}{All proofs in this section should be verified} %
-\michals{15.09}{As MK noted, this proof holds only for simulation soundness. For extractability we use special soundness (cf the next section)}
+  \michals{15.09}{As MK noted, this proof holds only for simulation soundness.
+    For extractability we use special soundness (cf the next section)}
 
 	\begin{theorem}[Simulation soundness]
 		% \michals{16.09}{To be change to sim snd proof}
