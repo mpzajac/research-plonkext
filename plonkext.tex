@@ -51,7 +51,7 @@
 \usepackage{dirtytalk}
 \usepackage[a4paper]{geometry}
 \usepackage{fullpage}
-\usepackage{ulem}
+\usepackage[normalem]{ulem}
 
 \include{macros}
 
@@ -3584,31 +3584,46 @@ We note that although the result of building a tree of transcripts presented in
 \cite{EC:BCCGP16} is dubbed ``forking lemma'' it differs from forking lemmas
 known from e.g.~\cite{JC:PoiSte00,CCS:BelNev06}.
 %
-First of all forking lemmas in these papers analyse probability of building a
-tree of acceptable transcripts for Fiat--Shamir based non-interactive proof
-systems, while the protocol presented by Bootle et al.~works for interactive
-proof systems. \xout{(It can however be adjusted to work with NIZKs as well as
-  presented on \mbox{\cref{fig:extractor_and_tree_finding_algorithm}}.)}
+First of all, the forking lemmas in these papers analyse probability of building
+a tree of acceptable transcripts for Fiat--Shamir based non-interactive proof
+systems, while the protocol presented by Bootle et al.~is intended to work for
+interactive proof systems. \xout{(It can however be adjusted to work with NIZKs
+  as well as presented on
+  \mbox{\cref{fig:extractor_and_tree_finding_algorithm}}.)}
 
-It is also not obvious how the result of Bootle et al.~can be used to show
-security of non-interactive protocols. At
+Importantly, it is not obvious how the result of Bootle et al.~can be used to
+show security of non-interactive protocols. At
 \cref{fig:extractor_and_tree_finding_algorithm} we present a ``natural''
 approach of making Bootle et al.'s extractor and tree finder work for a
 non-interactive proof system. Unfortunately, there is a crucial problem with
 such approach. Namely, the adversary is not fixed to show a proof for any
 concrete instance and can change the proven instance on the fly, e.g.~after
-seeing a number of random oracle responses. More precisely, at
-\cref{fig:extractor_and_tree_finding_algorithm}, line \ref{line:branching}, there is a first
-branch of the tree already built and the algorithm tries to find another one by
-presenting the adversary with a new set of challenges. The problem is that when
-$\adv$ sees $h'_j$ then it may decide to start the proof over \emph{with a new
-  instance}. In that case the resulting proof cannot be joined to the existing
-one (to make a tree) simply because it is for a different instance. Obviously,
-the adversary cannot change the instances indefinitely, so there is a chance
-that the tree will be finally build; however, it is far fgrom obvious and
-requires additional analysis.
+seeing a number of random oracle responses.
 
-This problem could be solved as follows \michals{18.2}{Describe how guessing the
+More precisely, at \cref{fig:extractor_and_tree_finding_algorithm}, line
+\ref{line:branching}, there is a first branch of the tree already built and the
+algorithm tries to find another one by presenting the adversary with a new set
+of challenges. The problem is that when $\adv$ sees $h'_j$ then it may decide to
+start the proof over \emph{with a new instance}. In that case the resulting
+proof cannot be joined to the existing one (to make a tree) simply because it is
+for a different instance. Obviously, the adversary cannot change the instances
+indefinitely, so there is a chance that the tree will be finally build; however,
+it is far from obvious and requires additional analysis.
+
+Alternatively, the adversary may not pick a new instance after seeing $h'_j$,
+but ``rewind'' its own proof. Say, that $\adv$ has prepared first $k$ messages
+and learns a new $h'_j$. Then it may discard some number of the last messages,
+say save the first $k'$, $k' < k$, messages and pick its $(k' + 1)$-th message
+differently and continues computation of the proof. In this scenario, the tree
+building algorithm fails as well as it was prepared to branch the protocol at
+point $k$ while the adversary made a new proof that branches from the previous
+at $k'$.
+
+The generalised forking lemma proposed in this paper solves the issues above.
+First of all, the 
+
+
+This problem could be solved as follows.  \michals{18.2}{Describe how guessing the
   first adversary's ro query can solve the problem.}
 \michals{18.2}{Maybe we could guess only the first ro query?! That would be splendid.}
 
