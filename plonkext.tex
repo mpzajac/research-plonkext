@@ -3585,7 +3585,7 @@ $\psfs$ is simulation extractable with extraction error $\epsur$.
 In \cite{EC:BCCGP16} Bootle et al.~proposed a novel inner-product argument. In
 its security proof the authors shown protocol's witness-extended emulation
 property. To that end, their proposed a new version of forking lemma, where they
-analised probability that a tree finding algorithm is able to produce a required
+analysed probability that a tree finding algorithm is able to produce a required
 tree of acceptable transcripts by rewinding a conversation between a
 (potentially malicious) prover and verifier.
 
@@ -3617,7 +3617,7 @@ chance that the tree will be finally build; however, it is far from obvious and
 requires additional analysis.
 
 Alternatively, the adversary may not pick a new instance after seeing $h'_j$,
-but ``rewind'' its own proof. Say, that $\adv$ has prepared first $k$ messages
+but ``rewinds'' its own proof. Say, that $\adv$ has prepared first $k$ messages
 and learns a new $h'_j$. Then it may discard some number of the last messages,
 say save the first $k'$, $k' < k$, messages and pick its $(k' + 1)$-th message
 differently and continues computation of the proof. In this scenario, the tree
@@ -3644,7 +3644,9 @@ $\zkproof[1..k]$ after $h_i$ has been seen as that would require finding a
 collision in the random oracle. That is, the new instance $\inp'$ and proof
 $\zkproof'$ would have to be that $h_i = \ro(\inp, \zkproof[1..k]) = \ro(\inp',
 \zkproof'[1..k])$, where either $\inp \neq \inp'$ or $\zkproof[1..k] \neq
-\zkproof'[1..k]$.
+\zkproof'[1..k]$. Otherwise, computing $\ro(\inp', \zkproof'[1..k])$ would
+require another random oracle query, falsifying the claim that we guessed the
+index for the $k$-th proof challenge correctly.
 
 
 % This problem could be solved as follows. \michals{18.2}{Describe how guessing
