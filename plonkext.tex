@@ -2077,14 +2077,16 @@ between $w = b_1 b_3 b_5 b_7$ and $w$ being random, thus \(
 \abs{\prob{\game{0}} - \prob{\game{2}}} \leq \epszk + \epsuber.  \) \qed
 \end{proof}
 
-\subsection{From special-soundness and unique response property to simulation extractability of $\plonkprotfs$}
+\subsection{From special-soundness and unique response property to simulation
+  extractability of $\plonkprotfs$}
 
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$
 and computationally special sound. We now 
 make use of \cref{thm:se} and show that
 $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
 
-% \michals{13.10}{The theorem below is going to have a much shorter proof -- for it being just a corollary of Sec.~4}
+% \michals{13.10}{The theorem below is going to have a much shorter proof -- for
+% it being just a corollary of Sec.~4}
 \begin{corollary}[Simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
 Assume that $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$, and
@@ -2108,12 +2110,14 @@ contrains in the proven circuit.
 \label{lem:pcoms_unique_op}
 Let $\PCOMs$ be a batched version of a KZG polynomial commitment
 \cite{AC:KatZavGol10} as described in \cite{CCS:MBKM19} then $\PCOMs$ has the
-unique opening property in the AGM.  \end{lemma}
+unique opening property in the AGM. \michals{15.03}{Write full version of the
+  batched polynomial commitment scheme}
+\end{lemma}
 \begin{proof}
 Let 
 $z \in \FF_p$ be the attribute the polynomial is evaluated at,
 $c \in \GRP$ be the commitment,  
-$s \in \FF_p$ the evaluation, and 
+$s \in \FF_p$ the evaluation value, and 
 $o \in \FF_p$ be the commitment opening. 
 We need to show that for every $\ppt$ adversary $\adv$ probability
 \[
@@ -2141,7 +2145,7 @@ is at most negligible.
 As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the
 probability of the adversary succeeding using the idealised verification
 equation---which considers equality between polynomials---instead of the real
-verification equation---which consider equality of the polynomials' evaluations.
+verification equation---which considers equality of the polynomials' evaluations.
 
 For a polynomial $f$, its degree upper bound $\maxconst$, evaluation point $z$,
 evaluation result $s$, and opening $o(X)$ the idealised check verifies that
@@ -2181,7 +2185,7 @@ second case we show that it breaks the unique opening property of $\PCOMs$.
 The proof goes similarly to the proof of \cref{lem:plonkprot_ur} thus we
 provide only draft of it here. 
 In each Round $i$, for $i > 1$, the prover either commits to some
-well-defined polynomials (deterministically), evaluates these on some
+well-defined polynomials (deterministically), evaluates these on 
 randomly picked points, or shows that the evaluations were performed
 correctly. 
 Naturally for a committed polynomial $\p{p}$ evaluated at point $x$ only one
@@ -2189,9 +2193,9 @@ value $y = \p{p}(x)$ is correct. If the adversary was able to provide two
 different values $y$ and $\tilde{y}$ that would be accepted as an evaluation
 of $\p{p}$ at $x$ then the $\PCOMs$'s evaluation binding would be broken.
 Alternatively, if $\adv$ was able to provide two openings $\p{W}$ and
-$\p{\tilde{W}}$ for $y = \p{x}$ then the unique opening property would be
+$\p{\tilde{W}}$ for $y = \p{p}(x)$ then the unique opening property would be
 broken.
-
+%
 Hence the probability that $\adv$ breaks $\ur{2}$-property of $\PCOMs$ is
 upper-bounded by $\epsbind + \epsop$. 
 \qed
@@ -2224,14 +2228,14 @@ upper-bounded by $\epsbind + \epsop$.
   a case when $\tree$ contains a transcript that is acceptable by the real
   verifier but is not acceptable by the ideal verifier.  In that case we show a
   reduction $\rdvldlog$ that uses $\adv$ to break the
-  $(\dconst, \dconst)$-$\ldlog$ assumption with at least the same probability.
+  $(\dconst, \dconst)$-$\ldlog$ assumption.
 
   \ncase{When $\event{E}$ happens} Since $\sonicprot$ is perfectly sound
   regarding the ideal verifier, for an acceptable proof $\zkproof$ for a
   statement $\inp$ there exists a witness $\wit$ such that $\REL(\inp, \wit)$
-  holds and the polynomial $\p{r}(X, Y)$ contains witness at its coefficients.
+  holds and the polynomial $\p{r}(X, y)$ contains witness at its coefficients.
   Note that the witness-carrying polynomial $\p{r}(X, y)$ has degree at most
-  $(\multconstr + \linconstr)$ and since $\adv$ answered correctly on
+  $\multconstr + \linconstr$ and since $\adv$ answered correctly on
   $(\multconstr + \linconstr + 1)$ different challenges $z$ (for the sake of
   concreteness let us call them $z_1, \ldots, z_{\multconstr + \linconstr + 1}$)
   then $(\multconstr + \linconstr + 1)$ evaluations
@@ -2266,15 +2270,15 @@ In the first round, it picks randomly vectors $\vec{a}$, $\vec{b}$ and sets
 Then it pick randomisers $c_{\multconstr + 1}, \ldots, c_{\multconstr + 4}$,
 honestly computes polynomials $\p{r}(X, Y), \p{r'}(X, Y), \p{s}(X, Y)$ and
 $\p{t}(X, Y)$ and concludes the first round as an honest prover would. Because
-of the randomisers polynomial $\pr(X, Y)$ computed by the simulator is
-indistinguishable from a polynomial provided by an honest user for a
-distinguisher that only learns $\pR,\pT,\pa,\pb$ from the proof (the other proof
-elements are fixed by these elements and the public information).
-See~\cref{sec:sonic_constraint_system}.
+of the randomisers the polynomial $\pr(X, Y)$ computed by the simulator is
+indistinguishable from a polynomial provided by an honest user for an adversary
+that only learns $\pR,\pT,\pa,\pb$ from the proof (the other proof elements are
+fixed by these elements and the public information,
+see~\cref{sec:sonic_constraint_system}).
 
 Next, $\simulator$ computes the first verifier's challenge $y$ such that
-$\p{t}(X, y)$ is a polynomial that has $0$ as a coefficient next to $X^0$.
-I.e.~$\pt(0, y) = 0$. As noted in \cite{CCS:MBKM19}, the coefficient next to
+$\pt(X, y)$ is a polynomial that has $0$ as a coefficient next to $X^0$.
+I.e.~$\pt(0, y) = 0$. By the definition of $\pt(X)$, the coefficient next to
 $X^0$ in $\p{t}(X, Y)$ equals
 \begin{equation}
 	\label{eq:x0}
@@ -2286,7 +2290,7 @@ $X^0$ in $\p{t}(X, Y)$ equals
 \end{equation}
 for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ as defined
 in \cref{sec:sonic_constraint_system} (Vectors $\vec{u_q}, \vec{v_q}, \vec{w_q}$
-are $\multconstr$-elements long and correspond to the $Q$ linear constrains of
+are $\multconstr$-elements long and correspond to $Q$ linear constrains of
 the proof system. Field element $k_{q}$ is the instance value). When the proven
 instance is correct, $\pt(0,Y)$ is a zero polynomial. See \cite{CCS:MBKM19} for
 details. Also, when \cref{eq:ab_eq_c} holds, that polynomial simplifies to
@@ -2302,14 +2306,13 @@ where $\vec{\p{\tilde{w}}}(Y)$ is defined as
 	\p{\tilde{w}_i}(Y) = \sum_{q = 1}^\linconstr Y^{q +
 	\multconstr} w_{q, i}\,.
 \]
-Note that the polynomial from \cref{eq:x0_simpl} is a ``classical'',
-i.e.~non-Laurent, polynomial. Also, $t(0,Y)$ is a polynomial of degree
-$(\linconstr + \multconstr)$ with $0$ coefficients for $Y^{i}$, for $i \in
-\range{0}{\multconstr}$. Also, since $\vec{a}, \vec{b}$ were picked at random,
-$\pt(0,Y) / Y^{\multconstr + 1}$ is a degree-$(\linconstr - 1)$ polynomial of
-random coefficients. Recall, that the view of the adversary is independent of
-$\vec{a}, \vec{b}$ because of randomisers $c_{\multconstr + 1}, \ldots,
-c_{\multconstr + 4}$.
+Note that $\pt(0, Y)$ is a ``classical'', i.e.~non-Laurent, polynomial. Also,
+it is a polynomial of degree $\linconstr + \multconstr$ with $0$
+coefficients for $Y^{i}$, for $i \in \range{0}{\multconstr}$. Also, since
+$\vec{a}, \vec{b}$ were picked at random, $\pt(0,Y) / Y^{\multconstr + 1}$ is a
+degree-$(\linconstr - 1)$ polynomial of random coefficients. Recall, that the
+view of the adversary is independent of $\vec{a}, \vec{b}$ because of
+randomisers $c_{\multconstr + 1}, \ldots, c_{\multconstr + 4}$.
 
 The probability that a random degree-$(\linconstr - 1)$ polynomial over
 $\FF_p[Y]$ has a root is at least $\infrac{1}{(\linconstr - 1) !}$, see
@@ -2317,7 +2320,7 @@ $\FF_p[Y]$ has a root is at least $\infrac{1}{(\linconstr - 1) !}$, see
 = \poly$, we can say that the polynomial $\pt(0,Y)$ as computed by the simulator
 has roots with non-negligible probability. Furthermore, these roots can be found
 and the simulator picks fresh $\vec{a}, \vec{b}$ until $\pt(0,Y)$ has a root. As
-the roots of a random polynomial are themselves random $\FF_p$ element, the
+the roots of a random polynomial are themselves random $\FF_p$ elements, the
 challenge $y$ picked by the simulator comes from the same distribution as if it
 was picked by an honest verifier.
 
