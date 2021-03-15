@@ -1629,9 +1629,10 @@ tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 
 \subsection{$\plonk$ protocol rolled out}
 \subsubsection{The constrain system}
-\subsubsection{Algorithms rolled out}
+\michals{15.03}{Explain}
+\subsubsection{Algorithms rolled out.}
 \label{sec:plonk_explained}
-\ncase{$\plonk$ CRS generating algorithm $\kgen(\REL)$}
+\paragraph{$\plonk$ CRS generating algorithm $\kgen(\REL)$:}
 For the sake of simplicity of security reductions presented in this paper, we
 describe here a simplified CRS generating algorithm which produces only
 these CRS elements that cannot be computed without knowing the secret trapdoor
@@ -1646,10 +1647,12 @@ and outputs
 	\gtwo{\chi} \right).
 \]
 
-\ncase{$\plonk$ prover $\prover(\REL, \crs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \numberofconstrains}})$}
+\paragraph{$\plonk$ prover
+  $\prover(\REL, \crs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot
+      \numberofconstrains}})$.}
 \begin{description}
-	\item[Round 1] 
-	Sample $b_1, \ldots, b_9 \sample \FF_p$; compute $\p{a}(X), \p{b}(X), \p{c}(X)$ as 
+\item[Round 1] Sample $b_1, \ldots, b_9 \sample \FF_p$; compute
+  $\p{a}(X), \p{b}(X), \p{c}(X)$ as
 	\begin{align*}
 		\p{a}(X) &= (b_1 X + b_2)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_i \lag_i(X) \\
 		\p{b}(X) &= (b_3 X + b_4)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_{\numberofconstrains + i} \lag_i(X) \\
@@ -2323,7 +2326,7 @@ In \sonic{} we will use commitments to the following polynomials.
 \end{align*}
 	
 \subsubsection{Algorithms rolled out}
-\ncase{$\sonic$ CRS generation $\kgen(\REL)$} The CRS generating algorithm picks
+\paragraph{$\sonic$ CRS generation $\kgen(\REL)$.} The CRS generating algorithm picks
 randomly $\alpha, \chi \sample \FF_p$ and outputs
 	\[
       \crs = \left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
@@ -2331,7 +2334,7 @@ randomly $\alpha, \chi \sample \FF_p$ and outputs
         \gtwo{\smallset{\chi^i, \alpha \chi^i}_{i = - \dconst}^{\dconst}},
         \gtar{\alpha} \right)
 	\]
-\ncase{$\sonic$ prover $\prover(\REL, \crs, \inp, \wit=\va, \vb, \vc)$}
+\paragraph{$\sonic$ prover $\prover(\REL, \crs, \inp, \wit=\va, \vb, \vc)$.}
 \begin{description}
 \item[Round 1] The prover picks randomly randomisers
   $c_{\multconstr + 1}, c_{\multconstr + 2}, c_{\multconstr + 3}, c_{\multconstr
@@ -2366,7 +2369,7 @@ randomly $\alpha, \chi \sample \FF_p$ and outputs
   $\gone{q_z} = \open(\crs, z, \p{s}(u, X))$ and outputs $\gone{q_z}$ and $\p{s}(u, z)$.
 \end{description}
 
-\ncase{$\sonic$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$} The verifier
+\paragraph{$\sonic$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$.} The verifier
 in \sonic{} runs as subroutines the verifier for the polynomial commitment. That
 is it sets $t' = a'(b' + s) - \p{k}(y)$ and checks the following:
 \begin{equation*}
