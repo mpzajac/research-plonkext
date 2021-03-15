@@ -2192,9 +2192,9 @@ in \sonic{} runs as subroutines the verifier for the polynomial commitment. That
 is it sets $t' = a'(b' + s) - \p{k}(y)$ and checks the following:
 \begin{equation*}
   \begin{split}
-    &\PCOMs.\verifier(\crs, \multconstr, \gone{r}, z, a, \gone{o_a}), \\
-    &\PCOMs.\verifier(\crs, \multconstr, \gone{r}, yz, b, \gone{o_b}),\\
-    &\PCOMs.\verifier(\crs, \dconst, \gone{t}, z, t, \gone{o_t}),\\
+    &\PCOMs.\verifier(\crs, \multconstr, \gone{r}, z, a', \gone{o_a}), \\
+    &\PCOMs.\verifier(\crs, \multconstr, \gone{r}, yz, b', \gone{o_b}),\\
+    &\PCOMs.\verifier(\crs, \dconst, \gone{t}, z, t', \gone{o_t}),\\
   \end{split}
   \qquad
   \begin{split}
@@ -2208,7 +2208,7 @@ and accepts the proof iff all the checks holds.
 \subsection{Unique opening property of $\PCOMs$}
 \begin{lemma}
 \label{lem:pcoms_unique_op}
-$\PCOMs$, cf.~\cref{fig:pcoms}, has the unique opening property in the AGM. 
+$\PCOMs$ has the unique opening property in the AGM. 
 \end{lemma}
 \begin{proof}
 Let 
