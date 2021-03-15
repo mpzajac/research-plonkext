@@ -2105,40 +2105,135 @@ contrains in the proven circuit.
 
 \section{Simulation extractability of $\sonicprotfs$}
 \label{sec:sonic}
+\subsection{The protocol.}
+In this section we present $\sonic$'s constraint system and algorithms. Reader
+familiar with them may jump directly to the next section.
+
+\subsubsection{The constraint system}
+\label{sec:sonic_constraint_system}
+\sonic's system of constraints composes of three $\multconstr$-long vectors
+$\va, \vb, \vc$ which corresponds to left and right inputs to multiplication
+gates and their outputs. It hence holds $\va \cdot \vb = \vc$.
+
+There is also $\linconstr$ linear constrains of the form
+\[
+  \va \vec{u_q} + \vb \vec{v_q} + \vc \vec{w_q} = k_q,
+\]
+where $\vec{u_q}, \vec{v_q}, \vec{w_q}$ are vectors for the $q$-th linear
+constraint with instance value $k_q \in \FF_p$. Furthermore define polynomials
+\begin{equation}
+  \begin{split}
+    \p{u_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} u_{q, i}\,,\\
+    \p{v_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} v_{q, i}\,,\\
+  \end{split}
+  \qquad
+  \begin{split}
+    \p{w_i}(Y) & = -Y^i - Y^{-i} + \sum_{q = 1}^\linconstr Y^{q +
+      \multconstr} w_{q, i}\,,\\
+    \p{k}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} k_{q}.
+  \end{split}
+\end{equation}
+In \sonic{} we will use commitments to the following polynomials.
+\begin{align*}
+  \pr(X, Y) & = \sum_{i = 1}^{\multconstr} \left(a_i X^i Y^i + b_i X^{-i} Y^{-i}
+              + c_i X^{-i - \multconstr} Y^{-i - \multconstr}\right) \\
+  \p{s}(X, Y) & = \sum_{i = 1}^{\multconstr} \left( u_i (Y) X^{-i} +
+                v_i(Y) X^i + w_i(Y) X^{i + \multconstr}\right)\\
+  \pr'(X, Y) & = \pr(X, Y) + \p{s}(X, Y) \\
+  \pt(X, Y) & = \pr(X, 1) \pr'(X, Y) - \p{k}(Y)\,.
+\end{align*}
+	
+\subsubsection{Algorithms rolled out}
+\ncase{$\sonic$ CRS generation $\kgen(\REL)$} The CRS generating algorithm picks
+randomly $\alpha, \chi \sample \FF_p$ and outputs
+	\[
+      \crs = \left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
+          \smallset{\alpha \chi^i}_{i = -\dconst, i \neq 0}^{\dconst}},
+        \gtwo{\smallset{\chi^i, \alpha \chi^i}_{i = - \dconst}^{\dconst}},
+        \gtar{\alpha} \right)
+	\]
+\ncase{$\sonic$ prover $\prover(\REL, \crs, \inp, \wit=\va, \vb, \vc)$}
+\begin{description}
+\item[Round 1] The prover picks randomly randomisers
+  $c_{\multconstr + 1}, c_{\multconstr + 2}, c_{\multconstr + 3}, c_{\multconstr
+    + 4} \sample \FF_p$. Set
+  $\pr(X, Y) \gets \pr(X, Y) + \sum_{i = 1}^4 c_{\multconstr + i} X^{- 2
+    \multconstr - i}$. Commits to $\pr(X, 1)$ and outputs
+  $\gone{r} \gets \com(\crs, \multconstr, \pr(X, 1))$.  Then it gets challenge $y$ from
+  the verifier.
+\item[Round 2] $\prover$ commits to $\pt(X, y)$ and outputs
+  $\gone{t} \gets \com(\crs, \dconst, \pt(X, y))$. Then it gets a challenge $z$ from
+  the verifier.
+\item[Round 3] The prover computes commitment openings. That is, it outputs
+  \begin{align*}
+    \gone{o_a} & = \open(\crs, z, \pr(z, 1), \pr(X, 1)) \\
+    \gone{o_b} & = \open(\crs, yz, \pr(yz, 1), \pr(X, 1)) \\
+    \gone{o_t} & = \open(\crs, z, \pt(z, y), \pt(X, y)) 
+  \end{align*}
+  along with evaluations $a' = \pr(z, 1), b' = \pr(y, z), t' = \pt(z, y)$.  Then it
+  engages in the signature of correct computation playing the role of the
+  helper, i.e.~it commits to $\p{s}(X, y)$ and sends the commitment $\gone{s}$.  Then
+  it obtains a challenge $u$ from the verifier.
+\item[Round 4] In the next round the prover computes
+  $\gone{c} \gets \com(\crs, \dconst, \p{s}(u, x)) \cdot \gone{\p{s}(u, x)}$ and
+  compute commitments' openings
+  \begin{align*}
+    \gone{w} & = \open(\crs, u, \p{s}(X, y)), \\
+    \gone{q_y} & = \open(\crs, y, \p{s}(u, Y)),
+  \end{align*}
+  and returns $\gone{w}, \gone{q_y}, \p{s}(u, y)$. Eventually the prover gets the last challenge
+  from the verifier---$z$.
+\item[Round 5] In the final round, $\prover$ computes opening
+  $\gone{q_z} = \open(\crs, z, \p{s}(u, X))$ and outputs $\gone{q_z}$ and $\p{s}(u, z)$.
+\end{description}
+
+\ncase{$\sonic$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$} The verifier
+in \sonic{} runs as subroutines the verifier for the polynomial commitment. That
+is it sets $t' = a'(b' + s) - \p{k}(y)$ and checks the following:
+\begin{equation*}
+  \begin{split}
+    &\PCOMs.\verifier(\crs, \multconstr, \gone{r}, z, a, \gone{o_a}), \\
+    &\PCOMs.\verifier(\crs, \multconstr, \gone{r}, yz, b, \gone{o_b}),\\
+    &\PCOMs.\verifier(\crs, \dconst, \gone{t}, z, t, \gone{o_t}),\\
+  \end{split}
+  \qquad
+  \begin{split}
+    &\PCOMs.\verifier(\crs, \dconst, \gone{s}, u, s, \gone{w}),\\
+    &\PCOMs.\verifier(\crs, \dconst, \gone{c}, y, s, \gone{q_y}),\\
+    &\PCOMs.\verifier(\crs, \dconst, \gone{c}, z, s_z, \gone{q_z}),
+  \end{split}
+\end{equation*}
+and accepts the proof iff all the checks holds.
+
 \subsection{Unique opening property of $\PCOMs$}
 \begin{lemma}
 \label{lem:pcoms_unique_op}
-Let $\PCOMs$ be a batched version of a KZG polynomial commitment
-\cite{AC:KatZavGol10} as described in \cite{CCS:MBKM19} then $\PCOMs$ has the
-unique opening property in the AGM. \michals{15.03}{Write full version of the
-  batched polynomial commitment scheme}
+$\PCOMs$, cf.~\cref{fig:pcoms}, has the unique opening property in the AGM. 
 \end{lemma}
 \begin{proof}
 Let 
 $z \in \FF_p$ be the attribute the polynomial is evaluated at,
-$c \in \GRP$ be the commitment,  
+$\gone{c} \in \GRP$ be the commitment,  
 $s \in \FF_p$ the evaluation value, and 
-$o \in \FF_p$ be the commitment opening. 
+$o \in \GRP$ be the commitment opening. 
 We need to show that for every $\ppt$ adversary $\adv$ probability
 \[
-	\Pr
-		\left[
-			\begin{aligned}
-				& \verify(\crs, c, z, s, o) = 1, \\
-				& \verify(\crs, c, z, \tilde{s}, \tilde{o}) = 1
-			\end{aligned}
-		\,\left|\,
-		\vphantom{\begin{aligned}
-			& \verify(\crs, c, z, s, o),\\
-			& \verify(\crs, c, z, \tilde{s}, \tilde{o}) \\
-			&o \neq \tilde{o})
+  \Pr \left[
+    \begin{aligned}
+      & \verify(\crs, \gone{c}, z, s, \gone{o}) = 1, \\
+      & \verify(\crs, \gone{c}, z, \tilde{s}, \gone{\tilde{o}}) = 1
+    \end{aligned}
+    \,\left|\, \vphantom{\begin{aligned}
+          & \verify(\crs, \gone{c}, z, s, \gone{o}),\\
+          & \verify(\crs, \gone{c}, z, \tilde{s}, \gone{\tilde{o}}) \\
+          &o \neq \tilde{o})
 		\end{aligned}}
-		\begin{aligned}
-			& \crs \gets \kgen(\secparam), \\
-			&	(c, z, s, \tilde{s}, o, \tilde{o}) \gets \adv(\crs)
-		\end{aligned}
-		\right.\right]
-	 % \leq \negl.
+      \begin{aligned}
+        & \crs \gets \kgen(\secparam), \\
+        & (\gone{c}, z, s, \tilde{s}, \gone{o}, \gone{\tilde{o}}) \gets \adv(\crs)
+      \end{aligned}
+    \right.\right]
+  % \leq \negl.
 \]
 is at most negligible.
 
@@ -2148,9 +2243,9 @@ equation---which considers equality between polynomials---instead of the real
 verification equation---which considers equality of the polynomials' evaluations.
 
 For a polynomial $f$, its degree upper bound $\maxconst$, evaluation point $z$,
-evaluation result $s$, and opening $o(X)$ the idealised check verifies that
+evaluation result $s$, and opening $\gone{o(X)}$ the idealised check verifies that
 \begin{equation}
-	\alpha (X^{\dconst - \maxconst}f(X) \cdot X^{-\dconst + \maxconst} -  s) \equiv \alpha \cdot o(X) (X - z)\,,
+  \alpha (X^{\dconst - \maxconst}f(X) \cdot X^{-\dconst + \maxconst} -  s) \equiv \alpha \cdot o(X) (X - z)\,,
 \end{equation}
 what is equivalent to 
 \begin{equation}
@@ -2159,7 +2254,6 @@ what is equivalent to
 \end{equation}
 Since $o(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial
 composition, there is only one $o(X)$ that fulfils the equation above.
-
 \qed
 \end{proof}
 
@@ -2969,12 +3063,12 @@ In \sonic{} we will use commitments to the following polynomials.
 		The prover picks randomly randomisers $c_{\multconstr + 1}, c_{\multconstr + 2},
 		c_{\multconstr + 3}, c_{\multconstr + 4} \sample \FF_p$. Set $\pr(X, Y)
 		\gets \pr(X, Y) + \sum_{i = 1}^4 c_{\multconstr + i} X^{- 2 \multconstr -
-		i}$. Commit to $\pr(X, 1)$ by setting and outputting $R \gets \com(\crs, \multconstr,
+		i}$. Commits to $\pr(X, 1)$ and outputs $R \gets \com(\crs, \multconstr,
 		\pr(X, 1))$.
 		Then it gets challenge $y$ from the verifier.
-	\item[Round 2] $\prover$ commits to $\pt(X, y)$ by setting and outputting $T
-		\gets \com(\crs, \dconst, \pt(X, y))$. Then it gets a challenge $z$ from
-		the verifier.
+      \item[Round 2] $\prover$ commits to $\pt(X, y)$ and outputs
+        $T \gets \com(\crs, \dconst, \pt(X, y))$. Then it gets a challenge $z$
+        from the verifier.
 	\item[Round 3] The prover computes commitment openings. That is, it outputs
 		\begin{align*}
 			W_a & = \open(\crs, z, \pr(z, 1), \pr(X, 1)) \\
