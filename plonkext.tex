@@ -1628,8 +1628,35 @@ property or breaks the $\dlog$ assumption, if extracting a valid witness from a
 tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 
 \subsection{$\plonk$ protocol rolled out}
+% \newcommand{\va}{\vec{a}}
+% \newcommand{\vb}{\vec{b}}
+% \newcommand{\vc}{\vec{v}}
+\newcommand{\vql}{\vec{q_{L}}}
+\newcommand{\vqr}{\vec{q_{R}}}
+\newcommand{\vqm}{\vec{q_{M}}}
+\newcommand{\vqo}{\vec{q_{O}}}
+\newcommand{\vx}{\vec{x}}
+\newcommand{\vqc}{\vec{q_{C}}}
 \subsubsection{The constrain system}
 \michals{15.03}{Explain}
+Assume $\CRKT$ is a fan-in two arithmetic circuit, which fan-out is unlimited
+and has $n$ gates and $m$ wires ($n \leq m \leq 2n$). \plonk's constraint system
+is defined as follows:
+\begin{itemize}
+\item Let $\vec{V} = (\va, \vb, \vc)$, where $\va, \vb, \vc
+  \in \range{1}{m}^n$. Vectors $\va, \vb, \vc$ represents left,
+  right and output gate wires. 
+\item Vectors $\vec{Q} = (\vql, \vqr, \vqo, \vqm, \vqc) \in
+  (\FF^n)^5$ are called \emph{selector vectors}. 
+\end{itemize}
+
+We say that vector $\vx \in \FF^m$ satisfies constraint system if for all $i
+\in \range{1}{n}$
+\[
+  \vql_i \cdot \vx_{\va_i} + \vqr_i \cdot \vx_{\vb_i} + \vqo \cdot \vx_{\vc_i} +
+  \vqm_i \cdot (\vx_{\va_i} \vx_{\vb_i}) + \vqc_i = 0. 
+\]
+
 \subsubsection{Algorithms rolled out.}
 \label{sec:plonk_explained}
 \paragraph{$\plonk$ CRS generating algorithm $\kgen(\REL)$:}
