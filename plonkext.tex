@@ -1663,14 +1663,19 @@ We say that vector $\vx \in \FF^m$ satisfies constraint system if for all $i
 
 \subsubsection{Algorithms rolled out.}
 \label{sec:plonk_explained}
-\paragraph{$\plonk$ CRS generating algorithm $\kgen(\REL)$:}
-For the sake of simplicity of security reductions presented in this paper, we
-describe here a simplified CRS generating algorithm which produces only
-these CRS elements that cannot be computed without knowing the secret trapdoor
-$\chi$. The rest of the preprocessed input, as it is called in
-\cite{EPRINT:GabWilCio19}, can be computed using these CRS elements thus we leave
-them to be computed by the prover, verifier, and simulator. 
+\plonk{} argument system is universal. That is, it allows to verify computation
+of any arithmetic circuit which has no more than $\numberofconstrains$
+gates using a single CRS. However, to make computation efficient, for each
+circuit there is allowed a preprocessing phase which extend the CRS with
+circuit-related polynomial evaluations.
 
+For the sake of simplicity of security reductions presented in this paper, we
+include in the CRS only these elements that cannot be computed without knowing
+the secret trapdoor $\chi$. The rest of the CRS---the preprocessed input---can
+be computed using these CRS elements thus we leave them to be computed by the
+prover, verifier, and simulator.
+
+\paragraph{$\plonk$ CRS generating algorithm $\kgen(\REL)$:}
 The CRS generating algorithm picks at random $\chi \sample \FF_p$, computes
 and outputs
 \[
@@ -1679,62 +1684,72 @@ and outputs
 \]
 
 \paragraph{Preprocessing:}
-Let $H = \smallset{\omega^i}_{i = 1}^{\numberofconstrains }$ be a (multiplicative) $\numberofconstrains$-element subgroup
-of a field $\FF$ compound of $\numberofconstrains$-th roots of unity in $\FF$.  During the
+Let $H = \smallset{\omega^i}_{i = 1}^{\numberofconstrains }$ be a
+(multiplicative) $\numberofconstrains$-element subgroup of a field $\FF$
+compound of $\numberofconstrains$-th roots of unity in $\FF$. Let $\lag_i(X)$ be
+$i$-th elements of an $\numberofconstrains$-elements Lagrange basis. During the
 preprocessing phase polynomials $\p{S_{id j}}, \p{S_{\sigma j}}$, for
 $j \in \range{1}{3}$, are computed. The polynomials are such that:
-\begin{align*}
-  \p{S_{id j}}(\omega^i) & = (j - 1) \cdot \numberofconstrains + i,\\
-  \p{S_{\sigma 1}}(X) & = X,\\
-  \p{S_{\sigma 2}}(X) & = k_1 \cdot X,\\
-  \p{S_{\sigma 3}}(X) & = k_2 \cdot X.
-\end{align*}
-Elements $k_1, k_2$ are chosen such that $H, k_1 \cdot H, k_2 \cdot H$ are
-distinct cosets in $\FF^*$ (thus consist of $3 \cdot \numberofconstrains $ distinct
-elements)\footnote{As noted in \cite{EPRINT:GabWilCio19}, $k_1$ may be a
-  quadratic residue and $k_2$ a quadratic non-residue.}.
+\begin{equation*}
+  \begin{aligned}
+    \p{S_{id 1}}(X) & = X,\\
+    \p{S_{id 2}}(X) & = k_1 \cdot X,\\
+    \p{S_{id 3}}(X) & = k_2 \cdot X,
+  \end{aligned}
+  \qquad
+\begin{aligned}
+  \p{S_{\sigma 1}}(X) & = \textstyle\sum\nolimits_{i = 1}^{\noofc} \sigma(i) \lag_i(X),\\
+  \p{S_{\sigma 2}}(X) & = \textstyle\sum\nolimits_{i = 1}^{\noofc}
+  \sigma(\noofc + i) \lag_i(X),\\
+  \p{S_{\sigma 3}}(X) & = \textstyle\sum\nolimits_{i = 1}^{\noofc} \sigma(2 \noofc + i) \lag_i(X).
+\end{aligned}
+\end{equation*}
+Coefficients $k_1$, $k_2$ are such that $H, k_1 \cdot H, k_2 \cdot H$ are
+different cosets of $\FF^*$, thus they define $3 \cdot \noofc$
+different elements. \cite{EPRINT:GabWilCio19} notes that it is enough to set
+$k_1$ to a quadratic residue and $k_2$ to a quadratic non-residue.
 
 Furthermore, we define polynomials $\p{q_L}, \p{q_R}, \p{q_O}, \p{q_M}, \p{q_C}$
-such that for $i \in \range{1}{\numberofconstrains }$
+such that for $i \in \range{1}{\noofc}$
 \begin{align*}
-  \p{q_L}(\omega^i) & = \vql_i, \\
-  \p{q_R}(\omega^i) & = \vqr_i, \\
-  \p{q_M}(\omega^i) & = \vqm_i, \\
-  \p{q_O}(\omega^i) & = \vqo_i, \\
-  \p{q_C}(\omega^i) & = \vqc_i.
+  \p{q_L}(X) & = \vql_i \lag_i(X), \\
+  \p{q_R}(X) & = \vqr_i \lag_i(X), \\
+  \p{q_M}(X) & = \vqm_i \lag_i(X), \\
+  \p{q_O}(X) & = \vqo_i \lag_i(X), \\
+  \p{q_C}(X) & = \vqc_i \lag_i(X).
 \end{align*}
 
 \paragraph{$\plonk$ prover
   $\prover(\REL, \crs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot
-      \numberofconstrains}})$.}
+      \noofc}})$.}
 \begin{description}
 \item[Round 1] Sample $b_1, \ldots, b_9 \sample \FF_p$; compute
   $\p{a}(X), \p{b}(X), \p{c}(X)$ as
 	\begin{align*}
-		\p{a}(X) &= (b_1 X + b_2)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_i \lag_i(X) \\
-		\p{b}(X) &= (b_3 X + b_4)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_{\numberofconstrains + i} \lag_i(X) \\
-		\p{c}(X) &= (b_5 X + b_6)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_{2 \cdot \numberofconstrains + i} \lag_i(X) 
+		\p{a}(X) &= (b_1 X + b_2)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_i \lag_i(X) \\
+		\p{b}(X) &= (b_3 X + b_4)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_{\noofc + i} \lag_i(X) \\
+		\p{c}(X) &= (b_5 X + b_6)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_{2 \cdot \noofc + i} \lag_i(X) 
 	\end{align*}
 	Output $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
 	
 	\item[Round 2]
 	Get challenges $\beta, \gamma \in \FF_p$
 	\[
-		\beta = \ro(\trans[0..1], 0)\,, \qquad \gamma = \ro(\trans[0..1], 1)\,.
+		\beta = \ro(\zkproof[0..1], 0)\,, \qquad \gamma = \ro(\zkproof[0..1], 1)\,.
 	\]
 	Compute permutation polynomial $\p{z}(X)$
 	\begin{multline*}
 		\p{z}(X) = (b_7 X^2 + b_8 X + b_9)\p{Z_H}(X) + \lag_1(X) + \\
-			+ \sum_{i = 1}^{\numberofconstrains - 1} 
+			+ \sum_{i = 1}^{\noofc - 1} 
 			\left(\lag_{i + 1} (X) \prod_{j = 1}^{i} 
 			\frac{
-			(\wit_j +\beta \omega^{j - 1} + \gamma)(\wit_{\numberofconstrains + j} + \beta k_1 \omega^{j - 1} + \gamma)(\wit_{2 \numberofconstrains + j} +\beta k_2 \omega^{j- 1} + \gamma)}
-			{(\wit_j+\sigma(j) \beta + \gamma)(\wit_{\numberofconstrains + j} + \sigma(\numberofconstrains + j)\beta + \gamma)(\wit_{2 \numberofconstrains + j} + \sigma(2 \numberofconstrains + j)\beta + \gamma)}\right)
+			(\wit_j +\beta \omega^{j - 1} + \gamma)(\wit_{\noofc + j} + \beta k_1 \omega^{j - 1} + \gamma)(\wit_{2 \noofc + j} +\beta k_2 \omega^{j- 1} + \gamma)}
+			{(\wit_j+\sigma(j) \beta + \gamma)(\wit_{\noofc + j} + \sigma(\noofc + j)\beta + \gamma)(\wit_{2 \noofc + j} + \sigma(2 \noofc + j)\beta + \gamma)}\right)
 	\end{multline*}
 	Output $\gone{\p{z}(\chi)}$
 		
 	\item[Round 3]
-	Get the challenge $\alpha = \ro(\trans[0..2])$, compute the quotient polynomial 
+	Get the challenge $\alpha = \ro(\zkproof[0..2])$, compute the quotient polynomial 
 	\begin{align*}
 	& \p{t}(X)  = \\
 	& (\p{a}(X) \p{b}(X) \selmulti(X) + \p{a}(X) \selleft(X) + 
@@ -1747,37 +1762,37 @@ such that for $i \in \range{1}{\numberofconstrains }$
 	\gamma)\p{z}(X \omega))  \frac{\alpha}{\p{Z_H}(X)} \\
 	& + (\p{z}(X) - 1) \lag_1(X) \frac{\alpha^2}{\p{Z_H}(X)}
 	\end{align*}
-	Split $\p{t}(X)$ into degree less then $\numberofconstrains$ polynomials $\p{t_{lo}}(X), \p{t_{mid}}(X), \p{t_{hi}}(X)$, such that
+	Split $\p{t}(X)$ into degree less then $\noofc$ polynomials $\p{t_{lo}}(X), \p{t_{mid}}(X), \p{t_{hi}}(X)$, such that
 	\[
-		\p{t}(X) = \p{t_{lo}}(X) + X^{\numberofconstrains} \p{t_{mid}}(X) + X^{2 \numberofconstrains} \p{t_{hi}}(X)\,.
+		\p{t}(X) = \p{t_{lo}}(X) + X^{\noofc} \p{t_{mid}}(X) + X^{2 \noofc} \p{t_{hi}}(X)\,.
 	\]
 	Output $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$.
 	
 	\item[Round 4]
-	Get the challenge $\chz \in \FF_p$, $\chz = \ro(\trans[0..3])$.
+	Get the challenge $\chz \in \FF_p$, $\chz = \ro(\zkproof[0..3])$.
 	Compute opening evaluations
 	\begin{align*}
-			\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
+      \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
 	\end{align*}
 	Compute the linearisation polynomial
 	\[
 		\p{r}(X) = 
 		\begin{aligned}
-			& \p{a}(\chz) \p{b}(\chz) \selmulti(X) + \p{a}(\chz) \selleft(X) + \p{b}(\chz) \selright(X) + \p{c}(\chz) \seloutput(X) + \selconst(X) \\
-			& + \alpha \cdot \left( (\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma)(\p{c}(\chz) + \beta k_2 \chz + \gamma) \cdot \p{z}(X)\right) \\
-			& - \alpha \cdot \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma)\beta \p{z}(\chz\omega) \cdot \p{S_{\sigma 3}}(X)\right) \\
-			& + \alpha^2 \cdot \lag_1(\chz) \cdot \p{z}(X)
+          & \p{a}(\chz) \p{b}(\chz) \selmulti(X) + \p{a}(\chz) \selleft(X) + \p{b}(\chz) \selright(X) + \p{c}(\chz) \seloutput(X) + \selconst(X) \\
+          & + \alpha \cdot \left( (\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma)(\p{c}(\chz) + \beta k_2 \chz + \gamma) \cdot \p{z}(X)\right) \\
+          & - \alpha \cdot \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma)\beta \p{z}(\chz\omega) \cdot \p{S_{\sigma 3}}(X)\right) \\
+          & + \alpha^2 \cdot \lag_1(\chz) \cdot \p{z}(X)
 		\end{aligned}
 	\]
 	Output $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega), \p{r}(\chz).$
 	
 	\item[Round 5]
-	Compute the opening challenge $v \in \FF_p$, $v = \ro(\trans[0..4])$.
+	Compute the opening challenge $v \in \FF_p$, $v = \ro(\zkproof[0..4])$.
 	Compute the openings for the polynomial commitment scheme 
 	\begin{align*}
 	& \p{W_\chz}(X) = \frac{1}{X - \chz} \left(
 	\begin{aligned}
-		& \p{t_{lo}}(X) + \chz^\numberofconstrains \p{t_{mid}}(X) + \chz^{2 \numberofconstrains} \p{t_{hi}}(X) - \p{t}(\chz)\\
+		& \p{t_{lo}}(X) + \chz^\noofc \p{t_{mid}}(X) + \chz^{2 \noofc} \p{t_{hi}}(X) - \p{t}(\chz)\\
 		& + v(\p{r}(X) - \p{r}(\chz)) \\
 		& + v^2 (\p{a}(X) - \p{a}(\chz))\\
 		& + v^3 (\p{b}(X) - \p{b}(\chz))\\
@@ -1796,19 +1811,23 @@ The \plonk{} verifier works as follows
 \begin{description}
 	\item[Step 1] Validate all obtained group elements.
 	\item[Step 2] Validate all obtained field elements.
-	\item[Step 3] Validate the instance $\inp = \smallset{\wit_i}_{i = 1}^\instsize$.
-	\item[Step 4] Compute challenges $\beta, \gamma, \alpha, \alpha', \chz, v, u$ from the transcript.
-	\item[Step 5] Compute zero polynomial evaluation $\p{Z_H} (\chz)  =\chz^\numberofconstrains - 1$.
-	\item[Step 6] Compute Lagrange polynomial evaluation $\lag_1 (\chz) = \frac{\chz^\numberofconstrains -1}{\numberofconstrains (\chz - 1)}$.
-	\item[Step 7] Compute public input polynomial evaluation $\pubinppoly (\chz) = \sum_{i \in \range{1}{\instsize}} \wit_i \lag_i(\chz)$.
+	\item[Step 3] Validate the instance
+      $\inp = \smallset{\wit_i}_{i = 1}^\instsize$.
+	\item[Step 4] Compute challenges $\beta, \gamma, \alpha, \alpha', \chz, v,
+      u$ from the transcript.
+	\item[Step 5] Compute zero polynomial evaluation
+      $\p{Z_H} (\chz) =\chz^\noofc - 1$.
+	\item[Step 6] Compute Lagrange polynomial evaluation
+      $\lag_1 (\chz) = \frac{\chz^\noofc -1}{\noofc (\chz - 1)}$.
+	\item[Step 7] Compute public input polynomial evaluation
+      $\pubinppoly (\chz) = \sum_{i \in \range{1}{\instsize}} \wit_i
+      \lag_i(\chz)$.
 	\item[Step 8] Compute quotient polynomials evaluations
 	\begin{multline*}
-		\p{t} (\chz)  = \frac{1}{\p{Z_H}(\chz)}
-		\Big(
-			\p{r} (\chz) + \pubinppoly(\chz) - (\p{a}(\chz) + \beta \p{S_\sigma 1}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_\sigma 2}(\chz) + \gamma) \\
-			(\p{c}(\chz) +
-			\gamma)\p{z}(\chz \omega) \alpha - \lag_1 (\chz) \alpha^2
-		\Big) \,.
+      \p{t} (\chz) = \frac{1}{\p{Z_H}(\chz)} \Big(
+      \p{r} (\chz) + \pubinppoly(\chz) - (\p{a}(\chz) + \beta \p{S_\sigma 1}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_\sigma 2}(\chz) + \gamma) \\
+      (\p{c}(\chz) + \gamma)\p{z}(\chz \omega) \alpha - \lag_1 (\chz) \alpha^2
+      \Big) \,.
 	\end{multline*}
 	\item[Step 9] Compute batched polynomial commitment
 	$\gone{D} = v \gone{r} + u \gone {z}$ that is
@@ -1816,19 +1835,21 @@ The \plonk{} verifier works as follows
 		\gone{D} & = v
 		\left(
 		\begin{aligned}
-			& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
-			& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
+          & \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
+          & + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
 			% &   \\
-			& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
+          & - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz)
+          + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha \beta \p{z}(\chz
+          \omega) \gone{\p{S_{\sigma 3}}(\chi)})
 		\end{aligned}
 		\right) + \\
 		& + u \gone{\p{z}(\chi)}\,.
 	\end{align*}
 	\item[Step 10] Computes full batched polynomial commitment $\gone{F}$:
 	\begin{align*}
-		\gone{F} & = \left(\gone{\p{t_{lo}}(\chi)} + \chz^\numberofconstrains \gone{\p{t_{mid}}(\chi)} + \chz^{2 \numberofconstrains} \gone{\p{t_{hi}}(\chi)}\right) + u \gone{\p{z}(\chi)} + \\
-		& + v
-		\left(
+      \gone{F} & = \left(\gone{\p{t_{lo}}(\chi)} + \chz^\noofc \gone{\p{t_{mid}}(\chi)} + \chz^{2 \noofc} \gone{\p{t_{hi}}(\chi)}\right) + u \gone{\p{z}(\chi)} + \\
+               & + v
+                 \left(
 		\begin{aligned}
 			& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}(\chz)   \gone{\selright} + \p{c}(\chz)  \gone{\seloutput} + \\
 			& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c}(\chz)  + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
@@ -1845,20 +1866,18 @@ The \plonk{} verifier works as follows
 			& \p{r}(\chz) + \pubinppoly(\chz) +  \alpha^2  \lag_1 (\chz) + \\
 			& - \alpha \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}} (\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}} (\chz) + \gamma) (\p{c}(\chz) + \gamma) \p{z}(\chz \omega) \right)
 		\end{aligned}
-		}\\
-		 + & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }\,.
+           }\\
+      + & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }\,.
 	\end{align*}
 	\item[Step 12] Check whether the verification $\vereq(\chi)$ equation holds
 	\begin{multline}
 		\label{eq:ver_eq}
-		\left(
-		\gone{\p{W_{\chz}}(\chi)} + u \cdot \gone{\p{W_{\chz \omega}}(\chi)}
-		\right) \bullet
+		\left( \gone{\p{W_{\chz}}(\chi)} + u \cdot \gone{\p{W_{\chz
+                \omega}}(\chi)} \right) \bullet
 		\gtwo{\chi} - \\
-		\left(
-			\chz \cdot \gone{\p{W_{\chz}}(\chi)} + u \chz \omega \cdot \gone{\p{W_{\chz \omega}}(\chi)} + \gone{F} - \gone{E}
-		\right) \bullet
-		\gtwo{1} = 0\,.
+		\left( \chz \cdot \gone{\p{W_{\chz}}(\chi)} + u \chz \omega \cdot
+          \gone{\p{W_{\chz \omega}}(\chi)} + \gone{F} - \gone{E} \right) \bullet
+        \gtwo{1} = 0\,.
 	\end{multline}
   The verification equation is a batched version of the verification equation
   from \cite{AC:KatZavGol10} which allows the verifier to check openings of
@@ -1957,7 +1976,7 @@ Step 1 above. \qed
 %is of knowledge.
 \end{lemma}
 \begin{proof}[sketch]
-  Let $\adv(\REL,\crs = (\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}},
+  Let $\adv(\REL,\crs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}},
   \gtwo{\chi}))$ be an adversary tasked to break the $\ur{3}$-ness of
   $\plonkprot$. It is sufficient to observe that the first 2 rounds of the
   protocol determines, along with the verifiers challenges, the rest of it. In
@@ -2069,7 +2088,7 @@ $\plonkprot$ is upper-bounded by $\epsbind + \epsop$. \qed
 \begin{lemma}
 \label{lem:plonkprot_ss}
 Let $\adv$ be a $\ppt$ algebraic adversary. The probability $\epsss$ that $\adv$
-breaks $(1, 1, \numberofconstrains + 3, 1)$-computational special soundness
+breaks $(1, 1, \noofc + 3, 1)$-computational special soundness
 of $\plonkprot$ is upper-bounded as
  \[
 	\epsss \leq \epsbatch + \epsdlog\,,
@@ -2077,13 +2096,13 @@ of $\plonkprot$ is upper-bounded as
  where $\epsbatch$ is the (negligible) probability that $\plonkprot$'s idealised
  verification equation $\vereq(X)$ accepts an invalid proof because of batching
  and $\epsdlog$ is a probability that a $\ppt$ algorithm can break the
- $(\numberofconstrains + 2, 1)$-$\dlog$ assumption.
+ $(\noofc + 2, 1)$-$\dlog$ assumption.
 \end{lemma}
 \begin{proof}
   Let $\crs$ be $\plonkprot$'s CRS and denote by $\crs_1$ all CRS's
   $\GRP_1$-elements; that is, $\crs_1 = \gone{1, \chi, \ldots,
-    \chi^{\numberofconstrains + 2}}$. Let $\adv$ be an algebraic adversary that
-  for a statement $\inp$ produces a $(1, 1, 1, \numberofconstrains + 3, 1)$-tree
+    \chi^{\noofc + 2}}$. Let $\adv$ be an algebraic adversary that
+  for a statement $\inp$ produces a $(1, 1, 1, \noofc + 3, 1)$-tree
   of acceptable transcripts
   $\tree$. % with non-negligible probability $\eta_\tree$.
   Note that in all transcripts the instance $\inp$, proof elements
@@ -2105,9 +2124,9 @@ of $\plonkprot$ is upper-bounded as
   probability of batching failure $\epsbatch$, for a valid proof $\zkproof$ of a
   statement $\inp$ there exists a witness $\wit$, such that $\REL(\inp, \wit)$
   holds. Note that the polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$, which contain
-  witness in their coefficients, have degree $(\numberofconstrains + 2)$ and
-  since $\adv$ answered honestly on $(\numberofconstrains + 3)$ different
-  challenges $\chz$ then $(\numberofconstrains + 3)$ evaluations of these
+  witness in their coefficients, have degree $(\noofc + 2)$ and
+  since $\adv$ answered honestly on $(\noofc + 3)$ different
+  challenges $\chz$ then $(\noofc + 3)$ evaluations of these
   polynomials (at different points) are known. The extractor $\extss$
   interpolates the polynomials and reveals the corresponding witness $\wit$.
 
@@ -2115,7 +2134,7 @@ of $\plonkprot$ is upper-bounded as
   $\vereq(X) \neq 0$, but $\vereq(\chi) = 0$. Since the adversary is algebraic,
   all group elements included in the tree of transcripts are extended by their
   representation as a combination of the input $\GRP_1$-elements i.e.~$\gone{1,
-    \chi, \ldots, \chi^{\numberofconstrains + 2}}$. Hence all coefficients of
+    \chi, \ldots, \chi^{\noofc + 2}}$. Hence all coefficients of
   the verification equation polynomial $\vereq(X)$ are known and $\rdvdlog$ can
   find its zero points. Since $\vereq(\chi) = 0$, the targeted discrete log
   value $\chi$ is among them. \qed
@@ -2150,7 +2169,7 @@ of $\plonkprot$ is upper-bounded as
   $\simulator_\chi$ which utilises for the simulation the CRS trapdoor and
   proceeds as follows. In the first round the simulator $\simulator_\chi$ picks
   randomisers $b_1, \ldots b_9$, sets $\wit_i = 0$, for $i \in \range{1}{3
-    \numberofconstrains}$, computes polynomials $\pa(X), \pb(X), \pc(X)$ and
+    \noofc}$, computes polynomials $\pa(X), \pb(X), \pc(X)$ and
   outputs $\gone{\pa(\chi), \pb(\chi), \pc(\chi)}$. Then it picks Round 1
   challenges $\beta, \gamma$ honestly.
 
@@ -2180,7 +2199,7 @@ $\simulator$ which proceeds as follows.
 First, since the simulator $\simulator$ does not know a witness $\wit$ for the proven
 statement $\inp$, it cannot compute the output of Round 1 accordingly to the
 protocol. Instead, it picks randomly both the randomisers $b_1, \ldots, b_6$ and
-sets $\wit_i = 0$ for $i \in \range{1}{3\numberofconstrains}$. Then $\simulator$
+sets $\wit_i = 0$ for $i \in \range{1}{3\noofc}$. Then $\simulator$
 outputs $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$. For the first round
 challenge, the simulator picks permutation argument challenges $\beta, \gamma$
 randomly.
@@ -2200,7 +2219,7 @@ $\p{t}(X)$ honestly. Since for a random $\p{a}, \p{b}, \p{c}, \p{z}$ the
 constraint system is (with overwhelming probability) not satisfied and the
 constraints-related polynomials are not divisible by $\p{Z_H}$, $\p{t}(X)$ is a
 rational function rather than a polynomial. Then, the simulator evaluates $\p{t}(X)$ at
-$\chz$ and picks randomly a degree-$(\numberofconstrains + 2)$ polynomial
+$\chz$ and picks randomly a degree-$(\noofc + 2)$ polynomial
 $\p{\tilde{t}}(X)$ such that $\p{t}(\chz) = \p{\tilde{t}}(\chz)$ and publishes a
 commitment $\gone{\p{\tilde{t}}(\chi)}$. After this round the simulator outputs
 $\chz$ as a challenge.
@@ -2285,7 +2304,7 @@ instance--witness pair $(\inp, \wit)$.  $\rdv$ now prepares a simulated proof as
 \begin{description} 
 \item[Round 1] $\rdv$ computes $\gone{\pa(\chi)}$ using as
 randomisers $\gone{\tb_1}, \gone{\tb_2}$ and setting $\wit_i = 0$, for $i
-\in \range{1}{3 \numberofconstrains}$. Similarly it computes
+\in \range{1}{3 \noofc}$. Similarly it computes
 $\gone{\pb(\chi)}, \gone{\pc(\chi)}$.  $\rdv$ publishes the obtained values
 and picks a Round 1 challenge $\beta, \gamma$ at random.  
 \item[Round 2]
@@ -2298,7 +2317,7 @@ computed by the simulator $\simulator_\chi$, otherwise, if $w$ is random
 then $\pt(\chi)$ is random as well, thus it is computed as $\simulator$
 would compute. The reduction computes and outputs $\gone{\ptlo(\chi),
 \ptmid(\chi), \pthi(\chi)}$ such that $\pt(X) = \ptlo(X) +
-X^\numberofconstrains \ptmid(X) + X^{2\numberofconstrains} \pthi(X)$.
+X^\noofc \ptmid(X) + X^{2\noofc} \pthi(X)$.
 Eventually, $\rdv$ outputs $\chz$.  
 \item[Round 4] The reduction outputs
 $\pa(\chz), \pb(\chz), \pc(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}
@@ -2336,9 +2355,9 @@ for $\plonkprotfs$ with probability at least $\accProb$. Then $\plonkprotfs$ is
 simulation-extractable with extraction error $\eta = \epsur$. The extraction
 probability $\extProb$ is at least
 \[
-	\extProb \geq \frac{1}{q^{\numberofconstrains + 2}} (\accProb - \epsur)^{\numberofconstrains + 3} -\eps\,,
+	\extProb \geq \frac{1}{q^{\noofc + 2}} (\accProb - \epsur)^{\noofc + 3} -\eps\,,
 \]
-for some negligible $\eps$ and $\numberofconstrains$ being the number of
+for some negligible $\eps$ and $\noofc$ being the number of
 contrains in the proven circuit.
 \end{corollary}
 
@@ -2783,7 +2802,7 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
 % \]
 % 
 % \ngame{2} This is identical to $\game{1}$ except that now the environment
-% aborts also when it fails to build a $(1, 1, 1, \numberofconstrains + 3,
+% aborts also when it fails to build a $(1, 1, 1, \noofc + 3,
 % 1)$-tree of accepting transcripts $\tree$ by rewinding $\advse$. Denote that
 % event by $\event{\errfrk}$. Note that for every acceptable proof
 % $\zkproof_{\advse}$, we may assume that whenever $\advse$ outputs in Round
@@ -2805,9 +2824,9 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
 % acceptable and does not break $\ur{3}$-ness of $\plonkprot$. From the
 % generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma},
 % \[
-%   \prob{\event{\errfrk}} \leq 1 - \left(\frac{\accProb^{\numberofconstrains +
-%     3}}{q^{\numberofconstrains + 2}} - \frac{\accProb \cdot
-%     (\numberofconstrains + 2)}{2^\secpar}\right)\,.
+%   \prob{\event{\errfrk}} \leq 1 - \left(\frac{\accProb^{\noofc +
+%     3}}{q^{\noofc + 2}} - \frac{\accProb \cdot
+%     (\noofc + 2)}{2^\secpar}\right)\,.
 % \]
 % 
 % \ngame{3} This is identical to $\game{2}$ except that now the environment uses
@@ -2827,14 +2846,14 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
 % the game-hoping argument,
 % \[
 %   \abs{\prob{\game{0}} - \prob{\game{3}}} \leq 1 -
-% 	 \left(\frac{\accProb^{\numberofconstrains + 3}}{q^{\numberofconstrains +
-%     2}} - \frac{\accProb \cdot (\numberofconstrains + 2)}{2^\secpar}\right) +
+% 	 \left(\frac{\accProb^{\noofc + 3}}{q^{\noofc +
+%     2}} - \frac{\accProb \cdot (\noofc + 2)}{2^\secpar}\right) +
 % 	 \epsur + \epsss\,.
 % \]
 % Thus the probability that extractor $\extss$ succeeds is at least
 % \[
-%   \left(\frac{\accProb^{\numberofconstrains + 3}}{q^{\numberofconstrains + 2}}
-%     - \frac{\accProb \cdot (\numberofconstrains + 2)}{2^\secpar}\right) -
+%   \left(\frac{\accProb^{\noofc + 3}}{q^{\noofc + 2}}
+%     - \frac{\accProb \cdot (\noofc + 2)}{2^\secpar}\right) -
 %   \epsur - \epsss\,.
 % \]
 % Since $\accProb$ is probability of $\advse$ outputting acceptable transcript
@@ -2843,14 +2862,14 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
 % an acceptable proof as defined in \cref{def:simext}. It thus holds
 % \[
 % 	\label{eq:frk}
-% 	\extProb \geq \frac{(\accProb - \epsur)^{\numberofconstrains +
-%  3}}{q^{\numberofconstrains + 2}} - \underbrace{\frac{(\accProb - \epsur)
-%  \cdot (\numberofconstrains + 2)}{2^\secpar} - \epsur - \epsss}_{\eps}\,.
+% 	\extProb \geq \frac{(\accProb - \epsur)^{\noofc +
+%  3}}{q^{\noofc + 2}} - \underbrace{\frac{(\accProb - \epsur)
+%  \cdot (\noofc + 2)}{2^\secpar} - \epsur - \epsss}_{\eps}\,.
 % \]
 % Note that the part of \cref{eq:frk} denoted by $\eps$ is negligible and 
 % \[
-%   \extProb \geq \frac{1}{q^{\numberofconstrains + 2}} (\accProb -
-% 	 \epsur)^{\numberofconstrains + 3} -\eps\,.
+%   \extProb \geq \frac{1}{q^{\noofc + 2}} (\accProb -
+% 	 \epsur)^{\noofc + 3} -\eps\,.
 % \] 
 % thus
 % $\plonkprot_\fs$ is simulation extractable with extraction error $\epsur$.
@@ -3032,18 +3051,18 @@ them to be computed by the prover, verifier, and simulator.
 The CRS generating algorithm picks at random $\chi \sample \FF_p$, computes
 and outputs
 \[
-	\crs = \left(\gone{\smallset{\chi^i}_{i = 0}^{\numberofconstrains + 2}},
+	\crs = \left(\gone{\smallset{\chi^i}_{i = 0}^{\noofc + 2}},
 	\gtwo{\chi} \right).
 \]
 
-\ncase{$\plonk$ prover $\prover(\REL, \crs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \numberofconstrains}})$}
+\ncase{$\plonk$ prover $\prover(\REL, \crs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \noofc}})$}
 \begin{description}
 	\item[Round 1] 
 	Sample $b_1, \ldots, b_9 \sample \FF_p$; compute $\p{a}(X), \p{b}(X), \p{c}(X)$ as 
 	\begin{align*}
-		\p{a}(X) &= (b_1 X + b_2)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_i \lag_i(X) \\
-		\p{b}(X) &= (b_3 X + b_4)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_{\numberofconstrains + i} \lag_i(X) \\
-		\p{c}(X) &= (b_5 X + b_6)\p{Z_H}(X) + \sum_{i = 1}^{\numberofconstrains} \wit_{2 \cdot \numberofconstrains + i} \lag_i(X) 
+		\p{a}(X) &= (b_1 X + b_2)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_i \lag_i(X) \\
+		\p{b}(X) &= (b_3 X + b_4)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_{\noofc + i} \lag_i(X) \\
+		\p{c}(X) &= (b_5 X + b_6)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_{2 \cdot \noofc + i} \lag_i(X) 
 	\end{align*}
 	Output $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
 	
@@ -3055,11 +3074,11 @@ and outputs
 	Compute permutation polynomial $\p{z}(X)$
 	\begin{multline*}
 		\p{z}(X) = (b_7 X^2 + b_8 X + b_9)\p{Z_H}(X) + \lag_1(X) + \\
-			+ \sum_{i = 1}^{\numberofconstrains - 1} 
+			+ \sum_{i = 1}^{\noofc - 1} 
 			\left(\lag_{i + 1} (X) \prod_{j = 1}^{i} 
 			\frac{
-			(\wit_j +\beta \omega^{j - 1} + \gamma)(\wit_{\numberofconstrains + j} + \beta k_1 \omega^{j - 1} + \gamma)(\wit_{2 \numberofconstrains + j} +\beta k_2 \omega^{j- 1} + \gamma)}
-			{(\wit_j+\sigma(j) \beta + \gamma)(\wit_{\numberofconstrains + j} + \sigma(\numberofconstrains + j)\beta + \gamma)(\wit_{2 \numberofconstrains + j} + \sigma(2 \numberofconstrains + j)\beta + \gamma)}\right)
+			(\wit_j +\beta \omega^{j - 1} + \gamma)(\wit_{\noofc + j} + \beta k_1 \omega^{j - 1} + \gamma)(\wit_{2 \noofc + j} +\beta k_2 \omega^{j- 1} + \gamma)}
+			{(\wit_j+\sigma(j) \beta + \gamma)(\wit_{\noofc + j} + \sigma(\noofc + j)\beta + \gamma)(\wit_{2 \noofc + j} + \sigma(2 \noofc + j)\beta + \gamma)}\right)
 	\end{multline*}
 	Output $\gone{\p{z}(\chi)}$
 		
@@ -3077,9 +3096,9 @@ and outputs
 	\gamma)\p{z}(X \omega))  \frac{\alpha}{\p{Z_H}(X)} \\
 	& + (\p{z}(X) - 1) \lag_1(X) \frac{\alpha^2}{\p{Z_H}(X)}
 	\end{align*}
-	Split $\p{t}(X)$ into degree less then $\numberofconstrains$ polynomials $\p{t_{lo}}(X), \p{t_{mid}}(X), \p{t_{hi}}(X)$, such that
+	Split $\p{t}(X)$ into degree less then $\noofc$ polynomials $\p{t_{lo}}(X), \p{t_{mid}}(X), \p{t_{hi}}(X)$, such that
 	\[
-		\p{t}(X) = \p{t_{lo}}(X) + X^{\numberofconstrains} \p{t_{mid}}(X) + X^{2 \numberofconstrains} \p{t_{hi}}(X)\,.
+		\p{t}(X) = \p{t_{lo}}(X) + X^{\noofc} \p{t_{mid}}(X) + X^{2 \noofc} \p{t_{hi}}(X)\,.
 	\]
 	Output $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$.
 	
@@ -3107,7 +3126,7 @@ and outputs
 	\begin{align*}
 	& \p{W_\chz}(X) = \frac{1}{X - \chz} \left(
 	\begin{aligned}
-		& \p{t_{lo}}(X) + \chz^\numberofconstrains \p{t_{mid}}(X) + \chz^{2 \numberofconstrains} \p{t_{hi}}(X) - \p{t}(\chz)\\
+		& \p{t_{lo}}(X) + \chz^\noofc \p{t_{mid}}(X) + \chz^{2 \noofc} \p{t_{hi}}(X) - \p{t}(\chz)\\
 		& + v(\p{r}(X) - \p{r}(\chz)) \\
 		& + v^2 (\p{a}(X) - \p{a}(\chz))\\
 		& + v^3 (\p{b}(X) - \p{b}(\chz))\\
@@ -3128,8 +3147,8 @@ The \plonk{} verifier works as follows
 	\item[Step 2] Validate all obtained field elements.
 	\item[Step 3] Validate the instance $\inp = \smallset{\wit_i}_{i = 1}^\instsize$.
 	\item[Step 4] Compute challenges $\beta, \gamma, \alpha, \alpha', \chz, v, u$ from the transcript.
-	\item[Step 5] Compute zero polynomial evaluation $\p{Z_H} (\chz)  =\chz^\numberofconstrains - 1$.
-	\item[Step 6] Compute Lagrange polynomial evaluation $\lag_1 (\chz) = \frac{\chz^\numberofconstrains -1}{\numberofconstrains (\chz - 1)}$.
+	\item[Step 5] Compute zero polynomial evaluation $\p{Z_H} (\chz)  =\chz^\noofc - 1$.
+	\item[Step 6] Compute Lagrange polynomial evaluation $\lag_1 (\chz) = \frac{\chz^\noofc -1}{\noofc (\chz - 1)}$.
 	\item[Step 7] Compute public input polynomial evaluation $\pubinppoly (\chz) = \sum_{i \in \range{1}{\instsize}} \wit_i \lag_i(\chz)$.
 	\item[Step 8] Compute quotient polynomials evaluations
 	\begin{multline*}
@@ -3156,7 +3175,7 @@ The \plonk{} verifier works as follows
 	\end{align*}
 	\item[Step 10] Computes full batched polynomial commitment $\gone{F}$:
 	\begin{align*}
-		\gone{F} & = \left(\gone{\p{t_{lo}}(\chi)} + \chz^\numberofconstrains \gone{\p{t_{mid}}(\chi)} + \chz^{2 \numberofconstrains} \gone{\p{t_{hi}}(\chi)}\right) + u \gone{\p{z}(\chi)} + \\
+		\gone{F} & = \left(\gone{\p{t_{lo}}(\chi)} + \chz^\noofc \gone{\p{t_{mid}}(\chi)} + \chz^{2 \noofc} \gone{\p{t_{hi}}(\chi)}\right) + u \gone{\p{z}(\chi)} + \\
 		& + v
 		\left(
 		\begin{aligned}
@@ -3356,7 +3375,7 @@ First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not
 general enough for our purpose as it is useful only for protocols where witness
 can be extracted from just two transcripts. To be able to extract a witness
 from, say, an execution of $\plonkprot$ we need to obtain at least
-$\numberofconstrains + 3$ valid proofs. Here we propose a generalisation of the
+$\noofc + 3$ valid proofs. Here we propose a generalisation of the
 general forking lemma that given probability of producing an accepting
 transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
   of accepting transcripts} $\tree$, which allows to extract a witness.
@@ -3970,7 +3989,7 @@ index for the $k$-th proof challenge correctly.
 
 \section{(Tight) simulation soundness of $\plonk$}
 \begin{theorem}[Simulation soundness]
-  Assume that $(\numberofconstrains + 2, 1)$-$\dlog$ is
+  Assume that $(\noofc + 2, 1)$-$\dlog$ is
   $\eps_\dlog(\secpar)$-hard, $\plonkprot$ is sound and $\ur{2}$ with security
   $\epss(\secpar)$ and $\epsur(\secpar)$ respectively. Then the probability that
   an algebraic, $\ppt$ adversary $\advss$ breaks simulation soundness of
@@ -4007,7 +4026,7 @@ index for the $k$-th proof challenge correctly.
   In such case, we are able to build reductions $\rdvs$, $\rdvur$, $\rdvdlog$
   which using $\advss$ as a black-box, violate either the soundness, unique
   response properties of the underlying interactive protocol $\plonkprot$, or
-  the $(\numberofconstrains + 2, 1)$-$\dlog$ assumption.
+  the $(\noofc + 2, 1)$-$\dlog$ assumption.
 
   In the following we denote by $\zkproof_{\advss}, \zkproof_{\simulator}$
   proofs returned by the adversary and the simulator respectively. We use
@@ -4052,11 +4071,11 @@ index for the $k$-th proof challenge correctly.
   $\zkproof_\advss$ that can be written as
   \[
     \zkproof_\advss = \vec{M} \cdot (\underbrace{1 \| \chi \| \ldots \|
-      \chi^{\numberofconstrains + 2}}_{\crs} \|
+      \chi^{\noofc + 2}}_{\crs} \|
     \vec{\tilde{\zkproof}_\simulator}_1^{\top} \| \ldots \|
     \vec{\tilde{\zkproof}_\simulator}_{q_\simulator}^\top)^\top\,,
   \]
-  where $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}$ are all
+  where $\gone{1, \chi, \ldots, \chi^{\noofc + 2}}$ are all
   $\GRP_1$-elements from the CRS of $\plonkprotfs$, $\vec{M}$ is a matrix of
   coefficients output by $\advss$ aside the proof,
   $\vec{\tilde{\zkproof}_\simulator}_i$ denote all $\GRP_1$-elements from the
@@ -4065,7 +4084,7 @@ index for the $k$-th proof challenge correctly.
   the simulated proofs, it knows a matrix $\vec{M'}$ such that
   \begin{equation}
     \label{eq:M_prim}
-    \zkproof_\advss = \vec{M'} \cdot (1 \| \chi \| \ldots \| \chi^{\numberofconstrains + 2})^\top\,.
+    \zkproof_\advss = \vec{M'} \cdot (1 \| \chi \| \ldots \| \chi^{\noofc + 2})^\top\,.
   \end{equation}
   We use this property when analysing the success probability of reductions
   $\rdvs$ and $\rdvdlog$.
@@ -4145,7 +4164,7 @@ index for the $k$-th proof challenge correctly.
   Assume that the $\plonkprot.\verifier$ accepts $\zkproof_\advss$. We consider
   a case when the idealised verification equation accepts. (Thus, the real
   verification accepts as well.) In that case $\rdvs$ extracts from $\vec{M'}$
-  coefficients of $1, \chi, \ldots, \chi^{\numberofconstrains + 2}$ for
+  coefficients of $1, \chi, \ldots, \chi^{\noofc + 2}$ for
   polynomials $\p{a}(X), \p{b}(X)$, and $\p{c}(X)$ and reveals the witness
   $\wit_\advss$ (as it is encoded in theses polynomials' coefficients). If
   $\REL(\inp_\advss, \wit_\advss)$ holds then $\advss$ failed to break
@@ -4165,8 +4184,8 @@ index for the $k$-th proof challenge correctly.
 
   \ncase{When $\nevent{E}_1$ happens} The reduction $\rdvdlog$ runs internally a
   protocol $\plonkprotfs$, which CRS is computed from the challenge
-  $\gone{1, \chi, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}$ from the
-  $(\numberofconstrains + 2, 1)$-$\dlog$ assumption challenger. Then it proceeds
+  $\gone{1, \chi, \ldots, \chi^{\noofc + 2}}, \gtwo{\chi}$ from the
+  $(\noofc + 2, 1)$-$\dlog$ assumption challenger. Then it proceeds
   as $\rdvs$ does, except in the last part, when the adversary provided its
   proof $\zkproof_\advss$, $\rdvdlog$ uses the fact that the real verification
   equation holds, but the ideal verification equation does not to break the
