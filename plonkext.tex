@@ -1628,9 +1628,6 @@ property or breaks the $\dlog$ assumption, if extracting a valid witness from a
 tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 
 \subsection{$\plonk$ protocol rolled out}
-% \newcommand{\va}{\vec{a}}
-% \newcommand{\vb}{\vec{b}}
-% \newcommand{\vc}{\vec{v}}
 \newcommand{\vql}{\vec{q_{L}}}
 \newcommand{\vqr}{\vec{q_{R}}}
 \newcommand{\vqm}{\vec{q_{M}}}
@@ -1644,10 +1641,17 @@ and has $n$ gates and $m$ wires ($n \leq m \leq 2n$). \plonk's constraint system
 is defined as follows:
 \begin{itemize}
 \item Let $\vec{V} = (\va, \vb, \vc)$, where $\va, \vb, \vc
-  \in \range{1}{m}^n$. Vectors $\va, \vb, \vc$ represents left,
-  right and output gate wires. 
+  \in \range{1}{m}^n$. Entries $\va_i, \vb_i, \vc_i$ represent indices of left,
+  right and output wires of circuits $i$-th gate.
 \item Vectors $\vec{Q} = (\vql, \vqr, \vqo, \vqm, \vqc) \in
-  (\FF^n)^5$ are called \emph{selector vectors}. 
+  (\FF^n)^5$ are called \emph{selector vectors}:
+  \begin{itemize}
+  \item If the $i$-th gate is a multiplicative gate then $\vql_i = \vqr_i = 0$,
+    $\vqm_i = 1$, and $\vqo_i = -1$. 
+  \item If the $i$-th gate is an addition gate then $\vql_i = \vqr_i  = 1$, $\vqm_i =
+    0$, and $\vqo_i = -1$. 
+  \item $\vqc_i = 0$ always. 
+  \end{itemize}
 \end{itemize}
 
 We say that vector $\vx \in \FF^m$ satisfies constraint system if for all $i
