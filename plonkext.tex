@@ -93,30 +93,27 @@ zero-knowledge proof systems,
 e.g.~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16,SP:BBBPWM18}
 to name a few. Special attention has been devoted to the design of new
 \emph{zero-knowledge succinct non-interactive arguments of knowledge} (zkSNARKs)
-with short (usually constant-length) proofs. Succinctness makes zkSNARKs
+with short (ideally constant-length) proofs. Succinctness makes zkSNARKs
 especially useful in real-life system deployment,
 e.g.~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}
-what in turn rises a question---\emph{Are zkSNARKs' security models useful in
-  real life?} Answering that becomes especially important when one realises that
-all zkSNARKs with constant-sized proofs are shown secure in the common reference
-string (CRS) model where the CRS used by the parties---i.e.~a prover that shows
+what in turn raises a question---\emph{Are zkSNARKs' security models useful in
+  real life?} This question is particularly pertinent when one realises that
+all zkSNARKs with constant-sized proofs are shown secure in the structured reference
+string (SRS) model where the SRS used by the parties---i.e.~a prover that shows
 veracity of a statement using its private input called \emph{witness} and a
-verifier that verifies it---comes with a trapdoor which can be used to break
+verifier that verifies it---necessarily comes with a trapdoor which can be used to break
 (knowledge) soundness; that is, convince the verifier to accept a false
 statement or a statement for which the prover does not know the witness. Hence
- secure real-life deployment of zkSNARKs requires answering to the number of
-questions---\emph{How can the parties be sure that the trapdoor has not leaked?}
-\emph{Who is the party that generates the CRS?} \emph{Can this party be
-  trusted?} The last question has to be answered positively, as otherwise the
-CRS-generating party may leak the trapdoor. The questions are especially
+ secure real-life deployment of zkSNARKs require answers to questions such as---\emph{How can the parties be sure that the trapdoor has not leaked?}
+\emph{Who is the party that generates the SRS?} \emph{Can this party be
+  trusted?} The questions are especially
 important in zero knowledge proofs used in distributed systems, like
-e.g.~blockchains, where assuming that a trusted party generates the CRS may be a
-step too far and subvert the whole purpose of a decentralised system.
+e.g.~blockchains, where assuming that a trusted party generates the SRS may be unrealistic and subvert the whole purpose of a decentralised system.
 
 One of the first to tackled this question were Bellare et al.~\cite{AC:BelFucSca16} who
 proposed notions of \emph{subversion zero knowledge} and \emph{subversion
 soundness}. The former states that zero knowledge property persists even when
-the CRS is produced by a malicious party. The latter states that the proof
+the SRS is produced by a malicious party. The latter states that the proof
 system remains sound in the same situation. Importantly, Bellare et al.~shown
 that no system can be simultaneously subversion zero-knowledge and subversion-sound.
 Abdolmaleki et al.~\cite{AC:ABLZ17}, and independently Fuchsbauer
@@ -124,32 +121,32 @@ Abdolmaleki et al.~\cite{AC:ABLZ17}, and independently Fuchsbauer
 efficient zkSNARK for QAP\footnote{QAP stands for Quadratic Arithmetic
 Program. QAP is currently the most efficient representation of arithmetic
 circuits for showing their validity.} by Groth \cite{EC:Groth16} can be made
-subversion zero-knowledge by introducing minor modifications to its CRS and without
+subversion zero-knowledge by introducing minor modifications to its SRS and without
 sacrificing its efficiency. 
 %\markulf{12/11/2020}{Not actually related to soundness.}
 
-Although efficient, Groth's zkSNARK comes with a drawback---the CRS is
+Although efficient, Groth's zkSNARK comes with a drawback---the SRS is
 relation-dependent. That is, if one wants to show that two different arithmetic
 circuits have been evaluated correctly, one has to do that using two different
-CRS-s.
+SRS-s.
 % We say that such a zkSNARK is not universal. 
-Since CRS generation is a troublesome process, it is desired to have it
+Since SRS generation is a troublesome process, it is desired to have it
 performed once, not every time a new circuit validity has to be shown. zkSNARKs
-that utilise a single CRS for all circuits of a given size are called
+that utilise a single SRS for all circuits of a given size are called
 \emph{universal}. One of the first universal zkSNARK was proposed by Groth et
 al.~\cite{C:GKMMM18}. This particular proof system also introduced a novel
 security property called \emph{updatable soundness}. Because of the Bellare et
 al.~\cite{AC:BelFucSca16} impossibility result, one cannot wish for a system
 that is simultaneously subversion zero-knowledge and subversion-sound. Groth et
 al.~work around this problem by proposing a notion which allows zkSNARK provers
-and verifiers to \emph{update} the CRS, i.e.~to take a CRS and modify it in a
-well-defined and verifiable way to obtain a new CRS. Updates guarantee that if
-at least one of the CRS-updating parties is honest then the proof system is
-(knowledge) sound. Although inefficient, as the CRS length is quadratic to the
+and verifiers to \emph{update} the SRS, i.e.~to take a SRS and modify it in a
+well-defined and verifiable way to obtain a new SRS. Updates guarantee that if
+at least one of the SRS-updating parties is honest then the proof system is
+(knowledge) sound. Although inefficient, as the SRS length is quadratic to the
 size of the proven statements, \cite{C:GKMMM18} set a new paradigm for designing
 zkSNARKs.
 
-The first universal zkSNARK with updatable and short CRS was $\sonic$ proposed
+The first universal zkSNARK with updatable and short SRS was $\sonic$ proposed
 by Maller et al.~in \cite{CCS:MBKM19}. Eventually, Gabizon et al.~designed
 $\plonk$ \cite{EPRINT:GabWilCio19} which currently is the most efficient
 updatable universal zkSNARK. Independently, Chiesa et al.~\cite{EC:CHMMVW20}
@@ -161,8 +158,8 @@ also use their own representation of circuits instead of the ``standard''
 quadratic arithmetic programs (QAP). However, these protocols are also one of
 the most interesting schemes for practitioners due to their practicality
 stemming from the efficient proving and verification algorithms, and the
-universality of the CRS, as well as for their security model that diminishes the
-need for a trusted party to provide a CRS.
+universality of the SRS, as well as for their security model that diminishes the
+need for a trusted party to provide a SRS.
 
 % In this paper we provide a framework which shows that any zero-knowledge proof
 % that fulfils some well-defined requirements is simulation-extractable. To show
@@ -215,7 +212,7 @@ e.g.~in \cite{EPRINT:KZMQCP15,CCS:AbdRamSla20}, but such lift comes with
 inevitably efficiency loss.  
 %On the other hand, there is no known lift that
 %would take a zkSNARK and make it universal. Since updatable zkSNARKs are quite
-%restrictive regarding format of their CRSs, making such lift seems as a very
+%restrictive regarding format of their SRSs, making such lift seems as a very
 %difficult task. 
 The same applies for updatable zkSNARKs. No out-of-the-box
 simulation-extractable updatable zkSNARKs are
@@ -299,7 +296,7 @@ In order to show our result we also show that (interactive) $\plonkprot$ and
 $\sonicprot$ are honest verifier zero-knowledge in the standard model, i.e.~the
 simulator is able to produce a transcript indistinguishable from a transcript
 produced by an honest prover and verifier without any additional knowledge,
-esp.~without knowing the CRS trapdoor. Although both $\sonic$ and $\plonk$ are
+esp.~without knowing the SRS trapdoor. Although both $\sonic$ and $\plonk$ are
 shown to be zero-knowledge, the proofs provided by their authors utilise
 trapdoors. For our reduction to work, we need simulators that provide
 indistinguishable proofs relying only on reordering the messages
@@ -854,11 +851,11 @@ We call zero knowledge \emph{perfect} if the distributions are equal and
 distinguisher.
 
 \end{description}
-A CRS $\crs$ may come with a secret string called \emph{trapdoor} $\td$ that
+A SRS $\crs$ may come with a secret string called \emph{trapdoor} $\td$ that
 allows the simulator to produce a simulated proof. In that case algorithm
 $\kgen(\REL)$ outputs $(\crs, \td)$ and $\td$ is given to the simulator. In this
 paper we distinguish simulators that requires a trapdoor to simulate and those
-that do not. We call the former \emph{CRS-simulators} and denote by
+that do not. We call the former \emph{SRS-simulators} and denote by
 $\simulator_\td$ for trapdoor $\td$.
 
 Occasionally, a weaker version of zero knowledge is sufficient. So called
@@ -1296,7 +1293,7 @@ to respond to them. Another problem rises when the protocol contains some
 message---obviously, except the first one---where the prover randomises its
 message. In that case unique-responsiveness can not hold as well. Last but not
 least, the protocols we consider here are not designed to be in the standard
-model, but utilises CRS what also complicates things considerably.
+model, but utilises SRS what also complicates things considerably.
 
 We walk around these obstacles by providing a generalised notion of the unique
 response property. More precisely, we say that a $(2\mu + 1)$-message protocol
@@ -1340,7 +1337,7 @@ that are the same on  first $i$ messages.
 % messages it already send and received and the future challenges from the
 % verifier.
 We note that the definition above is independent on whether the proof
-system $\proofsystem$ utilises CRS (and compounds of the CRS-generating $\kgen$
+system $\proofsystem$ utilises SRS (and compounds of the SRS-generating $\kgen$
 algorithm) or not.
 
 \subsection{Computational special soundness}
@@ -1376,11 +1373,11 @@ Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
 $(2 \mu + 1)$-message proof system for $\RELGEN(\secparam)$ that is honest
 verifier zero-knowledge in the standard model\footnote{Crucially, we require
   that one can provide an indistinguishable simulated proof without any
-  additional knowledge, as e.g~knowledge of a CRS trapdoor.}, has $\ur{k}$
+  additional knowledge, as e.g~knowledge of a SRS trapdoor.}, has $\ur{k}$
 property with security $\epsur$, is $(1, \ldots, 1, n_k, 1, \ldots, n_\mu)$-special
 sound.
 % Assume that the simulator $\simulator$ does not get as input any trapdoor
-% related to the CRS.
+% related to the SRS.
 
 Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
 Then $\psfs$ is simulation-extractable with extraction error $\epsur$
@@ -1504,7 +1501,7 @@ a simulated proof it saw, it would end up with exactly the same proof
 which can also can not break simulation extractability, thus $\waccProb=\waccProb'$.
 
 We describe our extractor here. The extractor takes as input relation $\REL$,
-CRS $\crs$, $\advse$'s code, its randomness $r$, the output instance
+SRS $\crs$, $\advse$'s code, its randomness $r$, the output instance
 $\inp_{\advse}$ and proof $\zkproof_{\advse}$, as well as the list $Q$ of
 simulated proofs (and their instances) and the list of random oracle queries and
 responses $Q_\ro$. Then, $\ext$ starts a forking algorithm
@@ -1617,7 +1614,7 @@ protocol we can either reveal a correct witness for the proven statement or use
 one of the transcripts to break the $\dlog$ assumption. The latter requires the
 AGM. More precisely, we assume that each group element included in the
 transcripts comes with a vector of coefficients that represents the element in
-the basis compound of the input group elements, i.e.~$\plonkprot$'s CRS. See
+the basis compound of the input group elements, i.e.~$\plonkprot$'s SRS. See
 \cref{lem:plonkprot_ss}.
 
 Given special-soundness of $\plonkprot$, we use the fact that it is also
@@ -1665,18 +1662,18 @@ We say that vector $\vx \in \FF^m$ satisfies constraint system if for all $i
 \label{sec:plonk_explained}
 \plonk{} argument system is universal. That is, it allows to verify computation
 of any arithmetic circuit which has no more than $\numberofconstrains$
-gates using a single CRS. However, to make computation efficient, for each
-circuit there is allowed a preprocessing phase which extend the CRS with
+gates using a single SRS. However, to make computation efficient, for each
+circuit there is allowed a preprocessing phase which extend the SRS with
 circuit-related polynomial evaluations.
 
 For the sake of simplicity of security reductions presented in this paper, we
-include in the CRS only these elements that cannot be computed without knowing
-the secret trapdoor $\chi$. The rest of the CRS---the preprocessed input---can
-be computed using these CRS elements thus we leave them to be computed by the
+include in the SRS only these elements that cannot be computed without knowing
+the secret trapdoor $\chi$. The rest of the SRS---the preprocessed input---can
+be computed using these SRS elements thus we leave them to be computed by the
 prover, verifier, and simulator.
 
-\paragraph{$\plonk$ CRS generating algorithm $\kgen(\REL)$:}
-The CRS generating algorithm picks at random $\chi \sample \FF_p$, computes
+\paragraph{$\plonk$ SRS generating algorithm $\kgen(\REL)$:}
+The SRS generating algorithm picks at random $\chi \sample \FF_p$, computes
 and outputs
 \[
 	\crs = \left(\gone{\smallset{\chi^i}_{i = 0}^{\numberofconstrains + 2}},
@@ -1932,7 +1929,7 @@ verification equation---which consider equality of the polynomials' evaluations.
 This holds since an adversary that manages to provide a commitment opening that
 holds for the real verifier, but does not hold for the idealised verifier can be
 used to break the dlog assumption and reveal the secret trapdoor used to produce
-the commitment's CRS.
+the commitment's SRS.
 
 For polynomials $\vec{f} = f_1, \ldots, f_k$, evaluation point $z$, evaluation
 result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $o(X)$ the
@@ -2099,7 +2096,7 @@ of $\plonkprot$ is upper-bounded as
  $(\noofc + 2, 1)$-$\dlog$ assumption.
 \end{lemma}
 \begin{proof}
-  Let $\crs$ be $\plonkprot$'s CRS and denote by $\crs_1$ all CRS's
+  Let $\crs$ be $\plonkprot$'s SRS and denote by $\crs_1$ all SRS's
   $\GRP_1$-elements; that is, $\crs_1 = \gone{1, \chi, \ldots,
     \chi^{\noofc + 2}}$. Let $\adv$ be an algebraic adversary that
   for a statement $\inp$ produces a $(1, 1, 1, \noofc + 3, 1)$-tree
@@ -2143,10 +2140,10 @@ of $\plonkprot$ is upper-bounded as
 \subsection{Honest verifier zero-knowledge}
 \begin{lemma}
   $\plonk$ is honest verifier zero-knowledge and its simulator $\simulator$ does
-  not require a CRS trapdoor.\footnote{The simulator works as a simulator for
+  not require a SRS trapdoor.\footnote{The simulator works as a simulator for
     proofs that are zero-knowledge in the standard model. However, we do not say
     that $\plonk$ is HVZK in the standard model as proof of that \emph{requires}
-    the CRS simulator.} More precisely, assume that $\plonk$'s CRS simulator
+    the SRS simulator.} More precisely, assume that $\plonk$'s SRS simulator
   $\simulator_\chi$ produces a proof that is at most $\epszk$ far from a real
   proof, and $(\pR, \pS, \pT, \pf)$-uber assumption for $\pR, \pS, \pT, \pf$ as
   defined in \cref{eq:uber} is $\epsuber$-secure. Then for any $\ppt$ adversary
@@ -2155,7 +2152,7 @@ of $\plonkprot$ is upper-bounded as
 \end{lemma}
 \begin{proof}
   The proof goes by game-hoping. The environment that controls the games
-  provides the adversary with a CRS $\crs$, then the adversary outputs an
+  provides the adversary with a SRS $\crs$, then the adversary outputs an
   instance--witness pair $(\inp, \wit)$ and, depending on the game, is provided
   with either real or simulated proof for it. In the end of the game the
   adversary outputs either $0$ if it believes that the proof it saw was provided
@@ -2166,7 +2163,7 @@ of $\plonkprot$ is upper-bounded as
 
   \ngame{1} In this game for $\adv(\REL, \crs)$ picks an instance--witness pair
   $(\inp, \wit)$ and gets a proof $\zkproof$ that is simulated by a simulator
-  $\simulator_\chi$ which utilises for the simulation the CRS trapdoor and
+  $\simulator_\chi$ which utilises for the simulation the SRS trapdoor and
   proceeds as follows. In the first round the simulator $\simulator_\chi$ picks
   randomisers $b_1, \ldots b_9$, sets $\wit_i = 0$, for $i \in \range{1}{3
     \noofc}$, computes polynomials $\pa(X), \pb(X), \pc(X)$ and
@@ -2263,7 +2260,7 @@ randomly picked $\vb = b_1, \ldots b_9$.
 
 The reduction $\rdv$ learns $\gone{\pR}$ and challenge $\gone{w}$ where $w$ is
 either $\pf(\vb) = b_1 b_3 b_5 b_7$ or a random value. Then it picks $\chi$,
-$\chz$ and computes the CRS $\crs$ from $\chi$. Elements $b_i$ are interpreted as
+$\chz$ and computes the SRS $\crs$ from $\chi$. Elements $b_i$ are interpreted as
 polynomials in $X$ that are evaluated at $\chi$, i.e. $b_i = b_i(\chi)$. Next,
 $\rdv$ sets
 \[
@@ -2402,7 +2399,7 @@ In \sonic{} we will use commitments to the following polynomials.
 \end{align*}
 	
 \subsubsection{Algorithms rolled out}
-\paragraph{$\sonic$ CRS generation $\kgen(\REL)$.} The CRS generating algorithm picks
+\paragraph{$\sonic$ SRS generation $\kgen(\REL)$.} The SRS generating algorithm picks
 randomly $\alpha, \chi \sample \FF_p$ and outputs
 	\[
       \crs = \left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
@@ -2686,8 +2683,8 @@ prover and verifier. \qed
 \begin{remark} 
   As noted in \cite{CCS:MBKM19}, $\sonic$ is statistically subversion-zero
   knowledge (Sub-ZK). As noted in \cite{AC:ABLZ17}, one way to achieve
-  subversion zero knowledge is to utilise an extractor that extracts a CRS
-  trapdoor from a CRS-generator. Unfortunately, a NIZK made subversion
+  subversion zero knowledge is to utilise an extractor that extracts a SRS
+  trapdoor from a SRS-generator. Unfortunately, a NIZK made subversion
   zero-knowledge by this approach cannot achieve perfect Sub-ZK as one has to
   count in the probability of extraction failure. However, with the simulation
   presented in \cref{lem:sonic_hvzk}, the trapdoor is not required for the
@@ -2886,7 +2883,7 @@ protocols that for witness extraction require transcripts that branch at more
 than one point.
 
 Although we picked $\plonk$ and $\sonic$ as examples for our framework, it is
-not limited to CRS-based NIZKs. Thus, it would be interesting to apply it to
+not limited to SRS-based NIZKs. Thus, it would be interesting to apply it to
 known so-called transparent zkSNARKs like Bulletproofs \cite{SP:BBBPWM18},
 Aurora \cite{EC:BCRSVW19} or AuroraLight \cite{EPRINT:Gabizon19a}.
 
@@ -3040,15 +3037,15 @@ h_{\iota - 1})$ to
 \section{$\plonk$ protocol rolled out}
 \subsection{Algorithms rolled out}
 \label{sec:plonk_explained}
-\ncase{$\plonk$ CRS generating algorithm $\kgen(\REL)$}
+\ncase{$\plonk$ SRS generating algorithm $\kgen(\REL)$}
 For the sake of simplicity of security reductions presented in this paper, we
-describe here a simplified CRS generating algorithm which produces only
-these CRS elements that cannot be computed without knowing the secret trapdoor
+describe here a simplified SRS generating algorithm which produces only
+these SRS elements that cannot be computed without knowing the secret trapdoor
 $\chi$. The rest of the preprocessed input, as it is called in
-\cite{EPRINT:GabWilCio19}, can be computed using these CRS elements thus we leave
+\cite{EPRINT:GabWilCio19}, can be computed using these SRS elements thus we leave
 them to be computed by the prover, verifier, and simulator. 
 
-The CRS generating algorithm picks at random $\chi \sample \FF_p$, computes
+The SRS generating algorithm picks at random $\chi \sample \FF_p$, computes
 and outputs
 \[
 	\crs = \left(\gone{\smallset{\chi^i}_{i = 0}^{\noofc + 2}},
@@ -3305,8 +3302,8 @@ In \sonic{} we will use commitments to the following polynomials.
 \end{align*}
 	
 	\subsection{Algorithms rolled out}
-	\ncase{$\sonic$ CRS generation $\kgen(\REL)$}
-	The CRS generating algorithm picks randomly $\alpha, \chi \sample \FF_p$ and
+	\ncase{$\sonic$ SRS generation $\kgen(\REL)$}
+	The SRS generating algorithm picks randomly $\alpha, \chi \sample \FF_p$ and
 	outputs 
 	\[
 		\crs = \left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
@@ -3619,7 +3616,7 @@ Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
 $(2 \mu + 1)$-message proof system for $\RELGEN(\secparam)$ that is honest
 verifier zero-knowledge in the standard model\footnote{Crucially, we require
   that one can provide an indistinguishable simulated proof without any
-  additional knowledge, as e.g~knowledge of a CRS trapdoor.}, has $\ur{k}$
+  additional knowledge, as e.g~knowledge of a SRS trapdoor.}, has $\ur{k}$
 property with security $\epsur$, is $(n_1, \ldots, n_\mu)$-special
 sound and $m'$ elements from $\smallset{n_1, \ldots, n_\mu}$ are not $1$.
 Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
@@ -3735,7 +3732,7 @@ for $m = \prod_{k = 1}^{\mu} n_k$ and some negligible $\eps$.
   $\waccProb=\waccProb'$.
 
   We describe our extractor here. The extractor takes as input relation $\REL$,
-  CRS $\crs$, $\advse$'s code, its randomness $r$, the output instance
+  SRS $\crs$, $\advse$'s code, its randomness $r$, the output instance
   $\inp_{\advse}$ and proof $\zkproof_{\advse}$, as well as the list $Q$ of
   simulated proofs (and their instances) and the list of random oracle queries
   and responses $Q_\ro$. Then, $\ext$ starts a forking algorithm
@@ -4076,7 +4073,7 @@ index for the $k$-th proof challenge correctly.
     \vec{\tilde{\zkproof}_\simulator}_{q_\simulator}^\top)^\top\,,
   \]
   where $\gone{1, \chi, \ldots, \chi^{\noofc + 2}}$ are all
-  $\GRP_1$-elements from the CRS of $\plonkprotfs$, $\vec{M}$ is a matrix of
+  $\GRP_1$-elements from the SRS of $\plonkprotfs$, $\vec{M}$ is a matrix of
   coefficients output by $\advss$ aside the proof,
   $\vec{\tilde{\zkproof}_\simulator}_i$ denote all $\GRP_1$-elements from the
   simulated proof ${\zkproof_\simulator}_i$, and the adversary makes
@@ -4183,7 +4180,7 @@ index for the $k$-th proof challenge correctly.
   \]
 
   \ncase{When $\nevent{E}_1$ happens} The reduction $\rdvdlog$ runs internally a
-  protocol $\plonkprotfs$, which CRS is computed from the challenge
+  protocol $\plonkprotfs$, which SRS is computed from the challenge
   $\gone{1, \chi, \ldots, \chi^{\noofc + 2}}, \gtwo{\chi}$ from the
   $(\noofc + 2, 1)$-$\dlog$ assumption challenger. Then it proceeds
   as $\rdvs$ does, except in the last part, when the adversary provided its
