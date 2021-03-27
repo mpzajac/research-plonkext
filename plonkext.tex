@@ -49,8 +49,8 @@
 \usepackage{bm}
 \usepackage{url}
 \usepackage{dirtytalk}
-\usepackage[a4paper]{geometry}
-\usepackage{fullpage}
+\usepackage[margin=0.7in,a4paper]{geometry}
+%\usepackage{fullpage}
 \usepackage[normalem]{ulem}
 \usepackage{dashbox}
 \newcommand\dboxed[1]{\dbox{\ensuremath{#1}}}
@@ -63,7 +63,7 @@
 \author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} 
 %\iflncs{
 \institute{University of Edinburgh, Edinburgh, UK \and IOHK \\
-\email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London UK \\
+\email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London, UK \\
 \email{m.p.zajac@gmail.com}} 
 
 \allowdisplaybreaks
@@ -231,7 +231,7 @@ First, following \cite{INDOCRYPT:FKMV12}, we need to show that $\plonkprot$ and
 $\sonicprot$ are special-sound. However the standard definition of special
 soundness could not be met. First of all, the definition requires extraction of
 a witness from any two transcripts, each containing three messages and sharing
-the first message. For $\plonkprot$ and $\sonicprot$ that gives nothing. The
+the first message. For $\plonkprot$ and $\sonicprot$ that is not enough. The
 definition had to be tuned to cover protocols that have more messages than just
 three. Furthermore, the number of transcripts required is much
 greater. Concretely, $(\numberofconstrains + 3)$---where $\numberofconstrains$ is the
@@ -240,15 +240,16 @@ number of constraints in the proven circuit---for $\plonkprot$ and $(\multconstr
 multiplicative and linear constraints---for $\sonicprot$. Hence, we do not have
 a \emph{pair of transcripts}, but a \emph{tree of transcripts}.
 
-Secondly, both protocols rely on common reference strings which come with
+Secondly, both protocols rely on structured reference strings which come with
 trapdoors that allow an adversary who knows them to produce multiple valid
 proofs even without knowing the witness or for false statements. Recall that the
 standard special soundness definition requires witness extraction from
-\emph{any} pair of acceptable transcripts that share a common root. Fortunately,
-one could define a weaker version of special soundness, i.e.~a computational
-special soundness. That is, we show that either it is possible to extract a
-witness from a tree of acceptable transcripts or one could use the adversary
-that produced the tree to break some underlying computational assumption.
+\emph{any} pair of acceptable transcripts that share a common root---even those
+that contain an acceptable proof for an incorrect statement. In this paper we
+define a weaker version of special soundness---a computational special
+soundness. That is, we show that either it is possible to extract a witness from
+a tree of acceptable transcripts or one could use the adversary that produced
+the tree to break some underlying computational assumption.
 
 \subsubsection{Unique response property.} Another property that has to be proven
 is the unique response property which states, as expressed in
@@ -289,19 +290,19 @@ $\sonicprotfs$ that rely only on programmability of the random oracle.
 Consider an interactive $3$-message special-sound protocol $\ps$ and its
 non-interactive version $\ps_\fs$ obtained by the Fiat--Shamir transform. The
 general forking lemma provides an instrumental lower bound for probability of
-extracting a witness from two proofs for the same statement that share the first
-message. Since $\plonkprot$ and $\sonicprot$ have more than $3$ messages and are
-not special-sound, the forking lemma, as stated in \cite{CCS:BelNev06}, cannot
-be used directly. We thus propose a modification that covers multi-message
-protocols where witness extraction requires more transcripts than merely two.
-Unfortunately, we also observe that the security gap grows with the number of
-transcripts and the probability that the extractor succeeds diminishes
-significantly. (That said, we have to note that the security loss is polynomial,
-albeit big.)
+extracting a witness from an adversary who provides two proofs for the same
+statement that share the first message. Since $\plonkprot$ and $\sonicprot$ have
+more than $3$ messages and are not special-sound, the forking lemma, as stated
+in \cite{CCS:BelNev06}, cannot be used directly. We thus propose a modification
+that covers multi-message protocols where witness extraction requires more
+transcripts than merely two.  Unfortunately, we also observe that the security
+gap grows with the number of transcripts and the probability that the extractor
+succeeds diminishes significantly. (That said, we have to note that the security
+loss is polynomial, albeit big.)
 
 We note that some modern zkSNARKs, like \cite{SP:BBBPWM18,CCS:MBKM19}, rely on
 the Fiat--Shamir transform and the forking lemma heavily. First, an interactive
-protocol is proposed and its security and special-soundness analysed. Second,
+protocol is proposed and its security and (a variant of) special-soundness analysed. Second,
 one uses an argument that the Fiat--Shamir transform can be used to get a
 protocol that is non-interactive and shares the same security properties.
 
@@ -317,7 +318,7 @@ lemma or disclose a transformation that does not suffer from the generalisation
 inefficiency. We note that the security loss may also apply when knowledge
 soundness is proven. That is the case for $\sonic$, which security proof relies
 on so-called witness-extended emulation. Authors of $\plonk$ worked around this
-problem by showing their protocol secure directly in the algebraic group model.
+problem by showing their protocol security directly in the algebraic group model.
 
 \subsubsection{Towards simulation-extractability.} Given our modified, less
 restrictive, definition for special-soundness and the unique response property,
@@ -325,7 +326,7 @@ and our generalised forking lemma we are able to show the announced
 result---simulation extractability of $\plonkprotfs$ and $\sonicprotfs$. The
 proof is inspired by simulation-extractability and simulation-soundness proofs
 from \cite{INDOCRYPT:FKMV12}, with major modifications, which were required as
-\cite{INDOCRYPT:FKMV12} considers (Fiat--Shamir transformed) sigma protocols
+\cite{INDOCRYPT:FKMV12} considers only sigma protocols
 that are undoubtedly simpler protocols than the considered proof systems.
 % Since the proof highly relies on the (generalised) forking lemma, the security
 % lost it introduces is considerable.
@@ -489,7 +490,7 @@ $\plonk$ in the standard model, what is required by our reduction, we rely on th
 al.~\cite{EC:BonBoyGoh05} as presented by Boyen in \cite{PAIRING:Boyen08}.
 % Here we present not in its whole generality but rather fitted to our purpose.
 
-Let $r, s, t, c \in \NN \setminus \smallset{0}$, Consider tuples of polynomials
+Let $r, s, t, c \in \NN \setminus \smallset{0}$, Consider vectors of polynomials
 $\pR \in \FF_p[X_1, \ldots, X_c]^r$, $\pS \in \FF_p[X_1, \ldots, X_c]^s$ and
 $\pT \in \FF_p[X_1, \ldots, X_c]^t$. Write $\pR = \left( \p{r}_1, \ldots,
   \p{r}_r \right)$, $\pS = \left( \p{s}_1, \ldots, \p{s}_s \right)$ and $\pT =
@@ -539,7 +540,7 @@ $\GRP_1$ (the changed element has been put into a \dbox{dashbox}), more precisel
     any $\ppt$ adversary $\adv$
 	\begin{multline*}
       \Pr\left[\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
-		\gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{\p{f}(x_1, \ldots, x_c)})} = 1\right] \approx_\secpar \\
+		\gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{\p{f}(x_1, \ldots, x_c)}}) = 1\right] \approx_\secpar \\
        \Pr\left[\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
        \gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{x'}}) = 1\right].
 	\end{multline*}
@@ -595,7 +596,7 @@ commitment scheme \cite{AC:KatZavGol10}. We denote the first by $\PCOMp$, presen
 			
 			\pchspace
 			
-			\procedure{$\com(\crs, \vec{\p{f}}(X))$}
+			\procedure{$\com(\srs, \vec{\p{f}}(X))$}
 			{ 
 				\pcreturn \gone{\vec{c}} = \gone{\vec{\p{f}}(\chi)}\\ [\myskip]
 				\hphantom{\pcind \pcif 
@@ -607,7 +608,7 @@ commitment scheme \cite{AC:KatZavGol10}. We denote the first by $\PCOMp$, presen
 		% \pcvspace
     
 		\begin{pchstack}
-			\procedure{$\open(\crs, \vec{\gamma}, \vec{z}, \vec{s}, \vec{f}(X))$}
+			\procedure{$\open(\srs, \vec{\gamma}, \vec{z}, \vec{s}, \vec{\p{f}}(X))$}
 			{
 			\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo\\ [\myskip]
       \pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1}
@@ -618,7 +619,7 @@ commitment scheme \cite{AC:KatZavGol10}. We denote the first by $\PCOMp$, presen
 			
 			\pchspace
 			
-			\procedure{$\verify(\crs, \gone{c}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
+			\procedure{$\verify(\srs, \gone{c}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
 			{
 				\vec{r} \gets \FF_p^{\abs{\vec{z}}}\\ [\myskip]
 				\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo \\ [\myskip]
@@ -655,7 +656,7 @@ commitment scheme \cite{AC:KatZavGol10}. We denote the first by $\PCOMp$, presen
 			
 			\pchspace
 			
-			\procedure{$\com(\crs, \maxconst, \p{f}(X))$} {
+			\procedure{$\com(\srs, \maxconst, \p{f}(X))$} {
 				\p{c}(X) \gets \alpha \cdot X^{\dconst - \maxconst} \p{f}(X) \\ [\myskip]
 				\pcreturn \gone{c} = \gone{\p{c}(\chi)}\\ [\myskip]
 				\hphantom{\pcind \pcif \sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot
@@ -665,7 +666,7 @@ commitment scheme \cite{AC:KatZavGol10}. We denote the first by $\PCOMp$, presen
 		% \pcvspace
     
 		\begin{pchstack}
-			\procedure{$\open(\crs, z, s, f(X))$}
+			\procedure{$\open(\srs, z, s, f(X))$}
 			{
 				\p{o}(X) \gets \frac{\p{f}(X) - \p{f}(z)}{X - z}\\ [\myskip]
 				\pcreturn \gone{\p{o}(\chi)}\\ [\myskip]
@@ -674,7 +675,7 @@ commitment scheme \cite{AC:KatZavGol10}. We denote the first by $\PCOMp$, presen
 			
 			\pchspace
 			
-			\procedure{$\verify(\crs, \maxconst, \gone{c}, z, s, \gone{\p{o}(\chi)})$}
+			\procedure{$\verify(\srs, \maxconst, \gone{c}, z, s, \gone{\p{o}(\chi)})$}
       {
         \pcif \gone{\p{o}(\chi)} \bullet \gtwo{\alpha \chi} + \gone{s - z
         \p{o}(\chi)} \bullet \gtwo{\alpha} = \\ [\myskip] \pcind \gone{c}
@@ -705,8 +706,8 @@ $\PCOM$:
 		\Pr
 			\left[
 			\begin{aligned}
-				& \verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o}) = 1,  \\ 
-				& \verify(\crs, \vec{c}, \vec{z}, \vec{s}', \vec{o}') = 1, \\
+				& \verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o}) = 1,  \\ 
+				& \verify(\srs, \vec{c}, \vec{z}, \vec{s}', \vec{o}') = 1, \\
 				& \vec{s} \neq \vec{s}'
 			\end{aligned}
 			\,\left|\,\vphantom{\begin{aligned}
@@ -715,8 +716,8 @@ $\PCOM$:
                   &
                 \end{aligned}}
 			\begin{aligned}
-				& \crs \gets \kgen(\secparam),\\
-				& (\vec{c}, \vec{z}, \vec{s}, \vec{s}', \vec{o}, \vec{o}') \gets \adv(\crs)
+				& \srs \gets \kgen(\secparam),\\
+				& (\vec{c}, \vec{z}, \vec{s}, \vec{s}', \vec{o}, \vec{o}') \gets \adv(\srs)
 			\end{aligned}
 			\right.\right] \leq \negl\,.
 	\]
@@ -734,8 +735,8 @@ We say that $\PCOM$ has the unique opening property if the following holds:
 		\Pr
 			\left[
 			\begin{aligned}
-				& \verify(\crs, \vec{c}, \vec{z}, \vec{s}, \vec{o}) = 1,  \\ 
-				& \verify(\crs, \vec{c}, \vec{z}, \vec{s'}, \vec{o'}) = 1, \\
+				& \verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o}) = 1,  \\ 
+				& \verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o'}) = 1, \\
 				& \vec{o} \neq \vec{o'}
 			\end{aligned}
 			\,\left|\, \vphantom{\begin{aligned}
@@ -744,8 +745,8 @@ We say that $\PCOM$ has the unique opening property if the following holds:
                   &
                 \end{aligned}}
 			\begin{aligned}
-				& \crs \gets \kgen(\secparam),\\
-				& (\vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}, \vec{o'}) \gets \adv(\crs)
+				& \srs \gets \kgen(\secparam),\\
+				& (\vec{c}, \vec{z}, \vec{s}, \vec{o}, \vec{o'}) \gets \adv(\srs)
 			\end{aligned}
 			\right.\right] \leq \negl\,.
 	\]
@@ -764,9 +765,9 @@ respectively.
 \[
   \Pr \left[
     \begin{aligned}
-      & \p{f} = \ext_\adv(\crs, c),\\
-      & c = \com(\crs, \p{f}),\\
-      & \verify(\crs, c, z, s, o) = 1
+      & \p{f} = \ext_\adv(\srs, c),\\
+      & c = \com(\srs, \p{f}),\\
+      & \verify(\srs, c, z, s, o) = 1
     \end{aligned}
     \,\left|\,
       \vphantom{
@@ -777,12 +778,14 @@ respectively.
         \end{aligned}
         }
     \begin{aligned}
-      & \crs \gets \kgen(\secparam),\\
-      & (c, z, s, o) \gets \adv(\crs)
+      & \srs \gets \kgen(\secparam),\\
+      & (c, z, s, o) \gets \adv(\srs)
     \end{aligned}
   \right.\right]
   \geq 1 - \epsk(\secpar).
 \]
+\michals{26.03}{Do we need to assure that the extracted polynomial $f$ is of the
+  right degree?}
 In that case we say that $\PCOM$ is $\epsk$-knowledge.
 \end{description}
 Intuitively when a commitment scheme is a commitment of knowledge then if an
@@ -807,14 +810,14 @@ $\npol$ relations. Denote by $\LANG_\REL$ the language determined by $\REL$. Let
 $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
 and the latter \emph{verifier}. We allow our proof system to have a setup,
 i.e.~there is a $\kgen$ algorithm that takes as input the relation description
-$\REL$ and outputs a common reference string $\crs$. We denote by
-$\ip{\prover(\REL, \crs, \inp, \wit)}{\verifier(\REL, \crs,\inp)}$ a transcript
+$\REL$ and outputs a common reference string $\srs$. We denote by
+$\ip{\prover(\REL, \srs, \inp, \wit)}{\verifier(\REL, \srs,\inp)}$ a transcript
 $\trans$ (or, proof $\zkproof$---we use these two alternatively) of a
-conversation between $\prover$ with input $(\REL, \crs, \inp, \wit)$ and
-$\verifier$ with input $(\REL, \crs, \inp)$. We write $\ip{\prover (\REL, \crs,
-  \inp, \wit)}{\verifier(\REL, \crs, \inp)} = 1$ if in the end of the transcript
+conversation between $\prover$ with input $(\REL, \srs, \inp, \wit)$ and
+$\verifier$ with input $(\REL, \srs, \inp)$. We write $\ip{\prover (\REL, \srs,
+  \inp, \wit)}{\verifier(\REL, \srs, \inp)} = 1$ if in the end of the transcript
 the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the
-transcript. We sometimes abuse notation and write $\verifier(\REL, \crs, \inp, \zkproof) = 1$ to
+transcript. We sometimes abuse notation and write $\verifier(\REL, \srs, \inp, \zkproof) = 1$ to
 denote a fact that $\zkproof$ is accepted by the verifier. (This is especially
 handy when the proof system is non-interactive, i.e.~the whole conversation
 between the prover and verifier consists of a single message $\zkproof$ sent by
@@ -826,16 +829,16 @@ A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RE
   \emph{complete} if an honest prover always convinces an honest verifier, that
   is for all $\REL \in \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
 	\[
-		\condprob{\ip{\prover (\REL, \crs, \inp, \wit)}{\verifier (\REL, \crs,
-        \inp)} = 1}{\crs \gets \kgen(\REL)} = 1\,.
+		\condprob{\ip{\prover (\REL, \srs, \inp, \wit)}{\verifier (\REL, \srs,
+        \inp)} = 1}{\srs \gets \kgen(\REL)} = 1\,.
 	\]
 \item[Soundness] We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no
   $\ppt$ prover $\adv$ can convince an honest verifier $\verifier$ to accept a
   proof for a false statement $\inp \not\in\LANG$. More precisely, for
   all $\REL \in \RELGEN(\secparam)$
 	\[
-      \condprob{\ip{\adv(\REL, \crs, \inp)}{\verifier(\REL, \crs, \inp)} =
-        1}{\crs \gets \kgen(\REL), \inp \gets \adv(\REL, \crs); \inp \not\in
+      \condprob{\ip{\adv(\REL, \srs, \inp)}{\verifier(\REL, \srs, \inp)} =
+        1}{\srs \gets \kgen(\REL), \inp \gets \adv(\REL, \srs); \inp \not\in
         \LANG_\REL} \leq \negl\,;
 	\]
 \item[Zero knowledge] We call a proof system $\proofsystem$
@@ -843,13 +846,13 @@ A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RE
   \in \REL$, and adversary $\adv$ there exists a $\ppt$ simulator $\simulator$
   such that
 	\begin{multline*}
-	  \left\{\ip{\prover(\REL, \crs, \inp, \wit)}{\adv(\REL, \crs, \inp, \wit)}
-      \,\left|\, \crs \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
-          \crs)}\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
+	  \left\{\ip{\prover(\REL, \srs, \inp, \wit)}{\adv(\REL, \srs, \inp, \wit)}
+      \,\left|\, \srs \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
+          \srs)}\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
 		\\
-		\left\{\simulator^{\adv}(\REL, \crs, \inp)\,\left|\, \crs \gets
+		\left\{\simulator^{\adv}(\REL, \srs, \inp)\,\left|\, \srs \gets
         \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
-          \crs)}\vphantom{\simulator^\adv}\right.\right\}\,.
+          \srs)}\vphantom{\simulator^\adv}\right.\right\}\,.
 \end{multline*}
 	%
 We call zero knowledge \emph{perfect} if the distributions are equal and
@@ -857,9 +860,9 @@ We call zero knowledge \emph{perfect} if the distributions are equal and
 distinguisher.
 
 \end{description}
-A SRS $\crs$ may come with a secret string called \emph{trapdoor} $\td$ that
+A SRS $\srs$ may come with a secret string called \emph{trapdoor} $\td$ that
 allows the simulator to produce a simulated proof. In that case algorithm
-$\kgen(\REL)$ outputs $(\crs, \td)$ and $\td$ is given to the simulator. In this
+$\kgen(\REL)$ outputs $(\srs, \td)$ and $\td$ is given to the simulator. In this
 paper we distinguish simulators that requires a trapdoor to simulate and those
 that do not. We call the former \emph{SRS-simulators} and denote by
 $\simulator_\td$ for trapdoor $\td$.
@@ -885,13 +888,13 @@ formalised by the so-called \emph{knowledge soundness}.
 	\[
 	\Pr\left[
 		\begin{aligned}
-			& \verifier(\REL, \crs, \inp, \trans) = 1, \\
+			& \verifier(\REL, \srs, \inp, \trans) = 1, \\
 			& \REL(\inp, \wit) = 0
 	 \end{aligned}
 	  \,\left|\,
 	 \begin{aligned}
-		 & \crs \gets \kgen(\REL), \inp \gets \adv(\REL, \crs), \\
-		 & (\wit, \trans) \gets \ext^{\ip{\adv(\REL, \crs, \inp)}{\verifier(\REL, \crs, \inp)}}(\REL, \inp)
+		 & \srs \gets \kgen(\REL), \inp \gets \adv(\REL, \srs), \\
+		 & (\wit, \trans) \gets \ext^{\ip{\adv(\REL, \srs, \inp)}{\verifier(\REL, \srs, \inp)}}(\REL, \inp)
 	 \end{aligned}
 	 \vphantom{\begin{aligned}
 		 \adv (\trans) = 1, \\
@@ -1004,14 +1007,14 @@ polynomially many simulated proofs for any statements it wishes.
 	\[
 		\accProb = \Pr \left[
 		\begin{aligned}
-			& \verifier_\fs(\REL, \crs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
+			& \verifier_\fs(\REL, \srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
 			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
-			& \crs \gets \kgen(\REL), r \sample \RND{\advse}, \\
+			& \srs \gets \kgen(\REL), r \sample \RND{\advse}, \\
 			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
-			\ro} (\REL, \crs; r) 
+			\ro} (\REL, \srs; r) 
 		\end{aligned}
 		\right.\right]\,,
 	\]
@@ -1019,16 +1022,16 @@ polynomially many simulated proofs for any statements it wishes.
 	\[
 		\frkProb = \Pr \left[
 		\begin{aligned}
-			& \verifier_\fs(\REL, \crs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
+			& \verifier_\fs(\REL, \srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
 			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
 			& \REL(\inp_{\advse}, \wit_{\advse}) = 1
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
-			& \crs \gets \kgen(\REL), r \sample \RND{\advse},\\
+			& \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
 			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
-			\ro} (\REL, \crs; r) \\
-			& \wit_{\advse} \gets \ext_\ss (\REL, \crs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+			\ro} (\REL, \srs; r) \\
+			& \wit_{\advse} \gets \ext_\ss (\REL, \srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
 			Q, Q_\ro,) 
 		\end{aligned}
 		\right.\right]
@@ -1241,7 +1244,7 @@ randomness; $Q$ the list of queries submitted by $\advse$ along with simulator's
 $\simulator_\zkproof$ answers; and $Q_\ro$ be the list of all random oracle
 queries made by $\advse$.  All of these are given to the extractor $\ext$ that
 internally runs the forking algorithm $\genforking_\zdv$.  Algorithm $\zdv$
-takes $(\REL, \crs, \advse,
+takes $(\REL, \srs, \advse,
 %\inp_\advse,
 %\zkproof_\advse, 
 Q, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
@@ -1250,7 +1253,7 @@ h_q^1$.
 pick $h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$
 elements.)  
 
-Next, $\zdv$ runs internally $\advse(\REL, \crs; r)$ and responds to its random
+Next, $\zdv$ runs internally $\advse(\REL, \srs; r)$ and responds to its random
 oracle and simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes
 the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
 as it is run on the same random tape and with the same answers from the
@@ -1318,20 +1321,20 @@ output by the prover, We say that $\proofsystem$ has \emph{unique responses
 		\begin{aligned}
 		&	\inp, \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
     a'_{\mu + 1})
-		\gets \adv^\ro(\REL, \crs), \\
+		\gets \adv^\ro(\REL, \srs), \\
     & \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i + 1} = a'_1,
     \ldots, a_{i + 1}, \\
-		& \verifier^\ro_\fs (\REL, \crs, \inp, \vec{a}) =
-		\verifier^\ro_\fs(\REL, \crs, \inp, \vec{a'}) = 1
+		& \verifier^\ro_\fs (\REL, \srs, \inp, \vec{a}) =
+		\verifier^\ro_\fs(\REL, \srs, \inp, \vec{a'}) = 1
 		\end{aligned}
 		\ \left|\  
 	\vphantom{\begin{aligned}
 	&	\vec{a} = (a_0, b_0, \ldots, a_j, b_j, a_\mu), \vec{a'} = (a'_0, b'_0, \ldots, a'_j,
-	b'_j a'_\mu) \gets \adv(\REL, \crs), \vec{a} \neq \vec{a'}, \\
+	b'_j a'_\mu) \gets \adv(\REL, \srs), \vec{a} \neq \vec{a'}, \\
 	& b_k = b'_k, k \in \range{1, \mu - 1},\\ a_l = a'_l, l \in
 \range{1}{j}, j > i 
 	\end{aligned}}
-\crs \gets \kgen_\fs(\REL) \right.
+\srs \gets \kgen_\fs(\REL) \right.
 } \leq \negl.
 \]
 \end{definition}
@@ -1361,7 +1364,7 @@ some computational assumption.
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an $(2 \mu +
   1)$-message proof system for a relation $\REL$. We say that $\proofsystem$ is
   $(n_1, \ldots, n_\mu)$-\emph{special sound} if for every $\ppt$ adversary
-  $\adv(\REL, \crs)$, where $\crs \gets \kgen(\REL)$, that produces an accepting
+  $\adv(\REL, \srs)$, where $\srs \gets \kgen(\REL)$, that produces an accepting
   $(n_1, \ldots, n_\mu)$-tree of transcripts $\tree$ for a statement $\inp$
   there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that
   $\REL(\inp, \wit) = 1$ with an overwhelming probability.
@@ -1507,12 +1510,12 @@ a simulated proof it saw, it would end up with exactly the same proof
 which can also can not break simulation extractability, thus $\waccProb=\waccProb'$.
 
 We describe our extractor here. The extractor takes as input relation $\REL$,
-SRS $\crs$, $\advse$'s code, its randomness $r$, the output instance
+SRS $\srs$, $\advse$'s code, its randomness $r$, the output instance
 $\inp_{\advse}$ and proof $\zkproof_{\advse}$, as well as the list $Q$ of
 simulated proofs (and their instances) and the list of random oracle queries and
 responses $Q_\ro$. Then, $\ext$ starts a forking algorithm
 $\genforking^{n_k}_\zdv(y,h_1, \ldots, h_q)$ for
-$y = (\REL, \crs, \advse, r, \inp_{\advse}, \zkproof_{\advse}, Q)$ where we set
+$y = (\REL, \srs, \advse, r, \inp_{\advse}, \zkproof_{\advse}, Q)$ where we set
 $h_1, \ldots, h_q$ to be the consecutive queries from list $Q_\ro$. We run
 $\advse$ internally in $\zdv$.
 
@@ -1682,7 +1685,7 @@ prover, verifier, and simulator.
 The SRS generating algorithm picks at random $\chi \sample \FF_p$, computes
 and outputs
 \[
-	\crs = \left(\gone{\smallset{\chi^i}_{i = 0}^{\numberofconstrains + 2}},
+	\srs = \left(\gone{\smallset{\chi^i}_{i = 0}^{\numberofconstrains + 2}},
 	\gtwo{\chi} \right).
 \]
 
@@ -1723,7 +1726,7 @@ such that for $i \in \range{1}{\noofc}$
 \end{align*}
 
 \paragraph{$\plonk$ prover
-  $\prover(\REL, \crs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot
+  $\prover(\REL, \srs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot
       \noofc}})$.}
 \begin{description}
 \item[Round 1] Sample $b_1, \ldots, b_9 \sample \FF_p$; compute
@@ -1809,7 +1812,7 @@ such that for $i \in \range{1}{\noofc}$
 	Output $\gone{\p{W_{\chz}}(\chi), \p{W_{\chz \omega}}(\chi)}$.
 \end{description}
 
-\ncase{$\plonk$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$}\ \newline
+\ncase{$\plonk$ verifier $\verifier(\REL, \srs, \inp, \zkproof)$}\ \newline
 The \plonk{} verifier works as follows
 \begin{description}
 	\item[Step 1] Validate all obtained group elements.
@@ -1907,19 +1910,19 @@ has the unique opening property in the AGM.
 	\Pr
 		\left[
 			\begin{aligned}
-				& \verify(\crs, \vec{c}, \vec{c'}, (z, z'), \vec{s}, \vec{s'}, \vec{o}), \\
-				& \verify(\crs, \vec{c}, \vec{c'}, (z, z'), \vec{\tilde{s}}, \vec{\tilde{s}'}, \vec{\tilde{o}}) \\
+				& \verify(\srs, \vec{c}, \vec{c'}, (z, z'), \vec{s}, \vec{s'}, \vec{o}), \\
+				& \verify(\srs, \vec{c}, \vec{c'}, (z, z'), \vec{\tilde{s}}, \vec{\tilde{s}'}, \vec{\tilde{o}}) \\
 				& \vec{o} \neq \vec{\tilde{o}}
 			\end{aligned}
 		\,\left|\,
 		\vphantom{\begin{aligned}
-			& \verify(\crs, \vec{c}, \vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}), \\
-			& \verify(\crs, \vec{c}, \vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{\tilde{o}}) \\
+			& \verify(\srs, \vec{c}, \vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}), \\
+			& \verify(\srs, \vec{c}, \vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{\tilde{o}}) \\
 			&\vec{o} \neq \vec{\tilde{o}})
 		\end{aligned}}
 		\begin{aligned}
-			& \crs \gets \kgen(\secparam), \\
-			&	(\vec{c}, \vec{c'}, \vec{z}, \vec{s}, \vec{s'}, \vec{\tilde{s}}, \vec{\tilde{s}'}, \vec{o}, \vec{\tilde{o}}) \gets \adv(\crs)
+			& \srs \gets \kgen(\secparam), \\
+			&	(\vec{c}, \vec{c'}, \vec{z}, \vec{s}, \vec{s'}, \vec{\tilde{s}}, \vec{\tilde{s}'}, \vec{o}, \vec{\tilde{o}}) \gets \adv(\srs)
 		\end{aligned}
 		\right.\right]
 	 % \leq \negl.
@@ -1979,7 +1982,7 @@ Step 1 above. \qed
 %is of knowledge.
 \end{lemma}
 \begin{proof}[sketch]
-  Let $\adv(\REL,\crs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}},
+  Let $\adv(\REL,\srs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}},
   \gtwo{\chi}))$ be an adversary tasked to break the $\ur{3}$-ness of
   $\plonkprot$. It is sufficient to observe that the first 2 rounds of the
   protocol determines, along with the verifiers challenges, the rest of it. In
@@ -2102,8 +2105,8 @@ of $\plonkprot$ is upper-bounded as
  $(\noofc + 2, 1)$-$\dlog$ assumption.
 \end{lemma}
 \begin{proof}
-  Let $\crs$ be $\plonkprot$'s SRS and denote by $\crs_1$ all SRS's
-  $\GRP_1$-elements; that is, $\crs_1 = \gone{1, \chi, \ldots,
+  Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
+  $\GRP_1$-elements; that is, $\srs_1 = \gone{1, \chi, \ldots,
     \chi^{\noofc + 2}}$. Let $\adv$ be an algebraic adversary that
   for a statement $\inp$ produces a $(1, 1, 1, \noofc + 3, 1)$-tree
   of acceptable transcripts
@@ -2158,16 +2161,16 @@ of $\plonkprot$ is upper-bounded as
 \end{lemma}
 \begin{proof}
   The proof goes by game-hoping. The environment that controls the games
-  provides the adversary with a SRS $\crs$, then the adversary outputs an
+  provides the adversary with a SRS $\srs$, then the adversary outputs an
   instance--witness pair $(\inp, \wit)$ and, depending on the game, is provided
   with either real or simulated proof for it. In the end of the game the
   adversary outputs either $0$ if it believes that the proof it saw was provided
   by the simulator and $1$ in the other case.
 
-  \ngame{0} In this game $\adv(\REL, \crs)$ picks an instance--witness pair
+  \ngame{0} In this game $\adv(\REL, \srs)$ picks an instance--witness pair
   $(\inp, \wit)$ and gets a real proof $\zkproof$ for it.
 
-  \ngame{1} In this game for $\adv(\REL, \crs)$ picks an instance--witness pair
+  \ngame{1} In this game for $\adv(\REL, \srs)$ picks an instance--witness pair
   $(\inp, \wit)$ and gets a proof $\zkproof$ that is simulated by a simulator
   $\simulator_\chi$ which utilises for the simulation the SRS trapdoor and
   proceeds as follows. In the first round the simulator $\simulator_\chi$ picks
@@ -2195,7 +2198,7 @@ of $\plonkprot$ is upper-bounded as
 	\abs{\prob{\game{0}} - \prob{\game{1}}} \leq \epszk.
 \]
 
-\ngame{2} In this game $\adv(\REL, \crs)$ picks an instance--witness pair
+\ngame{2} In this game $\adv(\REL, \srs)$ picks an instance--witness pair
 $(\inp, \wit)$ and gets a proof $\zkproof$ simulated by the simulator
 $\simulator$ which proceeds as follows.
 
@@ -2266,7 +2269,7 @@ randomly picked $\vb = b_1, \ldots b_9$.
 
 The reduction $\rdv$ learns $\gone{\pR}$ and challenge $\gone{w}$ where $w$ is
 either $\pf(\vb) = b_1 b_3 b_5 b_7$ or a random value. Then it picks $\chi$,
-$\chz$ and computes the SRS $\crs$ from $\chi$. Elements $b_i$ are interpreted as
+$\chz$ and computes the SRS $\srs$ from $\chi$. Elements $b_i$ are interpreted as
 polynomials in $X$ that are evaluated at $\chi$, i.e. $b_i = b_i(\chi)$. Next,
 $\rdv$ sets
 \[
@@ -2302,7 +2305,7 @@ Analogously for the triplets and quadruplets.
 
 For the challenge $\gone{w}$, $\rdv$ sets $\gone{\tw} = \gone{\tb_1 \tb_3
 \tb_5 \tb_7}$, where $\gone{b_1 b_3 b_5 b_7}$ is substituted by $\gone{w}$.
-Next it runs the adversary $\adv(\REL, \crs)$ and obtains from $\adv$ an
+Next it runs the adversary $\adv(\REL, \srs)$ and obtains from $\adv$ an
 instance--witness pair $(\inp, \wit)$.  $\rdv$ now prepares a simulated proof as follows:
 \begin{description} 
 \item[Round 1] $\rdv$ computes $\gone{\pa(\chi)}$ using as
@@ -2408,60 +2411,60 @@ In \sonic{} we will use commitments to the following polynomials.
 \paragraph{$\sonic$ SRS generation $\kgen(\REL)$.} The SRS generating algorithm picks
 randomly $\alpha, \chi \sample \FF_p$ and outputs
 	\[
-      \crs = \left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
+      \srs = \left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
           \smallset{\alpha \chi^i}_{i = -\dconst, i \neq 0}^{\dconst}},
         \gtwo{\smallset{\chi^i, \alpha \chi^i}_{i = - \dconst}^{\dconst}},
         \gtar{\alpha} \right)
 	\]
-\paragraph{$\sonic$ prover $\prover(\REL, \crs, \inp, \wit=\va, \vb, \vc)$.}
+\paragraph{$\sonic$ prover $\prover(\REL, \srs, \inp, \wit=\va, \vb, \vc)$.}
 \begin{description}
 \item[Round 1] The prover picks randomly randomisers
   $c_{\multconstr + 1}, c_{\multconstr + 2}, c_{\multconstr + 3}, c_{\multconstr
     + 4} \sample \FF_p$. Set
   $\pr(X, Y) \gets \pr(X, Y) + \sum_{i = 1}^4 c_{\multconstr + i} X^{- 2
     \multconstr - i}$. Commits to $\pr(X, 1)$ and outputs
-  $\gone{r} \gets \com(\crs, \multconstr, \pr(X, 1))$.  Then it gets challenge $y$ from
+  $\gone{r} \gets \com(\srs, \multconstr, \pr(X, 1))$.  Then it gets challenge $y$ from
   the verifier.
 \item[Round 2] $\prover$ commits to $\pt(X, y)$ and outputs
-  $\gone{t} \gets \com(\crs, \dconst, \pt(X, y))$. Then it gets a challenge $z$ from
+  $\gone{t} \gets \com(\srs, \dconst, \pt(X, y))$. Then it gets a challenge $z$ from
   the verifier.
 \item[Round 3] The prover computes commitment openings. That is, it outputs
   \begin{align*}
-    \gone{o_a} & = \open(\crs, z, \pr(z, 1), \pr(X, 1)) \\
-    \gone{o_b} & = \open(\crs, yz, \pr(yz, 1), \pr(X, 1)) \\
-    \gone{o_t} & = \open(\crs, z, \pt(z, y), \pt(X, y)) 
+    \gone{o_a} & = \open(\srs, z, \pr(z, 1), \pr(X, 1)) \\
+    \gone{o_b} & = \open(\srs, yz, \pr(yz, 1), \pr(X, 1)) \\
+    \gone{o_t} & = \open(\srs, z, \pt(z, y), \pt(X, y)) 
   \end{align*}
   along with evaluations $a' = \pr(z, 1), b' = \pr(y, z), t' = \pt(z, y)$.  Then it
   engages in the signature of correct computation playing the role of the
   helper, i.e.~it commits to $\p{s}(X, y)$ and sends the commitment $\gone{s}$.  Then
   it obtains a challenge $u$ from the verifier.
 \item[Round 4] In the next round the prover computes
-  $\gone{c} \gets \com(\crs, \dconst, \p{s}(u, x)) \cdot \gone{\p{s}(u, x)}$ and
+  $\gone{c} \gets \com(\srs, \dconst, \p{s}(u, x)) \cdot \gone{\p{s}(u, x)}$ and
   compute commitments' openings
   \begin{align*}
-    \gone{w} & = \open(\crs, u, \p{s}(X, y)), \\
-    \gone{q_y} & = \open(\crs, y, \p{s}(u, Y)),
+    \gone{w} & = \open(\srs, u, \p{s}(X, y)), \\
+    \gone{q_y} & = \open(\srs, y, \p{s}(u, Y)),
   \end{align*}
   and returns $\gone{w}, \gone{q_y}, \p{s}(u, y)$. Eventually the prover gets the last challenge
   from the verifier---$z$.
 \item[Round 5] In the final round, $\prover$ computes opening
-  $\gone{q_z} = \open(\crs, z, \p{s}(u, X))$ and outputs $\gone{q_z}$ and $\p{s}(u, z)$.
+  $\gone{q_z} = \open(\srs, z, \p{s}(u, X))$ and outputs $\gone{q_z}$ and $\p{s}(u, z)$.
 \end{description}
 
-\paragraph{$\sonic$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$.} The verifier
+\paragraph{$\sonic$ verifier $\verifier(\REL, \srs, \inp, \zkproof)$.} The verifier
 in \sonic{} runs as subroutines the verifier for the polynomial commitment. That
 is it sets $t' = a'(b' + s) - \p{k}(y)$ and checks the following:
 \begin{equation*}
   \begin{split}
-    &\PCOMs.\verifier(\crs, \multconstr, \gone{r}, z, a', \gone{o_a}), \\
-    &\PCOMs.\verifier(\crs, \multconstr, \gone{r}, yz, b', \gone{o_b}),\\
-    &\PCOMs.\verifier(\crs, \dconst, \gone{t}, z, t', \gone{o_t}),\\
+    &\PCOMs.\verifier(\srs, \multconstr, \gone{r}, z, a', \gone{o_a}), \\
+    &\PCOMs.\verifier(\srs, \multconstr, \gone{r}, yz, b', \gone{o_b}),\\
+    &\PCOMs.\verifier(\srs, \dconst, \gone{t}, z, t', \gone{o_t}),\\
   \end{split}
   \qquad
   \begin{split}
-    &\PCOMs.\verifier(\crs, \dconst, \gone{s}, u, s, \gone{w}),\\
-    &\PCOMs.\verifier(\crs, \dconst, \gone{c}, y, s, \gone{q_y}),\\
-    &\PCOMs.\verifier(\crs, \dconst, \gone{c}, z, s_z, \gone{q_z}),
+    &\PCOMs.\verifier(\srs, \dconst, \gone{s}, u, s, \gone{w}),\\
+    &\PCOMs.\verifier(\srs, \dconst, \gone{c}, y, s, \gone{q_y}),\\
+    &\PCOMs.\verifier(\srs, \dconst, \gone{c}, z, s_z, \gone{q_z}),
   \end{split}
 \end{equation*}
 and accepts the proof iff all the checks holds.
@@ -2481,17 +2484,17 @@ We need to show that for every $\ppt$ adversary $\adv$ probability
 \[
   \Pr \left[
     \begin{aligned}
-      & \verify(\crs, \gone{c}, z, s, \gone{o}) = 1, \\
-      & \verify(\crs, \gone{c}, z, \tilde{s}, \gone{\tilde{o}}) = 1
+      & \verify(\srs, \gone{c}, z, s, \gone{o}) = 1, \\
+      & \verify(\srs, \gone{c}, z, \tilde{s}, \gone{\tilde{o}}) = 1
     \end{aligned}
     \,\left|\, \vphantom{\begin{aligned}
-          & \verify(\crs, \gone{c}, z, s, \gone{o}),\\
-          & \verify(\crs, \gone{c}, z, \tilde{s}, \gone{\tilde{o}}) \\
+          & \verify(\srs, \gone{c}, z, s, \gone{o}),\\
+          & \verify(\srs, \gone{c}, z, \tilde{s}, \gone{\tilde{o}}) \\
           &o \neq \tilde{o})
 		\end{aligned}}
       \begin{aligned}
-        & \crs \gets \kgen(\secparam), \\
-        & (\gone{c}, z, s, \tilde{s}, \gone{o}, \gone{\tilde{o}}) \gets \adv(\crs)
+        & \srs \gets \kgen(\secparam), \\
+        & (\gone{c}, z, s, \tilde{s}, \gone{o}, \gone{\tilde{o}}) \gets \adv(\srs)
       \end{aligned}
     \right.\right]
   % \leq \negl.
@@ -3054,11 +3057,11 @@ them to be computed by the prover, verifier, and simulator.
 The SRS generating algorithm picks at random $\chi \sample \FF_p$, computes
 and outputs
 \[
-	\crs = \left(\gone{\smallset{\chi^i}_{i = 0}^{\noofc + 2}},
+	\srs = \left(\gone{\smallset{\chi^i}_{i = 0}^{\noofc + 2}},
 	\gtwo{\chi} \right).
 \]
 
-\ncase{$\plonk$ prover $\prover(\REL, \crs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \noofc}})$}
+\ncase{$\plonk$ prover $\prover(\REL, \srs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \noofc}})$}
 \begin{description}
 	\item[Round 1] 
 	Sample $b_1, \ldots, b_9 \sample \FF_p$; compute $\p{a}(X), \p{b}(X), \p{c}(X)$ as 
@@ -3143,7 +3146,7 @@ and outputs
 	Output $\gone{\p{W_{\chz}}(\chi), \p{W_{\chz \omega}}(\chi)}$.
 \end{description}
 
-\ncase{$\plonk$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$}\ \newline
+\ncase{$\plonk$ verifier $\verifier(\REL, \srs, \inp, \zkproof)$}\ \newline
 The \plonk{} verifier works as follows
 \begin{description}
 	\item[Step 1] Validate all obtained group elements.
@@ -3222,7 +3225,7 @@ Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the
 simulator of \plonk{} works, it is presented here.
 
 \COMMENT{
-\ncase{$\plonk$ simulator $\simulator_\chi(\REL, \crs, \td, \inp)$}
+\ncase{$\plonk$ simulator $\simulator_\chi(\REL, \srs, \td, \inp)$}
 % \paragraph{Simulation in \plonk.}
 % The simulator $\simulator$ in $\plonk$ proceeds according to the following steps:
 \begin{description}
@@ -3312,61 +3315,61 @@ In \sonic{} we will use commitments to the following polynomials.
 	The SRS generating algorithm picks randomly $\alpha, \chi \sample \FF_p$ and
 	outputs 
 	\[
-		\crs = \left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
+		\srs = \left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
 			\smallset{\alpha \chi^i}_{i = -\dconst, i \neq 0}^{\dconst}},
 			\gtwo{\smallset{\chi^i, \alpha \chi^i}_{i = - \dconst}^{\dconst}},
 		\gtar{\alpha} \right)
 	\]
-	\ncase{$\sonic$ prover $\prover(\REL, \crs, \inp, \wit=\va, \vb,
+	\ncase{$\sonic$ prover $\prover(\REL, \srs, \inp, \wit=\va, \vb,
 	\vc)$}
 \begin{description}
 	\item[Round 1]
 		The prover picks randomly randomisers $c_{\multconstr + 1}, c_{\multconstr + 2},
 		c_{\multconstr + 3}, c_{\multconstr + 4} \sample \FF_p$. Set $\pr(X, Y)
 		\gets \pr(X, Y) + \sum_{i = 1}^4 c_{\multconstr + i} X^{- 2 \multconstr -
-		i}$. Commits to $\pr(X, 1)$ and outputs $R \gets \com(\crs, \multconstr,
+		i}$. Commits to $\pr(X, 1)$ and outputs $R \gets \com(\srs, \multconstr,
 		\pr(X, 1))$.
 		Then it gets challenge $y$ from the verifier.
       \item[Round 2] $\prover$ commits to $\pt(X, y)$ and outputs
-        $T \gets \com(\crs, \dconst, \pt(X, y))$. Then it gets a challenge $z$
+        $T \gets \com(\srs, \dconst, \pt(X, y))$. Then it gets a challenge $z$
         from the verifier.
 	\item[Round 3] The prover computes commitment openings. That is, it outputs
 		\begin{align*}
-			W_a & = \open(\crs, z, \pr(z, 1), \pr(X, 1)) \\
-			W_b & = \open(\crs, yz, \pr(yz, 1), \pr(X, 1)) \\
-			W_t & = \open(\crs, z, \pt(z, y), \pt(X, y)) 
+			W_a & = \open(\srs, z, \pr(z, 1), \pr(X, 1)) \\
+			W_b & = \open(\srs, yz, \pr(yz, 1), \pr(X, 1)) \\
+			W_t & = \open(\srs, z, \pt(z, y), \pt(X, y)) 
 		\end{align*}
 		along with evaluations $a = \pr(z, 1), b = \pr(y, z), t = \pt(z, y)$.
 		Then it engages in the signature of correct computation playing the role of
 		the helper, i.e.~it commits to $\p{s}(X, y)$ and sends the commitment $S$.
 		Then it obtains a challenge $u$ from the verifier.
-	\item[Round 4] In the next round the prover computes $C \gets \com(\crs,
+	\item[Round 4] In the next round the prover computes $C \gets \com(\srs,
 		\dconst, \p{s}(u, x)) \cdot \gone{\p{s}(u, x)}$ and compute commitments'
 		openings 
 		\begin{align*}
-			W & = \open(\crs, u, \p{s}(X, y)), \\
-			Q & = \open(\crs, y, \p{s}(u, Y)),
+			W & = \open(\srs, u, \p{s}(X, y)), \\
+			Q & = \open(\srs, y, \p{s}(u, Y)),
 		\end{align*}
 		and returns $W, Q, \p{s}(u, y)$. Eventually the prover gets the last
 		challenge from the verifier---$z$.
 	\item[Round 5] In the final round, $\prover$ computes opening $Q_z =
-		\open(\crs, z, \p{s}(u, X))$ and outputs $Q_z$ and $\p{s}(u, z)$. 
+		\open(\srs, z, \p{s}(u, X))$ and outputs $Q_z$ and $\p{s}(u, z)$. 
 \end{description}
 
-	\ncase{$\sonic$ verifier $\verifier(\REL, \crs, \inp, \zkproof)$}
+	\ncase{$\sonic$ verifier $\verifier(\REL, \srs, \inp, \zkproof)$}
 	The verifier in \sonic{} runs as subroutines the verifier for the polynomial
 	commitment. That is it sets $t = a(b + s) - \p{k}(y)$ and checks the following:
 	\begin{equation*}
 		\begin{split}
-		&\PCOMs.\verifier(\crs, \multconstr, R, z, a, W_a), \\
-		&\PCOMs.\verifier(\crs, \multconstr, R, yz, b, W_b),\\
-		&\PCOMs.\verifier(\crs, \dconst, T, z, t, W_t),\\	
+		&\PCOMs.\verifier(\srs, \multconstr, R, z, a, W_a), \\
+		&\PCOMs.\verifier(\srs, \multconstr, R, yz, b, W_b),\\
+		&\PCOMs.\verifier(\srs, \dconst, T, z, t, W_t),\\	
 		\end{split}
 		\qquad
 		\begin{split}
-		&\PCOMs.\verifier(\crs, \dconst, S, u, s, W),\\
-		&\PCOMs.\verifier(\crs, \dconst, C, y, s, Q),\\
-		&\PCOMs.\verifier(\crs, \dconst, C, z, s_z, Q_z),
+		&\PCOMs.\verifier(\srs, \dconst, S, u, s, W),\\
+		&\PCOMs.\verifier(\srs, \dconst, C, y, s, Q),\\
+		&\PCOMs.\verifier(\srs, \dconst, C, z, s_z, Q_z),
 		\end{split}
       \end{equation*}
       and accepts the proof iff all the checks holds.
@@ -3574,12 +3577,12 @@ $\inp_{\advse}$; $r$ be $\advse$'s randomness; $Q$ the list of queries submitted
 by $\advse$ along with simulator's $\simulator_\zkproof$ answers; and $Q_\ro$ be
 the list of all random oracle queries made by $\advse$.  All of these are given
 to the extractor $\ext$ that internally runs the forking algorithm
-$\genforking_\zdv$.  Algorithm $\zdv$ takes $(\REL, \crs, \advse, Q, r)$ as
+$\genforking_\zdv$.  Algorithm $\zdv$ takes $(\REL, \srs, \advse, Q, r)$ as
 input $y$ and $Q_\ro$ as input $h_1^1, \ldots, h_q^1$.  (For the sake of
 completeness, we allow $\genforking_\zdv$ to pick $h^1_{k + 1}, \ldots, h^1_q$
 responses if $Q_\ro$ has only $k < q$ elements.)
 
-Next, $\zdv$ runs internally $\advse(\REL, \crs; r)$ and responds to its random
+Next, $\zdv$ runs internally $\advse(\REL, \srs; r)$ and responds to its random
 oracle and simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes
 the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
 as it is run on the same random tape and with the same answers from the
@@ -3738,11 +3741,11 @@ for $m = \prod_{k = 1}^{\mu} n_k$ and some negligible $\eps$.
   $\waccProb=\waccProb'$.
 
   We describe our extractor here. The extractor takes as input relation $\REL$,
-  SRS $\crs$, $\advse$'s code, its randomness $r$, the output instance
+  SRS $\srs$, $\advse$'s code, its randomness $r$, the output instance
   $\inp_{\advse}$ and proof $\zkproof_{\advse}$, as well as the list $Q$ of
   simulated proofs (and their instances) and the list of random oracle queries
   and responses $Q_\ro$. Then, $\ext$ starts a forking algorithm
-  $\genforking^{N}_\zdv(y,h_1, \ldots, h_q)$ for $y = (\REL, \crs, \advse, r,
+  $\genforking^{N}_\zdv(y,h_1, \ldots, h_q)$ for $y = (\REL, \srs, \advse, r,
   \inp_{\advse}, \zkproof_{\advse}, Q)$ where we set $h_1, \ldots, h_q$ to be
   the consecutive queries from list $Q_\ro$. We run $\advse$ internally in
   $\zdv$.
@@ -3845,20 +3848,20 @@ $\psfs$ is simulation extractable with extraction error $\epsur$.
 \begin{figure}
   \centering
   \fbox{
-    \procedure{$\ext_\adv(\REL, \crs, \inp; r)$}{
+    \procedure{$\ext_\adv(\REL, \srs, \inp; r)$}{
       h_1, \ldots, h_1 \sample H^{q}\\
       (\inp, \zkproof, \tree) \gets \treefind(1, (h_1, \ldots, h_q))\\
       \pcif \validtree(\tree) = 0 \pcthen \\
       \pcind \pcreturn (\inp, \zkproof, \bot)\\
-      \pcelse \wit \gets \findwitness(\REL, \crs, \inp, \tree) \\
+      \pcelse \wit \gets \findwitness(\REL, \srs, \inp, \tree) \\
       \pcreturn \wit
     }
   }
   \fbox{
     \procedure[linenumbering]{$\treefind(i, (h_1, \ldots, h_q))$}{
       \pcif i = \mu + 1 \pcthen\\
-      \pcind (\inp, \zkproof) \gets \adv^{\ro}(\REL, \crs)\\
-      \pcind \pcif \verifier(\REL, \crs, \inp, \zkproof) = 1 \pcthen\\
+      \pcind (\inp, \zkproof) \gets \adv^{\ro}(\REL, \srs)\\
+      \pcind \pcif \verifier(\REL, \srs, \inp, \zkproof) = 1 \pcthen\\
       \pcind \pcind \pcreturn (\inp, \zkproof, \tree)\\
       \pcind \pcelse \pcreturn (\inp, \zkproof, \bot)\\
       %
@@ -4009,19 +4012,19 @@ index for the $k$-th proof challenge correctly.
   \[
     \eps := \Pr \left[
       \begin{aligned}
-        & \plonkprotfs.\verifier(\REL, \crs, \inp, \zkproof_{\advss}),\\
+        & \plonkprotfs.\verifier(\REL, \srs, \inp, \zkproof_{\advss}),\\
         & (\inp_{\advss}, \zkproof_{\advss}) \not\in Q,\\
         & \inp_\advss \not\in \LANG_\REL
       \end{aligned}
       \,\left|\, \vphantom{\begin{aligned}
-            & \plonkprotfs.\verifier(\REL, \crs, \inp, \zkproof_{\advss}),\\
+            & \plonkprotfs.\verifier(\REL, \srs, \inp, \zkproof_{\advss}),\\
             & (\inp_{\advss}, \zkproof_{\advss}) \not\in Q,\\
             & \inp_\advss \not\in \LANG_\REL
           \end{aligned}}
         \begin{aligned}
-          & \crs \gets \plonkprotfs.\kgen(\REL, \secparam)\\
+          & \srs \gets \plonkprotfs.\kgen(\REL, \secparam)\\
           & (\inp_{\advss}, \zkproof_{\advss}) \gets \advss^{\simulator, \ro}
-          (\REL, \crs),
+          (\REL, \srs),
         \end{aligned}
       \right.\right].
   \]
@@ -4074,7 +4077,7 @@ index for the $k$-th proof challenge correctly.
   $\zkproof_\advss$ that can be written as
   \[
     \zkproof_\advss = \vec{M} \cdot (\underbrace{1 \| \chi \| \ldots \|
-      \chi^{\noofc + 2}}_{\crs} \|
+      \chi^{\noofc + 2}}_{\srs} \|
     \vec{\tilde{\zkproof}_\simulator}_1^{\top} \| \ldots \|
     \vec{\tilde{\zkproof}_\simulator}_{q_\simulator}^\top)^\top\,,
   \]
