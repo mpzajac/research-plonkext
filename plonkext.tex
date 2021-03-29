@@ -811,28 +811,32 @@ $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
 and the latter \emph{verifier}. We allow our proof system to have a setup,
 i.e.~there is a $\kgen$ algorithm that takes as input the relation description
 $\REL$ and outputs a common reference string $\srs$. We denote by
-$\ip{\prover(\REL, \srs, \inp, \wit)}{\verifier(\REL, \srs,\inp)}$ a transcript
-$\trans$ (or, proof $\zkproof$---we use these two alternatively) of a
-conversation between $\prover$ with input $(\REL, \srs, \inp, \wit)$ and
-$\verifier$ with input $(\REL, \srs, \inp)$. We write $\ip{\prover (\REL, \srs,
-  \inp, \wit)}{\verifier(\REL, \srs, \inp)} = 1$ if in the end of the transcript
-the verifier $\verifier$ returns $1$ and say that $\verifier$ accepts the
-transcript. We sometimes abuse notation and write $\verifier(\REL, \srs, \inp, \zkproof) = 1$ to
-denote a fact that $\zkproof$ is accepted by the verifier. (This is especially
-handy when the proof system is non-interactive, i.e.~the whole conversation
-between the prover and verifier consists of a single message $\zkproof$ sent by
-$\prover$).
+$\ip{\prover(\REL, \srs, \inp, \wit)}{\verifier(\REL, \srs,\inp)}$ a
+\emph{transcript} (also called \emph{proof}) $\zkproof$ of a conversation
+between $\prover$ with input $(\REL, \srs, \inp, \wit)$ and $\verifier$ with
+input $(\REL, \srs, \inp)$. We write
+$\ip{\prover (\REL, \srs, \inp, \wit)}{\verifier(\REL, \srs, \inp)} = 1$ if in
+the end of the transcript the verifier $\verifier$ returns $1$ and say that
+$\verifier$ accepts it. We sometimes abuse notation and write
+$\verifier(\REL, \srs, \inp, \zkproof) = 1$ to denote a fact that $\zkproof$ is
+accepted by the verifier. (This is especially handy when the proof system is
+non-interactive, i.e.~the whole conversation between the prover and verifier
+consists of a single message $\zkproof$ sent by $\prover$).
 
 A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
-\begin{description}
-\item[Completeness] An interactive proof system $\proofsystem$ is
+% \begin{description}
+\paragraph{Completeness.}
+%\item[Completeness]
+  An interactive proof system $\proofsystem$ is
   \emph{complete} if an honest prover always convinces an honest verifier, that
   is for all $\REL \in \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
 	\[
 		\condprob{\ip{\prover (\REL, \srs, \inp, \wit)}{\verifier (\REL, \srs,
         \inp)} = 1}{\srs \gets \kgen(\REL)} = 1\,.
 	\]
-\item[Soundness] We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no
+    % \item[Soundness]
+\paragraph{Soundness.}
+    We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no
   $\ppt$ prover $\adv$ can convince an honest verifier $\verifier$ to accept a
   proof for a false statement $\inp \not\in\LANG$. More precisely, for
   all $\REL \in \RELGEN(\secparam)$
@@ -841,15 +845,48 @@ A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RE
         1}{\srs \gets \kgen(\REL), \inp \gets \adv(\REL, \srs); \inp \not\in
         \LANG_\REL} \leq \negl\,;
 	\]
-\item[Zero knowledge] We call a proof system $\proofsystem$
-  \emph{zero-knowledge} if for any $\REL \in \RELGEN(\secparam)$, $(\inp, \wit)
-  \in \REL$, and adversary $\adv$ there exists a $\ppt$ simulator $\simulator$
-  such that
+%\end{description}
+Sometimes a stronger notion of soundness is required---except requiring that the
+verifier rejects proofs of statements outside the language, we request from the
+prover to know a witness corresponding to the proven statement. This property is
+formalised by the so-called \emph{knowledge soundness}.
+%\begin{description}
+%\begin{description}
+%\item[Knowledge soundness]
+That is, we call an interactive proof system $\proofsystem$
+\emph{knowledge-sound} if for any $\REL \in \RELGEN(\secparam)$ and a $\ppt$
+adversary $\adv$
+	% \begin{multline*}
+	\[
+	\Pr\left[
+		\begin{aligned}
+			& \verifier(\REL, \srs, \inp, \zkproof) = 1, \\
+			& \REL(\inp, \wit) = 0
+	 \end{aligned}
+	  \,\left|\,
+	 \begin{aligned}
+		 & \srs \gets \kgen(\REL), \inp \gets \adv(\REL, \srs), \\
+		 & (\wit, \zkproof) \gets \ext^{\ip{\adv(\REL, \srs, \inp)}{\verifier(\REL, \srs, \inp)}}(\REL, \inp)
+	 \end{aligned}
+	 \vphantom{\begin{aligned}
+		 \adv (\zkproof) = 1, \\
+		 \text{if $\zkproof{}$ is accepting} \\
+		 \pcind \text{then $\REL(\inp, \wit)$}
+	 \end{aligned}}\right.
+	 \right] \leq \negl\,,
+ % \end{multline*}
+ \]
+%\end{description}
+
+ \paragraph{Zero knowledge.}
+ We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
+ $\REL \in \RELGEN(\secparam)$, $(\inp, \wit) \in \REL$, and adversary $\adv$
+ there exists a $\ppt$ simulator $\simulator$ such that
 	\begin{multline*}
 	  \left\{\ip{\prover(\REL, \srs, \inp, \wit)}{\adv(\REL, \srs, \inp, \wit)}
       \,\left|\, \srs \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
           \srs)}\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
-		\\
+		%\\
 		\left\{\simulator^{\adv}(\REL, \srs, \inp)\,\left|\, \srs \gets
         \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
           \srs)}\vphantom{\simulator^\adv}\right.\right\}\,.
@@ -859,13 +896,13 @@ We call zero knowledge \emph{perfect} if the distributions are equal and
 \emph{computational} if they are indistinguishable for any $\nuppt$
 distinguisher.
 
-\end{description}
-A SRS $\srs$ may come with a secret string called \emph{trapdoor} $\td$ that
+%\end{description}
+An SRS $\srs$ comes with a secret string called \emph{trapdoor} $\td$ that
 allows the simulator to produce a simulated proof. In that case algorithm
 $\kgen(\REL)$ outputs $(\srs, \td)$ and $\td$ is given to the simulator. In this
 paper we distinguish simulators that requires a trapdoor to simulate and those
-that do not. We call the former \emph{SRS-simulators} and denote by
-$\simulator_\td$ for trapdoor $\td$.
+that do not. We call the former \emph{SRS-simulators} and denote them by
+$\simulator_\td$.
 
 Occasionally, a weaker version of zero knowledge is sufficient. So called
 \emph{honest verifier zero knowledge} (HVZK) assumes that the verifier's
@@ -876,37 +913,8 @@ outputs as challenges its random coins) can be made non-interactive and
 zero-knowledge in the random oracle model by using the Fiat--Shamir
 transformation.
 	
-Sometimes a stronger notion of soundness is required---except requiring that the
-verifier rejects proofs of statements outside the language, we request from the
-prover to know a witness corresponding to the proven statement. This property is
-formalised by the so-called \emph{knowledge soundness}.
-\begin{description}
-\item[Knowledge soundness] We call an interactive proof system $\proofsystem$
-  \emph{knowledge-sound} if for any $\REL \in \RELGEN(\secparam)$ and a $\ppt$
-  adversary $\adv$
-	% \begin{multline*}
-	\[
-	\Pr\left[
-		\begin{aligned}
-			& \verifier(\REL, \srs, \inp, \trans) = 1, \\
-			& \REL(\inp, \wit) = 0
-	 \end{aligned}
-	  \,\left|\,
-	 \begin{aligned}
-		 & \srs \gets \kgen(\REL), \inp \gets \adv(\REL, \srs), \\
-		 & (\wit, \trans) \gets \ext^{\ip{\adv(\REL, \srs, \inp)}{\verifier(\REL, \srs, \inp)}}(\REL, \inp)
-	 \end{aligned}
-	 \vphantom{\begin{aligned}
-		 \adv (\trans) = 1, \\
-		 \text{if $\trans{}$ is accepting} \\
-		 \pcind \text{then $\REL(\inp, \wit)$}
-	 \end{aligned}}\right.
-	 \right] \leq \negl\,,
- % \end{multline*}
- \]
-\end{description}
 
-\paragraph{Sigma protocols.}
+\subsubsection{Sigma protocols}
 A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ for a relation
 $\REL \in \RELGEN(\secparam)$ is a special case of an interactive proof which
 transcript compounds of three messages $(a, b, z)$, the middle being a challenge
@@ -915,8 +923,8 @@ the standard model and specially-sound. That is, there exists an extractor
 $\ext$ which given two accepting transcripts $(a, b, z)$, $(a, b', z')$ for a
 statement $\inp$ can recreate the corresponding witness if $b \neq b'$.
 Formally,
-\begin{description}
-\item[Special soundness] A sigma protocol $\sigmaprot$ is \emph{specially-sound}
+%\begin{description}
+\paragraph{Special soundness.} A sigma protocol $\sigmaprot$ is \emph{specially-sound}
   if for any adversary $\adv$ the probability
 	\[
 		\Pr\left[
@@ -926,46 +934,44 @@ Formally,
 		\end{aligned}
 		\,\left|\,
 		\begin{aligned}
-          & (\inp, (a, b, z), (a, b', z')) \gets \adv(\REL), \\
-          & b \neq b',  \\
-          & \verifier(\REL, \inp, (a, b, z)) = \\
-          & \qquad = \verifier(\REL, \inp, (a, b', z')) = 1, \\
+          & (\inp, (a, b, z), (a, b', z')) \gets \adv(\REL), %\\
+           b \neq b',  \\
+          & \verifier(\REL, \inp, (a, b, z)) = %\\
+           = \verifier(\REL, \inp, (a, b', z')) = 1, \\
 		\end{aligned}
 		\right.\right] \leq  \negl\,.
 	\]
-\end{description}
+%\end{description}
 
 Another property that sigma protocols may have is a unique response
 property \cite{C:Fischlin05} which states that no $\ppt$ adversary can
 produce two accepting transcripts that differ only on the last
 element. More precisely, 
-\begin{description} 
-  \item[Unique response
-  property] Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a
-  sigma-protocol for $\REL \in \RELGEN(\secparam)$ which proofs
-  compound of three messages $(a, b, z)$. We say that $\sigmaprot$ is
-  has a unique response property if for all $\ppt$ algorithms $\adv$
-  holds \[ \condprob{\verifier (\REL, \inp, (a, b, z)) = \verifier
-    (\REL, \inp, (a, b, z'))  = 1}{(\inp, a, b, z, z') \gets
-  \adv(\REL), z \neq z'} \leq \negl\,.  \] 
-\end{description} 
-If this
-  property holds even against unbounded adversaries, it is called
-  \emph{strict}, cf.~\cite{INDOCRYPT:FKMV12}. Later on we call
-  protocols that follows this notion \emph{ur-protocols}. For the sake
-  of completeness we note that many sigma protocols, like
-  e.g.~Schnorr's protocol \cite{C:Schnorr89}, fulfil this property.
+%\begin{description} 
+\paragraph{Unique response property.} Let
+$\sigmaprot = (\prover, \verifier, \simulator)$ be a sigma-protocol for
+$\REL \in \RELGEN(\secparam)$ which proofs compound of three messages
+$(a, b, z)$. We say that $\sigmaprot$ is has a unique response property if for
+all $\ppt$ algorithms $\adv$ holds
+\[ \condprob{\verifier (\REL, \inp, (a, b, z)) = \verifier (\REL, \inp, (a, b,
+    z')) = 1}{(\inp, a, b, z, z') \gets \adv(\REL), z \neq z'} \leq \negl\,.  \]
+%\end{description} 
+If this property holds even against unbounded adversaries, it is called
+\emph{strict}, cf.~\cite{INDOCRYPT:FKMV12}. Later on we call protocols that
+follows this notion \emph{ur-protocols}. For the sake of completeness we note
+that many sigma protocols, like e.g.~Schnorr's protocol \cite{C:Schnorr89},
+fulfil this property.
 
 \subsection{From interactive to non-interactive---Fiat--Shamir transformation}
-Consider a $(2\mu + 1)$-message, public-coin, honest verifier
-zero-knowledge interactive proof system $\proofsystem = (\kgen,
-\prover, \verifier, \simulator)$ for $\REL \in \RELGEN(\secparam)$.
-Let $\zkproof$ be a proof performed by the prover $\prover$ and
-verifier $\verifier$ compound of messages $(a_1, b_1, \ldots, a_{\mu -
-1}, b_{\mu}, a_{\mu + 1})$, where $a_i$ comes from $\prover$ and $b_i$
-comes from $\verifier$.  Denote by $\ro$ a random oracle. 
-Let $\proofsystem_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs,
-\simulator_\fs)$ be a proof system such that
+Consider a $(2\mu + 1)$-message, public-coin, honest verifier zero-knowledge
+interactive proof system
+$\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for
+$\REL \in \RELGEN(\secparam)$.  Let $\zkproof$ be a proof performed by the
+prover $\prover$ and verifier $\verifier$ compound of messages
+$(a_1, b_1, \ldots, a_{\mu - 1}, b_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
+$\prover$ and $b_i$ comes from $\verifier$.  Denote by $\ro$ a random oracle.
+Let $\proofsystem_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$
+be a proof system such that
 \begin{itemize}
   \item $\kgen_\fs$ behaves as $\kgen$.
   \item $\prover_\fs$ behaves as $\prover$ except after sending message
@@ -995,7 +1001,7 @@ which assures that no adversary can produce a valid proof without knowing the
 corresponding witness. This must hold even if the adversary is allowed to see
 polynomially many simulated proofs for any statements it wishes.
 
-\begin{definition}[Simulation-extractable NIZK]
+\begin{definition}[Simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
 	\label{def:simext}
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a computationally
   special-sound HVZK proof and $\ps_\fs = (\kgen_\fs, \prover_\fs,
@@ -1065,14 +1071,16 @@ soundness, and the unique response property to make them compatible with
 multi-message protocols.
 
 \subsection{Generalised forking lemma.}
+%\label{sec:forking_lemma}
 First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not
 general enough for our purpose as it is useful only for protocols where witness
 can be extracted from just two transcripts. To be able to extract a witness
 from, say, an execution of $\plonkprot$ we need to obtain at least
-$\numberofconstrains + 3$ valid proofs. Here we propose a generalisation of the
-general forking lemma that given probability of producing an accepting
-transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
-  of accepting transcripts} $\tree$, which allows to extract a witness.
+$\numberofconstrains + 3$ valid proofs, and even more for $\sonicprot$. Here we
+propose a generalisation of the general forking lemma that given probability of
+producing an accepting transcript $\accProb$ lower-bounds the probability of
+generating a \emph{tree of accepting transcripts} $\tree$, which allows to
+extract a witness.
 
 \begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
 	\label{def:tree_of_accepting_transcripts}
@@ -3075,7 +3083,7 @@ and outputs
 	\item[Round 2]
 	Get challenges $\beta, \gamma \in \FF_p$
 	\[
-		\beta = \ro(\trans[0..1], 0)\,, \qquad \gamma = \ro(\trans[0..1], 1)\,.
+		\beta = \ro(\zkproof[0..1], 0)\,, \qquad \gamma = \ro(\zkproof[0..1], 1)\,.
 	\]
 	Compute permutation polynomial $\p{z}(X)$
 	\begin{multline*}
@@ -3089,7 +3097,7 @@ and outputs
 	Output $\gone{\p{z}(\chi)}$
 		
 	\item[Round 3]
-	Get the challenge $\alpha = \ro(\trans[0..2])$, compute the quotient polynomial 
+	Get the challenge $\alpha = \ro(\zkproof[0..2])$, compute the quotient polynomial 
 	\begin{align*}
 	& \p{t}(X)  = \\
 	& (\p{a}(X) \p{b}(X) \selmulti(X) + \p{a}(X) \selleft(X) + 
@@ -3109,7 +3117,7 @@ and outputs
 	Output $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$.
 	
 	\item[Round 4]
-	Get the challenge $\chz \in \FF_p$, $\chz = \ro(\trans[0..3])$.
+	Get the challenge $\chz \in \FF_p$, $\chz = \ro(\zkproof[0..3])$.
 	Compute opening evaluations
 	\begin{align*}
 			\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
@@ -3127,7 +3135,7 @@ and outputs
 	Output $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega), \p{r}(\chz).$
 	
 	\item[Round 5]
-	Compute the opening challenge $v \in \FF_p$, $v = \ro(\trans[0..4])$.
+	Compute the opening challenge $v \in \FF_p$, $v = \ro(\zkproof[0..4])$.
 	Compute the openings for the polynomial commitment scheme 
 	\begin{align*}
 	& \p{W_\chz}(X) = \frac{1}{X - \chz} \left(
