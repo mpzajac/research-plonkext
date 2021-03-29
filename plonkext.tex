@@ -1385,8 +1385,8 @@ witness or can be used to break some computational assumption.
   $(n_1, \ldots, n_\mu)$-\emph{computationally special sound} if for every $\ppt$ adversary
   $\adv(\REL, \srs)$, where $\srs \gets \kgen(\REL)$, that produces an accepting
   $(n_1, \ldots, n_\mu)$-tree of transcripts $\tree$ for a statement $\inp$
-  there exists an extractor $\ext$ that given $\tree$ outputs $\wit$ such that
-  $\REL(\inp, \wit) = 1$ with an overwhelming probability.
+  there exists an extractor $\extt$ that given $\tree$ outputs $\wit$ such that
+  $\REL(\inp, \wit) = 1$ with probability $1 - \epsss$, for some negligible $\epsss$.
 \end{definition}
 
 Since we do not utilise the classical special soundness (that holds for all,
@@ -1511,21 +1511,8 @@ for some negligible $\eps$.
 \[
   \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}}\,.
 \]
-Denote by $\waccProb$ the probability that $\advse$ outputs a proof that is
-accepted and does not break $\ur{k}$-ness of $\ps$.  Assuming that $\advse$ does
-not break the unique response property is necessary to be able to use the
-forking lemma. Denote by $\waccProb'$ probability that algorithm $\zdv$, defined
-in the lemma, produces an accepting proof with a fresh challenge after round $k$.
-%
-Otherwise, if $\ur{k}$-ness does not hold and the adversary
-could, say, rerandomise a proof $\zkproof$ it obtained from the simulator then
-it could force $\zdv$ to never accept.  The unique
-response property takes care of that, hence that event has already been covered
-by the abort condition in $\game{1}$. If an adversary would like to reuse
-a simulated proof it saw, it would end up with exactly the same proof
-which can also can not break simulation extractability, thus $\waccProb=\waccProb'$.
 
-We describe our extractor $\extse$ here. The extractor takes as input relation
+We describe our extractor $\ext$ here. The extractor takes as input relation
 $\REL$, SRS $\srs$, $\advse$'s code, its randomness $r$, the output instance
 $\inp_{\advse}$ and proof $\zkproof_{\advse}$, as well as the list $Q$ of
 simulated proofs (and their instances) and the list of random oracle queries and
@@ -1546,7 +1533,8 @@ view with access to real random oracle and simulator, it produces exactly the
 same output. After the first run, $\zdv$ outputs the index $i$ of a random oracle
 query that was used by $\advse$ to compute the challenge $\zkproof[k].\ch =
 \ro(\zkproof_{\advse}[0..k])$ it had to answer in the $(k + 1)$-th round and
-adversary's transcript, denoted by $s_1$ in $\genforking$'s description.
+adversary's transcript, denoted by $s_1$ in $\genforking$'s description. If no
+such query took place $\zdv$ outputs $i = 0$.
 
 Then new random oracle responses are picked for queries indexed by
 $i, \ldots, q$ and the adversary is rewound to the point just prior it gets the
@@ -1555,16 +1543,37 @@ oracle response from a new set of responses $h^2_i, \ldots, h^2_q$. If the
 adversary requests a simulated proof after seeing $h^2_i$ then $\zdv$ computes
 the simulated proof on its own. Eventually, $\zdv$ outputs index $i'$ of a query
 that was used by the adversary to compute $\ro(\zkproof_{\advse}[0..k])$, and a
-new transcript $s_2$. $\zdv$ is run with different random oracle responses till
-a tree $\tree$ of $n + 1$ valid transcripts is built. Then $\extse$ runs
-internally the tree extractor $\exttree(\tree)$ and outputs what it returns.
+new transcript $s_2$. $\zdv$ is run $n + 1$ times with different random oracle
+responses. If a tree $\tree$ of $n + 1$ transcripts is build then $\ext$
+runs internally the tree extractor $\extt(\tree)$ and outputs what it returns.
 
-If the unique response property does not hold then in some $j$-th execution of
-$\zdv$ the adversary could reuse a challenge that it learnt from observing
-proofs in $Q$. In that case, $\zdv$ would not be able to output $i > 0$ and have
-to output $0$, what would make extractor fail. 
+We emphasize here the importance of the unique response property. If it does not
+hold then in some $j$-th execution of $\zdv$ the adversary could reuse a
+challenge that it learnt from observing proofs in $Q$. In that case, $\zdv$
+would output $i = 0$, making extractor fail. Fortunately, the case that the
+adversary breaks the unique response property has already been covered by the
+abort condition in $\game{1}$.
 
-From the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma},
+Denote by $\waccProb$ the probability that $\advse$ outputs a proof that is
+accepted and does not break $\ur{k}$-ness of $\ps$.  Denote by $\waccProb'$
+probability that algorithm $\zdv$, defined in the lemma, produces an accepting
+proof with a fresh challenge after Round $k$. Given the discussion above, we can
+state that $\waccProb = \waccProb'$.
+ % Assuming that $\advse$ does
+% not break the unique response property is necessary to be able to use the
+% forking lemma. Denote by $\waccProb'$ probability that algorithm $\zdv$, defined
+% in the lemma, produces an accepting proof with a fresh challenge after Round $k$.
+% %
+% Otherwise, if $\ur{k}$-ness does not hold and the adversary could, say,
+% rerandomise a proof $\zkproof$ it obtained from the simulator then it could
+% force $\zdv$ to output $i = 0$ (i.e.~not accept the proof) making extractor
+% fail. The unique response property takes care of that, hence that event has
+% already been covered by the abort condition in $\game{1}$. If an adversary would
+% like to reuse a simulated proof it saw, it would end up with exactly the same
+% proof which can also can not break simulation extractability, thus
+% $\waccProb=\waccProb'$.
+
+Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma},
 \[
 	\prob{\event{\errfrk}} \leq 1 -
 	\waccProb \cdot \left(\frac{\waccProb^{n - 1}}{q^{n - 1}} +
@@ -1579,7 +1588,8 @@ For the sake of simplicity we loose this approximation a bit and state
 	\waccProb\right)\,.
 \]
 \ngame{3} This is identical to $\game{2}$ except that now the game is aborted if
-$\exttree(\tree)$ fails to extract the witness. Denote that event by $\event{\errss}$.
+$\extt(\tree)$ run by $\ext$ fails to extract the witness. Denote that event by
+$\event{\errss}$.
 
 \ncase{$\game{2} \mapsto \game{3}$}	
 As previously, 
