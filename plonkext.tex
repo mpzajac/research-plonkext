@@ -523,7 +523,7 @@ Similarly for applying $f$ to $\pS$ and $\pT$.
   say that $\p{f}$ is \emph{independent} if it is not dependent.
 \end{definition}
 
-\begin{definition}[$(\pR, \pS, \pT, \p{f})$-uber assumption
+\begin{definition}[$(\pR, \pS, \pT, \p{f}, T)$-uber assumption
 	\cite{EC:BonBoyGoh05}]
 	\label{def:uber_assumption_orig}
 	Let $\pR, \pS, \pT$ be defined as above, $(x', x_1, \ldots, x_c) \sample
@@ -541,7 +541,7 @@ For the sake of this paper we modify the assumption slightly, i.e.~we require
 not target group $\GRP_T$ elements to be indistinguishable, but elements of
 $\GRP_1$ (the changed element has been put into a \dbox{dashbox}), more precisely we require: 
 
-\begin{definition}[$(\pR, \pS, \pT, \p{f})$-uber assumption]
+\begin{definition}[$(\pR, \pS, \pT, \p{f}, 1)$-uber assumption]
 	\label{def:uber_assumption}
 	Let $\pR, \pS, \pT$ be defined as above,
     $(x', x_1, \ldots, x_c) \sample \FF_p^{c + 1}$ and let $\p{f}$ be
@@ -554,6 +554,26 @@ $\GRP_1$ (the changed element has been put into a \dbox{dashbox}), more precisel
        \gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{x'}}) = 1\right].
 	\end{multline*}
   \end{definition}
+
+  \begin{lemma}
+    Let $\pS$ contain a constant polynomial $\p{s}(X) = 1$, then
+    $(\pR, \pS, \pT, \p{f}, T)$-uber assumption implies
+    $(\pR, \pS, \pT, \p{f}, 1)$-uber assumption.
+  \end{lemma}
+  \begin{proof}
+    Let $\adv_T$ be an adversary that breaks the
+    $(\pR, \pS, \pT, \p{f}, T)$-uber assumption with some non-negligible
+    advantage $\eps$, we build $\adv_{1}$ that breaks
+    $(\pR, \pS, \pT, \p{f}, 1)$-uber assumption with the same advantage. Let
+    $\adv_1$ get as its input
+    $(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)}, \gtar{\pT(x_1,
+      \ldots, x_c)}, \gone{x'})$, for some random $x_1, \ldots, x_c$, and $x'$
+    being either $\p{f}(x_1, \ldots, x_c)$ or a random element. Then $\adv_1$
+    obtains $\gtar{x'}$ by computing $\gone{x'} \bullet \gtwo{1}$ and runs
+    $\adv_T (\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
+    \gtar{\pT(x_1, \ldots, x_c)}, \gtar{x'})$ which outputs its guess
+    $b$. Adversary $\adv_1$ returns it and wins with probability $1/2 + \eps$.
+\end{proof}
 
 \paragraph{Proofs by Game-Hoping.}
 Proofs by \emph{game hoping} is a method of writing proofs popularised by
