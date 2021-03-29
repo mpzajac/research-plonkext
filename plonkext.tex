@@ -1086,10 +1086,10 @@ extract a witness.
 	\label{def:tree_of_accepting_transcripts}
 	Consider a $(2\mu + 1)$-message interactive proof system $\ps$. An $(n_1,
   \ldots, n_\mu)$-tree of accepting transcript is a tree where each node on
-  depth $i$, for $i \in \range{1}{\mu}$, is an $i$-th prover's message in an
+  depth $i$, for $i \in \range{1}{\mu + 1}$, is an $i$-th prover's message in an
   acceptable transcript; edges between the nodes are labeled with verifier's
   challenges, such that no two edges on the same depth have the same
-  label; and each node on depth $i$ has $(n_{i} - 1)$ siblings and $n_{i +
+  label; and each node on depth $i$ has $n_{i} - 1$ siblings and $n_{i +
     1}$ children. Altogether, the tree consists of $N = \prod_{i = 1}^\mu n_i$
   branches, which makes $N$ acceptable transcripts. We require $N = \poly$.
 \end{definition}
@@ -1176,8 +1176,8 @@ $\genforking_{\zdv}^{m}$ we have
 \begin{align*}
 	\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land
 h_{i_j}^{j} \neq h_{i_{j'}}^{j'} \text{ for } (j, j') \in J}	\\
-	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} \\
-  & \qquad - \prob{i_j \geq 1 \land h_{i_j}^{j} = h_{i_{j'}}^{j'} \text{ for some } (j, j') \in J}\\
+	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} %\\
+   - \prob{i_j \geq 1 \land h_{i_j}^{j} = h_{i_{j'}}^{j'} \text{ for some } (j, j') \in J}\\
 	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} -
 	\prob{i_j \geq 1} \cdot 
   \left(1 - \frac{h!}{(h - m)! \cdot h^{m}}\right) \\ 
@@ -1251,13 +1251,13 @@ proof $\zkproof_{\advse}$ for instance $\inp_{\advse}$; $r$ be $\advse$'s
 randomness; $Q$ the list of queries submitted by $\advse$ along with simulator's
 $\simulator_\zkproof$ answers; and $Q_\ro$ be the list of all random oracle
 queries made by $\advse$.  All of these are given to the extractor $\ext$ that
-internally runs the forking algorithm $\genforking_\zdv$.  Algorithm $\zdv$
+internally runs the forking algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$
 takes $(\REL, \srs, \advse,
 %\inp_\advse,
 %\zkproof_\advse, 
 Q, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
 h_q^1$. 
-(For the sake of completeness, we allow $\genforking_\zdv$ to
+(For the sake of completeness, we allow $\genforking_\zdv^{n_k}$ to
 pick $h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$
 elements.)  
 
@@ -1267,8 +1267,8 @@ the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
 as it is run on the same random tape and with the same answers from the
 simulator and random oracle. After $\advse$ finishes its acceptable proof
 $\zkproof_{\advse}$, algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where
-$i$ is the index of a random oracle query required to get the challenge after
-$k$-th message from the prover--- a message where the tree of transcripts
+$i$ is the index of a random oracle query submitted by $\advse$ to get the challenge after
+$k$-th message from the prover---a message where the tree of transcripts
 branches.
 %We also note that we differ here from the description of the
 %$\genforking_\zdv$ algorithm provided
@@ -1277,15 +1277,15 @@ branches.
 %is only notational as random oracle queries' responses provided in $Q_\ro$ are
 %random as well. 
 Then, after the first run of $\advse$ is done, the extractor runs $\zdv$ again,
-but this time it provides a fresh random oracle responses $h^2_i, \ldots,
+but this time it provides fresh random oracle responses $h^2_i, \ldots,
 h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
 before $\advse$ is about to ask its $i$-th random oracle
 query. Probability that the adversary produces an acceptable transcript with the
 fresh random oracle responses is at least $\accProb$. This continues until the
 required number of transcripts is obtained. 
 
-We note that in the original forking lemma the forking algorithm $\forking$
-cf.~\cref{fig:forking_lemma} gets only as input $y$ and elements $h^1_1, \ldots,
+We note that in the original forking lemma the forking algorithm $\forking$,
+cf.~\cref{fig:forking_lemma}, gets only as input $y$ and elements $h^1_1, \ldots,
 h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
 that $h^1_1, \ldots, h^1_q$ are random oracle responses, thus are random, makes
 the change only notational.
@@ -1298,15 +1298,16 @@ paper, i.e.~showing that both $\plonk$ and $\sonic$ are simulation extractable.
 
 \subsection{Unique-response protocols.}
 Another problem comes with another assumption required by Faust et al.---the
-unique response property of the transformed sigma protocol. Fischlin's
-formulation, although suitable for applications presented in
+unique response property of the transformed sigma protocol. The original
+Fischlin's formulation, although suitable for applications presented in
 \cite{C:Fischlin05,INDOCRYPT:FKMV12}, is not enough in our case. First of all,
 the property assumes that the protocol has three messages, with the middle being
 the challenge from the verifier. That is not the case we consider here. Second,
 it is not entirely clear how to generalize the property. Should one require that
 after the first challenge from the verifier the prover's responses are fixed?
-That could not work since if there is more challenges the prover's messages has
-to respond to them. Another problem rises when the protocol contains some
+That could not work since the prover needs to answer differently on different
+verifier's challenges, as otherwise the protocol could have fewer
+rounds. Another problem rises when the protocol contains some
 message---obviously, except the first one---where the prover randomises its
 message. In that case unique-responsiveness can not hold as well. Last but not
 least, the protocols we consider here are not designed to be in the standard
@@ -1323,15 +1324,15 @@ Let $\proofsystem$ be a $(2\mu + 1)$-message proof system $\ps = (\kgen,
 \prover, \verifier, \simulator)$. Let $\proofsystem_\fs$ be $\proofsystem$ after the
 Fiat--Shamir transform, Denote by $a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages
 output by the prover, We say that $\proofsystem$ has \emph{unique responses
-  from $i$} if for any $\ppt$ adversary $\adv$:
+  from $i$ on} if for any $\ppt$ adversary $\adv$:
 \[
 	\prob{
 		\begin{aligned}
 		&	\inp, \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
     a'_{\mu + 1})
 		\gets \adv^\ro(\REL, \srs), \\
-    & \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i + 1} = a'_1,
-    \ldots, a_{i + 1}, \\
+    & \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
+    \ldots, a'_{i}, \\
 		& \verifier^\ro_\fs (\REL, \srs, \inp, \vec{a}) =
 		\verifier^\ro_\fs(\REL, \srs, \inp, \vec{a'}) = 1
 		\end{aligned}
@@ -1360,21 +1361,21 @@ algorithm) or not.
 \subsection{Computational special soundness}
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
-simulation trapdoor for $\plonkprot$ exists, the protocol is not special sound
-in that regard. This comes since an unbounded adversary could reveal the
-trapdoor and build a number of simulated proofs for a fake statement. Hence, we
-provide a weaker, yet sufficient, definition of \emph{computational special
-  soundness}. More precisely, we state that an adversary that is able to answer
-correctly multiple challenges either knows the witness or can be used to break
-some computational assumption.
+simulation trapdoors for $\plonkprot$ and $\sonicprot$ exist, the protocols
+cannot be special sound in that regard. This comes since an unbounded adversary
+could reveal the trapdoor and build a number of simulated proofs for a fake
+statement. Hence, we provide a weaker, yet sufficient, definition of
+\emph{computational special soundness}. More precisely, we state that an
+adversary that is able to answer correctly multiple challenges either knows the
+witness or can be used to break some computational assumption.
 
 \begin{definition}[Computational special soundness]
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an $(2 \mu +
   1)$-message proof system for a relation $\REL$. We say that $\proofsystem$ is
-  $(n_1, \ldots, n_\mu)$-\emph{special sound} if for every $\ppt$ adversary
+  $(n_1, \ldots, n_\mu)$-\emph{computationally special sound} if for every $\ppt$ adversary
   $\adv(\REL, \srs)$, where $\srs \gets \kgen(\REL)$, that produces an accepting
   $(n_1, \ldots, n_\mu)$-tree of transcripts $\tree$ for a statement $\inp$
-  there exists an extractor $\ext$ that given $\tree$ extracts $\wit$ such that
+  there exists an extractor $\ext$ that given $\tree$ outputs $\wit$ such that
   $\REL(\inp, \wit) = 1$ with an overwhelming probability.
 \end{definition}
 
