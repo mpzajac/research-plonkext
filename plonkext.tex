@@ -2034,25 +2034,26 @@ Step 1 above. \qed
 %is of knowledge.
 \end{lemma}
 \begin{proof}[sketch]
-  Let $\adv(\REL,\srs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}},
-  \gtwo{\chi}))$ be an adversary tasked to break the $\ur{3}$-ness of
-  $\plonkprot$. It is sufficient to observe that the first 2 rounds of the
-  protocol determines, along with the verifiers challenges, the rest of it. In
-  Round 3 the adversary outputs a commitment to polynomial $\pt(X)$ which
-  assures that all constraints of the system are fulfilled. Since the commitment
-  scheme is deterministic, there is only one value $c$ that is a commitment to
-  $\pt(X)$. Assume that $\adv$ outputs $c' \neq c$ and is later able to open
-  $c'$ to $y = \pt(\chz)$, where $\chz$ is a random point determined later.
-  Using AGM and arguments similar to \cite{CCS:MBKM19}, we argue that $\PCOMp$
-  is a commitment of knowledge. That is, an AGM adversary $\adv$ that outputs a
-  commitment $c'$ which it can later open, knows a polynomial $\p{f}$ such that
-  $\gone{\p{f}(\chi)} = c'$. Thus if $c' \neq c$ and the commitment scheme is
-  evaluation binding then $\adv$ when picking $c'$ picks it as a commitment to
-  $\p{f}$ which evaluates at $\chz$ to $\pt(\chz)$. The probability of that is
-  negligible as there can only be degree of $\pt$ many overlapping points and
-  $\chz$ remains random for $\adv$ when it computes $c'$. Hence, the probability
-  that $\adv$ is able to produce two different outputs of Round 3 is
-  upper-bounded by $\epsk + \epsbind$.
+  Let
+  $\adv(\REL,\srs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}}, \gtwo{\chi}))$
+  be an adversary tasked to break the $\ur{3}$-ness of $\plonkprot$. It is
+  sufficient to observe that the first 2 rounds of the protocol determines,
+  along with the verifiers challenges, the rest of it. In Round 3 the adversary
+  outputs a commitment to polynomial $\pt(X)$ which assures that all constraints
+  of the system are fulfilled. Since the commitment scheme is deterministic,
+  there is only one value $c$ that is a commitment to $\pt(X)$. Assume that
+  $\adv$ outputs $c' \neq c$ and is later able to open $c'$ to $y = \pt(\chz)$,
+  where $\chz$ is a random point determined later.  Using the AGM and arguments
+  similar to \cite{CCS:MBKM19}, we argue that $\PCOMp$ is a commitment of
+  knowledge. That is, an AGM adversary $\adv$ that outputs a commitment $c'$
+  which it can later open, knows a polynomial $\p{f}$ of
+  degree-$(\leq \noofc + 2)$ such that $\gone{\p{f}(\chi)} = c'$. Thus if
+  $c' \neq c$ and the commitment scheme is evaluation binding then $\adv$ when
+  picking $c'$ picks it as a commitment to $\p{f}$ which evaluates at $\chz$ to
+  $\pt(\chz)$. The probability of that is negligible as there can only be
+  $\deg(\pt(X))$ many overlapping points and $\chz$ remains random for $\adv$ when
+  it computes $c'$. Hence, the probability that $\adv$ is able to produce two
+  different outputs of Round 3 is upper-bounded by $\epsk + \epsbind$.
 
   In Round 4 the prover is asked to give evaluations of predefined polynomials
   at some point $\chz$. Naturally, for the given polynomials only one value at
@@ -2076,7 +2077,7 @@ Step 1 above. \qed
 % Since \cref{lem:pcomp_unique_op}, 
   Since $\PCOM$ has unique opening property, one of the openings has to be
   incorrect and should be rejected by the polynomial commitment verifier. This
-  happens except with probability $\epsop$
+  happens except with probability $\epsop$.
 
   Hence, the probability that after fixing the two first rounds, the adversary
   is able to produce two different outputs in one of the following rounds is
@@ -2086,10 +2087,7 @@ Step 1 above. \qed
 \]
 \qed
 
-%That is possible only if   
-%polynomial $\pt'(X)$
-%Since the commitment is deterministic, there is
-%only one correct commitment for a 
+
 \end{proof}
 \COMMENT{
 \begin{lemma}
@@ -2100,18 +2098,12 @@ $\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required.
 with parameter $\epsur \leq \epsbind + \epsop$.
 \end{lemma}
 \begin{proof}
-Let $\adv$ be an adversary that breaks $\ur{2}$-ness of
-$\plonkprot$. 
-% \markulf{30.08}{This is fine. But sounds as if the law of the
-	% excluded middle is needed here. I am not sure it is. :) Mostly a
-	% philosophical point.}
-We consider two cases, depending on which round $\adv$ is able to provide at
-least two different outputs such that the resulting transcripts are acceptable.
-% \markulf{30.08}{Rewrote this text: that in each of them $\adv$ breaks the
-	% evaluation binding property of $\PCOM$.}
-For the first case we show that $\adv$ breaks the evaluation binding property of
-$\PCOM$, while for the second case we show that it breaks the unique opening
-property of $\PCOM$.
+  Let $\adv$ be an adversary that breaks $\ur{2}$-ness of $\plonkprot$.  We
+  consider two cases, depending on which round $\adv$ is able to provide at
+  least two different outputs such that the resulting transcripts are
+  acceptable.  For the first case we show that $\adv$ breaks the evaluation
+  binding property of $\PCOM$, while for the second case we show that it breaks
+  the unique opening property of $\PCOM$.
 
 \case{1} In Round 4 the prover is asked to give evaluations of predefined
 polynomials at some point $\chz$. Naturally, for the given polynomials only one
