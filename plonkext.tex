@@ -1962,7 +1962,7 @@ has the unique opening property in the AGM.
 		\left[
 			\begin{aligned}
 				& \verify(\srs, \vec{c}, \vec{c'}, (z, z'), \vec{s}, \vec{s'}, \vec{o}), \\
-				& \verify(\srs, \vec{c}, \vec{c'}, (z, z'), \vec{\tilde{s}}, \vec{\tilde{s}'}, \vec{\tilde{o}}) \\
+				& \verify(\srs, \vec{c}, \vec{c'}, (z, z'), \vec{s}, \vec{s'}, \vec{\tilde{o}}) \\
 				& \vec{o} \neq \vec{\tilde{o}}
 			\end{aligned}
 		\,\left|\,
@@ -1973,7 +1973,7 @@ has the unique opening property in the AGM.
 		\end{aligned}}
 		\begin{aligned}
 			& \srs \gets \kgen(\secparam), \\
-			&	(\vec{c}, \vec{c'}, \vec{z}, \vec{s}, \vec{s'}, \vec{\tilde{s}}, \vec{\tilde{s}'}, \vec{o}, \vec{\tilde{o}}) \gets \adv(\srs)
+			&	(\vec{c}, \vec{c'}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}, \vec{\tilde{o}}) \gets \adv(\srs)
 		\end{aligned}
 		\right.\right]
 	 % \leq \negl.
@@ -1989,16 +1989,17 @@ verification equation---which consider equality of the polynomials' evaluations.
 This holds since an adversary that manages to provide a commitment opening that
 holds for the real verifier, but does not hold for the idealised verifier can be
 used to break the dlog assumption and reveal the secret trapdoor used to produce
-the commitment's SRS.
+the commitment's SRS, cf.~\cite[Lemma 2.2]{EPRINT:GabWilCio19} for more details.
 
-For polynomials $\vec{f} = f_1, \ldots, f_k$, evaluation point $z$, evaluation
-result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $o(X)$ the
+For polynomials $\vec{\p{f}} = \p{f}_1, \ldots, \p{f}_k$, evaluation point $z$, evaluation
+result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $\p{o}(X)$ the
 idealised check verifies that
 \begin{equation}
-	\sum_{i = 1}^k \gamma^{i - 1} f_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} s_i \equiv o(X) (X - z)\,.
+	\sum_{i = 1}^k \gamma^{i - 1} \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} s_i \equiv \p{o}(X) (X - z)\,.
 	\label{eq:pcom_idealised_check}
 \end{equation}
-Since $o(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial composition, there is only one $o(X)$ that fulfils the equation above.
+Since $\p{o}(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial
+composition, there is only one $\p{o} (X)$ that fulfils the equation above.
 
 \ncase{Step 2} Second, consider a case when the polynomials are evaluated on two
 points $\vec{z} = (z, z')$ and the adversary is asked to provide two openings
@@ -2007,16 +2008,16 @@ In that scenario, the verifier checks whether the following equality, for
 $\gamma, r'$ picked at random, holds:
 \begin{multline}
 	\label{eq:ver_eq_poly}
-	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot f_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} \cdot s_i  + r' \left(\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot f'_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \right)\\
-	\equiv o(X)(X - z) + r' o'(X)(X- z')
+	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} \cdot s_i  + r' \left(\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \right)\\
+	\equiv \p{o}(X)(X - z) + r' \p{o}'(X)(X- z')
 \end{multline}
-Since $r'$ has been picked at random, \cref{eq:ver_eq_poly} holds while either
+Since $r'$ has been picked at random, probability that \cref{eq:ver_eq_poly} holds while either
 \[
-	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot f_i(X) - \sum_{i = 1}^{k}  \gamma^{i - 1} \cdot s_i \not\equiv o(X)(X - z)
+	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}  \gamma^{i - 1} \cdot s_i \not\equiv \p{o}(X)(X - z)
 \]
 or 
 \[
-	\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot f'_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \not\equiv o'(X)(X - z')
+	\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \not\equiv \p{o'}(X)(X - z')
 \]
 is negligible~\cite{EPRINT:GabWilCio19}. This brings the proof back to
 Step 1 above. \qed
