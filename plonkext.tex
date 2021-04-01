@@ -2201,16 +2201,16 @@ for
 
 \subsection{Honest verifier zero-knowledge}
 \begin{lemma}
-  $\plonk$ is honest verifier zero-knowledge and its simulator $\simulator$ does
+  $\plonkprot$ is honest verifier zero-knowledge and its simulator $\simulator$ does
   not require a SRS trapdoor.\footnote{The simulator works as a simulator for
     proofs that are zero-knowledge in the standard model. However, we do not say
     that $\plonk$ is HVZK in the standard model as proof of that \emph{requires}
     the SRS simulator.} More precisely, assume that $\plonk$'s SRS simulator
-  $\simulator_\chi$ produces a proof that is at most $\epszk$ far from a real
-  proof, and $(\pR, \pS, \pT, \pf)$-uber assumption for $\pR, \pS, \pT, \pf$ as
-  defined in \cref{eq:uber} is $\epsuber$-secure. Then for any $\ppt$ adversary
-  $\adv$ its advantage in telling a proof produced by $\simulator$ from a real
-  proof is upper-bounded by $\epszk + \epsuber$.
+  $\simulator_\chi$ produces proof that are distributed at most $\epszk$-far
+  from real proofs, and $(\pR, \pS, \pT, \pf, 1)$-uber assumption for
+  $\pR, \pS, \pT, \pf$ as defined in \cref{eq:uber} is $\epsuber$-secure. Then
+  any $\ppt$ adversary $\adv$ has advantage in telling a proof produced by
+  $\simulator$ from a real proof upper-bounded by $\epszk + \epsuber$.
 \end{lemma}
 \begin{proof}
   The proof goes by game-hoping. The environment that controls the games
