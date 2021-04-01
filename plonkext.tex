@@ -1400,13 +1400,13 @@ adversary that is able to answer correctly multiple challenges either knows the
 witness or can be used to break some computational assumption.
 
 \begin{definition}[Computational special soundness]
-  Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an $(2 \mu +
-  1)$-message proof system for a relation $\REL$. We say that $\proofsystem$ is
-  $(n_1, \ldots, n_\mu)$-\emph{computationally special sound} if for every $\ppt$ adversary
-  $\adv(\REL, \srs)$, where $\srs \gets \kgen(\REL)$, that produces an accepting
-  $(n_1, \ldots, n_\mu)$-tree of transcripts $\tree$ for a statement $\inp$
-  there exists an extractor $\extt$ that given $\tree$ outputs $\wit$ such that
-  $\REL(\inp, \wit) = 1$ with probability $1 - \epsss$, for some negligible $\epsss$.
+  Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
+  $(2 \mu + 1)$-message proof system for a relation $\REL$. We say that
+  $\proofsystem$ is $(\epsss, (n_1, \ldots, n_\mu))$-\emph{computationally special sound}
+  if there exists an extractor $\extt$ that given an $(n_1, \ldots, n_\mu)$-tree
+  of acceptable transcripts $\tree$ and instance $\inp$ output by some $\ppt$ adversary $\adv(\REL,
+  \srs)$, for $\srs \sample \kgen(\REL)$, outputs $\wit$ such that $\REL(\inp,
+  \wit) = 1$ with probability at least $1 - \epsss$.
 \end{definition}
 
 Since we do not utilise the classical special soundness (that holds for all,
@@ -1926,7 +1926,7 @@ The \plonk{} verifier works as follows
            }\\
       + & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }\,.
 	\end{align*}
-	\item[Step 12] Check whether the verification $\vereq(\chi)$ equation holds
+	\item[Step 12] Check whether the verification $\vereq_\zkproof(\chi)$ equation holds
 	\begin{multline}
 		\label{eq:ver_eq}
 		\left( \gone{\p{W_{\chz}}(\chi)} + u \cdot \gone{\p{W_{\chz
@@ -2139,56 +2139,63 @@ $\plonkprot$ is upper-bounded by $\epsbind + \epsop$. \qed
 \subsection{Computational special soundness}
 \begin{lemma}
 \label{lem:plonkprot_ss}
-Let $\adv$ be a $\ppt$ algebraic adversary. The probability $\epsss$ that $\adv$
-breaks $(1, 1, \noofc + 3, 1)$-computational special soundness
-of $\plonkprot$ is upper-bounded as
+$\plonkprot$ is $(\epsss, (1, 1, \noofc + 3, 1))$-computational special sound
+for 
  \[
 	\epsss \leq \epsbatch + \epsdlog\,,
  \] 
  where $\epsbatch$ is the (negligible) probability that $\plonkprot$'s idealised
- verification equation $\vereq(X)$ accepts an invalid proof because of batching
- and $\epsdlog$ is a probability that a $\ppt$ algorithm can break the
+ verification equation $\vereq_\zkproof(X)$ accepts an invalid proof because of batching
+ and $\epsdlog$ is a probability that a $\ppt$ algorithm breaks the
  $(\noofc + 2, 1)$-$\dlog$ assumption.
 \end{lemma}
 \begin{proof}
   Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
-  $\GRP_1$-elements; that is, $\srs_1 = \gone{1, \chi, \ldots,
-    \chi^{\noofc + 2}}$. Let $\adv$ be an algebraic adversary that
-  for a statement $\inp$ produces a $(1, 1, 1, \noofc + 3, 1)$-tree
-  of acceptable transcripts
-  $\tree$. % with non-negligible probability $\eta_\tree$.
-  Note that in all transcripts the instance $\inp$, proof elements
+  $\GRP_1$-elements; that is,
+  $\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc + 2}}$. Let $\adv$ be an
+  algebraic adversary that for produces a statement $\inp$ and
+  $(1, 1, \noofc + 3, 1)$-tree of acceptable transcripts $\tree$.  Note that in
+  all transcripts the instance $\inp$, proof elements
   $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and
   challenges $\alpha, \beta, \gamma$ are common as the transcripts share the
-  first three rounds.
+  first three rounds. The tree ``branches'' after third round of the protocol
+  where challenge $\chz$ is presented, thus tree $\tree$ is build by using different
+  values of $\chz$. 
 
-  We consider two mutually disjunctive events. First, $\event{E}$ holds when all
-  of the transcripts are acceptable by the idealised verification equation,
-  i.e.~$\vereq(X) = 0$, cf.~\cref{eq:ver_eq}. Second, $\nevent{E}$ holds when
-  there is a transcript that is acceptable, yet for some transcript
-  $\vereq(\chi) = 0$, but $\vereq(X) \neq 0$. We build a special extractor
-  $\extss$ which given the tree of transcripts $\tree$ reveals the witness with
-  an overwhelming probability when $\event{E}$ happens. We show a reduction
-  $\rdvdlog$ that, when $\nevent{E}$ happens, breaks the $\dlog$ assumption.
+  We consider two mutually disjunctive events. The first, $\event{E}$ holds when
+  all of the transcripts are acceptable by the idealised verification equation,
+  i.e.~$\vereq_\zkproof(X) = 0$, cf.~\cref{eq:ver_eq}. The second, $\nevent{E}$ holds
+  when there is a transcript that is acceptable by the real verifier, but not by
+  the ideal verifier. That is, for that particular transcript holds
+  $\vereq_\zkproof(\chi) = 0$, but $\vereq_\zkproof(X) \neq 0$.  When event $\event{E}$ holds we
+  construct the extractor $\extt$. If it does not, we show a reduction
+  $\rdvdlog$ that breaks the $\dlog$ assumption.
 
-  \ncase{When $\event{E}$ happens} Since the protocol $\plonkprot$, instantiated
-  with the idealised verification equation, is perfectly sound, except with
-  probability of batching failure $\epsbatch$, for a valid proof $\zkproof$ of a
-  statement $\inp$ there exists a witness $\wit$, such that $\REL(\inp, \wit)$
-  holds. Note that the polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$, which contain
-  witness in their coefficients, have degree $(\noofc + 2)$ and
-  since $\adv$ answered honestly on $(\noofc + 3)$ different
-  challenges $\chz$ then $(\noofc + 3)$ evaluations of these
-  polynomials (at different points) are known. The extractor $\extss$
-  interpolates the polynomials and reveals the corresponding witness $\wit$.
+  \ncase{When $\event{E}$ happens} Let $(\inp, \tree) \gets \adv(\REL,
+  \srs)$. Since the protocol $\plonkprot$, instantiated with the idealised
+  verification equation, is perfectly sound, except with probability of batching
+  failure $\epsbatch$, for a valid proof $\zkproof$ of a statement $\inp$ there
+  exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note that 
+  polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$, which contain witness in their
+  coefficients, have degree $(\noofc + 2)$ and since $\adv$ answered correctly
+  on $(\noofc + 3)$ different challenges $\chz$ then $(\noofc + 3)$ evaluations
+  of these polynomials (at different points) are known. The extractor $\extt$
+  interpolates the polynomials and reveals the corresponding witness
+  $\wit$. The extractor finds the witness with probability $1$.
 
-  \ncase{When $\nevent{E}$ happens} Consider a transcript such that
-  $\vereq(X) \neq 0$, but $\vereq(\chi) = 0$. Since the adversary is algebraic,
-  all group elements included in the tree of transcripts are extended by their
-  representation as a combination of the input $\GRP_1$-elements i.e.~$\gone{1,
-    \chi, \ldots, \chi^{\noofc + 2}}$. Hence all coefficients of
-  the verification equation polynomial $\vereq(X)$ are known and $\rdvdlog$ can
-  find its zero points. Since $\vereq(\chi) = 0$, the targeted discrete log
+  \ncase{When $\nevent{E}$ happens} Let $\adv$ be an adversary that for relation
+  $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree of
+  acceptable transcripts such that $\nevent{E}$ happens. Let $\rdvdlog$ be a
+  reduction that gets as input an $(\noofc + 2, 1)$-dlog instance
+  $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$ and is tasked to output
+  $\chi$. The reduction proceeds as follows---it gives the input instance to the
+  adversary as the SRS. Let $(\inp, \tree)$ be the output returned by $\adv$.
+  Consider a transcript $\zkproof \in \tree$ such that
+  $\vereq_\zkproof(X) \neq 0$, but $\vereq_\zkproof(\chi) = 0$. Since the
+  adversary is algebraic, all group elements included in $\tree$ are extended by
+  their representation as a combination of the input $\GRP_1$-elements. Hence all coefficients of
+  the verification equation polynomial $\vereq_\zkproof(X)$ are known and $\rdvdlog$ can
+  find its zero points. Since $\vereq_\zkproof(\chi) = 0$, the targeted discrete log
   value $\chi$ is among them. \qed
 \end{proof}
 
@@ -3249,7 +3256,7 @@ The \plonk{} verifier works as follows
 		}\\
 		 + & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }\,.
 	\end{align*}
-	\item[Step 12] Check whether the verification $\vereq(\chi)$ equation holds
+	\item[Step 12] Check whether the verification $\vereq_\zkproof(\chi)$ equation holds
 	\begin{multline}
 		\label{eq:ver_eq}
 		\left(
@@ -4101,9 +4108,9 @@ index for the $k$-th proof challenge correctly.
   Additionally, we divide event $\nevent{E}$ into two disjunctive subevents:
   $\nevent{E}_0$ and $\nevent{E}_1$. Event $\nevent{E}_0$ considers a case when
   the final proof provided by the adversary $\advss$ is accepted by the
-  idealised verification equation, i.e.~for that proof $\vereq(X) = 0$.
+  idealised verification equation, i.e.~for that proof $\vereq_\zkproof(X) = 0$.
   Alternatively, event $\nevent{E}_1$ covers a case when for $\zkproof_\advss$
-  it holds that $\vereq(\chi) = 0$, but $\vereq(X) \neq 0$, where $\chi$ is
+  it holds that $\vereq_\zkproof(\chi) = 0$, but $\vereq_\zkproof(X) \neq 0$, where $\chi$ is
   $\plonkprotfs$'s trapdoor.
 	%
   As all these events are mutually exclusive and exhaustive, we have
@@ -4142,10 +4149,10 @@ index for the $k$-th proof challenge correctly.
   $\rdvs$ and $\rdvdlog$.
 
   Also note that a proof $\zkproof$ could be accepted only if the verification
-  equation $\vereq(\chi)$ holds. That is, the verifier plugs-in elements of
-  $\zkproof$ into $\vereq(\chi)$ and checks whether it equals $0$. That is what
+  equation $\vereq_\zkproof(\chi)$ holds. That is, the verifier plugs-in elements of
+  $\zkproof$ into $\vereq_\zkproof(\chi)$ and checks whether it equals $0$. That is what
   is called a \emph{real check} in \cite{EPRINT:GabWilCio19}.  On the other hand
-  there is an \emph{idealised check}, which verifies whether $\vereq(X) = 0$
+  there is an \emph{idealised check}, which verifies whether $\vereq_\zkproof(X) = 0$
   \emph{as a polynomial}---with proof elements being polynomials as well.
 
   \ncase{When $\event{E}$ happens} We assume that $\inp_{\advss}$ is submitted
@@ -4243,10 +4250,10 @@ index for the $k$-th proof challenge correctly.
   equation holds, but the ideal verification equation does not to break the
   $\dlog$ assumption.
 
-  Since $\vereq(X) \neq 0$, but $\vereq(\chi) = 0$ and $\rdvdlog$ knows
+  Since $\vereq_\zkproof(X) \neq 0$, but $\vereq_\zkproof(\chi) = 0$ and $\rdvdlog$ knows
   $\vec{M'}$, as defined in \cref{eq:M_prim}, it can recreate all the
   polynomials submitted by $\advss$ as part of the proof and included in
-  $\vereq(X)$. This way, it knows all coefficients of $\vereq(X)$. Thus it can
+  $\vereq_\zkproof(X)$. This way, it knows all coefficients of $\vereq_\zkproof(X)$. Thus it can
   factorise it and find its roots, one of them is the required $\chi$. Hence it
   holds, by the analogous analysis as in the previous case, that
   \[
