@@ -2038,22 +2038,24 @@ Step 1 above. \qed
   $\adv(\REL,\srs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}}, \gtwo{\chi}))$
   be an adversary tasked to break the $\ur{3}$-ness of $\plonkprot$. It is
   sufficient to observe that the first 2 rounds of the protocol determines,
-  along with the verifiers challenges, the rest of it. In Round 3 the adversary
-  outputs a commitment to polynomial $\pt(X)$ which assures that all constraints
-  of the system are fulfilled. Since the commitment scheme is deterministic,
-  there is only one value $c$ that is a commitment to $\pt(X)$. Assume that
-  $\adv$ outputs $c' \neq c$ and is later able to open $c'$ to $y = \pt(\chz)$,
-  where $\chz$ is a random point determined later.  Using the AGM and arguments
-  similar to \cite{CCS:MBKM19}, we argue that $\PCOMp$ is a commitment of
-  knowledge. That is, an AGM adversary $\adv$ that outputs a commitment $c'$
-  which it can later open, knows a polynomial $\p{f}$ of
-  degree-$(\leq \noofc + 2)$ such that $\gone{\p{f}(\chi)} = c'$. Thus if
+  along with the verifiers challenges, the rest of it.
+
+  In Round 3 the adversary outputs a commitment to polynomial $\pt(X)$ which
+  assures that all constraints of the system are fulfilled. Since the commitment
+  scheme is deterministic, there is only one value $c$ that is a commitment to
+  $\pt(X)$. Assume that $\adv$ outputs $c' \neq c$ and is later able to open
+  $c'$ to $y = \pt(\chz)$, where $\chz$ is a random point determined later.
+  Using the AGM and arguments similar to \cite{CCS:MBKM19}, we argue that
+  $\PCOMp$ is a commitment of knowledge. That is, an AGM adversary $\adv$ that
+  outputs a commitment $c'$ which it can later open, knows a polynomial $\p{f}$
+  of degree-$(\leq \noofc + 2)$ such that $\gone{\p{f}(\chi)} = c'$. Thus if
   $c' \neq c$ and the commitment scheme is evaluation binding then $\adv$ when
   picking $c'$ picks it as a commitment to $\p{f}$ which evaluates at $\chz$ to
   $\pt(\chz)$. The probability of that is negligible as there can only be
-  $\deg(\pt(X))$ many overlapping points and $\chz$ remains random for $\adv$ when
-  it computes $c'$. Hence, the probability that $\adv$ is able to produce two
-  different outputs of Round 3 is upper-bounded by $\epsk + \epsbind$.
+  no more than $\noofc + 2$  overlapping points between $\p{f}(X)$ and $\p{t}(X)$, and
+  $\chz$ remains random for $\adv$ when it computes $c'$. Hence, the probability
+  that $\adv$ is able to produce two different outputs of Round 3 is
+  upper-bounded by $\epsk + \epsbind$.
 
   In Round 4 the prover is asked to give evaluations of predefined polynomials
   at some point $\chz$. Naturally, for the given polynomials only one value at
@@ -2065,8 +2067,8 @@ Step 1 above. \qed
   evaluations at $\chz$ of polynomials $\p{a}, \p{b}, \p{c}, \p{S_{\sigma 1}},
   \p{S_{\sigma 2}}, \p{r}$ and an evaluation at $\chz \omega$ of $\p{z}$.
   Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus
-  if both evaluations are acceptable by the $\PCOM.\verify$ then the evaluation
-  binding property of $\PCOM$ is broken. This happens with probability
+  if both evaluations are acceptable by the $\PCOMp.\verify$ then the evaluation
+  binding property of $\PCOMp$ is broken. This happens with probability
   upper-bounded by $\epsbind$.
 
   In the last round of the protocol the prover provides openings for the
@@ -2075,7 +2077,7 @@ Step 1 above. \qed
   (\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and $\vec{r'_5} =
   (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
 % Since \cref{lem:pcomp_unique_op}, 
-  Since $\PCOM$ has unique opening property, one of the openings has to be
+  Since $\PCOMp$ has unique opening property, one of the openings has to be
   incorrect and should be rejected by the polynomial commitment verifier. This
   happens except with probability $\epsop$.
 
