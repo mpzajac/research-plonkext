@@ -3173,6 +3173,24 @@ that allows to perform $\adv$ the following queries:
   \]
   for $i \in \smallset{1, 2, T}$. Invariant $\tau$ states that $\tau_0 + \tau_1
   = \tau + m_1 + m_2 + m$.
+
+  After at most $q$ queries to the oracle, the adversary returns a bit $b'$. At
+  that point challenger $\cdv$ chooses random
+  $x_1, \ldots, x_n, y_1 \ldots, y_m$, random bit $b$, and sets
+  $\p{F}_b \gets \p{F}(x_1, \ldots, x_n)$
+  and $\p{F}_{1 - b} \gets (y_1, \ldots, y_m)$. Note that $\cdv$ simulates
+  perfectly unless the chosen values $x_1, \ldots, x_n, y_1, \ldots, y_m$ result
+  in equalities between polynomial evaluations that are not equalities between
+  the polynomials. That is, the simulation is perfect unless for some $i, j, j'$
+  holds
+  \[
+    p_{i, j}(x_1, \ldots, x_n) - p_{i, j'}(x_1, \ldots, x_n) = 0,
+  \]
+  for $p_{i, j}(X_1, \ldots, X_n) \neq p_{i, j'}(X_1, \ldots, X_n)$.
+  Denote by $\bad$ an event that at least one of the three conditions
+  holds. When $\bad$ happens, the answer $\cdv$ gives to $adv$ differs from an
+  answer that a real oracle would give.
+  \end{itemize}
   \end{proof}
 
 \section{Simulation-extractability---the even more general result}
