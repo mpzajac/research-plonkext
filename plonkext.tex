@@ -2302,7 +2302,7 @@ at random as well.
 
 \ncase{$\game{1} \mapsto \game{2}$} We now describe the reduction $\rdv$ which
 relies on the $(\pR, \pS, \pT, \pf, 1)$-uber assumption where $\pR, \pS, \pT, \pf$
-are polynomials over variables $\vB = B_1, \ldots B_9$ and are defined as
+are polynomials over variables $\vB = B_1, \ldots, B_9$ and are defined as
 follows. Let $E = \smallset{\smallset{1, 2}, \smallset{3, 4}, \smallset{5, 6},
   \smallset{7, 8, 9}}$. Let
 \begin{align}
@@ -2323,7 +2323,7 @@ B_3 B_5 B_7}\,,\notag \\
 That is, the elements of $\pR$ are all singletons, pairs, triplets and
 quadruplets of $B_i$ variables that occur in polynomial $\pt(\vB)$ except the
 challenge element $\pf(\vB) = B_1 B_3 B_5 B_7$. Variables $\vB$ are evaluated to
-randomly picked $\vb = b_1, \ldots b_9$.
+randomly picked $\vb = b_1, \ldots, b_9$.
 
 The reduction $\rdv$ learns $\gone{\pR}$ and challenge $\gone{w}$ where $w$ is
 either $\pf(\vb) = b_1 b_3 b_5 b_7$ or a random value. Then it picks $\chi$,
@@ -2969,7 +2969,7 @@ that some of the inequalities used in the proof are already tight, i.e.~for
 specific adversaries, some of the inequalities are already equalities.
 \bibliographystyle{abbrv}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
-\clearpage
+%\clearpage
 \appendix
 %{\Huge{Supplementary Material}} 
 
@@ -3101,580 +3101,79 @@ h_{\iota - 1})$ to
   \qed
 \end{proof}
 
-\COMMENT{
-\section{$\plonk$ protocol rolled out}
-\subsection{Algorithms rolled out}
-\label{sec:plonk_explained}
-\ncase{$\plonk$ SRS generating algorithm $\kgen(\REL)$}
-For the sake of simplicity of security reductions presented in this paper, we
-describe here a simplified SRS generating algorithm which produces only
-these SRS elements that cannot be computed without knowing the secret trapdoor
-$\chi$. The rest of the preprocessed input, as it is called in
-\cite{EPRINT:GabWilCio19}, can be computed using these SRS elements thus we leave
-them to be computed by the prover, verifier, and simulator. 
+\subsection{Uber assumption}
+We show security of our version of the uber assumption using the generic group
+model as introduced by Shoup \cite{EC:Shoup97} where all group elements are
+represented by random binary strings of length $\secpar$. That is, there are
+random encodings $\xi_1, \xi_2, \xi_T$ which are injective functions from
+$\ZZ_p^+$ to $\bin^{\secpar}$. We write
+$\GRP_i = \smallset{\xi_i(x) \mid x \in \ZZ_p^+}$, for
+$i \in \smallset{1, 2, T}$. For the sake of clarity  we denote by $\xi_{i, j}$
+$j$-th encoding in group $\GRP_i$.
 
-The SRS generating algorithm picks at random $\chi \sample \FF_p$, computes
-and outputs
-\[
-	\srs = \left(\gone{\smallset{\chi^i}_{i = 0}^{\noofc + 2}},
-	\gtwo{\chi} \right).
-\]
+Let
+$\p{P}_i = \smallset{p_1, \ldots, p_{\tau_i}} \subset \FF_p[X_1, \ldots, X_n]$,
+for $i \in \smallset{1, 2, T}, \tau_i, n \in \NN$, be sets of multivariate
+polynomials. Denote by $\p{P}_i(x_1, \ldots, x_n)$ a set of evaluations of
+polynomials in $\p{P_i}$ at $(x_1, \ldots, x_n)$. Denote by
+$L_i = \smallset{(p_j, \xi_{i, j}) \mid j \leq \tau_i}$.
 
-\ncase{$\plonk$ prover $\prover(\REL, \srs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \noofc}})$}
+Let $\adv$ be an algorithm that is given encodings $\xi_{i, j_i}$ of polynomials
+in $\p{P}_i$ for $i \in \smallset{1, 2, T}, j_i = \tau_i$. There is an oracle
+that allows to perform $\adv$ the following queries:
 \begin{description}
-	\item[Round 1] 
-	Sample $b_1, \ldots, b_9 \sample \FF_p$; compute $\p{a}(X), \p{b}(X), \p{c}(X)$ as 
-	\begin{align*}
-		\p{a}(X) &= (b_1 X + b_2)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_i \lag_i(X) \\
-		\p{b}(X) &= (b_3 X + b_4)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_{\noofc + i} \lag_i(X) \\
-		\p{c}(X) &= (b_5 X + b_6)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_{2 \cdot \noofc + i} \lag_i(X) 
-	\end{align*}
-	Output $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
-	
-	\item[Round 2]
-	Get challenges $\beta, \gamma \in \FF_p$
-	\[
-		\beta = \ro(\zkproof[0..1], 0)\,, \qquad \gamma = \ro(\zkproof[0..1], 1)\,.
-	\]
-	Compute permutation polynomial $\p{z}(X)$
-	\begin{multline*}
-		\p{z}(X) = (b_7 X^2 + b_8 X + b_9)\p{Z_H}(X) + \lag_1(X) + \\
-			+ \sum_{i = 1}^{\noofc - 1} 
-			\left(\lag_{i + 1} (X) \prod_{j = 1}^{i} 
-			\frac{
-			(\wit_j +\beta \omega^{j - 1} + \gamma)(\wit_{\noofc + j} + \beta k_1 \omega^{j - 1} + \gamma)(\wit_{2 \noofc + j} +\beta k_2 \omega^{j- 1} + \gamma)}
-			{(\wit_j+\sigma(j) \beta + \gamma)(\wit_{\noofc + j} + \sigma(\noofc + j)\beta + \gamma)(\wit_{2 \noofc + j} + \sigma(2 \noofc + j)\beta + \gamma)}\right)
-	\end{multline*}
-	Output $\gone{\p{z}(\chi)}$
-		
-	\item[Round 3]
-	Get the challenge $\alpha = \ro(\zkproof[0..2])$, compute the quotient polynomial 
-	\begin{align*}
-	& \p{t}(X)  = \\
-	& (\p{a}(X) \p{b}(X) \selmulti(X) + \p{a}(X) \selleft(X) + 
-	\p{b}(X)\selright(X) + \p{c}(X)\seloutput(X) + \pubinppoly(X) + \selconst(X)) 
-	\frac{1}{\p{Z_H}(X)} +\\
-	& + ((\p{a}(X) + \beta X + \gamma) (\p{b}(X) + \beta k_1 X + \gamma)(\p{c}(X) 
-	+ \beta k_2 X + \gamma)\p{z}(X)) \frac{\alpha}{\p{Z_H}(X)} \\
-	& - (\p{a}(X) + \beta \p{S_{\sigma 1}}(X) + \gamma)(\p{b}(X) + \beta 
-	\p{S_{\sigma 2}}(X) + \gamma)(\p{c}(X) + \beta \p{S_{\sigma 3}}(X) + 
-	\gamma)\p{z}(X \omega))  \frac{\alpha}{\p{Z_H}(X)} \\
-	& + (\p{z}(X) - 1) \lag_1(X) \frac{\alpha^2}{\p{Z_H}(X)}
-	\end{align*}
-	Split $\p{t}(X)$ into degree less then $\noofc$ polynomials $\p{t_{lo}}(X), \p{t_{mid}}(X), \p{t_{hi}}(X)$, such that
-	\[
-		\p{t}(X) = \p{t_{lo}}(X) + X^{\noofc} \p{t_{mid}}(X) + X^{2 \noofc} \p{t_{hi}}(X)\,.
-	\]
-	Output $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$.
-	
-	\item[Round 4]
-	Get the challenge $\chz \in \FF_p$, $\chz = \ro(\zkproof[0..3])$.
-	Compute opening evaluations
-	\begin{align*}
-			\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
-	\end{align*}
-	Compute the linearisation polynomial
-	\[
-		\p{r}(X) = 
-		\begin{aligned}
-			& \p{a}(\chz) \p{b}(\chz) \selmulti(X) + \p{a}(\chz) \selleft(X) + \p{b}(\chz) \selright(X) + \p{c}(\chz) \seloutput(X) + \selconst(X) \\
-			& + \alpha \cdot \left( (\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma)(\p{c}(\chz) + \beta k_2 \chz + \gamma) \cdot \p{z}(X)\right) \\
-			& - \alpha \cdot \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma)\beta \p{z}(\chz\omega) \cdot \p{S_{\sigma 3}}(X)\right) \\
-			& + \alpha^2 \cdot \lag_1(\chz) \cdot \p{z}(X)
-		\end{aligned}
-	\]
-	Output $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega), \p{r}(\chz).$
-	
-	\item[Round 5]
-	Compute the opening challenge $v \in \FF_p$, $v = \ro(\zkproof[0..4])$.
-	Compute the openings for the polynomial commitment scheme 
-	\begin{align*}
-	& \p{W_\chz}(X) = \frac{1}{X - \chz} \left(
-	\begin{aligned}
-		& \p{t_{lo}}(X) + \chz^\noofc \p{t_{mid}}(X) + \chz^{2 \noofc} \p{t_{hi}}(X) - \p{t}(\chz)\\
-		& + v(\p{r}(X) - \p{r}(\chz)) \\
-		& + v^2 (\p{a}(X) - \p{a}(\chz))\\
-		& + v^3 (\p{b}(X) - \p{b}(\chz))\\
-		& + v^4 (\p{c}(X) - \p{c}(\chz))\\
-		& + v^5 (\p{S_{\sigma 1}}(X) - \p{S_{\sigma 1}}(\chz))\\
-		& + v^6 (\p{S_{\sigma 2}}(X) - \p{S_{\sigma 2}}(\chz))
-	\end{aligned}
-	\right)\\
-	& \p{W_{\chz \omega}}(X) = \frac{\p{z}(X) - \p{z}(\chz \omega)}{X - \chz \omega}
-\end{align*}
-	Output $\gone{\p{W_{\chz}}(\chi), \p{W_{\chz \omega}}(\chi)}$.
+\item[Group operations in $\GRP_1, \GRP_2, \GRP_T$:] On input
+  $(\xi_{i, j}, \xi_{i, j'}, i, op)$, $j, j' \leq \tau_i$,
+  $op = \msg{add}, \msg{sub}$, sets $\tau'_i \gets \tau_i + 1$, computes
+  $p_{i, \tau'_i} = p_{i, j} \pm p_{i, j'}$ respectively to $op$. If there is
+  another polynomial $p_{i, k} \in L_i$ such that $p_{i, k} = p_{\tau'_i}$, then the
+  oracle returns encoding of $p_{i, k}$. Otherwise it sets the encoding
+  $\xi_{i, \tau'_i}$ to a new unused random string, adds
+  $(p_{i, \tau'_i}, \xi_{i, \tau'_i})$ to $L_i$, and returns $\xi_{i, \tau'_i}$.
+\item[Bilinear pairing:] On input $(\xi_{1, j}, \xi_{2, j'})$ the oracle
+  sets $\tau' \gets \tau_T + 1$ and computes $r_{\tau'} \gets p_{i, j} \cdot
+  p_{i, j'}$. If $r_{\tau'} \in L_T$ then return encoding found in the list
+  $L_T$, else pick a new unused random string and set $\xi_{T, \tau'}$ to it. Return
+  the encoding to the algorithm. 
 \end{description}
 
-\ncase{$\plonk$ verifier $\verifier(\REL, \srs, \inp, \zkproof)$}\ \newline
-The \plonk{} verifier works as follows
-\begin{description}
-	\item[Step 1] Validate all obtained group elements.
-	\item[Step 2] Validate all obtained field elements.
-	\item[Step 3] Validate the instance $\inp = \smallset{\wit_i}_{i = 1}^\instsize$.
-	\item[Step 4] Compute challenges $\beta, \gamma, \alpha, \alpha', \chz, v, u$ from the transcript.
-	\item[Step 5] Compute zero polynomial evaluation $\p{Z_H} (\chz)  =\chz^\noofc - 1$.
-	\item[Step 6] Compute Lagrange polynomial evaluation $\lag_1 (\chz) = \frac{\chz^\noofc -1}{\noofc (\chz - 1)}$.
-	\item[Step 7] Compute public input polynomial evaluation $\pubinppoly (\chz) = \sum_{i \in \range{1}{\instsize}} \wit_i \lag_i(\chz)$.
-	\item[Step 8] Compute quotient polynomials evaluations
-	\begin{multline*}
-		\p{t} (\chz)  = \frac{1}{\p{Z_H}(\chz)}
-		\Big(
-			\p{r} (\chz) + \pubinppoly(\chz) - (\p{a}(\chz) + \beta \p{S_\sigma 1}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_\sigma 2}(\chz) + \gamma) \\
-			(\p{c}(\chz) +
-			\gamma)\p{z}(\chz \omega) \alpha - \lag_1 (\chz) \alpha^2
-		\Big) \,.
-	\end{multline*}
-	\item[Step 9] Compute batched polynomial commitment
-	$\gone{D} = v \gone{r} + u \gone {z}$ that is
-	\begin{align*}
-		\gone{D} & = v
-		\left(
-		\begin{aligned}
-			& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
-			& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
-			% &   \\
-			& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
-		\end{aligned}
-		\right) + \\
-		& + u \gone{\p{z}(\chi)}\,.
-	\end{align*}
-	\item[Step 10] Computes full batched polynomial commitment $\gone{F}$:
-	\begin{align*}
-		\gone{F} & = \left(\gone{\p{t_{lo}}(\chi)} + \chz^\noofc \gone{\p{t_{mid}}(\chi)} + \chz^{2 \noofc} \gone{\p{t_{hi}}(\chi)}\right) + u \gone{\p{z}(\chi)} + \\
-		& + v
-		\left(
-		\begin{aligned}
-			& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}(\chz)   \gone{\selright} + \p{c}(\chz)  \gone{\seloutput} + \\
-			& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c}(\chz)  + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
-			% &   \\
-			& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
-		\end{aligned}
-		\right) \\
-		& + v^2 \gone{\p{a}(\chi)} + v^3 \gone{\p{b}(\chi)} + v^4 \gone{\p{c}(\chi)} + v^5 \gone{\p{S_{\sigma 1}(\chi)}} + v^6 \gone{\p{S_{\sigma 2}}(\chi)}\,.
-	\end{align*}
-	\item[Step 11] Compute group-encoded batch evaluation $\gone{E}$
-	\begin{align*}
-		\gone{E}  = \frac{1}{\p{Z_H}(\chz)} & \gone{
-		\begin{aligned}
-			& \p{r}(\chz) + \pubinppoly(\chz) +  \alpha^2  \lag_1 (\chz) + \\
-			& - \alpha \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}} (\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}} (\chz) + \gamma) (\p{c}(\chz) + \gamma) \p{z}(\chz \omega) \right)
-		\end{aligned}
-		}\\
-		 + & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }\,.
-	\end{align*}
-	\item[Step 12] Check whether the verification $\vereq_\zkproof(\chi)$ equation holds
-	\begin{multline}
-		\label{eq:ver_eq}
-		\left(
-		\gone{\p{W_{\chz}}(\chi)} + u \cdot \gone{\p{W_{\chz \omega}}(\chi)}
-		\right) \bullet
-		\gtwo{\chi} - \\
-		\left(
-			\chz \cdot \gone{\p{W_{\chz}}(\chi)} + u \chz \omega \cdot \gone{\p{W_{\chz \omega}}(\chi)} + \gone{F} - \gone{E}
-		\right) \bullet
-		\gtwo{1} = 0\,.
-	\end{multline}
-  The verification equation is a batched version of the verification equation
-  from \cite{AC:KatZavGol10} which allows the verifier to check openings of
-  multiple polynomials in two points (instead of checking an opening of a single
-  polynomial at one point).
-\end{description}
-
-Since the original paper \cite{EPRINT:GabWilCio19} lacks of explanation how the
-simulator of \plonk{} works, it is presented here.
-
-\COMMENT{
-\ncase{$\plonk$ simulator $\simulator_\chi(\REL, \srs, \td, \inp)$}
-% \paragraph{Simulation in \plonk.}
-% The simulator $\simulator$ in $\plonk$ proceeds according to the following steps:
-\begin{description}
-\item[Round 1] Since the simulator does not know a witness $\wit$ for the proven
-  statement $\inp$, $\simulator_\chi$ cannot compute the output of this round
-  accordingly to the protocol. Instead, it picks randomly both the randomisers
-  $b_1, \ldots, b_6$ and evaluations of polynomials $\p{a}, \p{b}, \p{c}$ by
-  picking their coefficients randomly and outputting $\gone{\p{a}(\chi),
-    \p{b}(\chi), \p{c}(\chi)}$.
-\item[Round 2] The simulator takes permutation argument challenges $\beta,
-  \gamma$ as a random oracle output in the ongoing proof. Similarly as in the
-  previous round, the simulator cannot evaluate the requested polynomial $\p{z}$
-  honestly as it does not know the witness, picks its coefficients randomly and
-  outputs $\gone{\p{z}(\chi)}$.
-\item[Round 3] In this round the simulator starts by picking at random a
-  challenge $\chz$ that will be later used to program a random oracle. Then it
-  computes evaluations $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma
-      1}}(\chz), \p{S_{\sigma 2}}(\chz), \pubinppoly(\chz), \lag_1(\chz),
-  \p{Z_H}(\chz),\allowbreak \p{z}(\chz\omega)$
-	
-	Given the evaluations $\simulator_\chi$ computes polynomial $\p{r}(X)$ honestly, i.e.
-	\[
-		\p{r}(X) = 
-		\begin{aligned}
-			& \p{a}(\chz) \p{b}(\chz) \selmulti(X) + \p{a}(\chz) \selleft(X) + \p{b}(\chz) \selright(X) + \p{c}(\chz) \seloutput(X) + \selconst(X) \\
-			& + \alpha \cdot \left( (\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma)(\p{c}(\chz) + \beta k_2 \chz + \gamma) \cdot \p{z}(X)\right) \\
-			& - \alpha \cdot \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma)\beta \p{z}(\chz\omega) \cdot \p{S_{\sigma 3}}(X)\right) \\
-			& + \alpha^2 \cdot \lag_1(\chz) \cdot \p{z}(X)
-		\end{aligned}
-	\]
-	and evaluates $\p{r}(X)$ at $\chz$.
-	
-	In the next step the simulator computes $\ev{t}$ as the verifier would compute
-  in Step 8. Next, $\simulator_\chi$ picks randomly a polynomial $\p{t}$ such
-  that $\p{t} (\chz) = \ev{t}$. The simulator concludes this round as an honest
-  prover would by dividing $\p{t}$ into $\p{t_{hi}}, \p{t_{mid}}, \p{t_{lo}}$
-  and outputting $\gone{\p{t_{hi}}(\chi), \p{t_{mid}}(\chi), \p{t_{lo}}(\chi)}$.
-\item[Round 4] The simulator program random oracle to return $\chz$ when queried
-  on the current state of the transcript. Since the necessary evaluations at
-  $\chz$ are already computed, $\simulator_\chi$ simply outputs
-	\[
-		\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega)\,.
-	\]
-	\item[Round 5]
-	In this round the simulator proceeds as an honest prover would.
-	\end{description}
-}
-\COMMENT{
-	\section{$\sonic$ protocol rolled out}
-	\label{sec:sonic_explained}
-	\subsection{The constraint system}
-	\label{sec:sonic_constraint_system}
-	\sonic's system of constraints composes of three $\multconstr$-long vectors
-  $\va, \vb, \vc$ which corresponds to left and right inputs to multiplication
-  gates and their outputs. It hence holds $\va \cdot \vb = \vc$.
-
-	There is also $\linconstr$ linear constrains of the form 
-	\[
-		\va \vec{u_q} + \vb \vec{v_q} + \vc \vec{w_q} = k_q,
-	\]
-	where $\vec{u_q}, \vec{v_q}, \vec{w_q}$ are vectors for the $q$-th linear
-	constraint with instance value $k_q \in \FF_p$. Furthermore define polynomials
-\begin{equation}
-	\begin{split}
-		\p{u_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} u_{q, i}\,,\\
-		\p{v_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} v_{q, i}\,,\\
-	\end{split}
-	\qquad
-	\begin{split}
-		\p{w_i}(Y) & = -Y^i - Y^{-i}  + \sum_{q = 1}^\linconstr Y^{q +
-		\multconstr} w_{q, i}\,,\\
-		\p{k}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} k_{q}.
-	\end{split}
-\end{equation}
-In \sonic{} we will use commitments to the following polynomials.
-\begin{align*}
-	\pr(X, Y) & = \sum_{i = 1}^{\multconstr} \left(a_i X^i Y^i + b_i X^{-i} Y^{-i}
-	+ c_i X^{-i - \multconstr} Y^{-i - \multconstr}\right) \\
-	\p{s}(X, Y) & = \sum_{i = 1}^{\multconstr} \left( u_i (Y) X^{-i} +
-	v_i(Y) X^i + w_i(Y) X^{i + \multconstr}\right)\\
-		\pr'(X, Y) & = \pr(X, Y) + \p{s}(X, Y) \\
-		\pt(X, Y) & = \pr(X, 1) \pr'(X, Y) - \p{k}(Y)\,.
-\end{align*}
-	
-	\subsection{Algorithms rolled out}
-	\ncase{$\sonic$ SRS generation $\kgen(\REL)$}
-	The SRS generating algorithm picks randomly $\alpha, \chi \sample \FF_p$ and
-	outputs 
-	\[
-		\srs = \left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
-			\smallset{\alpha \chi^i}_{i = -\dconst, i \neq 0}^{\dconst}},
-			\gtwo{\smallset{\chi^i, \alpha \chi^i}_{i = - \dconst}^{\dconst}},
-		\gtar{\alpha} \right)
-	\]
-	\ncase{$\sonic$ prover $\prover(\REL, \srs, \inp, \wit=\va, \vb,
-	\vc)$}
-\begin{description}
-	\item[Round 1]
-		The prover picks randomly randomisers $c_{\multconstr + 1}, c_{\multconstr + 2},
-		c_{\multconstr + 3}, c_{\multconstr + 4} \sample \FF_p$. Set $\pr(X, Y)
-		\gets \pr(X, Y) + \sum_{i = 1}^4 c_{\multconstr + i} X^{- 2 \multconstr -
-		i}$. Commits to $\pr(X, 1)$ and outputs $R \gets \com(\srs, \multconstr,
-		\pr(X, 1))$.
-		Then it gets challenge $y$ from the verifier.
-      \item[Round 2] $\prover$ commits to $\pt(X, y)$ and outputs
-        $T \gets \com(\srs, \dconst, \pt(X, y))$. Then it gets a challenge $z$
-        from the verifier.
-	\item[Round 3] The prover computes commitment openings. That is, it outputs
-		\begin{align*}
-			W_a & = \open(\srs, z, \pr(z, 1), \pr(X, 1)) \\
-			W_b & = \open(\srs, yz, \pr(yz, 1), \pr(X, 1)) \\
-			W_t & = \open(\srs, z, \pt(z, y), \pt(X, y)) 
-		\end{align*}
-		along with evaluations $a = \pr(z, 1), b = \pr(y, z), t = \pt(z, y)$.
-		Then it engages in the signature of correct computation playing the role of
-		the helper, i.e.~it commits to $\p{s}(X, y)$ and sends the commitment $S$.
-		Then it obtains a challenge $u$ from the verifier.
-	\item[Round 4] In the next round the prover computes $C \gets \com(\srs,
-		\dconst, \p{s}(u, x)) \cdot \gone{\p{s}(u, x)}$ and compute commitments'
-		openings 
-		\begin{align*}
-			W & = \open(\srs, u, \p{s}(X, y)), \\
-			Q & = \open(\srs, y, \p{s}(u, Y)),
-		\end{align*}
-		and returns $W, Q, \p{s}(u, y)$. Eventually the prover gets the last
-		challenge from the verifier---$z$.
-	\item[Round 5] In the final round, $\prover$ computes opening $Q_z =
-		\open(\srs, z, \p{s}(u, X))$ and outputs $Q_z$ and $\p{s}(u, z)$. 
-\end{description}
-
-	\ncase{$\sonic$ verifier $\verifier(\REL, \srs, \inp, \zkproof)$}
-	The verifier in \sonic{} runs as subroutines the verifier for the polynomial
-	commitment. That is it sets $t = a(b + s) - \p{k}(y)$ and checks the following:
-	\begin{equation*}
-		\begin{split}
-		&\PCOMs.\verifier(\srs, \multconstr, R, z, a, W_a), \\
-		&\PCOMs.\verifier(\srs, \multconstr, R, yz, b, W_b),\\
-		&\PCOMs.\verifier(\srs, \dconst, T, z, t, W_t),\\	
-		\end{split}
-		\qquad
-		\begin{split}
-		&\PCOMs.\verifier(\srs, \dconst, S, u, s, W),\\
-		&\PCOMs.\verifier(\srs, \dconst, C, y, s, Q),\\
-		&\PCOMs.\verifier(\srs, \dconst, C, z, s_z, Q_z),
-		\end{split}
-      \end{equation*}
-      and accepts the proof iff all the checks holds.
- }
-}
-	\section{Generalised forking lemma for multiple branching points}
-    \subsection{Generalised forking lemma.}
-First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not
-general enough for our purpose as it is useful only for protocols where witness
-can be extracted from just two transcripts. To be able to extract a witness
-from, say, an execution of $\plonkprot$ we need to obtain at least
-$\noofc + 3$ valid proofs. Here we propose a generalisation of the
-general forking lemma that given probability of producing an accepting
-transcript $\accProb$ lower-bounds the probability of generating a \emph{tree
-  of accepting transcripts} $\tree$, which allows to extract a witness.
-
-\begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
-	\label{def:tree_of_accepting_transcripts}
-	Consider a $(2\mu + 1)$-message interactive proof system $\ps$. An $(n_1,
-  \ldots, n_\mu)$-tree of accepting transcript is a tree where each node on
-  depth $i$, for $i \in \range{1}{\mu}$, is an $i$-th prover's message in an
-  acceptable transcript; edges between the nodes are labeled with verifier's
-  challenges, such that no two edges on the same depth have the same
-  label; and each node on depth $i$ has $(n_{i} - 1)$ siblings and $n_{i +
-    1}$ children. Altogether, the tree consists of $m = \prod_{i = 1}^\mu n_i$
-  branches, which makes $m$ acceptable transcripts. We require $m = \poly$.
-\end{definition}
-
-
-\begin{lemma}[General forking lemma II]
-	\label{lem:generalised_forking_lemma_gen}
-	Fix $q \in \ZZ$ and set $H$ of size $h \geq m m'$. Let $\zdv$ be a $\ppt$
-  algorithm that on input $y, h_1, \ldots, h_q$ returns $(\vec{i}, s)$ where
-  $\vec{i} = (\vec{i}[1], \ldots, \vec{i}[m']) \in
-  \range{0}{q}^{m'}$ and $s$ is called a side output. Denote by $\ig$ a randomised
-  instance generator. We denote by $\accProb$ the probability
-	\[
-      \condprob{\forall k \in \range{1}{m'} : \vec{i}[k] \neq 0}{ y \gets \ig;\
-        h_1, \ldots, h_q \sample H;\ (\vec{i}, s) \gets \zdv(y, h_1, \ldots,
-        h_q)}\,.
-	\]
-	Let $\genforking_{\zdv}^{m}$ denote the algorithm described in
-  \cref{fig:genforking_lemma} then the probability $\frkProb := \condprob{b =
-    1}{y \gets \ig;\ h_1, \ldots, h_{q} \sample H;\ (b, \vec{s}) \gets
-    \genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}$ is at least
-	\[
-		\frac{\accProb^m}{q^{m'(m - 1)}} - \accProb \cdot \left(1 -
-    \frac{h!}{(h - m m')! \cdot h^{m m'}}\right).
-	\]
-		
-	\begin{figure}[t]
-      \centering \fbox{
-        \procedure{$\genforking_{\zdv}^{m} (y,h_1^{1}, \ldots, h_{q}^{1})$} {
-          \rho \sample \RND{\zdv}\\
-          (\vec{i}, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; \rho)
-          \pccomment{$\vec{i} = i[1], \ldots, i[m']$}\\
-          \vec{i_1} \gets \vec{i}\\
-          \pcif (\exists k \in \range{1}{m'} : \vec{i}[k] = 0)\ \pcreturn (0, \bot)\\
-          \pcfor j \in \range{2}{m}\\
-          \pcind h_{1}^{j}, \ldots, h_{i[1] - 1}^{j} \gets h_{1}^{j - 1},
-          \ldots,
-          h_{i[1] - 1}^{j - 1}\\
-          \pcind h_{i[1]}^{j}, \ldots, h_{q}^{j} \sample H\\
-          \pcind (\vec{i_j}, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{q}^{j}; \rho)\\
-          \pcind \pcif (\exists k \in \range{1}{m'} : \vec{i_j}[k] = 0) \lor \vec{i_j} \neq \vec{i}\ \pcreturn (0, \bot)\\
-          \pcif \exists (j, j') \in \range{1}{m}^2, k \in \range{1}{m'} :
-          (h_{i[k]}^{j} = h_{i[k]}^{j'})\
-          \pcreturn (0, \bot)\\
-          \pcelse \pcreturn (1, \vec{s}) }}
-	\caption{Generalised forking algorithm $\genforking_{\zdv}^{m}$}
-	\label{fig:genforking_lemma_gen}
-\end{figure}
-\end{lemma}
+\begin{theorem}[Security of the \"uber assumption]
+  Let $\p{P}_i \in \FF_p[X_1, \ldots, X_n]^{m_i}$, for
+  $i \in \smallset{1, 2, T}$ be $\tau_i$ tuples of $n$-variate polynomials over
+  $\FF_p$ and let $\p{F} \in \FF_p[X_1, \ldots, X_n]^m$. Let
+  $\xi_0, \xi_1, \xi_T$, $\GRP_1, \GRP_2, \GRP_T$ be as defined above. If
+  polynomials $f \in \p{F}$ are pair-wise independent and are independent of
+  $\p{P}_1, \p{P}_2$, then for any $\adv$ that makes up to $q$ queries to the
+  GGM oracle holds:
+  \[
+    \Pr\left[
+    \adv\left(
+      \begin{aligned}
+        \xi_1(\p{P}_1(x_1, \ldots, x_n)), \\
+        \xi_2(\p{P}_2(x_1, \ldots, x_n)), \\
+        \xi_T(\p{P}_T(x_1, \ldots, x_n)), \\
+        \xi_{1}(\p{F}_0), \xi_{1}(\p{F}_1)
+      \end{aligned}
+    \right) = b
+    \, \left|\,
+      \begin{aligned}
+        x_1, \ldots, x_n, y_1, \ldots, y_m \sample \FF_p,\\
+        b \sample \bin, \\
+        \p{F}_b \gets \p{F}(x_1, \ldots, x_n),\\
+        \p{F}_{1 - b} \gets (y_1, \ldots, y_m)
+      \end{aligned}
+      \right.  \right] - 1/2 \leq \frac{...}{}
+  \]
+\end{theorem}
 \begin{proof}
-First let denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
-\begin{align*}
-  \accProb(y) & =  \condprob{\forall k \in \range{1}{m'} : \vec{i}[k] \neq 0}{h_1, \ldots, h_q \sample H;\ (\vec{i}, s)
-                \gets \zdv(y, h_1, \ldots, h_q)}\,.\\
-  \frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
-                \genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}\,.
-\end{align*}
-
-We start by claiming that for all $y$ 
-\begin{equation}\label{eq:frkProb_y_gen}
-	\frkProb(y) \geq 
-	\frac{\accProb(y)^m}{q^{m'(m - 1)}} - \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - m m')! \cdot h^{m m'}}\right)
-	\end{equation}
-Then with the expectation taken over $y \sample \ig$, we have
-\begin{align}
-	\frkProb & = \expected{\frkProb(y)} \geq
-	\expected{\frac{\accProb(y)^m}{q^{m' (m - 1)}} -  \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - m m')! \cdot h^{m m'}}\right)} \label{eq:use_eq1_gen}\\
-	& \geq \frac{\expected{\accProb(y)}^m}{q^{m'(m - 1)}} -
-	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - m m')! \cdot
-  h^{m m'}}\right) \label{eq:by_lemma_jensen_gen}\\
-	& = \frac{\accProb^m}{q^{m'(m - 1)}} -  \accProb \cdot \left(1 -
-  \frac{h!}{(h - m m')! \cdot h^{m m'}}\right)\label{eq:by_accProb_gen}\,.
-\end{align}
-Where \cref{eq:use_eq1_gen} comes from \cref{eq:frkProb_y_gen};
-\cref{eq:by_lemma_jensen_gen} comes from linearity of expected value and \cref{lem:jensen}; and
-\cref{eq:by_accProb_gen} holds by the fact that $\expected{\accProb(y)} =
-\accProb$.
-
-We now show \cref{eq:frkProb_y}.
-Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$. 
-For any input $y$, with probabilities taken over the coin tosses of
-$\genforking_{\zdv}^{m}$ we have
-\begin{align*}
-  \frkProb (y) & = \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j}[k] \neq 0 \land
-                 h_{\vec{i_j}[l]}^{j} \neq h_{\vec{i_{j'}}[l]}^{j'} \text{ for
-                 all } (j, j') \in J, k, l \in \range{1}{m'}}	\\
-               & \geq \prob{\vec{i_j} = \vec{i_{j'}} \land  \vec{i_j}[k] \neq 0
-                 \text{ for all } (j, j') \in J,  k \in \range{1}{m'}} \\
-               & \quad - \prob{\vec{i_j}[k] \neq 0 \land
-                 h_{\vec{i_j}[l]}^{j} = h_{\vec{i_{j'}}[l]}^{j'} \text{ for all
-                 } k \in \range{1}{m'} \text{ and for some
-                 } (j, j') \in J, l \in \range{1}{m'}}\\
-               & = \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j}[k] \neq 0
-                 \text{ for all } (j, j') \in
-                 J,  k \in \range{1}{m'}} - \\
-               & \quad  \prob{\vec{i_j}[k] \neq 0 \text{ for all } k \in \range{1}{m'}} \cdot 
-                 \left(1 - \frac{h!}{(h - m m')! \cdot h^{m m'}}\right) \\ 
-               & = \prob{\vec{i_j} = \vec{i_{j'}} \land
-                 \vec{i_j}[k] \neq 0 \text{ for all 
-                 } (j, j') \in J,  k \in \range{1}{m'}} - \\
-               & \quad \accProb(y) \cdot \left(1 -
-                 \frac{h!}{(h - m m')! \cdot h^{m m'}}\right)\,.
-\end{align*}
-
-Probability that for some $(j, j') \in J$, $k \in \range{1}{m'}$ and $\vec{i_j} = \vec{i_{j'}}$ holds
-$h_{\vec{i_j}[k]}^{j} \neq h_{\vec{i_{j'}}[k]}^{j'}$, equals 
-\[
-  \frac{h \cdot (h - 1)
-\cdot \ldots \cdot (h - m m' - 1)}{h^{m m'}} = \frac{h!}{(h - m m')! \cdot h^{m m'}}.
-\]
-That is, it equals the number
-of all $m m'$-element strings where each element is different divided by
-the number of all $m m'$-element strings, where elements are taken from a
-set of size $h$. 
-
-It remains to show that
-\[
-  \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j}[k] \neq 0 \text{ for all } (j,
-    j') \in J, k \in \range{1}{m'}} \geq \infrac{\accProb(y)^m}{q^{m - 1}}.
-[]\]
-Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random. For
-each $\vec{\iota} \in \range{1}{q}^{m'}$ let $X_{\vec{\iota}} \colon \RND{\zdv}
-\times H^{\vec{\iota}[1] - 1} \to [0, 1]$ be defined by setting
-$X_{\vec{\iota}}(\rho, h_1, \ldots, h_{\vec{\iota}[1] - 1})$ to
-\[
-  \condprob{\vec{i} = \vec{\iota}}{h_{\vec{\iota}[1]}, \ldots, h_q \sample H;
-    (\vec{i}, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)}
-\] 
-for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\vec{\iota}[1] - 1} \in
-H$. Consider $X_{\vec{\iota}}$ as a random variable over the uniform
-distribution on its domain.  Then
-\begin{align*}
-  & \prob{\vec{i_j} = \vec{i_{j'}} \land \vec{i_j}[k] \neq 0 \text{ for
-    all } (j, j') \in J, k \in \range{1}{m'}} 
-    = \sum_{\vec{\iota} \in \range{1}{q}^{m'}} \prob{\vec{i_1} = \vec{\iota} \land \ldots \land \vec{i_m} = \vec{\iota}} \\
-  & = \sum_{\vec{\iota} \in \range{1}{q}^{m'}} \prob{\vec{i_1} = \vec{\iota}} \cdot \condprob{\vec{i_2} = \vec{\iota}}{\vec{i_1} = \vec{\iota}} \cdot \ldots \cdot \condprob{\vec{i_m} = \vec{\iota}}{\vec{i_1} = \ldots = \vec{i_{m - 1}} = \vec{\iota}} \\
-  & = \sum_{\vec{\iota} \in \range{1}{q}^{m'}} \sum_{\rho, h_1, \ldots, h_{\vec{\iota}[1] - 1}} X_{\vec{\iota}}
-    (\rho, h_1, \ldots, h_{\vec{\iota}[1] - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\vec{\iota}[1] - 1}}
-    = \sum_{\vec{\iota} \in \range{1}{q}^{m'}} \expected{X_{\vec{\iota}}^m} \,.
-\end{align*}
-Importantly, $\sum_{\vec{\iota} \in \range{1}{q}^{m'}} \expected{X_{\vec{\iota}}} = \accProb(y)$.
-
-By \cref{lem:jensen} we get
-\[
-	\sum_{\vec{\iota} \in \range{1}{q}^{m'}} \expected{X_{\vec{\iota}}^m} \geq \sum_{\vec{\iota} \in \range{1}{q}^{m'}} \expected{X_\iota}^m\,.
-\]
-Note that for e.g.~$X_{\vec{i}} = 1$, $\vec{i} \in \range{1}{q}^{m'}$ the
-inequality becomes equality, that is, it is tight.
- 
-We now use the H\"older inequality, cf.~\cref{lem:holder}, for
-$x_{\vec{i}} = \expected{X_{\vec{i}}}$, $y_{\vec{i}} = 1$, $p = m$, and
-$q = m/(m - 1)$ obtaining
-\begin{gather}
-  \left(\sum_{\vec{\iota} \in \range{1}{q}^{m'}} \expected{X_{\vec{i}}}\right)^{m}  \leq \left(\sum_{\vec{\iota} \in \range{1}{q}^{m'}} \expected{X_{\vec{i}}}^m\right) \cdot q^{m'(m - 1)}\\
-  \frac{1}{q^{m'(m - 1)}} \cdot \accProb(y)^{m} \leq \sum_{\vec{\iota} \in
-    \range{1}{q}^{m'}} \expected{X_{\vec{i}}}^m\,.
-\end{gather}
-Finally, we get
-\[
-	\frkProb(y) \geq \frac{\accProb(y)^m}{q^{m'(m - 1)}} - 
-	 \accProb(y) \cdot \left(1 - \frac{h!}{(h - m m')! \cdot h^{m m'}}\right)\,.
-\]
-\qed
-\end{proof}
-
-To highlight importance of the generalised forking lemma we describe how we use
-it in our simulation-extractability proof.  Let $\proofsystem$ be a
-computationally special sound proof system where for an instance $\inp$ the
-corresponding witness can be extracted from an $(n_1, \ldots, n_\mu)$-tree of
-accepting transcripts, where $m'$ elements $n_j$, $j \in \range{1}{\mu}$, are
-bigger than $1$. Denote the set of indices $j$ such that $n_j > 1$ by $B$. Let
-$\advse$ be the simulation-extractability adversary that outputs an acceptable
-proof with probability at least $\accProb$. (Although we use the same $\accProb$
-to denote probability of $\zdv$ outputing a $\vec{i}$ which has no $0$ entry and
-probability of $\advse$ outputing an acceptable proof we claim that these
-probabilities are exactly the same what comes from how we define $\zdv$.)  Let
-$\advse$ produce an acceptable proof $\zkproof_{\advse}$ for instance
-$\inp_{\advse}$; $r$ be $\advse$'s randomness; $Q$ the list of queries submitted
-by $\advse$ along with simulator's $\simulator_\zkproof$ answers; and $Q_\ro$ be
-the list of all random oracle queries made by $\advse$.  All of these are given
-to the extractor $\ext$ that internally runs the forking algorithm
-$\genforking_\zdv$.  Algorithm $\zdv$ takes $(\REL, \srs, \advse, Q, r)$ as
-input $y$ and $Q_\ro$ as input $h_1^1, \ldots, h_q^1$.  (For the sake of
-completeness, we allow $\genforking_\zdv$ to pick $h^1_{k + 1}, \ldots, h^1_q$
-responses if $Q_\ro$ has only $k < q$ elements.)
-
-Next, $\zdv$ runs internally $\advse(\REL, \srs; r)$ and responds to its random
-oracle and simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes
-the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
-as it is run on the same random tape and with the same answers from the
-simulator and random oracle. After $\advse$ finishes its acceptable proof
-$\zkproof_{\advse}$, algorithm $\zdv$ outputs $(\vec{i}, \zkproof_{\advse})$,
-where $\vec{i}$ is the vector of indices of random oracle queries that make
-challenges after $k$-th messages from the prover, for $k \in B$. Then, after the
-first run of $\advse$ is done, the extractor runs $\zdv$ again, but this time it
-provides a fresh random oracle responses $h^2_{\vec{i}[1]}, \ldots, h^2_q$. Note
-that this is equivalent to rewinding $\advse$ to a point just before $\advse$ is
-about to ask its $\vec{i}[1]$-th random oracle query. (We rewind to a point
-where the tree of accepting transcripts branches for the first time.)
-Probability that the adversary produces an acceptable transcript with the fresh
-random oracle responses is at least $\accProb$. This continues until the
-required number of transcripts is obtained.
-
-We note that in the original forking lemma the forking algorithm $\forking$
-cf.~\cref{fig:genforking_lemma_gen} gets only as input $y$ and elements $h^1_1, \ldots,
-h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
-that $h^1_1, \ldots, h^1_q$ are random oracle responses, thus are random, makes
-the change only notational.
-
-We also note that the general forking lemma proposed in
-\cref{lem:generalised_forking_lemma_gen} is more general than we actually need to
-show simulation extractability of $\plonk$ and $\sonic$. More precisely, it
-would be enough to show its variant which allows for extraction from
-$(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of acceptable transcripts, i.e.~for $m'
-= 1$. Setting $m' = 1$ also considerably improves the probability bounds for
-$\frkProb$, which becomes
-\[
-  \frkProb = \frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 -
-    \frac{h!}{(h - m)! \cdot h^m}\right)\enspace.
-\]
+  Let $\cdv$ be a challenger that plays with $\adv$ in the following
+  game. $\cdv$ maintains three lists
+  \[
+    L_i = \smallset{(p_j, \xi_{i, j}) \mid j \in \range{1}{\tau_i}},
+  \]
+  for $i \in \smallset{1, 2, T}$. Invariant $\tau$ states that $\tau_0 + \tau_1
+  = \tau + m_1 + m_2 + m$.
+  \end{proof}
 
 \section{Simulation-extractability---the even more general result}
 
