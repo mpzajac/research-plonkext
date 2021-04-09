@@ -332,6 +332,23 @@ proof is inspired by simulation-extractability and simulation-soundness proofs
 from \cite{INDOCRYPT:FKMV12}, with major modifications, which were required as
 \cite{INDOCRYPT:FKMV12} considers only $\Sigma$-protocols
 that are undoubtedly simpler protocols than the considered proof systems.
+
+\subsubsection{Generalising Boneh-Boyen-Goh~\cite{EC:BonBoyGoh05} uber assumption.}
+To show that $\plonk$ is zero-knowledge we rely on a variant of
+BBG's \emph{uber assumption}. In its original version, the
+assumption assures that some polynomial evaluation (on a random, unknown point)
+represented in a bilinear pairing target group $\GRP_T$ is indistinguishable
+from a random element. In our variant, we modify two things.
+\begin{itemize}
+\item Firstly, the polynomial evaluation can be represented in other groups
+  than $\GRP_T$; here we use $\GRP_1$;
+\item Secondly, the distinguisher is given not a single polynomial evaluation,
+  but a number of polynomials. That is, it either gets $k$ polynomial
+  evaluations representations or $k$ random numbers.
+\end{itemize}
+We show security of the generalized uber assumption directly in the generic
+group model.
+
 % Since the proof highly relies on the (generalised) forking lemma, the security
 % lost it introduces is considerable.
 
@@ -414,6 +431,37 @@ modifications hurt performance of the proof system, the resulting zkSNARKs are
 still more efficient than the first SE zkSNARK \cite{C:GroMal17}, see
 \cite{EPRINT:AtaBag19}. Recently, \cite{EPRINT:BKSV20} showed that the original
 Groth's proof system from \cite{EC:Groth16} is weakly SE and randomisable.
+
+\paragraph{Forking lemma generalizations.}
+In \cite{EC:BCCGP16} Bootle et al.~proposed a novel inner-product argument which
+security relies on, so-called, witness-extended emulation. To show that
+property, the authors proposed a new version of forking lemma, which gives a
+lower bound on probability that a tree finding algorithm is able to produce a 
+tree of acceptable transcripts by rewinding a conversation between a
+(potentially malicious) prover and verifier.
+
+Although the result of presented in that paper is dubbed ``forking lemma'' it
+differs from forking lemmas known from e.g.~\cite{JC:PoiSte00,CCS:BelNev06}.
+First of all, the forking lemmas in these papers analyse probability of building
+a tree of acceptable transcripts for Fiat--Shamir based non-interactive proof
+systems, while the protocol presented by Bootle et al.~is intended to work for
+interactive proof systems.
+
+Importantly, it is not obvious how the result of Bootle et al.~can be used to
+show security of non-interactive protocols as it relies interactive provers
+whose proving strategies are more limited than proving strategies of
+non-interactive ones. For example, if a challenge given by the verifier does not
+suit an interactive prover, it can only try to finish a proof with it or
+abort. On the other hand, a non-interactive prover has far wider scope of
+possible actions---when the protocol is non-interactive the prover may
+adapt its strategy respectively to the random oracle outputs. For example,
+seeing a response $h$ after sending $k$-th message it may decide to ``go back''
+a number of steps, e.g.~prior sending $k'$-th message ($k' \leq k$), provide
+different messages hoping for better suited response $h'$ on its $k$-th
+message. Furthermore, the adversary may even interrupt the proof and try again
+with another instance. All of these actions would make the proof unacceptable
+for an interactive verifier, however they may give a perfectly fine proof for a
+non-interactive one.
 
 \section{Preliminaries}
 \label{sec:preliminaries}
