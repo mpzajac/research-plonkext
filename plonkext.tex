@@ -575,57 +575,64 @@ Similarly for applying $f$ to $\pS$ and $\pT$.
   say that $\p{f}$ is \emph{independent} if it is not dependent.
 \end{definition}
 
-\begin{definition}[$(\pR, \pS, \pT, \p{f}, T)$-uber assumption
-	\cite{EC:BonBoyGoh05}]
-	\label{def:uber_assumption_orig}
-	Let $\pR, \pS, \pT$ be defined as above, $(x', x_1, \ldots, x_c) \sample
-  \FF_p^{c + 1}$ and let $\p{f}$ be independent on $(\pR, \pS, \pT)$,
-  cf.~\cref{def:independence}. Then, for any $\ppt$ adversary $\adv$
-	\begin{multline*}
-		\prob{\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
-		\gtar{\pT(x_1, \ldots, x_c)}, \gtar{\p{f}(x_1, \ldots, x_c)}) = 1} \approx_\secpar \\ 
-		\prob{\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
-		\gtar{\pT(x_1, \ldots, x_c)}, \gtar{x'}) = 1}.  
-	\end{multline*}
-\end{definition}
-
-For the sake of this paper we modify the assumption slightly, i.e.~we require
-not target group $\GRP_T$ elements to be indistinguishable, but elements of
-$\GRP_1$ (the changed element has been put into a \dbox{dashbox}), more precisely we require: 
-
-\begin{definition}[$(\pR, \pS, \pT, \p{f}, 1)$-uber assumption]
+To show (standard-model) zero knowledge of $\plonk$ we utilize a generalization
+of Boneh-Boyen-Goh's \emph{uber assumption} \cite{EC:BonBoyGoh05} stated as
+follows (the changed element has been put into a \dbox{dashbox})
+% \begin{definition}[$(\pR, \pS, \pT, \p{f}, T)$-uber assumption
+% 	\cite{EC:BonBoyGoh05}]
+% 	\label{def:uber_assumption_orig}
+% 	Let $\pR, \pS, \pT$ be defined as above, $(x', x_1, \ldots, x_c) \sample
+%   \FF_p^{c + 1}$ and let $\p{f}$ be independent on $(\pR, \pS, \pT)$,
+%   cf.~\cref{def:independence}. Then, for any $\ppt$ adversary $\adv$
+% 	\begin{multline*}
+% 		\prob{\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
+% 		\gtar{\pT(x_1, \ldots, x_c)}, \gtar{\p{f}(x_1, \ldots, x_c)}) = 1} \approx_\secpar \\ 
+% 		\prob{\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
+% 		\gtar{\pT(x_1, \ldots, x_c)}, \gtar{x'}) = 1}.  
+% 	\end{multline*}
+% \end{definition}
+\begin{definition}[$(\pR, \pS, \pT, \p{F}, 1)$-uber assumption]
 	\label{def:uber_assumption}
 	Let $\pR, \pS, \pT$ be defined as above,
-    $(x', x_1, \ldots, x_c) \sample \FF_p^{c + 1}$ and let $\p{f}$ be
+    $(x_1, \ldots, x_c, y_1, \ldots, y_{d}) \sample \FF_p^{c + d}$ and let
+    $\p{F}$ be a set of pair-wise independent polynomials which are also
     independent on $(\pR, \pS, \pT)$, cf.~\cref{def:independence}.  Then, for
     any $\ppt$ adversary $\adv$
 	\begin{multline*}
       \Pr\left[\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
-		\gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{\p{f}(x_1, \ldots, x_c)}}) = 1\right] \approx_\secpar \\
-       \Pr\left[\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
-       \gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{x'}}) = 1\right].
+		\gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{\p{F}(x_1, \ldots, x_c)}}) = 1\right] \approx_\secpar \\
+      \Pr\left[\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
+        \gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{y_1, \ldots, y_{d}}}) =
+        1\right].
 	\end{multline*}
   \end{definition}
 
-  \begin{lemma}
-    Let $\pS$ contain a constant polynomial $\p{s}(X) = 1$, then
-    $(\pR, \pS, \pT, \p{f}, T)$-uber assumption implies
-    $(\pR, \pS, \pT, \p{f}, 1)$-uber assumption.
-  \end{lemma}
-  \begin{proof}
-    Let $\adv_T$ be an adversary that breaks the
-    $(\pR, \pS, \pT, \p{f}, T)$-uber assumption with some non-negligible
-    advantage $\eps$, we build $\adv_{1}$ that breaks
-    $(\pR, \pS, \pT, \p{f}, 1)$-uber assumption with the same advantage. Let
-    $\adv_1$ get as its input
-    $(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)}, \gtar{\pT(x_1,
-      \ldots, x_c)}, \gone{x'})$, for some random $x_1, \ldots, x_c$, and $x'$
-    being either $\p{f}(x_1, \ldots, x_c)$ or a random element. Then $\adv_1$
-    obtains $\gtar{x'}$ by computing $\gone{x'} \bullet \gtwo{1}$ and runs
-    $\adv_T (\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
-    \gtar{\pT(x_1, \ldots, x_c)}, \gtar{x'})$ which outputs its guess
-    $b$. Adversary $\adv_1$ returns it and wins with probability $1/2 + \eps$.
-\end{proof}
+  Compared to the original uber assumptions, there are two major changes. First,
+  we require not target group $\GRP_T$ elements to be indistinguishable, but
+  elements of $\GRP_1$. Second, Boneh et al.'s assumption works for
+  distinguishers who are given only one challenge polynomial $\p{f}$,
+  i.e.~$\abs{\p{F}} = 1$.  We prove our variant of the uber assumption in the
+  generic group model, see \cref{thm:uber_assumption}.
+
+%   \begin{lemma}
+%     Let $\pS$ contain a constant polynomial $\p{s}(X) = 1$, then
+%     $(\pR, \pS, \pT, \p{f}, T)$-uber assumption implies
+%     $(\pR, \pS, \pT, \p{f}, 1)$-uber assumption.
+%   \end{lemma}
+%   \begin{proof}
+%     Let $\adv_T$ be an adversary that breaks the
+%     $(\pR, \pS, \pT, \p{f}, T)$-uber assumption with some non-negligible
+%     advantage $\eps$, we build $\adv_{1}$ that breaks
+%     $(\pR, \pS, \pT, \p{f}, 1)$-uber assumption with the same advantage. Let
+%     $\adv_1$ get as its input
+%     $(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)}, \gtar{\pT(x_1,
+%       \ldots, x_c)}, \gone{x'})$, for some random $x_1, \ldots, x_c$, and $x'$
+%     being either $\p{f}(x_1, \ldots, x_c)$ or a random element. Then $\adv_1$
+%     obtains $\gtar{x'}$ by computing $\gone{x'} \bullet \gtwo{1}$ and runs
+%     $\adv_T (\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
+%     \gtar{\pT(x_1, \ldots, x_c)}, \gtar{x'})$ which outputs its guess
+%     $b$. Adversary $\adv_1$ returns it and wins with probability $1/2 + \eps$.
+% \end{proof}
 
 \paragraph{Proofs by Game-Hoping.}
 Proofs by \emph{game hoping} is a method of writing proofs popularised by
@@ -3150,6 +3157,7 @@ h_{\iota - 1})$ to
 \end{proof}
 
 \subsection{Uber assumption}
+\label{sec:uber_assumption}
 We show security of our version of the uber assumption using the generic group
 model as introduced by Shoup \cite{EC:Shoup97} where all group elements are
 represented by random binary strings of length $\secpar$. That is, there are
@@ -3193,6 +3201,7 @@ al.~uber assumption. The proof goes similarly to the original proof given in
 \cite{EC:BonBoyGoh05} with minor differences.
 
 \begin{theorem}[Security of the uber assumption]
+  \label{thm:uber_assumption}
   Let $\p{P}_i \in \FF_p[X_1, \ldots, X_n]^{m_i}$, for
   $i \in \smallset{1, 2, T}$ be $\tau_i$ tuples of $n$-variate polynomials over
   $\FF_p$ and let $\p{F} \in \FF_p[X_1, \ldots, X_n]^m$. Let
