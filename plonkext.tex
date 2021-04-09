@@ -2346,58 +2346,73 @@ challenge.
 In the next round, the simulator computes polynomial $\p{r}(X)$ as an honest
 prover would, cf.~\cref{sec:plonk_explained} and evaluates $\p{r}(X)$ at $\chz$.
 
-The rest of the evaluations are already computed, thus 
-$\simulator$ simply outputs 
-\(
-	\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega)\,.
-\)
+The rest of the evaluations are already computed, thus $\simulator$ simply
+outputs
+\[
+  \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma
+      2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega)\,.
+\]
 After that it picks randomly the challenge $v$, proceeds in the last round as an
 honest prover would proceed and outputs the final challenge, $u$, by picking it
 at random as well.
 
 \ncase{$\game{1} \mapsto \game{2}$} We now describe the reduction $\rdv$ which
-relies on the $(\pR, \pS, \pT, \pf, 1)$-uber assumption where $\pR, \pS, \pT, \pf$
+relies on the $(\pR, \pS, \pT, \pF, 1)$-uber assumption where $\pR, \pS, \pT, \pF$
 are polynomials over variables $\vB = B_1, \ldots, B_9$ and are defined as
-follows. Let $E = \smallset{\smallset{1, 2}, \smallset{3, 4}, \smallset{5, 6},
-  \smallset{7, 8, 9}}$. Let
+follows. Let $E = \smallset{\smallset{2}, \smallset{3, 4}, \smallset{5, 6},
+  \smallset{7, 8, 9}}$ and $E' = E \setminus \smallset{2}$. Let
 \begin{align}
 \label{eq:uber}
-\pR(\vB) & = \smallset{B_i \mid i \in A,\ A \in E} \cup \smallset{B_i B_j \mid i \in
-A, j \in B,\ A \neq B, A, B \in E} \cup \\ 
-		& \smallset{B_i B_j B_k \mid i \in A,\ j \in
-B,\ k \in C,\
-		A, B, C \text{ all different and in } E} \cup \notag \\
-	& \smallset{B_i B_j B_k B_l \mid i \in A,\ j \in B,\ k \in C,\ l \in D,\
-		A, B, C, D \text{ all different and in } E} \notag \\
-	& \setminus \smallset{B_1
-B_3 B_5 B_7}\,,\notag \\
-\pS(\vB) & = \emptyset \notag\,, \\
-\pT(\vB) & = \emptyset \notag\,, \\
-\pf(\vB) & = B_1 B_3 B_5 B_7 \notag\,.
+\pF(\vB) & = \smallset{B_1} \cup \smallset{B_1B_i \mid i \in A,\ A \in E'} \cup
+             \smallset{B_1B_iB_j \mid i \in A, j \in B,\ A, B \in E', B
+             \neq A} \cup \notag\\
+           & \smallset{B_1B_iB_jB_k \mid i \in A, j \in
+             B, k \in C,\ A, B, C \in E', A \neq B \neq C \neq A}\notag\,,\\
+  \pR(\vB) & = \smallset{B_i \mid i \in A,\ A \in E} \cup \smallset{B_i B_j \mid i \in
+             A, j \in B,\ A \neq B, A, B \in E} \cup \\ 
+           & \smallset{B_i B_j B_k \mid i \in A,\ j \in
+             B,\ k \in C,\
+             A, B, C \text{ all different and in } E} \cup \notag \\
+           & \smallset{B_i B_j B_k B_l \mid i \in A,\ j \in B,\ k \in C,\ l \in D,\
+             A, B, C, D \text{ all different and in } E} \notag \\
+           & \setminus \pF(\vB)\,,\notag \\
+  \pS(\vB) & = \emptyset \notag\,, \\
+  \pT(\vB) & = \emptyset \notag\,.
 \end{align}
 That is, the elements of $\pR$ are all singletons, pairs, triplets and
 quadruplets of $B_i$ variables that occur in polynomial $\pt(\vB)$ except the
-challenge element $\pf(\vB) = B_1 B_3 B_5 B_7$. Variables $\vB$ are evaluated to
-randomly picked $\vb = b_1, \ldots, b_9$.
+challenge element $\pf(\vB)$ which are all elements that depends on a variable
+$B_1$. Variables $\vB$ are evaluated to randomly picked
+$\vb = b_1, \ldots, b_9$.
 
-The reduction $\rdv$ learns $\gone{\pR}$ and challenge $\gone{w}$ where $w$ is
-either $\pf(\vb) = b_1 b_3 b_5 b_7$ or a random value. Then it picks $\chi$,
-$\chz$ and computes the SRS $\srs$ from $\chi$. Elements $b_i$ are interpreted as
-polynomials in $X$ that are evaluated at $\chi$, i.e. $b_i = b_i(\chi)$. Next,
-$\rdv$ sets
+The reduction $\rdv$ learns $\gone{\pR}$ and challenge
+$\gone{\vec{w}} = \gone{w_1, \ldots, w_{12}}$ where $\vec{w}$ is either a vector
+of evaluations $\pF(\vb)$ or a sequence of random values $y_1, \ldots, y_{12}$,
+for the sake of concreteness we state $w_1 = b_1$ or $w_1 = y_1$ (depending on
+the chosen random bit). Then it picks $\chi$, $\chz$ and computes the SRS $\srs$
+from $\chi$. Elements $b_i$ are interpreted as polynomials in $X$ that are
+evaluated at $\chi$, i.e. $b_i = b_i(\chi)$. Next, $\rdv$ sets for
+$\xi_i, \zeta_i \sample \FF_p$
+\[
+  \gone{\p{\tb}_1}(X) =
+(X - \chz)(X - \ochz) \gone{w_1}(X) + \xi_i (X - \chz) \gone{1} +
+\zeta_i (X - \ochz) \gone{1}, % \text{ for } i \in % \range{1}{9}, u_1
+\]
+and
 \[
   \gone{\p{\tb}_i}(X) =
 (X - \chz)(X - \ochz) \gone{b_i}(X) + \xi_i (X - \chz) \gone{1} +
 \zeta_i (X - \ochz) \gone{1}, % \text{ for } i \in % \range{1}{9}, u_1
 \] 
-for $i \in \range{1}{9}$ and $\xi_i, \zeta_i \sample \FF_p$. Denote by $\tb_i$
-evaluations of $\p{\tb}_i$ at $\chi$.
-The reduction computes all $\gone{\tb_i \tb_j}, \gone{\tb_i \tb_j \tb_k},
-\gone{\tb_i \tb_j \tb_k \tb_l}$ such that
-$\gone{B_i B_j, B_i B_j B_k, B_i B_j B_k B_l} \in \pR$.
-This is possible since $\rdv$ knows all singletons $\gone{b_1, \ldots,
-b_9}$ and pairs $\gone{b_i b_j} \in \pR$ which can be used to compute all
-required pairs $\gone{\tb_i \tb_j}$: 
+for $i \in \range{2}{9}$.
+
+Denote by $\tb_i$ evaluations of $\p{\tb}_i$ at $\chi$.  The reduction computes
+all
+$\gone{\tb_i \tb_j}, \gone{\tb_i \tb_j \tb_k}, \gone{\tb_i \tb_j \tb_k \tb_l}$
+such that $\gone{B_i B_j, B_i B_j B_k, B_i B_j B_k B_l} \in \pR$.  This is
+possible since $\rdv$ knows all singletons $\gone{w_1, b_2, \ldots, b_9}$ and pairs
+$\gone{b_i b_j} \in \pR$ which can be used to compute all required pairs
+$\gone{\tb_i \tb_j}$:
 \begin{align*}
 \gone{\tb_i \tb_j} 
 & = ((\chi - \chz)(\chi - \ochz)\gone{b_i} + \xi_i (\chi - \chz)\gone{1} +
@@ -2414,44 +2429,148 @@ required pairs $\gone{\tb_i \tb_j}$:
 \end{align*}
 where $\psi$ compounds of $\xi_i, \xi_j, \zeta_i, \zeta_j, \chz, \ochz, \chi$ which
 are all known by $\rdv$ and no $b_i$ nor $b_j$.
-Analogously for the triplets and quadruplets. 
+Analogously for the triplets and quadruplets and elements dependent on $\vec{w}$. 
 
-For the challenge $\gone{w}$, $\rdv$ sets $\gone{\tw} = \gone{\tb_1 \tb_3
-\tb_5 \tb_7}$, where $\gone{b_1 b_3 b_5 b_7}$ is substituted by $\gone{w}$.
-Next it runs the adversary $\adv(\REL, \srs)$ and obtains from $\adv$ an
+Next the reduction runs the adversary $\adv(\REL, \srs)$ and obtains from $\adv$ an
 instance--witness pair $(\inp, \wit)$.  $\rdv$ now prepares a simulated proof as follows:
 \begin{description} 
 \item[Round 1] $\rdv$ computes $\gone{\pa(\chi)}$ using as
 randomisers $\gone{\tb_1}, \gone{\tb_2}$ and setting $\wit_i = 0$, for $i
 \in \range{1}{3 \noofc}$. Similarly it computes
 $\gone{\pb(\chi)}, \gone{\pc(\chi)}$.  $\rdv$ publishes the obtained values
-and picks a Round 1 challenge $\beta, \gamma$ at random.  
+and picks a Round 1 challenge $\beta, \gamma$ at random.  Note that regardless
+$w_1 = b_1$ or a random element, $\gone{a(\chi)}$ is random. Thus $\rdv$'s
+output has the same distribution as output of a real prover.  
 \item[Round 2]
 $\rdv$ computes $\gone{\pz(\chi)}$ using $\tb_7, \tb_8, \tb_9$ and publishes
-it. Then it picks randomly the challenge $\alpha$.  
-\item[Round 3] The
-reduction computes $\gone{\pt(\chi)}$ using $\tw$ as it was equal $\tb_1
-\tb_3 \tb_5 \tb_7$. That is, if $w = b_1 b_3 b_5 b_7$ then $\pt(\chi)$ is as
-computed by the simulator $\simulator_\chi$, otherwise, if $w$ is random
-then $\pt(\chi)$ is random as well, thus it is computed as $\simulator$
-would compute. The reduction computes and outputs $\gone{\ptlo(\chi),
-\ptmid(\chi), \pthi(\chi)}$ such that $\pt(X) = \ptlo(X) +
-X^\noofc \ptmid(X) + X^{2\noofc} \pthi(X)$.
-Eventually, $\rdv$ outputs $\chz$.  
+it. Then it picks randomly the challenge $\alpha$. This round output is
+independent on $b_1$ thus $\rdv$'s output is indistinguishable from the prover's. 
+\item[Round 3] The reduction computes
+  $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$, which all depend on
+  $b_1$. To that end $\gone{\tb_1}$ is used. Note that if $\vec{w}$ is a vector
+  of $\pF(b_1, \ldots, b_9)$ evaluations then
+  $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$ is the same as
+  the real prover's. Alternatively, if $\vec{w}$ is a vector of random values,
+  then $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$ are all random
+  polynomials which evaluates at $\chz$ to the same value as the polynomials
+  computed by the real prover. That is, in that case
+  $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$ are as the simulator
+  $\simulator$ would compute. Eventually, $\rdv$ outputs $\chz$.
 \item[Round 4] The reduction outputs
-$\pa(\chz), \pb(\chz), \pc(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}
-	(\chz)}, \pt(\chz), \pz(\ochz)$.  For the sake of concreteness, denote by
-	$S = \smallset{\pa, \pb, \pc, \pt, \pz}$. Although for a polynomial $\p{p}
-	\in S$, reduction $\rdv$ does not know $\p{p}(\chi)$ or even do not know
-	all the coefficients of $\p{p}$, the polynomials in $S$ was computed such
-	that the reduction always knows their evaluation at $\chz$ and $\ochz$.
+  $\pa(\chz), \pb(\chz), \pc(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}
+    (\chz)}, \pt(\chz), \pz(\ochz)$.  For the sake of concreteness, denote by
+  $S = \smallset{\pa, \pb, \pc, \pt, \pz}$. Although for a polynomial
+  $\p{p} \in S$, reduction $\rdv$ does not know $\p{p}(\chi)$ or even do not
+  know all the coefficients of $\p{p}$, the polynomials in $S$ was computed such
+  that the reduction always knows their evaluation at $\chz$ and $\ochz$.
 \item[Round 5] $\rdv$ computes the openings of the polynomial commitments
 assuring that evaluations at $\chz$ it provided were computed honestly.
-\end{description} Is the adversary $\adv$'s output distribution differ in
-Game $\game{1}$ and $\game{2}$ then the reduction uses it to distinguish
-between $w = b_1 b_3 b_5 b_7$ and $w$ being random, thus \(
-\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epsuber.  \) Eventually, \(
+\end{description}
+
+If the adversary $\adv$'s output distribution differ in Game $\game{1}$ and
+$\game{2}$ then the reduction uses it to distinguish between
+$\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
+\( \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epsuber.  \) Eventually,
+\(
 \abs{\prob{\game{0}} - \prob{\game{2}}} \leq \epszk + \epsuber.  \) \qed
+
+% \ncase{$\game{1} \mapsto \game{2}$} We now describe the reduction $\rdv$ which
+% relies on the $(\pR, \pS, \pT, \pf, 1)$-uber assumption where $\pR, \pS, \pT, \pf$
+% are polynomials over variables $\vB = B_1, \ldots, B_9$ and are defined as
+% follows. Let $E = \smallset{\smallset{1, 2}, \smallset{3, 4}, \smallset{5, 6},
+%   \smallset{7, 8, 9}}$. Let
+% \begin{align}
+% \label{eq:uber}
+% \pR(\vB) & = \smallset{B_i \mid i \in A,\ A \in E} \cup \smallset{B_i B_j \mid i \in
+% A, j \in B,\ A \neq B, A, B \in E} \cup \\ 
+% 		& \smallset{B_i B_j B_k \mid i \in A,\ j \in
+% B,\ k \in C,\
+% 		A, B, C \text{ all different and in } E} \cup \notag \\
+% 	& \smallset{B_i B_j B_k B_l \mid i \in A,\ j \in B,\ k \in C,\ l \in D,\
+% 		A, B, C, D \text{ all different and in } E} \notag \\
+% 	& \setminus \smallset{B_1
+% B_3 B_5 B_7}\,,\notag \\
+% \pS(\vB) & = \emptyset \notag\,, \\
+% \pT(\vB) & = \emptyset \notag\,, \\
+% \pf(\vB) & = B_1 B_3 B_5 B_7 \notag\,.
+% \end{align}
+% That is, the elements of $\pR$ are all singletons, pairs, triplets and
+% quadruplets of $B_i$ variables that occur in polynomial $\pt(\vB)$ except the
+% challenge element $\pf(\vB) = B_1 B_3 B_5 B_7$. Variables $\vB$ are evaluated to
+% randomly picked $\vb = b_1, \ldots, b_9$.
+
+% The reduction $\rdv$ learns $\gone{\pR}$ and challenge $\gone{w}$ where $w$ is
+% either $\pf(\vb) = b_1 b_3 b_5 b_7$ or a random value. Then it picks $\chi$,
+% $\chz$ and computes the SRS $\srs$ from $\chi$. Elements $b_i$ are interpreted as
+% polynomials in $X$ that are evaluated at $\chi$, i.e. $b_i = b_i(\chi)$. Next,
+% $\rdv$ sets
+% \[
+%   \gone{\p{\tb}_i}(X) =
+% (X - \chz)(X - \ochz) \gone{b_i}(X) + \xi_i (X - \chz) \gone{1} +
+% \zeta_i (X - \ochz) \gone{1}, % \text{ for } i \in % \range{1}{9}, u_1
+% \] 
+% for $i \in \range{1}{9}$ and $\xi_i, \zeta_i \sample \FF_p$. Denote by $\tb_i$
+% evaluations of $\p{\tb}_i$ at $\chi$.
+% The reduction computes all $\gone{\tb_i \tb_j}, \gone{\tb_i \tb_j \tb_k},
+% \gone{\tb_i \tb_j \tb_k \tb_l}$ such that
+% $\gone{B_i B_j, B_i B_j B_k, B_i B_j B_k B_l} \in \pR$.
+% This is possible since $\rdv$ knows all singletons $\gone{b_1, \ldots,
+% b_9}$ and pairs $\gone{b_i b_j} \in \pR$ which can be used to compute all
+% required pairs $\gone{\tb_i \tb_j}$: 
+% \begin{align*}
+% \gone{\tb_i \tb_j} 
+% & = ((\chi - \chz)(\chi - \ochz)\gone{b_i} + \xi_i (\chi - \chz)\gone{1} +
+% \zeta_i (\chi - \ochz) \gone{1}) 
+% \cdot \\
+%  & ((\chi - \chz)(\chi - \ochz)\gone{b_j} + \xi_j (\chi - \chz)\gone{1} +
+% \zeta_j (\chi - \ochz) \gone{1}) = \\
+%  & ((\chi - \chz)(\chi - \ochz))^2 \gone{b_i b_j} +  ((\chi - \chz)(\chi -
+%  \ochz)\gone{b_i} (\xi_j (\chi - \chz) \gone{1} + \zeta_j (\chi - \ochz)
+%  \gone{1}) + \\
+%  & ((\chi - \chz)(\chi -
+%  \ochz)\gone{b_j} (\xi_i (\chi - \chz) \gone{1} + \zeta_i (\chi - \ochz)
+%  \gone{1}) + \psi,
+% \end{align*}
+% where $\psi$ compounds of $\xi_i, \xi_j, \zeta_i, \zeta_j, \chz, \ochz, \chi$ which
+% are all known by $\rdv$ and no $b_i$ nor $b_j$.
+% Analogously for the triplets and quadruplets. 
+
+% For the challenge $\gone{w}$, $\rdv$ sets $\gone{\tw} = \gone{\tb_1 \tb_3
+% \tb_5 \tb_7}$, where $\gone{b_1 b_3 b_5 b_7}$ is substituted by $\gone{w}$.
+% Next it runs the adversary $\adv(\REL, \srs)$ and obtains from $\adv$ an
+% instance--witness pair $(\inp, \wit)$.  $\rdv$ now prepares a simulated proof as follows:
+% \begin{description} 
+% \item[Round 1] $\rdv$ computes $\gone{\pa(\chi)}$ using as
+% randomisers $\gone{\tb_1}, \gone{\tb_2}$ and setting $\wit_i = 0$, for $i
+% \in \range{1}{3 \noofc}$. Similarly it computes
+% $\gone{\pb(\chi)}, \gone{\pc(\chi)}$.  $\rdv$ publishes the obtained values
+% and picks a Round 1 challenge $\beta, \gamma$ at random.  
+% \item[Round 2]
+% $\rdv$ computes $\gone{\pz(\chi)}$ using $\tb_7, \tb_8, \tb_9$ and publishes
+% it. Then it picks randomly the challenge $\alpha$.  
+% \item[Round 3] The
+% reduction computes $\gone{\pt(\chi)}$ using $\tw$ as it was equal $\tb_1
+% \tb_3 \tb_5 \tb_7$. That is, if $w = b_1 b_3 b_5 b_7$ then $\pt(\chi)$ is as
+% computed by the simulator $\simulator_\chi$, otherwise, if $w$ is random
+% then $\pt(\chi)$ is random as well, thus it is computed as $\simulator$
+% would compute. The reduction computes and outputs $\gone{\ptlo(\chi),
+% \ptmid(\chi), \pthi(\chi)}$ such that $\pt(X) = \ptlo(X) +
+% X^\noofc \ptmid(X) + X^{2\noofc} \pthi(X)$.
+% Eventually, $\rdv$ outputs $\chz$.  
+% \item[Round 4] The reduction outputs
+% $\pa(\chz), \pb(\chz), \pc(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}
+% 	(\chz)}, \pt(\chz), \pz(\ochz)$.  For the sake of concreteness, denote by
+% 	$S = \smallset{\pa, \pb, \pc, \pt, \pz}$. Although for a polynomial $\p{p}
+% 	\in S$, reduction $\rdv$ does not know $\p{p}(\chi)$ or even do not know
+% 	all the coefficients of $\p{p}$, the polynomials in $S$ was computed such
+% 	that the reduction always knows their evaluation at $\chz$ and $\ochz$.
+% \item[Round 5] $\rdv$ computes the openings of the polynomial commitments
+% assuring that evaluations at $\chz$ it provided were computed honestly.
+% \end{description} Is the adversary $\adv$'s output distribution differ in
+% Game $\game{1}$ and $\game{2}$ then the reduction uses it to distinguish
+% between $w = b_1 b_3 b_5 b_7$ and $w$ being random, thus \(
+% \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epsuber.  \) Eventually, \(
+% \abs{\prob{\game{0}} - \prob{\game{2}}} \leq \epszk + \epsuber.  \) \qed
 \end{proof}
 
 \subsection{From special-soundness and unique response property to simulation
