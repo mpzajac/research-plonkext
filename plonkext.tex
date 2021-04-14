@@ -97,23 +97,28 @@ to name a few. Special attention has been devoted to the design of new
 with short (ideally constant-length) proofs. Succinctness makes zkSNARKs
 especially useful for deployment in real systems,
 e.g.~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}.
-This in turn raises the question: \emph{Are the security models of currently zkSNARKs adequate for real-life deployment?} This question is particularly pertinent when one realises that
-all zkSNARKs with constant-sized proofs are shown secure in the structured reference
-string (SRS) model where the SRS used by the parties---i.e.~a prover that shows
-veracity of a statement using its private input called \emph{witness} and a
-verifier that verifies it---necessarily comes with a trapdoor which can be used to break
-(knowledge) soundness; that is, convince the verifier to accept a false
-statement or a statement for which the prover does not know the witness. Hence
- secure real-life deployment of zkSNARKs require answers to questions such as---\emph{How can the parties be sure that the trapdoor has not leaked?}
-\emph{Who is the party that generates the SRS?} \emph{Can this party be
-  trusted?} The questions are especially
-important in zero knowledge proofs used in distributed systems, like
-e.g.~blockchains, where assuming that a trusted party generates the SRS may be unrealistic and subvert the whole purpose of a decentralised system.
+This in turn raises the question: \emph{Are the security models of currently
+  zkSNARKs adequate for real-life deployment?} This question is particularly
+pertinent when one realises that all zkSNARKs with constant-sized proofs are
+shown secure in the structured reference string (SRS) model where the SRS used
+by the parties---i.e.~a prover that shows veracity of a statement using its
+private input called \emph{witness} and a verifier that verifies
+it---necessarily comes with a trapdoor which can be used to break (knowledge)
+soundness; that is, convince the verifier to accept a false statement or a
+statement for which the prover does not know the witness. Hence secure real-life
+deployment of zkSNARKs require answers to questions such as---\emph{How can the
+  parties be sure that the trapdoor has not leaked?}  \emph{Who is the party
+  that generates the SRS?} \emph{Can this party be trusted?} The questions are
+especially important in zero knowledge proofs used in distributed systems, like
+e.g.~blockchains, where assuming that a trusted party generates the SRS may be
+unrealistic and subvert the whole purpose of a decentralised system.
 
 \paragraph{Universal, updateable, and subversion-sound SNARKs.}
-One of the first to tackled this question were Bellare et al.~\cite{AC:BelFucSca16} who
-proposed notions of \emph{subversion zero knowledge} and \emph{subversion
-soundness} and in turn Groth16~\cite{EC:Groth16}, a popular zkSNARK employed in industry was shown to be subversion zero-knowledge~\cite{AC:ABLZ17,PKC:Fuchsbauer18}.
+One of the first to tackled this question were Bellare et
+al.~\cite{AC:BelFucSca16} who proposed notions of \emph{subversion zero
+  knowledge} and \emph{subversion soundness} and in turn
+Groth16~\cite{EC:Groth16}, a popular zkSNARK employed in industry was shown to
+be subversion zero-knowledge~\cite{AC:ABLZ17,PKC:Fuchsbauer18}.
 %
 \iffalse
 The former states that zero knowledge property persists even when
@@ -2596,7 +2601,7 @@ probability $\extProb$ is at least
 	\extProb \geq \frac{1}{q^{\noofc + 2}} (\accProb - \epsur)^{\noofc + 3} -\eps\,,
 \]
 for some negligible $\eps$ and $\noofc$ being the number of
-contrains in the proven circuit.
+constrains in the proven circuit.
 \end{corollary}
 
 \section{Simulation extractability of $\sonicprotfs$}
@@ -3770,7 +3775,7 @@ proposed in this paper solves the issues above, however for a specific family of
 protocols where witnesses can be extracted from trees of acceptable transcripts
 that branch at single point only -- say that the tree branches after adversary's
 $k$-th message (where $k \leq \mu$ and the proof can be divided into $\mu$
-adversary's messages and corresponging ``challenges''). In the proposed lemma
+adversary's messages and corresponding ``challenges''). In the proposed lemma
 (following approach of \cite{CCS:BelNev06}) we analyse probability that the
 (possibly malicious) prover $\adv$ picks the same index of a random oracle in
 all runs of the rewound protocol where in each run $\adv$ is presented with
@@ -4032,7 +4037,7 @@ index for the $k$-th proof challenge correctly.
   $\vec{M'}$, as defined in \cref{eq:M_prim}, it can recreate all the
   polynomials submitted by $\advss$ as part of the proof and included in
   $\vereq_\zkproof(X)$. This way, it knows all coefficients of $\vereq_\zkproof(X)$. Thus it can
-  factorise it and find its roots, one of them is the required $\chi$. Hence it
+  factorize it and find its roots, one of them is the required $\chi$. Hence it
   holds, by the analogous analysis as in the previous case, that
   \[
     \prob{\advss \text{ wins}, \nevent{E}_1} \leq q_\ro^6 \cdot
