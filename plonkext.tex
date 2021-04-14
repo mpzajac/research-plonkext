@@ -2671,16 +2671,16 @@ randomly $\alpha, \chi \sample \FF_p$ and outputs
   helper, i.e.~it commits to $\p{s}(X, y)$ and sends the commitment $\gone{s}$.  Then
   it obtains a challenge $u$ from the verifier.
 \item[Round 4] In the next round the prover computes
-  $\gone{c} \gets \com(\srs, \dconst, \p{s}(u, x)) \cdot \gone{\p{s}(u, x)}$ and
-  compute commitments' openings
+  $\gone{c} \gets \com(\srs, \dconst, \p{s}(u, x)) + \gone{\p{s}(u, x)}$ and
+  computes commitments' openings
   \begin{align*}
     \gone{w} & = \open(\srs, u, \p{s}(X, y)), \\
     \gone{q_y} & = \open(\srs, y, \p{s}(u, Y)),
   \end{align*}
   and returns $\gone{w}, \gone{q_y}, \p{s}(u, y)$. Eventually the prover gets the last challenge
-  from the verifier---$z$.
+  from the verifier---$z'$.
 \item[Round 5] In the final round, $\prover$ computes opening
-  $\gone{q_z} = \open(\srs, z, \p{s}(u, X))$ and outputs $\gone{q_z}$ and $\p{s}(u, z)$.
+  $\gone{q_{z'}} = \open(\srs, z', \p{s}(u, X))$ and outputs $\gone{q_{z'}}$ and $\p{s}(u, z')$.
 \end{description}
 
 \paragraph{$\sonic$ verifier $\verifier(\REL, \srs, \inp, \zkproof)$.} The verifier
@@ -2696,7 +2696,7 @@ is it sets $t' = a'(b' + s) - \p{k}(y)$ and checks the following:
   \begin{split}
     &\PCOMs.\verifier(\srs, \dconst, \gone{s}, u, s, \gone{w}),\\
     &\PCOMs.\verifier(\srs, \dconst, \gone{c}, y, s, \gone{q_y}),\\
-    &\PCOMs.\verifier(\srs, \dconst, \gone{c}, z, s_z, \gone{q_z}),
+    &\PCOMs.\verifier(\srs, \dconst, \gone{c}, z', s_{z'}, \gone{q_{z'}}),
   \end{split}
 \end{equation*}
 and accepts the proof iff all the checks holds.
@@ -2765,26 +2765,24 @@ $\epsop$, then $\sonicprot$ is $\ur{2}$ with parameter $\epsur \leq
 \epsbind + \epsop$.  
 \end{lemma}
 \begin{proof}
-Let $\adv$ be an adversary that breaks $\ur{2}$-ness of $\sonicprot$. 
-We consider two cases, depending on which round $\adv$ is able to provide at
-least two different outputs such that the resulting transcripts are
-acceptable.  For the first case we show that $\adv$ breaks the evaluation
-binding property of $\PCOMs$, while for the
-second case we show that it breaks the unique opening property of $\PCOMs$.
+  Let $\adv$ be an adversary that breaks $\ur{2}$-ness of $\sonicprot$.  We
+  consider two cases, depending on which round $\adv$ is able to provide at
+  least two different outputs such that the resulting transcripts are
+  acceptable.  For the first case we show that $\adv$ can be used to break the
+  evaluation binding property of $\PCOMs$, while for the second case we show
+  that it can be used to break the unique opening property of $\PCOMs$.
 
-The proof goes similarly to the proof of \cref{lem:plonkprot_ur} thus we
-provide only draft of it here. 
-In each Round $i$, for $i > 1$, the prover either commits to some
-well-defined polynomials (deterministically), evaluates these on 
-randomly picked points, or shows that the evaluations were performed
-correctly. 
-Naturally for a committed polynomial $\p{p}$ evaluated at point $x$ only one
-value $y = \p{p}(x)$ is correct. If the adversary was able to provide two
-different values $y$ and $\tilde{y}$ that would be accepted as an evaluation
-of $\p{p}$ at $x$ then the $\PCOMs$'s evaluation binding would be broken.
-Alternatively, if $\adv$ was able to provide two openings $\p{W}$ and
-$\p{\tilde{W}}$ for $y = \p{p}(x)$ then the unique opening property would be
-broken.
+  The proof goes similarly to the proof of \cref{lem:plonkprot_ur} thus we
+  provide only draft of it here.  In each Round $i$, for $i > 1$, the prover
+  either commits to some well-defined polynomials (deterministically), evaluates
+  these on randomly picked points, or shows that the evaluations were performed
+  correctly.  Obviously, for a committed polynomial $\p{p}$ evaluated at point
+  $x$ only one value $y = \p{p}(x)$ is correct. If the adversary was able to
+  provide two different values $y$ and $\tilde{y}$ that would be accepted as an
+  evaluation of $\p{p}$ at $x$ then the $\PCOMs$'s evaluation binding would be
+  broken.  Alternatively, if $\adv$ was able to provide two openings $\p{W}$ and
+  $\p{\tilde{W}}$ for $y = \p{p}(x)$ then the unique opening property would be
+  broken.
 %
 Hence the probability that $\adv$ breaks $\ur{2}$-property of $\PCOMs$ is
 upper-bounded by $\epsbind + \epsop$. 
@@ -2809,7 +2807,7 @@ upper-bounded by $\epsbind + \epsop$.
   The proof goes similarly to the proof of \cref{lem:plonkprot_ss}.
 %
   Let $\adv$ be an adversary that produces a
-  $(1, 1, \multconstr + \linconstr + 1, 1, 1)$-tree of acceptable transcripts
+  $(1, \multconstr + \linconstr + 1, 1, 1)$-tree of acceptable transcripts
   $\tree$ for a statement $\inp$. We consider two disjunctive events $\event{E}$
   and $\nevent{E}$. The first corresponds to a case when all transcripts in
   $\tree$ are acceptable for the ideal verifier,
@@ -2820,15 +2818,16 @@ upper-bounded by $\epsbind + \epsop$.
   reduction $\rdvldlog$ that uses $\adv$ to break the
   $(\dconst, \dconst)$-$\ldlog$ assumption.
 
-  \ncase{When $\event{E}$ happens} Since $\sonicprot$ is perfectly sound
+  \ncase{When $\event{E}$ happens} Since $\sonicprot$ is statistically sound
   regarding the ideal verifier, for an acceptable proof $\zkproof$ for a
   statement $\inp$ there exists a witness $\wit$ such that $\REL(\inp, \wit)$
   holds and the polynomial $\p{r}(X, y)$ contains witness at its coefficients.
-  Note that the witness-carrying polynomial $\p{r}(X, y)$ has degree at most
-  $\multconstr + \linconstr$ and since $\adv$ answered correctly on
-  $(\multconstr + \linconstr + 1)$ different challenges $z$ (for the sake of
-  concreteness let us call them $z_1, \ldots, z_{\multconstr + \linconstr + 1}$)
-  then $(\multconstr + \linconstr + 1)$ evaluations
+  Note that the polynomial $\p{r}(X, y)$, which has witness elements at its
+  coefficients, has degree at most $\multconstr + \linconstr$ and since $\adv$
+  answered correctly on $(\multconstr + \linconstr + 1)$ different challenges
+  $z$ (for the sake of concreteness let us call them
+  $z_1, \ldots, z_{\multconstr + \linconstr + 1}$) then
+  $(\multconstr + \linconstr + 1)$ evaluations
   $\p{r}(z_1, y), \ldots, \p{r}(z_{\multconstr + \linconstr + 1}, y)$ of
   $\p{r}(X, y)$ are known. The extractor $\extss$ interpolates $\p{r}(X, y)$ and
   reveals the corresponding witness $\wit$.
@@ -2862,13 +2861,13 @@ honestly computes polynomials $\p{r}(X, Y), \p{r'}(X, Y), \p{s}(X, Y)$ and
 $\p{t}(X, Y)$ and concludes the first round as an honest prover would. Because
 of the randomisers the polynomial $\pr(X, Y)$ computed by the simulator is
 indistinguishable from a polynomial provided by an honest user for an adversary
-that only learns $\pR,\pT,\pa,\pb$ from the proof (the other proof elements are
+that only learns $\gone{r},\gone{t}, a', b'$ from the proof (the other proof elements are
 fixed by these elements and the public information,
 see~\cref{sec:sonic_constraint_system}).
 
 Next, $\simulator$ computes the first verifier's challenge $y$ such that
 $\pt(X, y)$ is a polynomial that has $0$ as a coefficient next to $X^0$.
-I.e.~$\pt(0, y) = 0$. By the definition of $\pt(X)$, the coefficient next to
+I.e.~$\pt(0, y) = 0$. By the definition of $\pt(X, Y)$, the coefficient next to
 $X^0$ in $\p{t}(X, Y)$ equals
 \begin{equation}
 	\label{eq:x0}
@@ -2880,13 +2879,13 @@ $X^0$ in $\p{t}(X, Y)$ equals
 \end{equation}
 for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ as defined
 in \cref{sec:sonic_constraint_system} (Vectors $\vec{u_q}, \vec{v_q}, \vec{w_q}$
-are $\multconstr$-elements long and correspond to $Q$ linear constrains of
+are $\multconstr$-elements long and correspond to $\linconstr$ linear constrains of
 the proof system. Field element $k_{q}$ is the instance value). When the proven
 instance is correct, $\pt(0,Y)$ is a zero polynomial. See \cite{CCS:MBKM19} for
 details. Also, when \cref{eq:ab_eq_c} holds, that polynomial simplifies to
 \begin{equation}
 	\label{eq:x0_simpl}
-	t(0,Y) = \vec{a} \cdot \vec{\p{u}}(Y) + 
+	\pt(0,Y) = \vec{a} \cdot \vec{\p{u}}(Y) + 
 	\vec{b} \cdot \vec{\p{v}}(Y) + 
 	\vec{c} \cdot \vec{\p{\tilde{w}}}(Y)	
 	- \p{k}(Y), 
