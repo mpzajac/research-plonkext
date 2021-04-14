@@ -57,7 +57,7 @@
 
 \include{macros}
 
-\title{On Simulation-Extractability of Universal zkSNARKs}
+\title{On (Weak) Simulation-Extractability of Universal zkSNARKs}
 
 %\author{Anonymous submission to PKC}
 \author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} 
@@ -73,11 +73,11 @@
 \begin{abstract} 
 	In this paper we show that a wide class of (computationally) special-sound
 	proofs of knowledge which have unique response property and are
-	standard-model zero-knowledge are (non-black-box) simulation-extractable
+	standard-model zero-knowledge are weak simulation-extractable
 	when made non-interactive by the Fiat--Shamir transform.  We prove that two
 	efficient updatable universal zkSNARKs---\plonk{}~\cite{EPRINT:GabWilCio19}
 	and $\sonic$~\cite{CCS:MBKM19}---meet these requirements and conclude by
-	showing their simulation-extractability.  As a side result we also show that
+	showing their weak simulation-extractability.  As a side result we also show that
 	relying security on rewinding and Fiat--Shamir transform often comes at a
 	great price of inefficient (yet still polynomial time) knowledge extraction
 	and the security loss introduced by these techniques should always be taken
@@ -191,12 +191,15 @@ Nevertheless, most zkSNARKs are only shown to satisfy only a (standard) knowledg
 
 
 \paragraph{State of the art---simulation-extractable updatable universal zkSNARKs.} 
-To the best of our knowledge, there are zkSNARKs that are simulation-extractable~\cite{C:GroMal17,EPRINT:BowGab18,EPRINT:AtaBag19,EC:Groth16}
-and zkSNARKs that are universal~\cite{C:GKMMM18,CCS:MBKM19,EPRINT:GabWilCio19,EC:CHMMVW20}, however there are no known zkSNARKs that enjoy
-both of these properties out-of-the-box. Obviously, given a universal zkSNARK
-one could lift it to be simulation-extractable using techniques described
-e.g.~in \cite{EPRINT:KZMQCP15,CCS:AbdRamSla20}, but such a lift comes with
-inevitably efficiency loss.  
+To the best of our knowledge, there are zkSNARKs that are
+simulation-extractable~\cite{C:GroMal17,EPRINT:BowGab18,EPRINT:AtaBag19,EC:Groth16}
+and zkSNARKs that are
+universal~\cite{C:GKMMM18,CCS:MBKM19,EPRINT:GabWilCio19,EC:CHMMVW20}, however
+there are no known zkSNARKs that enjoy both of these properties out-of-the-box
+(even for a weaker notion of simulation extractability). Obviously, given a
+universal zkSNARK one could lift it to be simulation-extractable using
+techniques described e.g.~in \cite{EPRINT:KZMQCP15,CCS:AbdRamSla20}, but such a
+lift comes with inevitably efficiency loss.
 %On the other hand, there is no known lift that
 %would take a zkSNARK and make it universal. Since updatable zkSNARKs are quite
 %restrictive regarding format of their SRSs, making such lift seems as a very
@@ -211,22 +214,50 @@ preserves updatability).
 %  universal circuit. There is also an optimized transformation for a variant of
 %  Groth16, called Mirage. There is a SE transformation that preserves updateabilit}
 
-\paragraph{On the popularity and power of Fiat-Shamir.} The Fiat-Shamir heuristic takes a public-coin interactive protocol and makes it interactive by computing the verifier's public coins by hashing the current protocol transcript. While in principle justifiable in the Random Oracle model~\cite{CCS:BelRog93}, it is theoretically unsound~\cite{FOCS:GolKal03} and so should be used with care. 
-Nevertheless, the Fiat-Shamir heuristic is a popular design tool when it comes to constructing zkSNARKs. Many works, including~\cite{CCS:MBKM19,EPRINT:GabWilCio19,EC:CHMMVW20}, design interactive protocols and prove them secure. However, they then only conjecturing the security for their non-interactive variants by employing the Fiat-Shamir heuristic. The more rigorous approach is to prove security of the Fiat-Shamir heuristic in the Random Oracle model.
+\paragraph{On the popularity and power of Fiat-Shamir.} The Fiat-Shamir
+heuristic takes a public-coin interactive protocol and makes it interactive by
+computing the verifier's public coins by hashing the current protocol
+transcript. While in principle justifiable in the Random Oracle
+model~\cite{CCS:BelRog93}, it is theoretically unsound~\cite{FOCS:GolKal03} and
+so should be used with care.  Nevertheless, the Fiat-Shamir heuristic is a
+popular design tool when it comes to constructing zkSNARKs. Many works,
+including~\cite{CCS:MBKM19,EPRINT:GabWilCio19,EC:CHMMVW20}, design interactive
+protocols and prove them secure. However, they then only conjecturing the
+security for their non-interactive variants by employing the Fiat-Shamir
+heuristic. The more rigorous approach is to prove security of the Fiat-Shamir
+heuristic in the Random Oracle model.
 
 \subsection{Our contribution}
 We show that a class of computationally special-sound interactive proofs of
 knowledge that are zero-knowledge 
 %\markulf{12/11/2020}{Should this be HVZK, also
 % in abstract?} 
-in the standard model and have a unique response property \emph{are
-  simulation-extractable out-of-the box} in the Random Oracle model when the Fiat--Shamir transformation is
-applied to them. Although a similar problem has been already tackled by Faust et
-al.~\cite{INDOCRYPT:FKMV12} for $3$-message $\Sigma$-protocols with classical special soundness, we extend it to a much wider class of protocols and thus make it applicable to zkSNARKs.
+in the standard model and have a unique response property \emph{are weakly
+  simulation-extractable out-of-the box} in the Random Oracle model when the
+Fiat--Shamir transformation is applied to them. Although a similar problem has
+been already tackled by Faust et al.~\cite{INDOCRYPT:FKMV12} for $3$-message
+$\Sigma$-protocols with classical special soundness, we extend it to a much
+wider class of protocols and thus make it applicable to zkSNARKs.
+
+The \emph{weakness} of the simulation extractability property considered in this
+paper and in Faust et al.~relates to the fact that the extractor is able to
+output a witness for a proven statement only if the adversary who produced the
+proof produces an acceptable proof with some probability at least $\nu$. In
+other words, the extractor is not guaranteed to succeed if the adversary outputs
+an acceptable proof with probability $\accProb$ smaller than $\nu$. On the other hand, we
+show that this $\nu$ can be arbitrarily small, even negligible. However, for
+$\accProb$ close to $\nu$ the extractor becomes fairly inefficient. Since in the
+later part of this paper we do not consider other simulation extractabilty
+definition than the weak one, we skip ``weak'' while referring to that property.
 
 To show that our result is useful and practical we prove that two of the most
 efficient updatable and universal zkSNARKs---$\plonk$ and $\sonic$---are
-simulation-extractable. To obtain this result, without having to change anything at all in these protocols, we define new intermediary properties satisfied by these multi-round computationally sound protocols and their building blocks: computational special soundness, generalized unique response, and a generalized forking lemma. These conceptual insights into interactive SNARK systems help us overcome a number of challenges, as we explain below.
+simulation-extractable. To obtain this result, without having to change anything
+at all in these protocols, we define new intermediary properties satisfied by
+these multi-round computationally sound protocols and their building blocks:
+computational special soundness, generalized unique response, and a generalized
+forking lemma. These conceptual insights into interactive SNARK systems help us
+overcome a number of challenges, as we explain below.
 
 \subsection{Our techniques}
 
@@ -1106,7 +1137,7 @@ which assures that no adversary can produce a valid proof without knowing the
 corresponding witness. This must hold even if the adversary is allowed to see
 polynomially many simulated proofs for any statements it wishes.
 
-\begin{definition}[Simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
+\begin{definition}[Weak simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
 	\label{def:simext}
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a computationally
   special-sound HVZK proof and $\ps_\fs = (\kgen_\fs, \prover_\fs,
