@@ -246,7 +246,9 @@ proof produces an acceptable proof with some probability at least $\nu$. In
 other words, the extractor is not guaranteed to succeed if the adversary outputs
 an acceptable proof with probability $\accProb$ smaller than $\nu$. On the other hand, we
 show that this $\nu$ can be arbitrarily small, even negligible. However, for
-$\accProb$ close to $\nu$ the extractor becomes fairly inefficient. Since in the
+$\accProb$ close to $\nu$ the extractor becomes fairly inefficient. On the other hand, the extractor considered in this paper is black-box as it only needs an oracle access to the adversary. Importantly, it does not depend on any knowledge assumption.
+
+Since in the
 later part of this paper we do not consider other simulation extractabilty
 definition than the weak one, we skip ``weak'' while referring to that property.
 
