@@ -969,7 +969,19 @@ adversary $\adv$
 	 \right] \leq \negl\,,
  % \end{multline*}
  \]
-%\end{description}
+ % \end{description}
+
+ Usually the verifier verifies messages send by the prover by checking a number
+ of equations depend on the instance, SRS and the proof sent. These equations
+ are often called \emph{verification equations} and denoted $\vereq_i$, for $i$
+ being an index of the equation. It is usually required that an acceptable proof
+ yields $\vereq_i = 0$. In the proof systems we consider---$\plonk$ and
+ $\sonic$---verification equations can be seen as polynomials evaluated at the
+ trapdoor $\chi$. Thus, the verifier checks that $\vereq_i(\chi) =
+ 0$. Sometimes, we consider an \emph{idealised verifier},
+ cf.~\cite{EPRINT:GabWilCio19}, who instead of checking that polynomial
+ $\vereq_i(X)$ evaluates to $0$ at $\chi$ just checks that $\vereq_i(X)$ is a
+ zero polynomial.
 
  \paragraph{Zero knowledge.}
  We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
