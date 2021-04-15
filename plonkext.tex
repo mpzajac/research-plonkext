@@ -244,13 +244,18 @@ paper and in Faust et al.~relates to the fact that the extractor is able to
 output a witness for a proven statement only if the adversary who produced the
 proof produces an acceptable proof with some probability at least $\nu$. In
 other words, the extractor is not guaranteed to succeed if the adversary outputs
-an acceptable proof with probability $\accProb$ smaller than $\nu$. On the other hand, we
-show that this $\nu$ can be arbitrarily small, even negligible. However, for
-$\accProb$ close to $\nu$ the extractor becomes fairly inefficient. On the other hand, the extractor considered in this paper is black-box as it only needs an oracle access to the adversary. Importantly, it does not depend on any knowledge assumption.
+an acceptable proof with probability $\accProb$ smaller than $\nu$. On the other
+hand, we show that this $\nu$ can be arbitrarily small, even
+negligible. However, for $\accProb$ close to $\nu$ the extractor becomes fairly
+inefficient. On the other hand, the extractor considered in this paper is
+black-box as it only needs an oracle access to the adversary. (However, it also
+depends on a number of properties required from the protocol. In case of
+$\plonk$ and $\sonic$, these properties are often proven in the AGM.)
+Importantly, it does not depend on any knowledge assumption.
 
-Since in the
-later part of this paper we do not consider other simulation extractabilty
-definition than the weak one, we skip ``weak'' while referring to that property.
+Since in the later part of this paper we do not consider other simulation
+extractabilty definition than the weak one, we skip ``weak'' while referring to
+that property.
 
 To show that our result is useful and practical we prove that two of the most
 efficient updatable and universal zkSNARKs---$\plonk$ and $\sonic$---are
@@ -291,9 +296,11 @@ standard special soundness definition requires witness extraction from
 \emph{any} pair of acceptable transcripts that share a common root---even those
 that contain an acceptable proof for an incorrect statement. In this paper we
 define a weaker version of special soundness---a computational special
-soundness. That is, we show that it is possible to extract a witness from
-all but negligibly many trees of acceptable transcripts produced by probabilistic polynomial time (PPT) adversaries. Said otherwise, an adversary that produced
-a tree of acceptable transcripts from which one cannot extract can be used to break some underlying computational assumption.
+soundness. That is, we show that it is possible to extract a witness from all
+but negligibly many trees of acceptable transcripts produced by probabilistic
+polynomial time (PPT) adversaries. Said otherwise, an adversary that produced a
+tree of acceptable transcripts from which one cannot extract can be used to
+break some underlying computational assumption.
 
 \subsubsection{Unique response property.} Another property that has to be proven
 is the unique response property which states, as expressed in
