@@ -85,9 +85,6 @@
 \end{abstract}
 
 \section{Introduction} 
-%\subsection{Motivation} 
-%\paragraph{The rise of updatable
-%zkSNARKs.} 
 
 In recent years we have seen indisputable progress in building efficient
 zero-knowledge proof systems,
@@ -358,10 +355,6 @@ one uses an argument that the Fiat--Shamir transform can be used to get a
 protocol that is non-interactive and shares the same security properties.
 
   
-	% \michals{4.11.20}{ Does knowledge soundness have the same tightness? For
-	% 	plonk there is no such issue with ks as its ks is shown in the algebraic
-	% 	group model; sonic uses both witness extended emulation and the AGM, thus
-	% I guess it is affected}
 We see our generalized forking lemma as contributing to a critical assessment of
 this approach. The analysis of the interactive protocol is not enough and one
 has to consider the security loss implied by the generalisation of the forking
@@ -417,7 +410,6 @@ group model.
 %   allowing for some efficiency loss the result of Bootle et al.~\emph{can} be
 %   used for non-interactive protocols.}
 
-% \michals{15.02}{This lemma is here only temporarily}
 
 % \begin{lemma}
 %   Let $\proofsystem$ be an $(2\mu + 1)$ public-coin interactive proofsystem and
@@ -1013,17 +1005,17 @@ adversary $\adv$
  \]
  % \end{description}
 
- Usually the verifier verifies messages send by the prover by checking a number
- of equations depend on the instance, SRS and the proof sent. These equations
- are often called \emph{verification equations} and denoted $\vereq_i$, for $i$
- being an index of the equation. It is usually required that an acceptable proof
- yields $\vereq_i = 0$. In the proof systems we consider---$\plonk$ and
- $\sonic$---verification equations can be seen as polynomials evaluated at the
- trapdoor $\chi$. Thus, the verifier checks that $\vereq_i(\chi) =
- 0$. Sometimes, we consider an \emph{idealised verifier},
- cf.~\cite{EPRINT:GabWilCio19}, who instead of checking that polynomial
- $\vereq_i(X)$ evaluates to $0$ at $\chi$ just checks that $\vereq_i(X)$ is a
- zero polynomial.
+ % Usually the verifier verifies messages send by the prover by checking a number
+ % of equations depend on the instance, SRS and the proof sent. These equations
+ % are often called \emph{verification equations} and denoted $\vereq_i$, for $i$
+ % being an index of the equation. It is usually required that an acceptable proof
+ % yields $\vereq_i = 0$. In the proof systems we consider---$\plonk$ and
+ % $\sonic$---verification equations can be seen as polynomials evaluated at the
+ % trapdoor $\chi$. Thus, the verifier checks that $\vereq_i(\chi) =
+ % 0$. Sometimes, we consider an \emph{idealised verifier},
+ % cf.~\cite{EPRINT:GabWilCio19}, who instead of checking that polynomial
+ % $\vereq_i(X)$ evaluates to $0$ at $\chi$ just checks that $\vereq_i(X)$ is a
+ % zero polynomial.
 
  \paragraph{Zero knowledge.}
  We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
@@ -1059,7 +1051,21 @@ zero-knowledge proof that is HVZK and \emph{public-coin} (i.e.~the verifier
 outputs as challenges its random coins) can be made non-interactive and
 zero-knowledge in the random oracle model by using the Fiat--Shamir
 transformation.
-	
+
+\paragraph{Idealised verifier and verfication equations}
+Usually the verifier $\verifier$ verifies messages send by the prover by
+checking a number of equations depend on the instance, SRS and the proof. We
+call these equations \emph{verification equations} and denote by $\vereq_i$, for
+$i$ being an index of the equation. We require that an acceptable
+proof yields $\vereq_i = 0$.
+
+In the proof systems we consider---$\plonk$ and $\sonic$---verification
+equations can be interpreted as group representations of polynomial evaluations
+at the trapdoor $\chi$. In other words, the verifier checks that
+$\vereq_i(\chi) = 0$. Gabizon et al.~\cite{EPRINT:GabWilCio19} formalized a
+notion of an \emph{idealised verifier} who, instead of checking that polynomial
+$\vereq_i(X)$ evaluates to $0$ at $\chi$, just checks that $\vereq_i(X)$ is a
+zero polynomial.
 
 \subsubsection{Sigma protocols}
 A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ for a relation
@@ -1084,7 +1090,7 @@ Formally,
           & (\inp, (a, b, z), (a, b', z')) \gets \adv(\REL), %\\
            b \neq b',  \\
           & \verifier(\REL, \inp, (a, b, z)) = %\\
-           = \verifier(\REL, \inp, (a, b', z')) = 1, \\
+            \verifier(\REL, \inp, (a, b', z')) = 1, \\
 		\end{aligned}
 		\right.\right] \leq  \negl\,.
 	\]
@@ -2045,7 +2051,9 @@ The \plonk{} verifier works as follows
            }\\
       + & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }\,.
 	\end{align*}
-	\item[Step 12] Check whether the verification $\vereq_\zkproof(\chi)$ equation holds
+\item[Step 12] Check whether the verification
+ % $\vereq_\zkproof(\chi)$
+  equation holds
 	\begin{multline}
 		\label{eq:ver_eq}
 		\left( \gone{\p{W_{\chz}}(\chi)} + u \cdot \gone{\p{W_{\chz
@@ -2320,7 +2328,7 @@ for
 
 \subsection{Honest verifier zero-knowledge}
 \begin{lemma}
-  $\plonkprot$ is honest verifier zero-knowledge and its simulator $\simulator$ does
+  $\plonkprot$ is computationally honest verifier zero-knowledge and its simulator $\simulator$ does
   not require a SRS trapdoor.\footnote{The simulator works as a simulator for
     proofs that are zero-knowledge in the standard model. However, we do not say
     that $\plonk$ is HVZK in the standard model as proof of that \emph{requires}
@@ -2640,8 +2648,6 @@ and computationally special sound. We now
 make use of \cref{thm:se} and show that
 $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:simext}.
 
-% \michals{13.10}{The theorem below is going to have a much shorter proof -- for
-% it being just a corollary of Sec.~4}
 \begin{corollary}[Simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
 Assume that $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$, and
