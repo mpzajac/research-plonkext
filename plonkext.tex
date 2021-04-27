@@ -57,7 +57,7 @@
 
 \include{macros}
 
-\title{On (Weak) Simulation-Extractability of Universal zkSNARKs}
+\title{On Simulation-Extractability of Universal zkSNARKs}
 
 %\author{Anonymous submission to PKC}
 \author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} 
@@ -73,11 +73,11 @@
 \begin{abstract} 
 	In this paper we show that a wide class of (computationally) special-sound
 	proofs of knowledge which have unique response property and are
-	standard-model zero-knowledge are weak simulation-extractable
+	standard-model zero-knowledge are simulation-extractable
 	when made non-interactive by the Fiat--Shamir transform.  We prove that two
 	efficient updatable universal zkSNARKs---\plonk{}~\cite{EPRINT:GabWilCio19}
 	and $\sonic$~\cite{CCS:MBKM19}---meet these requirements and conclude by
-	showing their weak simulation-extractability.  As a side result we also show that
+	showing their simulation-extractability.  As a side result we also show that
 	relying security on rewinding and Fiat--Shamir transform often comes at a
 	great price of inefficient (yet still polynomial time) knowledge extraction
 	and the security loss introduced by these techniques should always be taken
@@ -94,7 +94,7 @@ to name a few. Special attention has been devoted to the design of new
 with short (ideally constant-length) proofs. Succinctness makes zkSNARKs
 especially useful for deployment in real systems,
 e.g.~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}.
-This in turn raises the question: \emph{Are the security models of currently
+This in turn raises the question: \emph{Are the security models of current
   zkSNARKs adequate for real-life deployment?} This question is particularly
 pertinent when one realises that all zkSNARKs with constant-sized proofs are
 shown secure in the structured reference string (SRS) model where the SRS used
@@ -195,7 +195,7 @@ there are no known zkSNARKs that enjoy both of these properties out-of-the-box
 (even for a weaker notion of simulation extractability). Obviously, given a
 universal zkSNARK one could lift it to be simulation-extractable using
 techniques described e.g.~in \cite{EPRINT:KZMQCP15,CCS:AbdRamSla20}, but such a
-lift comes with inevitably efficiency loss.
+lift comes with inevitable efficiency loss.
 %On the other hand, there is no known lift that
 %would take a zkSNARK and make it universal. Since updatable zkSNARKs are quite
 %restrictive regarding format of their SRSs, making such lift seems as a very
@@ -218,7 +218,7 @@ model~\cite{CCS:BelRog93}, it is theoretically unsound~\cite{FOCS:GolKal03} and
 so should be used with care.  Nevertheless, the Fiat-Shamir heuristic is a
 popular design tool when it comes to constructing zkSNARKs. Many works,
 including~\cite{CCS:MBKM19,EPRINT:GabWilCio19,EC:CHMMVW20}, design interactive
-protocols and prove them secure. However, they then only conjecturing the
+protocols and prove them secure. However, they then only conjecture the
 security for their non-interactive variants by employing the Fiat-Shamir
 heuristic. The more rigorous approach is to prove security of the Fiat-Shamir
 heuristic in the Random Oracle model.
@@ -228,32 +228,29 @@ We show that a class of computationally special-sound interactive proofs of
 knowledge that are zero-knowledge 
 %\markulf{12/11/2020}{Should this be HVZK, also
 % in abstract?} 
-in the standard model and have a unique response property \emph{are weakly
+in the standard model and have a unique response property \emph{are
   simulation-extractable out-of-the box} in the Random Oracle model when the
 Fiat--Shamir transformation is applied to them. Although a similar problem has
 been already tackled by Faust et al.~\cite{INDOCRYPT:FKMV12} for special-sound
 $3$-message $\Sigma$-protocols, we extend it to a much wider class of protocols
 and thus make it applicable to zkSNARKs.
 
-The \emph{weakness} of the simulation extractability property considered in this
-paper and in Faust et al.~relates to the fact that the extractor's probability
-of returning a witness depends on the adversary's probability $\accProb$ of
-producing an acceptable proof. More precisely, the extractor is not guaranteed
-to succeed if the adversary outputs an acceptable proof with probability
-$\accProb$ smaller than knowledge error $\nu$. On the other hand, we show that
-this $\nu$ can be arbitrarily small, even negligible. However, for $\accProb$
-close to $\nu$ the extractor becomes fairly inefficient. On the other hand, the
-extractor considered in this paper is black-box as it only needs an oracle
-access to the adversary. (However, it also depends on a number of properties
-required from the protocol. In case of $\plonk$ and $\sonic$, these properties
-are often proven in the AGM.)  Importantly, it does not depend on any knowledge
-assumption. We also note that when an extractor depends on rewinding the
-adversary, it is expected to have extractor's success probability dependent on
-the adversary's probability of returning a valid proof.
-
-Since in the later part of this paper we do not consider other simulation
-extractabilty definition than the weak one, we skip ``weak'' while referring to
-that property.
+We follow Faust et al.~in their definition of simulation extractability. They
+called their simulation-extractability \emph{weak} which relates to the fact
+that the extractor's probability of returning a witness depends on the
+adversary's probability $\accProb$ of producing an acceptable proof. More
+precisely, the extractor is not guaranteed to succeed if the adversary outputs
+an acceptable proof with probability $\accProb$ smaller than knowledge error
+$\nu$. On the other hand, we show that this $\nu$ can be arbitrarily small, even
+negligible. However, for $\accProb$ close to $\nu$ the extractor becomes fairly
+inefficient. On the other hand, the extractor considered in this paper is
+black-box as it only needs an oracle access to the adversary. Importantly, it
+does not depend on any knowledge assumption.  (However, it also depends on a
+number of properties required from the protocol. In case of $\plonk$ and
+$\sonic$, these properties are often proven in the AGM.) We also note that when
+an extractor depends on rewinding the adversary, it is expected to have
+extractor's success probability dependent on the adversary's probability of
+returning a valid proof.
 
 To show that our result is useful and practical we prove that two of the most
 efficient updatable and universal zkSNARKs---$\plonk$ and $\sonic$---are
@@ -303,12 +300,13 @@ break some underlying computational assumption.
 \subsubsection{Unique response property.} Another property that has to be proven
 is the unique response property which states, as expressed in
 \cite{C:Fischlin05}, that except for the first message, all messages sent by the
-prover are deterministic (intuitively,~the prover can only employ fresh randomness
-in the first message of the protocol). Again, we can not use this
-definition right out of the box. $\plonkprot$ does not satisfy
-it---both the first and the second prover's messages are randomised. We thus propose
-a generalisation of the definition which states that a protocol is $\ur{i}$ if
-the prover is deterministic starting from its $i$-th message. For our proof it is sufficient that this property is met by $\plonkprot$ for $i = 3$.
+prover are deterministic (intuitively,~the prover can only employ fresh
+randomness in the first message of the protocol). Again, we can not use this
+definition right out of the box. $\plonkprot$ does not satisfy it---both the
+first and the second prover's messages are randomised. We thus propose a
+generalisation of the definition which states that a protocol is $\ur{i}$ if the
+prover is deterministic starting from its $i$-th message. For our proof it is
+sufficient that this property is met by $\plonkprot$ for $i = 3$.
 
 To be able to show the unique response property (for both of the protocols) we
 also had to show that the modified KZG polynomial commitment schemes
@@ -439,8 +437,8 @@ In the next section we present necessary preliminaries. Section 3 compounds of
 new notions and theorems that instantiate our framework. Then, in Section 4, we
 show our main result, that is a proof of simulation-soundness for a class of
 zero-knowledge proofs of knowledge. In Section 5 and \cref{sec:sonic} we show
-that $\plonk$ and $\sonic$ fulfils requirements of our framework and in fact is
-simulation extractable.
+that $\plonk$ and $\sonic$ fulfil requirements of our framework and in fact is
+simulation extractable.1
 
 
 
@@ -453,7 +451,7 @@ of (black-box) \emph{true simulation extractability} and showed that no NIZK can
 be UC-secure if it does not satisfy this property. In the context of zkSNARKs it is
 important to mention such works as the first simulation-extractable zkSNARK by
 Groth and Maller \cite{C:GroMal17} and SE zkSNARK for QAP by Lipmaa
-\cite{EPRINT:Lipmaa19a}. Kosba's et al.~\cite{EPRINT:KZMQCP15} give a general
+\cite{EPRINT:Lipmaa19b}. Kosba's et al.~\cite{EPRINT:KZMQCP15} give a general
 transformation from a NIZK to a black-box SE NIZK. Although their transformation
 works for zkSNARKs as well, succinctness of the proof system is not preserved as
 the statement's witness is encrypted. Recently, Abdolmaleki et
@@ -486,7 +484,7 @@ systems, while the protocol presented by Bootle et al.~is intended to work for
 interactive proof systems.
 
 Importantly, it is not obvious how the result of Bootle et al.~can be used to
-show security of non-interactive protocols as it relies interactive provers
+show security of non-interactive protocols as it relies on interactive provers
 whose proving strategies are more limited than proving strategies of
 non-interactive ones. For example, if a challenge given by the verifier does not
 suit an interactive prover, it can only try to finish a proof with it or
@@ -559,26 +557,32 @@ parameters by $\pgen$.
 
 \paragraph{Discrete-log assumptions.}
 Security of $\plonk$ and $\sonic$ relies on two discrete-log based security
-assumptions---$(q_1, q_2)$-$\dlog$ assumption and its extended with negative
-exponents version $(q_1, q_2)$-$\ldlog$ assumption\footnote{Note that
+assumptions---$(q_1, q_2)$-$\dlog$ assumption and its extended version with negative
+exponents $(q_1, q_2)$-$\ldlog$ assumption\footnote{Note that
   \cite{CCS:MBKM19} dubs their assumption \emph{a dlog assumption}. We changed
-  that name to distinct it from the more standard dlog assumption used in
+  that name to distinguish it from the more standard dlog assumption used in
   \cite{EPRINT:GabWilCio19}. ``l'' in \emph{ldlog} relates to use of Laurent
   polynomials in the assumption.}.
 
 \begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]
-	Let $\adv$ be a $\ppt$ adversary that gets as input $\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}}$, for some randomly picked $\chi \in \FF_p$, then
+	Let $\adv$ be a $\ppt$ adversary that gets as input
+  $\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}}$, for
+  some randomly picked $\chi \in \FF_p$, then
 	\[
-		\condprob{\chi \gets \adv(\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2} })}{\chi \sample \FF_p} \leq \negl.
+		\condprob{\chi \gets \adv(\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi,
+        \ldots, \chi^{q_2} })}{\chi \sample \FF_p} \leq \negl.
 	\]
 \end{definition}
 
 \begin{definition}[$(q_1, q_2)\mhyph\ldlog$ assumption]
-		Let $\adv$ be a $\ppt$ adversary that gets as input $\gone{\chi^{-q_1},
-		\ldots, 1, \chi, \ldots, \chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \chi, \ldots, \chi^{q_2}}$, for some randomly picked $\chi \in \FF_p$, then
+  Let $\adv$ be a $\ppt$ adversary that gets as input
+  $\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots, \chi^{q_1}}, \gtwo{\chi^{-q_2},
+    \ldots, 1, \chi, \ldots, \chi^{q_2}}$, for some randomly picked
+  $\chi \in \FF_p$, then
 	\[
-			\condprob{\chi \gets \adv(\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots,
-			\chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \chi, \ldots, \chi^{q_2} })}{\chi \sample \FF_p} \leq \negl.
+    \condprob{\chi \gets \adv(\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots,
+        \chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \chi, \ldots, \chi^{q_2}
+      })}{\chi \sample \FF_p} \leq \negl.
 	\]
 \end{definition}
 
@@ -593,7 +597,7 @@ Let $r, s, t, c \in \NN \setminus \smallset{0}$, Consider vectors of polynomials
 $\pR \in \FF_p[X_1, \ldots, X_c]^r$, $\pS \in \FF_p[X_1, \ldots, X_c]^s$ and
 $\pT \in \FF_p[X_1, \ldots, X_c]^t$. Write $\pR = \left( \p{r}_1, \ldots,
   \p{r}_r \right)$, $\pS = \left( \p{s}_1, \ldots, \p{s}_s \right)$ and $\pT =
-\left( \p{t}_1, \ldots, \p{t}_r \right)$ for polynomials $\p{r}_i, \p{s}_j,
+\left( \p{t}_1, \ldots, \p{t}_t \right)$ for polynomials $\p{r}_i, \p{s}_j,
 \p{t}_k$.
 
 For a function $f$ and vector $(x_1, \ldots, x_c)$ we write $f(\pR)$ to
@@ -633,8 +637,8 @@ follows (the changed element has been put into a \dbox{dashbox})
 	\label{def:uber_assumption}
 	Let $\pR, \pS, \pT$ be defined as above,
     $(x_1, \ldots, x_c, y_1, \ldots, y_{d}) \sample \FF_p^{c + d}$ and let
-    $\p{F}$ be a set of pair-wise independent polynomials which are also
-    independent on $(\pR, \pS, \pT)$, cf.~\cref{def:independence}.  Then, for
+    $\p{F}$ be a cardinality-$d$ set of pair-wise independent polynomials which are also
+    independent of $(\pR, \pS, \pT)$, cf.~\cref{def:independence}.  Then, for
     any $\ppt$ adversary $\adv$
 	\begin{multline*}
       \Pr\left[\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
@@ -1052,9 +1056,9 @@ outputs as challenges its random coins) can be made non-interactive and
 zero-knowledge in the random oracle model by using the Fiat--Shamir
 transformation.
 
-\paragraph{Idealised verifier and verfication equations}
-Usually the verifier $\verifier$ verifies messages send by the prover by
-checking a number of equations depend on the instance, SRS and the proof. We
+\paragraph{Idealised verifier and verification equations}
+Usually the verifier $\verifier$ verifies messages sent by the prover by
+checking a number of equations that depend on the instance, SRS and the proof. We
 call these equations \emph{verification equations} and denote by $\vereq_i$, for
 $i$ being an index of the equation. We require that an acceptable
 proof yields $\vereq_i = 0$.
@@ -1154,7 +1158,7 @@ which assures that no adversary can produce a valid proof without knowing the
 corresponding witness. This must hold even if the adversary is allowed to see
 polynomially many simulated proofs for any statements it wishes.
 
-\begin{definition}[Weak simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
+\begin{definition}[(Weak) simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
 	\label{def:simext}
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a computationally
   special-sound HVZK proof and $\ps_\fs = (\kgen_\fs, \prover_\fs,
@@ -1424,12 +1428,6 @@ $\zkproof_{\advse}$, algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where
 $i$ is the index of a random oracle query submitted by $\advse$ to get the challenge after
 $k$-th message from the prover---a message where the tree of transcripts
 branches.
-%We also note that we differ here from the description of the
-%$\genforking_\zdv$ algorithm provided
-%e.g.~in~\cite{INDOCRYPT:FKMV12,CCS:BelNev06} where the algorithm also picks the first set of random oracle
-%queries' responses $h^1_1, \ldots, h^1_q$. We however note that this difference
-%is only notational as random oracle queries' responses provided in $Q_\ro$ are
-%random as well. 
 Then, after the first run of $\advse$ is done, the extractor runs $\zdv$ again,
 but this time it provides fresh random oracle responses $h^2_i, \ldots,
 h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
@@ -1703,19 +1701,6 @@ accepted and does not break $\ur{k}$-ness of $\ps$.  Denote by $\waccProb'$
 probability that algorithm $\zdv$, defined in the lemma, produces an accepting
 proof with a fresh challenge after Round $k$. Given the discussion above, we can
 state that $\waccProb = \waccProb'$.
- % Assuming that $\advse$ does
-% not break the unique response property is necessary to be able to use the
-% forking lemma. Denote by $\waccProb'$ probability that algorithm $\zdv$, defined
-% in the lemma, produces an accepting proof with a fresh challenge after Round $k$.
-% %
-% Otherwise, if $\ur{k}$-ness does not hold and the adversary could, say,
-% rerandomise a proof $\zkproof$ it obtained from the simulator then it could
-% force $\zdv$ to output $i = 0$ (i.e.~not accept the proof) making extractor
-% fail. The unique response property takes care of that, hence that event has
-% already been covered by the abort condition in $\game{1}$. If an adversary would
-% like to reuse a simulated proof it saw, it would end up with exactly the same
-% proof which can also can not break simulation extractability, thus
-% $\waccProb=\waccProb'$.
 
 Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma},
 \[
@@ -3205,6 +3190,10 @@ Last, but not least, this paper would benefit greatly if a more tight version
 of the generalised forking lemma was provided. However, we have to note here
 that some of the inequalities used in the proof are already tight, i.e.~for
 specific adversaries, some of the inequalities are already equalities.
+
+\section*{Acknowledgement}
+The second author thanks Antoine Rondelet for helpful discussions.
+
 \bibliographystyle{abbrv}
 \bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
 %\clearpage
