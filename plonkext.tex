@@ -2685,8 +2685,7 @@ In \sonic{} we will use commitments to the following polynomials.
               + c_i X^{-i - \multconstr} Y^{-i - \multconstr}\right) \\
   \p{s}(X, Y) & = \sum_{i = 1}^{\multconstr} \left( u_i (Y) X^{-i} +
                 v_i(Y) X^i + w_i(Y) X^{i + \multconstr}\right)\\
-  \pr'(X, Y) & = \pr(X, Y) + \p{s}(X, Y) \\
-  \pt(X, Y) & = \pr(X, 1) \pr'(X, Y) - \p{k}(Y)\,.
+  \pt(X, Y) & = \pr(X, 1) (\pr(X, Y) + \p{s}(X, Y)) - \p{k}(Y)\,.
 \end{align*}
 	
 \subsubsection{Algorithms rolled out}
@@ -2718,38 +2717,44 @@ randomly $\alpha, \chi \sample \FF_p$ and outputs
   \end{align*}
   along with evaluations $a' = \pr(z, 1), b' = \pr(y, z), t' = \pt(z, y)$.  Then it
   engages in the signature of correct computation playing the role of the
-  helper, i.e.~it commits to $\p{s}(X, y)$ and sends the commitment $\gone{s}$.  Then
+  helper, i.e.~it commits to $\p{s}(X, y)$ and sends the commitment $\gone{s}$, commitment opening
+  \begin{align*}
+    \gone{o_s} & = \open(\srs, z, \p{s}(z, y), \p{s}(X, y)), \\
+  \end{align*} and $s'=\p{s}(z, y)$. 
+%
+  Then
   it obtains a challenge $u$ from the verifier.
 \item[Round 4] In the next round the prover computes
-  $\gone{c} \gets \com(\srs, \dconst, \p{s}(u, x)) + \gone{\p{s}(u, x)}$ and
+  $\gone{c} \gets \com(\srs, \dconst, \p{s}(u, Y))$ and
   computes commitments' openings
   \begin{align*}
-    \gone{w} & = \open(\srs, u, \p{s}(X, y)), \\
-    \gone{q_y} & = \open(\srs, y, \p{s}(u, Y)),
+    \gone{w} & = \open(\srs, u, \p{s}(u, y), \p{s}(X, y)), \\
+    \gone{q_y} & = \open(\srs, y,\p{s}(u, y), \p{s}(u, Y)),
   \end{align*}
-  and returns $\gone{w}, \gone{q_y}, \p{s}(u, y)$. Eventually the prover gets the last challenge
+  and returns $\gone{w}, \gone{q_y}, s = \p{s}(u, y)$. Eventually the prover gets the last challenge
   from the verifier---$z'$.
 \item[Round 5] In the final round, $\prover$ computes opening
-  $\gone{q_{z'}} = \open(\srs, z', \p{s}(u, X))$ and outputs $\gone{q_{z'}}$ and $\p{s}(u, z')$.
+  $\gone{q_{z'}} = \open(\srs, z', \p{s}(u, z'), \p{s}(u, X))$ and outputs $\gone{q_{z'}}$.
 \end{description}
 
 \paragraph{$\sonic$ verifier $\verifier(\REL, \srs, \inp, \zkproof)$.} The verifier
 in \sonic{} runs as subroutines the verifier for the polynomial commitment. That
-is it sets $t' = a'(b' + s) - \p{k}(y)$ and checks the following:
+is it sets $t' = a'(b' + s') - \p{k}(y)$ and checks the following:
 \begin{equation*}
   \begin{split}
     &\PCOMs.\verifier(\srs, \multconstr, \gone{r}, z, a', \gone{o_a}), \\
     &\PCOMs.\verifier(\srs, \multconstr, \gone{r}, yz, b', \gone{o_b}),\\
     &\PCOMs.\verifier(\srs, \dconst, \gone{t}, z, t', \gone{o_t}),\\
+    &\PCOMs.\verifier(\srs, \dconst, \gone{s}, z, s', \gone{o_s}),\\
   \end{split}
   \qquad
   \begin{split}
     &\PCOMs.\verifier(\srs, \dconst, \gone{s}, u, s, \gone{w}),\\
     &\PCOMs.\verifier(\srs, \dconst, \gone{c}, y, s, \gone{q_y}),\\
-    &\PCOMs.\verifier(\srs, \dconst, \gone{c}, z', s_{z'}, \gone{q_{z'}}),
+    &\PCOMs.\verifier(\srs, \dconst, \gone{c}, z', \p{s}(u, z'), \gone{q_{z'}}),
   \end{split}
 \end{equation*}
-and accepts the proof iff all the checks holds.
+and accepts the proof iff all the checks holds. Note that the value $\p{s}(u, z')$ that is recomputed by the verifier uses separate challenges $u$ and $z'$. This enables the batching of many proof and the outsourcing of this part of the proof to an untrusted helper. 
 
 \subsection{Unique opening property of $\PCOMs$}
 \begin{lemma}
