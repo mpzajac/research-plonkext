@@ -57,8 +57,8 @@
 
 \include{macros}
 
-\title{On Simulation-Extractability of Universal zkSNARKs}
-
+%\title{On Simulation-Extractability of Universal zkSNARKs}
+\title{On the Non-Malleability of the Fiat--Shamir Transform Revisited}
 %\author{Anonymous submission to PKC}
 \author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} 
 %\iflncs{
@@ -70,22 +70,37 @@
 
 \begin{document} \sloppy \maketitle
 
-\begin{abstract} 
-	In this paper we show that a wide class of (computationally) special-sound
-	proofs of knowledge which have unique response property and are
-	standard-model zero-knowledge are simulation-extractable
-	when made non-interactive by the Fiat--Shamir transform.  We prove that two
-	efficient updatable universal zkSNARKs---\plonk{}~\cite{EPRINT:GabWilCio19}
-	and $\sonic$~\cite{CCS:MBKM19}---meet these requirements and conclude by
-	showing their simulation-extractability.  As a side result we also show that
-	relying security on rewinding and Fiat--Shamir transform often comes at a
-	great price of inefficient (yet still polynomial time) knowledge extraction
-	and the security loss introduced by these techniques should always be taken
-	into account. 
+\begin{abstract}
+  Faust, Kohlweiss, Marson, and Venturi (INDOCRYPT 2012) shown that a
+  non-interactive zero knowledge (NIZK) proof system obtained by applying the
+  Fiat--Shamir transformation to a public-coin sigma protocol is simulation
+  simulation sound and simulation extractable (under some conditions). In this
+  paper, we continue the lead proposed by Faust et al.~and formally define
+  simulation extractability for protocols in the random oracle model (ROM) which
+  utilize a structured reference string (SRS). Furthermore, we show that a NIZK
+  proof system obtained by applying the Fiat--Shamir transformation to a
+  public-coin multi-round interactive protocol with SRS is
+  simulation-extractable under lenient conditions. A consequence of our result
+  is that, in the ROM, we obtain non-malleable NIZKs essentially for free from a
+  much wider class of protocols than Faust et al. Importantly, we show that two
+  popular zero knowledge SNARKs --- \plonk{} and \sonic{} --- are simulation
+  extractable out-of-the-box.  
+
+  \comment{ In this paper we show that a wide class of (computationally)
+    special-sound proofs of knowledge which have unique response property and
+    are standard-model zero-knowledge are simulation-extractable when made
+    non-interactive by the Fiat--Shamir transform.  We prove that two efficient
+    updatable universal zkSNARKs---\plonk{}~\cite{EPRINT:GabWilCio19} and
+    $\sonic$~\cite{CCS:MBKM19}---meet these requirements and conclude by showing
+    their simulation-extractability.  As a side result we also show that relying
+    security on rewinding and Fiat--Shamir transform often comes at a great
+    price of inefficient (yet still polynomial time) knowledge extraction and
+    the security loss introduced by these techniques should always be taken into
+    account.}  in the
 \end{abstract}
 
 \section{Introduction} 
-
+\comment{
 In recent years we have seen indisputable progress in building efficient
 zero-knowledge proof systems,
 e.g.~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16,SP:BBBPWM18}
@@ -260,6 +275,7 @@ these multi-round computationally sound protocols and their building blocks:
 computational special soundness, generalized unique response, and a generalized
 forking lemma. These conceptual insights into interactive SNARK systems help us
 overcome a number of challenges, as we explain below.
+}
 
 \subsection{Our techniques}
 
