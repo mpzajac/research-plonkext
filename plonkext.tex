@@ -1,38 +1,36 @@
 % !TeX spellcheck = en_UK
 % \let\accentvec\vec              
 \documentclass[runningheads,11pt]{llncs}
- % \documentclass[runningheads]{amsart}
-\let\spvec\vec \let\vec\accentvec
+\let\spvec\vec
+\let\vec\accentvec
 
-\usepackage{amssymb,amsmath} \let\vec\spvec \usepackage{lmodern}
-
-\usepackage[T1]{fontenc}
-
-\newcommand{\iflipics}[1] {} \newcommand{\iflncs}[1] {#1}
-
-\def\vec#1{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
-{\mbox{\boldmath$\textstyle#1$}} {\mbox{\boldmath$\scriptstyle#1$}}
-{\mbox{\boldmath$\scriptscriptstyle#1$}}}
+\newcommand\hmmax{0}
+\newcommand\bmmax{0}
 
 \DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
 \DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
 \DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
 \DeclareMathAccent{\widebar}{0}{mathx}{"73}
 
+\let\spvec\vec
+\usepackage{amssymb,amsmath}
+\let\vec\spvec
+\usepackage{newtxmath,newtxtext}
+\usepackage[T1]{fontenc}
+
+  \def\vec#1{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
+  {\mbox{\boldmath$\textstyle#1$}} {\mbox{\boldmath$\scriptstyle#1$}}
+  {\mbox{\boldmath$\scriptscriptstyle#1$}}}
+
 % lncs size (as printed in books, with small margins):
  % \usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={13.2cm,20.3cm},centering]{geometry}
  %\usepackage{fullpage}
-
-\newcommand{\ifamsart}[1] {} \ifamsart{ \newtheorem{theorem}{Theorem}%[section]
-  \newtheorem{proposition}[theorem]{Proposition}
-  \newtheorem{lemma}[theorem]{Lemma} \newtheorem{corollary}[theorem]{Corollary}
-  \theoremstyle{definition} \newtheorem{definition}[theorem]{Definition}
-  \newtheorem{example}[theorem]{Example} }
 \usepackage{soulutf8} \soulregister\cite7 \soulregister\ref7
-\soulregister\pageref7 \usepackage{hyperref}
-\usepackage[color=yellow]{todonotes} \hypersetup{final} \usepackage{mathrsfs}
+\soulregister\pageref7
+\usepackage{hyperref}
+\usepackage[color=yellow]{todonotes} \hypersetup{final}
+\usepackage{mathrsfs}
 \usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
-%\pcbodylinesep=0.15\baselineskip % MK: got an undefined control sequence error
 
 \usepackage[capitalise]{cleveref}
 %\crefname{appendix}{Supp.~Mat.}{Sup.~Mat.}
@@ -41,24 +39,19 @@
 \usepackage{booktabs}
 \usepackage{paralist}
 \usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed}
-%\usepackage{setspace}
 \usepackage{caption}
 \captionsetup{belowskip=0pt}
-%\captionsetup[figure]{font={stretch=2}}
-% \usepackage{subcaption}
 \usepackage{bm}
 \usepackage{url}
 \usepackage{dirtytalk}
 \usepackage[margin=0.7in,a4paper]{geometry}
-%\usepackage{fullpage}
 \usepackage[normalem]{ulem}
 \usepackage{dashbox}
 \newcommand\dboxed[1]{\dbox{\ensuremath{#1}}}
-
 \include{macros}
 
 %\title{On Simulation-Extractability of Universal zkSNARKs}
-\title{On the Non-Malleability of the Fiat--Shamir Transform Revisited}
+\title{Non-Malleability of the Fiat--Shamir Transform Revisited}
 %\author{Anonymous submission to PKC}
 \author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} 
 %\iflncs{
@@ -88,6 +81,48 @@
 \end{abstract}
 
 \section{Introduction}
+% \paragraph{On the popularity and power of Fiat--Shamir.}
+The Fiat--Shamir heuristic takes a public-coin interactive protocol and makes it
+interactive by computing the verifier's public coins by hashing the current
+protocol transcript. While in principle justifiable in the random oracle model
+(ROM)~\cite{CCS:BelRog93}, it is theoretically unsound~\cite{FOCS:GolKal03} and
+so should be used with care.  Nevertheless, the Fiat--Shamir heuristic is a
+popular design tool when it comes to constructing zkSNARKs. Many works,
+including \sonic{}~\cite{CCS:MBKM19} \plonk{}~\cite{EPRINT:GabWilCio19}, and
+\marlin~\cite{EC:CHMMVW20}, design interactive protocols and prove them
+secure. However, they then only \emph{conjecture} the security for their
+non-interactive variants by employing the Fiat--Shamir heuristic.
+% The more
+% rigorous approach is to prove security of the Fiat--Shamir heuristic in the
+% random oracle model.
+However, proper security analysis of zkSNARKs utilizing the heuristic is of
+great importance especially now, when they are used to secure cryptoassets of
+immense value. Moreover, the aforementioned zkSNARKs not only utilize the
+Fiat--Shamir transformation, but also a structured reference string
+(SRS). According to our best knowledge security of the transformation in case of
+SRS-based zero knowledge proofs has not yet been shown.
+
+
+
+
+In recent years we have seen indisputable progress in building efficient
+(non-interactive) zero-knowledge proof systems,
+e.g.~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16,SP:BBBPWM18}
+to name a few. Special attention has been devoted to the design of new
+\emph{zero-knowledge succinct non-interactive arguments of knowledge} (zkSNARKs)
+with short---ideally constant-length---proofs. Succinctness makes zkSNARKs
+especially useful for deployment in real systems,
+e.g.~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}. One
+of the most efficient (in terms of proof length and verifier's computation)
+zkSNARKs are \plonk{}~\cite{EPRINT:GabWilCio19} and \sonic{}~\cite{CCS:MBKM19}
+which security rely on both structure reference string (SRS) and Fiat--Shamir
+heuristic. More precisely, both protocols are analyzed as public coin
+interactive proof systems and it is conjectured that they remain secure when
+they are made non-interactive by using the Fiat--Shamir
+transformation. 
+
+\hl{Write about FS analysis for e.g. Bulletproofs}
+
 In recent years we have seen indisputable progress in building efficient
 zero-knowledge proof systems,
 e.g.~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16,SP:BBBPWM18}
@@ -95,33 +130,35 @@ to name a few. Special attention has been devoted to the design of new
 \emph{zero-knowledge succinct non-interactive arguments of knowledge} (zkSNARKs)
 with short (ideally constant-length) proofs. Succinctness makes zkSNARKs
 especially useful for deployment in real systems,
-e.g.~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}.
-This in turn raises the question: \emph{Are the security models of current
-  zkSNARKs adequate for real-life deployment?} This question is particularly
-pertinent when one realises that all zkSNARKs with constant-sized proofs are
-shown secure in the structured reference string (SRS) model where the SRS used
-by the parties---i.e.~a prover that shows veracity of a statement using its
-private input called \emph{witness} and a verifier that verifies
-it---necessarily comes with a trapdoor which can be used to break (knowledge)
-soundness; that is, convince the verifier to accept a false statement or a
-statement for which the prover does not know the witness. Hence secure real-life
-deployment of zkSNARKs require answers to questions such as---\emph{How can the
-  parties be sure that the trapdoor has not leaked?}  \emph{Who is the party
-  that generates the SRS?} \emph{Can this party be trusted?} The questions are
-especially important in zero knowledge proofs used in distributed systems, like
-e.g.~blockchains, where assuming that a trusted party generates the SRS may be
-unrealistic and subvert the whole purpose of a decentralised system.  Two recent
-works \plonk{}~\cite{EPRINT:GabWilCio19} and Sonic{}~\cite{CCS:MBKM19} tackle
-the problem of secure SRS generation by providing zkSNARKs that are
-\emph{updatable} and \emph{universal}.
-The former property allows parties to update the SRS and assures that if at
-least of the updates was performed honestly, then the system is sound.  The
-latter property means that a single SRS can be used to show satisfiability of
-any circuit up to some given size. While updatability is an important system
-security feature, universality is often crucial for the practical adoption of a
-proof system. 
+e.g.~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}. Known 
+zkSNARKs with a constant proof length are in so-called the structured reference
+string (SRS) model, where both the proving party (called the prover) and the
+verifying one (called the verifier) are equipped with a SRS provided by a
+trusted third party. Real-life deployment of proving systems raises a question
+on how the SRS is generated. How much the aforementioned ``trusted'' third party
+has to be trusted? Could this assumption be weakened without harm for the
+security of the proof system? 
+% This in turn raises the question: \emph{Are the security models of current
+%   zkSNARKs adequate for real-life deployment?} This question is particularly
+% pertinent when one realises that all zkSNARKs with constant-sized proofs are
+% shown secure in the structured reference string (SRS) model where a trusted
+% third party provides the SRS for prover and verifier
+% by the parties necessarily comes with a trapdoor which can be used to break
+% (knowledge) soundness. That is, a malicious \emph{prover} equipped with the SRS
+% trapdoor could convince a \emph{verifier} to accept a false statement or a
+% statement for which the prover does not know the witness. Hence secure real-life
+% deployment of zkSNARKs requires the trapdoor to remain secret.
 
-\paragraph{On the importance of the simulation extractability.}
+Two recent works \plonk{}~\cite{EPRINT:GabWilCio19} and
+Sonic{}~\cite{CCS:MBKM19} tackle the problem of secure SRS generation by
+providing zkSNARKs that are \emph{updatable} and \emph{universal}.  The former
+property allows parties to update the SRS and assures that if at least of the
+updates was performed honestly, then the system is sound.  The latter property
+means that a single SRS can be used to show satisfiability of any circuit up to
+some given size. While updatability is an important system security feature,
+universality is often crucial for the practical adoption of a proof system.
+
+% \paragraph{On the importance of the simulation extractability.}
 Another problem with existing security models is proof malleability.  Arguably,
 in the real life one simply cannot assume that the adversary who tries to break
 security of a system does not have access to any proofs provided by other
@@ -134,8 +171,8 @@ are only shown to satisfy only a (standard) knowledge soundness definition. We
 argue that simulation-extractability (SE) is the property that should be
 required from zkSNARKs used in practice.
 
-\paragraph{State of the art---simulation-extractable updatable universal zkSNARKs.} 
-To the best of our knowledge, there are zkSNARKs that are
+% \paragraph{State of the art---simulation-extractable updatable universal zkSNARKs.} 
+Unfortunately, to the best of our knowledge, there are zkSNARKs that are
 simulation-extractable~\cite{C:GroMal17,EPRINT:BowGab18,EPRINT:AtaBag19,EC:Groth16}
 and zkSNARKs that are
 universal~\cite{C:GKMMM18,CCS:MBKM19,EPRINT:GabWilCio19,EC:CHMMVW20}, however
@@ -143,11 +180,10 @@ there are no known zkSNARKs that enjoy both of these properties out-of-the-box
 (even for a weaker notion of simulation extractability). Obviously, given a
 universal zkSNARK one could lift it to be simulation-extractable using
 techniques described e.g.~in \cite{EPRINT:KZMQCP15,CCS:AbdRamSla20}, but such a
-lift comes with inevitable efficiency loss.
-The same applies for updatable zkSNARKs. No out-of-the-box
-simulation-extractable updatable zkSNARKs are
-currently known and there is no transformation that could take a SE zkSNARK
-and make it updatable (even though transformations like \cite{CCS:AbdRamSla20}
+lift comes with inevitable efficiency loss.  The same applies for updatable
+zkSNARKs. No out-of-the-box simulation-extractable updatable zkSNARKs are
+currently known and there is no transformation that could take a SE zkSNARK and
+make it updatable (even though transformations like \cite{CCS:AbdRamSla20}
 preserves updatability).
 
 \paragraph{On the popularity and power of Fiat-Shamir.} The Fiat-Shamir
@@ -158,10 +194,10 @@ model~\cite{CCS:BelRog93}, it is theoretically unsound~\cite{FOCS:GolKal03} and
 so should be used with care.  Nevertheless, the Fiat-Shamir heuristic is a
 popular design tool when it comes to constructing zkSNARKs. Many works,
 including~\cite{CCS:MBKM19,EPRINT:GabWilCio19,EC:CHMMVW20}, design interactive
-protocols and prove them secure. However, they then only conjecture the
-security for their non-interactive variants by employing the Fiat-Shamir
-heuristic. The more rigorous approach is to prove security of the Fiat-Shamir
-heuristic in the Random Oracle model.
+protocols and prove them secure. However, they then only conjecture the security
+for their non-interactive variants by employing the Fiat-Shamir heuristic. The
+more rigorous approach is to prove security of the Fiat-Shamir heuristic in the
+Random Oracle model.
 
 \subsection{Our contribution}
 We show that a class of computationally special-sound interactive proofs of
@@ -1098,7 +1134,7 @@ which assures that no adversary can produce a valid proof without knowing the
 corresponding witness. This must hold even if the adversary is allowed to see
 polynomially many simulated proofs for any statements it wishes.
 
-\begin{definition}[(Weak) simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
+\begin{definition}[Simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
 	\label{def:simext}
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a computationally
   special-sound HVZK proof and $\ps_\fs = (\kgen_\fs, \prover_\fs,
@@ -1157,6 +1193,95 @@ Fiat--Shamir transform to $\sigmaprot$. Faust et al.~\cite{INDOCRYPT:FKMV12}
 show that every such $\sigmaprot_\fs$ is simulation-extractable. This result is
 presented in \cref{sec:forking_lemma} along with the instrumental forking lemma,
 cf.~\cite{CCS:BelNev06}.
+
+\changedm{ We propose a new notion of \emph{updatable simulation extractability}
+  which assures that the proof system is secure even when an adversary is
+  allowed to update the SRS \emph{and} get simulated proofs for the statements
+  it requires.
+
+  \begin{definition}[Updatable simulation extractability]
+    \label{def:upsimext}
+    Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a computationally
+    special-sound HVZK proof and
+    $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$
+    transformed by the Fiat--Shamir transform. We say that $\ps_\fs$ is
+    \emph{updatable simulation-extractable} with \emph{extraction error} $\nu$
+    if for any $\ppt$ adversary $\adv$ that is given oracle access to a random
+    oracle $\ro$, simulator $\simulator_\fs$, and SRS update oracle $\oraclesrs$
+    defined at \cref{fig:oraclesrs}, and produces an accepting transcript of
+    $\ps$ with probability $\accProb$,
+    	\[
+		\accProb = \Pr \left[
+		\begin{aligned}
+			& \verifier_\fs(\REL, \srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
+			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q
+		\end{aligned}
+		\, \left| \,
+		\begin{aligned}
+			& \srs \gets \kgen(\REL), r \sample \RND{\advse}, \\
+			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
+			\ro, \oraclesrs} (\REL, \srs; r) 
+		\end{aligned}
+		\right.\right]\,,
+	\]
+	probability
+	\[
+		\frkProb = \Pr \left[
+		\begin{aligned}
+			& \verifier_\fs(\REL, \srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
+			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+			& \REL(\inp_{\advse}, \wit_{\advse}) = 1
+		\end{aligned}
+		\, \left| \,
+		\begin{aligned}
+			& \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
+			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
+			\ro,\oraclesrs} (\REL, \srs; r) \\
+			& \wit_{\advse} \gets \ext_\se (\REL, \srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+			Q, Q_\ro,) 
+		\end{aligned}
+		\right.\right]
+	\]
+	is at at least 
+	\[
+		\frkProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
+	\]
+	for some polynomial $\poly$, constant $d$ and negligible $\eps$ whenever
+  $\accProb \geq \nu$. List $Q$ contains all $(\inp, \zkproof)$ pairs where
+  $\inp$ is an instance provided to the simulator by the adversary and
+  $\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+  queries to $\ro$ and $\ro$'s answers.
+\end{definition}
+
+\begin{figure}
+  	\centering
+		\fbox{
+		\procedure{$\oraclesrs(\intent, \srs_n, (\rho_i)_{i = 1}^{n})$}		
+		{
+      \pcif \srs \neq \bot \pcthen \pcreturn 0 \\
+      \pcif \intent = \setup \pcthen \\
+      \pcind (\srs', \rho') \sample \kgen(\REL)\\
+      \pcind Q \gets Q \cup \smallset{\rho'}\\
+      \pcind \pcreturn (\srs', \rho')\\
+      \pcif \intent = \update \pcthen\\
+      \pcind b \gets \verifysrs(\REL, \srs_n, (\rho_i)_{i = 1}^n)\\
+      \pcind \pcif b = 0 \pcthen \pcreturn 0 \\
+      \pcind (\srs', \rho') \sample \srsupdate(\REL, \srs_n, (\rho)_{i = 1}^n)
+      \\
+      \pcind Q \gets Q \cup \smallset{\rho'}\\
+      \pcind \pcreturn (\srs', \rho') \\
+      \pcif \intent = \final \\
+      \pcind b \gets \verifysrs(\REL, \srs_n, (\rho_i)_{i = 1}^n)\\
+      \pcind \pcif b = 0 \lor Q \cap \smallset{\rho_i}_i = \emptyset \pcthen \pcreturn
+      0 \\
+      \pcind \srs \gets \srs_n\\
+      \pcind \pcreturn \srs\\
+      \pcelse \pcreturn 0
+    }}
+  \caption{SRS updates oracle}
+  \label{fig:oraclesrs}
+\end{figure}
+}
 
 \section{Towards simulation extractability of multi-message protocols,
   definitions and lemmas}
@@ -3532,14 +3657,14 @@ polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
   \[
     \zkproof_\advss = \vec{M} \cdot (\underbrace{1 \| \chi \| \ldots \|
       \chi^{\noofc + 2}}_{\srs} \|
-    \vec{\tilde{\zkproof}_\simulator}_1^{\top} \| \ldots \|
-    \vec{\tilde{\zkproof}_\simulator}_{q_\simulator}^\top)^\top\,,
+    \vec{\tilde{\zkproof}_{\simulator}}_1^{\top} \| \ldots \|
+    \vec{\tilde{\zkproof}_{\simulator}}_{q_{\simulator}}^\top)^\top\,,
   \]
   where $\gone{1, \chi, \ldots, \chi^{\noofc + 2}}$ are all
   $\GRP_1$-elements from the SRS of $\plonkprotfs$, $\vec{M}$ is a matrix of
   coefficients output by $\advss$ aside the proof,
-  $\vec{\tilde{\zkproof}_\simulator}_i$ denote all $\GRP_1$-elements from the
-  simulated proof ${\zkproof_\simulator}_i$, and the adversary makes
+  $\vec{\tilde{\zkproof}_{\simulator}}_i$ denote all $\GRP_1$-elements from the
+  simulated proof ${\zkproof_{\simulator}}_i$, and the adversary makes
   $q_\simulator$ queries to the simulator.  Since the reduction itself provides
   the simulated proofs, it knows a matrix $\vec{M'}$ such that
   \begin{equation}

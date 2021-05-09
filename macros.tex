@@ -93,6 +93,14 @@
 
 % zero knowledge
 \newcommand{\oracleo}{\mathsf{O}}
+\newcommand{\oraclesrs}{\oracleo_{srs}}
+% for srs updatability
+\newcommand{\intent}{\msg{intent}}
+\newcommand{\update}{\msg{update}}
+\newcommand{\setup}{\msg{setup}}
+\newcommand{\final}{\msg{final}}
+\newcommand{\verifysrs}{\verify_{srs}}
+\newcommand{\srsupdate}{\pcalgostyle{Update}}
 \newcommand{\crs}{\pcvarstyle{crs}}
 \newcommand{\srs}{\pcvarstyle{srs}}
 \newcommand{\td}{\pcvarstyle{td}}
@@ -182,6 +190,7 @@
 \newcommand{\ur}[1]{{#1\text{-}\mathsf{ur}}}
 
 \newcommand{\plonk}{\ensuremath{\textnormal{\textsf{Plonk}}}}
+\newcommand{\marlin}{{\ensuremath{\textnormal{\textsf{Marlin}}}}}
 \newcommand{\sonic}{{\ensuremath{\textnormal{\textsf{Sonic}}}}}
 \newcommand{\groth}{\ensuremath{\textsc{Groth16}}}
 \newcommand{\plonkmod}{\ensuremath{\plonk^\star}}
@@ -256,8 +265,4 @@
 \newcommand{\task}[2]{\todo[author=\textbf{Task},inline]{({\textit{#1}}) #2}}
 % \newcommand{\task}[2] {\xcommenti{Task}{#1}{#2}}
 % \DeclareRobustCommand{\task}[2]  {{\color{black}\sethlcolor{yellow}\hl{\textsf{TASK #1:} #2}}}
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "plonkext"
-%%% End:
+\DeclareRobustCommand{\changedm}[1] {{\color{blueish} #1}}
