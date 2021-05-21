@@ -90,7 +90,7 @@ so should be used with care.  Nevertheless, the Fiat--Shamir heuristic is a
 popular design tool when it comes to constructing zkSNARKs. Many works,
 including \sonic{}~\cite{CCS:MBKM19} \plonk{}~\cite{EPRINT:GabWilCio19}, and
 \marlin~\cite{EC:CHMMVW20}, design interactive protocols and prove them
-secure. However, they then only \emph{conjecture} the security for their
+secure. Unfortunately, they then only \emph{conjecture} the security for their
 non-interactive variants by employing the Fiat--Shamir heuristic.
 % The more
 % rigorous approach is to prove security of the Fiat--Shamir heuristic in the
@@ -1176,7 +1176,7 @@ polynomially many simulated proofs for any statements it wishes.
 	\]
 	probability
 	\[
-		\frkProb = \Pr \left[
+		\extProb = \Pr \left[
 		\begin{aligned}
 			& \verifier_\fs(\REL, \srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
 			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
@@ -1194,7 +1194,7 @@ polynomially many simulated proofs for any statements it wishes.
 	\]
 	is at at least 
 	\[
-		\frkProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
+		\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
 	\]
 	for some polynomial $\poly$, constant $d$ and negligible $\eps$ whenever
   $\accProb \geq \nu$. List $Q$ contains all $(\inp, \zkproof)$ pairs where
@@ -1211,94 +1211,54 @@ show that every such $\sigmaprot_\fs$ is special simulation-extractable. This re
 presented in \cref{sec:forking_lemma} along with the instrumental forking lemma,
 cf.~\cite{CCS:BelNev06}.
 
-% \changedm{ We propose a new notion of \emph{updatable simulation extractability}
-%   which assures that the proof system is secure even when an adversary is
-%   allowed to update the SRS \emph{and} get simulated proofs for the statements
-%   it requires.
+\subsubsection{Simulation sound NIZKs}
+Another notion for non-malleable NIZKs is \emph{simulation soundness} which
+allows the adversary to see simulated proof, but, differently to simulation
+extractability, does not require an extractor to provide a witness for the
+proven statement. Instead, it is only necessary, that an adversary who sees
+simulated proofs cannot make verifier accept a proof of an incorrect
+statement. More precisely,
 
-%   \begin{definition}[Updatable simulation extractability]
-%     \label{def:upsimext}
-%     Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a computationally
-%     special-sound HVZK proof and
-%     $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$
-%     transformed by the Fiat--Shamir transform. We say that $\ps_\fs$ is
-%     \emph{updatable simulation-extractable} with \emph{extraction error} $\nu$
-%     if for any $\ppt$ adversary $\adv$ that is given oracle access to a random
-%     oracle $\ro$, simulator $\simulator_\fs$, and SRS update oracle $\oraclesrs$
-%     defined at \cref{fig:oraclesrs}, and produces an accepting transcript of
-%     $\ps$ with probability $\accProb$,
-%     	\[
-% 		\accProb = \Pr \left[
-% 		\begin{aligned}
-% 			& \verifier_\fs(\REL, \srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
-% 			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q
-% 		\end{aligned}
-% 		\, \left| \,
-% 		\begin{aligned}
-% 			& \srs \gets \kgen(\REL), r \sample \RND{\advse}, \\
-% 			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
-% 			\ro, \oraclesrs} (\REL, \srs; r) 
-% 		\end{aligned}
-% 		\right.\right]\,,
-% 	\]
-% 	probability
-% 	\[
-% 		\frkProb = \Pr \left[
-% 		\begin{aligned}
-% 			& \verifier_\fs(\REL, \srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
-% 			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
-% 			& \REL(\inp_{\advse}, \wit_{\advse}) = 1
-% 		\end{aligned}
-% 		\, \left| \,
-% 		\begin{aligned}
-% 			& \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
-% 			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
-% 			\ro,\oraclesrs} (\REL, \srs; r) \\
-% 			& \wit_{\advse} \gets \ext_\se (\REL, \srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
-% 			Q, Q_\ro,) 
-% 		\end{aligned}
-% 		\right.\right]
-% 	\]
-% 	is at at least 
-% 	\[
-% 		\frkProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
-% 	\]
-% 	for some polynomial $\poly$, constant $d$ and negligible $\eps$ whenever
-%   $\accProb \geq \nu$. List $Q$ contains all $(\inp, \zkproof)$ pairs where
-%   $\inp$ is an instance provided to the simulator by the adversary and
-%   $\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-%   queries to $\ro$ and $\ro$'s answers.
-% \end{definition}
+\begin{definition}[Simulation soundness]
+  	\label{def:simsnd}
+    Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof and
+    $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$
+    transformed by the Fiat--Shamir transform. We say that $\ps_\fs$ is
+    \emph{simulation-sound}
+    for any $\ppt$ adversary $\adv$ that is given oracle access to a random
+    oracle $\ro$ and simulator $\simulator_\fs$, probability
+    \[
+      \Pr\left[
+        \begin{aligned}
+          & \verifier_\fs(\REL, \srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
+          & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+          & \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
+        \end{aligned}
+        \, \left| \,
+          \vphantom{\begin{aligned}
+          & \verifier_\fs(\REL, \srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
+          & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+          & \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
+        \end{aligned}}
+      \begin{aligned}
+        & \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
+        & (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
+          \ro} (\REL, \srs; r)
+      \end{aligned}
+		\right.  \right]
+    \]
+    is at most negligible.  List $Q$ contains all $(\inp, \zkproof)$ pairs where
+  $\inp$ is an instance provided to the simulator by the adversary and
+  $\zkproof$ is the simulator's answer. 
+  \end{definition}
 
-% \begin{figure}
-%   	\centering
-% 		\fbox{
-% 		\procedure{$\oraclesrs(\intent, \srs_n, (\rho_i)_{i = 1}^{n})$}		
-% 		{
-%       \pcif \srs \neq \bot \pcthen \pcreturn 0 \\
-%       \pcif \intent = \setup \pcthen \\
-%       \pcind (\srs', \rho') \sample \kgen(\REL)\\
-%       \pcind Q \gets Q \cup \smallset{\rho'}\\
-%       \pcind \pcreturn (\srs', \rho')\\
-%       \pcif \intent = \update \pcthen\\
-%       \pcind b \gets \verifysrs(\REL, \srs_n, (\rho_i)_{i = 1}^n)\\
-%       \pcind \pcif b = 0 \pcthen \pcreturn 0 \\
-%       \pcind (\srs', \rho') \sample \srsupdate(\REL, \srs_n, (\rho)_{i = 1}^n)
-%       \\
-%       \pcind Q \gets Q \cup \smallset{\rho'}\\
-%       \pcind \pcreturn (\srs', \rho') \\
-%       \pcif \intent = \final \\
-%       \pcind b \gets \verifysrs(\REL, \srs_n, (\rho_i)_{i = 1}^n)\\
-%       \pcind \pcif b = 0 \lor Q \cap \smallset{\rho_i}_i = \emptyset \pcthen \pcreturn
-%       0 \\
-%       \pcind \srs \gets \srs_n\\
-%       \pcind \pcreturn \srs\\
-%       \pcelse \pcreturn 0
-%     }}
-%   \caption{SRS updates oracle}
-%   \label{fig:oraclesrs}
-% \end{figure}
-% }
+  We note that \cref{def:simsnd} can be expressed as a special case of the
+  simulation-extractability where a witness for a statement proven in $\ps$ from
+  \cref{def:simext} can be extracted by an \emph{inefficient} extractor from a
+  single acceptable transcript (i.e.~$(1, \ldots, 1)$-tree of accepting
+  transcripts). Really, the extractor given a statement and transcript output by the adversary
+  can simply check all possible witnesses to determine whether the statement is
+  in the language or not. 
 
 \section{Towards special simulation extractability of multi-message protocols,
   definitions and lemmas}
