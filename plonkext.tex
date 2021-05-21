@@ -1143,6 +1143,7 @@ Fiat--Shamir heuristic states that $\proofsystem_\fs$ is zero-knowledge
 non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
 
 \subsection{Special simulation extractable NIZKs from sigma protocols}
+\label{sec:simext_def}
 Real life applications often require from a NIZK proof system to be
 non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement
 $\inp$ should be able to provide a new proof $\zkproof'$ related to $\zkproof$.
@@ -1228,6 +1229,7 @@ statement. More precisely,
     for any $\ppt$ adversary $\adv$ that is given oracle access to a random
     oracle $\ro$ and simulator $\simulator_\fs$, probability
     \[
+      \ssndProb =
       \Pr\left[
         \begin{aligned}
           & \verifier_\fs(\REL, \srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
@@ -1250,15 +1252,43 @@ statement. More precisely,
     is at most negligible.  List $Q$ contains all $(\inp, \zkproof)$ pairs where
   $\inp$ is an instance provided to the simulator by the adversary and
   $\zkproof$ is the simulator's answer. 
-  \end{definition}
+\end{definition}
 
-  We note that \cref{def:simsnd} can be expressed as a special case of the
-  simulation-extractability where a witness for a statement proven in $\ps$ from
-  \cref{def:simext} can be extracted by an \emph{inefficient} extractor from a
-  single acceptable transcript (i.e.~$(1, \ldots, 1)$-tree of accepting
-  transcripts). Really, the extractor given a statement and transcript output by the adversary
-  can simply check all possible witnesses to determine whether the statement is
-  in the language or not. 
+\begin{remark}
+  \label{rem:simext_to_simsnd}
+  We note that probability $\ssndProb$ \cref{def:simsnd} can be expressed in
+  terms from the simulation-extractability definition. More precisely, allowing
+  the extractor $\extse$ from \cref{def:simext} to be \emph{unbounded} and,
+  given statement $\inp$ always finds a witness $\wit$ if there is any, we have
+  $ \ssndProb = \accProb - \frkProb$. Note that such an unbounded extractor is
+  justified in the light of simulation soundness definition. More precisely, we
+  can equivalently define $\ssndProb$ as
+\[
+      \ssndProb =
+      \Pr\left[
+        \begin{aligned}
+          & \verifier_\fs(\REL, \srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
+          & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+          & \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
+        \end{aligned}
+        \, \left| \,
+      \begin{aligned}
+        & \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
+        & (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
+          \ro} (\REL, \srs; r)\\
+        & \wit_{\adv} \gets \ext(\REL, \srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+			Q, Q_\ro,) 
+      \end{aligned}
+		\right.  \right],
+\]
+where the only necessary input to the unbounded extractor $\ext$ is the instance
+$\inp$ (the rest is given for the consistency with the simulation extractability
+definition).
+\end{remark}
+
+In \cref{cor:simext_to_ssnd} we show that under some conditions this is enough
+to conjecture that probability $\ssndProb$ is not only at most negligible, but
+also, in some parameters, exponentially smaller than $(1 - \extProb)$.
 
 \section{Towards special simulation extractability of multi-message protocols,
   definitions and lemmas}
@@ -1583,14 +1613,14 @@ to present the main result of this paper---special simulation extractability of
 multi-round protocols.
 
 \begin{theorem}[Special simulation-extractable multi-message protocols]
-\label{thm:se}
-Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
-$(2 \mu + 1)$-message proof system for $\RELGEN(\secparam)$ that is honest
-verifier zero-knowledge in the standard model\footnote{Crucially, we require
-  that one can provide an indistinguishable simulated proof without any
-  additional knowledge, as e.g~knowledge of a SRS trapdoor.}, has $\ur{k}$
-property with security $\epsur$, is $(n_1, \ldots, n_\mu)$-special
-sound for $n_i = 1, i \in \range{1}{\mu} \setminus \smallset{k}$ and $n_k = n$.
+  \label{thm:se}
+  Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
+  $(2 \mu + 1)$-message proof system for $\RELGEN(\secparam)$ that is honest
+  verifier zero-knowledge in the standard model\footnote{Crucially, we require
+    that one can provide an indistinguishable simulated proof without any
+    additional knowledge, as e.g~knowledge of a SRS trapdoor.}, has $\ur{k}$
+  property with security $\epsur$, is $(n_1, \ldots, n_\mu)$-special sound for
+  $n_i = 1, i \in \range{1}{\mu} \setminus \smallset{k}$ and $n_k = n$.
 
 Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
 Then $\psfs$ is special simulation-extractable with extraction error $\epsur$
@@ -1807,6 +1837,47 @@ thus
 $\psfs$ is special simulation extractable with extraction error $\epsur$.
 \qed
 \end{proof}
+
+\paragraph{Inefficient simulation extractability gives efficient simulation soundness.}
+As noted in \cref{sec:simext_def} if we allow an unbounded extractor, then 
+\begin{corollary}[Simulation extractability to simulation soundness.]
+  \label{cor:simext_to_ssnd}
+  Let $\ps$, as defined in \cref{thm:se} be simulation-extractable with
+	\[
+    \extProb \geq \frac{(\accProb - \epsur)^{n}}{q^{n - 1}} -
+	(\accProb - \epsur) \cdot \left( 1 -
+      \left(\frac{2^\secpar - n}{2^\secpar}\right)^{n}\right)
+    - \epsur - \epsss,
+  \]
+  then it is simulation sound with
+  $\ssndProb \leq 2\epsur + \epsss 2^{-\secpar}(\accProb - \epsur)$
+\end{corollary}
+\begin{proof}
+  Since according to the discussion in \cref{rem:simext_to_simsnd} $\ssndProb =
+  \accProb - \extProb$ it holds:
+  \begin{align*}
+    \ssndProb \leq \accProb - \left(\frac{(\accProb - \epsur)^{n}}{q^{n - 1}} -
+	(\accProb - \epsur) \cdot \left( 1 -
+      \left(\frac{2^\secpar - n}{2^\secpar}\right)^{n}\right)
+    - \epsur - \epsss,\right).
+  \end{align*}
+  Furthermore, the extractor $\ext$ from \cref{rem:simext_to_simsnd} is unbounded, we can
+  assume that it is able to extract the witness from a single run of a
+  simulation-extractability adversary $\adv$. hence $n = 1$. Thus,
+    \begin{align*}
+      \ssndProb & \leq \accProb - \left(\accProb - \epsur -
+                  (\accProb - \epsur) \cdot \left( 1 -
+                  \left(\frac{2^\secpar - 1}{2^\secpar}\right)\right)
+                  - \epsur - \epsss\right) \\
+                & = \accProb - \left(\accProb - \epsur -
+                  (\accProb - \epsur) \cdot \frac{1}{2^\secpar}
+                  - \epsur - \epsss\right) \\
+                & = 2\epsur + \epsss
+                  (\accProb - \epsur) \cdot \frac{1}{2^\secpar}.
+    \end{align*}
+    \qed
+\end{proof}
+
 
 \section{Special simulation extractability of $\plonkprotfs$} 
 In this section we show that $\plonkprotfs$ is special simulation-extractable. To that
