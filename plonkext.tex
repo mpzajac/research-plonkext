@@ -15,7 +15,7 @@
 \let\spvec\vec
 \usepackage{amssymb,amsmath}
 \let\vec\spvec
-\usepackage{newtxmath,newtxtext}
+%\usepackage{newtxmath,newtxtext}
 \usepackage[T1]{fontenc}
 
   \def\vec#1{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
@@ -66,7 +66,7 @@
 \begin{abstract}
   Faust, Kohlweiss, Marson, and Venturi (INDOCRYPT 2012) shown that a
   non-interactive zero knowledge (NIZK) proof system obtained by applying the
-  Fiat--Shamir transformation to a public-coin sigma protocol is simulation
+   Fiat--Shamir transformation to a public-coin sigma protocol is simulation
   simulation sound and simulation extractable (under some conditions). In this
   paper, we continue the lead proposed by Faust et al.~and formally define
   simulation extractability for protocols in the random oracle model (ROM) which
@@ -86,79 +86,40 @@ The Fiat--Shamir heuristic takes a public-coin interactive protocol and makes it
 interactive by computing the verifier's public coins by hashing the current
 protocol transcript. While in principle justifiable in the random oracle model
 (ROM)~\cite{CCS:BelRog93}, it is theoretically unsound~\cite{FOCS:GolKal03} and
-so should be used with care.  Nevertheless, the Fiat--Shamir heuristic is a
-popular design tool when it comes to constructing zkSNARKs. Many works,
-including \sonic{}~\cite{CCS:MBKM19} \plonk{}~\cite{EPRINT:GabWilCio19}, and
-\marlin~\cite{EC:CHMMVW20}, design interactive protocols and prove them
-secure. Unfortunately, they then only \emph{conjecture} the security for their
-non-interactive variants by employing the Fiat--Shamir heuristic.
-% The more
-% rigorous approach is to prove security of the Fiat--Shamir heuristic in the
-% random oracle model.
-However, proper security analysis of zkSNARKs utilizing the heuristic is of
-great importance especially now, when they are used to secure cryptoassets of
-immense value. Moreover, the aforementioned zkSNARKs not only utilize the
-Fiat--Shamir transformation, but also a structured reference string
-(SRS). According to our best knowledge security of the transformation in case of
-SRS-based zero knowledge proofs has not yet been shown.
+so should be used with care.
 
-
-
-
-In recent years we have seen indisputable progress in building efficient
-(non-interactive) zero-knowledge proof systems,
+Nevertheless, the Fiat--Shamir heuristic is a popular design tool when it comes
+to constructing \emph{zero knowledge succinct arguments of knowledge}
+(zkSNARKs). zkSNARKs have seen indisputable progress in the recent years
 e.g.~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16,SP:BBBPWM18}
-to name a few. Special attention has been devoted to the design of new
-\emph{zero-knowledge succinct non-interactive arguments of knowledge} (zkSNARKs)
-with short---ideally constant-length---proofs. Succinctness makes zkSNARKs
-especially useful for deployment in real systems,
-e.g.~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}. One
-of the most efficient (in terms of proof length and verifier's computation)
-zkSNARKs are \plonk{}~\cite{EPRINT:GabWilCio19} and \sonic{}~\cite{CCS:MBKM19}
-which security rely on both structure reference string (SRS) and Fiat--Shamir
-heuristic. More precisely, both protocols are analyzed as public coin
-interactive proof systems and it is conjectured that they remain secure when
-they are made non-interactive by using the Fiat--Shamir
-transformation. 
+to name a few. Their succinctness make them especially useful for deployment in
+real systems,
+e.g.~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}. However,
+many works, including \sonic{}~\cite{CCS:MBKM19}
+\plonk{}~\cite{EPRINT:GabWilCio19}, and \marlin~\cite{EC:CHMMVW20}, design
+interactive protocols and prove them secure. Unfortunately, they then only
+\emph{conjecture} the security for their non-interactive variants by employing
+the Fiat--Shamir heuristic.  However, proper security analysis of zkSNARKs
+utilizing the heuristic is of great importance especially now, when they are
+used to secure cryptoassets of immense value. Moreover, the aforementioned
+zkSNARKs not only utilize the Fiat--Shamir transformation, but also a structured
+reference string (SRS). According to our best knowledge security of the
+transformation in case of SRS-based zero knowledge proofs has not yet been
+shown. \michals{22.05}{What about some works by Tibor Jeager?}
 
 \hl{Write about FS analysis for e.g. Bulletproofs}
 
-In recent years we have seen indisputable progress in building efficient
-zero-knowledge proof systems,
-e.g.~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16,SP:BBBPWM18}
-to name a few. Special attention has been devoted to the design of new
-\emph{zero-knowledge succinct non-interactive arguments of knowledge} (zkSNARKs)
-with short (ideally constant-length) proofs. Succinctness makes zkSNARKs
-especially useful for deployment in real systems,
-e.g.~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}. Known 
-zkSNARKs with a constant proof length are in so-called the structured reference
-string (SRS) model, where both the proving party (called the prover) and the
-verifying one (called the verifier) are equipped with a SRS provided by a
-trusted third party. Real-life deployment of proving systems raises a question
-on how the SRS is generated. How much the aforementioned ``trusted'' third party
-has to be trusted? Could this assumption be weakened without harm for the
-security of the proof system? 
-% This in turn raises the question: \emph{Are the security models of current
-%   zkSNARKs adequate for real-life deployment?} This question is particularly
-% pertinent when one realises that all zkSNARKs with constant-sized proofs are
-% shown secure in the structured reference string (SRS) model where a trusted
-% third party provides the SRS for prover and verifier
-% by the parties necessarily comes with a trapdoor which can be used to break
-% (knowledge) soundness. That is, a malicious \emph{prover} equipped with the SRS
-% trapdoor could convince a \emph{verifier} to accept a false statement or a
-% statement for which the prover does not know the witness. Hence secure real-life
-% deployment of zkSNARKs requires the trapdoor to remain secret.
+Unfortunately, conjecturing security by calling Fiat--Shamir transformation is
+no the only security weakness of zkSNARKs. And while security of the transform
+may be interesting only for a narrow group of cryptography theory enthusiasts,
+other are more practice-oriented. First of all, the most efficient zkSNARKs
+require a trusted third party to generate the SRS and provide no security if the
+SRS has been produced maliciously. This issue has been tackled by, e.g.~\plonk{}
+and \sonic{} by using an updatable SRS framework. This framework, instead of
+using a single SRS-generating entity, allows SRS to be generated by a set of
+different parties and assures that it remains secure if at least one of these
+parties is honest.
 
-Two recent works \plonk{}~\cite{EPRINT:GabWilCio19} and
-Sonic{}~\cite{CCS:MBKM19} tackle the problem of secure SRS generation by
-providing zkSNARKs that are \emph{updatable} and \emph{universal}.  The former
-property allows parties to update the SRS and assures that if at least of the
-updates was performed honestly, then the system is sound.  The latter property
-means that a single SRS can be used to show satisfiability of any circuit up to
-some given size. While updatability is an important system security feature,
-universality is often crucial for the practical adoption of a proof system.
-
-% \paragraph{On the importance of the simulation extractability.}
 Another problem with existing security models is proof malleability.  Arguably,
 in the real life one simply cannot assume that the adversary who tries to break
 security of a system does not have access to any proofs provided by other
@@ -171,11 +132,10 @@ are only shown to satisfy only a (standard) knowledge soundness definition. We
 argue that simulation-extractability (SE) is the property that should be
 required from zkSNARKs used in practice.
 
-% \paragraph{State of the art---simulation-extractable updatable universal zkSNARKs.} 
 Unfortunately, to the best of our knowledge, there are zkSNARKs that are
 simulation-extractable~\cite{C:GroMal17,EPRINT:BowGab18,EPRINT:AtaBag19,EC:Groth16}
-and zkSNARKs that are
-universal~\cite{C:GKMMM18,CCS:MBKM19,EPRINT:GabWilCio19,EC:CHMMVW20}, however
+and zkSNARKs that are universal and
+updatable~\cite{C:GKMMM18,CCS:MBKM19,EPRINT:GabWilCio19,EC:CHMMVW20}, however
 there are no known zkSNARKs that enjoy both of these properties out-of-the-box
 (even for a weaker notion of simulation extractability). Obviously, given a
 universal zkSNARK one could lift it to be simulation-extractable using
@@ -185,19 +145,6 @@ zkSNARKs. No out-of-the-box simulation-extractable updatable zkSNARKs are
 currently known and there is no transformation that could take a SE zkSNARK and
 make it updatable (even though transformations like \cite{CCS:AbdRamSla20}
 preserves updatability).
-
-\paragraph{On the popularity and power of Fiat-Shamir.} The Fiat-Shamir
-heuristic takes a public-coin interactive protocol and makes it interactive by
-computing the verifier's public coins by hashing the current protocol
-transcript. While in principle justifiable in the Random Oracle
-model~\cite{CCS:BelRog93}, it is theoretically unsound~\cite{FOCS:GolKal03} and
-so should be used with care.  Nevertheless, the Fiat-Shamir heuristic is a
-popular design tool when it comes to constructing zkSNARKs. Many works,
-including~\cite{CCS:MBKM19,EPRINT:GabWilCio19,EC:CHMMVW20}, design interactive
-protocols and prove them secure. However, they then only conjecture the security
-for their non-interactive variants by employing the Fiat-Shamir heuristic. The
-more rigorous approach is to prove security of the Fiat-Shamir heuristic in the
-Random Oracle model.
 
 \subsection{Our contribution}
 We show that a class of computationally special-sound interactive proofs of
@@ -243,6 +190,12 @@ computational special soundness, generalized unique response, and a generalized
 forking lemma. These conceptual insights into interactive SNARK systems help us
 overcome a number of challenges, as we explain below.
 
+Unfortunately, the extraction technique we use is quite inefficient as the
+security loss is exponential in the number of transcripts required to extract
+the witness. We use that result as a warning -- one should pay more attention
+when conjecturing security relying on the Fiat--Shamir transformation as it may
+introduce huge security loss.  On the up side, we show that even that fairly
+inefficient extraction gives a tight simulation soundness.
 
 \subsection{Our techniques}
 
@@ -3503,8 +3456,9 @@ al.~uber assumption. The proof goes similarly to the original proof given in
   polynomials $f \in \p{F}$ are pair-wise independent and are independent of
   $\p{P}_1, \p{P}_2, \p{P}_T$, then for any $\adv$ that makes up to $q$ queries to the
   GGM oracle holds:
-  \[
-    \left|\,
+  \begin{equation*}
+    \begin{split}
+     \left|\,
     \Pr\left[
     \adv\left(
       \begin{aligned}
@@ -3521,9 +3475,11 @@ al.~uber assumption. The proof goes similarly to the original proof given in
         \p{F}_b \gets \p{F}(x_1, \ldots, x_n),\\
         \p{F}_{1 - b} \gets (y_1, \ldots, y_m)
       \end{aligned}
-    \right.  \right] - \frac{1}{2} \, \right| \leq \frac{d(q + m_1 + m_2 + m_T +
-  m)^2 }{2p}
-  \]
+    \right.  \right] - \frac{1}{2} \, \right| \\
+     \leq \frac{d(q + m_1 + m_2 + m_T +
+      m)^2 }{2p}
+    \end{split}
+  \end{equation*}
 \end{theorem}
 \begin{proof}
   Let $\cdv$ be a challenger that plays with $\adv$ in the following
@@ -3622,7 +3578,9 @@ polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
     + m_0 + m_1 + m)^2 \frac{d}{2p}
   \]
   as required.
-  \end{proof}
+\end{proof}
+
+\end{document}
   
 \section{(Tight) simulation soundness of $\plonk$}
 \begin{theorem}[Simulation soundness]
