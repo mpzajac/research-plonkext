@@ -1257,12 +1257,11 @@ statement. More precisely,
 \begin{remark}
   \label{rem:simext_to_simsnd}
   We note that probability $\ssndProb$ \cref{def:simsnd} can be expressed in
-  terms from the simulation-extractability definition. More precisely, allowing
-  the extractor $\extse$ from \cref{def:simext} to be \emph{unbounded} and,
-  given statement $\inp$ always finds a witness $\wit$ if there is any, we have
-  $ \ssndProb = \accProb - \frkProb$. Note that such an unbounded extractor is
-  justified in the light of simulation soundness definition. More precisely, we
-  can equivalently define $\ssndProb$ as
+  terms from the simulation-extractability definition. More precisely, the
+  condition $\neg \exists \wit: \REL(\inp_\adv, \wit_\adv) = 1$ can be substituted with
+  $\REL(\inp_\adv, \wit_\adv) = 0$, where $\wit_\adv$, returned by a possibly unbounded
+  extractor is either a witness to $\inp_\adv$ (if there exists any) or $\bot$ (if
+  there is none). More precisely
 \[
       \ssndProb =
       \Pr\left[
@@ -1282,13 +1281,18 @@ statement. More precisely,
 		\right.  \right],
 \]
 where the only necessary input to the unbounded extractor $\ext$ is the instance
-$\inp$ (the rest is given for the consistency with the simulation extractability
-definition).
+$\inp_\adv$ (the rest is given for the consistency with the simulation extractability
+definition). 
+%
+With the probabilities in \cref{def:simext} holding regardless the extractor
+is unbounded or not, we obtain the following equality
+$ \ssndProb = \accProb - \frkProb$.
 \end{remark}
 
-In \cref{cor:simext_to_ssnd} we show that under some conditions this is enough
+In \cref{cor:simext_to_ssnd} we show that (under some mild conditions) this is enough
 to conjecture that probability $\ssndProb$ is not only at most negligible, but
-also, in some parameters, exponentially smaller than $(1 - \extProb)$.
+also, in some parameters, exponentially smaller than $(1 - \extProb)$
+(probability of extraction failure in \cref{def:simext}).
 
 \section{Towards special simulation extractability of multi-message protocols,
   definitions and lemmas}
@@ -1839,7 +1843,9 @@ $\psfs$ is special simulation extractable with extraction error $\epsur$.
 \end{proof}
 
 \paragraph{Inefficient simulation extractability gives efficient simulation soundness.}
-As noted in \cref{sec:simext_def} if we allow an unbounded extractor, then 
+As noted in \cref{sec:simext_def}, simulation soundness can be expressed in
+terms of simulation extractability with an  unbounded extractor. Holds then,
+
 \begin{corollary}[Simulation extractability to simulation soundness.]
   \label{cor:simext_to_ssnd}
   Let $\ps$, as defined in \cref{thm:se} be simulation-extractable with
