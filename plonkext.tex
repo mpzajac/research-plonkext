@@ -64,14 +64,12 @@
 \begin{document} \sloppy \maketitle
 
 \begin{abstract}
-  Faust, Kohlweiss, Marson, and Venturi (INDOCRYPT 2012) shown that a
-  non-interactive zero knowledge (NIZK) proof system obtained by applying the
-   Fiat--Shamir transformation to a public-coin sigma protocol is simulation
-  simulation sound and simulation extractable (under some conditions). In this
-  paper, we continue the lead proposed by Faust et al.~and formally define
-  simulation extractability for protocols in the random oracle model (ROM) which
-  utilize a structured reference string (SRS). Furthermore, we show that a NIZK
-  proof system obtained by applying the Fiat--Shamir transformation to a
+  Faust, Kohlweiss, Marson, and Venturi (INDOCRYPT 2012) showed that  non-interactive zero knowledge (NIZK) proof systems obtained by applying the
+  Fiat--Shamir transformation to a public-coin sigma protocol are simulation
+  simulation sound and simulation extractable under lenient conditions. In this
+  paper, we extend this work and formally define
+  simulation extractability for protocols in the random oracle model (ROM) which also use a structured reference string (SRS). Furthermore, we show that NIZK
+  proof systems obtained by applying the Fiat--Shamir transformation to a
   public-coin multi-round interactive protocol with SRS is
   simulation-extractable under lenient conditions. A consequence of our result
   is that, in the ROM, we obtain non-malleable NIZKs essentially for free from a
@@ -82,34 +80,29 @@
 
 \section{Introduction}
 % \paragraph{On the popularity and power of Fiat--Shamir.}
-The Fiat--Shamir heuristic takes a public-coin interactive protocol and makes it
+The Fiat--Shamir (FS) transform takes a public-coin interactive protocol and makes it
 interactive by computing the verifier's public coins by hashing the current
 protocol transcript. While in principle justifiable in the random oracle model
 (ROM)~\cite{CCS:BelRog93}, it is theoretically unsound~\cite{FOCS:GolKal03} and
-so should be used with care.
+so only a heuristic that should be used with care.
 
-Nevertheless, the Fiat--Shamir heuristic is a popular design tool when it comes
+Nevertheless, the FS transform is a popular design tool when it comes
 to constructing \emph{zero knowledge succinct arguments of knowledge}
-(zkSNARKs). zkSNARKs have seen indisputable progress in the recent years
-e.g.~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16,SP:BBBPWM18}
-to name a few. Their succinctness make them especially useful for deployment in
-real systems,
-e.g.~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}. However,
+(zkSNARKs). In recent years, zkSNARKs have seen indisputable progress~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16,SP:BBBPWM18}
+Their succinctness make them especially useful for deployment in
+real systems~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}. However,
 many works, including \sonic{}~\cite{CCS:MBKM19}
-\plonk{}~\cite{EPRINT:GabWilCio19}, and \marlin~\cite{EC:CHMMVW20}, design
-interactive protocols and prove them secure. Unfortunately, they then only
-\emph{conjecture} the security for their non-interactive variants by employing
-the Fiat--Shamir heuristic.  However, proper security analysis of zkSNARKs
-utilizing the heuristic is of great importance especially now, when they are
-used to secure cryptoassets of immense value. Moreover, the aforementioned
-zkSNARKs not only utilize the Fiat--Shamir transformation, but also a structured
-reference string (SRS). According to our best knowledge security of the
-transformation in case of SRS-based zero knowledge proofs has not yet been
-shown. \michals{22.05}{What about some works by Tibor Jeager?}
+\plonk{}~\cite{EPRINT:GabWilCio19}, and \marlin~\cite{EC:CHMMVW20} are designed and proven secure as interactive protocols. Security is then only
+\emph{conjectured} for their non-interactive variants by employing
+the FS transform. Properly analyzing this heuristic security of zkSNARKs is of great importance not the least because they are frequently
+used to secure crypto-currency assets of immense value. Moreover, the aforementioned
+zkSNARKs employ not only a FS transform, but also a structured
+reference string (SRS). To the best of our knowledge the security of the FS
+transform for SRS-based zero knowledge proofs has not yet been
+shown, not even heuristically in the random oracle model. \michals{22.05}{What about some works by Tibor Jeager?}\markulf{Not sure which work you refer to, but I agree. Likely someone did look at this. We can also add the multi-round conjunct.}
 
 \hl{Write about FS analysis for e.g. Bulletproofs}
-
-Unfortunately, conjecturing security by calling Fiat--Shamir transformation is
+Security conjectures via the Fiat--Shamir transform is
 no the only security weakness of zkSNARKs. And while security of the transform
 may be interesting only for a narrow group of cryptography theory enthusiasts,
 other are more practice-oriented. First of all, the most efficient zkSNARKs
@@ -1221,7 +1214,7 @@ statement. More precisely,
         \begin{aligned}
           & \verifier_\fs(\REL, \srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
           & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
-          & \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
+          & \REL(\inp_{\adv}, \wit_{\adv}) = 0
         \end{aligned}
         \, \left| \,
       \begin{aligned}
@@ -1237,9 +1230,9 @@ where the only necessary input to the unbounded extractor $\ext$ is the instance
 $\inp_\adv$ (the rest is given for the consistency with the simulation extractability
 definition). 
 %
-With the probabilities in \cref{def:simext} holding regardless the extractor
+With the probabilities in \cref{def:simext} holding regardless of whether the extractor
 is unbounded or not, we obtain the following equality
-$ \ssndProb = \accProb - \frkProb$.
+$ \ssndProb = \accProb - \extProb$.
 \end{remark}
 
 In \cref{cor:simext_to_ssnd} we show that (under some mild conditions) this is enough
