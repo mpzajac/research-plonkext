@@ -1715,18 +1715,18 @@ runs internally the tree extractor $\extt(\tree)$ and outputs what it returns.
 
 We emphasize here the importance of the unique response property. If it does not
 hold then in some $j$-th execution of $\zdv$ the adversary could reuse a
-challenge that it learnt from observing proofs in $Q$. In that case, $\zdv$
+challenge that it learned from observing proofs in $Q$. In that case, $\zdv$
 would output $i = 0$, making the extractor fail. Fortunately, the case that the
 adversary breaks the unique response property has already been covered by the
 abort condition in $\game{1}$.
 
 Denote by $\waccProb$ the probability that $\advse$ outputs a proof that is
-accepted and does not break $\ur{k}$-ness of $\ps$.  Denote by $\waccProb'$
+accepted and does not break $\ur{k}$-ness of $\ps$.  Denote by $\waccProb'$ the
 probability that algorithm $\zdv$, defined in the lemma, produces an accepting
 proof with a fresh challenge after Round $k$. Given the discussion above, we can
 state that $\waccProb = \waccProb'$.
 
-Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma},
+Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma}, we get that
 \begin{equation}
   \begin{split}
     \prob{\event{\errfrk}} \leq 1 - \waccProb \cdot \left(\frac{\waccProb^{n -
@@ -1744,7 +1744,7 @@ Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemm
 % 		\waccProb \cdot \left(\frac{2^\secpar - n}{2^\secpar}\right)^{n} -
 % 	\waccProb\right)\,.
 % \]
-\ngame{3} This is identical to $\game{2}$ except that now the game is aborted if
+\ngame{3} This game is identical to $\game{2}$ except that it aborts if
 $\extt(\tree)$ run by $\ext$ fails to extract the witness. Denote that event by
 $\event{\errss}$.
 
@@ -2339,25 +2339,24 @@ for
   Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
   $\GRP_1$-elements; that is,
   $\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc + 2}}$. Let $\adv$ be an
-  algebraic adversary that for produces a statement $\inp$ and
+  algebraic adversary that produces a statement $\inp$ and a
   $(1, 1, \noofc + 3, 1)$-tree of acceptable transcripts $\tree$.  Note that in
   all transcripts the instance $\inp$, proof elements
   $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and
   challenges $\alpha, \beta, \gamma$ are common as the transcripts share the
-  first three rounds. The tree ``branches'' after third round of the protocol
-  where challenge $\chz$ is presented, thus tree $\tree$ is build by using different
+  first three rounds. The tree ``branches'' after the third round of the protocol
+  where the challenge $\chz$ is presented, thus tree $\tree$ is build using different
   values of $\chz$. 
 
   We consider two mutually disjunctive events. The first, $\event{E}$ holds when
   all of the transcripts are acceptable by the idealised verification equation,
   i.e.~$\vereq_\zkproof(X) = 0$, cf.~\cref{eq:ver_eq}. The second, $\nevent{E}$ holds
   when there is a transcript that is acceptable by the real verifier, but not by
-  the ideal verifier. That is, for that particular transcript holds
-  $\vereq_\zkproof(\chi) = 0$, but $\vereq_\zkproof(X) \neq 0$.  When event $\event{E}$ holds we
-  construct the extractor $\extt$. If it does not, we show a reduction
+  the ideal verifier. That is, for that particular transcript it holds that
+  $\vereq_\zkproof(\chi) = 0$, but $\vereq_\zkproof(X) \neq 0$.  When event $\event{E}$ holds we show that the extractor $\extt$ is successful. If it does not hold, we show a reduction
   $\rdvdlog$ that breaks the $\dlog$ assumption.
 
-  \ncase{When $\event{E}$ happens} Let $(\inp, \tree) \gets \adv(\REL,
+  \ncase{When $\event{E}$ holds} Let $(\inp, \tree) \gets \adv(\REL,
   \srs)$. Since the protocol $\plonkprot$, instantiated with the idealised
   verification equation, is perfectly sound, except with probability of batching
   failure $\epsbatch$, for a valid proof $\zkproof$ of a statement $\inp$ there
@@ -2369,9 +2368,9 @@ for
   interpolates the polynomials and reveals the corresponding witness
   $\wit$. The extractor finds the witness with probability $1$.
 
-  \ncase{When $\nevent{E}$ happens} Let $\adv$ be an adversary that for relation
+  \ncase{When $\nevent{E}$ holds} Let $\adv$ be an adversary that for relation
   $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree of
-  acceptable transcripts such that $\nevent{E}$ happens. Let $\rdvdlog$ be a
+  acceptable transcripts such that $\nevent{E}$ holds. Let $\rdvdlog$ be a
   reduction that gets as input an $(\noofc + 2, 1)$-dlog instance
   $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$ and is tasked to output
   $\chi$. The reduction proceeds as follows---it gives the input instance to the
