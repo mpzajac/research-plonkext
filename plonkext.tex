@@ -1727,19 +1727,23 @@ proof with a fresh challenge after Round $k$. Given the discussion above, we can
 state that $\waccProb = \waccProb'$.
 
 Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma},
-\[
-	\prob{\event{\errfrk}} \leq 1 -
-	\waccProb \cdot \left(\frac{\waccProb^{n - 1}}{q^{n - 1}} +
-	\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
-(2^\secpar)^{n}} - 1\right)\,.
-\]
-For the sake of simplicity we loose this approximation a bit and state
-\[
-	\prob{\event{\errfrk}} \leq 1 -
-	\left(\frac{\waccProb^{n}}{q^{n - 1}} +
-		\waccProb \cdot \left(\frac{2^\secpar - n}{2^\secpar}\right)^{n} -
-	\waccProb\right)\,.
-\]
+\begin{equation}
+  \begin{split}
+    \prob{\event{\errfrk}} \leq 1 - \waccProb \cdot \left(\frac{\waccProb^{n -
+          1}}{q^{n - 1}} + \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
+        (2^\secpar)^{n}} - 1\right) = \\
+    1 - \left(\frac{\waccProb^{n}}{q^{n - 1}} + 
+      \waccProb \cdot \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
+        (2^\secpar)^{n}} - \waccProb\right)\,.
+\end{split}
+\end{equation}
+% For the sake of simplicity we loose this approximation a bit and state
+% \[
+% 	\prob{\event{\errfrk}} \leq 1 -
+% 	\left(\frac{\waccProb^{n}}{q^{n - 1}} +
+% 		\waccProb \cdot \left(\frac{2^\secpar - n}{2^\secpar}\right)^{n} -
+% 	\waccProb\right)\,.
+% \]
 \ngame{3} This is identical to $\game{2}$ except that now the game is aborted if
 $\extt(\tree)$ run by $\ext$ fails to extract the witness. Denote that event by
 $\event{\errss}$.
@@ -1758,13 +1762,15 @@ argument,
 \[
 	\abs{\prob{\game{0}} - \prob{\game{3}}} \leq 1 -
 	\left(\frac{\waccProb^{n}}{q^{n - 1}} + \waccProb \cdot
-	\left(\frac{2^\secpar - n}{2^\secpar}\right)^{n} - \waccProb\right) + \epsur + \epsss\,.
+	\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
+        (2^\secpar)^{n}} - \waccProb\right) + \epsur + \epsss\,.
 \]
 Thus the probability that extractor $\extss$ succeeds is at least
 \[
 	\frac{\waccProb^{n}}{q^{n - 1}} + 
 	\waccProb \cdot
-	\left( \frac{2^\secpar - n}{2^\secpar}\right)^{n} -
+	\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
+        (2^\secpar)^{n}} -
 \waccProb - \epsur - \epsss\,.
 \]
 Since $\waccProb$ is probability of $\advse$ outputting acceptable transcript
@@ -1775,11 +1781,13 @@ proof as defined in \cref{def:simext}. It thus holds
 	\label{eq:frk}
 	\extProb \geq \frac{(\accProb - \epsur)^{n}}{q^{n - 1}} -
 	\underbrace{(\accProb - \epsur) \cdot \left( 1 -
-      \left(\frac{2^\secpar - n}{2^\secpar}\right)^{n}\right)
+      \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
+        (2^\secpar)^{n}}\right)
 - \epsur - \epsss}_{\eps}\,.
 \]
 Note that the part of \cref{eq:frk} denoted by $\eps$ is negligible as
-$\epsur, \epsss$ are negligible, and $\left(\infrac{(2^\secpar
+$\epsur, \epsss$ are negligible, and $\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
+        (2^\secpar)^{n}} \geq \left(\infrac{(2^\secpar
 - n)}{2^\secpar}\right)^{n}$ is overwhelming.
 Thus, 
 \[
@@ -1800,7 +1808,8 @@ terms of simulation extractability with an  unbounded extractor. Holds then,
 	\[
     \extProb \geq \frac{(\accProb - \epsur)^{n}}{q^{n - 1}} -
 	(\accProb - \epsur) \cdot \left( 1 -
-      \left(\frac{2^\secpar - n}{2^\secpar}\right)^{n}\right)
+      \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
+        (2^\secpar)^{n}}\right)
     - \epsur - \epsss,
   \]
   then it is simulation sound with
@@ -1812,24 +1821,24 @@ terms of simulation extractability with an  unbounded extractor. Holds then,
   \begin{align*}
     \ssndProb \leq \accProb - \left(\frac{(\accProb - \epsur)^{n}}{q^{n - 1}} -
 	(\accProb - \epsur) \cdot \left( 1 -
-      \left(\frac{2^\secpar - n}{2^\secpar}\right)^{n}\right)
+      \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
+        (2^\secpar)^{n}}\right)
     - \epsur - \epsss,\right).
   \end{align*}
   Furthermore, as the extractor $\ext$ from \cref{rem:simext_to_simsnd} is unbounded, we can
   assume that it is able to extract the witness from a single run of a
   simulation-extractability adversary $\adv$. hence $n = 1$. Thus,
-    \begin{align*}
+  \begin{equation*}
+    \begin{split}
       \ssndProb & \leq \accProb - \left(\accProb - \epsur -
                   (\accProb - \epsur) \cdot \left( 1 -
-                  \left(\frac{2^\secpar - 1}{2^\secpar}\right)\right)
+                  1)\right)
                   - \epsur - \epsss\right) \\
-                & = \accProb - \left(\accProb - \epsur -
-                  (\accProb - \epsur) \cdot \frac{1}{2^\secpar}
-                  - \epsur - \epsss\right) \\
-                & = 2\epsur + \epsss
-                  (\accProb - \epsur) \cdot \frac{1}{2^\secpar}.
-    \end{align*}
-    \qed
+                & =  2 \epsur 
+                  + \epsss \\
+                \end{split}
+              \end{equation*}
+              \qed
 \end{proof}
 
 
