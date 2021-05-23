@@ -643,6 +643,7 @@ polynomial. We assume that $\maxdeg$ can be read from the output SRS.
 %
 % We require $\PCOM$ to have the following properties:
 \begin{figure}[t!]
+\centering
 	\begin{pcvstack}[center,boxed]
 		\begin{pchstack}
 			\procedure{$\kgen(\secparam, \maxdeg)$}
@@ -700,6 +701,7 @@ polynomial. We assume that $\maxdeg$ can be read from the output SRS.
   \end{figure}
 
 \begin{figure}[t!]
+\centering
 	\begin{pcvstack}[center,boxed]
 		\begin{pchstack}
 			\procedure{$\kgen(\secparam, \maxdeg)$} {
@@ -1653,8 +1655,8 @@ for some negligible $\eps$.
 	\end{itemize}  
 	If $\zkproof_1 = \zkproof_2$, then $\advse$ fails to break simulation
   extractability, as $\zkproof_2 \in Q$. On the other hand, if the proofs are
-  not equal, then $\rdvur$ breaks $\ur{k}$-ness of $\ps$, what may happen with
-  some negligible probability $\epsur$ only, hence \( \prob{\event{\errur}} \leq
+  not equal, then $\rdvur$ breaks $\ur{k}$-ness of $\ps$. This happens only with
+  negligible probability $\epsur$, hence \( \prob{\event{\errur}} \leq
   \epsur\,. \)
 	
   \ngame{2} This is identical to $\game{1}$ except that now the environment
@@ -1664,8 +1666,8 @@ for some negligible $\eps$.
 
   \ncase{$\game{1} \mapsto \game{2}$} Note that for every acceptable proof
   $\zkproof_{\advse}$, we may assume that whenever $\advse$ outputs in Round $k$
-  message $\zkproof_{\advse}[k]$, then
-  $(\inp_{\advse}, \zkproof_{\advse}[1..k])$ random oracle query that was made
+  message $\zkproof_{\advse}[k]$, then the
+  $(\inp_{\advse}, \zkproof_{\advse}[1..k])$ random oracle query was made
   by the adversary, not the simulator\footnote{\cite{INDOCRYPT:FKMV12} calls
     these queries \emph{fresh}.}, i.e.~there is no simulated proof
   $\zkproof_\simulator$ on $\inp_\simulator$ such that
@@ -1690,10 +1692,10 @@ $\advse$ internally in $\zdv$.% which returns the proof $\zkproof$ and index $i$
 To assure that in the first execution of $\zdv$ the adversary $\advse$ produce
 the same $(\inp_{\advse}, \zkproof_{\advse})$ as in the extraction game, $\zdv$
 provides $\advse$ with the same randomness $r$ and answers queries to the random
-oracle and simulator with responses pre-recorded responses in $Q_\ro$ and $Q$.
+oracle and simulator with pre-recorded responses in $Q_\ro$ and $Q$.
 %
-Note, that since the view of the adversary run inside $\zdv$ is the same as its
-view with access to real random oracle and simulator, it produces exactly the
+Note, that since the view of the adversary when run inside $\zdv$ is the same as its
+view with access to the real random oracle and simulator, it produces exactly the
 same output. After the first run, $\zdv$ outputs the index $i$ of a random oracle
 query that was used by $\advse$ to compute the challenge $\zkproof[k].\ch =
 \ro(\zkproof_{\advse}[0..k])$ it had to answer in the $(k + 1)$-th round and
@@ -1701,7 +1703,7 @@ adversary's transcript, denoted by $s_1$ in $\genforking$'s description. If no
 such query took place $\zdv$ outputs $i = 0$.
 
 Then new random oracle responses are picked for queries indexed by
-$i, \ldots, q$ and the adversary is rewound to the point just prior it gets the
+$i, \ldots, q$ and the adversary is rewound to the point just prior to when it gets the
 response to RO query $\zkproof_{\advse}[0..k]$. The adversary gets a random
 oracle response from a new set of responses $h^2_i, \ldots, h^2_q$. If the
 adversary requests a simulated proof after seeing $h^2_i$ then $\zdv$ computes
@@ -1714,7 +1716,7 @@ runs internally the tree extractor $\extt(\tree)$ and outputs what it returns.
 We emphasize here the importance of the unique response property. If it does not
 hold then in some $j$-th execution of $\zdv$ the adversary could reuse a
 challenge that it learnt from observing proofs in $Q$. In that case, $\zdv$
-would output $i = 0$, making extractor fail. Fortunately, the case that the
+would output $i = 0$, making the extractor fail. Fortunately, the case that the
 adversary breaks the unique response property has already been covered by the
 abort condition in $\game{1}$.
 
