@@ -3921,10 +3921,10 @@ polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
     $\adv$ finds $h$ in $Q_\ro$ and returns the corresponding $y$.
   \item On input $h_{i_j}$ for the $i_j$-th,
     $i_j \in \smallset{{i_1}, \ldots, {i_\mu}}$, random oracle query, $\adv'$
-    parses $h_{i_j}$ as a partial proof transcript $\zkproof[1..j]$ and runs
-    $\ps$ using $\zkproof[j]$ as a $\ps.\prover$'s $j$-th message to
+    parses $h_{i_j}$ as a partial proof transcript $\zkproof_\adv[1..j]$ and runs
+    $\ps$ using $\zkproof_\adv[j]$ as a $\ps.\prover$'s $j$-th message to
     $\ps.\verifier$. The verifier responds with a challenge
-    $\zkproof[j].\ch$. $\adv'$ sets $\ro(h_{i_j}) = \zkproof[j].\ch$. If we guessed the indices correctly we have that $h_{i_{j'}}$, for $j' \leq j$, parsed as $\zkproof[1..j']$ is a prefix of $\zkproof[1..j]$.
+    $\zkproof_\adv[j].\ch$. $\adv'$ sets $\ro(h_{i_j}) = \zkproof_\adv[j].\ch$. If we guessed the indices correctly we have that $h_{i_{j'}}$, for $j' \leq j$, parsed as $\zkproof_\adv[1..j']$ is a prefix of $\zkproof_\adv[1..j]$.
   \item On query $\inp_\simulator$ to $\simulator$, $\adv'$ runs the simulator
     $\ps.\simulator$ internally. Note that we require a simulator that only programs the random oracle for $j \geq k$.
 
@@ -3933,7 +3933,7 @@ polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
     invoking $\ps.\verifier$ on $\zkproof_\simulator[j]$ and programs
     $\ro(h_{i_j}) = \zkproof_\simulator[j].\ch$.
     It returns $\zkproof_\simulator$.
-  \item Answers $\ps.\verifier$'s final challenge $\zkproof[k].\ch$ using the
+  \item Answers $\ps.\verifier$'s final challenge $\zkproof_\adv[\mu].\ch$ using the
     answer given by $\adv$, i.e.~$\zkproof_\adv[\mu]$.
   \end{itemize}
   That is, $\adv'$ manages to break soundness of $\ps$ if $\adv$ manages to
