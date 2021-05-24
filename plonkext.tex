@@ -1598,14 +1598,16 @@ to present the main result of this paper---special simulation extractability of
 multi-round protocols.
 
 \begin{theorem}[Simulation soundness]
-  Assume that $\ps$ is sound and $\ur{k}$ with security $\epss(\secpar)$ and
-  $\epsur(\secpar)$ respectively. Then the probability that a $\ppt$ adversary
-  $\adv$ breaks simulation soundness of $\ps_{\fs}$ is upper-bounded by
+  \label{thm:simsnd}
+  Assume that $\ps$ is HVZK in the standard model, $\epss(\secpar)$-sound and
+  $\ur{k}$ with security $\epsur(\secpar)$. Then the probability
+  that a $\ppt$ adversary $\adv$ breaks simulation soundness of $\ps_{\fs}$ is
+  upper-bounded by
   \[
     \epsur(\secpar) + q_\ro^\mu  \epss(\secpar)\,,
   \]
-  where $q_\ro$ is the total number of queries made by the adversary
-  $\adv$.
+  where $q_\ro$ is the total number of queries made by the adversary $\adv$ to a
+  random oracle $\ro\colon \bin^{*} \to \bin^{\secpar}$.
 \end{theorem}
 
 \begin{proof}
@@ -1764,7 +1766,7 @@ The extraction probability $\extProb$ is at least
 for some negligible $\eps$.	
 \end{theorem}
 \begin{proof}		
-  The proof goes by game hoping. The games are controlled by an environment
+As in \cref{thm:simsnd}, the proof goes by game hoping. The games are controlled by an environment
   $\env$ that internally runs a simulation extractability adversary $\advse$,
   provides it with access to a random oracle and simulator, and when necessary
   rewinds it. The games differ by various breaking points, i.e.~points where the
@@ -1923,26 +1925,32 @@ Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemm
 % 		\waccProb \cdot \left(\frac{2^\secpar - n}{2^\secpar}\right)^{n} -
 % 	\waccProb\right)\,.
 % \]
-\ngame{3} This game is identical to $\game{2}$ except that it aborts if
-$\extt(\tree)$ run by $\ext$ fails to extract the witness. Denote that event by
-$\event{\errss}$.
+\ngame{3} This game is identical to $\game{2}$ except that the environment
+aborts it when the adversary manages to break simulation soundness in one the
+transcripts in tree $\tree$.
 
-\ncase{$\game{2} \mapsto \game{3}$}	
-As previously, 
-\[
-	\abs{\prob{\game{2}} - \prob{\game{3}}} \leq \event{\errss}\,.
-\]
-Since $\ps$ is special-sound the probability of $\event{\errss}$ is
-upper-bounded by some negligible $\eps_\ss$.
+\ncase{$\game{2} \mapsto \game{3}$}
+From \cref{thm:simsnd} we have that probability that $\adv$ breaks simulation
+soundness, while not breaking the unique response property, is upper-bounded by
+$q_\ro^{\mu} \epss$. Hence the probability that $\adv$ breaks simulation
+soundness in one of the tree branches is upper-bounded by $n \cdot
+q_{\ro}^{\mu} \epss$.
 
-Game $\game{3}$ is aborted when it is impossible to extract the correct witness
+\ngame{4} This game is identical to $\game{3}$ except that it aborts if
+$\extt(\tree)$ run by $\ext$ fails to extract the witness. 
+
+\ncase{$\game{3} \mapsto \game{4}$}	
+Since $\ps$ is computationally special-sound the probability that $\extt(\tree)$
+fails is $0$. \michals{24.05}{Is that true?}
+
+Since Game $\game{4}$ is aborted when it is impossible to extract the correct witness
 from $\tree$, hence the adversary $\advse$ cannot win.  Thus, by the game-hoping
 argument,
 \[
-	\abs{\prob{\game{0}} - \prob{\game{3}}} \leq 1 -
-	\left(\frac{\waccProb^{n}}{q^{n - 1}} + \waccProb \cdot
-	\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
-        (2^\secpar)^{n}} - \waccProb\right) + \epsur + \epsss\,.
+	\abs{\prob{\game{0}} - \prob{\game{4}}} \leq 1 -
+  \left(\frac{\waccProb^{n}}{q^{n - 1}} + \waccProb \cdot \frac{(2^\secpar)
+      !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb\right) + \epsur + n
+  \cdot q_{\ro}^{\mu} \epss\,.
 \]
 Thus the probability that extractor $\extss$ succeeds is at least
 \[
@@ -1950,7 +1958,8 @@ Thus the probability that extractor $\extss$ succeeds is at least
 	\waccProb \cdot
 	\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
         (2^\secpar)^{n}} -
-\waccProb - \epsur - \epsss\,.
+\waccProb - \epsur - n \cdot
+q_{\ro}^{\mu} \epss\,.
 \]
 Since $\waccProb$ is probability of $\advse$ outputting acceptable transcript
 that does not break $\ur{k}$-ness of $\ps$, then $\waccProb \geq \accProb -
@@ -1959,21 +1968,18 @@ proof as defined in \cref{def:simext}. It thus holds
 \[
 	\label{eq:frk}
 	\extProb \geq \frac{(\accProb - \epsur)^{n}}{q^{n - 1}} -
-	\underbrace{(\accProb - \epsur) \cdot \left( 1 -
-      \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
-        (2^\secpar)^{n}}\right)
-- \epsur - \epsss}_{\eps}\,.
+  \underbrace{(\accProb - \epsur) \cdot \left( 1 - \frac{(2^\secpar)
+        !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}}\right) - \epsur - n \cdot
+    q_{\ro}^{\mu} \epss}_{\eps}\,.
 \]
 Note that the part of \cref{eq:frk} denoted by $\eps$ is negligible as
-$\epsur, \epsss$ are negligible, and $\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
-        (2^\secpar)^{n}} \geq \left(\infrac{(2^\secpar
-- n)}{2^\secpar}\right)^{n}$ is overwhelming.
-Thus, 
+$\epsur, \epsss$ are negligible, and
+$\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} \geq
+\left(\infrac{(2^\secpar - n)}{2^\secpar}\right)^{n}$ is overwhelming.  Thus,
 \[
 	\extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur)^{n} -\eps\,.
 \] 
-thus
-$\psfs$ is special simulation extractable with extraction error $\epsur$.
+thus $\psfs$ is special simulation extractable with extraction error $\epsur$.
 \qed
 \end{proof}
 
