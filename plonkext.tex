@@ -2515,7 +2515,63 @@ $\plonkprot$ is upper-bounded by $\epsbind + \epsop$. \qed
 \begin{lemma}
 \label{lem:plonkprot_ss}
 $\plonkprot$ is $(\epsss, (1, 1, \noofc + 3, 1))$-computational special sound
-for 
+for $\epsss = 0$.
+\end{lemma}
+\begin{proof}
+  
+  Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
+  $\GRP_1$-elements; that is,
+  $\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc + 2}}$. Let $\adv$ be an
+  algebraic adversary that produces a statement $\inp$ and a
+  $(1, 1, \noofc + 3, 1)$-tree of acceptable transcripts $\tree$.  Note that in
+  all transcripts the instance $\inp$, proof elements
+  $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and
+  challenges $\alpha, \beta, \gamma$ are common as the transcripts share the
+  first three rounds. The tree ``branches'' after the third round of the protocol
+  where the challenge $\chz$ is presented, thus tree $\tree$ is build using different
+  values of $\chz$. 
+
+  We consider two mutually disjunctive events. The first, $\event{E}$ holds when
+  all of the transcripts are acceptable by the idealised verification equation,
+  i.e.~$\vereq_\zkproof(X) = 0$, cf.~\cref{eq:ver_eq}. The second, $\nevent{E}$ holds
+  when there is a transcript that is acceptable by the real verifier, but not by
+  the ideal verifier. That is, for that particular transcript it holds that
+  $\vereq_\zkproof(\chi) = 0$, but $\vereq_\zkproof(X) \neq 0$.  When event $\event{E}$ holds we show that the extractor $\extt$ is successful. If it does not hold, we show a reduction
+  $\rdvdlog$ that breaks the $\dlog$ assumption.
+
+  \ncase{When $\event{E}$ holds} Let $(\inp, \tree) \gets \adv(\REL,
+  \srs)$. Since the protocol $\plonkprot$, instantiated with the idealised
+  verification equation, is perfectly sound, except with probability of batching
+  failure $\epsbatch$, for a valid proof $\zkproof$ of a statement $\inp$ there
+  exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note that 
+  polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$, which contain witness in their
+  coefficients, have degree $(\noofc + 2)$ and since $\adv$ answered correctly
+  on $(\noofc + 3)$ different challenges $\chz$ then $(\noofc + 3)$ evaluations
+  of these polynomials (at different points) are known. The extractor $\extt$
+  interpolates the polynomials and reveals the corresponding witness
+  $\wit$. The extractor finds the witness with probability $1$.
+
+  \ncase{When $\nevent{E}$ holds} Let $\adv$ be an adversary that for relation
+  $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree of
+  acceptable transcripts such that $\nevent{E}$ holds. Let $\rdvdlog$ be a
+  reduction that gets as input an $(\noofc + 2, 1)$-dlog instance
+  $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$ and is tasked to output
+  $\chi$. The reduction proceeds as follows---it gives the input instance to the
+  adversary as the SRS. Let $(\inp, \tree)$ be the output returned by $\adv$.
+  Consider a transcript $\zkproof \in \tree$ such that
+  $\vereq_\zkproof(X) \neq 0$, but $\vereq_\zkproof(\chi) = 0$. Since the
+  adversary is algebraic, all group elements included in $\tree$ are extended by
+  their representation as a combination of the input $\GRP_1$-elements. Hence all coefficients of
+  the verification equation polynomial $\vereq_\zkproof(X)$ are known and $\rdvdlog$ can
+  find its zero points. Since $\vereq_\zkproof(\chi) = 0$, the targeted discrete log
+  value $\chi$ is among them. \qed
+\end{proof}
+
+\iffalse
+\begin{lemma}
+\label{lem:plonkprot_ss}
+$\plonkprot$ is $(\epsss, (1, 1, \noofc + 3, 1))$-computational special sound
+for
  \[
 	\epsss \leq \epsbatch + \epsdlog\,,
  \] 
@@ -2572,6 +2628,7 @@ for
   find its zero points. Since $\vereq_\zkproof(\chi) = 0$, the targeted discrete log
   value $\chi$ is among them. \qed
 \end{proof}
+\fi
 
 \subsection{Honest verifier zero-knowledge}
 \begin{lemma}
