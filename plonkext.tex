@@ -1942,7 +1942,7 @@ $\extt(\tree)$ run by $\ext$ fails to extract the witness.
 
 \ncase{$\game{3} \mapsto \game{4}$}	
 Since $\ps$ is computationally special-sound the probability that $\extt(\tree)$
-fails is $0$. \michals{24.05}{Is that true?}
+fails is upper-bounded by $\epsss$. 
 
 Since Game $\game{4}$ is aborted when it is impossible to extract the correct witness
 from $\tree$, hence the adversary $\advse$ cannot win.  Thus, by the game-hoping
@@ -1951,13 +1951,13 @@ argument,
 	\abs{\prob{\game{0}} - \prob{\game{4}}} \leq 1 -
   \left(\frac{\waccProb^{n}}{q^{n - 1}} + \waccProb \cdot \frac{(2^\secpar)
       !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb\right) + \epsur +
-  q_{\ro}^{\mu} \epss\,.
+  q_{\ro}^{\mu} \epss + \epsss\,.
 \]
 Thus the probability that extractor $\extss$ succeeds is at least
 \[
 	\frac{\waccProb^{n}}{q^{n - 1}} + \waccProb \cdot \frac{(2^\secpar)
     !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb - \epsur -
-  q_{\ro}^{\mu} \epss\,.
+  q_{\ro}^{\mu} \epss  - \epsss\,.
 \]
 Since $\waccProb$ is probability of $\advse$ outputting acceptable transcript
 that does not break $\ur{k}$-ness of $\ps$, then $\waccProb \geq \accProb -
@@ -1968,7 +1968,7 @@ proof as defined in \cref{def:simext}. It thus holds
 	\extProb \geq \frac{(\accProb - \epsur)^{n}}{q^{n - 1}} -
   \underbrace{(\accProb - \epsur) \cdot \left( 1 - \frac{(2^\secpar)
         !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}}\right) - \epsur -
-    q_{\ro}^{\mu} \epss}_{\eps}\,.
+    q_{\ro}^{\mu} \epss - \epsss}_{\eps}\,.
 \]
 Note that the part of \cref{eq:frk} denoted by $\eps$ is negligible as
 $\epsur, \epsss$ are negligible, and
