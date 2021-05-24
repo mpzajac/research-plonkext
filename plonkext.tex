@@ -1930,12 +1930,12 @@ Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemm
 aborts it when the adversary manages to break simulation soundness in one the
 transcripts in tree $\tree$.
 
-\ncase{$\game{2} \mapsto \game{3}$}
-From \cref{thm:simsnd} we have that probability that $\adv$ breaks simulation
-soundness, while not breaking the unique response property, is upper-bounded by
-$q_\ro^{\mu} \epss$. Hence the probability that $\adv$ breaks simulation
-soundness in one of the tree branches is upper-bounded by $n \cdot
-q_{\ro}^{\mu} \epss$.
+\ncase{$\game{2} \mapsto \game{3}$} From \cref{thm:simsnd} we have that
+probability that $\adv$ breaks simulation soundness, while not breaking the
+unique response property, is upper-bounded by $q_\ro^{\mu} \epss$. Since all the
+branches of the tree are either for a valid or invalid statement, then the
+probability that $\adv$ breaks simulation soundness in one of the tree branches
+is upper-bounded by $q_{\ro}^{\mu} \epss$ as well.
 
 \ngame{4} This game is identical to $\game{3}$ except that it aborts if
 $\extt(\tree)$ run by $\ext$ fails to extract the witness. 
@@ -1950,17 +1950,14 @@ argument,
 \[
 	\abs{\prob{\game{0}} - \prob{\game{4}}} \leq 1 -
   \left(\frac{\waccProb^{n}}{q^{n - 1}} + \waccProb \cdot \frac{(2^\secpar)
-      !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb\right) + \epsur + n
-  \cdot q_{\ro}^{\mu} \epss\,.
+      !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb\right) + \epsur +
+  q_{\ro}^{\mu} \epss\,.
 \]
 Thus the probability that extractor $\extss$ succeeds is at least
 \[
-	\frac{\waccProb^{n}}{q^{n - 1}} + 
-	\waccProb \cdot
-	\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
-        (2^\secpar)^{n}} -
-\waccProb - \epsur - n \cdot
-q_{\ro}^{\mu} \epss\,.
+	\frac{\waccProb^{n}}{q^{n - 1}} + \waccProb \cdot \frac{(2^\secpar)
+    !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb - \epsur -
+  q_{\ro}^{\mu} \epss\,.
 \]
 Since $\waccProb$ is probability of $\advse$ outputting acceptable transcript
 that does not break $\ur{k}$-ness of $\ps$, then $\waccProb \geq \accProb -
@@ -1970,7 +1967,7 @@ proof as defined in \cref{def:simext}. It thus holds
 	\label{eq:frk}
 	\extProb \geq \frac{(\accProb - \epsur)^{n}}{q^{n - 1}} -
   \underbrace{(\accProb - \epsur) \cdot \left( 1 - \frac{(2^\secpar)
-        !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}}\right) - \epsur - n \cdot
+        !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}}\right) - \epsur -
     q_{\ro}^{\mu} \epss}_{\eps}\,.
 \]
 Note that the part of \cref{eq:frk} denoted by $\eps$ is negligible as
@@ -1984,48 +1981,48 @@ thus $\psfs$ is special simulation extractable with extraction error $\epsur$.
 \qed
 \end{proof}
 
-\paragraph{Inefficient simulation extractability gives efficient simulation soundness.}
-As noted in \cref{sec:simext_def}, simulation soundness can be expressed in
-terms of simulation extractability with an  unbounded extractor. Holds then,
+% \paragraph{Inefficient simulation extractability gives efficient simulation soundness.}
+% As noted in \cref{sec:simext_def}, simulation soundness can be expressed in
+% terms of simulation extractability with an  unbounded extractor. Holds then,
 
-\begin{corollary}[Simulation extractability to simulation soundness.]
-  \label{cor:simext_to_ssnd}
-  Let $\ps$, as defined in \cref{thm:se} be simulation-extractable with
-	\[
-    \extProb \geq \frac{(\accProb - \epsur)^{n}}{q^{n - 1}} -
-	(\accProb - \epsur) \cdot \left( 1 -
-      \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
-        (2^\secpar)^{n}}\right)
-    - \epsur - \epsss,
-  \]
-  then it is simulation sound with
-  $\ssndProb \leq 2\epsur + \epsss 2^{-\secpar}(\accProb - \epsur)$
-\end{corollary}
-\begin{proof}
-  Since according to the discussion in \cref{rem:simext_to_simsnd} $\ssndProb =
-  \accProb - \extProb$ it holds:
-  \begin{align*}
-    \ssndProb \leq \accProb - \left(\frac{(\accProb - \epsur)^{n}}{q^{n - 1}} -
-	(\accProb - \epsur) \cdot \left( 1 -
-      \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
-        (2^\secpar)^{n}}\right)
-    - \epsur - \epsss,\right).
-  \end{align*}
-  Furthermore, as the extractor $\ext$ from \cref{rem:simext_to_simsnd} is unbounded, we can
-  assume that it is able to extract the witness from a single run of a
-  simulation-extractability adversary $\adv$. hence $n = 1$. Thus,
-  \begin{equation*}
-    \begin{split}
-      \ssndProb & \leq \accProb - \left(\accProb - \epsur -
-                  (\accProb - \epsur) \cdot \left( 1 -
-                  1)\right)
-                  - \epsur - \epsss\right) \\
-                & =  2 \epsur 
-                  + \epsss \\
-                \end{split}
-              \end{equation*}
-              \qed
-\end{proof}
+% \begin{corollary}[Simulation extractability to simulation soundness.]
+%   \label{cor:simext_to_ssnd}
+%   Let $\ps$, as defined in \cref{thm:se} be simulation-extractable with
+% 	\[
+%     \extProb \geq \frac{(\accProb - \epsur)^{n}}{q^{n - 1}} -
+% 	(\accProb - \epsur) \cdot \left( 1 -
+%       \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
+%         (2^\secpar)^{n}}\right)
+%     - \epsur - \epsss,
+%   \]
+%   then it is simulation sound with
+%   $\ssndProb \leq 2\epsur + \epsss 2^{-\secpar}(\accProb - \epsur)$
+% \end{corollary}
+% \begin{proof}
+%   Since according to the discussion in \cref{rem:simext_to_simsnd} $\ssndProb =
+%   \accProb - \extProb$ it holds:
+%   \begin{align*}
+%     \ssndProb \leq \accProb - \left(\frac{(\accProb - \epsur)^{n}}{q^{n - 1}} -
+% 	(\accProb - \epsur) \cdot \left( 1 -
+%       \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
+%         (2^\secpar)^{n}}\right)
+%     - \epsur - \epsss,\right).
+%   \end{align*}
+%   Furthermore, as the extractor $\ext$ from \cref{rem:simext_to_simsnd} is unbounded, we can
+%   assume that it is able to extract the witness from a single run of a
+%   simulation-extractability adversary $\adv$. hence $n = 1$. Thus,
+%   \begin{equation*}
+%     \begin{split}
+%       \ssndProb & \leq \accProb - \left(\accProb - \epsur -
+%                   (\accProb - \epsur) \cdot \left( 1 -
+%                   1)\right)
+%                   - \epsur - \epsss\right) \\
+%                 & =  2 \epsur 
+%                   + \epsss \\
+%                 \end{split}
+%               \end{equation*}
+%               \qed
+% \end{proof}
 
 
 \section{Special simulation extractability of $\plonkprotfs$} 
