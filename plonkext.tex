@@ -229,7 +229,9 @@ definition right out of the box. $\plonkprot$ does not satisfy it---both the
 first and the second prover's messages are randomised. We thus propose a
 generalisation of the definition which states that a protocol is $\ur{i}$ if the
 prover is deterministic starting from its $i$-th message. For our proof it is
-sufficient that this property is met by $\plonkprot$ for $i = 3$. \markulf{What about \sonic?}
+sufficient that this property is met by $\plonkprot$ for $i = 3$. The situation
+looks better in case of \sonic{} which has unique response property from the
+first message on. %\markulf{What about \sonic?}
 
 To be able to show the unique response property (for both of the protocols) we
 also had to show that the modified KZG polynomial commitment schemes
