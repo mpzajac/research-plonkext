@@ -1645,22 +1645,24 @@ algorithm from the generalized forking lemma.
 
 \begin{definition}
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
-  $(2 \mu + 1)$-message proof system for a relation $\REL$, let $\adv$ and
-  $\tdv$ be $\ppt$ algorithms. $\tdv$ has oracle access to $\adv$ and provides
-  it with (oracle) access to random oracle $\ro$ and $\ps$ simulator
-  $\simulator$ -- more precisely $\tdv$ has an internal procedure $\bdv$ that
-  provided $\srs$ and random oracle queries' responses $h_1, \ldots, h_1$ gives
-  $\adv$ access to the random oracle and simulates proof for it. In the end,
-  $\bdv$ returns the proof $\adv$ returns.
+  $(2 \mu + 1)$-message proof system for a relation $\REL$, let $\adv$, called
+  adversary, and $\tdv$, called tree creator, be $\ppt$ algorithms. $\tdv$ has
+  oracle access to $\adv$ and provides it with (oracle) access to random oracle
+  $\ro$ and $\ps$ simulator $\simulator$ -- more precisely $\tdv$ has an
+  internal procedure $\bdv$ that provided $\srs$ and random oracle queries'
+  responses $h_1, \ldots, h_1$ gives $\adv$ access to the random oracle and
+  simulates proof for it. In the end, $\bdv$ returns the proof $\adv$
+  returns. Eventually, $\tdv$ returns a $(n_1, \ldots, n_\mu)$ tree of
+  acceptable transcripts $\tree$.
 
   \begin{figure}
     \centering
  		\fbox{ \procedure{$\tdv(\adv, \srs \sample \kgen(\REL))$}
       {h_1^{1}, \ldots,
-      h_{q}^1 \sample H
+      h_{q}^1 \sample H\\
       (i, \inp, \zkproof_1) \gets \bdv(\adv, \srs, h_1^{1}, \ldots, h_{q}^{1})\\
         % i_1 \gets i\\
-        \pcif \verifier(\srs, \inp, \zkproof_i) = 0\ \pcreturn (0, \bot)\\
+        \pcif \verifier(\srs, \inp, \zkproof_i) = 0\ \pcreturn (\bot)\\
         \pcfor j \in \range{2}{m}\\
         \pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
         h_{i - 1}^{j - 1}\\
@@ -1668,18 +1670,18 @@ algorithm from the generalized forking lemma.
         \pcind (i_j, \zkproof_j) \gets \bdv(\adv, \srs, h_1^{j}, \ldots, h_{i -
           1}^{j}, h_{i}^{j},
         \ldots, h_{q}^{j})\\
-        \pcind \pcif \verifier(\srs, \inp, \zkproof_i) = 0\ \pcreturn (0, \bot)\\
+        \pcind \pcif \verifier(\srs, \inp, \zkproof_i) = 0\ \pcreturn (\bot)\\
         %\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
         % \pcif \exists (j, j') \in \range{1}{m}^2, j \neq j' : (h_{i}^{j} =
         % h_{i}^{j'})\
         % 
         % pcreturn (0, \bot)\\
-        \pcelse \pcreturn (1, \tree)}
+        \pcelse \pcreturn (\tree)}
     }
   \end{figure}
 
-  We say that $\ps$ is $(1, \ldots, n_k, \ldots, 1)$-forking special sound if
-  for any adversary probability that
+  We say that $\ps$ is $(n_1, \ldots, n_k, \ldots, n_\mu)$-forking special sound if
+  for any adversary probability
   \[
     \Pr\left[
       \begin{aligned}
