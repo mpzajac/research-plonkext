@@ -1648,8 +1648,8 @@ algorithm from the generalized forking lemma.
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
   $(2 \mu + 1)$-message proof system for a relation $\REL$.
 
-  Let $\tdv$ be the
-  algorithm below that rewinds $\ppt$ $\advse^{\simulator_\fs,
+  Let $\tdv$, called tree creator, be the
+  algorithm below that rewinds the $\ppt$ adversary $\advse^{\simulator_\fs,
           \ro} (\REL, \srs; r)$ to produce a $(1,\dots, n,\dots, 1)$-tree of
   transcripts such that none of the $n$ challenges in round $k$ were used in
   simulated proofs.
@@ -1659,7 +1659,8 @@ algorithm from the generalized forking lemma.
   $\simulator_\fs$ -- more precisely $\tdv$ has an internal procedure $\bdv$ that
   provided $\srs$ and random oracle queries' responses $h_1, \ldots, h_1$ gives
   $\adv$ access to the random oracle and simulates proof for it. In the end,
-  $\bdv$ returns the index $i$ of the random oracle query made for challenge $k$, the set $Q$ of simulator random oracle indexes, the instance $\inp$, and the proof $\adv$ returns.
+  $\bdv$ returns the index $i$ of the random oracle query made for challenge $k$, the set $Q$ of simulator random oracle indexes, the instance $\inp$, and the proof $\adv$ returns. Eventually, $\tdv$ returns a $(1, \ldots, n, \dots, 1)$ tree of acceptable transcripts $\tree$.
+
 
   \begin{figure}
     \centering
@@ -1686,7 +1687,7 @@ algorithm from the generalized forking lemma.
     }
   \end{figure}
 
-  We say that $\ps$ is $(1, \ldots, n, \ldots, 1)$-forking special sound if
+  We say that $\ps$ is $(k,n)$-forking special sound if
   for any PPT adversary the probability that
   \[
     \Pr\left[
