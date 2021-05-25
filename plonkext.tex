@@ -136,7 +136,7 @@ lift comes with inevitable efficiency loss.  %The same applies for updatable
 %preserves updatability).
 
 \subsection{Our contribution}
-We show that a class of computationally special-sound interactive proofs of
+We show that a class of forking sound interactive proofs of
 knowledge that are (honest-verifier) zero-knowledge in the standard model and
 have a unique response property \emph{are simulation-extractable out-of-the box}
 in the random oracle model when the Fiat--Shamir transformation is applied to
@@ -152,13 +152,14 @@ precisely, the extractor is not guaranteed to succeed if the adversary outputs
 an acceptable proof with probability $\accProb$ smaller than knowledge error
 $\nu$. On the other hand, we show that this $\nu$ can be arbitrarily small, even
 negligible. However, for $\accProb$ close to $\nu$ the extractor becomes fairly
-inefficient. Since the extractor utilizes special soundness of the protocol, we
-call our flavour of simulation extractability \emph{special}. This is also to
+inefficient. Since the extractor utilizes forking soundness of the protocol,
+which relates to \emph{forking lemma},  we
+call our flavour of simulation extractability \emph{forking}. This is also to
 avoid confusion with weakly simulation extractable protocols, which provide
 simulation extractability given that the adversary cannot output a proof for a
 statement it saw a simulated proof for. Importantly, weakly simulation
 extractable proof systems are (often) re-randomizable. (Since we do not consider other notions
-of simulation extractability than special, we sometimes omit that adjective and
+of simulation extractability than forking, we sometimes omit that adjective and
 write ``simulation extractability'')
 
 Furthermore, Faust et al.'s extractor is not fully black-box as it needs to run
@@ -175,7 +176,7 @@ efficient updatable and universal zkSNARKs---$\plonk$ and $\sonic$---are
 simulation-extractable. To obtain this result, without having to change anything
 at all in these protocols, we define new intermediary properties satisfied by
 these multi-round computationally sound protocols and their building blocks:
-computational special soundness, generalized unique response, and a generalized
+forking soundness, generalized unique response, and a generalized
 forking lemma. These conceptual insights into interactive SNARK systems help us
 overcome a number of challenges, as we explain below.
 
@@ -195,28 +196,33 @@ we denote the underlying interactive protocols by $\plonkprot$ (for $\plonk$)
 and $\sonicprot$ (for $\sonic$) and the resulting non-interactive proof systems by
 $\plonkprotfs$ and $\sonicprotfs$, respectively.
 
-\subsubsection{Special soundness.} 
-First, following \cite{INDOCRYPT:FKMV12}, we need to show that $\plonkprot$ and
-$\sonicprot$ are special-sound. However the standard definition of special
-soundness could not be met. First of all, the definition requires extraction of
-a witness from any two transcripts, each containing three messages and sharing
-the first message. For $\plonkprot$ and $\sonicprot$ that is not enough. The
-definition needs to be adapted to cover protocols with more than
-three messages. Furthermore, the number of transcripts required is much
-greater. Concretely, $(\numberofconstrains + 3)$---where $\numberofconstrains$ is the
-number of constraints in the proven circuit---for $\plonkprot$ and $(\multconstr
-+ \linconstr + 1)$---where $\multconstr$ and $\linconstr$ are the numbers of
-multiplicative and linear constraints---for $\sonicprot$. Hence, we do not have
-a \emph{pair of transcripts}, but a \emph{tree of transcripts}.
+\subsubsection{Forking soundness.} 
+First, following \cite{INDOCRYPT:FKMV12}, we need to show that from a number of
+valid proofs that share some parts of the transcripts witnesses to instances
+proven in $\plonkprot$ and $\sonicprot$  can be extracted. However the standard
+definition of special soundness could not be met. First of all, the definition
+requires extraction of a witness from any two transcripts, each containing three
+messages and sharing the first message. For $\plonkprot$ and $\sonicprot$ that
+is not enough. The definition needs to be adapted to cover protocols with more
+than three messages. Furthermore, the number of transcripts required is much
+greater. Concretely, $(\numberofconstrains + 3)$---where $\numberofconstrains$
+is the number of constraints in the proven circuit---for $\plonkprot$ and
+$(\multconstr + \linconstr + 1)$---where $\multconstr$ and $\linconstr$ are the
+numbers of multiplicative and linear constraints---for $\sonicprot$. Hence, we
+do not have a \emph{pair of transcripts}, but a \emph{tree of transcripts}.
 
 Second, both protocols rely on structured reference strings which come with
-trapdoors. If in possession of the trapdoor, an adversary can produce multiple valid
-proof transcripts without knowing the witness and potentially for false statements. Recall that the
-standard special soundness definition requires witness extraction from
-\emph{any} tree of acceptable transcripts that share a common root. This means that there are no such trees for incorrect statements. In this paper we
-define a weaker computational version of special soundness. That is, we show that it is possible to extract a witness from all
-but negligibly many trees of acceptable transcripts produced by probabilistic
-polynomial time (PPT) adversaries. Said otherwise, an adversary that produced a
+trapdoors. If in possession of the trapdoor, an adversary can produce multiple
+valid proof transcripts without knowing the witness and potentially for false
+statements. Recall that the standard special soundness definition requires
+witness extraction from \emph{any} tree of acceptable transcripts that share a
+common root. This means that there are no such trees for incorrect
+statements. In this paper we define a different, forking lemma-related, version
+of soundness which we call \emph{forking}. That is, we show that it is possible
+to extract a witness from all but negligibly many trees of acceptable
+transcripts produced by probabilistic polynomial time (PPT) adversaries, given
+that the trees are generated as interactions between a (possibly malicious)
+prover and honest verifier. We show that an adversary that was used to produce a
 tree of acceptable transcripts from which one cannot extract can be used to
 break some underlying computational assumption.
 
@@ -272,7 +278,7 @@ loss is polynomial, albeit big.)
 
 We note that some modern zkSNARKs, like \cite{SP:BBBPWM18,CCS:MBKM19}, heavily rely on
 the Fiat--Shamir transform and the forking lemma. First, an interactive
-protocol is proposed and its security and (a variant of) special-soundness analysed. Second,
+protocol is proposed and its security and forking soundness analysed. Second,
 one uses an argument that the Fiat--Shamir transform can be used to get a
 protocol that is non-interactive and shares the same security properties.
 
@@ -285,10 +291,10 @@ soundness is proven. That is the case for $\sonic$, whose security proof relies
 on so-called witness-extended emulation. The authors of $\plonk$ worked around this
 problem by proving knowledge soundness directly in the algebraic group model.
 
-\subsubsection{Special simulation-extractability.} Given our modified, less
-restrictive, definition for special-soundness and the unique response property,
+\subsubsection{Forking simulation-extractability.} Given our modified, less
+restrictive, definition for forking soundness and the unique response property,
 and our generalised forking lemma we obtain our main
-result---special simulation extractability of $\plonkprotfs$ and $\sonicprotfs$. The
+result---forking simulation extractability of $\plonkprotfs$ and $\sonicprotfs$. The
 proof is inspired by simulation-extractability and simulation-soundness proofs
 from \cite{INDOCRYPT:FKMV12}, with major modifications, which were required as
 \cite{INDOCRYPT:FKMV12} considers only $\Sigma$-protocols
@@ -357,10 +363,13 @@ group model.
 
 
 \subsection{Structure of the paper}
-In the next section we present necessary preliminaries. \cref{sec:se_definitions} gives definitions and lemmas for instantiating our framework. In \cref{sec:general}, we
-present our main result, a proof of simulation-soundness for a class of
-zero-knowledge proofs of knowledge. In \cref{sec:plonk} and \cref{sec:sonic} we show
-that $\plonk$ and $\sonic$ fulfill the requirements of our framework and are in fact special simulation extractable.
+In the next section we present necessary
+preliminaries. \cref{sec:se_definitions} gives definitions and lemmas for
+instantiating our framework. In \cref{sec:general}, we present our main result,
+a proof of simulation-soundness for a class of zero-knowledge proofs of
+knowledge. In \cref{sec:plonk} and \cref{sec:sonic} we show that $\plonk$ and
+$\sonic$ fulfill the requirements of our framework and are in fact forking
+simulation extractable.
 
 \subsection{Related Work}
 There are many results on simulation extractability for non-interactive
@@ -808,7 +817,7 @@ We say that $\PCOM$ has the unique opening property if the following holds:
 \end{description}
 Intuitively, opening uniqueness assures that there is only one valid opening
 for the committed polynomial and given evaluation point. This property is
-crucial in showing special simulation-extractability of $\plonk$ and $\sonic$. We show
+crucial in showing forking simulation-extractability of $\plonk$ and $\sonic$. We show
 that the $\plonk$'s and $\sonic$'s polynomial commitment schemes satisfy this
 requirement in \cref{lem:pcomp_unique_op} and \cref{lem:pcoms_unique_op}
 respectively.
@@ -1083,7 +1092,7 @@ be a proof system such that
 Fiat--Shamir heuristic states that $\proofsystem_\fs$ is zero-knowledge
 non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
 
-\subsection{Special simulation extractable NIZKs from sigma protocols}
+\subsection{Forking simulation extractable NIZKs from sigma protocols}
 \label{sec:simext_def}
 Real life applications often require from a NIZK proof system to be
 non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement
@@ -1093,15 +1102,15 @@ which assures that no adversary can produce a valid proof without knowing the
 corresponding witness. This must hold even if the adversary is allowed to see
 polynomially many simulated proofs for any statements it wishes.
 
-\begin{definition}[Special simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
+\begin{definition}[Forking simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
 	\label{def:simext}
-	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a computationally
-  special-sound HVZK proof and $\ps_\fs = (\kgen_\fs, \prover_\fs,
-  \verifier_\fs, \simulator_\fs)$ be $\ps$ transformed by the Fiat--Shamir
-  transform. We say that $\ps_\fs$ is \emph{special simulation-extractable} with
-  \emph{extraction error} $\nu$ if for any $\ppt$ adversary $\adv$ that is given
-  oracle access to a random oracle $\ro$ and simulator $\simulator_\fs$, and
-  produces an accepting transcript of $\ps$ with probability $\accProb$, that is
+	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a forking-sound HVZK
+  proof and $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$
+  be $\ps$ transformed by the Fiat--Shamir transform. We say that $\ps_\fs$ is
+  \emph{forking simulation-extractable} with \emph{extraction error} $\nu$ if
+  for any $\ppt$ adversary $\adv$ that is given oracle access to a random oracle
+  $\ro$ and simulator $\simulator_\fs$, and produces an accepting transcript of
+  $\ps$ with probability $\accProb$, that is
 	\[
 		\accProb = \Pr \left[
 		\begin{aligned}
@@ -1146,10 +1155,10 @@ polynomially many simulated proofs for any statements it wishes.
 \end{definition}
 
 Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
-is specially sound and has a unique response property. Let $\sigmaprot_\fs =
+is forking-sound and has a unique response property. Let $\sigmaprot_\fs =
 (\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the
 Fiat--Shamir transform to $\sigmaprot$. Faust et al.~\cite{INDOCRYPT:FKMV12}
-show that every such $\sigmaprot_\fs$ is special simulation-extractable. This result is
+show that every such $\sigmaprot_\fs$ is forking simulation-extractable. This result is
 presented in \cref{sec:forking_lemma} along with the instrumental forking lemma,
 cf.~\cite{CCS:BelNev06}.
 
@@ -1235,7 +1244,7 @@ to conjecture that probability $\ssndProb$ is not only at most negligible, but
 also, in some parameters, exponentially smaller than $(1 - \extProb)$
 (probability of extraction failure in \cref{def:simext}).
 
-\section{Special simulation extractability of multi-message protocols,
+\section{Forking simulation extractability of multi-message protocols,
   definitions and lemmas}
 \label{sec:se_definitions}
 Unfortunately, Faust et al.'s result cannot be directly applied in our case
@@ -1436,8 +1445,8 @@ Finally, we get
 % \end{figure}
 
 To highlight importance of the generalised forking lemma we describe how we use
-it in our special simulation-extractability proof.  Let $\proofsystem$ be a
-computationally special sound proof system where for an instance $\inp$ the
+it in our forking simulation-extractability proof.  Let $\proofsystem$ be a
+forking sound proof system where for an instance $\inp$ the
 corresponding witness can be extracted from an
 $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\advse$
 be the simulation-extractability adversary that outputs an acceptable proof with
@@ -1486,7 +1495,7 @@ We also note that the general forking lemma proposed in
 \cref{lem:generalised_forking_lemma} works for protocols which have extractable
 witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of acceptable
 transcripts. This limitation however does not affect the main result of this
-paper, i.e.~showing that both $\plonk$ and $\sonic$ are special simulation extractable.
+paper, i.e.~showing that both $\plonk$ and $\sonic$ are forking simulation extractable.
 
 \subsection{Unique-response protocols.}
 Another problem comes with another assumption required by Faust et al.---the
@@ -1551,21 +1560,21 @@ system $\proofsystem$ utilises SRS (and compounds of the SRS-generating $\kgen$
 algorithm) or not.
 
 \iffalse
-\subsection{Computational special soundness}
+\subsection{Forking soundness}
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
 simulation trapdoors for $\plonkprot$ and $\sonicprot$ exist, the protocols
 cannot be special sound in that regard. This comes since an unbounded adversary
 could reveal the trapdoor and build a number of simulated proofs for a fake
 statement. Hence, we provide a weaker, yet sufficient, definition of
-\emph{computational special soundness}. More precisely, we state that an
+\emph{forking soundness}. More precisely, we state that an
 adversary that is able to answer correctly multiple challenges either knows the
 witness or can be used to break some computational assumption.
 
-\begin{definition}[Computational special soundness]
+\begin{definition}[Forking soundness]
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
   $(2 \mu + 1)$-message proof system for a relation $\REL$. We say that
-  $\proofsystem$ is $(\epsss, (n_1, \ldots, n_\mu))$-\emph{computationally special sound}
+  $\proofsystem$ is $(\epsss, (n_1, \ldots, n_\mu))$-\emph{forking sound}
   if there exists an extractor $\extt$ that given an $(n_1, \ldots, n_\mu)$-tree
   of acceptable transcripts $\tree$ and instance $\inp$ output by some $\ppt$ adversary $\adv(\REL,
   \srs)$, for $\srs \sample \kgen(\REL)$, outputs $\wit$ such that $\REL(\inp,
@@ -1577,14 +1586,14 @@ even unbounded, adversaries) all references to that property should be
 understood as references to its computational version.
 \fi
 
-\subsection{Computational special soundness}
+\subsection{Forking soundness}
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
 simulation trapdoors for $\plonkprot$ and $\sonicprot$ exist, the protocols
 cannot be special sound in that regard. This comes since an unbounded adversary
 could reveal the trapdoor and build a number of simulated proofs for a fake
 statement. Hence, we provide a weaker, yet sufficient, definition of
-\emph{computational special soundness}. More precisely, we state that an
+\emph{forking soundness}. More precisely, we state that an
 adversary that is able to answer correctly multiple challenges either knows the
 witness or can be used to break some computational assumption.
 
@@ -1595,7 +1604,7 @@ e.g.~all challenges are picked randomly---exactly as an honest verifier would
 pick them. Intuitively, the tree is as it would be generated by a $\genforking$
 algorithm from the generalized forking lemma.
 
-\begin{definition}[Forking special soundness]
+\begin{definition}[Forking soundness]
   % Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
   % $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\tree$ be an
   % $(n_1, \ldots, n_\mu)$-tree of acceptable transcripts output by a $\ppt$ tree
@@ -1612,12 +1621,11 @@ algorithm from the generalized forking lemma.
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
   $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\tree$ be an
   $(n_1, \ldots, n_\mu)$-tree of transcripts for an in valid instance
-  $\inp$. We say that $\ps$ is $(\epsss, (n_1, \ldots, n_\mu))$-forking special
-  sound if there is an extractor $\extt$ that given $\tree$ extracts $\wit$
+  $\inp$. We say that $\ps$ is $(\epsss, (n_1, \ldots, n_\mu))$-forking sound if there is an extractor $\extt$ that given $\tree$ extracts $\wit$
   such that $\REL(\inp, \wit) = 1$ with probability at least $1 - \epsss.$
 \end{definition}
 
-\begin{definition}[$k$-round forking special soundness]
+\begin{definition}[$k$-round forking soundness]
   % Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
   % $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\tree$ be an
   % $(n_1, \ldots, n_\mu)$-tree of acceptable transcripts output by a $\ppt$ tree
@@ -1646,7 +1654,7 @@ algorithm from the generalized forking lemma.
 % even unbounded, adversaries) all references to that property should be
 % understood as references to its computational version.
 
-\begin{definition}[$(k,n)$-forking special soundness]
+\begin{definition}[$(\eps, k,n)$-forking soundness]
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
   $(2 \mu + 1)$-message proof system for a relation $\REL$.
 
@@ -1656,12 +1664,15 @@ algorithm from the generalized forking lemma.
   transcripts such that none of the $n$ challenges in round $k$ were used in
   simulated proofs.
 
-  $\tdv$ has oracle access to $\adv$ and provides
-  it with (oracle) access to random oracle $\ro$ and simulator
-  $\simulator_\fs$ -- more precisely $\tdv$ has an internal procedure $\bdv$ that
-  provided $\srs$ and random oracle queries' responses $h_1, \ldots, h_1$ gives
-  $\adv$ access to the random oracle and simulates proof for it. In the end,
-  $\bdv$ returns the index $i$ of the random oracle query made for challenge $k$, the set $Q$ of simulator random oracle indexes, the instance $\inp$, and the proof $\adv$ returns. Eventually, $\tdv$ returns a $(1, \ldots, n, \dots, 1)$ tree of acceptable transcripts~$\tree$.
+  $\tdv$ has oracle access to $\adv$ and provides it with (oracle) access to
+  random oracle $\ro$ and simulator $\simulator_\fs$ -- more precisely $\tdv$
+  has an internal procedure $\bdv$ that provided $\srs$ and random oracle
+  queries' responses $h_1, \ldots, h_1$ gives $\adv$ access to the random oracle
+  and simulates proof for it. In the end, $\bdv$ returns the index $i$ of the
+  random oracle query made for challenge $k$, the set $Q$ of simulator random
+  oracle indexes, the instance $\inp$, and the proof $\adv$ returns. Eventually,
+  $\tdv$ returns a $(1, \ldots, n, \dots, 1)$ tree of acceptable
+  transcripts~$\tree$.
 
 
   \begin{figure}
@@ -1689,7 +1700,7 @@ algorithm from the generalized forking lemma.
     }
   \end{figure}
 %
-  We say that $\ps$ is $(k,n)$-forking special sound if
+  We say that $\ps$ is $(\eps, k,n)$-forking sound if
   for any PPT adversary the probability that
   \[
     \Pr\left[
@@ -1710,15 +1721,15 @@ algorithm from the generalized forking lemma.
           & \srs \sample \kgen(\REL),\\
           & (1, \tree) \gets \tdv(\adv, \srs)
         \end{aligned}
-      \right.\right] \leq \negl.
+      \right.\right] \leq \eps(\secpar).
       \]
 \end{definition}
 
-\section{Special simulation-extractability---the general result}
+\section{Forking simulation-extractability---the general result}
 \label{sec:general}
 Equipped with definitional framework of \cref{sec:se_definitions} we are ready
-to present the main result of this paper---special simulation soundness and
-special soundness extractability of multi-round protocols.
+to present the main result of this paper---forking simulation soundness and
+forking soundness extractability of multi-round protocols.
 
 The proofs go by game hoping. The games are controlled by an environment $\env$
 that internally runs a simulation extractability adversary $\advse$, provides it
@@ -1890,18 +1901,19 @@ random oracle and wins with the same probability.
 \end{proof}
 
 
-\begin{theorem}[Special simulation-extractable multi-message protocols]
+\begin{theorem}[Forking simulation-extractable multi-message protocols]
   \label{thm:se}
   Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
   $(2 \mu + 1)$-message proof system for $\RELGEN(\secparam)$ that is honest
   verifier zero-knowledge in the standard model\footnote{Crucially, we require
     that one can provide an indistinguishable simulated proof without any
     additional knowledge, as e.g~knowledge of a SRS trapdoor.}, has $\ur{k}$
-  property with security $\epsur$, is $(n_1, \ldots, n_\mu)$-special sound for
-  $n_i = 1, i \in \range{1}{\mu} \setminus \smallset{k}$ and $n_k = n$.
+  property with security $\epsur$, is $(\epss, n, k)$-forking sound .
+  % for
+  % $n_i = 1, i \in \range{1}{\mu} \setminus \smallset{k}$ and $n_k = n$.
 
 Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
-Then $\psfs$ is special simulation-extractable with extraction error $\epsur$
+Then $\psfs$ is forking simulation-extractable with extraction error $\epsur$
 against $\ppt$ algebraic adversaries that makes up to $q$ random oracle queries and
 returns an acceptable proof with probability at least $\accProb$. 
 The extraction probability $\extProb$ is at least
@@ -2064,7 +2076,7 @@ is upper-bounded by $q_{\ro}^{\mu} \epss$ as well.
 $\extt(\tree)$ run by $\ext$ fails to extract the witness. 
 
 \ncase{$\game{3} \mapsto \game{4}$}	
-Since $\ps$ is computationally special-sound the probability that $\extt(\tree)$
+Since $\ps$ is forking-sound the probability that $\extt(\tree)$
 fails is upper-bounded by $\epsss$. 
 
 Since Game $\game{4}$ is aborted when it is impossible to extract the correct witness
@@ -2100,7 +2112,7 @@ $\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} \geq
 \[
 	\extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur)^{n} -\eps\,.
 \] 
-thus $\psfs$ is special simulation extractable with extraction error $\epsur$.
+thus $\psfs$ is forking simulation extractable with extraction error $\epsur$.
 \qed
 \end{proof}
 
@@ -2148,22 +2160,22 @@ thus $\psfs$ is special simulation extractable with extraction error $\epsur$.
 % \end{proof}
 
 
-\section{Special simulation extractability of $\plonkprotfs$} 
+\section{Forking simulation extractability of $\plonkprotfs$} 
 \label{sec:plonk}
-In this section we show that $\plonkprotfs$ is special simulation-extractable. To that
+In this section we show that $\plonkprotfs$ is forking simulation-extractable. To that
 end, we proceed as follows. First we show that the version of the KZG polynomial
 commitment scheme that is proposed in the \plonk{} paper has the unique opening
 property, cf.~\cref{sec:poly_com} and \cref{lem:pcomp_unique_op}. This is then
 used to show that $\plonkprot$ has the $\ur{3}$ property,
 cf.~\cref{lem:plonkprot_ur}.
 
-Next, we show that $\plonkprot$ is computationally special-sound. That is, given a
+Next, we show that $\plonkprot$ is forking-sound. That is, given a
 number of acceptable transcripts which match on the first 3 rounds of the
 protocol we can either reveal a correct witness for the proven statement or use
 one of the transcripts to break the $\dlog$ assumption. This result is shown in
 the AGM, cf.~\cref{lem:plonkprot_ss}.
 
-Given special-soundness of $\plonkprot$, we use the fact that it is also
+Given forking-soundness of $\plonkprot$, we use the fact that it is also
 $\ur{3}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is
 simulation-extractable. That is, we build reductions that given a simulation
 extractability adversary $\advse$ either break the protocol's unique response
@@ -2584,111 +2596,77 @@ Step 1 above. \qed
 
 
 \end{proof}
-\COMMENT{
-\begin{lemma}
-\label{lem:plonkprot_ur}
-If a polynomial commitment scheme $\PCOM$ is evaluation binding with parameter
-$\epsbind$ and has unique openings property with parameter $\epsop$, then
-$\plonkprot$ is $\ur{2}$. However, in the case presented here, less is required.
-with parameter $\epsur \leq \epsbind + \epsop$.
-\end{lemma}
-\begin{proof}
-  Let $\adv$ be an adversary that breaks $\ur{2}$-ness of $\plonkprot$.  We
-  consider two cases, depending on which round $\adv$ is able to provide at
-  least two different outputs such that the resulting transcripts are
-  acceptable.  For the first case we show that $\adv$ breaks the evaluation
-  binding property of $\PCOM$, while for the second case we show that it breaks
-  the unique opening property of $\PCOM$.
 
-\case{1} In Round 4 the prover is asked to give evaluations of predefined
-polynomials at some point $\chz$. Naturally, for the given polynomials only one
-value at $\chz$ is correct. Assume $\adv$ is able to produce two different
-outputs in that round: $\vec{r_4} = (\ev{\p{a}}, \ev{\p{b}}, \ev{\p{c}},
-\ev{\p{S_{\sigma 1}}}, \ev{\p{S_{\sigma 2}}}, \ev{\p{r}}, \ev{\p{z}})$ and
-$\vec{r_4} = (\ev{\p{a}}', \ev{\p{b}}', \ev{\p{c}}', \ev{\p{S_{\sigma 1}}}',
-\ev{\p{S_{\sigma 2}}}', \ev{\p{r}}', \ev{\p{z}}')$ which suppose to be
-evaluations at $\chz$ of polynomials $\p{a}, \p{b}, \p{c}, \p{S_{\sigma 1}},
-\p{S_{\sigma 2}}, \p{r}$ and an evaluation at $\chz \omega$ of $\p{z}$. Clearly,
-at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus if both
-evaluations are acceptable by the $\PCOM.\verify$ then the evaluation binding
-property of $\PCOM$ is broken. This happens with probability upper-bounded by
-$\epsbind$.
-
-\case{2} In the last round of the protocol the prover provides openings for the
-polynomial commitment evaluations done before. Assume $\adv$ is able to produce
-two different polynomial commitment openings pairs: $\vec{r_5} =
-(\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and $\vec{r'_5} =
-(\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
-% Since \cref{lem:pcomp_unique_op},
-Since $\PCOM$ has unique opening property, one of the openings has to be
-incorrect and should be rejected by the polynomial commitment verifier. This
-happens except with probability $\epsop$
-
-\conclude Hence the probability that $\adv$ breaks $\ur{2}$-property of
-$\plonkprot$ is upper-bounded by $\epsbind + \epsop$. \qed
-\end{proof}
-}
-
-\subsection{Computational special soundness}
+\subsection{Forking soundness}
 \begin{lemma}
 \label{lem:plonkprot_ss}
-$\plonkprot$ is $(\epsss, (1, 1, \noofc + 3, 1))$-computational special sound
-for $\epsss = $.
+$\plonkprot$ is $(\epsss, (1, 1, 3 \noofc + 1, 1))$-forking sound
+for $\epsss = \epsid + \epsdlog$.
 \end{lemma}
 \begin{proof}
-  
   Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
   $\GRP_1$-elements; that is,
-  $\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc + 2}}$. Let $\adv$ be an
+  $\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc + 2}}$. Let $\tdv$ be an
   algebraic adversary that produces a statement $\inp$ and a
-  $(1, 1, \noofc + 3, 1)$-tree of acceptable transcripts $\tree$.  Note that in
+  $(1, 1, 3\noofc + 1, 1)$-tree of acceptable transcripts $\tree$.  Note that in
   all transcripts the instance $\inp$, proof elements
   $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and
   challenges $\alpha, \beta, \gamma$ are common as the transcripts share the
-  first three rounds. The tree ``branches'' after the third round of the protocol
-  where the challenge $\chz$ is presented, thus tree $\tree$ is build using different
-  values of $\chz$. 
+  first three rounds. The tree branches after the third round of the protocol
+  where the challenge $\chz$ is presented, thus tree $\tree$ is build using
+  different values of $\chz$.
 
   We consider two mutually disjunctive events. The first, $\event{E}$ holds when
   all of the transcripts are acceptable by the idealised verification equation,
-  i.e.~$\vereq_\zkproof(X) = 0$, cf.~\cref{eq:ver_eq}. The second, $\nevent{E}$ holds
-  when there is a transcript that is acceptable by the real verifier, but not by
-  the ideal verifier. That is, for that particular transcript it holds that
-  $\vereq_\zkproof(\chi) = 0$, but $\vereq_\zkproof(X) \neq 0$.  When event $\event{E}$ holds we show that the extractor $\extt$ is successful. If it does not hold, we show a reduction
-  $\rdvdlog$ that breaks the $\dlog$ assumption.
+  i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}. The second,
+  $\nevent{E}$ holds when there is a transcript that is acceptable by the real
+  verifier, but not by the ideal verifier. That is, for that particular
+  transcript it holds that $\vereq_{\inp, \zkproof}(\chi) = 0$, but
+  $\vereq_{\inp, \zkproof}(X) \neq 0$.  When event $\event{E}$ holds we show
+  that the extractor $\extt$ is successful. If it does not hold, we show a
+  reduction $\rdvdlog$ that breaks the $\dlog$ assumption.
 
-  \ncase{When $\event{E}$ holds} Let $(\inp, \tree) \gets \adv(\REL,
-  \srs)$. Since the protocol $\plonkprot$, instantiated with the idealised
-  verification equation, is perfectly sound, except with probability of batching
-  failure $\epsbatch$, for a valid proof $\zkproof$ of a statement $\inp$ there
-  exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note that 
-  polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$, which contain witness in their
-  coefficients, have degree $(\noofc + 2)$ and since $\adv$ answered correctly
-  on $(\noofc + 3)$ different challenges $\chz$ then $(\noofc + 3)$ evaluations
-  of these polynomials (at different points) are known. The extractor $\extt$
-  interpolates the polynomials and reveals the corresponding witness
-  $\wit$. The extractor finds the witness with probability $1$.
+  \ncase{When $\event{E}$ holds} Let $(1, \tree) \gets \tdv(\REL, \srs)$ and
+  $\inp$ be a relation proven in $\tree$. Since the protocol $\plonkprot$,
+  instantiated with the idealised verification equation, is perfectly sound,
+  except with negligible probability of the idealised verifier failure $\epsid$,
+  for a valid proof $\zkproof$ of a statement $\inp$ there exists a witness
+  $\wit$, such that $\REL(\inp, \wit)$ holds. Note that since the $\tdv$
+  produces $(3 \noofc + 1)$ acceptable transcripts for different challenges
+  $\chz$, it obtains the same number of different evaluations of polynomials
+  $\p{a}, \p{b}, \p{c}, \p{z}, \p{t}$. Since the transcripts are acceptable by
+  an idealised verifier, the equality between polynomial $\p{t}$ and combination
+  of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$ described in Round 3 of the
+  protocol holds. Hence, $\p{a}, \p{b}, \p{c}$ encodes the valid witness for the
+  proven statement. Since $\p{a}, \p{b}, \p{c}$ are of degree at most
+  $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their evaluations known,
+  $\extt$ can recreate their coefficients by interpolation and reveal the
+  witness with probability $1$. Hence, the probability that extraction fails in
+  that case is upper-bounded by probability of an idealised verifier failing
+  $\epsid$, which is negligible.
 
-  \ncase{When $\nevent{E}$ holds} Let $\adv$ be an adversary that for relation
+  \ncase{When $\nevent{E}$ holds} Let $\tdv$ be an adversary that for relation
   $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree of
   acceptable transcripts such that $\nevent{E}$ holds. Let $\rdvdlog$ be a
   reduction that gets as input an $(\noofc + 2, 1)$-dlog instance
   $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$ and is tasked to output
   $\chi$. The reduction proceeds as follows---it gives the input instance to the
-  adversary as the SRS. Let $(\inp, \tree)$ be the output returned by $\adv$.
-  Consider a transcript $\zkproof \in \tree$ such that
-  $\vereq_\zkproof(X) \neq 0$, but $\vereq_\zkproof(\chi) = 0$. Since the
-  adversary is algebraic, all group elements included in $\tree$ are extended by
-  their representation as a combination of the input $\GRP_1$-elements. Hence all coefficients of
-  the verification equation polynomial $\vereq_\zkproof(X)$ are known and $\rdvdlog$ can
-  find its zero points. Since $\vereq_\zkproof(\chi) = 0$, the targeted discrete log
-  value $\chi$ is among them. \qed
+  adversary as the SRS. Let $(1, \tree)$ be the output returned by $\adv$. Let
+  $\inp$ be a relation proven in $\tree$.  Consider a transcript
+  $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
+  $\vereq_{\inp, \zkproof}(\chi) = 0$. Since the adversary is algebraic, all group
+  elements included in $\tree$ are extended by their representation as a
+  combination of the input $\GRP_1$-elements. Hence all coefficients of the
+  verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known and $\rdvdlog$
+  can find its zero points. Since $\vereq_{\inp, \zkproof}(\chi) = 0$, the targeted
+  discrete log value $\chi$ is among them.
+  Hence, the probability that this event happens is upper-bounded by $\epsdlog$. \qed
 \end{proof}
 
 \iffalse
 \begin{lemma}
 \label{lem:plonkprot_ss}
-$\plonkprot$ is $(\epsss, (1, 1, \noofc + 3, 1))$-computational special sound
+$\plonkprot$ is $(\epsss, (1, 1, \noofc + 3, 1))$-computational forking sound
 for
  \[
 	\epsss \leq \epsbatch + \epsdlog\,,
@@ -3062,22 +3040,22 @@ $\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
 % \abs{\prob{\game{0}} - \prob{\game{2}}} \leq \epszk + \epsuber.  \) \qed
 \end{proof}
 
-\subsection{From special-soundness and unique response property to special simulation
+\subsection{From forking soundness and unique response property to forking simulation
   extractability of $\plonkprotfs$}
 
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$
-and computationally special sound. We now 
+and forking sound. We now 
 make use of \cref{thm:se} and show that
-$\plonkprot_\fs$ is special simulation-extractable as defined in \cref{def:simext}.
+$\plonkprot_\fs$ is forking simulation-extractable as defined in \cref{def:simext}.
 
-\begin{corollary}[Special simulation extractability of $\plonkprot_\fs$]
+\begin{corollary}[Forking simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
 Assume that $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$, and
-computational special-sound with security $\epsss(\secpar)$. Let $\ro\colon
+forking-sound with security $\epsss(\secpar)$. Let $\ro\colon
 \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$ adversary
 that can make up to $q$ random oracle queries and outputs an acceptable proof
 for $\plonkprotfs$ with probability at least $\accProb$. Then $\plonkprotfs$ is
-special simulation-extractable with extraction error $\eta = \epsur$. The extraction
+forking simulation-extractable with extraction error $\eta = \epsur$. The extraction
 probability $\extProb$ is at least
 \[
 	\extProb \geq \frac{1}{q^{\noofc + 2}} (\accProb - \epsur)^{\noofc + 3} -\eps\,,
@@ -3086,7 +3064,7 @@ for some negligible $\eps$ and $\noofc$ being the number of
 constrains in the proven circuit.
 \end{corollary}
 
-\section{Special simulation extractability of $\sonicprotfs$}
+\section{Forking simulation extractability of $\sonicprotfs$}
 \label{sec:sonic}
 \subsection{\sonic{} protocol rolled out}
 In this section we present $\sonic$'s constraint system and algorithms. Reader
@@ -3282,11 +3260,11 @@ upper-bounded by $\epsbind + \epsop$.
 
 \end{proof}
 
-\subsection{Computational special soundness}
+\subsection{Forking soundness}
 \begin{lemma}
 	\label{lem:sonicprot_ss}
 	Let $\adv$ be a $\ppt$ algebraic adversary. The probability $\epsss$ that
-  $\adv$ breaks computational special soundness of $\sonicprot$ is upper-bounded
+  $\adv$ breaks forking soundness of $\sonicprot$ is upper-bounded
   as
 	\[
 			\epsss \leq \epss + \epsldlog\,,
@@ -3426,19 +3404,19 @@ prover and verifier. \qed
   challenges that fits it.
 \end{remark}
 
-\subsection{From special-soundness and unique response property to special simulation extractability of $\sonicprotfs$}
+\subsection{From forking soundness and unique response property to forking simulation extractability of $\sonicprotfs$}
 Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{2}$
-and computationally special sound. We now make use
-of \cref{thm:se} and show that $\sonicprotfs$ is special simulation-extractable as defined in \cref{def:simext}.
+and forking sound. We now make use
+of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable as defined in \cref{def:simext}.
 
-\begin{corollary}[Special simulation extractability of $\sonicprotfs$]
+\begin{corollary}[Forking simulation extractability of $\sonicprotfs$]
   \label{thm:sonicprotfs_se}
   Assume that $\sonicprot$ is $\ur{2}$ with security $\epsur(\secpar)$, and
-  computational special-sound with security $\epsss(\secpar)$. Let $\ro\colon
+  forking-sound with security $\epsss(\secpar)$. Let $\ro\colon
   \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$
   adversary that can make up to $q$ random oracle queries and outputs an
   acceptable proof for $\sonicprotfs$ with probability at least $\accProb$. Then
-  $\sonicprotfs$ is special simulation-extractable with extraction error $\eta =
+  $\sonicprotfs$ is forking simulation-extractable with extraction error $\eta =
   \epsur$. The extraction probability $\extProb$ is at least
 \[
 		\extProb  \geq \frac{1}{q^{\multconstr + \linconstr}} (\accProb - \epsur)^{\multconstr +
@@ -3609,8 +3587,9 @@ of \cref{thm:se} and show that $\sonicprotfs$ is special simulation-extractable 
 \section{Further work}
 We identify a number of problems which we left as further work. First of all,
 the generalised version of the forking lemma presented in this paper can be
-generalised even further to include protocols where $(n_1, \ldots,
-n_\mu)$-special soundness holds for more than one $n_j > 1$. I.e.~to include
+generalised even further to include protocols where forking soundness holds for
+protocols where $\extt$ extracts a witness from a $(n_1, \ldots, n_\mu)$-tree of
+acceptable transcripts, where more than one $n_j > 1$. I.e.~to include
 protocols that for witness extraction require transcripts that branch at more
 than one point.
 
@@ -4082,7 +4061,7 @@ polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
       \zkproof_2 = (\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch, \zkproof_{\advss}\range{4}{5})
     \end{align*}
   \end{itemize}
-  If $\zkproof_1 = \zkproof_2$, then $\advss$ fails to break special simulation
+  If $\zkproof_1 = \zkproof_2$, then $\advss$ fails to break forking simulation
   extractability, as $\zkproof_2 \in Q$.  On the other hand, if the proofs are
   not equal, then $\rdvur$ breaks $\ur{2}$-ness of $\plonkprot$. Thus
   \[
