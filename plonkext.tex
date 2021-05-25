@@ -1592,6 +1592,27 @@ algorithm from the generalized forking lemma.
   such that $\REL(\inp, \wit) = 1$ with probability at least $1 - \epsss.$
 \end{definition}
 
+\begin{definition}[$k$-round forking special soundness]
+  % Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
+  % $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\tree$ be an
+  % $(n_1, \ldots, n_\mu)$-tree of acceptable transcripts output by a $\ppt$ tree
+  % building algorithm $\tdv$ which plays the role of the verifier $\ps.\verifier$
+  % against $\ppt$ adversary $\adv$ which it interacts with.
+%
+  % We say that $\proofsystem$ is
+  % $(\epsss, (n_1, \ldots, n_\mu))$-\emph{computationally special sound} if there
+  % exists an extractor $\extt$ that given an $ (n_1, \ldots, n_\mu)$-tree of
+  % acceptable transcripts $\tree$ for an instance $\inp \in \LANG_\REL$ output by
+  % a $\ppt$ tree building adversary $\tdv$ some $\ppt$ adversary
+  % $\adv(\REL, \srs)$, for $\srs \sample \kgen(\REL)$, outputs $\wit$ such that
+  % $\REL(\inp, \wit) = 1$ with probability at least $1 - \epsss$.
+  Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
+  $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\tree$ be a PPT algorithm that rewinds $\adv^{H,Sim}$ to produce a
+  $(1, n_k, 1)$-tree of transcripts such that none of the challenges in round $k$ were used in simulated proofs. We say that $\ps$ is $(\epsss, ((1, n_k, 1)))$-forking special
+  sound if there is an extractor $\extt$ that given a tree produced by $\tree$ extracts $\wit$
+  such that $\REL(\inp, \wit) = 1$ with probability at least $1 - \epsss.$
+\end{definition}
+
 % Since we do not utilise the classical special soundness (that holds for all,
 % even unbounded, adversaries) all references to that property should be
 % understood as references to its computational version.
