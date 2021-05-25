@@ -1651,21 +1651,21 @@ algorithm from the generalized forking lemma.
   $\simulator$ -- more precisely $\tdv$ has an internal procedure $\bdv$ that
   provided $\srs$ and random oracle queries' responses $h_1, \ldots, h_1$ gives
   $\adv$ access to the random oracle and simulates proof for it. In the end,
-  $\bdv$ returns the proof $\adv$ returns and 
+  $\bdv$ returns the proof $\adv$ returns.
 
   \begin{figure}
     \centering
- 		\fbox{ \procedure{$\tdv (\srs \sample \kgen(\REL))$}
+ 		\fbox{ \procedure{$\tdv(\adv, \srs \sample \kgen(\REL))$}
       {h_1^{1}, \ldots,
       h_{q}^1 \sample H
-      (i, \inp, \zkproof_1) \gets \bdv(\srs, h_1^{1}, \ldots, h_{q}^{1})\\
+      (i, \inp, \zkproof_1) \gets \bdv(\adv, \srs, h_1^{1}, \ldots, h_{q}^{1})\\
         % i_1 \gets i\\
         \pcif \verifier(\srs, \inp, \zkproof_i) = 0\ \pcreturn (0, \bot)\\
         \pcfor j \in \range{2}{m}\\
         \pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
         h_{i - 1}^{j - 1}\\
         \pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
-        \pcind (i_j, \zkproof_j) \gets \bdv(\srs, h_1^{j}, \ldots, h_{i -
+        \pcind (i_j, \zkproof_j) \gets \bdv(\adv, \srs, h_1^{j}, \ldots, h_{i -
           1}^{j}, h_{i}^{j},
         \ldots, h_{q}^{j})\\
         \pcind \pcif \verifier(\srs, \inp, \zkproof_i) = 0\ \pcreturn (0, \bot)\\
@@ -1697,7 +1697,7 @@ algorithm from the generalized forking lemma.
         }
         \begin{aligned}
           & \srs \sample \kgen,\\
-          & \tree \gets \tdv(\srs)
+          & \tree \gets \tdv(\adv, \srs)
         \end{aligned}
       \right.\right] \leq \negl.
       \]
