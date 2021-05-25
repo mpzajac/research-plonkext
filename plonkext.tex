@@ -1410,6 +1410,29 @@ Finally, we get
 \qed
 \end{proof}
 
+\begin{figure}
+		\fbox{
+		\procedure{$\zdv (y,h_1^{1}, \ldots, h_{q}^{1}; \rho)$}		
+		{
+      (\rho_\sim, \rho_\adv)
+		\rho \sample \RND{\zdv}\\
+		(i, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; \rho)\\
+    i_1 \gets i\\
+		\pcif i = 0\ \pcreturn (0, \bot)\\
+		\pcfor j \in \range{2}{m}\\
+		\pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
+		h_{i - 1}^{j - 1}\\
+		\pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
+		\pcind (i_j, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
+		\ldots, h_{q}^{j}; \rho)\\
+		\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
+    \pcif \exists (j, j') \in \range{1}{m}^2, j \neq j' : (h_{i}^{j} = h_{i}^{j'})\
+	\pcreturn (0, \bot)\\
+		\pcelse \pcreturn (1, \vec{s})
+	}}
+
+\end{figure}
+
 To highlight importance of the generalised forking lemma we describe how we use
 it in our special simulation-extractability proof.  Let $\proofsystem$ be a
 computationally special sound proof system where for an instance $\inp$ the
@@ -2515,7 +2538,7 @@ $\plonkprot$ is upper-bounded by $\epsbind + \epsop$. \qed
 \begin{lemma}
 \label{lem:plonkprot_ss}
 $\plonkprot$ is $(\epsss, (1, 1, \noofc + 3, 1))$-computational special sound
-for $\epsss = 0$.
+for $\epsss = $.
 \end{lemma}
 \begin{proof}
   
