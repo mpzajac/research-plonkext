@@ -1630,8 +1630,9 @@ algorithm from the generalized forking lemma.
   % $\adv(\REL, \srs)$, for $\srs \sample \kgen(\REL)$, outputs $\wit$ such that
   % $\REL(\inp, \wit) = 1$ with probability at least $1 - \epsss$.
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
-  $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\tree$ be a PPT
-  algorithm that rewinds $\adv^{H,Sim}$ to produce a $(1, n_k, 1)$-tree of
+  $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\tree$ be the
+  algorithm below that rewinds $\advse^{\simulator_\fs,
+          \ro} (\REL, \srs; r)$ to produce a $(1, n_k, 1)$-tree of
   transcripts such that none of the challenges in round $k$ were used in
   simulated proofs. We say that $\ps$ is $(\epsss, ((1, n_k, 1)))$-forking
   special sound if there is an extractor $\extt$ that given a tree produced by
@@ -1643,49 +1644,56 @@ algorithm from the generalized forking lemma.
 % even unbounded, adversaries) all references to that property should be
 % understood as references to its computational version.
 
-\begin{definition}
+\begin{definition}[$(k,n)$-forking special soundness]
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
-  $(2 \mu + 1)$-message proof system for a relation $\REL$, let $\adv$ and
-  $\tdv$ be $\ppt$ algorithms. $\tdv$ has oracle access to $\adv$ and provides
-  it with (oracle) access to random oracle $\ro$ and $\ps$ simulator
-  $\simulator$ -- more precisely $\tdv$ has an internal procedure $\bdv$ that
+  $(2 \mu + 1)$-message proof system for a relation $\REL$.
+
+  Let $\tdv$ be the
+  algorithm below that rewinds $\ppt$ $\advse^{\simulator_\fs,
+          \ro} (\REL, \srs; r)$ to produce a $(1,\dots, n,\dots, 1)$-tree of
+  transcripts such that none of the $n$ challenges in round $k$ were used in
+  simulated proofs.
+
+  $\tdv$ has oracle access to $\adv$ and provides
+  it with (oracle) access to random oracle $\ro$ and simulator
+  $\simulator_\fs$ -- more precisely $\tdv$ has an internal procedure $\bdv$ that
   provided $\srs$ and random oracle queries' responses $h_1, \ldots, h_1$ gives
   $\adv$ access to the random oracle and simulates proof for it. In the end,
-  $\bdv$ returns the proof $\adv$ returns.
+  $\bdv$ returns the index $i$ of the random oracle query made for challenge $k$, the set $Q$ of simulator random oracle indexes, the instance $\inp$, and the proof $\adv$ returns.
 
   \begin{figure}
     \centering
  		\fbox{ \procedure{$\tdv(\adv, \srs \sample \kgen(\REL))$}
       {h_1^{1}, \ldots,
-      h_{q}^1 \sample H
-      (i, \inp, \zkproof_1) \gets \bdv(\adv, \srs, h_1^{1}, \ldots, h_{q}^{1})\\
+      h_{q}^1 \sample H \\
+      (i, Q, \inp, \zkproof_1) \gets \bdv(\adv, \srs, h_1^{1}, \ldots, h_{q}^{1})\\
         % i_1 \gets i\\
-        \pcif \verifier(\srs, \inp, \zkproof_i) = 0\ \pcreturn (0, \bot)\\
+        \pcif i\in Q \lor \verifier(\srs, \inp, \zkproof_1) = 0\ \pcreturn (0, \bot)\\
         \pcfor j \in \range{2}{m}\\
         \pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
         h_{i - 1}^{j - 1}\\
         \pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
-        \pcind (i_j, \zkproof_j) \gets \bdv(\adv, \srs, h_1^{j}, \ldots, h_{i -
+        \pcind (i_j, Q_j, \inp_j, \zkproof_j) \gets \bdv(\adv, \srs, h_1^{j}, \ldots, h_{i -
           1}^{j}, h_{i}^{j},
         \ldots, h_{q}^{j})\\
-        \pcind \pcif \verifier(\srs, \inp, \zkproof_i) = 0\ \pcreturn (0, \bot)\\
+        \pcind \pcif i \neq i_j \lor i_j \in Q_j \lor \inp \neq \inp_j \lor \verifier(\srs, \inp_j, \zkproof_i) = 0\ \pcreturn (0, \bot)\\
         %\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
         % \pcif \exists (j, j') \in \range{1}{m}^2, j \neq j' : (h_{i}^{j} =
         % h_{i}^{j'})\
         % 
         % pcreturn (0, \bot)\\
-        \pcelse \pcreturn (1, \tree)}
+        \pcelse \pcreturn (1, \tree = (\inp, \pmb{\pi}))}
     }
   \end{figure}
 
-  We say that $\ps$ is $(1, \ldots, n_k, \ldots, 1)$-forking special sound if
-  for any adversary probability that
+  We say that $\ps$ is $(1, \ldots, n, \ldots, 1)$-forking special sound if
+  for any PPT adversary the probability that
   \[
     \Pr\left[
       \begin{aligned}
-        & \forall_{\zkproof \in \tree} \verifier(\srs, \inp, \zkproof) = 1, \\
+       % & \forall_{\zkproof \in \tree} \verifier(\srs, \inp, \zkproof) = 1, \\
         & \wit \gets \extt(\tree), \\
-        & \REL(\inp, \wit) = 0
+        & \REL(\tree.\inp, \wit) = 0
       \end{aligned}
       \,\left|\,
         \vphantom{
@@ -1696,8 +1704,8 @@ algorithm from the generalized forking lemma.
           \end{aligned}
         }
         \begin{aligned}
-          & \srs \sample \kgen,\\
-          & \tree \gets \tdv(\adv, \srs)
+          & \srs \sample \kgen(\REL),\\
+          & (1, \tree) \gets \tdv(\adv, \srs)
         \end{aligned}
       \right.\right] \leq \negl.
       \]
