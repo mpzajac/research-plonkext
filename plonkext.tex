@@ -237,7 +237,7 @@ prover and honest verifier. We show how to use an adversary producing a tree of
 acceptable transcripts which one cannot extract the witness from to break the
 underlying computational assumption.
 
-\oursubsub{Unique response property.}%
+\oursubsub{Unique response property.} 
 Another property that has to be proven is the unique response property which
 states, as expressed in \cite{C:Fischlin05}, that for $3$-messages sigma
 protocols, except for the first message, all messages sent by the prover are
@@ -276,7 +276,7 @@ conversation with a real verifier). This property allows us to build simulators
 for $\plonkprotfs$ and $\sonicprotfs$ that rely only on the programmability of
 the random oracle.
 
-\oursubsub{Generalisation of the general forking lemma.}. 
+\oursubsub{Generalisation of the general forking lemma.} 
 Consider an interactive $3$-message special-sound protocol $\ps$ and its
 non-interactive version $\ps_\fs$ obtained by the Fiat--Shamir transform. The
 general forking lemma provides an instrumental lower bound for the probability
@@ -1829,14 +1829,14 @@ random oracle and wins with the same probability.
 
 \begin{theorem}[Simulation soundness]
   \label{thm:simsnd}
-  Assume that $\ps$ is $k$-programmable HVZK in the standard model,
+  Assume that $\ps$ is $k$-programmable HVZK in the standard model, that is
   $\epss(\secpar)$-sound and $\ur{k}$ with security $\epsur(\secpar)$. Then the
   probability that a $\ppt$ adversary $\adv$ breaks simulation soundness of
   $\ps_{\fs}$ is upper-bounded by
   \[
     \epsur(\secpar) + q_\ro^\mu  \epss(\secpar)\,,
   \]
-  where $q_\ro$ is the total number of queries made by the adversary $\adv$ to a
+  where $q$ is the total number of queries made by the adversary $\adv$ to a
   random oracle $\ro\colon \bin^{*} \to \bin^{\secpar}$.
 \end{theorem}
 
@@ -1864,17 +1864,17 @@ random oracle and wins with the same probability.
   % additional queries to the random oracle and wins with the same probability.
 
   \ngame{0} This is a simulation soundness game played between an adversary
-  $\advss$ who has given access to a random oracle $\ro$ and simulator
-  $\psfs.\simulator$. $\advss$ wins if it manages to produce an acceptable proof
+  $\adv$ who has given access to a random oracle $\ro$ and simulator
+  $\psfs.\simulator$. $\adv$ wins if it manages to produce an acceptable proof
   for a false statement. In the following game hops we upper-bound the
   probability that this happens.
 
-  \ngame{1} This is identical to $\game{0}$ except that now the game is aborted
-  if there is a simulated proof $\zkproof_\simulator$ for $\inp_{\adv}$ such
-  that $(\inp_{\adv}, \zkproof_\simulator[1..k]) = (\inp_{\adv},
-  \zkproof_{\adv}[1..k])$. That is, the adversary in its final proof
-  reuses a part of a simulated proof it saw before and the proof is acceptable.
-  Denote that event by $\event{\errur}$.
+  \ngame{1} This is identical to $\game{0}$ except now the game is aborted if
+  there is a simulated proof $\zkproof_\simulator$ for $\inp_{\adv}$ such that
+  $(\inp_{\adv}, \zkproof_\simulator[1..k]) = (\inp_{\adv},
+  \zkproof_{\adv}[1..k])$. That is, the adversary in its final proof reuses at
+  least $k$ messages from a simulated proof it saw before and the proof is
+  acceptable.  Denote that event by $\event{\errur}$.
 
   \ncase{$\game{0} \mapsto \game{1}$} We have, \( \prob{\game{0} \land
     \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}} \) and, from the
@@ -1885,9 +1885,9 @@ random oracle and wins with the same probability.
   $\prob{\event{\errur}}$ is small.
 
   We can assume that $\adv$ queried the simulator on the instance it wishes to
-  output---$\inp_{\adv}$. We show a reduction $\rdvur$ that utilises $\adv$,
-  who outputs a valid proof for $\inp_{\adv}$, to break the $\ur{k}$ property of
-  $\ps$. Let $\rdvur$ run $\advse$ internally as a black-box:
+  output, i.e.~$\inp_{\adv}$. We show a reduction $\rdvur$ that utilises $\adv$
+  to break the $\ur{k}$ property of $\ps$. Let $\rdvur$ run $\advse$ internally
+  as a black-box:
   \begin{itemize}
 	\item The reduction answers both queries to the simulator $\psfs.\simulator$
     and to the random oracle.  It also keeps lists $Q$, for the simulated
@@ -1908,29 +1908,21 @@ random oracle and wins with the same probability.
 	If $\zkproof_1 = \zkproof_2$, then $\adv$ fails to break simulation soundness,
   as $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then
   $\rdvur$ breaks $\ur{k}$-ness of $\ps$. This happens only with negligible
-  probability $\epsur$, hence \( \prob{\event{\errur}} \leq \epsur\,. \)
+  probability $\epsur(\secpar)$, hence
+  \( \prob{\event{\errur}} \leq \epsur(\secpar)\,. \)
 	
   \ngame{2} This is identical to $\game{1}$ except that now the environment
   aborts if the instance the adversary proves is not in the language.
 
   \ncase{$\game{1} \mapsto \game{2}$} 
-  % STARTED REDUCTION TO NI SOUNDNESS:
-  % We show that
-  % $\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epss$. Consider a simulation
-  % soundness adversary $\advss$ that does not break unique response property, yet it gives
-  % an accepting proof for an invalid statement. We show that such an adversary
-  % could be used to break soundness of $\ps$. Really, consider a soundness
-  % adversary $\adv$. Since $\ps$ is HVZK $\adv$ can internally simulate $\advss$
-  % and provide it with simulated proofs as it wishes. 
-  %
   % REDUCTION TO INTERACTIVE SOUNDNESS:
   We show that
-  $\abs{\prob{\game{1}} - \prob{\game{2}}} \leq q_{\ro}^{\mu} \cdot \epss(\secpar)$,
+  $\abs{\prob{\game{1}} - \prob{\game{2}}} \leq q^{\mu} \cdot \epss(\secpar)$,
   where $\epss(\secpar)$ is the probability of breaking soundness of the underlying
   \emph{interactive} protocol $\ps$. Note that
   $\abs{\prob{\game{1}} - \prob{\game{2}}}$ is the probability that $\adv$
-  outputs an acceptable proof for a false statement, which does not break the
-  unique response property (proofs breaking that property have been excluded by
+  outputs an acceptable proof for a false statement which does not break the
+  unique response property (such proofs have been excluded by
   $\game{1}$). Consider a soundness adversary $\adv'$ who initiates a proof with
   $\ps$'s verifier $\ps.\verifier$, internally runs $\adv$ and proceeds as
   follows:
@@ -1938,7 +1930,7 @@ random oracle and wins with the same probability.
   \item It guesses indices $i_1, \ldots, i_\mu$ such that random oracle queries
     $h_{i_1}, \ldots, h_{i_\mu}$ are the queries used in the $\zkproof_\adv$
     proof eventually output by $\adv$. This is done with probability at least
-    $1/q_{\ro}^\mu$ (since there are $\mu$ challenges from the verifier in
+    $1/q^\mu$ (since there are $\mu$ challenges from the verifier in
     $\ps$).
   \item On input $h$ for the $i$-th,
     $i \not\in \smallset{{i_1}, \ldots, {i_\mu}}$, random oracle query, $\adv'$
@@ -1966,12 +1958,12 @@ random oracle and wins with the same probability.
   break simulation soundness without breaking the unique response property and
   $\adv'$ correctly guesses the indices of $\adv$ random oracle queries. This
   happens with probability upper-bounded by $\abs{\prob{\game{1}} -
-    \prob{\game{2}}} \cdot \infrac{1}{q_\ro^{\mu}}$. Hence $\abs{\prob{\game{1}} -
-    \prob{\game{2}}} \leq q_\ro^{\mu} \cdot \epss(\secpar)$.
+    \prob{\game{2}}} \cdot \infrac{1}{q^{\mu}}$. Hence $\abs{\prob{\game{1}} -
+    \prob{\game{2}}} \leq q^{\mu} \cdot \epss(\secpar)$.
 
   Note that in $\game{2}$ the adversary cannot win. Thus the probability
   that $\advss$ is successful is upper-bounded by
-  $\epsur(\secpar) + q_{\ro}^{\mu} \cdot \epss(\secpar)$.  \qed
+  $\epsur(\secpar) + q^{\mu} \cdot \epss(\secpar)$.  \qed
 \end{proof}
 
 
@@ -1982,7 +1974,7 @@ random oracle and wins with the same probability.
   verifier zero-knowledge in the standard model\footnote{Crucially, we require
     that one can provide an indistinguishable simulated proof without any
     additional knowledge, as e.g~knowledge of a SRS trapdoor.}, has $\ur{k}$
-  property with security $\epsur$, is $(\epss, k, n)$-forking sound .
+  property with security $\epsur(\secpar)$, and is $(\epss(\secpar), k, n)$-forking sound.
   % for
   % $n_i = 1, i \in \range{1}{\mu} \setminus \smallset{k}$ and $n_k = n$.
 
@@ -1992,9 +1984,9 @@ against $\ppt$ algebraic adversaries that makes up to $q$ random oracle queries 
 returns an acceptable proof with probability at least $\accProb$. 
 The extraction probability $\extProb$ is at least
 \[
-	\extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur)^{n} -\eps\,,
+	\extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,,
 \]
-for some negligible $\eps$.	
+for some negligible $\eps(\secpar)$.	
 \end{theorem}
 \begin{proof}		
 
@@ -2012,10 +2004,10 @@ for some negligible $\eps$.
   if there is a simulated proof $\zkproof_\simulator$ for $\inp_{\advse}$ such
   that $(\inp_{\advse}, \zkproof_\simulator[1..k]) = (\inp_{\advse},
   \zkproof_{\advse}[1..k])$. That is, the adversary in its final proof
-  reuses a part of a simulated proof it saw before and the proof is acceptable.
+  reuses at least $k$ messages from a simulated proof it saw before and the proof is acceptable.
   Denote that event by $\event{\errur}$.
 
-  \ncase{$\game{0} \mapsto \game{1}$} $\prob{\event{\errur}} \leq \epsur$. The
+  \ncase{$\game{0} \mapsto \game{1}$} $\prob{\event{\errur}} \leq \epsur(\secpar)$. The
   proof goes exactly as in \cref{thm:simsnd}.
 
   \COMMENT{We have,
@@ -2105,8 +2097,8 @@ oracle response from a new set of responses $h^2_i, \ldots, h^2_q$. If the
 adversary requests a simulated proof after seeing $h^2_i$ then $\zdv$ computes
 the simulated proof on its own. Eventually, $\zdv$ outputs index $i'$ of a query
 that was used by the adversary to compute $\ro(\zkproof_{\advse}[0..k])$, and a
-new transcript $s_2$. $\zdv$ is run $n + 1$ times with different random oracle
-responses. If a tree $\tree$ of $n + 1$ transcripts is build then $\ext$
+new transcript $s_2$. $\zdv$ is run $n$ times with different random oracle
+responses. If a tree $\tree$ of $n$ transcripts is built then $\ext$
 runs internally the tree extractor $\extt(\tree)$ and outputs what it returns.
 
 We emphasize here the importance of the unique response property. If it does not
@@ -2150,7 +2142,7 @@ $\extt(\tree)$ run by $\ext$ fails to extract the witness.
 
 \ncase{$\game{2} \mapsto \game{3}$}	
 Since $\ps$ is forking-sound the probability that $\extt(\tree)$
-fails is upper-bounded by $\epsss$. 
+fails is upper-bounded by $\epsss(\secpar)$. 
 
 Since Game $\game{3}$ is aborted when it is impossible to extract the correct witness
 from $\tree$, hence the adversary $\advse$ cannot win.  Thus, by the game-hoping
@@ -2158,37 +2150,37 @@ argument,
 \[
 	\abs{\prob{\game{0}} - \prob{\game{4}}} \leq 1 -
   \left(\frac{\waccProb^{n}}{q^{n - 1}} + \waccProb \cdot \frac{(2^\secpar)
-      !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb\right) + \epsur +
+      !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb\right) + \epsur(\secpar) +
   %q_{\ro}^{\mu} \epss +
-  \epsss\,.
+  \epsss(\secpar)\,.
 \]
 Thus the probability that extractor $\extss$ succeeds is at least
 \[
 	\frac{\waccProb^{n}}{q^{n - 1}} + \waccProb \cdot \frac{(2^\secpar)
-    !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb - \epsur 
+    !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb - \epsur(\secpar) 
   %- q_{\ro}^{\mu} \epss
-  - \epsss\,.
+  - \epsss(\secpar)\,.
 \]
 Since $\waccProb$ is probability of $\advse$ outputting acceptable transcript
 that does not break $\ur{k}$-ness of $\ps$, then $\waccProb \geq \accProb -
-\epsur$, where $\accProb$ is the probability of $\advse$ outputing an acceptable
+\epsur(\secpar)$, where $\accProb$ is the probability of $\advse$ outputing an acceptable
 proof as defined in \cref{def:simext}. It thus holds
-\[
+\begin{equation}
 	\label{eq:frk}
-	\extProb \geq \frac{(\accProb - \epsur)^{n}}{q^{n - 1}} -
-  \underbrace{(\accProb - \epsur) \cdot \left( 1 - \frac{(2^\secpar)
-        !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}}\right) - \epsur -
+	\extProb \geq \frac{(\accProb - \epsur(\secpar))^{n}}{q^{n - 1}} -
+  \underbrace{(\accProb - \epsur(\secpar)) \cdot \left( 1 - \frac{(2^\secpar)
+        !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}}\right) - \epsur(\secpar) -
     % q_{\ro}^{\mu} \epss -
-    \epsss}_{\eps}\,.
-\]
-Note that the part of \cref{eq:frk} denoted by $\eps$ is negligible as
-$\epsur, \epsss$ are negligible, and
+    \epsss(\secpar)}_{\eps(\secpar)}\,.
+\end{equation}
+Note that the part of \cref{eq:frk} denoted by $\eps(\secpar)$ is negligible as
+$\epsur(\secpar), \epsss(\secpar)$ are negligible, and
 $\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} \geq
 \left(\infrac{(2^\secpar - n)}{2^\secpar}\right)^{n}$ is overwhelming.  Thus,
 \[
-	\extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur)^{n} -\eps\,.
+	\extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,.
 \] 
-thus $\psfs$ is forking simulation extractable with extraction error $\epsur$.
+thus $\psfs$ is forking simulation extractable with extraction error $\epsur(\secpar)$.
 \qed
 \end{proof}
 
@@ -2527,6 +2519,17 @@ The \plonk{} verifier works as follows
   polynomial at one point).
 \end{description}
 
+\ncase{$\plonk$ simulator $\simulator_\chi(\REL, \srs, \rd= \chi, \inp)$}\ \newline
+The \plonk{} simulator proceeds as an honest prover would, except:
+\begin{enumerate}
+  \item In the first round, it sets $\wit = (\wit_i)_{i \in \range{1}{3 \noofc}}
+    = \vec{0}$, and at random picks $b_1, \ldots, b_9$. Then it proceeds with
+    that all-zero witness.
+  \item In Round 3, it computes polynomial $\pt(X)$ honestly, however uses
+    trapdoor $\chi$ to compute commitments
+    $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$.
+  \end{enumerate}
+  
 \subsection{Unique opening property of $\PCOMp$}
 \begin{lemma}
 \label{lem:pcomp_unique_op}
