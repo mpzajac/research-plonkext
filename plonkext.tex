@@ -427,7 +427,7 @@ message. Furthermore, the adversary may even interrupt the proof and try again
 with another instance. All of these actions would make the proof unacceptable
 for an interactive verifier, however they may give a perfectly fine proof for a non-interactive one.
 
-State restoration attack security~\cite{TCC:BenChiSpo16,EPRINT:Holmgren19} defines a stronger soundness notion for interactive protocols, that allows for a tighter reduction from interactive to non-interactive protocols. \cite{cryptoeprint:2020:1351} combine this approach with the algebraic group model to obtain tight security guarantees for the non-interactive versions of BulletProof~\cite{SP:BBBPWM18} and Sonic. These works do, however, not consider simulation soundness and simulation extractability.
+State restoration attack security~\cite{TCC:BenChiSpo16,EPRINT:Holmgren19} defines a stronger soundness notion for interactive protocols, that allows for a tighter reduction from interactive to non-interactive protocols. \cite{cryptoeprint:2020:1351} combine this approach with the algebraic group model to obtain tight security guarantees for the non-interactive versions of BulletProof~\cite{SP:BBBPWM18} and Sonic. A similar approach is also taken by~\cite{cryptoeprint:2019:1177}. These works do, however, not consider simulation soundness and simulation extractability.
 
 \section{Preliminaries}
 \label{sec:preliminaries}
