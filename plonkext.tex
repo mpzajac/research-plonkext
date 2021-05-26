@@ -50,6 +50,9 @@
 \newcommand\dboxed[1]{\dbox{\ensuremath{#1}}}
 \include{macros}
 
+\newcommand{\oursubsub}[1] {\smallskip\noindent\textbf{#1}}
+\newcommand{\ourpar}[1] {\smallskip\noindent\emph{#1}}
+
 %\title{On Simulation-Extractability of Universal zkSNARKs}
 \title{Non-Malleability of the Fiat--Shamir Transform Revisited}
 %\author{Anonymous submission to PKC}
@@ -79,7 +82,7 @@
 \end{abstract}
 
 \section{Introduction}
-% \paragraph{On the popularity and power of Fiat--Shamir.}
+% \ourpar{On the popularity and power of Fiat--Shamir.}
 The Fiat--Shamir (FS) transform takes a public-coin interactive protocol and makes it
 interactive by computing the verifier's public coins by hashing the current
 protocol transcript. While in principle justifiable in the random oracle model
@@ -203,7 +206,7 @@ we denote the underlying interactive protocols by $\plonkprot$ (for $\plonk$)
 and $\sonicprot$ (for $\sonic$) and the resulting non-interactive proof systems by
 $\plonkprotfs$ and $\sonicprotfs$, respectively.
 
-\subsubsection{Forking soundness.} 
+\oursubsub{Forking soundness.} 
 First, following \cite{INDOCRYPT:FKMV12}, we need to show that in $\plonkprot$
 and $\sonicprot$ we can extract a witness from a number of valid proofs for the
 same instance that share some parts of the transcripts. However these protocols
@@ -233,7 +236,7 @@ prover and honest verifier. We show how to use an adversary producing a tree of
 acceptable transcripts which one cannot extract the witness from to break the
 underlying computational assumption.
 
-\subsubsection{Unique response property.}%
+\oursubsub{Unique response property.}%
 Another property that has to be proven is the unique response property which
 states, as expressed in \cite{C:Fischlin05}, that except for the first message,
 all messages sent by the prover are deterministic (intuitively, the prover can
@@ -254,7 +257,7 @@ polynomial $\p{f}(X)$ evaluated at some point $z$ it should be infeasible for
 any PPT adversary to provide two different acceptable openings
 of the commitment.
 
-\subsubsection{HVZK.}%
+\oursubsub{HVZK.}%
 In order to show our result we also show that (interactive) $\plonkprot$ and
 $\sonicprot$ are honest verifier zero-knowledge in the standard model, i.e.~the
 simulator is able to produce a transcript indistinguishable from a transcript
@@ -270,7 +273,7 @@ conversation with a real verifier). This property allows us to build simulators
 for $\plonkprotfs$ and $\sonicprotfs$ that rely only on the programmability of
 the random oracle.
 
-\subsubsection{Generalisation of the general forking lemma.}%
+\oursubsub{Generalisation of the general forking lemma.}%
 Consider an interactive $3$-message special-sound protocol $\ps$ and its
 non-interactive version $\ps_\fs$ obtained by the Fiat--Shamir transform. The
 general forking lemma provides an instrumental lower bound for the probability
@@ -299,7 +302,7 @@ case for $\sonic$, whose security proof relies on so-called witness-extended
 emulation. The authors of $\plonk$ worked around this problem by proving
 knowledge soundness directly in the algebraic group model.
 
-\subsubsection{Forking simulation-extractability.} Given our modified, less
+\oursubsub{Forking simulation-extractability.} Given our modified, less
 restrictive, definition for forking soundness and the unique response property,
 and our generalised forking lemma we obtain our main
 result---forking simulation extractability of $\plonkprotfs$ and $\sonicprotfs$. The
@@ -308,7 +311,7 @@ from \cite{INDOCRYPT:FKMV12}, with major modifications, which were required as
 \cite{INDOCRYPT:FKMV12} considers only $\Sigma$-protocols
 that are undoubtedly simpler protocols than the considered proof systems.
 
-\subsubsection{Generalising Boneh-Boyen-Goh~\cite{EC:BonBoyGoh05} uber assumption.}
+\oursubsub{Generalising Boneh-Boyen-Goh~\cite{EC:BonBoyGoh05} uber assumption.}
 To show that $\plonk$ is zero-knowledge we rely on a variant of
 BBG's \emph{uber assumption}. In its original version, the
 assumption assures that some polynomial evaluation (on a random, unknown point)
@@ -327,7 +330,7 @@ group model.
 % Since the proof highly relies on the (generalised) forking lemma, the security
 % lost it introduces is considerable.
 
-% \subsubsection{Efficient simulation-soundness.}
+% \oursubsub{Efficient simulation-soundness.}
 % Given that the security reduction for simulation-extractability introduces a
 % security gap we also present a proof for $\plonkprot_\fs$ simulation soundness
 % which utilises the algebraic group model and is tight. It remains an open
@@ -405,7 +408,7 @@ still more efficient than the first SE zkSNARK \cite{C:GroMal17}, see
 \cite{EPRINT:AtaBag19}. Recently, \cite{EPRINT:BKSV20} showed that the original
 Groth's proof system from \cite{EC:Groth16} is weakly SE and randomisable.
 
-\paragraph{Forking lemma generalizations.}
+\ourpar{Forking lemma generalizations.}
 There are several task specific variants, e.g.,~\cite{INDOCRYPT:HerSae03,CCS:BagCheJar08,AC:BelDaiLi19}, of the general forking lemma~\cite{JC:PoiSte00,CCS:BelNev06} for analyzing the forking behavior of random-oracle based executions.
 In \cite{EC:BCCGP16} Bootle et al.~proposed a novel inner-product argument which
 security relies on, so-called, witness-extended emulation. To show that
@@ -485,7 +488,7 @@ necessary information like public parameters $\pp$ containing description of a
 group $\GRP$, if the relation is a relation of group elements (as it usually is
 in case of zkSNARKs).
 
-\paragraph{Bilinear groups.}
+\ourpar{Bilinear groups.}
 A bilinear group generator $\pgen (\secparam)$ returns public parameters $ \pp =
 (p, \GRP_1, \GRP_2, \GRP_T, \pair, \gone{1}, \gtwo{1})$, where $\GRP_1$,
 $\GRP_2$, and $\GRP_T$ are additive cyclic groups of prime order $p = 2^{\Omega
@@ -506,7 +509,7 @@ parameters by $\pgen$.
 
 \subsection{Computational assumptions.}
 
-\paragraph{Discrete-log assumptions.}
+\ourpar{Discrete-log assumptions.}
 Security of $\plonk$ and $\sonic$ relies on two discrete-log based security
 assumptions---$(q_1, q_2)$-$\dlog$ assumption and its extended version with negative
 exponents $(q_1, q_2)$-$\ldlog$ assumption\footnote{Note that
@@ -537,7 +540,7 @@ exponents $(q_1, q_2)$-$\ldlog$ assumption\footnote{Note that
 	\]
 \end{definition}
 
-\paragraph{BBG uber assumption.}
+\ourpar{BBG uber assumption.}
 Also, to be able to show computational honest verifier zero knowledge of
 $\plonk$ in the standard model, what is required by our reduction, we rely on the
 \emph{uber assumption} introduced by Boneh et
@@ -627,7 +630,7 @@ follows (the changed element has been put into a \dbox{dashbox})
 %     $b$. Adversary $\adv_1$ returns it and wins with probability $1/2 + \eps$.
 % \end{proof}
 
-\paragraph{Proofs by Game-Hoping.}
+\ourpar{Proofs by Game-Hoping.}
 Proofs by \emph{game hoping} is a method of writing proofs popularised by
 e.g.~Shoup \cite{EPRINT:Shoup04} and Dent \cite{EPRINT:Dent06c}. The method
 relies on the following lemma.
@@ -909,7 +912,7 @@ consists of a single message $\zkproof$ sent by $\prover$).
 
 A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
 % \begin{description}
-\paragraph{Completeness.}
+\ourpar{Completeness.}
 %\item[Completeness]
   An interactive proof system $\proofsystem$ is
   \emph{complete} if an honest prover always convinces an honest verifier, that
@@ -919,7 +922,7 @@ A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RE
         \inp)} = 1}{\srs \gets \kgen(\REL)} = 1\,.
 	\]
     % \item[Soundness]
-\paragraph{Soundness.}
+\ourpar{Soundness.}
     We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no
   $\ppt$ prover $\adv$ can convince an honest verifier $\verifier$ to accept a
   proof for a false statement $\inp \not\in\LANG$. More precisely, for
@@ -974,7 +977,7 @@ adversary $\adv$
  % $\vereq_i(X)$ evaluates to $0$ at $\chi$ just checks that $\vereq_i(X)$ is a
  % zero polynomial.
 
- \paragraph{Zero knowledge.}
+ \ourpar{Zero knowledge.}
  We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
  $\REL \in \RELGEN(\secparam)$, $(\inp, \wit) \in \REL$, and adversary $\adv$
  there exists a $\ppt$ simulator $\simulator$ such that
@@ -1009,7 +1012,7 @@ outputs as challenges its random coins) can be made non-interactive and
 zero-knowledge in the random oracle model by using the Fiat--Shamir
 transformation.
 
-\subsubsection{Idealised verifier and verification equations}
+\oursubsub{Idealised verifier and verification equations}
 Let $(\kgen, \prover, \verifier)$ be a protocol -- in this paper, either a proof
 systems or a polynomial commitment scheme. Observe that the $\kgen$ algorithm
 provides an SRS which can be interpreted as a set of group representation of
@@ -1036,7 +1039,7 @@ proofs. More precisely, we show that
   (in our case---a variant of $\dlog$.)
 \end{enumerate}
 
-\subsubsection{Sigma protocols}
+\oursubsub{Sigma protocols}
 A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ for a relation
 $\REL \in \RELGEN(\secparam)$ is a special case of an interactive proof which
 transcript compounds of three messages $(a, b, z)$, the middle being a challenge
@@ -1046,7 +1049,7 @@ $\ext$ which given two accepting transcripts $(a, b, z)$, $(a, b', z')$ for a
 statement $\inp$ can recreate the corresponding witness if $b \neq b'$.
 Formally,
 %\begin{description}
-\paragraph{Special soundness.} A sigma protocol $\sigmaprot$ is \emph{specially-sound}
+\ourpar{Special soundness.} A sigma protocol $\sigmaprot$ is \emph{specially-sound}
   if for any adversary $\adv$ the probability
 	\[
 		\Pr\left[
@@ -1070,7 +1073,7 @@ property \cite{C:Fischlin05} which states that no $\ppt$ adversary can
 produce two accepting transcripts that differ only on the last
 element. More precisely, 
 %\begin{description} 
-\paragraph{Unique response property.} Let
+\ourpar{Unique response property.} Let
 $\sigmaprot = (\prover, \verifier, \simulator)$ be a sigma-protocol for
 $\REL \in \RELGEN(\secparam)$ which proofs compound of three messages
 $(a, b, z)$. We say that $\sigmaprot$ is has a unique response property if for
@@ -1184,7 +1187,7 @@ show that every such $\sigmaprot_\fs$ is forking simulation-extractable. This re
 presented in \cref{sec:forking_lemma} along with the instrumental forking lemma,
 cf.~\cite{CCS:BelNev06}.
 
-\subsubsection{Simulation sound NIZKs}
+\oursubsub{Simulation sound NIZKs}
 Another notion for non-malleable NIZKs is \emph{simulation soundness}. It allows the adversary to see simulated proof, however, in contrast to simulation
 extractability it does not require an extractor to provide a witness for the
 proven statement. Instead, it is only necessary, that an adversary who sees
@@ -2161,7 +2164,7 @@ thus $\psfs$ is forking simulation extractable with extraction error $\epsur$.
 \qed
 \end{proof}
 
-% \paragraph{Inefficient simulation extractability gives efficient simulation soundness.}
+% \ourpar{Inefficient simulation extractability gives efficient simulation soundness.}
 % As noted in \cref{sec:simext_def}, simulation soundness can be expressed in
 % terms of simulation extractability with an  unbounded extractor. Holds then,
 
@@ -2237,7 +2240,7 @@ tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 \newcommand{\vqo}{\vec{q_{O}}}
 \newcommand{\vx}{\vec{x}}
 \newcommand{\vqc}{\vec{q_{C}}}
-\subsubsection{The constrain system}
+\oursubsub{The constrain system}
 Assume $\CRKT$ is a fan-in two arithmetic circuit,
 which fan-out is unlimited and has $\numberofconstrains$ gates and $\noofw$ wires
 ($\numberofconstrains \leq \noofw \leq 2\numberofconstrains$). \plonk's constraint
@@ -2264,7 +2267,7 @@ We say that vector $\vx \in \FF^\noofw$ satisfies constraint system if for all $
   \vqm_i \cdot (\vx_{\va_i} \vx_{\vb_i}) + \vqc_i = 0. 
 \]
 
-\subsubsection{Algorithms rolled out}
+\oursubsub{Algorithms rolled out}
 \label{sec:plonk_explained}
 \plonk{} argument system is universal. That is, it allows to verify computation
 of any arithmetic circuit which has no more than $\numberofconstrains$
@@ -2278,7 +2281,7 @@ the secret trapdoor $\chi$. The rest of the SRS---the preprocessed input---can
 be computed using these SRS elements thus we leave them to be computed by the
 prover, verifier, and simulator.
 
-\paragraph{$\plonk$ SRS generating algorithm $\kgen(\REL)$:}
+\ourpar{$\plonk$ SRS generating algorithm $\kgen(\REL)$:}
 The SRS generating algorithm picks at random $\chi \sample \FF_p$, computes
 and outputs
 \[
@@ -2286,7 +2289,7 @@ and outputs
 	\gtwo{\chi} \right).
 \]
 
-\paragraph{Preprocessing:}
+\ourpar{Preprocessing:}
 Let $H = \smallset{\omega^i}_{i = 1}^{\numberofconstrains }$ be a
 (multiplicative) $\numberofconstrains$-element subgroup of a field $\FF$
 compound of $\numberofconstrains$-th roots of unity in $\FF$. Let $\lag_i(X)$ be
@@ -2328,7 +2331,7 @@ such that
 \end{aligned}
 \end{equation*}
 
-\paragraph{$\plonk$ prover
+\ourpar{$\plonk$ prover
   $\prover(\REL, \srs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot
       \noofc}})$.}
 \begin{description}
@@ -2971,7 +2974,7 @@ constrains in the proven circuit.
 In this section we present $\sonic$'s constraint system and algorithms. Reader
 familiar with them may jump directly to the next section.
 
-\subsubsection{The constraint system}
+\oursubsub{The constraint system}
 \label{sec:sonic_constraint_system}
 \sonic's system of constraints composes of three $\multconstr$-long vectors
 $\va, \vb, \vc$ which corresponds to left and right inputs to multiplication
@@ -3004,8 +3007,8 @@ In \sonic{} we will use commitments to the following polynomials.
   \pt(X, Y) & = \pr(X, 1) (\pr(X, Y) + \p{s}(X, Y)) - \p{k}(Y)\,.
 \end{align*}
 	
-\subsubsection{Algorithms rolled out}
-\paragraph{$\sonic$ SRS generation $\kgen(\REL)$.} The SRS generating algorithm picks
+\oursubsub{Algorithms rolled out}
+\ourpar{$\sonic$ SRS generation $\kgen(\REL)$.} The SRS generating algorithm picks
 randomly $\alpha, \chi \sample \FF_p$ and outputs
 	\[
       \srs = \left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
@@ -3013,7 +3016,7 @@ randomly $\alpha, \chi \sample \FF_p$ and outputs
         \gtwo{\smallset{\chi^i, \alpha \chi^i}_{i = - \dconst}^{\dconst}},
         \gtar{\alpha} \right)
 	\]
-\paragraph{$\sonic$ prover $\prover(\REL, \srs, \inp, \wit=\va, \vb, \vc)$.}
+\ourpar{$\sonic$ prover $\prover(\REL, \srs, \inp, \wit=\va, \vb, \vc)$.}
 \begin{description}
 \item[Round 1] The prover picks randomly randomisers
   $c_{\multconstr + 1}, c_{\multconstr + 2}, c_{\multconstr + 3}, c_{\multconstr
@@ -3053,7 +3056,7 @@ randomly $\alpha, \chi \sample \FF_p$ and outputs
   $\gone{q_{z'}} = \open(\srs, z', \p{s}(u, z'), \p{s}(u, X))$ and outputs $\gone{q_{z'}}$.
 \end{description}
 
-\paragraph{$\sonic$ verifier $\verifier(\REL, \srs, \inp, \zkproof)$.} The verifier
+\ourpar{$\sonic$ verifier $\verifier(\REL, \srs, \inp, \zkproof)$.} The verifier
 in \sonic{} runs as subroutines the verifier for the polynomial commitment. That
 is it sets $t' = a'(b' + s') - \p{k}(y)$ and checks the following:
 \begin{equation*}
