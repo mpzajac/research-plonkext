@@ -840,12 +840,12 @@ respectively.
 
 \begin{description}
 \item[Commitment of knowledge]  For every $\ppt$ adversary $\adv$ who produces
-  commitment $c$, evaluation point $z$, evaluation $s$ and opening $o$ there
+  commitment $c$, evaluation $s$ and opening $o$ there
   exists a $\ppt$ extractor $\ext$ such that
 \[
   \Pr \left[
     \begin{aligned}
-      & \p{f} = \ext_\adv(\srs, c),\\
+      & \deg \p{f} \leq \maxdeg\\
       & c = \com(\srs, \p{f}),\\
       & \verify(\srs, c, z, s, o) = 1
     \end{aligned}
@@ -859,12 +859,15 @@ respectively.
         }
     \begin{aligned}
       & \srs \gets \kgen(\secparam, \maxdeg),\\
-      & (c, z, s, o) \gets \adv(\srs)
+      & c \gets \adv(\srs),
+      z \sample \FF_p \\
+      & (s, o) \gets \adv(\srs, c, z), \\
+      & \p{f} = \ext_\adv(\srs, c)\\
     \end{aligned}
   \right.\right]
   \geq 1 - \epsk(\secpar).
 \]
-In that case we say that $\PCOM$ is $\epsk$-knowledge.
+In that case we say that $\PCOM$ is $\epsk(\secpar)$-knowledge.
 \end{description}
 Intuitively when a commitment scheme is a commitment of knowledge then if an
 adversary produces a (valid) commitment $c$, which it can open, then it also
@@ -1184,7 +1187,7 @@ polynomially many simulated proofs for any statements it wishes.
 	\[
 		\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
 	\]
-	for some polynomial $\poly$, constant $d$ and negligible $\eps$ whenever
+	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
   $\accProb \geq \nu$. List $Q$ contains all $(\inp, \zkproof)$ pairs where
   $\inp$ is an instance provided to the simulator by the adversary and
   $\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
@@ -1637,7 +1640,7 @@ witness or can be used to break some computational assumption.
 \begin{definition}[Forking soundness]
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
   $(2 \mu + 1)$-message proof system for a relation $\REL$. We say that
-  $\proofsystem$ is $(\epsss, (n_1, \ldots, n_\mu))$-\emph{forking sound}
+  $\proofsystem$ is $(\epsss(\secpar), (n_1, \ldots, n_\mu))$-\emph{forking sound}
   if there exists an extractor $\extt$ that given an $(n_1, \ldots, n_\mu)$-tree
   of acceptable transcripts $\tree$ and instance $\inp$ output by some $\ppt$ adversary $\adv(\REL,
   \srs)$, for $\srs \sample \kgen(\REL)$, outputs $\wit$ such that $\REL(\inp,
@@ -1717,7 +1720,7 @@ algorithm from the generalized forking lemma.
 % even unbounded, adversaries) all references to that property should be
 % understood as references to its computational version.
 
-\begin{definition}[$(\eps, k,n)$-forking soundness]
+\begin{definition}[$(\eps(\secpar), k,n)$-forking soundness]
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
   $(2 \mu + 1)$-message proof system for a relation $\REL$.
 
@@ -1763,7 +1766,7 @@ algorithm from the generalized forking lemma.
     }
   \end{figure}
 %
-  We say that $\ps$ is $(\eps, k,n)$-forking sound if
+  We say that $\ps$ is $(\eps(\secpar), k,n)$-forking sound if
   for any PPT adversary the probability that
   \[
     \Pr\left[
@@ -1968,7 +1971,7 @@ random oracle and wins with the same probability.
   % $n_i = 1, i \in \range{1}{\mu} \setminus \smallset{k}$ and $n_k = n$.
 
 Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
-Then $\psfs$ is forking simulation-extractable with extraction error $\epsur$
+Then $\psfs$ is forking simulation-extractable with extraction error $\epsur(\secpar)$
 against $\ppt$ algebraic adversaries that makes up to $q$ random oracle queries and
 returns an acceptable proof with probability at least $\accProb$. 
 The extraction probability $\extProb$ is at least
@@ -2032,8 +2035,8 @@ for some negligible $\eps(\secpar)$.
 	If $\zkproof_1 = \zkproof_2$, then $\advse$ fails to break simulation
   extractability, as $\zkproof_2 \in Q$. On the other hand, if the proofs are
   not equal, then $\rdvur$ breaks $\ur{k}$-ness of $\ps$. This happens only with
-  negligible probability $\epsur$, hence \( \prob{\event{\errur}} \leq
-  \epsur\,. \)
+  negligible probability $\epsur(\secpar)$, hence \( \prob{\event{\errur}} \leq
+  \epsur(\secpar)\,. \)
 }
 
   \ngame{2} This is identical to $\game{1}$ except that now the environment
@@ -2524,8 +2527,8 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 \label{lem:pcomp_unique_op}
 Let $\PCOMp$ be a batched version of a batched KZG polynomial
 commitment, cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property
-in the AGM with security $\epsop \leq 2 \epsdlog + \infrac{1}{\abs{\FF_p}}$, where
-$\epsdlog$ is security of the $(\noofc + 2, 1)$-dlog assumption and $\FF_p$ is the
+in the AGM with security $\epsop(\secpar) \leq 2 \epsdlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where
+$\epsdlog(\secpar)$ is security of the $(\noofc + 2, 1)$-dlog assumption and $\FF_p$ is the
 field used in $\PCOMp$.\end{lemma}
 \begin{proof}
   Let $\vec{z} = (z, z') \in \FF_p^2$ be the two points the polynomials are
@@ -2556,7 +2559,7 @@ field used in $\PCOMp$.\end{lemma}
 		\right.\right]
 	 % \leq \negl.
 \]
-is at most negligible.
+is at most $\epsop(\secpar)$.
 
 \ncase{Step 1} First, consider a case where the commitment is limited to commit
 to multiple polynomials which are evaluated at the same point $z$. As noted in
@@ -2568,7 +2571,7 @@ equation\COMMENT{---which considers equality between polynomials---instead of
 commitment opening that holds for the real verifier, but does not hold for the
 idealised verifier can be used to break the dlog assumption and reveal the
 secret trapdoor used to produce the commitment's SRS, the probability of such
-event is bounded by the $(\noofc + 2, 1)$-dlog security $\epsdlog$,
+event is bounded by the $(\noofc + 2, 1)$-dlog security $\epsdlog(\secpar)$,
 cf.~\cite[Lemma 2.2]{EPRINT:GabWilCio19} for more details.
 
 For polynomials $\vec{\p{f}} = \p{f}_1, \ldots, \p{f}_k$, evaluation point $z$, evaluation
@@ -2602,18 +2605,18 @@ or
 \]
 is $\infrac{1}{\abs{\FF_p}}$~\cite{EPRINT:GabWilCio19}. This brings the proof back to
 Step 1 above. Altogether, Step 2 gives the following bound for the unique
-opening property $\epsop \leq 2\epsdlog + \infrac{1}{\FF_p}$.
+opening property $\epsop(\secpar) \leq 2\epsdlog(\secpar) + \infrac{1}{\FF_p}$.
 \qed
 \end{proof}
 
 \subsection{Unique response property}
 \begin{lemma}
 	\label{lem:plonkprot_ur}
-  Let $\PCOMp$ be commitment of knowledge with security $\epsk$,
-  $\epsbind$-binding and has unique opening property with security $\epsop$,
+  Let $\PCOMp$ be commitment of knowledge with security $\epsk(\secpar)$,
+  $\epsbind(\secpar)$-binding and has unique opening property with security $\epsop(\secpar)$,
   then probability that a $\ppt$ adversary $\adv$ breaks $\plonkprot$'s $\ur{2}$
-  property is at most $\epsk + 2\cdot\epsbind +
-  \epsop$.% assuming the polynomial commitment scheme $\PCOMp$
+  property is at most $\epsk(\secpar) + 2\cdot\epsbind(\secpar) +
+  \epsop(\secpar)$.% assuming the polynomial commitment scheme $\PCOMp$
 %is of knowledge.
 \end{lemma}
 \begin{proof}[sketch]
@@ -2632,15 +2635,15 @@ opening property $\epsop \leq 2\epsdlog + \infrac{1}{\FF_p}$.
   $\PCOMp$ is a commitment of knowledge. That is, an AGM adversary $\adv$ that
   outputs a commitment $c'$ which it can later open, knows a polynomial $\p{f}$
   of degree-$(\leq \noofc + 2)$ such that $\gone{\p{f}(\chi)} = c'$. Denote by
-  $\epsk$ probability that $\adv$ breaks knowledge soundness of the commitment. Thus if
+  $\epsk(\secpar)$ probability that $\adv$ breaks knowledge soundness of the commitment. Thus if
   $c' \neq c$ and the commitment scheme is evaluation binding with security
-  $\epsbind$ then $\adv$ when
+  $\epsbind(\secpar)$ then $\adv$ when
   picking $c'$ picks it as a commitment to $\p{f}$ which evaluates at $\chz$ to
   $\pt(\chz)$. The probability of that is negligible as there can only be no
   more than $\noofc + 2$ overlapping points between $\p{f}(X)$ and $\p{t}(X)$,
   and $\chz$ remains random for $\adv$ when it computes $c'$. Hence, the
   probability that $\adv$ is able to produce two different outputs of Round 3 is
-  upper-bounded by $\epsk + \epsbind$.
+  upper-bounded by $\epsk(\secpar) + \epsbind(\secpar)$.
 
   In Round 4 the prover is asked to give evaluations of predefined polynomials
   at some point $\chz$. Naturally, for the given polynomials only one value at
@@ -2654,7 +2657,7 @@ opening property $\epsop \leq 2\epsdlog + \infrac{1}{\FF_p}$.
   Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus
   if both evaluations are acceptable by the $\PCOMp.\verify$ then the evaluation
   binding property of $\PCOMp$ is broken. This happens with probability
-  upper-bounded by $\epsbind$.
+  upper-bounded by $\epsbind(\secpar)$.
 
   In the last round of the protocol the prover provides openings for the
   polynomial commitment evaluations done before. Assume $\adv$ is able to
@@ -2664,13 +2667,13 @@ opening property $\epsop \leq 2\epsdlog + \infrac{1}{\FF_p}$.
 % Since \cref{lem:pcomp_unique_op}, 
   Since $\PCOMp$ has unique opening property, one of the openings has to be
   incorrect and should be rejected by the polynomial commitment verifier. This
-  happens except with probability $\epsop$.
+  happens except with probability $\epsop(\secpar)$.
 
   Hence, the probability that after fixing the two first rounds, the adversary
   is able to produce two different outputs in one of the following rounds is
   upper-bounded by
 \[
-	\epsk + 2 \cdot \epsbind + \epsop\,.
+	\epsk(\secpar) + 2 \cdot \epsbind(\secpar) + \epsop(\secpar)\,.
 \]
 \qed
 
@@ -2680,8 +2683,8 @@ opening property $\epsop \leq 2\epsdlog + \infrac{1}{\FF_p}$.
 \subsection{Forking soundness}
 \begin{lemma}
 \label{lem:plonkprot_ss}
-$\plonkprot$ is $(\epsss, 3, 3 \noofc + 1)$-forking sound
-for $\epsss \leq \epsid + \epsdlog$ against algebraic adversaries.
+$\plonkprot$ is $(\epsss(\secpar), 3, 3 \noofc + 1)$-forking sound
+for $\epsss(\secpar) \leq \epsid(\secpar) + \epsdlog(\secpar)$ against algebraic adversaries.
 \end{lemma}
 \begin{proof}
   Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
@@ -2709,7 +2712,7 @@ for $\epsss \leq \epsid + \epsdlog$ against algebraic adversaries.
   \ncase{When $\event{E}$ holds} Let $(1, \tree) \gets \tdv(\REL, \srs)$ and
   $\inp$ be a relation proven in $\tree$. Since the protocol $\plonkprot$,
   instantiated with the idealised verification equation, is perfectly sound,
-  except with negligible probability of the idealised verifier failure $\epsid$,
+  except with negligible probability of the idealised verifier failure $\epsid(\secpar)$,
   for a valid proof $\zkproof$ of a statement $\inp$ there exists a witness
   $\wit$, such that $\REL(\inp, \wit)$ holds. Note that since the $\tdv$
   produces $(3 \noofc + 1)$ acceptable transcripts for different challenges
@@ -2723,7 +2726,7 @@ for $\epsss \leq \epsid + \epsdlog$ against algebraic adversaries.
   $\extt$ can recreate their coefficients by interpolation and reveal the
   witness with probability $1$. Hence, the probability that extraction fails in
   that case is upper-bounded by probability of an idealised verifier failing
-  $\epsid$, which is negligible.
+  $\epsid(\secpar)$, which is negligible.
 
   \ncase{When $\nevent{E}$ holds} Let $\tdv$ be an adversary that for relation
   $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree of
@@ -2740,18 +2743,18 @@ for $\epsss \leq \epsid + \epsdlog$ against algebraic adversaries.
   verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known and $\rdvdlog$
   can find its zero points. Since $\vereq_{\inp, \zkproof}(\chi) = 0$, the targeted
   discrete log value $\chi$ is among them.
-  Hence, the probability that this event happens is upper-bounded by $\epsdlog$. \qed
+  Hence, the probability that this event happens is upper-bounded by $\epsdlog(\secpar)$. \qed
 \end{proof}
 
 \subsection{Honest verifier zero-knowledge}
 \begin{lemma}
   \label{lem:plonk_hvzk}
-  Let $\plonkprot$ be zero knowledge with security $\epszk$. Let
+  Let $\plonkprot$ be zero knowledge with security $\epszk(\secpar)$. Let
   $(\pR, \pS, \pT, \pf, 1)$-uber assumption for $\pR, \pS, \pT, \pf$ as defined
-  in \cref{eq:uber} hold with security $\epsuber$. Then $\plonkprot$ is
+  in \cref{eq:uber} hold with security $\epsuber(\secpar)$. Then $\plonkprot$ is
   computationally honest verifier zero-knowledge with simulator $\simulator$
   that does not require a SRS trapdoor with security
-  $\epszk + \epsuber$.\footnote{The simulator works as a simulator for proofs
+  $\epszk(\secpar) + \epsuber(\secpar)$.\footnote{The simulator works as a simulator for proofs
     that are zero-knowledge in the standard model. However, we do not say that
     $\plonk$ is HVZK in the standard model as proof of that \emph{requires} the
     SRS simulator.}
@@ -2799,7 +2802,7 @@ for $\epsss \leq \epsid + \epsdlog$ against algebraic adversaries.
   probability that $\adv$ outputs a different bit in both games is negligible.
   Hence
   \[
-	\abs{\prob{\game{0}} - \prob{\game{1}}} \leq \epszk.
+	\abs{\prob{\game{0}} - \prob{\game{1}}} \leq \epszk(\secpar).
 \]
 
 \ngame{2} In this game $\adv(\REL, \srs)$ picks an instance--witness pair
@@ -2961,9 +2964,9 @@ assuring that evaluations at $\chz$ it provided were computed honestly.
 If the adversary $\adv$'s output distribution differ in Game $\game{1}$ and
 $\game{2}$ then the reduction uses it to distinguish between
 $\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
-\( \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epsuber.  \) Eventually,
+\( \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epsuber(\secpar).  \) Eventually,
 \(
-\abs{\prob{\game{0}} - \prob{\game{2}}} \leq \epszk + \epsuber.  \) \qed
+\abs{\prob{\game{0}} - \prob{\game{2}}} \leq \epszk(\secpar) + \epsuber(\secpar).  \) \qed
 \end{proof}
 
 \subsection{From forking soundness and unique response property to forking simulation
@@ -2976,16 +2979,16 @@ $\plonkprot_\fs$ is forking simulation-extractable as defined in
 \begin{corollary}[Forking simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
 Assume that $\plonkprot$ is $\ur{2}$ with security $\epsur(\secpar)$, and
-$(\epsss, 3, 3\noofc + 1)$-forking-sound. Let
+$(\epsss(\secpar), 3, 3\noofc + 1)$-forking-sound. Let
 $\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$
 adversary that can make up to $q$ random oracle queries and outputs an
 acceptable proof for $\plonkprotfs$ with probability at least $\accProb$. Then
 $\plonkprotfs$ is forking simulation-extractable with extraction error
-$\eta = \epsur$. The extraction probability $\extProb$ is at least
+$\eta = \epsur(\secpar)$. The extraction probability $\extProb$ is at least
 \[
-	\extProb \geq \frac{1}{q^{3 \noofc}} (\accProb - \epsur)^{3\noofc + 1} -\eps\,,
+	\extProb \geq \frac{1}{q^{3 \noofc}} (\accProb - \epsur(\secpar))^{3\noofc + 1} -\eps(\secpar)\,,
 \]
-for some negligible $\eps$ and $\noofc$ being the number of
+for some negligible $\eps(\secpar)$ and $\noofc$ being the number of
 constrains in the proven circuit.
 \end{corollary}
 
@@ -3155,9 +3158,9 @@ property of the used polynomial commitment scheme $\PCOMs$.
 \begin{lemma}
 \label{lem:sonicprot_ur}
 If a polynomial commitment scheme $\PCOMs$ is evaluation binding with
-parameter $\epsbind$ and has unique openings property with parameter
-$\epsop$, then $\sonicprot$ is $\ur{1}$ with parameter $\epsur \leq
-\epsbind + \epsop$.  
+parameter $\epsbind(\secpar)$ and has unique openings property with parameter
+$\epsop(\secpar)$, then $\sonicprot$ is $\ur{1}$ with parameter $\epsur(\secpar) \leq
+\epsbind(\secpar) + \epsop(\secpar)$.  
 \end{lemma}
 \begin{proof}
   Let $\adv$ be an adversary that breaks $\ur{1}$-ness of $\sonicprot$.  We
@@ -3180,7 +3183,7 @@ $\epsop$, then $\sonicprot$ is $\ur{1}$ with parameter $\epsur \leq
   broken.
 %
 Hence the probability that $\adv$ breaks $\ur{1}$-property of $\PCOMs$ is
-upper-bounded by $\epsbind + \epsop$. 
+upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$. 
 \qed
 
 \end{proof}
@@ -3188,12 +3191,12 @@ upper-bounded by $\epsbind + \epsop$.
 \subsection{Forking soundness}
 \begin{lemma}
 	\label{lem:sonicprot_ss}
-  $\sonicprot$ is $(\epsss, 2, \multconstr + \linconstr)$-forking sound against
+  $\sonicprot$ is $(\epsss(\secpar), 2, \multconstr + \linconstr + 1)$-forking sound against
   algebraic adversaries, with
   \[
-			\epsss \leq \epss + \epsldlog\,,
+			\epsss(\secpar) \leq \epss(\secpar) + \epsldlog(\secpar)\,,
 	\]
-	where $\epss$ is a soundness error of the protocol, and $\epsldlog$ is
+	where $\epss(\secpar)$ is a soundness error of the protocol, and $\epsldlog(\secpar)$ is
   security of $(\dconst, \dconst)$-$\ldlog$ assumption.
 \end{lemma}
 \begin{proof}
@@ -3341,12 +3344,12 @@ of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable 
   adversary that can make up to $q$ random oracle queries and outputs an
   acceptable proof for $\sonicprotfs$ with probability at least $\accProb$. Then
   $\sonicprotfs$ is forking simulation-extractable with extraction error $\eta =
-  \epsur$. The extraction probability $\extProb$ is at least
+  \epsur(\secpar)$. The extraction probability $\extProb$ is at least
 \[
-		\extProb  \geq \frac{1}{q^{\multconstr + \linconstr}} (\accProb - \epsur)^{\multconstr +
-		\linconstr + 1} - \eps.
+		\extProb  \geq \frac{1}{q^{\multconstr + \linconstr}} (\accProb - \epsur(\secpar))^{\multconstr +
+		\linconstr + 1} - \eps(\secpar).
 	\]
-	for some negligible $\eps$, $\multconstr$ and $\linconstr$ being,
+	for some negligible $\eps(\secpar)$, $\multconstr$ and $\linconstr$ being,
   respectively, the number of multiplicative and linear constrains of the system.
 \end{corollary}
 
@@ -3853,231 +3856,3 @@ polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
 \end{proof}
 
 \end{document}
-  
-\section{(Tight) simulation soundness of $\plonk$}
-\begin{theorem}[Simulation soundness]
-  Assume that $(\noofc + 2, 1)$-$\dlog$ is
-  $\eps_\dlog(\secpar)$-hard, $\plonkprot$ is sound and $\ur{2}$ with security
-  $\epss(\secpar)$ and $\epsur(\secpar)$ respectively. Then the probability that
-  an algebraic, $\ppt$ adversary $\advss$ breaks simulation soundness of
-  $\plonkprotfs$ is upper-bounded by
-  \[
-    \epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) + \epss(\secpar))\,,
-  \]
-  where $q_\ro$ is the total number of queries required by the adversary
-  $\advss$.
-\end{theorem}
-\begin{proof}
-  We proceed by contradiction. Suppose there exists a $\ppt$ adversary $\advss$
-  that breaks simulation soundness with non-negligible probability
-  \[
-    \eps := \Pr \left[
-      \begin{aligned}
-        & \plonkprotfs.\verifier(\REL, \srs, \inp, \zkproof_{\advss}),\\
-        & (\inp_{\advss}, \zkproof_{\advss}) \not\in Q,\\
-        & \inp_\advss \not\in \LANG_\REL
-      \end{aligned}
-      \,\left|\, \vphantom{\begin{aligned}
-            & \plonkprotfs.\verifier(\REL, \srs, \inp, \zkproof_{\advss}),\\
-            & (\inp_{\advss}, \zkproof_{\advss}) \not\in Q,\\
-            & \inp_\advss \not\in \LANG_\REL
-          \end{aligned}}
-        \begin{aligned}
-          & \srs \gets \plonkprotfs.\kgen(\REL, \secparam)\\
-          & (\inp_{\advss}, \zkproof_{\advss}) \gets \advss^{\simulator, \ro}
-          (\REL, \srs),
-        \end{aligned}
-      \right.\right].
-  \]
-
-  In such case, we are able to build reductions $\rdvs$, $\rdvur$, $\rdvdlog$
-  which using $\advss$ as a black-box, violate either the soundness, unique
-  response properties of the underlying interactive protocol $\plonkprot$, or
-  the $(\noofc + 2, 1)$-$\dlog$ assumption.
-
-  In the following we denote by $\zkproof_{\advss}, \zkproof_{\simulator}$
-  proofs returned by the adversary and the simulator respectively. We use
-  $\zkproof[i]$ to denote prover's message in the $i$-th round of the proof,
-  $\zkproof[i].\ch$ to denote the challenge that is given to the prover after
-  $\zkproof[i]$, and $\zkproof\range{i}{j}$ to denote all messages of the proof
-  including challenges between rounds $i$ and $j$.
-
-  Without loss of generality, we assume that whenever the accepting proof
-  contains a response to a challenge from a random oracle, we assume that the
-  adversary queried the oracle to get it. It is straightforward to transform any
-  adversary that violates this condition into an adversary that makes these
-  additional queries to the random oracle and wins with the same probability.
-
-  A crucial observation is that the adversary $\advss$ may have learned
-  $\zkproof_{\advss}\range{1}{3}$ by querying the simulator on $\inp_{\advss}$
-  or might have computed it itself. We denote the first event by $\event{E}$ and
-  the second by $\nevent{E}$.
-	%
-  Additionally, we divide event $\nevent{E}$ into two disjunctive subevents:
-  $\nevent{E}_0$ and $\nevent{E}_1$. Event $\nevent{E}_0$ considers a case when
-  the final proof provided by the adversary $\advss$ is accepted by the
-  idealised verification equation, i.e.~for that proof $\vereq_{\inp, zkproof}(X) = 0$.
-  Alternatively, event $\nevent{E}_1$ covers a case when for $\zkproof_\advss$
-  it holds that $\vereq_{\inp, zkproof}(\chi) = 0$, but $\vereq_{\inp, zkproof}(X) \neq 0$, where $\chi$ is
-  $\plonkprotfs$'s trapdoor.
-	%
-  As all these events are mutually exclusive and exhaustive, we have
-  \[
-    \eps = \prob{\advss \text{ wins}} = \prob{\advss \text{ wins}, \event{E}} +
-    \prob{\advss \text{ wins}, \nevent{E}_0} + \prob{\advss \text{ wins},
-      \nevent{E}_1}\,.
-  \]
-
-  Before analysing the events, we make the following observation. First of all,
-  we allow reductions $\rdv_\dlog, \rdvur, \rdvs$ to simulate the random oracle
-  and simulator for the adversary $\advss$. We argue that since the reductions
-  in their simulation behaves as real random oracle or simulator would, the
-  chances the adversary breaks simulation soundness does not change.
-
-  Furthermore, we note that since $\advss$ is algebraic, it outputs a proof
-  $\zkproof_\advss$ that can be written as
-  \[
-    \zkproof_\advss = \vec{M} \cdot (\underbrace{1 \| \chi \| \ldots \|
-      \chi^{\noofc + 2}}_{\srs} \|
-    \vec{\tilde{\zkproof}_{\simulator}}_1^{\top} \| \ldots \|
-    \vec{\tilde{\zkproof}_{\simulator}}_{q_{\simulator}}^\top)^\top\,,
-  \]
-  where $\gone{1, \chi, \ldots, \chi^{\noofc + 2}}$ are all
-  $\GRP_1$-elements from the SRS of $\plonkprotfs$, $\vec{M}$ is a matrix of
-  coefficients output by $\advss$ aside the proof,
-  $\vec{\tilde{\zkproof}_{\simulator}}_i$ denote all $\GRP_1$-elements from the
-  simulated proof ${\zkproof_{\simulator}}_i$, and the adversary makes
-  $q_\simulator$ queries to the simulator.  Since the reduction itself provides
-  the simulated proofs, it knows a matrix $\vec{M'}$ such that
-  \begin{equation}
-    \label{eq:M_prim}
-    \zkproof_\advss = \vec{M'} \cdot (1 \| \chi \| \ldots \| \chi^{\noofc + 2})^\top\,.
-  \end{equation}
-  We use this property when analysing the success probability of reductions
-  $\rdvs$ and $\rdvdlog$.
-
-  Also note that a proof $\zkproof$ could be accepted only if the verification
-  equation $\vereq_{\inp, zkproof}(\chi)$ holds. That is, the verifier plugs-in elements of
-  $\zkproof$ into $\vereq_{\inp, zkproof}(\chi)$ and checks whether it equals $0$. That is what
-  is called a \emph{real check} in \cite{EPRINT:GabWilCio19}.  On the other hand
-  there is an \emph{idealised check}, which verifies whether $\vereq_{\inp, zkproof}(X) = 0$
-  \emph{as a polynomial}---with proof elements being polynomials as well.
-
-  \ncase{When $\event{E}$ happens} We assume that $\inp_{\advss}$ is submitted
-  to the simulator $\simulator$.  We show how $\rdvur$ utilizes $\advss$, that
-  makes use of $\inp_\advss, \zkproof_{\advss}\range{1}{3}$, to break the
-  $\ur{2}$ property of $\plonkprot$.  This way we bound the probability
-  $\prob{\adv \text{ wins}, \event{E}}$ by the probability of $\rdvur$ being
-  able to win in the $\ur{2}$ game.
-
-  Consider an algorithm $\rdvur$ that runs $\advss$ internally as a black-box:
-  \begin{itemize}
-  \item The reduction answers both queries to the simulator
-    $\plonkprotfs.\simulator$ and to the random oracle. It also keeps lists $Q$,
-    for the simulated proofs, and $Q_\ro$ for the random oracle queries.
-  \item When $\advss$ outputs a fake proof $\zkproof_{\advss}$ for
-    $\inp_\advss$, $\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds
-    $\zkproof_{\simulator}\range{1}{3}$ such that
-    $\zkproof_{\advss}\range{1}{2} = \zkproof_{\simulator}\range{1}{3}$ and a
-    random oracle query $\zkproof_{\simulator}[3].\ch$ on
-    $\zkproof_{\simulator}\range{1}{3}$.
-  \item $\rdvur$ returns two proofs for $\inp_\advss$:
-    \begin{align*}
-      \zkproof_1 = (\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch, \zkproof_{\simulator}\range{4}{5})\\
-      \zkproof_2 = (\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch, \zkproof_{\advss}\range{4}{5})
-    \end{align*}
-  \end{itemize}
-  If $\zkproof_1 = \zkproof_2$, then $\advss$ fails to break forking simulation
-  extractability, as $\zkproof_2 \in Q$.  On the other hand, if the proofs are
-  not equal, then $\rdvur$ breaks $\ur{2}$-ness of $\plonkprot$. Thus
-  \[
-    \prob{\advss \text{ wins}, \event{E}} \leq \epsur(\secpar).
-  \]
-
-  \ncase{When $\nevent{E}_0$ happens} In this case the reduction $\rdvs$ uses
-  $\advss$ to break soundness of $\plonkprot$ with probability
-  $\epss / q_{\ro}^6$, where $q_\ro$ is the number of total random oracle
-  queries performed by the adversary or by $\rdvs$ on behalf of the
-  simulator. As previously, $\rdvs$ runs $\advss$ internally and simulates its
-  environment by answering to its queries to $\plonkprotfs.\simulator$ and
-  $\ro$. The reduction works as follows:
-  \begin{itemize}
-  \item It guesses indices $i_1, \ldots, i_6$ such that random oracle queries
-    $h_{i_1}, \ldots, h_{i_6}$ are the queries used in $\zkproof_\advss$. This
-    is done with probability at least $1/q_{\ro}^6$ (since there are $6$
-    challenges from the verifier in $\plonkprot$).
-  \item On input $h$ for the $i$-th,
-    $i \not\in \smallset{{i_1}, \ldots, {i_6}}$, random oracle query, $\rdvs$
-    returns randomly picked $ y$, sets $\ro(h) = y $ and stores $(h, y)$ in
-    $Q_\ro$ if $h$ is sent to $\ro$ the first time. If that is not the case,
-    $\rdv$ finds $h$ in $Q_\ro$ and returns the corresponding $y$.
-  \item On input $h_{i_j}$ for the $i_j$-th,
-    $i_j \in \smallset{{i_1}, \ldots, {i_6}}$, random oracle query, $\rdvs$
-    parses $h_{i_j}$ as a partial proof transcript $\zkproof[1..j]$ and runs
-    $\plonkprot$ using $\zkproof[j]$ as a $\plonkprot.\prover$'s $j$-th message
-    to $\plonkprot.\verifier$. The verifier responds with a challenge
-    $\zkproof[j].\ch$. The reduction sets $\ro(h_{i_j}) = \zkproof[j].\ch$.
-  \item On query $\inp_\simulator$ to $\simulator$ it runs a simulator
-    $\plonkprotfs.\simulator$ internally and returns $\zkproof_\simulator$. If
-    the random oracle query with input $\zkproof_\simulator[j]$,
-    $1 \leq j \leq 2$, of the simulator is the $i_j$-th query, generate
-    $\zkproof_\simulator[j].\ch$ by invoking $\plonkprot.\verifier$ on
-    $\zkproof_\simulator[j]$ and programming
-    $\ro(h_{i_j}) = \zkproof_\simulator[j].\ch$.
-  \item Answers $\plonkprot.\verifier$'s challenge $\zkproof[j].\ch$ using the
-    answer given by $\advss$, i.e.~$\zkproof_\advss[j + 1]$.
-  \end{itemize}
-
-  Assume that the $\plonkprot.\verifier$ accepts $\zkproof_\advss$. We consider
-  a case when the idealised verification equation accepts. (Thus, the real
-  verification accepts as well.) In that case $\rdvs$ extracts from $\vec{M'}$
-  coefficients of $1, \chi, \ldots, \chi^{\noofc + 2}$ for
-  polynomials $\p{a}(X), \p{b}(X)$, and $\p{c}(X)$ and reveals the witness
-  $\wit_\advss$ (as it is encoded in theses polynomials' coefficients). If
-  $\REL(\inp_\advss, \wit_\advss)$ holds then $\advss$ failed to break
-  simulation-soundness of $\plonkprotfs$. On the other hand, if that is not the
-  case, then $\rdvs$ breaks soundness of $\plonkprot$.
-	%
-  Since the reduction guesses queries $h_{i_1}, \ldots, h_{i_6}$ with
-  probability $1/q_\ro^6$, then
-  \[
-    \prob{\rdvs \text{ wins}} = \prob{\advss \text{ wins}, h_{i_1}, \ldots,
-      h_{i_6} \text{ are guessed correctly}, \nevent{E}_0}\,.
-  \]
-  Hence,
-  \[
-    \prob{\advss \text{ wins}, \nevent{E}_0} \leq q_\ro^6 \cdot \epsss(\secpar).
-  \]
-
-  \ncase{When $\nevent{E}_1$ happens} The reduction $\rdvdlog$ runs internally a
-  protocol $\plonkprotfs$, which SRS is computed from the challenge
-  $\gone{1, \chi, \ldots, \chi^{\noofc + 2}}, \gtwo{\chi}$ from the
-  $(\noofc + 2, 1)$-$\dlog$ assumption challenger. Then it proceeds
-  as $\rdvs$ does, except in the last part, when the adversary provided its
-  proof $\zkproof_\advss$, $\rdvdlog$ uses the fact that the real verification
-  equation holds, but the ideal verification equation does not to break the
-  $\dlog$ assumption.
-
-  Since $\vereq_{\inp, zkproof}(X) \neq 0$, but $\vereq_{\inp, zkproof}(\chi) = 0$ and $\rdvdlog$ knows
-  $\vec{M'}$, as defined in \cref{eq:M_prim}, it can recreate all the
-  polynomials submitted by $\advss$ as part of the proof and included in
-  $\vereq_{\inp, zkproof}(X)$. This way, it knows all coefficients of $\vereq_{\inp, zkproof}(X)$. Thus it can
-  factorize it and find its roots, one of them is the required $\chi$. Hence it
-  holds, by the analogous analysis as in the previous case, that
-  \[
-    \prob{\advss \text{ wins}, \nevent{E}_1} \leq q_\ro^6 \cdot
-    \eps_{\dlog}(\secpar).
-  \]
-
-  The proof is concluded by observing that the analysis of events
-  $\event{E}, \nevent{E}_0, \nevent{E}_1$ gives
-  \[
-    \eps \leq \epsur(\secpar) + q_\ro^6 (\eps_{\dlog}(\secpar) +
-    \epsss(\secpar))\,,
-  \]
-  hence $\eps$ is negligible if $\dlog$ is hard and $\plonkprot$ is sound and
-  $\ur{2}$.  \qed
-\end{proof}
-
-\end{document}
-
