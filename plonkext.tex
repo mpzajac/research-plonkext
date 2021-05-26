@@ -1519,45 +1519,22 @@ follows the definition below:
 
 \begin{definition}[$\ur{i}$-protocol]
 \label{def:wiur}
-% Let $\proofsystem$ be a $(2\mu + 1)$-message proof system $\ps = (\kgen,
-% \prover, \verifier, \simulator)$. Let $\proofsystem_\fs$ be $\proofsystem$ after the
-% Fiat--Shamir transform, Denote by $a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages
-% output by the prover, We say that $\proofsystem$ has \emph{unique responses
-%   from $i$ on} if for any $\ppt$ adversary $\adv$:
-% \[
-% 	\prob{
-% 		\begin{aligned}
-% 		&	\inp, \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
-%     a'_{\mu + 1})
-% 		\gets \adv^\ro(\REL, \srs), \\
-%     & \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
-%     \ldots, a'_{i}, \\
-% 		& \verifier^\ro_\fs (\REL, \srs, \inp, \vec{a}) =
-% 		\verifier^\ro_\fs(\REL, \srs, \inp, \vec{a'}) = 1
-% 		\end{aligned}
-% 		\ \left|\  
-% 	\vphantom{\begin{aligned}
-% 	&	\vec{a} = (a_0, b_0, \ldots, a_j, b_j, a_\mu), \vec{a'} = (a'_0, b'_0, \ldots, a'_j,
-% 	b'_j a'_\mu) \gets \adv(\REL, \srs), \vec{a} \neq \vec{a'}, \\
-% 	& b_k = b'_k, k \in \range{1, \mu - 1},\\ a_l = a'_l, l \in
-% \range{1}{j}, j > i 
-% 	\end{aligned}}
-% \srs \gets \kgen_\fs(\REL) \right.
-% } \leq \negl.
-% \]
 Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
-$\ps = (\kgen, \prover, \verifier, \simulator)$ and let $r$ be verifier's
-randomness which determines its challenges $r_1, \ldots, r_\mu$. Denote by
-$\vec{a} = a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output by the prover and by $r_1, \ldots, r_\mu$ the challenges of the verifier, We
-say that $\proofsystem$ has \emph{unique responses from $i$ on} if for any
-$\ppt$ adversary $\adv$:
+$\ps = (\kgen, \prover, \verifier, \simulator)$. Let $\proofsystem_\fs$ be
+$\proofsystem$ after the Fiat--Shamir transform and $\ro$ the random
+oracle. Denote by $a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output
+by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$
+  on} if for any $\ppt$ adversary $\adv$:
 \[
 	\prob{
 		\begin{aligned}
+		&	\inp, \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
+    a'_{\mu + 1})
+		\gets \adv^\ro(\REL, \srs), \\
     & \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
     \ldots, a'_{i}, \\
-		& \verifier (\REL, \srs, \inp, \vec{a}; r) =
-		\verifier(\REL, \srs, \inp, \vec{a'}; r) = 1
+		& \verifier^\ro_\fs (\REL, \srs, \inp, \vec{a}) =
+		\verifier^\ro_\fs(\REL, \srs, \inp, \vec{a'}) = 1
 		\end{aligned}
 		\ \left|\  
 	\vphantom{\begin{aligned}
@@ -1566,15 +1543,39 @@ $\ppt$ adversary $\adv$:
 	& b_k = b'_k, k \in \range{1, \mu - 1},\\ a_l = a'_l, l \in
 \range{1}{j}, j > i 
 	\end{aligned}}
-  \begin{aligned}
-&\srs \gets \kgen(\REL) \\
-&\inp, \vec{a}, \vec{a'} \gets \adv(\REL, \srs) \\
-& r_1, \ldots, r_i \gets H^i\\
-&    r_{i+1}, \ldots r_\mu \gets H^{\mu-i}, r'_{i+1}, \ldots r'_\mu \gets H^{\mu-i} 
-\end{aligned}
-     \right.
+\srs \gets \kgen_\fs(\REL) \right.
 } \leq \negl.
 \]
+% Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
+% $\ps = (\kgen, \prover, \verifier, \simulator)$ and let $r$ be verifier's
+% randomness which determines its challenges $r_1, \ldots, r_\mu$. Denote by
+% $\vec{a} = a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output by the prover and by $r_1, \ldots, r_\mu$ the challenges of the verifier, We
+% say that $\proofsystem$ has \emph{unique responses from $i$ on} if for any
+% $\ppt$ adversary $\adv$:
+% \[
+% 	\prob{
+% 		\begin{aligned}
+%     & \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
+%     \ldots, a'_{i}, \\
+% 		& \verifier (\REL, \srs, \inp, \vec{a}; r) =
+% 		\verifier(\REL, \srs, \inp, \vec{a'}; r) = 1
+% 		\end{aligned}
+% 		\ \left|\  
+% 	\vphantom{\begin{aligned}
+% 	&	\vec{a} = (a_0, b_0, \ldots, a_j, b_j, a_\mu), \vec{a'} = (a'_0, b'_0, \ldots, a'_j,
+% 	b'_j a'_\mu) \gets \adv(\REL, \srs), \vec{a} \neq \vec{a'}, \\
+% 	& b_k = b'_k, k \in \range{1, \mu - 1},\\ a_l = a'_l, l \in
+% \range{1}{j}, j > i 
+% 	\end{aligned}}
+%   \begin{aligned}
+% &\srs \gets \kgen(\REL) \\
+% &\inp, \vec{a}, \vec{a'} \gets \adv(\REL, \srs) \\
+% & r_1, \ldots, r_i \gets H^i\\
+% &    r_{i+1}, \ldots r_\mu \gets H^{\mu-i}, r'_{i+1}, \ldots r'_\mu \gets H^{\mu-i} 
+% \end{aligned}
+%      \right.
+% } \leq \negl.
+% \]
 \end{definition}
 Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary
 to produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$
