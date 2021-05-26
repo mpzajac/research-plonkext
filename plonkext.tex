@@ -1014,21 +1014,40 @@ outputs as challenges its random coins) can be made non-interactive and
 zero-knowledge in the random oracle model by using the Fiat--Shamir
 transformation.
 
-\oursubsub{Idealised verifier and verification equations}
-Let $(\kgen, \prover, \verifier)$ be a protocol---in this paper, either a proof
+In our simulation soundness proof (but not simulation extractability) we need
+an additional property of the zero-knowledge  proof system which we call $k$-programmable ZK.
+\begin{definition}[$k$-programmable ZK]
+  \label{def:kzk}
+  Let $\ps$ be a $(2\mu + 1)$-message ZK proof system and let $\ps_\fs$ be its
+  Fiat--Shamir variant. We say that $\ps_\fs$ is $k$-programmable ZK if there
+  exists a simulator $\simulator_\fs$ that
+  \begin{compactenum}
+  \item produces proofs indistinguishable from proofs output by an honest
+    prover;
+  \item $\simulator_\fs$ can program random oracle \emph{only} to compute
+    challenges from $k$ to $\mu + 1$.
+  \end{compactenum}
+\end{definition}
+We note that $\plonkprot$ is $2$-programmable ZK and $\sonicprot$ is
+$1$-programmable what follows directly from proofs of their zero knowledge in
+\cref{lem:plonk_hvzk,lem:sonic_hvzk}.
+
+\oursubsub{Idealised verifier and verification equations} Let
+$(\kgen, \prover, \verifier)$ be a protocol---in this paper, either a proof
 system or a polynomial commitment scheme. Observe that the $\kgen$ algorithm
 provides an SRS which can be interpreted as a set of group representation of
 polynomials evaluated at trapdoor elements. E.g.~for a trapdoor $\chi$ the SRS
 contains $\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for some polynomials
 $\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. On the other hand, the verifier
-$\verifier$ accepts if a verification equation $\vereq$ (or a set of them),
-which can also be interpreted as a polynomial in $\FF_p[X]$ and which
-coefficients depend on messages sent by the prover, zeroes at $\chi$. Following
-\cite{EPRINT:GabWilCio19} we call verifiers who checks that $\vereq(\chi) = 0$
-\emph{real verifiers} as opposed to \emph{ideal verifiers} who accepts only when
-$\vereq(X) = 0$. That is, while a real verifier accepts when a polynomial
-\emph{evaluates} to zero, an ideal verifier accepts only when the polynomial
-\emph{is} zero.
+$\verifier$ accepts if a (possibly set of) verification equation
+$\vereq_{\inp, \zkproof}$ (note that the verification equation changes relate to
+the instance $\inp$ and proof $\zkproof$), which can also be interpreted as a
+polynomial in $\FF_p[X]$ and which coefficients depend on messages sent by the
+prover, zeroes at $\chi$. Following \cite{EPRINT:GabWilCio19} we call verifiers
+who checks that $\vereq(\chi) = 0$ \emph{real verifiers} as opposed to
+\emph{ideal verifiers} who accepts only when $\vereq(X) = 0$. That is, while a
+real verifier accepts when a polynomial \emph{evaluates} to zero, an ideal
+verifier accepts only when the polynomial \emph{is} zero.
 
 Although ideal verifiers are impractical, the are very useful in our
 proofs. More precisely, we show that
@@ -1532,11 +1551,11 @@ it is not entirely clear how to generalize the property. Should one require that
 after the first challenge from the verifier the prover's responses are fixed?
 That could not work since the prover needs to answer differently on different
 verifier's challenges, as otherwise the protocol could have fewer
-rounds. Another problem arises when the protocol contains some
-message---obviously, except the first one---where the prover randomises its
-message. In that case unique-responsiveness can not hold as well. Last but not
-least, the protocols we consider here are not designed to be in the standard
-model, but utilises SRS what also complicates things considerably.
+rounds. Another problem arises when the protocol contains some message, but not
+the first one, where the prover randomises its message. In that case
+unique-responsiveness can not hold as well. Last but not least, the protocols we
+consider here are not designed to be in the standard model, but utilises SRS
+what also complicates things considerably.
 
 We walk around these obstacles by providing a generalised notion of the unique
 response property. More precisely, we say that a $(2\mu + 1)$-message protocol
@@ -1808,10 +1827,10 @@ random oracle and wins with the same probability.
 
 \begin{theorem}[Simulation soundness]
   \label{thm:simsnd}
-  Assume that $\ps$ is HVZK in the standard model, $\epss(\secpar)$-sound and
-  $\ur{k}$ with security $\epsur(\secpar)$. Then the probability
-  that a $\ppt$ adversary $\adv$ breaks simulation soundness of $\ps_{\fs}$ is
-  upper-bounded by
+  Assume that $\ps$ is $k$-programmable HVZK in the standard model,
+  $\epss(\secpar)$-sound and $\ur{k}$ with security $\epsur(\secpar)$. Then the
+  probability that a $\ppt$ adversary $\adv$ breaks simulation soundness of
+  $\ps_{\fs}$ is upper-bounded by
   \[
     \epsur(\secpar) + q_\ro^\mu  \epss(\secpar)\,,
   \]
@@ -1994,9 +2013,13 @@ for some negligible $\eps$.
   reuses a part of a simulated proof it saw before and the proof is acceptable.
   Denote that event by $\event{\errur}$.
 
-  \ncase{$\game{0} \mapsto \game{1}$} We have, \( \prob{\game{0} \land
-    \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}} \) and, from the
-  difference lemma, cf.~\cref{lem:difference_lemma},
+  \ncase{$\game{0} \mapsto \game{1}$} $\prob{\event{\errur}} \leq \epsur$. The
+  proof goes exactly as in \cref{thm:simsnd}.
+
+  \COMMENT{We have,
+    \( \prob{\game{0} \land \nevent{\errur}} = \prob{\game{1} \land
+      \nevent{\errur}} \) and, from the difference lemma,
+    cf.~\cref{lem:difference_lemma},
   \[ \abs{\prob{\game{0}} - \prob{\game{1}}} \leq \prob{\event{\errur}}\,. \]
   Thus, to show that the transition from one game to another introduces only
   minor change in probability of $\advse$ winning it should be shown that
@@ -2028,7 +2051,8 @@ for some negligible $\eps$.
   not equal, then $\rdvur$ breaks $\ur{k}$-ness of $\ps$. This happens only with
   negligible probability $\epsur$, hence \( \prob{\event{\errur}} \leq
   \epsur\,. \)
-	
+}
+
   \ngame{2} This is identical to $\game{1}$ except that now the environment
   aborts also when it fails to build a $(1, \ldots, 1, n, 1, \ldots, 1)$-tree
   of accepting transcripts $\tree$ by rewinding $\advse$. Denote that event by
@@ -2727,6 +2751,7 @@ for $\epsss \leq \epsid + \epsdlog$ against algebraic adversaries.
 
 \subsection{Honest verifier zero-knowledge}
 \begin{lemma}
+  \label{lem:plonk_hvzk}
   Let $\plonkprot$ be zero knowledge with security $\epszk$. Let
   $(\pR, \pS, \pT, \pf, 1)$-uber assumption for $\pR, \pS, \pT, \pf$ as defined
   in \cref{eq:uber} hold with security $\epsuber$. Then $\plonkprot$ is
