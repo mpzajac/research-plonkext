@@ -851,12 +851,12 @@ respectively.
 
 \begin{description}
 \item[Commitment of knowledge]  For every $\ppt$ adversary $\adv$ who produces
-  commitment $c$, evaluation point $z$, evaluation $s$ and opening $o$ there
+  commitment $c$, evaluation $s$ and opening $o$ there
   exists a $\ppt$ extractor $\ext$ such that
 \[
   \Pr \left[
     \begin{aligned}
-      & \p{f} = \ext_\adv(\srs, c),\\
+      & \deg \p{f} \leq \maxdeg\\
       & c = \com(\srs, \p{f}),\\
       & \verify(\srs, c, z, s, o) = 1
     \end{aligned}
@@ -870,7 +870,10 @@ respectively.
         }
     \begin{aligned}
       & \srs \gets \kgen(\secparam, \maxdeg),\\
-      & (c, z, s, o) \gets \adv(\srs)
+      & c \gets \adv(\srs),
+      z \sample \FF_p \\
+      & (s, o) \gets \adv(\srs, c, z), \\
+      & \p{f} = \ext_\adv(\srs, c)\\
     \end{aligned}
   \right.\right]
   \geq 1 - \epsk(\secpar).
