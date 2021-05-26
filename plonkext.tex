@@ -1095,11 +1095,11 @@ non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
 
 \subsection{Forking simulation extractable NIZKs from sigma protocols}
 \label{sec:simext_def}
-Real life applications often require from a NIZK proof system to be
+Real life applications often require a NIZK proof system to be
 non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement
 $\inp$ should be able to provide a new proof $\zkproof'$ related to $\zkproof$.
-A strong version of non-malleability is formalised by so-called \emph{simulation extractability}
-which assures that no adversary can produce a valid proof without knowing the
+\emph{Simulation extractability} formalizes a strong version of non-malleability
+by requiring that no adversary can produce a valid proof without knowing the
 corresponding witness. This must hold even if the adversary is allowed to see
 polynomially many simulated proofs for any statements it wishes.
 
@@ -1208,7 +1208,7 @@ statement. More precisely,
 \begin{remark}
   \label{rem:simext_to_simsnd}
   We note that probability $\ssndProb$ \cref{def:simsnd} can be expressed in
-  terms from the simulation-extractability definition. More precisely, the
+  terms of simulation-extractability. More precisely, the
   condition $\neg \exists \wit: \REL(\inp_\adv, \wit_\adv) = 1$ can be substituted with
   $\REL(\inp_\adv, \wit_\adv) = 0$, where $\wit_\adv$, returned by a possibly unbounded
   extractor is either a witness to $\inp_\adv$ (if there exists any) or $\bot$ (if
@@ -1240,10 +1240,10 @@ is unbounded or not, we obtain the following equality
 $ \ssndProb = \accProb - \extProb$.
 \end{remark}
 
-In \cref{cor:simext_to_ssnd} we show that (under some mild conditions) this is enough
-to conjecture that probability $\ssndProb$ is not only at most negligible, but
-also, in some parameters, exponentially smaller than $(1 - \extProb)$
-(probability of extraction failure in \cref{def:simext}).
+% In \cref{cor:simext_to_ssnd} we show that (under some mild conditions) this is enough
+% to conjecture that probability $\ssndProb$ is not only at most negligible, but
+% also, in some parameters, exponentially smaller than $(1 - \extProb)$
+% (probability of extraction failure in \cref{def:simext}).
 
 \section{Forking simulation extractability of multi-message protocols,
   definitions and lemmas}
