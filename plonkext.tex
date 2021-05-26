@@ -239,16 +239,18 @@ underlying computational assumption.
 
 \oursubsub{Unique response property.}%
 Another property that has to be proven is the unique response property which
-states, as expressed in \cite{C:Fischlin05}, that except for the first message,
-all messages sent by the prover are deterministic (intuitively, the prover can
-only employ fresh randomness in the first message of the protocol). Again, we
-can not use this definition right out of the box. Although $\sonicprotfs$
-satisfy it, $\plonkprotfs$ does not---both the first and the second prover's
-messages are randomised. We thus propose a generalisation of the definition
-which states that a protocol is $\ur{i}$ if the prover is deterministic starting
-from its $(i + 1)$-th message. For our proof it is sufficient that this property
-is met by $\plonkprot$ for $i = 2$. Since \sonic{}'s prover is deterministic
-from the second message on, it is $\ur{1}$.
+states, as expressed in \cite{C:Fischlin05}, that for $3$-messages sigma
+protocols, except for the first message, all messages sent by the prover are
+deterministic (intuitively, the prover can only employ fresh randomness in the
+first message of the protocol). Again, we can not use this definition right out
+of the box. $\plonkprotfs$ does not satisfy it---both the first and the second
+prover's messages are randomised. Although $\sonicprot$ prover is deterministic
+after it picks its first message, the protocol has more than $3$ rounds, hence
+it also does not fulfill the definition. We thus propose a generalisation of the
+definition which states that a protocol is $\ur{i}$ if the prover is
+deterministic starting from its $(i + 1)$-th message. For our proof it is
+sufficient that this property is met by $\plonkprot$ for $i = 2$. Since
+\sonic{}'s prover is deterministic from the second message on, it is $\ur{1}$.
 
 To be able to show the unique response property (for both of the protocols) we
 also had to show that the modified KZG polynomial commitment schemes
@@ -2240,7 +2242,7 @@ In this section we show that $\plonkprotfs$ is forking simulation-extractable. T
 end, we proceed as follows. First we show that the version of the KZG polynomial
 commitment scheme that is proposed in the \plonk{} paper has the unique opening
 property, cf.~\cref{sec:poly_com} and \cref{lem:pcomp_unique_op}. This is then
-used to show that $\plonkprot$ has the $\ur{3}$ property,
+used to show that $\plonkprot$ has the $\ur{2}$ property,
 cf.~\cref{lem:plonkprot_ur}.
 
 Next, we show that $\plonkprot$ is forking-sound. That is, given a
@@ -2250,7 +2252,7 @@ one of the transcripts to break the $\dlog$ assumption. This result is shown in
 the AGM, cf.~\cref{lem:plonkprot_ss}.
 
 Given forking-soundness of $\plonkprot$, we use the fact that it is also
-$\ur{3}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is
+$\ur{2}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is
 simulation-extractable. That is, we build reductions that given a simulation
 extractability adversary $\advse$ either break the protocol's unique response
 property or break the $\dlog$ assumption, if extracting a valid witness from a
@@ -2974,14 +2976,14 @@ $\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
 
 \subsection{From forking soundness and unique response property to forking simulation
   extractability of $\plonkprotfs$}
-Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$
+Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$
 and forking sound. We now make use of \cref{thm:se} and show that
 $\plonkprot_\fs$ is forking simulation-extractable as defined in
 \cref{def:simext}.
 
 \begin{corollary}[Forking simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
-Assume that $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$, and
+Assume that $\plonkprot$ is $\ur{2}$ with security $\epsur(\secpar)$, and
 $(\epsss, 3, 3\noofc + 1)$-forking-sound. Let
 $\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$
 adversary that can make up to $q$ random oracle queries and outputs an
@@ -3162,11 +3164,11 @@ property of the used polynomial commitment scheme $\PCOMs$.
 \label{lem:sonicprot_ur}
 If a polynomial commitment scheme $\PCOMs$ is evaluation binding with
 parameter $\epsbind$ and has unique openings property with parameter
-$\epsop$, then $\sonicprot$ is $\ur{2}$ with parameter $\epsur \leq
+$\epsop$, then $\sonicprot$ is $\ur{1}$ with parameter $\epsur \leq
 \epsbind + \epsop$.  
 \end{lemma}
 \begin{proof}
-  Let $\adv$ be an adversary that breaks $\ur{2}$-ness of $\sonicprot$.  We
+  Let $\adv$ be an adversary that breaks $\ur{1}$-ness of $\sonicprot$.  We
   consider two cases, depending on which round $\adv$ is able to provide at
   least two different outputs such that the resulting transcripts are
   acceptable.  For the first case we show that $\adv$ can be used to break the
@@ -3185,7 +3187,7 @@ $\epsop$, then $\sonicprot$ is $\ur{2}$ with parameter $\epsur \leq
   $\p{\tilde{W}}$ for $y = \p{p}(x)$ then the unique opening property would be
   broken.
 %
-Hence the probability that $\adv$ breaks $\ur{2}$-property of $\PCOMs$ is
+Hence the probability that $\adv$ breaks $\ur{1}$-property of $\PCOMs$ is
 upper-bounded by $\epsbind + \epsop$. 
 \qed
 
@@ -3335,13 +3337,13 @@ prover and verifier. \qed
 \end{remark}
 
 \subsection{From forking soundness and unique response property to forking simulation extractability of $\sonicprotfs$}
-Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{2}$
+Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$
 and forking sound. We now make use
 of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable as defined in \cref{def:simext}.
 
 \begin{corollary}[Forking simulation extractability of $\sonicprotfs$]
   \label{thm:sonicprotfs_se}
-  Assume that $\sonicprot$ is $\ur{2}$ with security $\epsur(\secpar)$, and
+  Assume that $\sonicprot$ is $\ur{1}$ with security $\epsur(\secpar)$, and
   forking-sound with security $\epsss(\secpar)$. Let $\ro\colon
   \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$
   adversary that can make up to $q$ random oracle queries and outputs an
@@ -3413,7 +3415,7 @@ of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable 
 % 
 % Assume that $\advse$ queried the simulator on $\inp_{\advse}$---the instance
 % which $\advse$ outputs. We show a reduction $\rdvur$ that utilises $\advse$,
-% who outputs a valid proof for $\inp_\advse$, to break the $\ur{3}$ property of
+% who outputs a valid proof for $\inp_\advse$, to break the $\ur{2}$ property of
 % $\plonkprot$.
 % 
 % Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
@@ -3432,7 +3434,7 @@ of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable 
 % \zkproof_{\advse}\range{4}{5}) \end{align*} \end{itemize}   If $\zkproof_1 =
 % \zkproof_2$, then $\advse$ fails to break simulation extractability, as
 % $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then
-% $\rdvur$ breaks $\ur{3}$-ness of $\plonkprot$, what may happen with some
+% $\rdvur$ breaks $\ur{2}$-ness of $\plonkprot$, what may happen with some
 % negligible probability $\epsur$ only, hence 
 % \[ 
 % \prob{\event{\errur}} \leq \epsur\,. 
@@ -3458,7 +3460,7 @@ of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable 
 % 	\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \event{\errfrk}\,.
 % \]
 % Denote by $\accProb$ the probability that $\advse$ outputs a proof which is
-% acceptable and does not break $\ur{3}$-ness of $\plonkprot$. From the
+% acceptable and does not break $\ur{2}$-ness of $\plonkprot$. From the
 % generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma},
 % \[
 %   \prob{\event{\errfrk}} \leq 1 - \left(\frac{\accProb^{\noofc +
@@ -3494,7 +3496,7 @@ of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable 
 %   \epsur - \epsss\,.
 % \]
 % Since $\accProb$ is probability of $\advse$ outputting acceptable transcript
-% that does not break $\ur{3}$-ness of $\plonkprot$, then $\accProb \leq
+% that does not break $\ur{2}$-ness of $\plonkprot$, then $\accProb \leq
 % \accProb + \epsur$, where $\accProb$ is the probability of $\advse$ outputing
 % an acceptable proof as defined in \cref{def:simext}. It thus holds
 % \[
