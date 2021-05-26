@@ -1907,7 +1907,7 @@ random oracle and wins with the same probability.
   verifier zero-knowledge in the standard model\footnote{Crucially, we require
     that one can provide an indistinguishable simulated proof without any
     additional knowledge, as e.g~knowledge of a SRS trapdoor.}, has $\ur{k}$
-  property with security $\epsur$, is $(\epss, n, k)$-forking sound .
+  property with security $\epsur$, is $(\epss, k, n)$-forking sound .
   % for
   % $n_i = 1, i \in \range{1}{\mu} \setminus \smallset{k}$ and $n_k = n$.
 
@@ -2449,7 +2449,10 @@ The \plonk{} verifier works as follows
 \begin{lemma}
 \label{lem:pcomp_unique_op}
 Let $\PCOMp$ be a batched version of a batched KZG polynomial
-commitment. $\PCOMp$ has the unique opening property in the AGM.\end{lemma}
+commitment, cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property
+in the AGM with security $\epsop \leq 2 \epsdlog + \infrac{1}{\abs{\FF_p}}$, where
+$\esdlog$ is security of the $(\noofc + 2, 1)$-dlog assumption and $\FF_p$ is the
+field used in $\PCOMp$.\end{lemma}
 \begin{proof}
   Let $\vec{z} = (z, z') \in \FF_p^2$ be the two points the polynomials are
   evaluated at, $k \in \NN$ be the number of the committed polynomials to be
@@ -2481,16 +2484,18 @@ commitment. $\PCOMp$ has the unique opening property in the AGM.\end{lemma}
 \]
 is at most negligible.
 
-\ncase{Step 1} First, consider a case where the commitment is limited to
-commit to multiple polynomials which are evaluated at the same point $z$. As
-noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the
-probability of the adversary succeeding using the idealised verification
-equation---which considers equality between polynomials---instead of the real
-verification equation---which consider equality of the polynomials' evaluations.
-This holds since an adversary that manages to provide a commitment opening that
-holds for the real verifier, but does not hold for the idealised verifier can be
-used to break the dlog assumption and reveal the secret trapdoor used to produce
-the commitment's SRS, cf.~\cite[Lemma 2.2]{EPRINT:GabWilCio19} for more details.
+\ncase{Step 1} First, consider a case where the commitment is limited to commit
+to multiple polynomials which are evaluated at the same point $z$. As noted in
+\cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the probability
+of the adversary succeeding using the idealised verification
+equation\COMMENT{---which considers equality between polynomials---instead of
+  the real verification equation---which consider equality of the polynomials'
+  evaluations}.  This holds since an adversary that manages to provide a
+commitment opening that holds for the real verifier, but does not hold for the
+idealised verifier can be used to break the dlog assumption and reveal the
+secret trapdoor used to produce the commitment's SRS, the probability of such
+event is bounded by the $(\noofc + 2, 1)$-dlog security $\epsdlog$,
+cf.~\cite[Lemma 2.2]{EPRINT:GabWilCio19} for more details.
 
 For polynomials $\vec{\p{f}} = \p{f}_1, \ldots, \p{f}_k$, evaluation point $z$, evaluation
 result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $\p{o}(X)$ the
@@ -2512,7 +2517,8 @@ $\gamma, r'$ picked at random, holds:
 	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} \cdot s_i  + r' \left(\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \right)\\
 	\equiv \p{o}(X)(X - z) + r' \p{o}'(X)(X- z')
 \end{multline}
-Since $r'$ has been picked at random, probability that \cref{eq:ver_eq_poly} holds while either
+Since $r'$ has been picked at random from $\FF$, probability that \cref{eq:ver_eq_poly}
+holds while either
 \[
 	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}  \gamma^{i - 1} \cdot s_i \not\equiv \p{o}(X)(X - z)
 \]
@@ -2520,8 +2526,10 @@ or
 \[
 	\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \not\equiv \p{o'}(X)(X - z')
 \]
-is negligible~\cite{EPRINT:GabWilCio19}. This brings the proof back to
-Step 1 above. \qed
+is $\infrac{1}{\abs{\FF_p}}$~\cite{EPRINT:GabWilCio19}. This brings the proof back to
+Step 1 above. Altogether, Step 2 gives the following bound for the unique
+opening property $\epsop \leq 2\epsdlog + \infrac{1}{\FF_p}$.
+\qed
 \end{proof}
 
 \subsection{Unique response property}
@@ -2529,7 +2537,7 @@ Step 1 above. \qed
 	\label{lem:plonkprot_ur}
   Let $\PCOMp$ be commitment of knowledge with security $\epsk$,
   $\epsbind$-binding and has unique opening property with security $\epsop$,
-  then probability that a $\ppt$ adversary $\adv$ breaks $\plonkprot$'s $\ur{3}$
+  then probability that a $\ppt$ adversary $\adv$ breaks $\plonkprot$'s $\ur{2}$
   property is at most $\epsk + 2\cdot\epsbind +
   \epsop$.% assuming the polynomial commitment scheme $\PCOMp$
 %is of knowledge.
@@ -2537,7 +2545,7 @@ Step 1 above. \qed
 \begin{proof}[sketch]
   Let
   $\adv(\REL,\srs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}}, \gtwo{\chi}))$
-  be an adversary tasked to break the $\ur{3}$-ness of $\plonkprot$. It is
+  be an adversary tasked to break the $\ur{2}$-ness of $\plonkprot$. It is
   sufficient to observe that the first 2 rounds of the protocol determines,
   along with the verifiers challenges, the rest of it.
 
@@ -2549,13 +2557,15 @@ Step 1 above. \qed
   Using the AGM and arguments similar to \cite{CCS:MBKM19}, we argue that
   $\PCOMp$ is a commitment of knowledge. That is, an AGM adversary $\adv$ that
   outputs a commitment $c'$ which it can later open, knows a polynomial $\p{f}$
-  of degree-$(\leq \noofc + 2)$ such that $\gone{\p{f}(\chi)} = c'$. Thus if
-  $c' \neq c$ and the commitment scheme is evaluation binding then $\adv$ when
+  of degree-$(\leq \noofc + 2)$ such that $\gone{\p{f}(\chi)} = c'$. Denote by
+  $\epsk$ probability that $\adv$ breaks knowledge soundness of the commitment. Thus if
+  $c' \neq c$ and the commitment scheme is evaluation binding with security
+  $\epsbind$ then $\adv$ when
   picking $c'$ picks it as a commitment to $\p{f}$ which evaluates at $\chz$ to
-  $\pt(\chz)$. The probability of that is negligible as there can only be
-  no more than $\noofc + 2$  overlapping points between $\p{f}(X)$ and $\p{t}(X)$, and
-  $\chz$ remains random for $\adv$ when it computes $c'$. Hence, the probability
-  that $\adv$ is able to produce two different outputs of Round 3 is
+  $\pt(\chz)$. The probability of that is negligible as there can only be no
+  more than $\noofc + 2$ overlapping points between $\p{f}(X)$ and $\p{t}(X)$,
+  and $\chz$ remains random for $\adv$ when it computes $c'$. Hence, the
+  probability that $\adv$ is able to produce two different outputs of Round 3 is
   upper-bounded by $\epsk + \epsbind$.
 
   In Round 4 the prover is asked to give evaluations of predefined polynomials
@@ -2596,8 +2606,8 @@ Step 1 above. \qed
 \subsection{Forking soundness}
 \begin{lemma}
 \label{lem:plonkprot_ss}
-$\plonkprot$ is $(\epsss, (1, 1, 3 \noofc + 1, 1))$-forking sound
-for $\epsss = \epsid + \epsdlog$.
+$\plonkprot$ is $(\epsss, 3, 3 \noofc + 1)$-forking sound
+for $\epsss \leq \epsid + \epsdlog$ against algebraic adversaries.
 \end{lemma}
 \begin{proof}
   Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
@@ -2659,83 +2669,26 @@ for $\epsss = \epsid + \epsdlog$.
   Hence, the probability that this event happens is upper-bounded by $\epsdlog$. \qed
 \end{proof}
 
-\iffalse
-\begin{lemma}
-\label{lem:plonkprot_ss}
-$\plonkprot$ is $(\epsss, (1, 1, 3\noofc + 1, 1))$-computational forking sound
-for
- \[
-	\epsss \leq \epsbatch + \epsdlog\,,
- \] 
- where $\epsbatch$ is the (negligible) probability that $\plonkprot$'s idealised
- verification equation $\vereq_\zkproof(X)$ accepts an invalid proof because of batching
- and $\epsdlog$ is a probability that a $\ppt$ algorithm breaks the
- $(\noofc + 2, 1)$-$\dlog$ assumption.
-\end{lemma}
-\begin{proof}
-  Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
-  $\GRP_1$-elements; that is,
-  $\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc + 2}}$. Let $\adv$ be an
-  algebraic adversary that produces a statement $\inp$ and a
-  $(1, 1, 3\noofc + 1, 1)$-tree of acceptable transcripts $\tree$.  Note that in
-  all transcripts the instance $\inp$, proof elements
-  $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and
-  challenges $\alpha, \beta, \gamma$ are common as the transcripts share the
-  first three rounds. The tree ``branches'' after the third round of the protocol
-  where the challenge $\chz$ is presented, thus tree $\tree$ is build using different
-  values of $\chz$. 
-
-  We consider two mutually disjunctive events. The first, $\event{E}$ holds when
-  all of the transcripts are acceptable by the idealised verification equation,
-  i.e.~$\vereq_\zkproof(X) = 0$, cf.~\cref{eq:ver_eq}. The second, $\nevent{E}$ holds
-  when there is a transcript that is acceptable by the real verifier, but not by
-  the ideal verifier. That is, for that particular transcript it holds that
-  $\vereq_\zkproof(\chi) = 0$, but $\vereq_\zkproof(X) \neq 0$.  When event $\event{E}$ holds we show that the extractor $\extt$ is successful. If it does not hold, we show a reduction
-  $\rdvdlog$ that breaks the $\dlog$ assumption.
-
-  \ncase{When $\event{E}$ holds} Let $(\inp, \tree) \gets \adv(\REL,
-  \srs)$. Since the protocol $\plonkprot$, instantiated with the idealised
-  verification equation, is perfectly sound, except with probability of batching
-  failure $\epsbatch$, for a valid proof $\zkproof$ of a statement $\inp$ there
-  exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note that 
-  polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$, which contain witness in their
-  coefficients, have degree $(\noofc + 2)$ and since $\adv$ answered correctly
-  on $(\noofc + 3)$ different challenges $\chz$ then $( \noofc + 3)$ evaluations
-  of these polynomials (at different points) are known. The extractor $\extt$
-  interpolates the polynomials and reveals the corresponding witness
-  $\wit$. The extractor finds the witness with probability $1$.
-
-  \ncase{When $\nevent{E}$ holds} Let $\adv$ be an adversary that for relation
-  $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree of
-  acceptable transcripts such that $\nevent{E}$ holds. Let $\rdvdlog$ be a
-  reduction that gets as input an $(\noofc + 2, 1)$-dlog instance
-  $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$ and is tasked to output
-  $\chi$. The reduction proceeds as follows---it gives the input instance to the
-  adversary as the SRS. Let $(\inp, \tree)$ be the output returned by $\adv$.
-  Consider a transcript $\zkproof \in \tree$ such that
-  $\vereq_\zkproof(X) \neq 0$, but $\vereq_\zkproof(\chi) = 0$. Since the
-  adversary is algebraic, all group elements included in $\tree$ are extended by
-  their representation as a combination of the input $\GRP_1$-elements. Hence all coefficients of
-  the verification equation polynomial $\vereq_\zkproof(X)$ are known and $\rdvdlog$ can
-  find its zero points. Since $\vereq_\zkproof(\chi) = 0$, the targeted discrete log
-  value $\chi$ is among them. \qed
-\end{proof}
-\fi
-
 \subsection{Honest verifier zero-knowledge}
 \begin{lemma}
-  $\plonkprot$ is computationally honest verifier zero-knowledge and its simulator $\simulator$ does
-  not require a SRS trapdoor.\footnote{The simulator works as a simulator for
-    proofs that are zero-knowledge in the standard model. However, we do not say
-    that $\plonk$ is HVZK in the standard model as proof of that \emph{requires}
-    the SRS simulator.} More precisely, assume that $\plonk$'s SRS simulator
-  $\simulator_\chi$ produces proof that are distributed at most $\epszk$-far
-  from real proofs, and $(\pR, \pS, \pT, \pf, 1)$-uber assumption for
-  $\pR, \pS, \pT, \pf$ as defined in \cref{eq:uber} is $\epsuber$-secure. Then
-  any $\ppt$ adversary $\adv$ has advantage in telling a proof produced by
-  $\simulator$ from a real proof upper-bounded by $\epszk + \epsuber$.
+  Let $\plonkprot$ be zero knowledge with security $\epszk$. Let
+  $(\pR, \pS, \pT, \pf, 1)$-uber assumption for $\pR, \pS, \pT, \pf$ as defined
+  in \cref{eq:uber} hold with security $\epsuber$. Then $\plonkprot$ is
+  computationally honest verifier zero-knowledge with simulator $\simulator$
+  that does not require a SRS trapdoor with security
+  $\epszk + \epsuber$.\footnote{The simulator works as a simulator for proofs
+    that are zero-knowledge in the standard model. However, we do not say that
+    $\plonk$ is HVZK in the standard model as proof of that \emph{requires} the
+    SRS simulator.}
 \end{lemma}
 \begin{proof}
+  % More precisely, assume that $\plonk$'s SRS simulator
+  % $\simulator_\chi$ produces proof that are distributed at most $\epszk$-far
+  % from real proofs, and $(\pR, \pS, \pT, \pf, 1)$-uber assumption for
+  % $\pR, \pS, \pT, \pf$ as defined in \cref{eq:uber} is $\epsuber$-secure. Then
+  % any $\ppt$ adversary $\adv$ has advantage in telling a proof produced by
+  % $\simulator$ from a real proof upper-bounded by $\epszk + \epsuber$.
+  
   The proof goes by game-hoping. The environment that controls the games
   provides the adversary with a SRS $\srs$, then the adversary outputs an
   instance--witness pair $(\inp, \wit)$ and, depending on the game, is provided
@@ -2936,123 +2889,24 @@ $\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
 \( \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epsuber.  \) Eventually,
 \(
 \abs{\prob{\game{0}} - \prob{\game{2}}} \leq \epszk + \epsuber.  \) \qed
-
-% \ncase{$\game{1} \mapsto \game{2}$} We now describe the reduction $\rdv$ which
-% relies on the $(\pR, \pS, \pT, \pf, 1)$-uber assumption where $\pR, \pS, \pT, \pf$
-% are polynomials over variables $\vB = B_1, \ldots, B_9$ and are defined as
-% follows. Let $E = \smallset{\smallset{1, 2}, \smallset{3, 4}, \smallset{5, 6},
-%   \smallset{7, 8, 9}}$. Let
-% \begin{align}
-% \label{eq:uber}
-% \pR(\vB) & = \smallset{B_i \mid i \in A,\ A \in E} \cup \smallset{B_i B_j \mid i \in
-% A, j \in B,\ A \neq B, A, B \in E} \cup \\ 
-% 		& \smallset{B_i B_j B_k \mid i \in A,\ j \in
-% B,\ k \in C,\
-% 		A, B, C \text{ all different and in } E} \cup \notag \\
-% 	& \smallset{B_i B_j B_k B_l \mid i \in A,\ j \in B,\ k \in C,\ l \in D,\
-% 		A, B, C, D \text{ all different and in } E} \notag \\
-% 	& \setminus \smallset{B_1
-% B_3 B_5 B_7}\,,\notag \\
-% \pS(\vB) & = \emptyset \notag\,, \\
-% \pT(\vB) & = \emptyset \notag\,, \\
-% \pf(\vB) & = B_1 B_3 B_5 B_7 \notag\,.
-% \end{align}
-% That is, the elements of $\pR$ are all singletons, pairs, triplets and
-% quadruplets of $B_i$ variables that occur in polynomial $\pt(\vB)$ except the
-% challenge element $\pf(\vB) = B_1 B_3 B_5 B_7$. Variables $\vB$ are evaluated to
-% randomly picked $\vb = b_1, \ldots, b_9$.
-
-% The reduction $\rdv$ learns $\gone{\pR}$ and challenge $\gone{w}$ where $w$ is
-% either $\pf(\vb) = b_1 b_3 b_5 b_7$ or a random value. Then it picks $\chi$,
-% $\chz$ and computes the SRS $\srs$ from $\chi$. Elements $b_i$ are interpreted as
-% polynomials in $X$ that are evaluated at $\chi$, i.e. $b_i = b_i(\chi)$. Next,
-% $\rdv$ sets
-% \[
-%   \gone{\p{\tb}_i}(X) =
-% (X - \chz)(X - \ochz) \gone{b_i}(X) + \xi_i (X - \chz) \gone{1} +
-% \zeta_i (X - \ochz) \gone{1}, % \text{ for } i \in % \range{1}{9}, u_1
-% \] 
-% for $i \in \range{1}{9}$ and $\xi_i, \zeta_i \sample \FF_p$. Denote by $\tb_i$
-% evaluations of $\p{\tb}_i$ at $\chi$.
-% The reduction computes all $\gone{\tb_i \tb_j}, \gone{\tb_i \tb_j \tb_k},
-% \gone{\tb_i \tb_j \tb_k \tb_l}$ such that
-% $\gone{B_i B_j, B_i B_j B_k, B_i B_j B_k B_l} \in \pR$.
-% This is possible since $\rdv$ knows all singletons $\gone{b_1, \ldots,
-% b_9}$ and pairs $\gone{b_i b_j} \in \pR$ which can be used to compute all
-% required pairs $\gone{\tb_i \tb_j}$: 
-% \begin{align*}
-% \gone{\tb_i \tb_j} 
-% & = ((\chi - \chz)(\chi - \ochz)\gone{b_i} + \xi_i (\chi - \chz)\gone{1} +
-% \zeta_i (\chi - \ochz) \gone{1}) 
-% \cdot \\
-%  & ((\chi - \chz)(\chi - \ochz)\gone{b_j} + \xi_j (\chi - \chz)\gone{1} +
-% \zeta_j (\chi - \ochz) \gone{1}) = \\
-%  & ((\chi - \chz)(\chi - \ochz))^2 \gone{b_i b_j} +  ((\chi - \chz)(\chi -
-%  \ochz)\gone{b_i} (\xi_j (\chi - \chz) \gone{1} + \zeta_j (\chi - \ochz)
-%  \gone{1}) + \\
-%  & ((\chi - \chz)(\chi -
-%  \ochz)\gone{b_j} (\xi_i (\chi - \chz) \gone{1} + \zeta_i (\chi - \ochz)
-%  \gone{1}) + \psi,
-% \end{align*}
-% where $\psi$ compounds of $\xi_i, \xi_j, \zeta_i, \zeta_j, \chz, \ochz, \chi$ which
-% are all known by $\rdv$ and no $b_i$ nor $b_j$.
-% Analogously for the triplets and quadruplets. 
-
-% For the challenge $\gone{w}$, $\rdv$ sets $\gone{\tw} = \gone{\tb_1 \tb_3
-% \tb_5 \tb_7}$, where $\gone{b_1 b_3 b_5 b_7}$ is substituted by $\gone{w}$.
-% Next it runs the adversary $\adv(\REL, \srs)$ and obtains from $\adv$ an
-% instance--witness pair $(\inp, \wit)$.  $\rdv$ now prepares a simulated proof as follows:
-% \begin{description} 
-% \item[Round 1] $\rdv$ computes $\gone{\pa(\chi)}$ using as
-% randomisers $\gone{\tb_1}, \gone{\tb_2}$ and setting $\wit_i = 0$, for $i
-% \in \range{1}{3 \noofc}$. Similarly it computes
-% $\gone{\pb(\chi)}, \gone{\pc(\chi)}$.  $\rdv$ publishes the obtained values
-% and picks a Round 1 challenge $\beta, \gamma$ at random.  
-% \item[Round 2]
-% $\rdv$ computes $\gone{\pz(\chi)}$ using $\tb_7, \tb_8, \tb_9$ and publishes
-% it. Then it picks randomly the challenge $\alpha$.  
-% \item[Round 3] The
-% reduction computes $\gone{\pt(\chi)}$ using $\tw$ as it was equal $\tb_1
-% \tb_3 \tb_5 \tb_7$. That is, if $w = b_1 b_3 b_5 b_7$ then $\pt(\chi)$ is as
-% computed by the simulator $\simulator_\chi$, otherwise, if $w$ is random
-% then $\pt(\chi)$ is random as well, thus it is computed as $\simulator$
-% would compute. The reduction computes and outputs $\gone{\ptlo(\chi),
-% \ptmid(\chi), \pthi(\chi)}$ such that $\pt(X) = \ptlo(X) +
-% X^\noofc \ptmid(X) + X^{2\noofc} \pthi(X)$.
-% Eventually, $\rdv$ outputs $\chz$.  
-% \item[Round 4] The reduction outputs
-% $\pa(\chz), \pb(\chz), \pc(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}
-% 	(\chz)}, \pt(\chz), \pz(\ochz)$.  For the sake of concreteness, denote by
-% 	$S = \smallset{\pa, \pb, \pc, \pt, \pz}$. Although for a polynomial $\p{p}
-% 	\in S$, reduction $\rdv$ does not know $\p{p}(\chi)$ or even do not know
-% 	all the coefficients of $\p{p}$, the polynomials in $S$ was computed such
-% 	that the reduction always knows their evaluation at $\chz$ and $\ochz$.
-% \item[Round 5] $\rdv$ computes the openings of the polynomial commitments
-% assuring that evaluations at $\chz$ it provided were computed honestly.
-% \end{description} Is the adversary $\adv$'s output distribution differ in
-% Game $\game{1}$ and $\game{2}$ then the reduction uses it to distinguish
-% between $w = b_1 b_3 b_5 b_7$ and $w$ being random, thus \(
-% \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epsuber.  \) Eventually, \(
-% \abs{\prob{\game{0}} - \prob{\game{2}}} \leq \epszk + \epsuber.  \) \qed
 \end{proof}
 
 \subsection{From forking soundness and unique response property to forking simulation
   extractability of $\plonkprotfs$}
-
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{3}$
-and forking sound. We now 
-make use of \cref{thm:se} and show that
-$\plonkprot_\fs$ is forking simulation-extractable as defined in \cref{def:simext}.
+and forking sound. We now make use of \cref{thm:se} and show that
+$\plonkprot_\fs$ is forking simulation-extractable as defined in
+\cref{def:simext}.
 
 \begin{corollary}[Forking simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
 Assume that $\plonkprot$ is $\ur{3}$ with security $\epsur(\secpar)$, and
-forking-sound with security $\epsss(\secpar)$. Let $\ro\colon
-\bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$ adversary
-that can make up to $q$ random oracle queries and outputs an acceptable proof
-for $\plonkprotfs$ with probability at least $\accProb$. Then $\plonkprotfs$ is
-forking simulation-extractable with extraction error $\eta = \epsur$. The extraction
-probability $\extProb$ is at least
+$(\epsss, 3, 3\noofc + 1)$-forking-sound. Let
+$\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$
+adversary that can make up to $q$ random oracle queries and outputs an
+acceptable proof for $\plonkprotfs$ with probability at least $\accProb$. Then
+$\plonkprotfs$ is forking simulation-extractable with extraction error
+$\eta = \epsur$. The extraction probability $\extProb$ is at least
 \[
 	\extProb \geq \frac{1}{q^{3 \noofc}} (\accProb - \epsur)^{3\noofc + 1} -\eps\,,
 \]
@@ -3259,15 +3113,13 @@ upper-bounded by $\epsbind + \epsop$.
 \subsection{Forking soundness}
 \begin{lemma}
 	\label{lem:sonicprot_ss}
-	Let $\adv$ be a $\ppt$ algebraic adversary. The probability $\epsss$ that
-  $\adv$ breaks forking soundness of $\sonicprot$ is upper-bounded
-  as
-	\[
+  $\sonicprot$ is $(\epsss, 2, \multconstr + \linconstr)$-forking sound against
+  algebraic adversaries, with
+  \[
 			\epsss \leq \epss + \epsldlog\,,
 	\]
-	where $\epss$ is a soundness error of the protocol, and $\epsldlog$ is a
-  probability that a $\ppt$ algorithm can break the $(\dconst,
-  \dconst)$-$\ldlog$ assumption.
+	where $\epss$ is a soundness error of the protocol, and $\epsldlog$ is
+  security of $(\dconst, \dconst)$-$\ldlog$ assumption.
 \end{lemma}
 \begin{proof}
   The proof goes similarly to the proof of \cref{lem:plonkprot_ss}.
