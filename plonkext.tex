@@ -933,33 +933,30 @@ knowledge, which are defined as follows:
 Sometimes a stronger notion of soundness is required---except requiring that the
 verifier rejects proofs of statements outside the language, we request from the
 prover to know a witness corresponding to the proven statement. This property is
-called \emph{knowledge soundness}.
-%\begin{description}
-%\begin{description}
-%\item[Knowledge soundness]
-We call an interactive proof system $\proofsystem$
-\emph{knowledge-sound} if for any $\REL \in \RELGEN(\secparam)$ and a $\ppt$
-adversary $\adv$
-	% \begin{multline*}
-	\[
-	\Pr\left[
-		\begin{aligned}
-			& \verifier(\REL, \srs, \inp, \zkproof) = 1, \\
-			& \REL(\inp, \wit) = 0
-	 \end{aligned}
-	  \,\left|\,
-	 \begin{aligned}
-		 & \srs \gets \kgen(\REL), \inp \gets \adv(\REL, \srs), \\
-		 & (\wit, \zkproof) \gets \ext^{\ip{\adv(\REL, \srs, \inp)}{\verifier(\REL, \srs, \inp)}}(\REL, \inp)
-	 \end{aligned}
-	 \vphantom{\begin{aligned}
-		 \adv (\zkproof) = 1, \\
-		 \text{if $\zkproof{}$ is accepting} \\
-		 \pcind \text{then $\REL(\inp, \wit)$}
-	 \end{aligned}}\right.
-	 \right] \leq \negl\,,
- % \end{multline*}
- \]
+called \emph{knowledge soundness}.\markulf{Commented out the formal definition as we don't use it.}
+
+% We call an interactive proof system $\proofsystem$
+% \emph{knowledge-sound} if for any $\REL \in \RELGEN(\secparam)$ and a $\ppt$
+% adversary $\adv$
+% 	\[
+% 	\Pr\left[
+% 		\begin{aligned}
+% 			& \verifier(\REL, \srs, \inp, \zkproof) = 1, \\
+% 			& \REL(\inp, \wit) = 0
+% 	 \end{aligned}
+% 	  \,\left|\,
+% 	 \begin{aligned}
+% 		 & \srs \gets \kgen(\REL), \inp \gets \adv(\REL, \srs), \\
+% 		 & (\wit, \zkproof) \gets \ext^{\ip{\adv(\REL, \srs, \inp)}{\verifier(\REL, \srs, \inp)}}(\REL, \inp)
+% 	 \end{aligned}
+% 	 \vphantom{\begin{aligned}
+% 		 \adv (\zkproof) = 1, \\
+% 		 \text{if $\zkproof{}$ is accepting} \\
+% 		 \pcind \text{then $\REL(\inp, \wit)$}
+% 	 \end{aligned}}\right.
+% 	 \right] \leq \negl\,,
+%  \]
+ 
  % \end{description}
 
  % Usually the verifier verifies messages send by the prover by checking a number
@@ -994,7 +991,7 @@ distinguisher.
 
 % \end{description}
 Alternatively, zero-knowledge can be defined by allowing the simulator to use
-the trapdoor $\td$ that is generated along $\srs$. In this paper we distinguish
+the trapdoor $\td$ that is generated along the $\srs$. In this paper we distinguish
 simulators that requires a trapdoor to simulate and those that do not. We call
 the former \emph{SRS-simulators}. We say that a protocol is zero knowledge in
 the standard model if its simulator does not require the trapdoor.
@@ -1018,12 +1015,12 @@ an additional property of the zero-knowledge  proof system which we call $k$-pro
   \begin{compactenum}
   \item produces proofs indistinguishable from proofs output by an honest
     prover;
-  \item $\simulator_\fs$ can program random oracle \emph{only} to compute
-    challenges from $k$ to $\mu + 1$.
+  \item $\simulator_\fs$ program the random oracle \emph{only} for
+    challenges from round $k$ to $\mu + 1$.
   \end{compactenum}
 \end{definition}
 We note that $\plonkprot$ is $2$-programmable ZK and $\sonicprot$ is
-$1$-programmable what follows directly from proofs of their zero knowledge in
+$1$-programmable. This follows directly from the proofs of their standard model zero-knowledge property in
 \cref{lem:plonk_hvzk,lem:sonic_hvzk}.
 
 \oursubsub{Idealised verifier and verification equations} Let
@@ -1125,14 +1122,15 @@ be a proof system such that
     challenges locally as $\prover_\fs$ does. Then it verifies the
     resulting transcript $\zkproof$ as the verifier $\verifier$ would. 
   \item $\simulator_\fs$ behaves as $\simulator$, except when
-    $\simulator$ picks challenge $b_i$, $\simulator_\fs$ programs the
+    $\simulator$ picks challenge $b_i$ before computing message $\zkproof[0, i]$, $\simulator_\fs$ programs the
     random oracle to output $b_i$ on $\zkproof[0, i]$.
   \end{compactitem}
 
-Fiat--Shamir heuristic states that $\proofsystem_\fs$ is zero-knowledge
+\noindent
+The Fiat--Shamir heuristic states that $\proofsystem_\fs$ is a zero-knowledge
 non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
 
-\subsection{Forking simulation extractable NIZKs from sigma protocols}
+\subsection{Non-malleability definitions for NIZKs}
 \label{sec:simext_def}
 Real life applications often require a NIZK proof system to be
 non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement
@@ -1194,13 +1192,14 @@ polynomially many simulated proofs for any statements it wishes.
   queries to $\ro$ and $\ro$'s answers.
 \end{definition}
 
-Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
-is special-sound and has a unique response property. Let $\sigmaprot_\fs =
-(\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the
-Fiat--Shamir transform to $\sigmaprot$. Faust et al.~\cite{INDOCRYPT:FKMV12}
-show that every such $\sigmaprot_\fs$ is forking simulation-extractable. This result is
-presented in \cref{sec:forking_lemma} along with the instrumental forking lemma,
-cf.~\cite{CCS:BelNev06}.
+\markulf{Removed paragraph on sigma protocols}
+% Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
+% is special-sound and has a unique response property. Let $\sigmaprot_\fs =
+% (\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the
+% Fiat--Shamir transform to $\sigmaprot$. Faust et al.~\cite{INDOCRYPT:FKMV12}
+% show that every such $\sigmaprot_\fs$ is forking simulation-extractable. This result is
+% presented in \cref{sec:forking_lemma} along with the instrumental forking lemma,
+% cf.~\cite{CCS:BelNev06}.
 
 \oursubsub{Simulation sound NIZKs.}
 Another notion for non-malleable NIZKs is \emph{simulation soundness}. It allows the adversary to see simulated proof, however, in contrast to simulation
@@ -1284,12 +1283,12 @@ $ \ssndProb = \accProb - \extProb$.
 \section{Forking simulation extractability of multi-message protocols,
   definitions and lemmas}
 \label{sec:se_definitions}
-Unfortunately, Faust et al.'s result cannot be directly applied in our case
-since the protocols we consider have more than three messages, require more than
-just two transcripts for the extractor to work and are not special
-sound. In this part we generalize the forking lemma, special
-soundness---as forking soundness, and the unique response property to make them compatible with
-multi-message protocols.
+The result of Faust et al.\cite{INDOCRYPT:FKMV12} do not apply to our setting
+since the protocols we consider have and SRS and more than three messages, require more than
+just two transcripts for standard model extraction and are not special
+sound. We thus adapt special
+soundness to forking soundness, and generalize the forking lemma and the unique response property to make them compatible with
+multi-round SRS-based protocols.
 
 \subsection{Generalised forking lemma.}
 %\label{sec:forking_lemma}
@@ -1791,11 +1790,11 @@ algorithm from the generalized forking lemma.
       \]
 \end{definition}
 
-\section{Forking simulation-extractability---the general result}
+\section{Simulation soundness and forking simulation-extractability---the general result}
 \label{sec:general}
 Equipped with definitional framework of \cref{sec:se_definitions} we are ready
-to present the main result of this paper---forking simulation soundness and
-forking soundness extractability of multi-round protocols.
+to present the main result of this paper---a proof of simulation soundness and
+forking simulation extractability of Fiat-Shamir NIZK based on multi-round protocols.
 
 The proofs go by game hoping. The games are controlled by an environment $\env$
 that internally runs a simulation extractability adversary $\advse$, provides it
