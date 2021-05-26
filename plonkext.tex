@@ -1164,11 +1164,10 @@ presented in \cref{sec:forking_lemma} along with the instrumental forking lemma,
 cf.~\cite{CCS:BelNev06}.
 
 \subsubsection{Simulation sound NIZKs}
-Another notion for non-malleable NIZKs is \emph{simulation soundness} which
-allows the adversary to see simulated proof, but, differently to simulation
-extractability, does not require an extractor to provide a witness for the
+Another notion for non-malleable NIZKs is \emph{simulation soundness}. It allows the adversary to see simulated proof, however, in contrast to simulation
+extractability it does not require an extractor to provide a witness for the
 proven statement. Instead, it is only necessary, that an adversary who sees
-simulated proofs cannot make verifier accept a proof of an incorrect
+simulated proofs cannot make the verifier accept a proof of an incorrect
 statement. More precisely,
 
 \begin{definition}[Simulation soundness]
@@ -1205,9 +1204,8 @@ statement. More precisely,
   $\zkproof$ is the simulator's answer. 
 \end{definition}
 
-\begin{remark}
   \label{rem:simext_to_simsnd}
-  We note that probability $\ssndProb$ \cref{def:simsnd} can be expressed in
+  We note that the probability $\ssndProb$ \cref{def:simsnd} can be expressed in
   terms of simulation-extractability. More precisely, the
   condition $\neg \exists \wit: \REL(\inp_\adv, \wit_\adv) = 1$ can be substituted with
   $\REL(\inp_\adv, \wit_\adv) = 0$, where $\wit_\adv$, returned by a possibly unbounded
@@ -1238,7 +1236,6 @@ definition).
 With the probabilities in \cref{def:simext} holding regardless of whether the extractor
 is unbounded or not, we obtain the following equality
 $ \ssndProb = \accProb - \extProb$.
-\end{remark}
 
 % In \cref{cor:simext_to_ssnd} we show that (under some mild conditions) this is enough
 % to conjecture that probability $\ssndProb$ is not only at most negligible, but
@@ -1252,7 +1249,7 @@ Unfortunately, Faust et al.'s result cannot be directly applied in our case
 since the protocols we consider have more than three messages, require more than
 just two transcripts for the extractor to work and are not special
 sound. In this part we generalize the forking lemma, special
-soundness, and the unique response property to make them compatible with
+soundness --- as forking soundness, and the unique response property to make them compatible with
 multi-message protocols.
 
 \subsection{Generalised forking lemma.}
@@ -1493,7 +1490,7 @@ that $h^1_1, \ldots, h^1_q$ are random oracle responses, and thus random, makes
 the change only notational.
 
 We also note that the general forking lemma proposed in
-\cref{lem:generalised_forking_lemma} works for protocols which have extractable
+\cref{lem:generalised_forking_lemma} works for protocols with an extractor that can obtain the
 witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of acceptable
 transcripts. This limitation however does not affect the main result of this
 paper, i.e.~showing that both $\plonk$ and $\sonic$ are forking simulation extractable.
@@ -1551,15 +1548,12 @@ follows the definition below:
 Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
 $\ps = (\kgen, \prover, \verifier, \simulator)$ and let $r$ be verifier's
 randomness which determines its challenges $r_1, \ldots, r_\mu$. Denote by
-$a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output by the prover, We
+$\vec{a} = a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output by the prover and by $r_1, \ldots, r_\mu$ the challenges of the verifier, We
 say that $\proofsystem$ has \emph{unique responses from $i$ on} if for any
 $\ppt$ adversary $\adv$:
 \[
 	\prob{
 		\begin{aligned}
-		&	\inp, \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
-    a'_{\mu + 1})
-		\gets \adv(\REL, \srs), \\
     & \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
     \ldots, a'_{i}, \\
 		& \verifier (\REL, \srs, \inp, \vec{a}; r) =
@@ -1572,7 +1566,13 @@ $\ppt$ adversary $\adv$:
 	& b_k = b'_k, k \in \range{1, \mu - 1},\\ a_l = a'_l, l \in
 \range{1}{j}, j > i 
 	\end{aligned}}
-\srs \gets \kgen(\REL) \right.
+  \begin{aligned}
+&\srs \gets \kgen(\REL) \\
+&\inp, \vec{a}, \vec{a'} \gets \adv(\REL, \srs) \\
+& r_1, \ldots, r_i \gets H^i\\
+&    r_{i+1}, \ldots r_\mu \gets H^{\mu-i}, r'_{i+1}, \ldots r'_\mu \gets H^{\mu-i} 
+\end{aligned}
+     \right.
 } \leq \negl.
 \]
 \end{definition}
@@ -1583,9 +1583,7 @@ that are the same on  first $i$ messages.
 % $\prover$'s further messages are determined by the witness it knows, the
 % messages it already send and received and the future challenges from the
 % verifier.
-We note that the definition above is independent on whether the proof
-system $\proofsystem$ utilises SRS (and compounds of the SRS-generating $\kgen$
-algorithm) or not.
+We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
 
 \iffalse
 \subsection{Forking soundness}
