@@ -48,6 +48,7 @@
 \usepackage[normalem]{ulem}
 \usepackage{dashbox}
 \newcommand\dboxed[1]{\dbox{\ensuremath{#1}}}
+\usepackage{setspace}
 \include{macros}
 
 \newcommand{\oursubsub}[1] {\smallskip\noindent\textbf{#1}}
@@ -257,7 +258,7 @@ polynomial $\p{f}(X)$ evaluated at some point $z$ it should be infeasible for
 any PPT adversary to provide two different acceptable openings
 of the commitment.
 
-\oursubsub{HVZK.}%
+\oursubsub{HVZK.}
 In order to show our result we also show that (interactive) $\plonkprot$ and
 $\sonicprot$ are honest verifier zero-knowledge in the standard model, i.e.~the
 simulator is able to produce a transcript indistinguishable from a transcript
@@ -273,7 +274,7 @@ conversation with a real verifier). This property allows us to build simulators
 for $\plonkprotfs$ and $\sonicprotfs$ that rely only on the programmability of
 the random oracle.
 
-\oursubsub{Generalisation of the general forking lemma.}%
+\oursubsub{Generalisation of the general forking lemma.}. 
 Consider an interactive $3$-message special-sound protocol $\ps$ and its
 non-interactive version $\ps_\fs$ obtained by the Fiat--Shamir transform. The
 general forking lemma provides an instrumental lower bound for the probability
@@ -509,14 +510,13 @@ parameters by $\pgen$.
 
 \subsection{Computational assumptions.}
 
-\ourpar{Discrete-log assumptions.}
-Security of $\plonk$ and $\sonic$ relies on two discrete-log based security
-assumptions---$(q_1, q_2)$-$\dlog$ assumption and its extended version with negative
-exponents $(q_1, q_2)$-$\ldlog$ assumption\footnote{Note that
-  \cite{CCS:MBKM19} dubs their assumption \emph{a dlog assumption}. We changed
-  that name to distinguish it from the more standard dlog assumption used in
-  \cite{EPRINT:GabWilCio19}. ``l'' in \emph{ldlog} relates to use of Laurent
-  polynomials in the assumption.}.
+\ourpar{Discrete-log assumptions.}  Security of $\plonk$ and $\sonic$ relies on
+two discrete-log based security assumptions---$(q_1, q_2)$-$\dlog$ assumption
+and its variant that allows for negative exponents $(q_1, q_2)$-$\ldlog$
+assumption\footnote{Note that \cite{CCS:MBKM19} dubs their assumption \emph{a
+    dlog assumption}. We changed that name to distinguish it from the more
+  standard dlog assumption used in \cite{EPRINT:GabWilCio19}. ``l'' in
+  \emph{ldlog} relates to use of Laurent polynomials in the assumption.}.
 
 \begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]
 	Let $\adv$ be a $\ppt$ adversary that gets as input
@@ -910,8 +910,11 @@ accepted by the verifier. (This is especially handy when the proof system is
 non-interactive, i.e.~the whole conversation between the prover and verifier
 consists of a single message $\zkproof$ sent by $\prover$).
 
-A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is required to have three properties: completeness, soundness and zero knowledge, which are defined as follows:
+A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for
+$\RELGEN$ is required to have three properties: completeness, soundness and zero
+knowledge, which are defined as follows:
 % \begin{description}
+
 \ourpar{Completeness.}
 %\item[Completeness]
   An interactive proof system $\proofsystem$ is
@@ -995,13 +998,12 @@ We call zero knowledge \emph{perfect} if the distributions are equal and
 \emph{computational} if they are indistinguishable for any $\nuppt$
 distinguisher.
 
-%\end{description}
-An SRS $\srs$ comes with a secret string called \emph{trapdoor} $\td$ that
-allows the simulator to produce a simulated proof. In that case algorithm
-$\kgen(\REL)$ outputs $(\srs, \td)$ and $\td$ is given to the simulator. In this
-paper we distinguish simulators that requires a trapdoor to simulate and those
-that do not. We call the former \emph{SRS-simulators} and denote them by
-$\simulator_\td$.
+% \end{description}
+Alternatively, zero-knowledge can be defined by allowing the simulator to use
+the trapdoor $\td$ that is generated along $\srs$. In this paper we distinguish
+simulators that requires a trapdoor to simulate and those that do not. We call
+the former \emph{SRS-simulators}. We say that a protocol is zero knowledge in
+the standard model if its simulator does not require the trapdoor.
 
 Occasionally, a weaker version of zero knowledge is sufficient. So called
 \emph{honest verifier zero knowledge} (HVZK) assumes that the verifier's
@@ -1013,8 +1015,8 @@ zero-knowledge in the random oracle model by using the Fiat--Shamir
 transformation.
 
 \oursubsub{Idealised verifier and verification equations}
-Let $(\kgen, \prover, \verifier)$ be a protocol -- in this paper, either a proof
-systems or a polynomial commitment scheme. Observe that the $\kgen$ algorithm
+Let $(\kgen, \prover, \verifier)$ be a protocol---in this paper, either a proof
+system or a polynomial commitment scheme. Observe that the $\kgen$ algorithm
 provides an SRS which can be interpreted as a set of group representation of
 polynomials evaluated at trapdoor elements. E.g.~for a trapdoor $\chi$ the SRS
 contains $\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for some polynomials
@@ -1022,7 +1024,7 @@ $\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. On the other hand, the verifier
 $\verifier$ accepts if a verification equation $\vereq$ (or a set of them),
 which can also be interpreted as a polynomial in $\FF_p[X]$ and which
 coefficients depend on messages sent by the prover, zeroes at $\chi$. Following
-\cite{EPRINT:GabWilCio19} We call verifiers who checks that $\vereq(\chi) = 0$
+\cite{EPRINT:GabWilCio19} we call verifiers who checks that $\vereq(\chi) = 0$
 \emph{real verifiers} as opposed to \emph{ideal verifiers} who accepts only when
 $\vereq(X) = 0$. That is, while a real verifier accepts when a polynomial
 \emph{evaluates} to zero, an ideal verifier accepts only when the polynomial
@@ -1097,7 +1099,7 @@ $(a_1, b_1, \ldots, a_{\mu - 1}, b_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
 $\prover$ and $b_i$ comes from $\verifier$.  Denote by $\ro$ a random oracle.
 Let $\proofsystem_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$
 be a proof system such that
-\begin{itemize}
+\begin{compactitem}
   \item $\kgen_\fs$ behaves as $\kgen$.
   \item $\prover_\fs$ behaves as $\prover$ except after sending message
     $a_i$, $i \in \range{1}{\mu}$, the prover does not wait for
@@ -1112,7 +1114,7 @@ be a proof system such that
   \item $\simulator_\fs$ behaves as $\simulator$, except when
     $\simulator$ picks challenge $b_i$, $\simulator_\fs$ programs the
     random oracle to output $b_i$ on $\zkproof[0, i]$.
-  \end{itemize}
+  \end{compactitem}
 
 Fiat--Shamir heuristic states that $\proofsystem_\fs$ is zero-knowledge
 non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
@@ -1144,7 +1146,7 @@ polynomially many simulated proofs for any statements it wishes.
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
-			& \srs \gets \kgen(\REL), r \sample \RND{\advse}, \\
+			& \srs \gets \kgen_\fs(\REL), r \sample \RND{\advse}, \\
 			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
 			\ro} (\REL, \srs; r) 
 		\end{aligned}
@@ -1160,11 +1162,11 @@ polynomially many simulated proofs for any statements it wishes.
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
-			& \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
+			& \srs \gets \kgen_\fs(\REL), r \sample \RND{\advse},\\
 			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
 			\ro} (\REL, \srs; r) \\
 			& \wit_{\advse} \gets \ext_\se (\REL, \srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
-			Q, Q_\ro,) 
+			Q, Q_\ro) 
 		\end{aligned}
 		\right.\right]
 	\]
@@ -1180,14 +1182,14 @@ polynomially many simulated proofs for any statements it wishes.
 \end{definition}
 
 Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
-is forking-sound and has a unique response property. Let $\sigmaprot_\fs =
+is special-sound and has a unique response property. Let $\sigmaprot_\fs =
 (\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the
 Fiat--Shamir transform to $\sigmaprot$. Faust et al.~\cite{INDOCRYPT:FKMV12}
 show that every such $\sigmaprot_\fs$ is forking simulation-extractable. This result is
 presented in \cref{sec:forking_lemma} along with the instrumental forking lemma,
 cf.~\cite{CCS:BelNev06}.
 
-\oursubsub{Simulation sound NIZKs}
+\oursubsub{Simulation sound NIZKs.}
 Another notion for non-malleable NIZKs is \emph{simulation soundness}. It allows the adversary to see simulated proof, however, in contrast to simulation
 extractability it does not require an extractor to provide a witness for the
 proven statement. Instead, it is only necessary, that an adversary who sees
@@ -1233,8 +1235,8 @@ statement. More precisely,
   terms of simulation-extractability. More precisely, the
   condition $\neg \exists \wit: \REL(\inp_\adv, \wit_\adv) = 1$ can be substituted with
   $\REL(\inp_\adv, \wit_\adv) = 0$, where $\wit_\adv$, returned by a possibly unbounded
-  extractor is either a witness to $\inp_\adv$ (if there exists any) or $\bot$ (if
-  there is none). More precisely
+  extractor, is either a witness to $\inp_\adv$ (if there exists any) or $\bot$ (if
+  there is none). More precisely,
 \[
       \ssndProb =
       \Pr\left[
@@ -1251,9 +1253,9 @@ statement. More precisely,
         & \wit_{\adv} \gets \ext(\REL, \srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
 			Q, Q_\ro,) 
       \end{aligned}
-		\right.  \right],
+		\right.  \right].
 \]
-where the only necessary input to the unbounded extractor $\ext$ is the instance
+The only necessary input to the unbounded extractor $\ext$ is the instance
 $\inp_\adv$ (the rest is given for the consistency with the simulation extractability
 definition). 
 %
@@ -1273,7 +1275,7 @@ Unfortunately, Faust et al.'s result cannot be directly applied in our case
 since the protocols we consider have more than three messages, require more than
 just two transcripts for the extractor to work and are not special
 sound. In this part we generalize the forking lemma, special
-soundness --- as forking soundness, and the unique response property to make them compatible with
+soundness---as forking soundness, and the unique response property to make them compatible with
 multi-message protocols.
 
 \subsection{Generalised forking lemma.}
@@ -1478,7 +1480,7 @@ outputing an acceptable proof we claim that these probabilities are exactly the
 same what comes from how we define $\zdv$.)  Let $\advse$ produce an acceptable
 proof $\zkproof_{\advse}$ for instance $\inp_{\advse}$; $r$ be $\advse$'s
 randomness; $Q$ the list of queries submitted by $\advse$ along with simulator's
-$\simulator_\zkproof$ answers; and $Q_\ro$ be the list of all random oracle
+$\simulator$ answers; and $Q_\ro$ be the list of all random oracle
 queries made by $\advse$.  All of these are given to the extractor $\ext$ that
 internally runs the forking algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$
 takes $(\REL, \srs, \advse,
@@ -3517,9 +3519,11 @@ specific adversaries, some of the inequalities are already equalities.
 % \section*{Acknowledgement}
 % The second author thanks Antoine Rondelet for helpful discussions.
 
+\begin{spacing}{0.93}
 \bibliographystyle{abbrv}
-\bibliography{cryptobib/abbrev1,cryptobib/crypto,additional_bib}
-%\clearpage
+\bibliography{cryptobib/abbrev3,cryptobib/crypto,additional_bib}
+% \clearpage
+\end{spacing}
 \appendix
 %{\Huge{Supplementary Material}} 
 
