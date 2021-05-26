@@ -1044,8 +1044,8 @@ $\vereq_{\inp, \zkproof}$ (note that the verification equation changes relate to
 the instance $\inp$ and proof $\zkproof$), which can also be interpreted as a
 polynomial in $\FF_p[X]$ and which coefficients depend on messages sent by the
 prover, zeroes at $\chi$. Following \cite{EPRINT:GabWilCio19} we call verifiers
-who checks that $\vereq(\chi) = 0$ \emph{real verifiers} as opposed to
-\emph{ideal verifiers} who accepts only when $\vereq(X) = 0$. That is, while a
+who checks that $\vereq_{\inp, \zkproof}(\chi) = 0$ \emph{real verifiers} as opposed to
+\emph{ideal verifiers} who accepts only when $\vereq_{\inp, \zkproof}(X) = 0$. That is, while a
 real verifier accepts when a polynomial \emph{evaluates} to zero, an ideal
 verifier accepts only when the polynomial \emph{is} zero.
 
@@ -3210,7 +3210,7 @@ upper-bounded by $\epsbind + \epsop$.
   $\tree$ for a statement $\inp$. We consider two disjunctive events $\event{E}$
   and $\nevent{E}$. The first corresponds to a case when all transcripts in
   $\tree$ are acceptable for the ideal verifier,
-  i.e.~$\vec{\vereq}(X) = \vec{0}$. In that case we show an extractor $\extss$
+  i.e.~$\vec{\vereq_{\inp, \zkproof}}(X) = \vec{0}$. In that case we show an extractor $\extss$
   that from $\tree$ extracts a valid witness $\wit$. The second, corresponds to
   a case when $\tree$ contains a transcript that is acceptable by the real
   verifier but is not acceptable by the ideal verifier.  In that case we show a
@@ -3232,12 +3232,13 @@ upper-bounded by $\epsbind + \epsop$.
   reveals the corresponding witness $\wit$.
 
   \ncase{When $\nevent{E}$ happens} Consider a transcript such that for some
-  verification equation $\vereq_i(X) \neq 0$, but $\vereq_i(\chi) = 0$. Since
+  verification equation $\vereq_{i, \inp, \zkproof}(X) \neq 0$, but
+  $\vereq_{i, \inp, \zkproof}(\chi) = 0$. Since
   the adversary is algebraic, all group elements included in the tree of
   transcripts are extended by their representation as a combination of the input
   $\GRP_1$ or $\GRP_2$-elements. Hence all coefficients of the verification
-  equation polynomial $\vereq_i(X)$ are known and $\rdvdlog$ can find its zero
-  points. Since $\vereq_i(\chi) = 0$, the targeted discrete log value $\chi$ is
+  equation polynomial $\vereq_{i,\inp, \zkproof}(X)$ are known and $\rdvdlog$ can find its zero
+  points. Since $\vereq_{i, \inp, \zkproof}(\chi) = 0$, the targeted discrete log value $\chi$ is
   among them. \qed
 \end{proof}
 
@@ -3921,9 +3922,9 @@ polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
   Additionally, we divide event $\nevent{E}$ into two disjunctive subevents:
   $\nevent{E}_0$ and $\nevent{E}_1$. Event $\nevent{E}_0$ considers a case when
   the final proof provided by the adversary $\advss$ is accepted by the
-  idealised verification equation, i.e.~for that proof $\vereq_\zkproof(X) = 0$.
+  idealised verification equation, i.e.~for that proof $\vereq_{\inp, zkproof}(X) = 0$.
   Alternatively, event $\nevent{E}_1$ covers a case when for $\zkproof_\advss$
-  it holds that $\vereq_\zkproof(\chi) = 0$, but $\vereq_\zkproof(X) \neq 0$, where $\chi$ is
+  it holds that $\vereq_{\inp, zkproof}(\chi) = 0$, but $\vereq_{\inp, zkproof}(X) \neq 0$, where $\chi$ is
   $\plonkprotfs$'s trapdoor.
 	%
   As all these events are mutually exclusive and exhaustive, we have
@@ -3962,10 +3963,10 @@ polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
   $\rdvs$ and $\rdvdlog$.
 
   Also note that a proof $\zkproof$ could be accepted only if the verification
-  equation $\vereq_\zkproof(\chi)$ holds. That is, the verifier plugs-in elements of
-  $\zkproof$ into $\vereq_\zkproof(\chi)$ and checks whether it equals $0$. That is what
+  equation $\vereq_{\inp, zkproof}(\chi)$ holds. That is, the verifier plugs-in elements of
+  $\zkproof$ into $\vereq_{\inp, zkproof}(\chi)$ and checks whether it equals $0$. That is what
   is called a \emph{real check} in \cite{EPRINT:GabWilCio19}.  On the other hand
-  there is an \emph{idealised check}, which verifies whether $\vereq_\zkproof(X) = 0$
+  there is an \emph{idealised check}, which verifies whether $\vereq_{\inp, zkproof}(X) = 0$
   \emph{as a polynomial}---with proof elements being polynomials as well.
 
   \ncase{When $\event{E}$ happens} We assume that $\inp_{\advss}$ is submitted
@@ -4063,10 +4064,10 @@ polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
   equation holds, but the ideal verification equation does not to break the
   $\dlog$ assumption.
 
-  Since $\vereq_\zkproof(X) \neq 0$, but $\vereq_\zkproof(\chi) = 0$ and $\rdvdlog$ knows
+  Since $\vereq_{\inp, zkproof}(X) \neq 0$, but $\vereq_{\inp, zkproof}(\chi) = 0$ and $\rdvdlog$ knows
   $\vec{M'}$, as defined in \cref{eq:M_prim}, it can recreate all the
   polynomials submitted by $\advss$ as part of the proof and included in
-  $\vereq_\zkproof(X)$. This way, it knows all coefficients of $\vereq_\zkproof(X)$. Thus it can
+  $\vereq_{\inp, zkproof}(X)$. This way, it knows all coefficients of $\vereq_{\inp, zkproof}(X)$. Thus it can
   factorize it and find its roots, one of them is the required $\chi$. Hence it
   holds, by the analogous analysis as in the previous case, that
   \[
