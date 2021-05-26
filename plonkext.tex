@@ -2056,45 +2056,41 @@ Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemm
         (2^\secpar)^{n}} - \waccProb\right)\,.
 \end{split}
 \end{equation}
-% For the sake of simplicity we loose this approximation a bit and state
-% \[
-% 	\prob{\event{\errfrk}} \leq 1 -
-% 	\left(\frac{\waccProb^{n}}{q^{n - 1}} +
-% 		\waccProb \cdot \left(\frac{2^\secpar - n}{2^\secpar}\right)^{n} -
-% 	\waccProb\right)\,.
-% \]
-\ngame{3} This game is identical to $\game{2}$ except that the environment
-aborts it when the adversary manages to break simulation soundness in one the
-transcripts in tree $\tree$.
 
-\ncase{$\game{2} \mapsto \game{3}$} From \cref{thm:simsnd} we have that
-probability that $\adv$ breaks simulation soundness, while not breaking the
-unique response property, is upper-bounded by $q_\ro^{\mu} \epss$. Since all the
-branches of the tree are either for a valid or invalid statement, then the
-probability that $\adv$ breaks simulation soundness in one of the tree branches
-is upper-bounded by $q_{\ro}^{\mu} \epss$ as well.
+% \ngame{3} This game is identical to $\game{2}$ except that the environment
+% aborts it when the adversary manages to break simulation soundness in one the
+% transcripts in tree $\tree$.
 
-\ngame{4} This game is identical to $\game{3}$ except that it aborts if
+% \ncase{$\game{2} \mapsto \game{3}$} From \cref{thm:simsnd} we have that
+% probability that $\adv$ breaks simulation soundness, while not breaking the
+% unique response property, is upper-bounded by $q_\ro^{\mu} \epss$. Since all the
+% branches of the tree are either for a valid or invalid statement, then the
+% probability that $\adv$ breaks simulation soundness in one of the tree branches
+% is upper-bounded by $q_{\ro}^{\mu} \epss$ as well.
+
+\ngame{3} This game is identical to $\game{2}$ except that it aborts if
 $\extt(\tree)$ run by $\ext$ fails to extract the witness. 
 
-\ncase{$\game{3} \mapsto \game{4}$}	
+\ncase{$\game{2} \mapsto \game{3}$}	
 Since $\ps$ is forking-sound the probability that $\extt(\tree)$
 fails is upper-bounded by $\epsss$. 
 
-Since Game $\game{4}$ is aborted when it is impossible to extract the correct witness
+Since Game $\game{3}$ is aborted when it is impossible to extract the correct witness
 from $\tree$, hence the adversary $\advse$ cannot win.  Thus, by the game-hoping
 argument,
 \[
 	\abs{\prob{\game{0}} - \prob{\game{4}}} \leq 1 -
   \left(\frac{\waccProb^{n}}{q^{n - 1}} + \waccProb \cdot \frac{(2^\secpar)
       !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb\right) + \epsur +
-  q_{\ro}^{\mu} \epss + \epsss\,.
+  %q_{\ro}^{\mu} \epss +
+  \epsss\,.
 \]
 Thus the probability that extractor $\extss$ succeeds is at least
 \[
 	\frac{\waccProb^{n}}{q^{n - 1}} + \waccProb \cdot \frac{(2^\secpar)
-    !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb - \epsur -
-  q_{\ro}^{\mu} \epss  - \epsss\,.
+    !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb - \epsur 
+  %- q_{\ro}^{\mu} \epss
+  - \epsss\,.
 \]
 Since $\waccProb$ is probability of $\advse$ outputting acceptable transcript
 that does not break $\ur{k}$-ness of $\ps$, then $\waccProb \geq \accProb -
@@ -2105,7 +2101,8 @@ proof as defined in \cref{def:simext}. It thus holds
 	\extProb \geq \frac{(\accProb - \epsur)^{n}}{q^{n - 1}} -
   \underbrace{(\accProb - \epsur) \cdot \left( 1 - \frac{(2^\secpar)
         !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}}\right) - \epsur -
-    q_{\ro}^{\mu} \epss - \epsss}_{\eps}\,.
+    % q_{\ro}^{\mu} \epss -
+    \epsss}_{\eps}\,.
 \]
 Note that the part of \cref{eq:frk} denoted by $\eps$ is negligible as
 $\epsur, \epsss$ are negligible, and
@@ -2668,7 +2665,7 @@ for $\epsss = \epsid + \epsdlog$.
 \iffalse
 \begin{lemma}
 \label{lem:plonkprot_ss}
-$\plonkprot$ is $(\epsss, (1, 1, \noofc + 3, 1))$-computational forking sound
+$\plonkprot$ is $(\epsss, (1, 1, 3\noofc + 1, 1))$-computational forking sound
 for
  \[
 	\epsss \leq \epsbatch + \epsdlog\,,
@@ -2683,7 +2680,7 @@ for
   $\GRP_1$-elements; that is,
   $\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc + 2}}$. Let $\adv$ be an
   algebraic adversary that produces a statement $\inp$ and a
-  $(1, 1, \noofc + 3, 1)$-tree of acceptable transcripts $\tree$.  Note that in
+  $(1, 1, 3\noofc + 1, 1)$-tree of acceptable transcripts $\tree$.  Note that in
   all transcripts the instance $\inp$, proof elements
   $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and
   challenges $\alpha, \beta, \gamma$ are common as the transcripts share the
@@ -2706,7 +2703,7 @@ for
   exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note that 
   polynomials $\p{a}(X), \p{b}(X), \p{c}(X)$, which contain witness in their
   coefficients, have degree $(\noofc + 2)$ and since $\adv$ answered correctly
-  on $(\noofc + 3)$ different challenges $\chz$ then $(\noofc + 3)$ evaluations
+  on $(\noofc + 3)$ different challenges $\chz$ then $( \noofc + 3)$ evaluations
   of these polynomials (at different points) are known. The extractor $\extt$
   interpolates the polynomials and reveals the corresponding witness
   $\wit$. The extractor finds the witness with probability $1$.
@@ -3060,7 +3057,7 @@ for $\plonkprotfs$ with probability at least $\accProb$. Then $\plonkprotfs$ is
 forking simulation-extractable with extraction error $\eta = \epsur$. The extraction
 probability $\extProb$ is at least
 \[
-	\extProb \geq \frac{1}{q^{\noofc + 2}} (\accProb - \epsur)^{\noofc + 3} -\eps\,,
+	\extProb \geq \frac{1}{q^{3 \noofc}} (\accProb - \epsur)^{3\noofc + 1} -\eps\,,
 \]
 for some negligible $\eps$ and $\noofc$ being the number of
 constrains in the proven circuit.
