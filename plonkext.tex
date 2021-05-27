@@ -2435,8 +2435,7 @@ $\plonkprot_\fs$ is simulation sound and forking simulation-extractable as defin
 
 \begin{corollary}[Forking simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
-Assume that $\plonkprot$ is
-$(\epsss(\secpar), 3, 3\noofc + 1)$-forking-sound and the $\PCOMp$ is a commitment of knowledge with security $\epsk(\secpar)$, binding security
+Assume an idealised $\plonkprot$ verifier fails at most with probability $\epsid(\secpar)$, the discrete logarithm advantage is bounded by $\epsdlog(\secpar)$ and the $\PCOMp$ is a commitment of knowledge with security $\epsk(\secpar)$, binding security
   $\epsbind(\secpar)$ and has unique opening property with security $\epsop(\secpar)$. Let
 $\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$
 adversary that can make up to $q$ random oracle queries and outputs an
@@ -2444,7 +2443,7 @@ acceptable proof for $\plonkprotfs$ with probability at least $\accProb$. Then
 $\plonkprotfs$ is forking simulation-extractable with extraction error
 $\eta = \epsur(\secpar)$. The extraction probability $\extProb$ is at least
 \[
-	\extProb \geq \frac{1}{q^{3 \noofc}} (\accProb - \epsk(\secpar) - 2\cdot\epsbind(\secpar) -
+	\extProb \geq \frac{1}{q^{3 (\epsid(\secpar)+\epsdlog(\secpar))}} (\accProb - \epsk(\secpar) - 2\cdot\epsbind(\secpar) -
   \epsop(\secpar))^{3\noofc + 1} -\eps(\secpar)\,,
 \]
 for some negligible $\eps(\secpar)$ and $\noofc$ being the number of
