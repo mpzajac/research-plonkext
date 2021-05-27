@@ -127,9 +127,8 @@ lift comes with inevitable efficiency loss.  %The same applies for updatable
 %make it updatable (even though transformations like \cite{CCS:AbdRamSla20}
 %preserves updatability).
 
-Properly analyzing this heuristic security of zkSNARKs is of great importance
-not the least because they are frequently used to secure crypto-currency assets
-of immense value~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}.
+Given the proliferation of zkSNARK systems and their frequently used to secure crypto-currency assets
+of immense value~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20} analyzing their security is of great importance. We investigate the advanced security properties of a class of multi-round SRS-based zkSNARK protocols. As in the case of sigma protocols we show that it is sufficient for protocol designers to follow certain design principles and satisfy basic security properties. Using the Fiat-Shamir transform, these properties are then lifting to practice relevant security notions. 
 
 \subsection{Our contribution}
 We show that a class of forking sound\footnote{Forking soundness is a variant of
@@ -139,7 +138,7 @@ of knowledge that are (honest-verifier) zero-knowledge in the standard model and
 have a unique response property \emph{are simulation-extractable out-of-the box}
 in the random oracle model when the Fiat--Shamir transformation is applied to
 them. In contrast to Faust et al.~\cite{INDOCRYPT:FKMV12} who focused on
-special-sound $3$-message $\Sigma$-protocols, our result can be applied to a
+special-sound $3$-message sigma protocols, our result can be applied to a
 wider class of protocols and is applicable to zkSNARKs.
 
 We follow Faust et al.~in their definition of simulation extractability. They
@@ -364,11 +363,10 @@ that are undoubtedly much simpler protocols than the considered proof systems.
 
 \subsection{Structure of the paper}
 In the next section we present necessary
-preliminaries. \cref{sec:se_definitions} gives definitions and lemmas for
-instantiating our framework. In \cref{sec:general}, we present our main result,
-a proof of simulation-soundness and simulation-extraction for a class of zero-knowledge proofs of
-knowledge. In \cref{sec:plonk} and \cref{sec:sonic} we show that $\plonk$ and
-$\sonic$ fulfill the requirements of our framework and are in fact forking
+preliminaries. \cref{sec:se_definitions} gives definitions and lemmas for multi-round SRS-based protocol needed to
+instantiate our framework. In \cref{sec:general}, we present our main result,
+a proof of simulation-soundness and simulation-extraction for multi-round SRS-based zero-knowledge proofs systems. In \cref{sec:plonk} and \cref{sec:sonic} we show that $\plonk$ and
+$\sonic$ fulfill the requirements of our framework and are in fact simulation sound and forking
 simulation extractable.
 
 \subsection{Related Work}
@@ -438,9 +436,9 @@ approach is also taken by~\cite{cryptoeprint:2019:1177}. These works however are
 focused on showing security of concrete proof systems, while we are show
 security of an arguably wide class of protocols. They also do not consider
 simulation soundness and simulation extractability. Last, but not least, our
-security proof relies only on random oracle, while
+high-level security proof relies only on random oracle, while
 \cite{cryptoeprint:2020:1351,cryptoeprint:2019:1177} make use of random oracle
-\emph{and} the AGM.
+\emph{and} the AGM. The AGM is only used to prove low-level properties about specific protocols.
 
 \section{Preliminaries}
 \label{sec:preliminaries}
@@ -1277,8 +1275,7 @@ $ \ssndProb = \accProb - \extProb$.
 % also, in some parameters, exponentially smaller than $(1 - \extProb)$
 % (probability of extraction failure in \cref{def:simext}).
 
-\section{Forking simulation extractability of multi-message protocols,
-  definitions and lemmas}
+\section{Definitions and lemmas for multi-round SRS-based protocols}
 \label{sec:se_definitions}
 The result of Faust et al.\cite{INDOCRYPT:FKMV12} do not apply to our setting
 since the protocols we consider have and SRS and more than three messages, require more than
