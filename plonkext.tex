@@ -65,7 +65,7 @@
 
 %\title{On Simulation-Extractability of Universal zkSNARKs}
 \title{Non-Malleability of the Fiat--Shamir Transform Revisited for Multi-round SRS-Based Protocols}
-\author{Anonymous submission to PKC}
+\author{Anonymous submission to Asiacrypt}
 %\author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} 
 %\iflncs{
 %\institute{University of Edinburgh, Edinburgh, UK \and IOHK \\
@@ -679,7 +679,7 @@ called \emph{knowledge soundness}.%\markulf{Commented out the formal definition 
 	  \left\{\ip{\prover(\REL, \srs, \inp, \wit)}{\adv(\REL, \srs, \inp, \wit)}
       \,\left|\, \srs \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
           \srs)}\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
-		%\\
+		\\
 		\left\{\simulator^{\adv}(\REL, \srs, \inp)\,\left|\, \srs \gets
         \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
           \srs)}\vphantom{\simulator^\adv}\right.\right\}\,.
@@ -776,8 +776,9 @@ Formally,
           & \verifier(\REL, \inp, (a, b, z)) = %\\
             \verifier(\REL, \inp, (a, b', z')) = 1, \\
 		\end{aligned}
-		\right.\right] \leq  \negl\,.
-	\]
+		\right.\right]
+\]
+is upper-bounded by some negligible function $\negl$.
 %\end{description}
 
 Another property that sigma protocols may have is a unique response
@@ -1163,8 +1164,9 @@ by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$
 \range{1}{j}, j > i 
 	\end{aligned}}
 \srs \gets \kgen_\fs(\REL) \right.
-} \leq \negl.
+}
 \]
+is upper-bounded by some negligible function $\negl$.
 % Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
 % $\ps = (\kgen, \prover, \verifier, \simulator)$ and let $r$ be verifier's
 % randomness which determines its challenges $r_1, \ldots, r_\mu$. Denote by
