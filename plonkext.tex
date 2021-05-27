@@ -1686,6 +1686,10 @@ random oracle and wins with the same probability.
   $\epsur(\secpar) + q^{\mu} \cdot \epss(\secpar)$.  \qed
 \end{proof}
 
+
+We conjecture that based on the recent results on state restoration attack secure soundness\cite{cryptoeprint:2020:1351}, which effectively allows to query the verifier multiple times on different overlapping transcripts the $q^{\mu}$ loss could be avoided. However, this would reduce the class of protocols covered by our results. 
+
+
 \begin{theorem}[Forking simulation-extractable multi-message protocols]
   \label{thm:se}
   Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
@@ -1948,9 +1952,9 @@ and $\psfs$ is forking simulation extractable with extraction error $\epsur(\sec
 % \end{proof}
 
 
-\section{Forking simulation extractability of $\plonkprotfs$} 
+\section{Non-Malleability of $\plonkprotfs$} 
 \label{sec:plonk}
-In this section we show that $\plonkprotfs$ is forking simulation-extractable. To that
+In this section we show that $\plonkprotfs$ is simulation-sound and forking simulation-extractable. To that
 end, we proceed as follows. First we show that the version of the KZG polynomial
 commitment scheme that is proposed in the \plonk{} paper has the unique opening
 property, cf.~\cref{sec:poly_com} and \cref{lem:pcomp_unique_op}. This is then
@@ -1967,7 +1971,7 @@ Given forking-soundness of $\plonkprot$, we use the fact that it is also
 $\ur{2}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is
 simulation-extractable. That is, we build reductions that given a simulation
 extractability adversary $\advse$ either break the protocol's unique response
-property or break the $\dlog$ assumption, if extracting a valid witness from a
+property or based on forking soundness break the $\dlog$ assumption, if extracting a valid witness from a
 tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 
 Due to page limit, we omit description of \plonk{} here and refer to \cref{sec:plonk_explained}.
@@ -2444,6 +2448,7 @@ $\eta = \epsur(\secpar)$. The extraction probability $\extProb$ is at least
 for some negligible $\eps(\secpar)$ and $\noofc$ being the number of
 constrains in the proven circuit.
 \end{corollary}
+
 
 \section{Further work}
 We identify a number of problems which we left as further work. First of all,
@@ -3141,7 +3146,6 @@ polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
   as required.
 \end{proof}
 
-
 \subsection{Proof of the generalized forking lemma (\cref{lem:generalised_forking_lemma})}
 \label{sec:forking_proof}
 \begin{proof}
@@ -3314,8 +3318,8 @@ h_{\iota - 1})$ to
   \qed
 \end{proof}
 
-
-\section{Forking simulation extractability of $\sonicprotfs$}
+\section{Non-malleability of $\sonicprotfs$}
+>>>>>>> fdd72bef5b6776e52ca1689b8031523785c8b47d
 \label{sec:sonic}
 \subsection{\sonic{} protocol rolled out}
 In this section we present $\sonic$'s constraint system and algorithms. Reader
