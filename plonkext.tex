@@ -1974,98 +1974,20 @@ extractability adversary $\advse$ either break the protocol's unique response
 property or based on forking soundness break the $\dlog$ assumption, if extracting a valid witness from a
 tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 
-Due to page limit, we omit description of \plonk{} here and refer to \cref{sec:plonk_explained}.
+Due to page limit, we omit description of \plonk{} here and refer to
+\cref{sec:plonk_explained}. Unfortunately, we also have to move some of the
+proofs to the Supplementary Materials as well.
 
   
 \subsection{Unique opening property of $\PCOMp$}
 \begin{lemma}
-\label{lem:pcomp_unique_op}
+\label{lem:pcomp_op}
 Let $\PCOMp$ be a batched version of a batched KZG polynomial
 commitment, cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property
 in the AGM with security $\epsop(\secpar) \leq 2 \epsdlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where
 $\epsdlog(\secpar)$ is security of the $(\noofc + 2, 1)$-dlog assumption and $\FF_p$ is the
 field used in $\PCOMp$.\end{lemma}
-\begin{proof}
-  Let $\vec{z} = (z, z') \in \FF_p^2$ be the two points the polynomials are
-  evaluated at, $k \in \NN$ be the number of the committed polynomials to be
-  evaluated at $z$, and $k' \in \NN$ be the number of the committed polynomials
-  to be evaluated at $z'$, $\vec{c} \in \GRP^k, \vec{c'} \in \GRP^{k'}$ be the
-  commitments, $\vec{s} \in \FF_p^k, \vec{s'} \in \FF_p^{k'}$ the evaluations,
-  and $\vec{o} = (o, o') \in \FF_p^2$ be the commitment openings.
-  We need to show that the probability a $\ppt$ $\adv$ opens the same commitment
-  in two different ways is negligible. 
-  \iffalse
-  We need to
-  show that for every $\ppt$ adversary $\adv$ the probability
-\[
-	\Pr
-		\left[
-			\begin{aligned}
-				& \verify(\srs, \vec{c}, \vec{c'}, (z, z'), \vec{s}, \vec{s'}, \vec{o}), \\
-				& \verify(\srs, \vec{c}, \vec{c'}, (z, z'), \vec{s}, \vec{s'}, \vec{\tilde{o}}) \\
-				& \vec{o} \neq \vec{\tilde{o}}
-			\end{aligned}
-		\,\left|\,
-		\vphantom{\begin{aligned}
-			& \verify(\srs, \vec{c}, \vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}), \\
-			& \verify(\srs, \vec{c}, \vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{\tilde{o}}) \\
-			&\vec{o} \neq \vec{\tilde{o}})
-		\end{aligned}}
-		\begin{aligned}
-			& \srs \gets \kgen(\secparam, \maxdeg), \\
-			&	(\vec{c}, \vec{c'}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}, \vec{\tilde{o}}) \gets \adv(\srs)
-		\end{aligned}
-		\right.\right]
-	 % \leq \negl.
-\]
-\fi
-is at most $\epsop(\secpar)$.
-
-\ncase{Step 1} First, consider a case where the commitment is limited to commit
-to multiple polynomials which are evaluated at the same point $z$. As noted in
-\cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the probability
-of the adversary succeeding using the idealised verification
-equation\COMMENT{---which considers equality between polynomials---instead of
-  the real verification equation---which consider equality of the polynomials'
-  evaluations}.  This holds since an adversary that manages to provide a
-commitment opening that holds for the real verifier, but does not hold for the
-idealised verifier can be used to break the dlog assumption and reveal the
-secret trapdoor used to produce the commitment's SRS, the probability of such
-event is bounded by the $(\noofc + 2, 1)$-dlog security $\epsdlog(\secpar)$,
-cf.~\cite[Lemma 2.2]{EPRINT:GabWilCio19} for more details.
-
-For polynomials $\vec{\p{f}} = \p{f}_1, \ldots, \p{f}_k$, evaluation point $z$, evaluation
-result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $\p{o}(X)$ the
-idealised check verifies that
-\(	\sum_{i = 1}^k \gamma^{i - 1} \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} s_i \equiv \p{o}(X) (X - z)\,.
-	\label{eq:pcom_idealised_check}
-  \)%
-Since $\p{o}(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial
-composition, there is only one $\p{o} (X)$ that fulfils the equation above.
-
-\ncase{Step 2} Second, consider a case when the polynomials are evaluated on two
-points $\vec{z} = (z, z')$ and the adversary is asked to provide two openings
-$\vec{o} = (o, o')$. Similarly, we analyse the case of the ideal verification.
-In that scenario, the verifier checks whether the following equality, for
-$\gamma, r'$ picked at random, holds:
-\begin{multline}
-	\label{eq:ver_eq_poly}
-	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} \cdot s_i  + r' \left(\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \right)\\
-	\equiv \p{o}(X)(X - z) + r' \p{o}'(X)(X- z')
-\end{multline}
-Since $r'$ has been picked at random from $\FF$, probability that \cref{eq:ver_eq_poly}
-holds while either
-\(
-	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}  \gamma^{i - 1} \cdot s_i \not\equiv \p{o}(X)(X - z)
-\text{, or}\)
-\(
-	\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \not\equiv \p{o'}(X)(X - z')
-\)
-is $\infrac{1}{\abs{\FF_p}}$~cf.~\cite{EPRINT:GabWilCio19}. This brings the proof back to
-Step 1 above. Altogether, Step 2 gives the following bound for the unique
-opening property $\epsop(\secpar) \leq 2\epsdlog(\secpar) + \infrac{1}{\FF_p}$.
-\qed
-\end{proof}
+The proof has been referred to \cref{sec:pcomp_op_proof}.
 
 \subsection{Unique response property}
 \begin{lemma}
@@ -2557,7 +2479,7 @@ $\maxdeg$ can be read from the output SRS.
 	\label{fig:pcomp}
   \end{figure}
 
-\begin{figure}[t!]
+\begin{figure}
 \centering
 	\begin{pcvstack}[center,boxed]
 		\begin{pchstack}
@@ -2610,6 +2532,7 @@ $\maxdeg$ can be read from the output SRS.
 	\label{fig:pcoms}
 \end{figure}
 
+\section{Non-malleability of \plonk{}, omitted proofs and descriptions}
 \subsection{$\plonk$ protocol rolled out}
 \label{sec:plonk_explained}
 \newcommand{\vql}{\vec{q_{L}}}
@@ -2887,6 +2810,90 @@ The \plonk{} simulator proceeds as an honest prover would, except:
     trapdoor $\chi$ to compute commitments
     $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$.
   \end{enumerate}
+
+\subsection{Proof of $\PCOMp$ unique opening property, \cref{lem:pcomp_op}}
+\label{sec:pcomp_op_proof}
+\begin{proof}
+  Let $\vec{z} = (z, z') \in \FF_p^2$ be the two points the polynomials are
+  evaluated at, $k \in \NN$ be the number of the committed polynomials to be
+  evaluated at $z$, and $k' \in \NN$ be the number of the committed polynomials
+  to be evaluated at $z'$, $\vec{c} \in \GRP^k, \vec{c'} \in \GRP^{k'}$ be the
+  commitments, $\vec{s} \in \FF_p^k, \vec{s'} \in \FF_p^{k'}$ the evaluations,
+  and $\vec{o} = (o, o') \in \FF_p^2$ be the commitment openings.
+  We need to show that the probability a $\ppt$ $\adv$ opens the same commitment
+  in two different ways is negligible. 
+  \iffalse
+  We need to
+  show that for every $\ppt$ adversary $\adv$ the probability
+\[
+	\Pr
+		\left[
+			\begin{aligned}
+				& \verify(\srs, \vec{c}, \vec{c'}, (z, z'), \vec{s}, \vec{s'}, \vec{o}), \\
+				& \verify(\srs, \vec{c}, \vec{c'}, (z, z'), \vec{s}, \vec{s'}, \vec{\tilde{o}}) \\
+				& \vec{o} \neq \vec{\tilde{o}}
+			\end{aligned}
+		\,\left|\,
+		\vphantom{\begin{aligned}
+			& \verify(\srs, \vec{c}, \vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}), \\
+			& \verify(\srs, \vec{c}, \vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{\tilde{o}}) \\
+			&\vec{o} \neq \vec{\tilde{o}})
+		\end{aligned}}
+		\begin{aligned}
+			& \srs \gets \kgen(\secparam, \maxdeg), \\
+			&	(\vec{c}, \vec{c'}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}, \vec{\tilde{o}}) \gets \adv(\srs)
+		\end{aligned}
+		\right.\right]
+	 % \leq \negl.
+\]
+\fi
+is at most $\epsop(\secpar)$.
+
+\ncase{Step 1} First, consider a case where the commitment is limited to commit
+to multiple polynomials which are evaluated at the same point $z$. As noted in
+\cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the probability
+of the adversary succeeding using the idealised verification
+equation\COMMENT{---which considers equality between polynomials---instead of
+  the real verification equation---which consider equality of the polynomials'
+  evaluations}.  This holds since an adversary that manages to provide a
+commitment opening that holds for the real verifier, but does not hold for the
+idealised verifier can be used to break the dlog assumption and reveal the
+secret trapdoor used to produce the commitment's SRS, the probability of such
+event is bounded by the $(\noofc + 2, 1)$-dlog security $\epsdlog(\secpar)$,
+cf.~\cite[Lemma 2.2]{EPRINT:GabWilCio19} for more details.
+
+For polynomials $\vec{\p{f}} = \p{f}_1, \ldots, \p{f}_k$, evaluation point $z$, evaluation
+result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $\p{o}(X)$ the
+idealised check verifies that
+\(	\sum_{i = 1}^k \gamma^{i - 1} \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} s_i \equiv \p{o}(X) (X - z)\,.
+	\label{eq:pcom_idealised_check}
+  \)%
+Since $\p{o}(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial
+composition, there is only one $\p{o} (X)$ that fulfils the equation above.
+
+\ncase{Step 2} Second, consider a case when the polynomials are evaluated on two
+points $\vec{z} = (z, z')$ and the adversary is asked to provide two openings
+$\vec{o} = (o, o')$. Similarly, we analyse the case of the ideal verification.
+In that scenario, the verifier checks whether the following equality, for
+$\gamma, r'$ picked at random, holds:
+\begin{multline}
+	\label{eq:ver_eq_poly}
+	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} \cdot s_i  + r' \left(\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \right)\\
+	\equiv \p{o}(X)(X - z) + r' \p{o}'(X)(X- z')
+\end{multline}
+Since $r'$ has been picked at random from $\FF$, probability that \cref{eq:ver_eq_poly}
+holds while either
+\(
+	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}  \gamma^{i - 1} \cdot s_i \not\equiv \p{o}(X)(X - z)
+\text{, or}\)
+\(
+	\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \not\equiv \p{o'}(X)(X - z')
+\)
+is $\infrac{1}{\abs{\FF_p}}$~cf.~\cite{EPRINT:GabWilCio19}. This brings the proof back to
+Step 1 above. Altogether, Step 2 gives the following bound for the unique
+opening property $\epsop(\secpar) \leq 2\epsdlog(\secpar) + \infrac{1}{\FF_p}$.
+\qed
+\end{proof}
 
 
 \section{Special simulation-extractability of sigma protocols and forking lemma}
@@ -3319,7 +3326,6 @@ h_{\iota - 1})$ to
 \end{proof}
 
 \section{Non-malleability of $\sonicprotfs$}
->>>>>>> fdd72bef5b6776e52ca1689b8031523785c8b47d
 \label{sec:sonic}
 \subsection{\sonic{} protocol rolled out}
 In this section we present $\sonic$'s constraint system and algorithms. Reader
