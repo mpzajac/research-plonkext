@@ -85,8 +85,8 @@
 \section{Introduction}
 % \ourpar{On the popularity and power of Fiat--Shamir.}
 The Fiat--Shamir (FS) transform takes a public-coin interactive protocol and makes it
-interactive by computing the verifier's public coins by hashing the current
-protocol transcript. While in principle justifiable in the random oracle model
+interactive by hashing the current
+protocol transcript to compute the verifier's public coins. While in principle justifiable in the random oracle model
 (ROM)~\cite{CCS:BelRog93}, it is theoretically unsound~\cite{FOCS:GolKal03} and
 so only a heuristic that should be used with care.
 %
@@ -189,18 +189,16 @@ generalized unique response property, and a generalized forking lemma. These con
 
 
 \subsection{Our techniques}
-Before we continue, we note that \plonk{} and \sonic{}---as originally presented
+We note that \plonk{} and \sonic{}---as originally presented
 in \cite{EPRINT:GabWilCio19} and \cite{CCS:MBKM19}---are interactive proofs of
-knowledge made non-interactive by the Fiat--Shamir transform. In the following,
+knowledge that are made non-interactive by the Fiat--Shamir transform. In the following,
 we denote the underlying interactive protocols by $\plonkprot$ (for $\plonk$)
 and $\sonicprot$ (for $\sonic$) and the resulting non-interactive proof systems by
 $\plonkprotfs$ and $\sonicprotfs$, respectively.
 
 \oursubsub{Forking soundness.} 
-First, following \cite{INDOCRYPT:FKMV12}, we need to show that in $\plonkprot$
-and $\sonicprot$ we can extract a witness from a number of valid proofs for the
-same instance that share some parts of the transcripts. However these protocols
-do not meet the standard definition of special soundness. First of all, the
+First, following \cite{INDOCRYPT:FKMV12}, we need to show for the protocols we consider that one can extract a witness from sufficiently many valid proof transcripts with a common prefix. However many protocols
+do not meet the standard definition of special soundness for sigma protocols. First of all, the
 definition requires extraction of a witness from any two transcripts, each
 containing three messages and sharing the first message. For $\plonkprot$ and
 $\sonicprot$ that is not enough. The definition needs to be adapted to cover
@@ -222,14 +220,13 @@ of soundness which we call \emph{forking soundness}. That is, we show that it is
 possible to extract a witness from all but negligibly many trees of acceptable
 transcripts produced by probabilistic polynomial time (PPT) adversaries, given
 that the trees are generated as interactions between a (possibly malicious)
-prover and honest verifier. We show how to use an adversary producing a tree of
-acceptable transcripts which one cannot extract the witness from to break the
+prover and an honest verifier. We show how to use an adversary from which we cannot extract the witness but that produces such a tree to break the
 underlying computational assumption.
 
 \oursubsub{Unique response property.} 
-Another property that has to be proven is the unique response property which
-states, as expressed in \cite{C:Fischlin05}, that for $3$-messages sigma
-protocols, except for the first message, all messages sent by the prover are
+Another property we require is the unique response property which
+states, as expressed in \cite{C:Fischlin05} for $3$-messages sigma
+protocols, that all but the first message sent by the prover are
 deterministic (intuitively, the prover can only employ fresh randomness in the
 first message of the protocol). Again, we can not use this definition right out
 of the box. $\plonkprotfs$ does not satisfy it---both the first and the second
@@ -244,10 +241,8 @@ sufficient that this property is met by $\plonkprot$ for $i = 2$. Since
 To be able to show the unique response property (for both of the protocols) we
 also had to show that the modified KZG polynomial commitment schemes
 \cite{AC:KatZavGol10} proposed in \cite{EPRINT:GabWilCio19} and
-\cite{CCS:MBKM19} have a \emph{unique opening property} which states that for a
-polynomial $\p{f}(X)$ evaluated at some point $z$ it should be infeasible for
-any PPT adversary to provide two different acceptable openings
-of the commitment.
+\cite{CCS:MBKM19} have a \emph{unique opening property} which requires that for a commitment to a polynomial $p(X)$ it is infeasible for
+any PPT adversary to provide two different acceptable openings witnesses at point $z$ even for the consistent evaluation $p(z)$.
 
 \oursubsub{HVZK.}
 In order to show our result we also show that (interactive) $\plonkprot$ and
@@ -263,45 +258,7 @@ this property does not necessary break soundness of the protocol as the
 simulator is required only to produce a transcript and is not involved in a real
 conversation with a real verifier). This property allows us to build simulators
 for $\plonkprotfs$ and $\sonicprotfs$ that rely only on the programmability of
-the random oracle.
-
-\oursubsub{Generalisation of the general forking lemma.} 
-Consider an interactive $3$-message special-sound protocol $\ps$ and its
-non-interactive version $\ps_\fs$ obtained by the Fiat--Shamir transform. The
-general forking lemma provides an instrumental lower bound for the probability
-of extracting a witness from an adversary who provides two proofs for the same
-statement that share the first message. Since $\plonkprot$ and $\sonicprot$ have
-more than $3$ messages and are not special-sound, the forking lemma of Bellare
-and Neven~\cite{CCS:BelNev06}, cannot be used directly. We thus propose a
-modification that covers multi-message protocols where witness extraction
-requires more transcripts than merely two.  Unfortunately, we also observe that
-the security gap grows with the number of transcripts and the probability that
-the extractor succeeds diminishes significantly. (That said, we have to note
-that the security loss is polynomial, albeit big.)
-
-We note that some modern zkSNARKs, like \cite{SP:BBBPWM18,CCS:MBKM19}, heavily
-rely on the Fiat--Shamir transform and the forking lemma. First, an interactive
-protocol is proposed and its security and forking soundness analysed. Second,
-one uses an argument that the Fiat--Shamir transform can be used to get a
-protocol that is non-interactive and shares the same security properties.
-
-We see our generalized forking lemma as contributing to a critical assessment of
-this approach. The analysis of the interactive protocol is not enough and one
-has to consider the security loss implied by the generalisation of the forking
-lemma or disclose a transformation that does not suffer this loss. We note that
-the security loss may also apply when knowledge soundness is proven. That is the
-case for $\sonic$, whose security proof relies on so-called witness-extended
-emulation. The authors of $\plonk$ worked around this problem by proving
-knowledge soundness directly in the algebraic group model.
-
-\oursubsub{Forking simulation-extractability.} Given our modified, less
-restrictive, definition for forking soundness and the unique response property,
-and our generalised forking lemma we obtain our main
-result---forking simulation extractability of $\plonkprotfs$ and $\sonicprotfs$. The
-proof is inspired by simulation-extractability and simulation-soundness proofs
-from \cite{INDOCRYPT:FKMV12}, with major modifications, which were required as
-\cite{INDOCRYPT:FKMV12} considers only $\Sigma$-protocols
-that are undoubtedly simpler protocols than the considered proof systems.
+the random oracle. Note that this programmability is also only needed from some round $i$ onward.
 
 \oursubsub{Generalising Boneh-Boyen-Goh~\cite{EC:BonBoyGoh05} uber assumption.}
 To show that $\plonk$ is zero-knowledge we rely on a variant of
@@ -318,6 +275,46 @@ from a random element. In our variant, we modify two things.
 \end{inparaenum}
 We show security of the generalized uber assumption directly in the generic
 group model.
+
+\oursubsub{Generalisation of the general forking lemma.} 
+Consider an interactive $3$-message special-sound protocol $\ps$ and its
+non-interactive version $\ps_\fs$ obtained by the Fiat--Shamir transform. The
+general forking lemma provides an instrumental lower bound for the probability
+of extracting a witness from an adversary who provides two proofs for the same
+statement that share the first message. Since $\plonkprot$ and $\sonicprot$ have
+more than $3$ messages and are not special-sound, the forking lemma of Bellare
+and Neven~\cite{CCS:BelNev06}, cannot be used directly. We thus propose a
+modification that covers multi-message protocols where witness extraction
+requires more transcripts than merely two.  Unfortunately, we also observe that
+the security gap grows with the number of transcripts and the probability that
+the extractor succeeds diminishes significantly. (That said, we have to note
+that the security loss is polynomial, albeit big.)
+
+We note that some modern zkSNARKs, like \cite{SP:BBBPWM18,CCS:MBKM19}, heavily
+rely on the Fiat--Shamir transform and thus potentially the forking lemma. First, an interactive
+protocol is proposed and its security and forking soundness analysed. Second,
+one uses an argument that the Fiat--Shamir transform can be used to get a
+protocol that is non-interactive and shares the same security properties.
+
+We see our generalized forking lemma as contributing to a critical assessment of
+this approach. The analysis of the interactive protocol is not enough and one
+has to consider the security loss implied by the Fiat-Shamir transform for the target security notion. Thus one has to either rely on our generalisation of the forking
+lemma or disclose a transformation that does not suffer this loss. We note that
+the security loss may also apply when knowledge soundness is proven. That is the
+case for the original $\sonic$ paper, whose security proof relies on so-called witness-extended
+emulation. The authors of $\plonk$ and recent work on $\sonic$~\cite{cryptoeprint:2020:1351} worked around this problem by proving
+knowledge soundness directly in the algebraic group model.
+
+\oursubsub{Simulation soundness and forking simulation-extractability.} Given our modified, less
+restrictive, definition for forking soundness and the unique response property,
+and our generalised forking lemma we obtain our main
+results---proofs for the simulation soundness and forking simulation extractability of $\plonkprotfs$ and $\sonicprotfs$. The
+proofs are inspired by simulation-extractability and simulation-soundness proofs
+from \cite{INDOCRYPT:FKMV12}, with major modifications, which were required as
+\cite{INDOCRYPT:FKMV12} considers only sigma protocols
+that are undoubtedly much simpler protocols than the considered proof systems.
+
+
 
 % Since the proof highly relies on the (generalised) forking lemma, the security
 % lost it introduces is considerable.
