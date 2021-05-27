@@ -2062,7 +2062,8 @@ The proof has been referred to \cref{sec:pcomp_op_proof}.
 \subsection{Forking soundness}
 \begin{lemma}
 \label{lem:plonkprot_ss}
-$\plonkprot$ is $(\epsss(\secpar), 3, 3 \noofc + 1)$-forking sound
+Assume an idealised $\plonkprot$ verifier fails at most with probability $\epsid(\secpar)$ and the discrete logarithm advantage is bounded by $\epsdlog(\secpar)$,
+ $\plonkprot$ is $(\epsss(\secpar), 3, 3 \noofc + 1)$-forking sound
 for $\epsss(\secpar) \leq \epsid(\secpar) + \epsdlog(\secpar)$ against algebraic adversaries.
 \end{lemma}
 \begin{proof}
