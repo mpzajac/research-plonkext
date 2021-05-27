@@ -51,6 +51,15 @@
 \usepackage{setspace}
 \include{macros}
 
+%% Save the class definition of \subparagraph
+\let\llncssubparagraph\subparagraph
+%% Provide a definition to \subparagraph to keep titlesec happy
+\let\subparagraph\paragraph
+%% Load titlesec
+\usepackage[compact]{titlesec}
+%% Revert \subparagraph to the llncs definition
+\let\subparagraph\llncssubparagraph
+
 \newcommand{\oursubsub}[1] {\smallskip\noindent\textbf{#1}}
 \newcommand{\ourpar}[1] {\smallskip\noindent\emph{#1}}
 
@@ -502,29 +511,10 @@ and its variant that allows for negative exponents $(q_1, q_2)$-$\ldlog$
 assumption\footnote{Note that \cite{CCS:MBKM19} dubs their assumption \emph{a
     dlog assumption}. We changed that name to distinguish it from the more
   standard dlog assumption used in \cite{EPRINT:GabWilCio19}. ``l'' in
-  \emph{ldlog} relates to use of Laurent polynomials in the assumption.}.
+  \emph{ldlog} relates to use of Laurent polynomials in the assumption.}. We
+omit here description of the assumptions and refer to
+\cref{sec:dlog_assumptions}.
 
-\begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]
-	Let $\adv$ be a $\ppt$ adversary that gets as input
-  $\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}}$, for
-  some randomly picked $\chi \in \FF_p$, then
-	\[
-		\condprob{\chi \gets \adv(\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi,
-        \ldots, \chi^{q_2} })}{\chi \sample \FF_p} \leq \negl.
-	\]
-\end{definition}
-
-\begin{definition}[$(q_1, q_2)\mhyph\ldlog$ assumption]
-  Let $\adv$ be a $\ppt$ adversary that gets as input
-  $\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots, \chi^{q_1}}, \gtwo{\chi^{-q_2},
-    \ldots, 1, \chi, \ldots, \chi^{q_2}}$, for some randomly picked
-  $\chi \in \FF_p$, then
-	\[
-    \condprob{\chi \gets \adv(\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots,
-        \chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \chi, \ldots, \chi^{q_2}
-      })}{\chi \sample \FF_p} \leq \negl.
-	\]
-\end{definition}
 
 \ourpar{BBG uber assumption.}
 Also, to be able to show computational honest verifier zero knowledge of
@@ -542,10 +532,10 @@ $\pT \in \FF_p[X_1, \ldots, X_c]^t$. Write $\pR = \left( \p{r}_1, \ldots,
 
 For a function $f$ and vector $(x_1, \ldots, x_c)$ we write $f(\pR)$ to
 denote application of $f$ to each element of $\pR$, i.e.
-\[
+\(
 	f(\pR) = \left( f(\p{r}_1 (x_1, \ldots, x_c), \ldots, f(\p{r}_r
 	(x_1, \ldots, x_c) \right).
-\]
+\)
 Similarly for applying $f$ to $\pS$ and $\pT$.
 
 \begin{definition}[Independence of $\pR, \pS, \pT$]
@@ -924,14 +914,14 @@ verifier accepts only when the polynomial \emph{is} zero.
 
 Although ideal verifiers are impractical, the are very useful in our
 proofs. More precisely, we show that
-\begin{enumerate}[(1)]
+\begin{compactenum}
 \item the idealised verifier accepts an incorrect proof (what ``incorrect''
   means depends on the situation) with at most negligible probability (and many
   cases---never);
 \item when the real verifier accepts, but not the idealised one, then we show
   how to use a malicious $\prover$ to break the underlying security assumption
   (in our case---a variant of $\dlog$.)
-\end{enumerate}
+\end{compactenum}
 
 \oursubsub{Sigma protocols}
 A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ for a relation
@@ -1849,12 +1839,13 @@ state that $\waccProb = \waccProb'$.
 Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma}, we get that
 \begin{equation}
   \begin{split}
-    \prob{\event{\errfrk}} \leq 1 - \waccProb \cdot \left(\frac{\waccProb^{n -
-          1}}{q^{n - 1}} + \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
-        (2^\secpar)^{n}} - 1\right) = \\
-    1 - \left(\frac{\waccProb^{n}}{q^{n - 1}} + 
-      \waccProb \cdot \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
-        (2^\secpar)^{n}} - \waccProb\right)\,.
+    \prob{\event{\errfrk}} \leq 1 - \waccProb \cdot \left(\infrac{\waccProb^{n -
+          1}}{q^{n - 1}} + \infrac{(2^\secpar) !}{((2^\secpar - n)! \cdot
+        (2^\secpar)^{n})} - 1\right).
+    % = \\
+    % 1 - \left(\frac{\waccProb^{n}}{q^{n - 1}} + 
+    %   \waccProb \cdot \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
+    %     (2^\secpar)^{n}} - \waccProb\right)\,.
 \end{split}
 \end{equation}
 
@@ -1910,7 +1901,7 @@ $\epsur(\secpar), \epsss(\secpar)$ are negligible, and
 $\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} \geq
 \left(\infrac{(2^\secpar - n)}{2^\secpar}\right)^{n}$ is overwhelming.  Thus,
 \[
-	\extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,.
+	\extProb \geq q^{-(n - 1)} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,.
 \] 
 and $\psfs$ is forking simulation extractable with extraction error $\epsur(\secpar)$.
 \qed
@@ -2063,13 +2054,13 @@ $\gamma, r'$ picked at random, holds:
 \end{multline}
 Since $r'$ has been picked at random from $\FF$, probability that \cref{eq:ver_eq_poly}
 holds while either
-\[
+\(
 	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}  \gamma^{i - 1} \cdot s_i \not\equiv \p{o}(X)(X - z)
-\text{, or}\]
-\[
+\text{, or}\)
+\(
 	\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \not\equiv \p{o'}(X)(X - z')
-\]
-is $\infrac{1}{\abs{\FF_p}}$~\cite{EPRINT:GabWilCio19}. This brings the proof back to
+\)
+is $\infrac{1}{\abs{\FF_p}}$~cf.~\cite{EPRINT:GabWilCio19}. This brings the proof back to
 Step 1 above. Altogether, Step 2 gives the following bound for the unique
 opening property $\epsop(\secpar) \leq 2\epsdlog(\secpar) + \infrac{1}{\FF_p}$.
 \qed
@@ -2388,7 +2379,7 @@ $\gone{\tb_i \tb_j}$:
 \end{align*}
 where $\psi$ compounds of $\xi_i, \xi_j, \zeta_i, \zeta_j, \chz, \ochz, \chi$ which
 are all known by $\rdv$ and no $b_i$ nor $b_j$.
-Analogously for the triplets and quadruplets and elements dependent on $\vec{w}$. 
+Analogously for the triplets and quadruplets and elements dependent on~$\vec{w}$. 
 
 Next the reduction runs the adversary $\adv(\REL, \srs)$ and obtains from $\adv$ an
 instance--witness pair $(\inp, \wit)$.  $\rdv$ now prepares a simulated proof as follows:
@@ -2506,11 +2497,11 @@ specific adversaries, some of the inequalities are already equalities.
 % \section*{Acknowledgement}
 % The second author thanks Antoine Rondelet for helpful discussions.
 
-\begin{spacing}{0.93}
+\begin{spacing}{0.92}
 \bibliographystyle{abbrv}
 \bibliography{cryptobib/abbrev3,cryptobib/crypto,additional_bib}
-% \clearpage
 \end{spacing}
+ \clearpage
 \appendix
 {\Huge{Supplementary Material}} 
 
@@ -2524,7 +2515,7 @@ determines the maximal degree of the committed polynomial. We assume that
 $\maxdeg$ can be read from the output SRS.
 %
 % We require $\PCOM$ to have the following properties:
-\begin{figure}[t!]
+\begin{figure}
 \centering
 	\begin{pcvstack}[center,boxed]
 		\begin{pchstack}
@@ -2969,178 +2960,30 @@ The theorem relies on the following \emph{general forking lemma} \cite{JC:PoiSte
 
 
 
-\section{Additional lemmas and proofs}
-\subsection{Proof of \cref{lem:generalised_forking_lemma}}
-\label{sec:forking_proof}
-\begin{proof}
-First denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
-\begin{align*}
-\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s)
-\gets \zdv(y, h_1, \ldots, h_q)}\,.\\
-	\frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
-\genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}\,.
-\end{align*}
-
-We start by claiming that for all $y$ 
-\begin{equation}\label{eq:frkProb_y}
-	\frkProb(y) \geq 
-	\frac{\accProb(y)^m}{q^{m - 1}} - \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - m)! \cdot h^{m}}\right)
-	\end{equation}
-Then with the expectation taken over $y \sample \ig$, we have
-\begin{align}
-	\frkProb & = \expected{\frkProb(y)} \geq
-	\expected{\frac{\accProb(y)^m}{q^{m - 1}} -  \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - m)! \cdot h^{m}}\right)} \label{eq:use_eq1}\\
-	& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} -
-	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - m)! \cdot
-  h^{m}}\right) \label{eq:by_lemma_jensen}\\
-	& = \frac{\accProb^m}{q^{m - 1}} -  \accProb \cdot \left(1 -
-  \frac{h!}{(h - m)! \cdot h^{m}}\right)\label{eq:by_accProb}\,.
-\end{align}
-Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
-\cref{eq:by_lemma_jensen} comes from linearity of expected value and \cref{lem:jensen}; and
-\cref{eq:by_accProb} holds by the fact that $\expected{\accProb(y)} =
-\accProb$.
-
-We now show \cref{eq:frkProb_y}.
-Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$. 
-For any input $y$, with probabilities taken over the coin tosses of
-$\genforking_{\zdv}^{m}$ we have
-\begin{align*}
-	\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land
-h_{i_j}^{j} \neq h_{i_{j'}}^{j'} \text{ for } (j, j') \in J}	\\
-	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} %\\
-   - \prob{i_j \geq 1 \land h_{i_j}^{j} = h_{i_{j'}}^{j'} \text{ for some } (j, j') \in J}\\
-	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} -
-	\prob{i_j \geq 1} \cdot 
-  \left(1 - \frac{h!}{(h - m)! \cdot h^{m}}\right) \\ 
-	& = \prob{i_j = i_{j'} \land
-	i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 -
-\frac{h!}{(h - m)! \cdot h^{m}}\right)\,.
-\end{align*}
-
-Probability that for some $(j, j') \in J$ and $i_j = i_{j'}$ holds
-$h_{i_j}^{j} \neq h_{i_{j'}}^{j'}$ equals 
-\[
-  \frac{h \cdot (h - 1)
-\cdot \ldots \cdot (h - m - 1)}{h^m} = \frac{h!}{(h - m)! \cdot h^m}.
-\]
-That is, it equals the number
-of all $m$-element strings where each element is different divided by
-the number of all $m$-element strings, where elements are taken from a
-set of size $h$. 
-
-It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j,
-  j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$. Let $\RND{\zdv}$ denote
-the set from which $\zdv$ picks its coins at random. For each $\iota \in
-\range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times H^{\iota - 1} \to [0, 1]$ be
-defined by setting $X_\iota(\rho, h_1, \ldots, h_{\iota - 1})$ to
-\[
-  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
-    \ldots, h_q; \rho)}
-\]
-for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
-$X_\iota$ be a random variable over the uniform distribution on its domain. Then
-\begin{align*}
-	& \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} 
-	 = \sum_{\iota = 1}^{q} \prob{i_1 = \iota \land \ldots \land i_m = \iota} \\
-	& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota} \cdot \condprob{i_2 = \iota}{i_1 = \iota} \cdot \ldots \cdot \condprob{i_m = \iota}{i_1 = \ldots = i_{m - 1} = \iota} \\
-	& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota}
-   (\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\iota - 1}}
-   = \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
-\end{align*}
-Importantly, $\sum_{\iota = 1}^q \expected{X_{\iota}} = \accProb(y)$.
-
-By \cref{lem:jensen} we get
-\[
-	\sum_{\iota = 1}^{q} \expected{X_\iota^m} \geq \sum_{\iota = 1}^{q} \expected{X_\iota}^m\,.
-\]
-Note that for e.g.~$X_i = 1$, $i \in \range{1}{q}$ the inequality becomes equality, that is, it is tight.
- 
-We now use the H\"older inequality, cf.~\cref{lem:holder}, for $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
-\begin{gather}
-	\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
-	\frac{1}{q^{m - 1}} \cdot \accProb(y)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
-\end{gather}
-Finally, we get
-\[
-	\frkProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
-	 \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
-\]
-\qed
-\end{proof}
-\begin{lemma}\label{lem:jensen}
-	Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
-	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times
-	H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
-h_{\iota - 1})$ to 
-\[
-  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
-    \ldots, h_q; \rho)}
-	\] 
-	for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
-  $X_\iota$ as a random variable over the uniform distribution on its domain.
-  Then $\expected{X_\iota^m} \geq \expected{X_\iota}^m$.
-\end{lemma}
-\begin{proof}
-	First we recall the Jensen inequality \cite{W:Weissten20}, if for some random
-  variable $X$ holds $\abs{\expected{X}} \leq \infty$ and $f$ is a Borel convex
-  function then
+\section{Additional preliminaries, lemmas and proofs}
+\subsection{Dlog assumptions}
+\label{sec:dlog_assumptions}
+\begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]
+	Let $\adv$ be a $\ppt$ adversary that gets as input
+  $\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}}$, for
+  some randomly picked $\chi \in \FF_p$, then
 	\[
-		f(\expected{X}) \leq \expected{f(X)}\,.
-	\] 
-	Finally, we note that $\abs{\expected{X}} \leq \infty$ and taking to the
-  $m$-th power is a Borel convex function on $[0, 1]$ interval. \qed
-\end{proof}
-
-\begin{lemma}[H\"older's inequality. Simplified.]\label{lem:holder}
-	Let $x_i, y_i$, for $i \in \range{1}{q}$, and $p, q$ be real numbers such that
-  $1/p + 1/q = 1$. Then
-	\[
-		\sum_{i = 1}^{q} x_i y_i \leq \left(\sum_{i = 1}^{q}
-      x_i^p\right)^{\frac{1}{p}} \cdot \left(\sum_{i = 1}^{q}
-      y_i^p\right)^{\frac{1}{q}}\,.
+		\condprob{\chi \gets \adv(\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi,
+        \ldots, \chi^{q_2} })}{\chi \sample \FF_p} \leq \negl.
 	\]
-\end{lemma}
+\end{definition}
 
-\begin{remark}[Tightness of the H\"older inequality]
-	In is important to note that Inequality (\ref{eq:tightness}) is tight. More
-  precisely, for $\expected{X_i} = x$, $i \in \range{1}{q}$ we have
-	\begin{gather*}
-		\sum_{i = 1}^q x = \left(\sum_{i = 1}^{q} x^m\right)^\frac{1}{m} \cdot \left(\sum_{i = 1}^{q} 1^{\frac{m}{m - 1}}\right)^{\frac{m - 1}{m}} \\
-		qx = \left(qx^m\right)^\frac{1}{m} \cdot q^{\frac{m - 1}{m}} \\
-		(qx)^m = qx^m \cdot q^{m - 1} \\
-		(qx)^m = (qx)^m\,.
-	\end{gather*}
-\end{remark}
-
-\begin{lemma}
-  \label{lem:root_prob}
-  Let $\p{f}(X)$ be a random degree-$d$ polynomial over $\FF_p[X]$. Then the
-  probability that $\p{f}(X)$ has roots in $\FF_p$ is at least $\infrac{1}{d!}$.
-\end{lemma}
-\begin{proof}
-  First observe that there is $p^{d}$ canonical polynomials in $\FF_p[X]$.  Each
-  of the polynomials may have up to $d$ roots. Consider polynomials which are
-  reducible to polynomials of degree $1$, i.e.~polynomials that have all $d$
-  roots. The roots can be picked in $\bar{C}^{p}_{d}$ ways, where
-  $\bar{C}^{n}_{k}$ is the number of $k$-elements combinations with repetitions
-  from $n$-element set. That is,
-  \[
-    \bar{C}^n_k = \binom{n + k - 1}{k}\,.
-  \]
-  Thus, the probability that a randomly picked polynomial has all $d$ roots is
-  \begin{multline*}
-    p^{-d} \cdot \bar{C}^p_d = p^{-d} \cdot \binom{p + d - 1}{d} =
-    p^{-d} \cdot \frac{(p + d - 1)!}{(p + d - 1 - d)! \cdot d!} = \\
-    p^{-d} \cdot \frac{(p + d - 1) \cdot \ldots \cdot p \cdot (p - 1)!}{(p - 1)!
-      \cdot d!} = p^{-d} \cdot \frac{(p + d - 1)\cdot
-      \ldots \cdot p}{d!} \\
-    \geq p^{-d} \cdot {\frac{p^d}{d!}} = \frac{1}{d!}
-  \end{multline*}
-  \qed
-\end{proof}
+\begin{definition}[$(q_1, q_2)\mhyph\ldlog$ assumption]
+  Let $\adv$ be a $\ppt$ adversary that gets as input
+  $\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots, \chi^{q_1}}, \gtwo{\chi^{-q_2},
+    \ldots, 1, \chi, \ldots, \chi^{q_2}}$, for some randomly picked
+  $\chi \in \FF_p$, then
+	\[
+    \condprob{\chi \gets \adv(\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots,
+        \chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \chi, \ldots, \chi^{q_2}
+      })}{\chi \sample \FF_p} \leq \negl.
+	\]
+\end{definition}
 
 \subsection{Uber assumption}
 \label{sec:uber_assumption}
@@ -3319,8 +3162,180 @@ polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
   as required.
 \end{proof}
 
+\subsection{Proof of the generalized forking lemma (\cref{lem:generalised_forking_lemma})}
+\label{sec:forking_proof}
+\begin{proof}
+First denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
+\begin{align*}
+\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s)
+\gets \zdv(y, h_1, \ldots, h_q)}\,.\\
+	\frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
+\genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}\,.
+\end{align*}
+
+We start by claiming that for all $y$ 
+\begin{equation}\label{eq:frkProb_y}
+	\frkProb(y) \geq 
+	\frac{\accProb(y)^m}{q^{m - 1}} - \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)
+	\end{equation}
+Then with the expectation taken over $y \sample \ig$, we have
+\begin{align}
+	\frkProb & = \expected{\frkProb(y)} \geq
+	\expected{\frac{\accProb(y)^m}{q^{m - 1}} -  \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)} \label{eq:use_eq1}\\
+	& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} -
+	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - m)! \cdot
+  h^{m}}\right) \label{eq:by_lemma_jensen}\\
+	& = \frac{\accProb^m}{q^{m - 1}} -  \accProb \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)\label{eq:by_accProb}\,.
+\end{align}
+Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
+\cref{eq:by_lemma_jensen} comes from linearity of expected value and \cref{lem:jensen}; and
+\cref{eq:by_accProb} holds by the fact that $\expected{\accProb(y)} =
+\accProb$.
+
+We now show \cref{eq:frkProb_y}.
+Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$. 
+For any input $y$, with probabilities taken over the coin tosses of
+$\genforking_{\zdv}^{m}$ we have
+\begin{align*}
+	\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land
+h_{i_j}^{j} \neq h_{i_{j'}}^{j'} \text{ for } (j, j') \in J}	\\
+	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} %\\
+   - \prob{i_j \geq 1 \land h_{i_j}^{j} = h_{i_{j'}}^{j'} \text{ for some } (j, j') \in J}\\
+	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} -
+	\prob{i_j \geq 1} \cdot 
+  \left(1 - \frac{h!}{(h - m)! \cdot h^{m}}\right) \\ 
+	& = \prob{i_j = i_{j'} \land
+	i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 -
+\frac{h!}{(h - m)! \cdot h^{m}}\right)\,.
+\end{align*}
+
+Probability that for some $(j, j') \in J$ and $i_j = i_{j'}$ holds
+$h_{i_j}^{j} \neq h_{i_{j'}}^{j'}$ equals 
+\[
+  \frac{h \cdot (h - 1)
+\cdot \ldots \cdot (h - m - 1)}{h^m} = \frac{h!}{(h - m)! \cdot h^m}.
+\]
+That is, it equals the number
+of all $m$-element strings where each element is different divided by
+the number of all $m$-element strings, where elements are taken from a
+set of size $h$. 
+
+It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j,
+  j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$. Let $\RND{\zdv}$ denote
+the set from which $\zdv$ picks its coins at random. For each $\iota \in
+\range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times H^{\iota - 1} \to [0, 1]$ be
+defined by setting $X_\iota(\rho, h_1, \ldots, h_{\iota - 1})$ to
+\[
+  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
+    \ldots, h_q; \rho)}
+\]
+for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
+$X_\iota$ be a random variable over the uniform distribution on its domain. Then
+\begin{align*}
+	& \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} 
+	 = \sum_{\iota = 1}^{q} \prob{i_1 = \iota \land \ldots \land i_m = \iota} \\
+	& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota} \cdot \condprob{i_2 = \iota}{i_1 = \iota} \cdot \ldots \cdot \condprob{i_m = \iota}{i_1 = \ldots = i_{m - 1} = \iota} \\
+	& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota}
+   (\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\iota - 1}}
+   = \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
+\end{align*}
+Importantly, $\sum_{\iota = 1}^q \expected{X_{\iota}} = \accProb(y)$.
+
+By \cref{lem:jensen} we get
+\[
+	\sum_{\iota = 1}^{q} \expected{X_\iota^m} \geq \sum_{\iota = 1}^{q} \expected{X_\iota}^m\,.
+\]
+Note that for e.g.~$X_i = 1$, $i \in \range{1}{q}$ the inequality becomes equality, that is, it is tight.
+ 
+We now use the H\"older inequality, cf.~\cref{lem:holder}, for $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
+\begin{gather}
+	\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
+	\frac{1}{q^{m - 1}} \cdot \accProb(y)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
+\end{gather}
+Finally, we get
+\[
+	\frkProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
+	 \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
+\]
+\qed
+\end{proof}
+\begin{lemma}\label{lem:jensen}
+	Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
+	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times
+	H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
+h_{\iota - 1})$ to 
+\[
+  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
+    \ldots, h_q; \rho)}
+	\] 
+	for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
+  $X_\iota$ as a random variable over the uniform distribution on its domain.
+  Then $\expected{X_\iota^m} \geq \expected{X_\iota}^m$.
+\end{lemma}
+\begin{proof}
+	First we recall the Jensen inequality \cite{W:Weissten20}, if for some random
+  variable $X$ holds $\abs{\expected{X}} \leq \infty$ and $f$ is a Borel convex
+  function then
+	\[
+		f(\expected{X}) \leq \expected{f(X)}\,.
+	\] 
+	Finally, we note that $\abs{\expected{X}} \leq \infty$ and taking to the
+  $m$-th power is a Borel convex function on $[0, 1]$ interval. \qed
+\end{proof}
+
+\begin{lemma}[H\"older's inequality. Simplified.]\label{lem:holder}
+	Let $x_i, y_i$, for $i \in \range{1}{q}$, and $p, q$ be real numbers such that
+  $1/p + 1/q = 1$. Then
+	\[
+		\sum_{i = 1}^{q} x_i y_i \leq \left(\sum_{i = 1}^{q}
+      x_i^p\right)^{\frac{1}{p}} \cdot \left(\sum_{i = 1}^{q}
+      y_i^p\right)^{\frac{1}{q}}\,.
+	\]
+\end{lemma}
+
+\begin{remark}[Tightness of the H\"older inequality]
+	In is important to note that Inequality (\ref{eq:tightness}) is tight. More
+  precisely, for $\expected{X_i} = x$, $i \in \range{1}{q}$ we have
+	\begin{gather*}
+		\sum_{i = 1}^q x = \left(\sum_{i = 1}^{q} x^m\right)^\frac{1}{m} \cdot \left(\sum_{i = 1}^{q} 1^{\frac{m}{m - 1}}\right)^{\frac{m - 1}{m}} \\
+		qx = \left(qx^m\right)^\frac{1}{m} \cdot q^{\frac{m - 1}{m}} \\
+		(qx)^m = qx^m \cdot q^{m - 1} \\
+		(qx)^m = (qx)^m\,.
+	\end{gather*}
+\end{remark}
+
+\begin{lemma}
+  \label{lem:root_prob}
+  Let $\p{f}(X)$ be a random degree-$d$ polynomial over $\FF_p[X]$. Then the
+  probability that $\p{f}(X)$ has roots in $\FF_p$ is at least $\infrac{1}{d!}$.
+\end{lemma}
+\begin{proof}
+  First observe that there is $p^{d}$ canonical polynomials in $\FF_p[X]$.  Each
+  of the polynomials may have up to $d$ roots. Consider polynomials which are
+  reducible to polynomials of degree $1$, i.e.~polynomials that have all $d$
+  roots. The roots can be picked in $\bar{C}^{p}_{d}$ ways, where
+  $\bar{C}^{n}_{k}$ is the number of $k$-elements combinations with repetitions
+  from $n$-element set. That is,
+  \[
+    \bar{C}^n_k = \binom{n + k - 1}{k}\,.
+  \]
+  Thus, the probability that a randomly picked polynomial has all $d$ roots is
+  \begin{multline*}
+    p^{-d} \cdot \bar{C}^p_d = p^{-d} \cdot \binom{p + d - 1}{d} =
+    p^{-d} \cdot \frac{(p + d - 1)!}{(p + d - 1 - d)! \cdot d!} = \\
+    p^{-d} \cdot \frac{(p + d - 1) \cdot \ldots \cdot p \cdot (p - 1)!}{(p - 1)!
+      \cdot d!} = p^{-d} \cdot \frac{(p + d - 1)\cdot
+      \ldots \cdot p}{d!} \\
+    \geq p^{-d} \cdot {\frac{p^d}{d!}} = \frac{1}{d!}
+  \end{multline*}
+  \qed
+\end{proof}
 
 \section{Non-malleability of $\sonicprotfs$}
+>>>>>>> fdd72bef5b6776e52ca1689b8031523785c8b47d
 \label{sec:sonic}
 \subsection{\sonic{} protocol rolled out}
 In this section we present $\sonic$'s constraint system and algorithms. Reader
