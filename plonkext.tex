@@ -1998,6 +1998,10 @@ The proof has been referred to \cref{sec:pcomp_op_proof}.
   \epsop(\secpar)$.% assuming the polynomial commitment scheme $\PCOMp$
 %is of knowledge.
 \end{lemma}
+The proof has been referred to \cref{sec:plonk_ur_proof}.
+\subsection{Proof of \plonk{} unique response property
+  (\cref{lem:plonkprot_ur})}
+\label{sec:plonk_ur_proof}
 \begin{proof}[sketch]
   Let
   $\adv(\REL,\srs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}}, \gtwo{\chi}))$
@@ -2828,7 +2832,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
     $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$.
   \end{enumerate}
 
-\subsection{Proof of $\PCOMp$ unique opening property, \cref{lem:pcomp_op}}
+\subsection{Proof of $\PCOMp$ unique opening property (\cref{lem:pcomp_op})}
 \label{sec:pcomp_op_proof}
 \begin{proof}
   Let $\vec{z} = (z, z') \in \FF_p^2$ be the two points the polynomials are
