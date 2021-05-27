@@ -33,8 +33,8 @@
 \usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
 
 \usepackage[capitalise]{cleveref}
-%\crefname{appendix}{Supp.~Mat.}{Sup.~Mat.}
-%\Crefname{appendix}{Supp.~Mat.}{Sup.~Mat.}
+\crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
+\Crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
 \usepackage{cite} 
 \usepackage{booktabs}
 \usepackage{paralist}
@@ -44,7 +44,7 @@
 \usepackage{bm}
 \usepackage{url}
 \usepackage{dirtytalk}
-\usepackage[margin=0.7in,a4paper]{geometry}
+%\usepackage[margin=0.7in,a4paper]{geometry}
 \usepackage[normalem]{ulem}
 \usepackage{dashbox}
 \newcommand\dboxed[1]{\dbox{\ensuremath{#1}}}
@@ -56,12 +56,12 @@
 
 %\title{On Simulation-Extractability of Universal zkSNARKs}
 \title{Non-Malleability of the Fiat--Shamir Transform Revisited}
-%\author{Anonymous submission to PKC}
-\author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} 
+\author{Anonymous submission to PKC}
+%\author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} 
 %\iflncs{
-\institute{University of Edinburgh, Edinburgh, UK \and IOHK \\
-\email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London, UK \\
-\email{m.p.zajac@gmail.com}} 
+%\institute{University of Edinburgh, Edinburgh, UK \and IOHK \\
+%\email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London, UK \\
+%\email{m.p.zajac@gmail.com}} 
 
 \allowdisplaybreaks
 
@@ -642,129 +642,16 @@ also outputs $\vec{c}$ such that $\gnone{y} = \vec{c}^\top \cdot
 \gnone{\vec{x}}$. Both $\plonk$ and $\sonic$ have been shown secure using the
 AGM. An adversary that works in the AGM is called \emph{algebraic}.
 
-\subsection{Polynomial commitment.}
+\subsection{Polynomial commitment}
 \label{sec:poly_com}
 In the polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$ the
-committer $\committer$ can convince the receiver $\receiver$ that some polynomial
-$\p{f}$ which $\committer$ committed to evaluates to $s$ at some point $z$
-chosen by $\receiver$. $\plonk$ and $\sonic$ use variants of the KZG polynomial
-commitment scheme \cite{AC:KatZavGol10}. We denote the first by $\PCOMp$, presented in
-\cref{fig:pcomp}, and the latter by $\PCOMs$, presented in \cref{fig:pcoms}. The
-key generation algorithm $\kgen$ takes as input a security parameter $\secparam$
-and a parameter $\maxdeg$ which determines the maximal degree of the committed
-polynomial. We assume that $\maxdeg$ can be read from the output SRS.
-%
-% We require $\PCOM$ to have the following properties:
-\begin{figure}[t!]
-\centering
-	\begin{pcvstack}[center,boxed]
-		\begin{pchstack}
-			\procedure{$\kgen(\secparam, \maxdeg)$}
-			{
-			\chi \sample \FF^2_p \\ [\myskip]
-			\pcreturn \gone{1, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}\\ [\myskip]
-				\hphantom{\hspace*{5.5cm}}	
-        %\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1}
-        %\frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
-      }
-			
-			\pchspace
-			
-			\procedure{$\com(\srs, \vec{\p{f}}(X))$}
-			{ 
-				\pcreturn \gone{\vec{c}} = \gone{\vec{\p{f}}(\chi)}\\ [\myskip]
-				\hphantom{\pcind \pcif 
-					\sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j}
-					\gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet
-				\gtwo{1} + }
-			}
-		\end{pchstack}
-		% \pcvspace
-    
-		\begin{pchstack}
-			\procedure{$\open(\srs, \vec{\gamma}, \vec{z}, \vec{s}, \vec{\p{f}}(X))$}
-			{
-			\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo\\ [\myskip]
-      \pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1}
-      \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}\\ [\myskip] \pcreturn
-      \vec{o} = \gone{\vec{\p{o}}(\chi)}\\ [\myskip]
-				\hphantom{\hspace*{5.5cm}}	
-			}
-			
-			\pchspace
-			
-			\procedure{$\verify(\srs, \gone{c}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
-			{
-				\vec{r} \gets \FF_p^{\abs{\vec{z}}}\\ [\myskip]
-				\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo \\ [\myskip]
-				\pcind \pcif 
-          \sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j}
-          \gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet
-          \gtwo{1} + \\ [\myskip] \pcind \sum_{i = 1}^{\abs{\vec{z}}} r_i z_i
-          o_i
-          \bullet \gtwo{1} \neq \gone{- \sum_{i = 1}^{\abs{\vec{z}}} r_i o_i }
-          \bullet \gtwo{\chi} \pcthen  \\
-					\pcind \pcreturn 0\\ [\myskip]
-					\pcreturn 1.
-			}
-		\end{pchstack}
-	\end{pcvstack}
-	\caption{$\PCOMp$ polynomial commitment scheme.}
-	\label{fig:pcomp}
-  \end{figure}
-
-\begin{figure}[t!]
-\centering
-	\begin{pcvstack}[center,boxed]
-		\begin{pchstack}
-			\procedure{$\kgen(\secparam, \maxdeg)$} {
-				\alpha, \chi \sample \FF^2_p \\ [\myskip]
-				\pcreturn \gone{\smallset{\chi^i}_{i = -\multconstr}^{\multconstr},
-          \smallset{\alpha \chi^i}_{i = -\multconstr, i \neq
-            0}^{\multconstr}},\\
-        \pcind \gtwo{\smallset{\chi^i, \alpha \chi^i}_{i =
-            -\multconstr}^{\multconstr}}, \gtar{\alpha}\\
-				%\markulf{03.11.2020}{} \\
-			%	\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
-				\hphantom{\hspace*{5.5cm}}	
-		}
-			
-			\pchspace
-			
-			\procedure{$\com(\srs, \maxconst, \p{f}(X))$} {
-				\p{c}(X) \gets \alpha \cdot X^{\dconst - \maxconst} \p{f}(X) \\ [\myskip]
-				\pcreturn \gone{c} = \gone{\p{c}(\chi)}\\ [\myskip]
-				\hphantom{\pcind \pcif \sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot
-          \gone{\sum_{j = 1}^{t_j} \gamma_i^{j - 1} c_{i, j} - \sum_{j = 1}^{t_j}
-            s_{i, j}} \bullet \gtwo{1} + } }
-		\end{pchstack}
-		% \pcvspace
-    
-		\begin{pchstack}
-			\procedure{$\open(\srs, z, s, f(X))$}
-			{
-				\p{o}(X) \gets \frac{\p{f}(X) - \p{f}(z)}{X - z}\\ [\myskip]
-				\pcreturn \gone{\p{o}(\chi)}\\ [\myskip]
-				\hphantom{\hspace*{5.5cm}}	
-			}
-			
-			\pchspace
-			
-			\procedure{$\verify(\srs, \maxconst, \gone{c}, z, s, \gone{\p{o}(\chi)})$}
-      {
-        \pcif \gone{\p{o}(\chi)} \bullet \gtwo{\alpha \chi} + \gone{s - z
-        \p{o}(\chi)} \bullet \gtwo{\alpha} = \\ [\myskip] \pcind \gone{c}
-        \bullet \gtwo{\chi^{- \dconst + \maxconst}} \pcthen  \pcreturn 1\\
-        [\myskip]
-        \rlap{\pcelse \pcreturn 0.} \hphantom{\pcind \pcif \sum_{i =
-            1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j} \gamma_i^{j -
-              1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet \gtwo{1} + } }
-		\end{pchstack}
-	\end{pcvstack}
-	
-	\caption{$\PCOMs$ polynomial commitment scheme.}
-	\label{fig:pcoms}
-\end{figure}
+committer $\committer$ can convince the receiver $\receiver$ that some
+polynomial $\p{f}$ which $\committer$ committed to evaluates to $s$ at some
+point $z$ chosen by $\receiver$. $\plonk$ and $\sonic$ use variants of the KZG
+polynomial commitment scheme \cite{AC:KatZavGol10}. We denote the first by
+$\PCOMp$ and the latter by $\PCOMs$ Due to page limit, we omit their
+presentation here and refer to \cref{fig:pcomp} and \cref{fig:pcoms} in the
+\cref{sec:pcom}.
   
 We emphasize the following properties of a secure polynomial commitment
 $\PCOM$:
@@ -1352,127 +1239,10 @@ extract a witness.
 	\label{fig:genforking_lemma}
 \end{figure}
 \end{lemma}
-\begin{proof}
-First denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
-\begin{align*}
-\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s)
-\gets \zdv(y, h_1, \ldots, h_q)}\,.\\
-	\frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
-\genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}\,.
-\end{align*}
-
-We start by claiming that for all $y$ 
-\begin{equation}\label{eq:frkProb_y}
-	\frkProb(y) \geq 
-	\frac{\accProb(y)^m}{q^{m - 1}} - \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - m)! \cdot h^{m}}\right)
-	\end{equation}
-Then with the expectation taken over $y \sample \ig$, we have
-\begin{align}
-	\frkProb & = \expected{\frkProb(y)} \geq
-	\expected{\frac{\accProb(y)^m}{q^{m - 1}} -  \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - m)! \cdot h^{m}}\right)} \label{eq:use_eq1}\\
-	& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} -
-	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - m)! \cdot
-  h^{m}}\right) \label{eq:by_lemma_jensen}\\
-	& = \frac{\accProb^m}{q^{m - 1}} -  \accProb \cdot \left(1 -
-  \frac{h!}{(h - m)! \cdot h^{m}}\right)\label{eq:by_accProb}\,.
-\end{align}
-Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
-\cref{eq:by_lemma_jensen} comes from linearity of expected value and \cref{lem:jensen}; and
-\cref{eq:by_accProb} holds by the fact that $\expected{\accProb(y)} =
-\accProb$.
-
-We now show \cref{eq:frkProb_y}.
-Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$. 
-For any input $y$, with probabilities taken over the coin tosses of
-$\genforking_{\zdv}^{m}$ we have
-\begin{align*}
-	\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land
-h_{i_j}^{j} \neq h_{i_{j'}}^{j'} \text{ for } (j, j') \in J}	\\
-	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} %\\
-   - \prob{i_j \geq 1 \land h_{i_j}^{j} = h_{i_{j'}}^{j'} \text{ for some } (j, j') \in J}\\
-	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} -
-	\prob{i_j \geq 1} \cdot 
-  \left(1 - \frac{h!}{(h - m)! \cdot h^{m}}\right) \\ 
-	& = \prob{i_j = i_{j'} \land
-	i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 -
-\frac{h!}{(h - m)! \cdot h^{m}}\right)\,.
-\end{align*}
-
-Probability that for some $(j, j') \in J$ and $i_j = i_{j'}$ holds
-$h_{i_j}^{j} \neq h_{i_{j'}}^{j'}$ equals 
-\[
-  \frac{h \cdot (h - 1)
-\cdot \ldots \cdot (h - m - 1)}{h^m} = \frac{h!}{(h - m)! \cdot h^m}.
-\]
-That is, it equals the number
-of all $m$-element strings where each element is different divided by
-the number of all $m$-element strings, where elements are taken from a
-set of size $h$. 
-
-It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j,
-  j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$. Let $\RND{\zdv}$ denote
-the set from which $\zdv$ picks its coins at random. For each $\iota \in
-\range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times H^{\iota - 1} \to [0, 1]$ be
-defined by setting $X_\iota(\rho, h_1, \ldots, h_{\iota - 1})$ to
-\[
-  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
-    \ldots, h_q; \rho)}
-\]
-for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
-$X_\iota$ be a random variable over the uniform distribution on its domain. Then
-\begin{align*}
-	& \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} 
-	 = \sum_{\iota = 1}^{q} \prob{i_1 = \iota \land \ldots \land i_m = \iota} \\
-	& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota} \cdot \condprob{i_2 = \iota}{i_1 = \iota} \cdot \ldots \cdot \condprob{i_m = \iota}{i_1 = \ldots = i_{m - 1} = \iota} \\
-	& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota}
-   (\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\iota - 1}}
-   = \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
-\end{align*}
-Importantly, $\sum_{\iota = 1}^q \expected{X_{\iota}} = \accProb(y)$.
-
-By \cref{lem:jensen} we get
-\[
-	\sum_{\iota = 1}^{q} \expected{X_\iota^m} \geq \sum_{\iota = 1}^{q} \expected{X_\iota}^m\,.
-\]
-Note that for e.g.~$X_i = 1$, $i \in \range{1}{q}$ the inequality becomes equality, that is, it is tight.
- 
-We now use the H\"older inequality, cf.~\cref{lem:holder}, for $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
-\begin{gather}
-	\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
-	\frac{1}{q^{m - 1}} \cdot \accProb(y)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
-\end{gather}
-Finally, we get
-\[
-	\frkProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
-	 \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
-\]
-\qed
-\end{proof}
-
-% \begin{figure}
-% 		\fbox{
-% 		\procedure{$\zdv (y,h_1^{1}, \ldots, h_{q}^{1}; \rho)$}		
-% 		{
-%       (\rho_\sim, \rho_\adv)
-% 		\rho \sample \RND{\zdv}\\
-% 		(i, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; \rho)\\
-%     i_1 \gets i\\
-% 		\pcif i = 0\ \pcreturn (0, \bot)\\
-% 		\pcfor j \in \range{2}{m}\\
-% 		\pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
-% 		h_{i - 1}^{j - 1}\\
-% 		\pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
-% 		\pcind (i_j, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
-% 		\ldots, h_{q}^{j}; \rho)\\
-% 		\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
-%     \pcif \exists (j, j') \in \range{1}{m}^2, j \neq j' : (h_{i}^{j} = h_{i}^{j'})\
-% 	\pcreturn (0, \bot)\\
-% 		\pcelse \pcreturn (1, \vec{s})
-% 	}}
-
-% \end{figure}
+The proof goes similarly to \cite[Lemma 1]{CCS:BelNev06} with some modifications required
+by the fact that the protocol has more than 3 rounds and the number of
+transcripts required is larger. Due to page limit the proof is presented in
+\cref{sec:forking_proof}.
 
 To highlight importance of the generalised forking lemma we describe how we use
 it in our forking simulation-extractability proof.  Let $\proofsystem$ be a
@@ -1527,7 +1297,7 @@ witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of acceptable
 transcripts. This limitation however does not affect the main result of this
 paper, i.e.~showing that both $\plonk$ and $\sonic$ are forking simulation extractable.
 
-\subsection{Unique-response protocols.}
+\subsection{Unique-response protocols}
 Another problem comes with another assumption required by Faust et al.---the
 unique response property of the transformed sigma protocol. The original
 Fischlin's formulation, although suitable for applications presented in
@@ -1763,23 +1533,16 @@ algorithm from the generalized forking lemma.
   for any PPT adversary the probability that
   \[
     \Pr\left[
-      \begin{aligned}
+    %  \begin{aligned}
        % & \forall_{\zkproof \in \tree} \verifier(\srs, \inp, \zkproof) = 1, \\
-        & \wit \gets \extt(\tree), \\
-        & \REL(\tree.\inp, \wit) = 0
-      \end{aligned}
+         \wit \gets \extt(\tree), 
+         \REL(\tree.\inp, \wit) = 0
+    %  \end{aligned}
       \,\left|\,
-        \vphantom{
-          \begin{aligned}
-            \\
-            \\
-            \\
-          \end{aligned}
-        }
-        \begin{aligned}
-          & \srs \sample \kgen(\REL),\\
-          & (1, \tree) \gets \tdv(\adv, \srs)
-        \end{aligned}
+        %\begin{aligned}
+           \srs \sample \kgen(\REL), 
+           (1, \tree) \gets \tdv(\adv, \srs)
+     %   \end{aligned}
       \right.\right] \leq \eps(\secpar).
       \]
 \end{definition}
@@ -1818,36 +1581,14 @@ random oracle and wins with the same probability.
   $\epss(\secpar)$-sound and $\ur{k}$ with security $\epsur(\secpar)$. Then the
   probability that a $\ppt$ adversary $\adv$ breaks simulation soundness of
   $\ps_{\fs}$ is upper-bounded by
-  \[
+  \(
     \epsur(\secpar) + q_\ro^\mu  \epss(\secpar)\,,
-  \]
+  \)
   where $q$ is the total number of queries made by the adversary $\adv$ to a
   random oracle $\ro\colon \bin^{*} \to \bin^{\secpar}$.
 \end{theorem}
 
 \begin{proof}
-  % The proof goes by game hoping. The games are controlled by an environment
-  % $\env$ that internally runs a simulation soundness adversary $\adv$, provides
-  % it with access to a random oracle and simulator, and when necessary rewinds
-  % it. The games differ by various breaking points, i.e.~points where the
-  % environment decides to abort the game.
-
-  % Denote by $\zkproof_{\adv}, \zkproof_{\simulator}$ proofs returned by the
-  % adversary and the simulator respectively. We use $\zkproof[i]$ to denote
-  % prover's message in the $i$-th round of the proof (counting from 1), i.e.~$(2i
-  % - 1)$-th message exchanged in the protocol. We use $\zkproof[i].\ch$ to denote the
-  % challenge that is given to the prover after $\zkproof[i]$, and
-  % $\zkproof[i..j]$ to denote all messages of the proof including challenges
-  % between rounds $i$ and $j$, but not challenge $\zkproof[j].\ch$. When it is
-  % not explicitly stated we denote the proven instance $\inp$ by $\zkproof[0]$
-  % (however, there is no challenge $\zkproof[0].\ch$).
-
-  % Without loss of generality, we assume that whenever the accepting proof
-  % contains a response to a challenge from a random oracle, then the
-  % adversary queried the oracle to get it. It is straightforward to transform any
-  % adversary that violates this condition into an adversary that makes these
-  % additional queries to the random oracle and wins with the same probability.
-
   \ngame{0} This is a simulation soundness game played between an adversary
   $\adv$ who has given access to a random oracle $\ro$ and simulator
   $\psfs.\simulator$. $\adv$ wins if it manages to produce an acceptable proof
@@ -1864,7 +1605,7 @@ random oracle and wins with the same probability.
   \ncase{$\game{0} \mapsto \game{1}$} We have, \( \prob{\game{0} \land
     \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}} \) and, from the
   difference lemma, cf.~\cref{lem:difference_lemma},
-  \[ \abs{\prob{\game{0}} - \prob{\game{1}}} \leq \prob{\event{\errur}}\,. \]
+  $ \abs{\prob{\game{0}} - \prob{\game{1}}} \leq \prob{\event{\errur}}\,$.
   Thus, to show that the transition from one game to another introduces only
   minor change in probability of $\adv$ winning it should be shown that
   $\prob{\event{\errur}}$ is small.
@@ -1873,7 +1614,7 @@ random oracle and wins with the same probability.
   output, i.e.~$\inp_{\adv}$. We show a reduction $\rdvur$ that utilises $\adv$
   to break the $\ur{k}$ property of $\ps$. Let $\rdvur$ run $\advse$ internally
   as a black-box:
-  \begin{itemize}
+  \begin{compactitem}
 	\item The reduction answers both queries to the simulator $\psfs.\simulator$
     and to the random oracle.  It also keeps lists $Q$, for the simulated
     proofs, and $Q_\ro$ for the random oracle queries.
@@ -1889,7 +1630,7 @@ random oracle and wins with the same probability.
 		\zkproof_2 = (\zkproof_{\simulator}[1..k],
 		\zkproof_{\simulator}[k].\ch, \zkproof_{\adv}[k + 1..\mu + 1])
 	\end{align*}
-	\end{itemize}  
+	\end{compactitem}  
 	If $\zkproof_1 = \zkproof_2$, then $\adv$ fails to break simulation soundness,
   as $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then
   $\rdvur$ breaks $\ur{k}$-ness of $\ps$. This happens only with negligible
@@ -1911,7 +1652,7 @@ random oracle and wins with the same probability.
   $\game{1}$). Consider a soundness adversary $\adv'$ who initiates a proof with
   $\ps$'s verifier $\ps.\verifier$, internally runs $\adv$ and proceeds as
   follows:
-  \begin{itemize}
+  \begin{compactitem}
   \item It guesses indices $i_1, \ldots, i_\mu$ such that random oracle queries
     $h_{i_1}, \ldots, h_{i_\mu}$ are the queries used in the $\zkproof_\adv$
     proof eventually output by $\adv$. This is done with probability at least
@@ -1924,21 +1665,25 @@ random oracle and wins with the same probability.
     $\adv$ finds $h$ in $Q_\ro$ and returns the corresponding $y$.
   \item On input $h_{i_j}$ for the $i_j$-th,
     $i_j \in \smallset{{i_1}, \ldots, {i_\mu}}$, random oracle query, $\adv'$
-    parses $h_{i_j}$ as a partial proof transcript $\zkproof_\adv[1..j]$ and runs
-    $\ps$ using $\zkproof_\adv[j]$ as a $\ps.\prover$'s $j$-th message to
+    parses $h_{i_j}$ as a partial proof transcript $\zkproof_\adv[1..j]$ and
+    runs $\ps$ using $\zkproof_\adv[j]$ as a $\ps.\prover$'s $j$-th message to
     $\ps.\verifier$. The verifier responds with a challenge
-    $\zkproof_\adv[j].\ch$. $\adv'$ sets $\ro(h_{i_j}) = \zkproof_\adv[j].\ch$. If we guessed the indices correctly we have that $h_{i_{j'}}$, for $j' \leq j$, parsed as $\zkproof_\adv[1..j']$ is a prefix of $\zkproof_\adv[1..j]$.
+    $\zkproof_\adv[j].\ch$. $\adv'$ sets $\ro(h_{i_j}) =
+    \zkproof_\adv[j].\ch$. If we guessed the indices correctly we have that
+    $h_{i_{j'}}$, for $j' \leq j$, parsed as $\zkproof_\adv[1..j']$ is a prefix
+    of $\zkproof_\adv[1..j]$.
   \item On query $\inp_\simulator$ to $\simulator$, $\adv'$ runs the simulator
-    $\ps.\simulator$ internally. Note that we require a simulator that only programs the random oracle for $j \geq k$.
-
-    If the simulator makes a previously unanswered random
-    oracle query with input $\zkproof_\simulator[1..j]$, $1 \leq j < k$, and this is the $i_j$-th query, it generates $\zkproof_\simulator[j].\ch$ by
-    invoking $\ps.\verifier$ on $\zkproof_\simulator[j]$ and programs
-    $\ro(h_{i_j}) = \zkproof_\simulator[j].\ch$.
-    It returns $\zkproof_\simulator$.
+    $\ps.\simulator$ internally. Note that we require a simulator that only
+    programs the random oracle for $j \geq k$.  If the simulator makes a
+    previously unanswered random oracle query with input
+    $\zkproof_\simulator[1..j]$, $1 \leq j < k$, and this is the $i_j$-th query,
+    it generates $\zkproof_\simulator[j].\ch$ by invoking $\ps.\verifier$ on
+    $\zkproof_\simulator[j]$ and programs
+    $\ro(h_{i_j}) = \zkproof_\simulator[j].\ch$.  It returns
+    $\zkproof_\simulator$.
   \item Answers $\ps.\verifier$'s final challenge $\zkproof_\adv[\mu].\ch$ using the
     answer given by $\adv$, i.e.~$\zkproof_\adv[\mu]$.
-  \end{itemize}
+  \end{compactitem}
   That is, $\adv'$ manages to break soundness of $\ps$ if $\adv$ manages to
   break simulation soundness without breaking the unique response property and
   $\adv'$ correctly guesses the indices of $\adv$ random oracle queries. This
@@ -1951,9 +1696,12 @@ random oracle and wins with the same probability.
   $\epsur(\secpar) + q^{\mu} \cdot \epss(\secpar)$.  \qed
 \end{proof}
 
+<<<<<<< HEAD
 We conjecture that based on the recent results on state restoration attack secure soundness\cite{cryptoeprint:2020:1351}, which effectively allows to query the verifier multiple times on different overlapping transcripts the $q^{\mu}$ loss could be avoided. However, this would reduce the class of protocols covered by our results. 
 
 
+=======
+>>>>>>> 2ac0952dba81de4dbc90d01e9b35a87e6079e27b
 \begin{theorem}[Forking simulation-extractable multi-message protocols]
   \label{thm:se}
   Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
@@ -1964,15 +1712,15 @@ We conjecture that based on the recent results on state restoration attack secur
   property with security $\epsur(\secpar)$, and is $(\epss(\secpar), k, n)$-forking sound.
   % for
   % $n_i = 1, i \in \range{1}{\mu} \setminus \smallset{k}$ and $n_k = n$.
-
+%
 Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
 Then $\psfs$ is forking simulation-extractable with extraction error $\epsur(\secpar)$
 against $\ppt$ algebraic adversaries that makes up to $q$ random oracle queries and
 returns an acceptable proof with probability at least $\accProb$. 
 The extraction probability $\extProb$ is at least
-\[
+\(
 	\extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,,
-\]
+\)
 for some negligible $\eps(\secpar)$.	
 \end{theorem}
 \begin{proof}		
@@ -2049,9 +1797,9 @@ for some negligible $\eps(\secpar)$.
   $(\inp_{\advse}, \zkproof_{\advse} [1..k]) = (\inp_\simulator,
   \zkproof_\simulator[1..k])$. Otherwise, the game would be already interrupted
   by the error event in Game $\game{1}$.  As previously,
-\[
+\(
   \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}}\,.
-\]
+\)
 
 We describe our extractor $\ext$ here. The extractor takes as input relation
 $\REL$, SRS $\srs$, $\advse$'s code, its randomness $r$, the output instance
@@ -2167,7 +1915,7 @@ $\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} \geq
 \[
 	\extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,.
 \] 
-thus $\psfs$ is forking simulation extractable with extraction error $\epsur(\secpar)$.
+and $\psfs$ is forking simulation extractable with extraction error $\epsur(\secpar)$.
 \qed
 \end{proof}
 
@@ -2237,7 +1985,641 @@ extractability adversary $\advse$ either break the protocol's unique response
 property or based on forking soundness break the $\dlog$ assumption, if extracting a valid witness from a
 tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 
-%Due to page limit, we omit description of \plonk{} here and refer to Supp.~Mat.~\ref{sec:plonk_explained}
+Due to page limit, we omit description of \plonk{} here and refer to \cref{sec:plonk_explained}.
+
+  
+\subsection{Unique opening property of $\PCOMp$}
+\begin{lemma}
+\label{lem:pcomp_unique_op}
+Let $\PCOMp$ be a batched version of a batched KZG polynomial
+commitment, cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property
+in the AGM with security $\epsop(\secpar) \leq 2 \epsdlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where
+$\epsdlog(\secpar)$ is security of the $(\noofc + 2, 1)$-dlog assumption and $\FF_p$ is the
+field used in $\PCOMp$.\end{lemma}
+\begin{proof}
+  Let $\vec{z} = (z, z') \in \FF_p^2$ be the two points the polynomials are
+  evaluated at, $k \in \NN$ be the number of the committed polynomials to be
+  evaluated at $z$, and $k' \in \NN$ be the number of the committed polynomials
+  to be evaluated at $z'$, $\vec{c} \in \GRP^k, \vec{c'} \in \GRP^{k'}$ be the
+  commitments, $\vec{s} \in \FF_p^k, \vec{s'} \in \FF_p^{k'}$ the evaluations,
+  and $\vec{o} = (o, o') \in \FF_p^2$ be the commitment openings.
+  We need to show that the probability a $\ppt$ $\adv$ opens the same commitment
+  in two different ways is negligible. 
+  \iffalse
+  We need to
+  show that for every $\ppt$ adversary $\adv$ the probability
+\[
+	\Pr
+		\left[
+			\begin{aligned}
+				& \verify(\srs, \vec{c}, \vec{c'}, (z, z'), \vec{s}, \vec{s'}, \vec{o}), \\
+				& \verify(\srs, \vec{c}, \vec{c'}, (z, z'), \vec{s}, \vec{s'}, \vec{\tilde{o}}) \\
+				& \vec{o} \neq \vec{\tilde{o}}
+			\end{aligned}
+		\,\left|\,
+		\vphantom{\begin{aligned}
+			& \verify(\srs, \vec{c}, \vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}), \\
+			& \verify(\srs, \vec{c}, \vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{\tilde{o}}) \\
+			&\vec{o} \neq \vec{\tilde{o}})
+		\end{aligned}}
+		\begin{aligned}
+			& \srs \gets \kgen(\secparam, \maxdeg), \\
+			&	(\vec{c}, \vec{c'}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}, \vec{\tilde{o}}) \gets \adv(\srs)
+		\end{aligned}
+		\right.\right]
+	 % \leq \negl.
+\]
+\fi
+is at most $\epsop(\secpar)$.
+
+\ncase{Step 1} First, consider a case where the commitment is limited to commit
+to multiple polynomials which are evaluated at the same point $z$. As noted in
+\cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the probability
+of the adversary succeeding using the idealised verification
+equation\COMMENT{---which considers equality between polynomials---instead of
+  the real verification equation---which consider equality of the polynomials'
+  evaluations}.  This holds since an adversary that manages to provide a
+commitment opening that holds for the real verifier, but does not hold for the
+idealised verifier can be used to break the dlog assumption and reveal the
+secret trapdoor used to produce the commitment's SRS, the probability of such
+event is bounded by the $(\noofc + 2, 1)$-dlog security $\epsdlog(\secpar)$,
+cf.~\cite[Lemma 2.2]{EPRINT:GabWilCio19} for more details.
+
+For polynomials $\vec{\p{f}} = \p{f}_1, \ldots, \p{f}_k$, evaluation point $z$, evaluation
+result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $\p{o}(X)$ the
+idealised check verifies that
+\(	\sum_{i = 1}^k \gamma^{i - 1} \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} s_i \equiv \p{o}(X) (X - z)\,.
+	\label{eq:pcom_idealised_check}
+  \)%
+Since $\p{o}(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial
+composition, there is only one $\p{o} (X)$ that fulfils the equation above.
+
+\ncase{Step 2} Second, consider a case when the polynomials are evaluated on two
+points $\vec{z} = (z, z')$ and the adversary is asked to provide two openings
+$\vec{o} = (o, o')$. Similarly, we analyse the case of the ideal verification.
+In that scenario, the verifier checks whether the following equality, for
+$\gamma, r'$ picked at random, holds:
+\begin{multline}
+	\label{eq:ver_eq_poly}
+	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} \cdot s_i  + r' \left(\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \right)\\
+	\equiv \p{o}(X)(X - z) + r' \p{o}'(X)(X- z')
+\end{multline}
+Since $r'$ has been picked at random from $\FF$, probability that \cref{eq:ver_eq_poly}
+holds while either
+\[
+	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}  \gamma^{i - 1} \cdot s_i \not\equiv \p{o}(X)(X - z)
+\text{, or}\]
+\[
+	\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \not\equiv \p{o'}(X)(X - z')
+\]
+is $\infrac{1}{\abs{\FF_p}}$~\cite{EPRINT:GabWilCio19}. This brings the proof back to
+Step 1 above. Altogether, Step 2 gives the following bound for the unique
+opening property $\epsop(\secpar) \leq 2\epsdlog(\secpar) + \infrac{1}{\FF_p}$.
+\qed
+\end{proof}
+
+\subsection{Unique response property}
+\begin{lemma}
+	\label{lem:plonkprot_ur}
+  Let $\PCOMp$ be commitment of knowledge with security $\epsk(\secpar)$,
+  $\epsbind(\secpar)$-binding and has unique opening property with security $\epsop(\secpar)$,
+  then probability that a $\ppt$ adversary $\adv$ breaks $\plonkprot$'s $\ur{2}$
+  property is at most $\epsk(\secpar) + 2\cdot\epsbind(\secpar) +
+  \epsop(\secpar)$.% assuming the polynomial commitment scheme $\PCOMp$
+%is of knowledge.
+\end{lemma}
+\begin{proof}[sketch]
+  Let
+  $\adv(\REL,\srs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}}, \gtwo{\chi}))$
+  be an adversary tasked to break the $\ur{2}$-ness of $\plonkprot$. It is
+  sufficient to observe that the first 2 rounds of the protocol determines,
+  along with the verifiers challenges, the rest of it.
+
+  In Round 3 the adversary outputs a commitment to polynomial $\pt(X)$ which
+  assures that all constraints of the system are fulfilled. Since the commitment
+  scheme is deterministic, there is only one value $c$ that is a commitment to
+  $\pt(X)$. Assume that $\adv$ outputs $c' \neq c$ and is later able to open
+  $c'$ to $y = \pt(\chz)$, where $\chz$ is a random point determined later.
+  Using the AGM and arguments similar to \cite{CCS:MBKM19}, we argue that
+  $\PCOMp$ is a commitment of knowledge. That is, an AGM adversary $\adv$ that
+  outputs a commitment $c'$ which it can later open, knows a polynomial $\p{f}$
+  of degree-$(\leq \noofc + 2)$ such that $\gone{\p{f}(\chi)} = c'$. Denote by
+  $\epsk(\secpar)$ probability that $\adv$ breaks knowledge soundness of the commitment. Thus if
+  $c' \neq c$ and the commitment scheme is evaluation binding with security
+  $\epsbind(\secpar)$ then $\adv$ when
+  picking $c'$ picks it as a commitment to $\p{f}$ which evaluates at $\chz$ to
+  $\pt(\chz)$. The probability of that is negligible as there can only be no
+  more than $\noofc + 2$ overlapping points between $\p{f}(X)$ and $\p{t}(X)$,
+  and $\chz$ remains random for $\adv$ when it computes $c'$. Hence, the
+  probability that $\adv$ is able to produce two different outputs of Round 3 is
+  upper-bounded by $\epsk(\secpar) + \epsbind(\secpar)$.
+
+  In Round 4 the prover is asked to give evaluations of predefined polynomials
+  at some point $\chz$. Naturally, for the given polynomials only one value at
+  $\chz$ is correct. Assume $\adv$ is able to produce two different outputs in
+  that round: $\vec{r_4} = (\ev{\p{a}}, \ev{\p{b}}, \ev{\p{c}}, \ev{\p{S_{\sigma
+        1}}}, \ev{\p{S_{\sigma 2}}}, \ev{\p{r}}, \ev{\p{z}})$ and $\vec{r_4} =
+  (\ev{\p{a}}', \ev{\p{b}}', \ev{\p{c}}', \ev{\p{S_{\sigma 1}}}',
+  \ev{\p{S_{\sigma 2}}}', \ev{\p{r}}', \ev{\p{z}}')$ which suppose to be
+  evaluations at $\chz$ of polynomials $\p{a}, \p{b}, \p{c}, \p{S_{\sigma 1}},
+  \p{S_{\sigma 2}}, \p{r}$ and an evaluation at $\chz \omega$ of $\p{z}$.
+  Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus
+  if both evaluations are acceptable by the $\PCOMp.\verify$ then the evaluation
+  binding property of $\PCOMp$ is broken. This happens with probability
+  upper-bounded by $\epsbind(\secpar)$.
+
+  In the last round of the protocol the prover provides openings for the
+  polynomial commitment evaluations done before. Assume $\adv$ is able to
+  produce two different polynomial commitment openings pairs: $\vec{r_5} =
+  (\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and $\vec{r'_5} =
+  (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
+% Since \cref{lem:pcomp_unique_op}, 
+  Since $\PCOMp$ has unique opening property, one of the openings has to be
+  incorrect and should be rejected by the polynomial commitment verifier. This
+  happens except with probability $\epsop(\secpar)$.
+
+  Hence, the probability that after fixing the two first rounds, the adversary
+  is able to produce two different outputs in one of the following rounds is
+  upper-bounded by
+\(
+	\epsk(\secpar) + 2 \cdot \epsbind(\secpar) + \epsop(\secpar)\,.
+\)
+\qed
+
+
+\end{proof}
+
+\subsection{Forking soundness}
+\begin{lemma}
+\label{lem:plonkprot_ss}
+$\plonkprot$ is $(\epsss(\secpar), 3, 3 \noofc + 1)$-forking sound
+for $\epsss(\secpar) \leq \epsid(\secpar) + \epsdlog(\secpar)$ against algebraic adversaries.
+\end{lemma}
+\begin{proof}
+  Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
+  $\GRP_1$-elements; that is,
+  $\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc + 2}}$. Let $\tdv$ be an
+  algebraic adversary that produces a statement $\inp$ and a
+  $(1, 1, 3\noofc + 1, 1)$-tree of acceptable transcripts $\tree$.  Note that in
+  all transcripts the instance $\inp$, proof elements
+  $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and
+  challenges $\alpha, \beta, \gamma$ are common as the transcripts share the
+  first three rounds. The tree branches after the third round of the protocol
+  where the challenge $\chz$ is presented, thus tree $\tree$ is build using
+  different values of $\chz$.
+
+  We consider two mutually disjunctive events. The first, $\event{E}$ holds when
+  all of the transcripts are acceptable by the idealised verification equation,
+  i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}. The second,
+  $\nevent{E}$ holds when there is a transcript that is acceptable by the real
+  verifier, but not by the ideal verifier. That is, for that particular
+  transcript it holds that $\vereq_{\inp, \zkproof}(\chi) = 0$, but
+  $\vereq_{\inp, \zkproof}(X) \neq 0$.  When event $\event{E}$ holds we show
+  that the extractor $\extt$ is successful. If it does not hold, we show a
+  reduction $\rdvdlog$ that breaks the $\dlog$ assumption.
+
+  \ncase{When $\event{E}$ holds} Let $(1, \tree) \gets \tdv(\REL, \srs)$ and
+  $\inp$ be a relation proven in $\tree$. Since the protocol $\plonkprot$,
+  instantiated with the idealised verification equation, is perfectly sound,
+  except with negligible probability of the idealised verifier failure $\epsid(\secpar)$,
+  for a valid proof $\zkproof$ of a statement $\inp$ there exists a witness
+  $\wit$, such that $\REL(\inp, \wit)$ holds. Note that since the $\tdv$
+  produces $(3 \noofc + 1)$ acceptable transcripts for different challenges
+  $\chz$, it obtains the same number of different evaluations of polynomials
+  $\p{a}, \p{b}, \p{c}, \p{z}, \p{t}$. Since the transcripts are acceptable by
+  an idealised verifier, the equality between polynomial $\p{t}$ and combination
+  of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$ described in Round 3 of the
+  protocol holds. Hence, $\p{a}, \p{b}, \p{c}$ encodes the valid witness for the
+  proven statement. Since $\p{a}, \p{b}, \p{c}$ are of degree at most
+  $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their evaluations known,
+  $\extt$ can recreate their coefficients by interpolation and reveal the
+  witness with probability $1$. Hence, the probability that extraction fails in
+  that case is upper-bounded by probability of an idealised verifier failing
+  $\epsid(\secpar)$, which is negligible.
+
+  \ncase{When $\nevent{E}$ holds} Let $\tdv$ be an adversary that for relation
+  $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree of
+  acceptable transcripts such that $\nevent{E}$ holds. Let $\rdvdlog$ be a
+  reduction that gets as input an $(\noofc + 2, 1)$-dlog instance
+  $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$ and is tasked to output
+  $\chi$. The reduction proceeds as follows---it gives the input instance to the
+  adversary as the SRS. Let $(1, \tree)$ be the output returned by $\adv$. Let
+  $\inp$ be a relation proven in $\tree$.  Consider a transcript
+  $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
+  $\vereq_{\inp, \zkproof}(\chi) = 0$. Since the adversary is algebraic, all group
+  elements included in $\tree$ are extended by their representation as a
+  combination of the input $\GRP_1$-elements. Hence all coefficients of the
+  verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known and $\rdvdlog$
+  can find its zero points. Since $\vereq_{\inp, \zkproof}(\chi) = 0$, the targeted
+  discrete log value $\chi$ is among them.
+  Hence, the probability that this event happens is upper-bounded by $\epsdlog(\secpar)$. \qed
+\end{proof}
+
+\subsection{Honest verifier zero-knowledge}
+\begin{lemma}
+  \label{lem:plonk_hvzk}
+  Let $\plonkprot$ be zero knowledge with security $\epszk(\secpar)$. Let
+  $(\pR, \pS, \pT, \pf, 1)$-uber assumption for $\pR, \pS, \pT, \pf$ as defined
+  in \cref{eq:uber} hold with security $\epsuber(\secpar)$. Then $\plonkprot$ is
+  computationally honest verifier zero-knowledge with simulator $\simulator$
+  that does not require a SRS trapdoor with security
+  $\epszk(\secpar) + \epsuber(\secpar)$.\footnote{The simulator works as a simulator for proofs
+    that are zero-knowledge in the standard model. However, we do not say that
+    $\plonk$ is HVZK in the standard model as proof of that \emph{requires} the
+    SRS simulator.}
+\end{lemma}
+\begin{proof}
+  % More precisely, assume that $\plonk$'s SRS simulator
+  % $\simulator_\chi$ produces proof that are distributed at most $\epszk$-far
+  % from real proofs, and $(\pR, \pS, \pT, \pf, 1)$-uber assumption for
+  % $\pR, \pS, \pT, \pf$ as defined in \cref{eq:uber} is $\epsuber$-secure. Then
+  % any $\ppt$ adversary $\adv$ has advantage in telling a proof produced by
+  % $\simulator$ from a real proof upper-bounded by $\epszk + \epsuber$.
+  
+  The proof goes by game-hoping. The environment that controls the games
+  provides the adversary with a SRS $\srs$, then the adversary outputs an
+  instance--witness pair $(\inp, \wit)$ and, depending on the game, is provided
+  with either real or simulated proof for it. In the end of the game the
+  adversary outputs either $0$ if it believes that the proof it saw was provided
+  by the simulator and $1$ in the other case.
+
+  \ngame{0} In this game $\adv(\REL, \srs)$ picks an instance--witness pair
+  $(\inp, \wit)$ and gets a real proof $\zkproof$ for it.
+
+  \ngame{1} In this game for $\adv(\REL, \srs)$ picks an instance--witness pair
+  $(\inp, \wit)$ and gets a proof $\zkproof$ that is simulated by a simulator
+  $\simulator_\chi$ which utilises for the simulation the SRS trapdoor and
+  proceeds as follows. In the first round the simulator $\simulator_\chi$ picks
+  randomisers $b_1, \ldots b_9$, sets $\wit_i = 0$, for $i \in \range{1}{3
+    \noofc}$, computes polynomials $\pa(X), \pb(X), \pc(X)$ and
+  outputs $\gone{\pa(\chi), \pb(\chi), \pc(\chi)}$. Then it picks Round 1
+  challenges $\beta, \gamma$ honestly.
+
+  In Round 2 $\simulator_\chi$ computes the polynomial $\pz(X)$ and
+  outputs $\gone{\pz(\chi)}$. Then it picks randomly Round 2 challenge $\alpha$.
+
+  In Round 3 the simulator computes polynomial $\pt(X)$ and evaluates it
+  at $\chi$, then outputs $\gone{\ptlo(\chi), \ptmid(\chi), \pthi(\chi)}$. Note
+  that this evaluation is feasible (in the polynomial time with non-negligible
+  probability) only since $\simulator_\chi$ knows the trapdoor.
+
+  In the last two rounds the simulator proceeds as an honest prover would
+  proceed and picks corresponding challenges at random as an honest verifier
+  would.
+
+  \ncase{$\game{0} \mapsto \game{1}$} Since $\plonk$ is zero-knowledge,
+  probability that $\adv$ outputs a different bit in both games is negligible.
+  Hence
+  \(
+	\abs{\prob{\game{0}} - \prob{\game{1}}} \leq \epszk(\secpar).
+\)
+
+\ngame{2} In this game $\adv(\REL, \srs)$ picks an instance--witness pair
+$(\inp, \wit)$ and gets a proof $\zkproof$ simulated by the simulator
+$\simulator$ which proceeds as follows.
+
+In Round 1 the simulator  picks randomly both the randomisers $b_1, \ldots, b_6$ and
+sets $\wit_i = 0$ for $i \in \range{1}{3\noofc}$. Then $\simulator$
+outputs $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$. For the first round
+challenge, the simulator picks permutation argument challenges $\beta, \gamma$
+randomly.
+
+In Round 2, the simulator computes $\p{z}(X)$ from
+the newly picked randomisers $b_7, b_8, b_9$ and coefficients of polynomials
+$\p{a}(X), \p{b}(X), \p{c}(X)$. Then it evaluates $\p{z}(X)$ honestly and outputs
+$\gone{\p{z}(\chi)}$. Challenge $\alpha$ that should be sent by the verifier
+after Round 2 is picked by the simulator at random.
+
+In Round 3 the simulator starts by picking at random a challenge $\chz$, which
+in the real proof comes as a challenge from the verifier sent \emph{after} Round
+3. Then $\simulator$ computes evaluations
+\(\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma
+    2}}(\chz), \pubinppoly(\chz), \lag_1(\chz), \p{Z_H}(\chz),\allowbreak
+\p{z}(\chz\omega)\) and computes $\p{t}(X)$ honestly. Since for a random
+$\p{a}(X), \p{b}(X), \p{c}(X), \p{z}(X)$ the constraint system is (with
+overwhelming probability) not satisfied and the constraints-related polynomials
+are not divisible by $\p{Z_H}(X)$, hence $\p{t}(X)$ is a rational function
+rather than a polynomial. Then, the simulator evaluates $\p{t}(X)$ at $\chz$ and
+picks randomly a degree-$(3 \noofc - 1)$ polynomial $\p{\tilde{t}}(X)$ such that
+$\p{t}(\chz) = \p{\tilde{t}}(\chz)$ and publishes a commitment
+$\gone{\p{\tilde{t}_{lo}}(\chi), \p{\tilde{t}_{mid}}(\chi),
+  \p{\tilde{t}_{hi}}(\chi)}$. After this round the simulator outputs $\chz$ as a
+challenge.
+
+In the next round, the simulator computes polynomial $\p{r}(X)$ as an honest
+prover would, cf.~\cref{sec:plonk_explained} and evaluates $\p{r}(X)$ at $\chz$.
+
+The rest of the evaluations are already computed, thus $\simulator$ simply
+outputs
+\(
+  \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma
+      2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega)\,.
+\)
+After that it picks randomly the challenge $v$, proceeds in the last round as an
+honest prover would proceed and outputs the final challenge, $u$, by picking it
+at random as well.
+
+\ncase{$\game{1} \mapsto \game{2}$} We now describe the reduction $\rdv$ which
+relies on the $(\pR, \pS, \pT, \pF, 1)$-uber assumption where $\pR, \pS, \pT, \pF$
+are polynomials over variables $\vB = B_1, \ldots, B_9$ and are defined as
+follows. Let $E = \smallset{\smallset{2}, \smallset{3, 4}, \smallset{5, 6},
+  \smallset{7, 8, 9}}$ and $E' = E \setminus \smallset{2}$. Let
+\begin{align}
+\label{eq:uber}
+\pF(\vB) & = \smallset{B_1} \cup \smallset{B_1B_i \mid i \in A,\ A \in E'} \cup
+             \smallset{B_1B_iB_j \mid i \in A, j \in B,\ A, B \in E', B
+             \neq A} \cup \notag\\
+           & \smallset{B_1B_iB_jB_k \mid i \in A, j \in
+             B, k \in C,\ A, B, C \in E', A \neq B \neq C \neq A}\notag\,,\\
+  \pR(\vB) & = \smallset{B_i \mid i \in A,\ A \in E} \cup \smallset{B_i B_j \mid i \in
+             A, j \in B,\ A \neq B, A, B \in E} \cup \\ 
+           & \smallset{B_i B_j B_k \mid i \in A,\ j \in
+             B,\ k \in C,\
+             A, B, C \text{ all different and in } E} \cup \notag \\
+           & \smallset{B_i B_j B_k B_l \mid i \in A,\ j \in B,\ k \in C,\ l \in D,\
+             A, B, C, D \text{ all different and in } E} \notag \\
+           & \setminus \pF(\vB)\,,\notag \\
+  \pS(\vB) & = \emptyset, \qquad \pT(\vB) = \emptyset.
+\end{align}
+That is, the elements of $\pR$ are all singletons, pairs, triplets and
+quadruplets of $B_i$ variables that occur in polynomial $\pt(\vB)$ except the
+challenge element $\pf(\vB)$ which are all elements that depends on a variable
+$B_1$. Variables $\vB$ are evaluated to randomly picked
+$\vb = b_1, \ldots, b_9$.
+
+The reduction $\rdv$ learns $\gone{\pR}$ and challenge
+$\gone{\vec{w}} = \gone{w_1, \ldots, w_{12}}$ where $\vec{w}$ is either a vector
+of evaluations $\pF(\vb)$ or a sequence of random values $y_1, \ldots, y_{12}$,
+for the sake of concreteness we state $w_1 = b_1$ or $w_1 = y_1$ (depending on
+the chosen random bit). Then it picks $\chi$, $\chz$ and computes the SRS $\srs$
+from $\chi$. Elements $b_i$ are interpreted as polynomials in $X$ that are
+evaluated at $\chi$, i.e. $b_i = b_i(\chi)$. Next, $\rdv$ sets for
+$\xi_i, \zeta_i \sample \FF_p$
+\(
+  \gone{\p{\tb}_1(X)} =
+(X - \chz)(X - \ochz) \gone{w_1}(X) + \xi_i (X - \chz) \gone{1} +
+\zeta_i (X - \ochz) \gone{1}, % \text{ for } i \in % \range{1}{9}, u_1
+\),
+and
+\(
+  \gone{\p{\tb}_i(X)} =
+(X - \chz)(X - \ochz) \gone{b_i}(X) + \xi_i (X - \chz) \gone{1} +
+\zeta_i (X - \ochz) \gone{1}, % \text{ for } i \in % \range{1}{9}, u_1
+\) 
+for $i \in \range{2}{9}$.
+
+Denote by $\tb_i$ evaluations of $\p{\tb}_i$ at $\chi$.  The reduction computes
+all
+$\gone{\tb_i \tb_j}, \gone{\tb_i \tb_j \tb_k}, \gone{\tb_i \tb_j \tb_k \tb_l}$
+such that $\gone{B_i B_j, B_i B_j B_k, B_i B_j B_k B_l} \in \pR$.  This is
+possible since $\rdv$ knows all singletons $\gone{w_1, b_2, \ldots, b_9}$ and pairs
+$\gone{b_i b_j} \in \pR$ which can be used to compute all required pairs
+$\gone{\tb_i \tb_j}$:
+\begin{align*}
+\gone{\tb_i \tb_j} 
+& = ((\chi - \chz)(\chi - \ochz)\gone{b_i} + \xi_i (\chi - \chz)\gone{1} +
+\zeta_i (\chi - \ochz) \gone{1}) 
+\cdot \\
+ & ((\chi - \chz)(\chi - \ochz)\gone{b_j} + \xi_j (\chi - \chz)\gone{1} +
+\zeta_j (\chi - \ochz) \gone{1}) = \\
+ & ((\chi - \chz)(\chi - \ochz))^2 \gone{b_i b_j} +  ((\chi - \chz)(\chi -
+ \ochz)\gone{b_i} (\xi_j (\chi - \chz) \gone{1} + \zeta_j (\chi - \ochz)
+ \gone{1}) + \\
+ & ((\chi - \chz)(\chi -
+ \ochz)\gone{b_j} (\xi_i (\chi - \chz) \gone{1} + \zeta_i (\chi - \ochz)
+ \gone{1}) + \psi,
+\end{align*}
+where $\psi$ compounds of $\xi_i, \xi_j, \zeta_i, \zeta_j, \chz, \ochz, \chi$ which
+are all known by $\rdv$ and no $b_i$ nor $b_j$.
+Analogously for the triplets and quadruplets and elements dependent on $\vec{w}$. 
+
+Next the reduction runs the adversary $\adv(\REL, \srs)$ and obtains from $\adv$ an
+instance--witness pair $(\inp, \wit)$.  $\rdv$ now prepares a simulated proof as follows:
+\begin{compactdesc} 
+\item[Round 1] $\rdv$ computes $\gone{\pa(\chi)}$ using as
+randomisers $\gone{\tb_1}, \gone{\tb_2}$ and setting $\wit_i = 0$, for $i
+\in \range{1}{3 \noofc}$. Similarly it computes
+$\gone{\pb(\chi)}, \gone{\pc(\chi)}$.  $\rdv$ publishes the obtained values
+and picks a Round 1 challenge $\beta, \gamma$ at random.  Note that regardless
+$w_1 = b_1$ or a random element, $\gone{a(\chi)}$ is random. Thus $\rdv$'s
+output has the same distribution as output of a real prover.  
+\item[Round 2]
+$\rdv$ computes $\gone{\pz(\chi)}$ using $\tb_7, \tb_8, \tb_9$ and publishes
+it. Then it picks randomly the challenge $\alpha$. This round output is
+independent on $b_1$ thus $\rdv$'s output is indistinguishable from the prover's. 
+\item[Round 3] The reduction computes
+  $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$, which all depend on
+  $b_1$. To that end $\gone{\tb_1}$ is used. Note that if $\vec{w}$ is a vector
+  of $\pF(b_1, \ldots, b_9)$ evaluations then
+  $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$ is the same as
+  the real prover's. Alternatively, if $\vec{w}$ is a vector of random values,
+  then $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$ are all random
+  polynomials which evaluates at $\chz$ to the same value as the polynomials
+  computed by the real prover. That is, in that case
+  $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$ are as the simulator
+  $\simulator$ would compute. Eventually, $\rdv$ outputs $\chz$.
+\item[Round 4] The reduction outputs
+  $\pa(\chz), \pb(\chz), \pc(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}
+    (\chz)}, \pt(\chz), \pz(\ochz)$.  For the sake of concreteness, denote by
+  $S = \smallset{\pa, \pb, \pc, \pt, \pz}$. Although for a polynomial
+  $\p{p} \in S$, reduction $\rdv$ does not know $\p{p}(\chi)$ or even do not
+  know all the coefficients of $\p{p}$, the polynomials in $S$ was computed such
+  that the reduction always knows their evaluation at $\chz$ and $\ochz$.
+\item[Round 5] $\rdv$ computes the openings of the polynomial commitments
+assuring that evaluations at $\chz$ it provided were computed honestly.
+\end{compactdesc}
+
+If the adversary $\adv$'s output distribution differ in Game $\game{1}$ and
+$\game{2}$ then the reduction uses it to distinguish between
+$\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
+\( \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epsuber(\secpar).  \) Eventually,
+\(
+\abs{\prob{\game{0}} - \prob{\game{2}}} \leq \epszk(\secpar) + \epsuber(\secpar).  \) \qed
+\end{proof}
+
+\subsection{From forking soundness and unique response property to forking simulation
+  extractability of $\plonkprotfs$}
+Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$
+and forking sound. We now make use of \cref{thm:se} and show that
+$\plonkprot_\fs$ is forking simulation-extractable as defined in
+\cref{def:simext}.
+
+\begin{corollary}[Forking simulation extractability of $\plonkprot_\fs$]
+\label{thm:plonkprotfs_se}
+Assume that $\plonkprot$ is $\ur{2}$ with security $\epsur(\secpar)$, and
+$(\epsss(\secpar), 3, 3\noofc + 1)$-forking-sound. Let
+$\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$
+adversary that can make up to $q$ random oracle queries and outputs an
+acceptable proof for $\plonkprotfs$ with probability at least $\accProb$. Then
+$\plonkprotfs$ is forking simulation-extractable with extraction error
+$\eta = \epsur(\secpar)$. The extraction probability $\extProb$ is at least
+\[
+	\extProb \geq \frac{1}{q^{3 \noofc}} (\accProb - \epsur(\secpar))^{3\noofc + 1} -\eps(\secpar)\,,
+\]
+for some negligible $\eps(\secpar)$ and $\noofc$ being the number of
+constrains in the proven circuit.
+\end{corollary}
+
+
+\section{Further work}
+We identify a number of problems which we left as further work. First of all,
+the generalised version of the forking lemma presented in this paper can be
+generalised even further to include protocols where forking soundness holds for
+protocols where $\extt$ extracts a witness from a $(n_1, \ldots, n_\mu)$-tree of
+acceptable transcripts, where more than one $n_j > 1$. I.e.~to include
+protocols that for witness extraction require transcripts that branch at more
+than one point.
+
+Although we picked $\plonk$ and $\sonic$ as examples for our framework, it is
+not limited to SRS-based NIZKs. Thus, it would be interesting to apply it to
+known so-called transparent zkSNARKs like Bulletproofs \cite{SP:BBBPWM18},
+Aurora \cite{EC:BCRSVW19} or AuroraLight \cite{EPRINT:Gabizon19a}.
+
+Since the rewinding technique and the forking lemma used to show simulation
+extractability of $\plonkprotfs$ and $\sonicprotfs$ come with security loss,
+it would be interesting to show SE of these protocols directly in the
+algebraic group model.
+
+Although we focused here only on zkSNARKs, it is worth to
+investigating other protocols that may benefit from our framework, like
+e.g.~identification schemes.
+
+Last, but not least, this paper would benefit greatly if a more tight version
+of the generalised forking lemma was provided. However, we have to note here
+that some of the inequalities used in the proof are already tight, i.e.~for
+specific adversaries, some of the inequalities are already equalities.
+
+% \section*{Acknowledgement}
+% The second author thanks Antoine Rondelet for helpful discussions.
+
+\begin{spacing}{0.93}
+\bibliographystyle{abbrv}
+\bibliography{cryptobib/abbrev3,cryptobib/crypto,additional_bib}
+% \clearpage
+\end{spacing}
+\appendix
+{\Huge{Supplementary Material}} 
+
+\section{Omitted protocols descriptions}
+\subsection{Polynomial commitment schemes}
+\label{sec:pcom}
+\cref{fig:pcomp,fig:pcoms} present variants of KZG polynomial commitment schemes
+used in \plonk{} and \sonic{}. The key generation algorithm $\kgen$ takes as
+input a security parameter $\secparam$ and a parameter $\maxdeg$ which
+determines the maximal degree of the committed polynomial. We assume that
+$\maxdeg$ can be read from the output SRS.
+%
+% We require $\PCOM$ to have the following properties:
+\begin{figure}[t!]
+\centering
+	\begin{pcvstack}[center,boxed]
+		\begin{pchstack}
+			\procedure{$\kgen(\secparam, \maxdeg)$}
+			{
+			\chi \sample \FF^2_p \\ [\myskip]
+			\pcreturn \gone{1, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}\\ [\myskip]
+				\hphantom{\hspace*{5.5cm}}	
+        %\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1}
+        %\frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
+      }
+			
+			\pchspace
+			
+			\procedure{$\com(\srs, \vec{\p{f}}(X))$}
+			{ 
+				\pcreturn \gone{\vec{c}} = \gone{\vec{\p{f}}(\chi)}\\ [\myskip]
+				\hphantom{\pcind \pcif 
+					\sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j}
+					\gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet
+				\gtwo{1} + }
+			}
+		\end{pchstack}
+		% \pcvspace
+    
+		\begin{pchstack}
+			\procedure{$\open(\srs, \vec{\gamma}, \vec{z}, \vec{s}, \vec{\p{f}}(X))$}
+			{
+			\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo\\ [\myskip]
+      \pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1}
+      \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}\\ [\myskip] \pcreturn
+      \vec{o} = \gone{\vec{\p{o}}(\chi)}\\ [\myskip]
+				\hphantom{\hspace*{5.5cm}}	
+			}
+			
+			\pchspace
+			
+			\procedure{$\verify(\srs, \gone{c}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
+			{
+				\vec{r} \gets \FF_p^{\abs{\vec{z}}}\\ [\myskip]
+				\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo \\ [\myskip]
+				\pcind \pcif 
+          \sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j}
+          \gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet
+          \gtwo{1} + \\ [\myskip] \pcind \sum_{i = 1}^{\abs{\vec{z}}} r_i z_i
+          o_i
+          \bullet \gtwo{1} \neq \gone{- \sum_{i = 1}^{\abs{\vec{z}}} r_i o_i }
+          \bullet \gtwo{\chi} \pcthen  \\
+					\pcind \pcreturn 0\\ [\myskip]
+					\pcreturn 1.
+			}
+		\end{pchstack}
+	\end{pcvstack}
+	\caption{$\PCOMp$ polynomial commitment scheme.}
+	\label{fig:pcomp}
+  \end{figure}
+
+\begin{figure}[t!]
+\centering
+	\begin{pcvstack}[center,boxed]
+		\begin{pchstack}
+			\procedure{$\kgen(\secparam, \maxdeg)$} {
+				\alpha, \chi \sample \FF^2_p \\ [\myskip]
+				\pcreturn \gone{\smallset{\chi^i}_{i = -\multconstr}^{\multconstr},
+          \smallset{\alpha \chi^i}_{i = -\multconstr, i \neq
+            0}^{\multconstr}},\\
+        \pcind \gtwo{\smallset{\chi^i, \alpha \chi^i}_{i =
+            -\multconstr}^{\multconstr}}, \gtar{\alpha}\\
+				%\markulf{03.11.2020}{} \\
+			%	\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
+				\hphantom{\hspace*{5.5cm}}	
+		}
+			
+			\pchspace
+			
+			\procedure{$\com(\srs, \maxconst, \p{f}(X))$} {
+				\p{c}(X) \gets \alpha \cdot X^{\dconst - \maxconst} \p{f}(X) \\ [\myskip]
+				\pcreturn \gone{c} = \gone{\p{c}(\chi)}\\ [\myskip]
+				\hphantom{\pcind \pcif \sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot
+          \gone{\sum_{j = 1}^{t_j} \gamma_i^{j - 1} c_{i, j} - \sum_{j = 1}^{t_j}
+            s_{i, j}} \bullet \gtwo{1} + } }
+		\end{pchstack}
+		% \pcvspace
+    
+		\begin{pchstack}
+			\procedure{$\open(\srs, z, s, f(X))$}
+			{
+				\p{o}(X) \gets \frac{\p{f}(X) - \p{f}(z)}{X - z}\\ [\myskip]
+				\pcreturn \gone{\p{o}(\chi)}\\ [\myskip]
+				\hphantom{\hspace*{5.5cm}}	
+			}
+			
+			\pchspace
+			
+			\procedure{$\verify(\srs, \maxconst, \gone{c}, z, s, \gone{\p{o}(\chi)})$}
+      {
+        \pcif \gone{\p{o}(\chi)} \bullet \gtwo{\alpha \chi} + \gone{s - z
+        \p{o}(\chi)} \bullet \gtwo{\alpha} = \\ [\myskip] \pcind \gone{c}
+        \bullet \gtwo{\chi^{- \dconst + \maxconst}} \pcthen  \pcreturn 1\\
+        [\myskip]
+        \rlap{\pcelse \pcreturn 0.} \hphantom{\pcind \pcif \sum_{i =
+            1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j} \gamma_i^{j -
+              1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet \gtwo{1} + } }
+		\end{pchstack}
+	\end{pcvstack}
+	
+	\caption{$\PCOMs$ polynomial commitment scheme.}
+	\label{fig:pcoms}
+\end{figure}
 
 \subsection{$\plonk$ protocol rolled out}
 \label{sec:plonk_explained}
@@ -2516,478 +2898,415 @@ The \plonk{} simulator proceeds as an honest prover would, except:
     trapdoor $\chi$ to compute commitments
     $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$.
   \end{enumerate}
-  
-\subsection{Unique opening property of $\PCOMp$}
-\begin{lemma}
-\label{lem:pcomp_unique_op}
-Let $\PCOMp$ be a batched version of a batched KZG polynomial
-commitment, cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property
-in the AGM with security $\epsop(\secpar) \leq 2 \epsdlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where
-$\epsdlog(\secpar)$ is security of the $(\noofc + 2, 1)$-dlog assumption and $\FF_p$ is the
-field used in $\PCOMp$.\end{lemma}
-\begin{proof}
-  Let $\vec{z} = (z, z') \in \FF_p^2$ be the two points the polynomials are
-  evaluated at, $k \in \NN$ be the number of the committed polynomials to be
-  evaluated at $z$, and $k' \in \NN$ be the number of the committed polynomials
-  to be evaluated at $z'$, $\vec{c} \in \GRP^k, \vec{c'} \in \GRP^{k'}$ be the
-  commitments, $\vec{s} \in \FF_p^k, \vec{s'} \in \FF_p^{k'}$ the evaluations,
-  and $\vec{o} = (o, o') \in \FF_p^2$ be the commitment openings. We need to
-  show that for every $\ppt$ adversary $\adv$ the probability
-\[
-	\Pr
-		\left[
-			\begin{aligned}
-				& \verify(\srs, \vec{c}, \vec{c'}, (z, z'), \vec{s}, \vec{s'}, \vec{o}), \\
-				& \verify(\srs, \vec{c}, \vec{c'}, (z, z'), \vec{s}, \vec{s'}, \vec{\tilde{o}}) \\
-				& \vec{o} \neq \vec{\tilde{o}}
-			\end{aligned}
-		\,\left|\,
-		\vphantom{\begin{aligned}
-			& \verify(\srs, \vec{c}, \vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}), \\
-			& \verify(\srs, \vec{c}, \vec{c}, \vec{z}, \vec{s}, \vec{s'}, \vec{\tilde{o}}) \\
-			&\vec{o} \neq \vec{\tilde{o}})
-		\end{aligned}}
-		\begin{aligned}
-			& \srs \gets \kgen(\secparam, \maxdeg), \\
-			&	(\vec{c}, \vec{c'}, \vec{z}, \vec{s}, \vec{s'}, \vec{o}, \vec{\tilde{o}}) \gets \adv(\srs)
-		\end{aligned}
-		\right.\right]
-	 % \leq \negl.
-\]
-is at most $\epsop(\secpar)$.
 
-\ncase{Step 1} First, consider a case where the commitment is limited to commit
-to multiple polynomials which are evaluated at the same point $z$. As noted in
-\cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the probability
-of the adversary succeeding using the idealised verification
-equation\COMMENT{---which considers equality between polynomials---instead of
-  the real verification equation---which consider equality of the polynomials'
-  evaluations}.  This holds since an adversary that manages to provide a
-commitment opening that holds for the real verifier, but does not hold for the
-idealised verifier can be used to break the dlog assumption and reveal the
-secret trapdoor used to produce the commitment's SRS, the probability of such
-event is bounded by the $(\noofc + 2, 1)$-dlog security $\epsdlog(\secpar)$,
-cf.~\cite[Lemma 2.2]{EPRINT:GabWilCio19} for more details.
 
-For polynomials $\vec{\p{f}} = \p{f}_1, \ldots, \p{f}_k$, evaluation point $z$, evaluation
-result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $\p{o}(X)$ the
-idealised check verifies that
-\begin{equation}
-	\sum_{i = 1}^k \gamma^{i - 1} \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} s_i \equiv \p{o}(X) (X - z)\,.
-	\label{eq:pcom_idealised_check}
-\end{equation}
-Since $\p{o}(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial
-composition, there is only one $\p{o} (X)$ that fulfils the equation above.
+\section{Special simulation-extractability of sigma protocols and forking lemma}
+\label{sec:forking_lemma}
+\begin{theorem}[Special simulation extractability of the Fiat--Shamir transform
+  \cite{INDOCRYPT:FKMV12}]
+	Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a non-trivial sigma
+  protocol with unique responses for a language $\LANG \in \npol$. In the random
+  oracle model, the NIZK proof system $\sigmaprot_\fs = (\prover_\fs,
+  \verifier_\fs, \simulator_{\fs})$ resulting by applying the Fiat--Shamir
+  transform to $\sigmaprot$ is special simulation extractable with extraction error
+  $\eta = q/h$ for the simulator $\simulator$. Here, $q$ is the number of random
+  oracle queries and $h$ is the number of elements in the range of $\ro$.
+\end{theorem}
 
-\ncase{Step 2} Second, consider a case when the polynomials are evaluated on two
-points $\vec{z} = (z, z')$ and the adversary is asked to provide two openings
-$\vec{o} = (o, o')$. Similarly, we analyse the case of the ideal verification.
-In that scenario, the verifier checks whether the following equality, for
-$\gamma, r'$ picked at random, holds:
-\begin{multline}
-	\label{eq:ver_eq_poly}
-	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} \cdot s_i  + r' \left(\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \right)\\
-	\equiv \p{o}(X)(X - z) + r' \p{o}'(X)(X- z')
-\end{multline}
-Since $r'$ has been picked at random from $\FF$, probability that \cref{eq:ver_eq_poly}
-holds while either
-\[
-	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}  \gamma^{i - 1} \cdot s_i \not\equiv \p{o}(X)(X - z)
-\]
-or 
-\[
-	\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \not\equiv \p{o'}(X)(X - z')
-\]
-is $\infrac{1}{\abs{\FF_p}}$~\cite{EPRINT:GabWilCio19}. This brings the proof back to
-Step 1 above. Altogether, Step 2 gives the following bound for the unique
-opening property $\epsop(\secpar) \leq 2\epsdlog(\secpar) + \infrac{1}{\FF_p}$.
-\qed
-\end{proof}
+The theorem relies on the following \emph{general forking lemma} \cite{JC:PoiSte00}.
 
-\subsection{Unique response property}
-\begin{lemma}
-	\label{lem:plonkprot_ur}
-  Let $\PCOMp$ be commitment of knowledge with security $\epsk(\secpar)$,
-  $\epsbind(\secpar)$-binding and has unique opening property with security $\epsop(\secpar)$,
-  then probability that a $\ppt$ adversary $\adv$ breaks $\plonkprot$'s $\ur{2}$
-  property is at most $\epsk(\secpar) + 2\cdot\epsbind(\secpar) +
-  \epsop(\secpar)$.% assuming the polynomial commitment scheme $\PCOMp$
-%is of knowledge.
+\begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12,CCS:BelNev06}]
+	\label{lem:forking_lemma}
+	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\zdv$ be a $\ppt$
+  algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $i
+  \in\range{0}{q}$ and $s$ is called a \emph{side output}. Denote by $\ig$ a
+  randomised instance generator. We denote by $\accProb$ the probability
+	\[
+		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_q \sample H; (i, s) \gets
+		\zdv(y, h_1, \ldots, h_q)}\,.
+	\]
+	Let $\forking_\zdv(y)$ denote the algorithm described in
+  \cref{fig:forking_lemma}, then the probability $\frkProb$ defined as $
+  \frkProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\zdv}(y)}
+  $ holds
+	\[
+		\frkProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
+	\]
+	%
+	\begin{figure}
+		\centering
+		\fbox{
+		\procedure{$\forking_\zdv (y)$}
+		{
+			\rho \sample \RND{\zdv}\\
+			h_1, \ldots, h_q \sample H\\
+			(i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)\\
+			\pcif i = 0\ \pcreturn (0, \bot, \bot)\\
+			h'_{i}, \ldots, h'_{q} \sample H\\
+			(i', s') \gets \zdv(y, h_1, \ldots, h_{i - 1}, h'_{i}, \ldots,  h'_{q};
+			\rho)\\
+			\pcif (i = i') \land (h_{i} \neq h'_{i})\ \pcreturn (1, s, s')\\
+			\pcind \pcelse \pcreturn (0, \bot, \bot)
+		}}
+		\caption{Forking algorithm $\forking_\zdv$}
+		\label{fig:forking_lemma}
+\end{figure}
 \end{lemma}
-\begin{proof}[sketch]
-  Let
-  $\adv(\REL,\srs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}}, \gtwo{\chi}))$
-  be an adversary tasked to break the $\ur{2}$-ness of $\plonkprot$. It is
-  sufficient to observe that the first 2 rounds of the protocol determines,
-  along with the verifiers challenges, the rest of it.
-
-  In Round 3 the adversary outputs a commitment to polynomial $\pt(X)$ which
-  assures that all constraints of the system are fulfilled. Since the commitment
-  scheme is deterministic, there is only one value $c$ that is a commitment to
-  $\pt(X)$. Assume that $\adv$ outputs $c' \neq c$ and is later able to open
-  $c'$ to $y = \pt(\chz)$, where $\chz$ is a random point determined later.
-  Using the AGM and arguments similar to \cite{CCS:MBKM19}, we argue that
-  $\PCOMp$ is a commitment of knowledge. That is, an AGM adversary $\adv$ that
-  outputs a commitment $c'$ which it can later open, knows a polynomial $\p{f}$
-  of degree-$(\leq \noofc + 2)$ such that $\gone{\p{f}(\chi)} = c'$. Denote by
-  $\epsk(\secpar)$ probability that $\adv$ breaks knowledge soundness of the commitment. Thus if
-  $c' \neq c$ and the commitment scheme is evaluation binding with security
-  $\epsbind(\secpar)$ then $\adv$ when
-  picking $c'$ picks it as a commitment to $\p{f}$ which evaluates at $\chz$ to
-  $\pt(\chz)$. The probability of that is negligible as there can only be no
-  more than $\noofc + 2$ overlapping points between $\p{f}(X)$ and $\p{t}(X)$,
-  and $\chz$ remains random for $\adv$ when it computes $c'$. Hence, the
-  probability that $\adv$ is able to produce two different outputs of Round 3 is
-  upper-bounded by $\epsk(\secpar) + \epsbind(\secpar)$.
-
-  In Round 4 the prover is asked to give evaluations of predefined polynomials
-  at some point $\chz$. Naturally, for the given polynomials only one value at
-  $\chz$ is correct. Assume $\adv$ is able to produce two different outputs in
-  that round: $\vec{r_4} = (\ev{\p{a}}, \ev{\p{b}}, \ev{\p{c}}, \ev{\p{S_{\sigma
-        1}}}, \ev{\p{S_{\sigma 2}}}, \ev{\p{r}}, \ev{\p{z}})$ and $\vec{r_4} =
-  (\ev{\p{a}}', \ev{\p{b}}', \ev{\p{c}}', \ev{\p{S_{\sigma 1}}}',
-  \ev{\p{S_{\sigma 2}}}', \ev{\p{r}}', \ev{\p{z}}')$ which suppose to be
-  evaluations at $\chz$ of polynomials $\p{a}, \p{b}, \p{c}, \p{S_{\sigma 1}},
-  \p{S_{\sigma 2}}, \p{r}$ and an evaluation at $\chz \omega$ of $\p{z}$.
-  Clearly, at least one of $\vec{r_4}$, $\vec{r'_4}$ has to be incorrect, thus
-  if both evaluations are acceptable by the $\PCOMp.\verify$ then the evaluation
-  binding property of $\PCOMp$ is broken. This happens with probability
-  upper-bounded by $\epsbind(\secpar)$.
-
-  In the last round of the protocol the prover provides openings for the
-  polynomial commitment evaluations done before. Assume $\adv$ is able to
-  produce two different polynomial commitment openings pairs: $\vec{r_5} =
-  (\ev{\p{W_\chz}}, \ev{\p{W_{\chz \omega}}})$ and $\vec{r'_5} =
-  (\ev{\p{W_\chz}}', \ev{\p{W_{\chz \omega}}}')$.
-% Since \cref{lem:pcomp_unique_op}, 
-  Since $\PCOMp$ has unique opening property, one of the openings has to be
-  incorrect and should be rejected by the polynomial commitment verifier. This
-  happens except with probability $\epsop(\secpar)$.
-
-  Hence, the probability that after fixing the two first rounds, the adversary
-  is able to produce two different outputs in one of the following rounds is
-  upper-bounded by
-\[
-	\epsk(\secpar) + 2 \cdot \epsbind(\secpar) + \epsop(\secpar)\,.
-\]
-\qed
 
 
-\end{proof}
 
-\subsection{Forking soundness}
-\begin{lemma}
-\label{lem:plonkprot_ss}
-$\plonkprot$ is $(\epsss(\secpar), 3, 3 \noofc + 1)$-forking sound
-for $\epsss(\secpar) \leq \epsid(\secpar) + \epsdlog(\secpar)$ against algebraic adversaries.
-\end{lemma}
+\section{Additional lemmas and proofs}
+\subsection{Proof of \cref{lem:generalised_forking_lemma}}
+\label{sec:forking_proof}
 \begin{proof}
-  Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
-  $\GRP_1$-elements; that is,
-  $\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc + 2}}$. Let $\tdv$ be an
-  algebraic adversary that produces a statement $\inp$ and a
-  $(1, 1, 3\noofc + 1, 1)$-tree of acceptable transcripts $\tree$.  Note that in
-  all transcripts the instance $\inp$, proof elements
-  $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and
-  challenges $\alpha, \beta, \gamma$ are common as the transcripts share the
-  first three rounds. The tree branches after the third round of the protocol
-  where the challenge $\chz$ is presented, thus tree $\tree$ is build using
-  different values of $\chz$.
-
-  We consider two mutually disjunctive events. The first, $\event{E}$ holds when
-  all of the transcripts are acceptable by the idealised verification equation,
-  i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}. The second,
-  $\nevent{E}$ holds when there is a transcript that is acceptable by the real
-  verifier, but not by the ideal verifier. That is, for that particular
-  transcript it holds that $\vereq_{\inp, \zkproof}(\chi) = 0$, but
-  $\vereq_{\inp, \zkproof}(X) \neq 0$.  When event $\event{E}$ holds we show
-  that the extractor $\extt$ is successful. If it does not hold, we show a
-  reduction $\rdvdlog$ that breaks the $\dlog$ assumption.
-
-  \ncase{When $\event{E}$ holds} Let $(1, \tree) \gets \tdv(\REL, \srs)$ and
-  $\inp$ be a relation proven in $\tree$. Since the protocol $\plonkprot$,
-  instantiated with the idealised verification equation, is perfectly sound,
-  except with negligible probability of the idealised verifier failure $\epsid(\secpar)$,
-  for a valid proof $\zkproof$ of a statement $\inp$ there exists a witness
-  $\wit$, such that $\REL(\inp, \wit)$ holds. Note that since the $\tdv$
-  produces $(3 \noofc + 1)$ acceptable transcripts for different challenges
-  $\chz$, it obtains the same number of different evaluations of polynomials
-  $\p{a}, \p{b}, \p{c}, \p{z}, \p{t}$. Since the transcripts are acceptable by
-  an idealised verifier, the equality between polynomial $\p{t}$ and combination
-  of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$ described in Round 3 of the
-  protocol holds. Hence, $\p{a}, \p{b}, \p{c}$ encodes the valid witness for the
-  proven statement. Since $\p{a}, \p{b}, \p{c}$ are of degree at most
-  $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their evaluations known,
-  $\extt$ can recreate their coefficients by interpolation and reveal the
-  witness with probability $1$. Hence, the probability that extraction fails in
-  that case is upper-bounded by probability of an idealised verifier failing
-  $\epsid(\secpar)$, which is negligible.
-
-  \ncase{When $\nevent{E}$ holds} Let $\tdv$ be an adversary that for relation
-  $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree of
-  acceptable transcripts such that $\nevent{E}$ holds. Let $\rdvdlog$ be a
-  reduction that gets as input an $(\noofc + 2, 1)$-dlog instance
-  $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$ and is tasked to output
-  $\chi$. The reduction proceeds as follows---it gives the input instance to the
-  adversary as the SRS. Let $(1, \tree)$ be the output returned by $\adv$. Let
-  $\inp$ be a relation proven in $\tree$.  Consider a transcript
-  $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
-  $\vereq_{\inp, \zkproof}(\chi) = 0$. Since the adversary is algebraic, all group
-  elements included in $\tree$ are extended by their representation as a
-  combination of the input $\GRP_1$-elements. Hence all coefficients of the
-  verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known and $\rdvdlog$
-  can find its zero points. Since $\vereq_{\inp, \zkproof}(\chi) = 0$, the targeted
-  discrete log value $\chi$ is among them.
-  Hence, the probability that this event happens is upper-bounded by $\epsdlog(\secpar)$. \qed
-\end{proof}
-
-\subsection{Honest verifier zero-knowledge}
-\begin{lemma}
-  \label{lem:plonk_hvzk}
-  Let $\plonkprot$ be zero knowledge with security $\epszk(\secpar)$. Let
-  $(\pR, \pS, \pT, \pf, 1)$-uber assumption for $\pR, \pS, \pT, \pf$ as defined
-  in \cref{eq:uber} hold with security $\epsuber(\secpar)$. Then $\plonkprot$ is
-  computationally honest verifier zero-knowledge with simulator $\simulator$
-  that does not require a SRS trapdoor with security
-  $\epszk(\secpar) + \epsuber(\secpar)$.\footnote{The simulator works as a simulator for proofs
-    that are zero-knowledge in the standard model. However, we do not say that
-    $\plonk$ is HVZK in the standard model as proof of that \emph{requires} the
-    SRS simulator.}
-\end{lemma}
-\begin{proof}
-  % More precisely, assume that $\plonk$'s SRS simulator
-  % $\simulator_\chi$ produces proof that are distributed at most $\epszk$-far
-  % from real proofs, and $(\pR, \pS, \pT, \pf, 1)$-uber assumption for
-  % $\pR, \pS, \pT, \pf$ as defined in \cref{eq:uber} is $\epsuber$-secure. Then
-  % any $\ppt$ adversary $\adv$ has advantage in telling a proof produced by
-  % $\simulator$ from a real proof upper-bounded by $\epszk + \epsuber$.
-  
-  The proof goes by game-hoping. The environment that controls the games
-  provides the adversary with a SRS $\srs$, then the adversary outputs an
-  instance--witness pair $(\inp, \wit)$ and, depending on the game, is provided
-  with either real or simulated proof for it. In the end of the game the
-  adversary outputs either $0$ if it believes that the proof it saw was provided
-  by the simulator and $1$ in the other case.
-
-  \ngame{0} In this game $\adv(\REL, \srs)$ picks an instance--witness pair
-  $(\inp, \wit)$ and gets a real proof $\zkproof$ for it.
-
-  \ngame{1} In this game for $\adv(\REL, \srs)$ picks an instance--witness pair
-  $(\inp, \wit)$ and gets a proof $\zkproof$ that is simulated by a simulator
-  $\simulator_\chi$ which utilises for the simulation the SRS trapdoor and
-  proceeds as follows. In the first round the simulator $\simulator_\chi$ picks
-  randomisers $b_1, \ldots b_9$, sets $\wit_i = 0$, for $i \in \range{1}{3
-    \noofc}$, computes polynomials $\pa(X), \pb(X), \pc(X)$ and
-  outputs $\gone{\pa(\chi), \pb(\chi), \pc(\chi)}$. Then it picks Round 1
-  challenges $\beta, \gamma$ honestly.
-
-  In Round 2 $\simulator_\chi$ computes the polynomial $\pz(X)$ and
-  outputs $\gone{\pz(\chi)}$. Then it picks randomly Round 2 challenge $\alpha$.
-
-  In Round 3 the simulator computes polynomial $\pt(X)$ and evaluates it
-  at $\chi$, then outputs $\gone{\ptlo(\chi), \ptmid(\chi), \pthi(\chi)}$. Note
-  that this evaluation is feasible (in the polynomial time with non-negligible
-  probability) only since $\simulator_\chi$ knows the trapdoor.
-
-  In the last two rounds the simulator proceeds as an honest prover would
-  proceed and picks corresponding challenges at random as an honest verifier
-  would.
-
-  \ncase{$\game{0} \mapsto \game{1}$} Since $\plonk$ is zero-knowledge,
-  probability that $\adv$ outputs a different bit in both games is negligible.
-  Hence
-  \[
-	\abs{\prob{\game{0}} - \prob{\game{1}}} \leq \epszk(\secpar).
-\]
-
-\ngame{2} In this game $\adv(\REL, \srs)$ picks an instance--witness pair
-$(\inp, \wit)$ and gets a proof $\zkproof$ simulated by the simulator
-$\simulator$ which proceeds as follows.
-
-In Round 1 the simulator  picks randomly both the randomisers $b_1, \ldots, b_6$ and
-sets $\wit_i = 0$ for $i \in \range{1}{3\noofc}$. Then $\simulator$
-outputs $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$. For the first round
-challenge, the simulator picks permutation argument challenges $\beta, \gamma$
-randomly.
-
-In Round 2, the simulator computes $\p{z}(X)$ from
-the newly picked randomisers $b_7, b_8, b_9$ and coefficients of polynomials
-$\p{a}(X), \p{b}(X), \p{c}(X)$. Then it evaluates $\p{z}(X)$ honestly and outputs
-$\gone{\p{z}(\chi)}$. Challenge $\alpha$ that should be sent by the verifier
-after Round 2 is picked by the simulator at random.
-
-In Round 3 the simulator starts by picking at random a challenge $\chz$, which
-in the real proof comes as a challenge from the verifier sent \emph{after} Round
-3. Then $\simulator$ computes evaluations
-\(\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma
-    2}}(\chz), \pubinppoly(\chz), \lag_1(\chz), \p{Z_H}(\chz),\allowbreak
-\p{z}(\chz\omega)\) and computes $\p{t}(X)$ honestly. Since for a random
-$\p{a}(X), \p{b}(X), \p{c}(X), \p{z}(X)$ the constraint system is (with
-overwhelming probability) not satisfied and the constraints-related polynomials
-are not divisible by $\p{Z_H}(X)$, hence $\p{t}(X)$ is a rational function
-rather than a polynomial. Then, the simulator evaluates $\p{t}(X)$ at $\chz$ and
-picks randomly a degree-$(3 \noofc - 1)$ polynomial $\p{\tilde{t}}(X)$ such that
-$\p{t}(\chz) = \p{\tilde{t}}(\chz)$ and publishes a commitment
-$\gone{\p{\tilde{t}_{lo}}(\chi), \p{\tilde{t}_{mid}}(\chi),
-  \p{\tilde{t}_{hi}}(\chi)}$. After this round the simulator outputs $\chz$ as a
-challenge.
-
-In the next round, the simulator computes polynomial $\p{r}(X)$ as an honest
-prover would, cf.~\cref{sec:plonk_explained} and evaluates $\p{r}(X)$ at $\chz$.
-
-The rest of the evaluations are already computed, thus $\simulator$ simply
-outputs
-\[
-  \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma
-      2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega)\,.
-\]
-After that it picks randomly the challenge $v$, proceeds in the last round as an
-honest prover would proceed and outputs the final challenge, $u$, by picking it
-at random as well.
-
-\ncase{$\game{1} \mapsto \game{2}$} We now describe the reduction $\rdv$ which
-relies on the $(\pR, \pS, \pT, \pF, 1)$-uber assumption where $\pR, \pS, \pT, \pF$
-are polynomials over variables $\vB = B_1, \ldots, B_9$ and are defined as
-follows. Let $E = \smallset{\smallset{2}, \smallset{3, 4}, \smallset{5, 6},
-  \smallset{7, 8, 9}}$ and $E' = E \setminus \smallset{2}$. Let
-\begin{align}
-\label{eq:uber}
-\pF(\vB) & = \smallset{B_1} \cup \smallset{B_1B_i \mid i \in A,\ A \in E'} \cup
-             \smallset{B_1B_iB_j \mid i \in A, j \in B,\ A, B \in E', B
-             \neq A} \cup \notag\\
-           & \smallset{B_1B_iB_jB_k \mid i \in A, j \in
-             B, k \in C,\ A, B, C \in E', A \neq B \neq C \neq A}\notag\,,\\
-  \pR(\vB) & = \smallset{B_i \mid i \in A,\ A \in E} \cup \smallset{B_i B_j \mid i \in
-             A, j \in B,\ A \neq B, A, B \in E} \cup \\ 
-           & \smallset{B_i B_j B_k \mid i \in A,\ j \in
-             B,\ k \in C,\
-             A, B, C \text{ all different and in } E} \cup \notag \\
-           & \smallset{B_i B_j B_k B_l \mid i \in A,\ j \in B,\ k \in C,\ l \in D,\
-             A, B, C, D \text{ all different and in } E} \notag \\
-           & \setminus \pF(\vB)\,,\notag \\
-  \pS(\vB) & = \emptyset \notag\,, \\
-  \pT(\vB) & = \emptyset \notag\,.
-\end{align}
-That is, the elements of $\pR$ are all singletons, pairs, triplets and
-quadruplets of $B_i$ variables that occur in polynomial $\pt(\vB)$ except the
-challenge element $\pf(\vB)$ which are all elements that depends on a variable
-$B_1$. Variables $\vB$ are evaluated to randomly picked
-$\vb = b_1, \ldots, b_9$.
-
-The reduction $\rdv$ learns $\gone{\pR}$ and challenge
-$\gone{\vec{w}} = \gone{w_1, \ldots, w_{12}}$ where $\vec{w}$ is either a vector
-of evaluations $\pF(\vb)$ or a sequence of random values $y_1, \ldots, y_{12}$,
-for the sake of concreteness we state $w_1 = b_1$ or $w_1 = y_1$ (depending on
-the chosen random bit). Then it picks $\chi$, $\chz$ and computes the SRS $\srs$
-from $\chi$. Elements $b_i$ are interpreted as polynomials in $X$ that are
-evaluated at $\chi$, i.e. $b_i = b_i(\chi)$. Next, $\rdv$ sets for
-$\xi_i, \zeta_i \sample \FF_p$
-\[
-  \gone{\p{\tb}_1}(X) =
-(X - \chz)(X - \ochz) \gone{w_1}(X) + \xi_i (X - \chz) \gone{1} +
-\zeta_i (X - \ochz) \gone{1}, % \text{ for } i \in % \range{1}{9}, u_1
-\]
-and
-\[
-  \gone{\p{\tb}_i}(X) =
-(X - \chz)(X - \ochz) \gone{b_i}(X) + \xi_i (X - \chz) \gone{1} +
-\zeta_i (X - \ochz) \gone{1}, % \text{ for } i \in % \range{1}{9}, u_1
-\] 
-for $i \in \range{2}{9}$.
-
-Denote by $\tb_i$ evaluations of $\p{\tb}_i$ at $\chi$.  The reduction computes
-all
-$\gone{\tb_i \tb_j}, \gone{\tb_i \tb_j \tb_k}, \gone{\tb_i \tb_j \tb_k \tb_l}$
-such that $\gone{B_i B_j, B_i B_j B_k, B_i B_j B_k B_l} \in \pR$.  This is
-possible since $\rdv$ knows all singletons $\gone{w_1, b_2, \ldots, b_9}$ and pairs
-$\gone{b_i b_j} \in \pR$ which can be used to compute all required pairs
-$\gone{\tb_i \tb_j}$:
+First denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
 \begin{align*}
-\gone{\tb_i \tb_j} 
-& = ((\chi - \chz)(\chi - \ochz)\gone{b_i} + \xi_i (\chi - \chz)\gone{1} +
-\zeta_i (\chi - \ochz) \gone{1}) 
-\cdot \\
- & ((\chi - \chz)(\chi - \ochz)\gone{b_j} + \xi_j (\chi - \chz)\gone{1} +
-\zeta_j (\chi - \ochz) \gone{1}) = \\
- & ((\chi - \chz)(\chi - \ochz))^2 \gone{b_i b_j} +  ((\chi - \chz)(\chi -
- \ochz)\gone{b_i} (\xi_j (\chi - \chz) \gone{1} + \zeta_j (\chi - \ochz)
- \gone{1}) + \\
- & ((\chi - \chz)(\chi -
- \ochz)\gone{b_j} (\xi_i (\chi - \chz) \gone{1} + \zeta_i (\chi - \ochz)
- \gone{1}) + \psi,
+\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s)
+\gets \zdv(y, h_1, \ldots, h_q)}\,.\\
+	\frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
+\genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}\,.
 \end{align*}
-where $\psi$ compounds of $\xi_i, \xi_j, \zeta_i, \zeta_j, \chz, \ochz, \chi$ which
-are all known by $\rdv$ and no $b_i$ nor $b_j$.
-Analogously for the triplets and quadruplets and elements dependent on $\vec{w}$. 
 
-Next the reduction runs the adversary $\adv(\REL, \srs)$ and obtains from $\adv$ an
-instance--witness pair $(\inp, \wit)$.  $\rdv$ now prepares a simulated proof as follows:
-\begin{description} 
-\item[Round 1] $\rdv$ computes $\gone{\pa(\chi)}$ using as
-randomisers $\gone{\tb_1}, \gone{\tb_2}$ and setting $\wit_i = 0$, for $i
-\in \range{1}{3 \noofc}$. Similarly it computes
-$\gone{\pb(\chi)}, \gone{\pc(\chi)}$.  $\rdv$ publishes the obtained values
-and picks a Round 1 challenge $\beta, \gamma$ at random.  Note that regardless
-$w_1 = b_1$ or a random element, $\gone{a(\chi)}$ is random. Thus $\rdv$'s
-output has the same distribution as output of a real prover.  
-\item[Round 2]
-$\rdv$ computes $\gone{\pz(\chi)}$ using $\tb_7, \tb_8, \tb_9$ and publishes
-it. Then it picks randomly the challenge $\alpha$. This round output is
-independent on $b_1$ thus $\rdv$'s output is indistinguishable from the prover's. 
-\item[Round 3] The reduction computes
-  $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$, which all depend on
-  $b_1$. To that end $\gone{\tb_1}$ is used. Note that if $\vec{w}$ is a vector
-  of $\pF(b_1, \ldots, b_9)$ evaluations then
-  $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$ is the same as
-  the real prover's. Alternatively, if $\vec{w}$ is a vector of random values,
-  then $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$ are all random
-  polynomials which evaluates at $\chz$ to the same value as the polynomials
-  computed by the real prover. That is, in that case
-  $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$ are as the simulator
-  $\simulator$ would compute. Eventually, $\rdv$ outputs $\chz$.
-\item[Round 4] The reduction outputs
-  $\pa(\chz), \pb(\chz), \pc(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}
-    (\chz)}, \pt(\chz), \pz(\ochz)$.  For the sake of concreteness, denote by
-  $S = \smallset{\pa, \pb, \pc, \pt, \pz}$. Although for a polynomial
-  $\p{p} \in S$, reduction $\rdv$ does not know $\p{p}(\chi)$ or even do not
-  know all the coefficients of $\p{p}$, the polynomials in $S$ was computed such
-  that the reduction always knows their evaluation at $\chz$ and $\ochz$.
-\item[Round 5] $\rdv$ computes the openings of the polynomial commitments
-assuring that evaluations at $\chz$ it provided were computed honestly.
+We start by claiming that for all $y$ 
+\begin{equation}\label{eq:frkProb_y}
+	\frkProb(y) \geq 
+	\frac{\accProb(y)^m}{q^{m - 1}} - \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)
+	\end{equation}
+Then with the expectation taken over $y \sample \ig$, we have
+\begin{align}
+	\frkProb & = \expected{\frkProb(y)} \geq
+	\expected{\frac{\accProb(y)^m}{q^{m - 1}} -  \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)} \label{eq:use_eq1}\\
+	& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} -
+	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - m)! \cdot
+  h^{m}}\right) \label{eq:by_lemma_jensen}\\
+	& = \frac{\accProb^m}{q^{m - 1}} -  \accProb \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)\label{eq:by_accProb}\,.
+\end{align}
+Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
+\cref{eq:by_lemma_jensen} comes from linearity of expected value and \cref{lem:jensen}; and
+\cref{eq:by_accProb} holds by the fact that $\expected{\accProb(y)} =
+\accProb$.
+
+We now show \cref{eq:frkProb_y}.
+Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$. 
+For any input $y$, with probabilities taken over the coin tosses of
+$\genforking_{\zdv}^{m}$ we have
+\begin{align*}
+	\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land
+h_{i_j}^{j} \neq h_{i_{j'}}^{j'} \text{ for } (j, j') \in J}	\\
+	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} %\\
+   - \prob{i_j \geq 1 \land h_{i_j}^{j} = h_{i_{j'}}^{j'} \text{ for some } (j, j') \in J}\\
+	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} -
+	\prob{i_j \geq 1} \cdot 
+  \left(1 - \frac{h!}{(h - m)! \cdot h^{m}}\right) \\ 
+	& = \prob{i_j = i_{j'} \land
+	i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 -
+\frac{h!}{(h - m)! \cdot h^{m}}\right)\,.
+\end{align*}
+
+Probability that for some $(j, j') \in J$ and $i_j = i_{j'}$ holds
+$h_{i_j}^{j} \neq h_{i_{j'}}^{j'}$ equals 
+\[
+  \frac{h \cdot (h - 1)
+\cdot \ldots \cdot (h - m - 1)}{h^m} = \frac{h!}{(h - m)! \cdot h^m}.
+\]
+That is, it equals the number
+of all $m$-element strings where each element is different divided by
+the number of all $m$-element strings, where elements are taken from a
+set of size $h$. 
+
+It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j,
+  j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$. Let $\RND{\zdv}$ denote
+the set from which $\zdv$ picks its coins at random. For each $\iota \in
+\range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times H^{\iota - 1} \to [0, 1]$ be
+defined by setting $X_\iota(\rho, h_1, \ldots, h_{\iota - 1})$ to
+\[
+  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
+    \ldots, h_q; \rho)}
+\]
+for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
+$X_\iota$ be a random variable over the uniform distribution on its domain. Then
+\begin{align*}
+	& \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} 
+	 = \sum_{\iota = 1}^{q} \prob{i_1 = \iota \land \ldots \land i_m = \iota} \\
+	& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota} \cdot \condprob{i_2 = \iota}{i_1 = \iota} \cdot \ldots \cdot \condprob{i_m = \iota}{i_1 = \ldots = i_{m - 1} = \iota} \\
+	& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota}
+   (\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\iota - 1}}
+   = \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
+\end{align*}
+Importantly, $\sum_{\iota = 1}^q \expected{X_{\iota}} = \accProb(y)$.
+
+By \cref{lem:jensen} we get
+\[
+	\sum_{\iota = 1}^{q} \expected{X_\iota^m} \geq \sum_{\iota = 1}^{q} \expected{X_\iota}^m\,.
+\]
+Note that for e.g.~$X_i = 1$, $i \in \range{1}{q}$ the inequality becomes equality, that is, it is tight.
+ 
+We now use the H\"older inequality, cf.~\cref{lem:holder}, for $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
+\begin{gather}
+	\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
+	\frac{1}{q^{m - 1}} \cdot \accProb(y)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
+\end{gather}
+Finally, we get
+\[
+	\frkProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
+	 \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
+\]
+\qed
+\end{proof}
+\begin{lemma}\label{lem:jensen}
+	Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
+	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times
+	H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
+h_{\iota - 1})$ to 
+\[
+  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
+    \ldots, h_q; \rho)}
+	\] 
+	for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
+  $X_\iota$ as a random variable over the uniform distribution on its domain.
+  Then $\expected{X_\iota^m} \geq \expected{X_\iota}^m$.
+\end{lemma}
+\begin{proof}
+	First we recall the Jensen inequality \cite{W:Weissten20}, if for some random
+  variable $X$ holds $\abs{\expected{X}} \leq \infty$ and $f$ is a Borel convex
+  function then
+	\[
+		f(\expected{X}) \leq \expected{f(X)}\,.
+	\] 
+	Finally, we note that $\abs{\expected{X}} \leq \infty$ and taking to the
+  $m$-th power is a Borel convex function on $[0, 1]$ interval. \qed
+\end{proof}
+
+\begin{lemma}[H\"older's inequality. Simplified.]\label{lem:holder}
+	Let $x_i, y_i$, for $i \in \range{1}{q}$, and $p, q$ be real numbers such that
+  $1/p + 1/q = 1$. Then
+	\[
+		\sum_{i = 1}^{q} x_i y_i \leq \left(\sum_{i = 1}^{q}
+      x_i^p\right)^{\frac{1}{p}} \cdot \left(\sum_{i = 1}^{q}
+      y_i^p\right)^{\frac{1}{q}}\,.
+	\]
+\end{lemma}
+
+\begin{remark}[Tightness of the H\"older inequality]
+	In is important to note that Inequality (\ref{eq:tightness}) is tight. More
+  precisely, for $\expected{X_i} = x$, $i \in \range{1}{q}$ we have
+	\begin{gather*}
+		\sum_{i = 1}^q x = \left(\sum_{i = 1}^{q} x^m\right)^\frac{1}{m} \cdot \left(\sum_{i = 1}^{q} 1^{\frac{m}{m - 1}}\right)^{\frac{m - 1}{m}} \\
+		qx = \left(qx^m\right)^\frac{1}{m} \cdot q^{\frac{m - 1}{m}} \\
+		(qx)^m = qx^m \cdot q^{m - 1} \\
+		(qx)^m = (qx)^m\,.
+	\end{gather*}
+\end{remark}
+
+\begin{lemma}
+  \label{lem:root_prob}
+  Let $\p{f}(X)$ be a random degree-$d$ polynomial over $\FF_p[X]$. Then the
+  probability that $\p{f}(X)$ has roots in $\FF_p$ is at least $\infrac{1}{d!}$.
+\end{lemma}
+\begin{proof}
+  First observe that there is $p^{d}$ canonical polynomials in $\FF_p[X]$.  Each
+  of the polynomials may have up to $d$ roots. Consider polynomials which are
+  reducible to polynomials of degree $1$, i.e.~polynomials that have all $d$
+  roots. The roots can be picked in $\bar{C}^{p}_{d}$ ways, where
+  $\bar{C}^{n}_{k}$ is the number of $k$-elements combinations with repetitions
+  from $n$-element set. That is,
+  \[
+    \bar{C}^n_k = \binom{n + k - 1}{k}\,.
+  \]
+  Thus, the probability that a randomly picked polynomial has all $d$ roots is
+  \begin{multline*}
+    p^{-d} \cdot \bar{C}^p_d = p^{-d} \cdot \binom{p + d - 1}{d} =
+    p^{-d} \cdot \frac{(p + d - 1)!}{(p + d - 1 - d)! \cdot d!} = \\
+    p^{-d} \cdot \frac{(p + d - 1) \cdot \ldots \cdot p \cdot (p - 1)!}{(p - 1)!
+      \cdot d!} = p^{-d} \cdot \frac{(p + d - 1)\cdot
+      \ldots \cdot p}{d!} \\
+    \geq p^{-d} \cdot {\frac{p^d}{d!}} = \frac{1}{d!}
+  \end{multline*}
+  \qed
+\end{proof}
+
+\subsection{Uber assumption}
+\label{sec:uber_assumption}
+We show security of our version of the uber assumption using the generic group
+model as introduced by Shoup \cite{EC:Shoup97} where all group elements are
+represented by random binary strings of length $\secpar$. That is, there are
+random encodings $\xi_1, \xi_2, \xi_T$ which are injective functions from
+$\ZZ_p^+$ to $\bin^{\secpar}$. We write
+$\GRP_i = \smallset{\xi_i(x) \mid x \in \ZZ_p^+}$, for
+$i \in \smallset{1, 2, T}$. For the sake of clarity  we denote by $\xi_{i, j}$
+the $j$-th encoding in group $\GRP_i$.
+
+Let
+$\p{P}_i = \smallset{p_1, \ldots, p_{\tau_i}} \subset \FF_p[X_1, \ldots, X_n]$,
+for $i \in \smallset{1, 2, T}, \tau_i, n \in \NN$, be sets of multivariate
+polynomials. Denote by $\p{P}_i(x_1, \ldots, x_n)$ a set of evaluations of
+polynomials in $\p{P_i}$ at $(x_1, \ldots, x_n)$. Denote by
+$L_i = \smallset{(p_j, \xi_{i, j}) \mid j \leq \tau_i}$.
+
+Let $\adv$ be an algorithm that is given encodings $\xi_{i, j_i}$ of polynomials
+in $\p{P}_i$ for $i \in \smallset{1, 2, T}, j_i = \tau_i$. There is an oracle $\oracleo$
+that allows to perform $\adv$ the following queries:
+\begin{description}
+\item[Group operations in $\GRP_1, \GRP_2, \GRP_T$:] On input
+  $(\xi_{i, j}, \xi_{i, j'}, i, op)$, $j, j' \leq \tau_i$,
+  $op \in \smallset{\msg{add}, \msg{sub}}$, $\oracleo$ sets $\tau'_i \gets \tau_i + 1$,
+  computes
+  $p_{i, \tau'_i} = p_{i, j}(x_1, \ldots, x_n) \pm p_{i, j'}(x_1, \ldots, x_n)$
+  respectively to $op$. If there is an element  $p_{i, k} \in L_i$ such 
+  that $p_{i, k} = p_{\tau'_i}$, then the oracle returns encoding of $p_{i,
+    k}$. Otherwise it sets the encoding $\xi_{i, \tau'_i}$ to a new unused
+  random string, adds $(p_{i, \tau'_i}, \xi_{i, \tau'_i})$ to $L_i$, and returns
+  $\xi_{i, \tau'_i}$.
+\item[Bilinear pairing:] On input $(\xi_{1, j}, \xi_{2, j'})$ the oracle sets
+  $\tau' \gets \tau_T + 1$ and computes
+  $r_{\tau'} \gets p_{i, j}(x_1, \ldots, x_n) \cdot p_{i, j'}(x_1, \ldots,
+  x_n)$. If $r_{\tau'} \in L_T$ then return encoding found in the list $L_T$,
+  else pick a new unused random string and set $\xi_{T, \tau'}$ to it. Return
+  the encoding to the algorithm.
 \end{description}
 
-If the adversary $\adv$'s output distribution differ in Game $\game{1}$ and
-$\game{2}$ then the reduction uses it to distinguish between
-$\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
-\( \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epsuber(\secpar).  \) Eventually,
-\(
-\abs{\prob{\game{0}} - \prob{\game{2}}} \leq \epszk(\secpar) + \epsuber(\secpar).  \) \qed
+Given that, we are ready to show security of our variant of the Boneh et
+al.~uber assumption. The proof goes similarly to the original proof given in
+\cite{EC:BonBoyGoh05} with minor differences.
+
+\begin{theorem}[Security of the uber assumption]
+  \label{thm:uber_assumption}
+  Let $\p{P}_i \in \FF_p[X_1, \ldots, X_n]^{m_i}$, for
+  $i \in \smallset{1, 2, T}$ be $\tau_i$ tuples of $n$-variate polynomials over
+  $\FF_p$ and let $\p{F} \in \FF_p[X_1, \ldots, X_n]^m$. Let
+  $\xi_0, \xi_1, \xi_T$, $\GRP_1, \GRP_2, \GRP_T$ be as defined above. If
+  polynomials $f \in \p{F}$ are pair-wise independent and are independent of
+  $\p{P}_1, \p{P}_2, \p{P}_T$, then for any $\adv$ that makes up to $q$ queries to the
+  GGM oracle holds:
+  \begin{equation*}
+    \begin{split}
+     \left|\,
+    \Pr\left[
+    \adv\left(
+      \begin{aligned}
+        \xi_1(\p{P}_1(x_1, \ldots, x_n)), \\
+        \xi_2(\p{P}_2(x_1, \ldots, x_n)), \\
+        \xi_T(\p{P}_T(x_1, \ldots, x_n)), \\
+        \xi_{1}(\p{F}_0), \xi_{1}(\p{F}_1)
+      \end{aligned}
+    \right) = b
+    \, \left|\,
+      \begin{aligned}
+        x_1, \ldots, x_n, y_1, \ldots, y_m \sample \FF_p,\\
+        b \sample \bin, \\
+        \p{F}_b \gets \p{F}(x_1, \ldots, x_n),\\
+        \p{F}_{1 - b} \gets (y_1, \ldots, y_m)
+      \end{aligned}
+    \right.  \right] - \frac{1}{2} \, \right| \\
+     \leq \frac{d(q + m_1 + m_2 + m_T +
+      m)^2 }{2p}
+    \end{split}
+  \end{equation*}
+\end{theorem}
+\begin{proof}
+  Let $\cdv$ be a challenger that plays with $\adv$ in the following
+  game. $\cdv$ maintains three lists
+  \[
+    L_i = \smallset{(p_j, \xi_{i, j}) \mid j \in \range{1}{\tau_i}},
+  \]
+  for $i \in \smallset{1, 2, T}$. Invariant $\tau$ states that
+  $\tau_1 + \tau_2 + \tau_T = \tau + m_1 + m_2 + m$.
+
+  Challenger $\cdv$ answers $\adv$'s oracle queries. However, it does it a bit
+  differently that the oracle $\oracleo$ would:
+  \begin{description}
+  \item[Group operations in $\GRP_1, \GRP_2, \GRP_T$:] On input
+    $(\xi_{i, j}, \xi_{i, j'}, i, op)$, $j, j' \leq \tau_i$,
+    $op \in \smallset{\msg{add}, \msg{sub}}$, $\cdv$ sets
+    $\tau' \gets \tau_i + 1$, computes
+    $p_{i, \tau'}(X_1, \ldots, X_n) = p_{i, j}(X_1, \ldots, X_n) \pm p_{i,
+      j'}(X_1, \ldots, X_n)$ respectively to $op$. If there is a polynomial
+    $p_{i, k}(X_1, \ldots, X_n) \in L_i$ such that
+    $p_{i, k}(X_1, \ldots, X_n) = p_{\tau'}(X_1, \ldots, X_n)$, then the
+    challenger returns encoding of $p_{i, k}$. Otherwise it sets the encoding
+    $\xi_{i, \tau'}$ to a new unused random string, adds
+    $(p_{i, \tau'}, \xi_{i, \tau'})$ to $L_i$, and returns $\xi_{i, \tau'}$.
+  \item[Bilinear pairing:] On input $(\xi_{1, j}, \xi_{2, j'})$ the challenger
+    sets $\tau' \gets \tau_T + 1$ and computes
+    $r_{\tau'}(X_1, \ldots, X_n) \gets p_{i, j}(X_1, \ldots, X_n) \cdot p_{i,
+      j'}(X_1, \ldots, X_n)$. If $r_{\tau'}(X_1, \ldots, X_n) \in L_T$, $\cdv$
+    returns encoding found in the list $L_T$. Else it picks a new unused random
+    string and set $\xi_{T, \tau'}$ to it. Finally it returns the encoding to
+    the algorithm.
+\end{description}
+  
+After at most $q$ queries to the oracle, the adversary returns a bit $b'$. At
+that point the challenger $\cdv$ chooses randomly $x_1, \ldots, x_n, y_1 \ldots, y_m$,
+random bit $b$, and sets $X_i = x_i$, for $i \in \range{1}{n}$, and $Y_i = y_i$,
+for $i \in \range{1}{m}$; furthermore, $\p{F}_b \gets \p{F}(x_1, \ldots, x_n)$
+and $\p{F}_{1 - b} \gets (y_1, \ldots, y_m)$. Note that $\cdv$ simulates
+perfectly unless the chosen values $x_1, \ldots, x_n, y_1, \ldots, y_m$ result
+in equalities between polynomial evaluations that are not equalities between the
+polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
+\[
+  p_{i, j}(x_1, \ldots, x_n) - p_{i, j'}(x_1, \ldots, x_n) = 0,
+  \]
+  for $p_{i, j}(X_1, \ldots, X_n) \neq p_{i, j'}(X_1, \ldots, X_n)$.  Denote by
+  $\bad$ an event that at least one of the three conditions holds. When $\bad$
+  happens, the answer $\cdv$ gives to $\adv$ differs from an answer that a real
+  oracle would give. We bound the probability that $\bad$ occurs in two steps.
+
+  First we set $\p{F}_b = \p{F}(X_1, \ldots, X_n)$. Note that symbolic
+  substitutions do not introduce any new equalities in $\GRP_1$. That is, if for
+  all $j, j'$ holds $p_{1, j} \neq p_{1, j'}$, then $p_{1, j} \neq p_{1, j'}$
+  even after setting $\p{F}_b = \p{F}(X_1, \ldots, X_n)$. This follows since all
+  polynomials in $\p{F}$ are pairwise independent and $\p{F}$ independent on
+  $\p{P}_1, \p{P}_2, \p{P}_T$. Indeed, $p_{1, j} - p_{1, j'}$ is a polynomial of
+  the form
+  \[
+    \sum_{j = 1}^{m_1}a_j p_{1, j} + \sum_{j = 1}^{m} b_j f_j (X_1, \ldots, X_n),
+  \]
+  for some constants $a_j, b_j$. If the polynomial is non-zero, but setting
+  $\p{F}_b = \p{F}(X_1, \ldots, X_n)$ makes this polynomial vanish, then some
+  $f_k$ must be dependent on some $\p{P}_1, \p{F} \setminus \smallset{f_k}$.
+
+  Now we set $X_1 \ldots, X_n, \p{F}_{1 - b}$ and bound probability that for
+  some $i$ and $j, j'$ holds
+  $(p_{i, j}(x_1, \ldots, x_n) - p_{i, j'}(x_1, \ldots, x_n) = 0$ for
+  $p_{i, j} \neq p_{i, j'}$. By the construction, the maximum total degree of
+  these polynomials is
+  $d = \max(d_{\p{P}_1}+ d_{\p{P}_2}, d_{\p{P}_T}, d_{\p{F}})$, where $d_f$ is
+  the total degree of some polynomial $f$ and for a set of polynomials
+  $F = \smallset{f_1, \ldots, f_k}$, we write
+  $d_F = \smallset{d_{f_1}, \ldots, d_{f_k}}$. Thus, for a given $j, j'$ probability that a random assignment to
+  $X_1, \ldots, X_n, Y_1, \ldots, Y_n$ is a root of $p_{i, j} - p_{i, j'}$ is,
+  by the Schwartz-Zippel lemma, bounded by $\infrac{d}{p}$, which is
+  negligible. There is at most $2 \cdot {q + m_0 + m_1 + m  \choose 2}$ such
+  pairs $p_{i, j}, p_{i, j'}$ we have that
+  \[
+    \prob{\bad} \leq  {q + m_0 + m_1 + m  \choose 2} \cdot \frac{2d}{p} \leq (q
+    + m_0 + m_1 + m)^2 \frac{d}{p}.
+  \]
+
+  As noted, if $\bad$ does not occur then the simulation is perfect. Also the
+  bit $b$ has been chosen independently on the $\adv$'s view, thus $\condprob{b
+    = b'}{\neg \bad} = \infrac{1}{2}$. Hence,
+  \[
+    \begin{aligned}
+      \prob{b = b'} & \leq \condprob{b = b'}{\neg \bad}(1 - \prob{\bad}) + \prob{\bad} =
+      \frac{1}{2} + \frac{\prob{\bad}}{2} \\
+      \prob{b = b'} & \geq \condprob{b = b'}{\neq \bad}(1 - \prob{\bad}) =
+      \frac{1}{2} - \frac{\prob{\bad}}{2}.
+    \end{aligned}
+  \]
+  Finally,
+  \[
+    \abs{\Pr[b = b'] - \frac{1}{2}} \leq \prob{\bad}/2 \leq (q
+    + m_0 + m_1 + m)^2 \frac{d}{2p}
+  \]
+  as required.
 \end{proof}
 
-\subsection{From forking soundness and unique response property to forking simulation
-  extractability of $\plonkprotfs$}
-Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$
-and forking sound. We now make use of \cref{thm:se} and show that
-$\plonkprot_\fs$ is forking simulation-extractable as defined in
-\cref{def:simext}.
 
-\begin{corollary}[Forking simulation extractability of $\plonkprot_\fs$]
-\label{thm:plonkprotfs_se}
-Assume that $\plonkprot$ is $\ur{2}$ with security $\epsur(\secpar)$, and
-$(\epsss(\secpar), 3, 3\noofc + 1)$-forking-sound. Let
-$\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$
-adversary that can make up to $q$ random oracle queries and outputs an
-acceptable proof for $\plonkprotfs$ with probability at least $\accProb$. Then
-$\plonkprotfs$ is forking simulation-extractable with extraction error
-$\eta = \epsur(\secpar)$. The extraction probability $\extProb$ is at least
-\[
-	\extProb \geq \frac{1}{q^{3 \noofc}} (\accProb - \epsur(\secpar))^{3\noofc + 1} -\eps(\secpar)\,,
-\]
-for some negligible $\eps(\secpar)$ and $\noofc$ being the number of
-constrains in the proven circuit.
-\end{corollary}
-
-\section{Non-Malleability of $\sonicprotfs$}
+\section{Non-malleability of $\sonicprotfs$}
 \label{sec:sonic}
 \subsection{\sonic{} protocol rolled out}
 In this section we present $\sonic$'s constraint system and algorithms. Reader
@@ -3348,506 +3667,6 @@ of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable 
   respectively, the number of multiplicative and linear constrains of the system.
 \end{corollary}
 
-
-% \markulf{03.11.2020}{Comment again at this being huge? Maybe mention
-% simulation-soundness result?}
-
-%\begin{proof}
-% 	The theorem holds as a corollary to \cref{thm:se}. The proof goes by game
-%  hoping. The games are controlled by an environment $\env$ that internally
-%  runs a simulation extractability adversary $\advse$, simulates its with
-%  access to a random oracle and simulator, and when necessary rewinds it. The
-%  games differ by various breaking points, i.e.~points where the environment
-%  decides to abort the game.
-% 
-% Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs
-% returned by the adversary and the simulator respectively. We use $\zkproof[i]$
-% to denote prover's message in the $i$-th round of the proof, $\zkproof[i].\ch$
-% to denote the challenge that is given to the prover after $\zkproof[i]$, and
-% $\zkproof\range{i}{i'}$ to denote all messages of the proof exchanged between rounds $i$ and $i'$, i.e.~$\zkproof[i], \zkproof[i].\ch, \ldots, \zkproof[i']$.
-% 
-% Without loss of generality, we assume that whenever the accepting proof
-% contains a response to a challenge from a random oracle, we assume that the
-% adversary queried the oracle to get it. It is straightforward to transform any
-% adversary that violates this condition into an adversary that makes these
-% additional queries to the random oracle and wins with the same probability.
-% 
-% \ngame{0}
-% This is a simulation extraction game played between an adversary $\advse$ who
-% has given access to a random oracle $\ro$ and simulator
-% $\plonkprotfs.\simulator$.  There is also an extractor $\ext$ that, from the
-% proof $\zkproof_\advse$ for instance $\inp_\advse$ output by the adversary and
-% from a transcripts of $\advse$'s operations, is tasked to extract a witness
-% $\wit_\advse$ such that $\REL(\inp_\advse, \wit_\advse)$ holds. $\advse$ wins
-% if it manages to produce an acceptable proof and the extractor fails to reveal
-% the corresponding witness. In the following game hops we upper-bound
-% probability of this happening.
-% 
-% \ngame{1}
-% This is identical to $\game{0}$ except that now the game is aborted if there
-% is a simulated proof $\zkproof_\simulator$ such that
-% $\zkproof_\simulator\range{1}{3} = \zkproof_\advse\range{1}{3}$. That is, the
-% adversary in its final proof reuses a part of a simulated proof it saw before
-% and the proof is acceptable. Denote that event by $\event{\errur}$.
-% 
-% \ncase{$\game{0} \mapsto \game{1}$}	
-% We have, 
-% \[
-% 	\prob{\game{0} \land \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}}
-% \]
-% and, from \cref{lem:difference_lemma}
-% \[
-% 	\abs{\prob{\game{0}} - \prob{\game{1}}} \leq \event{\errur}\,.
-% \]
-% Thus, to show that the transition from one game to another introduces only
-% minor change in probability of $\advse$ winning it should be shown that
-% $\prob{\event{\errur}}$ is small.
-% 
-% Assume that $\advse$ queried the simulator on $\inp_{\advse}$---the instance
-% which $\advse$ outputs. We show a reduction $\rdvur$ that utilises $\advse$,
-% who outputs a valid proof for $\inp_\advse$, to break the $\ur{2}$ property of
-% $\plonkprot$.
-% 
-% Consider an algorithm $\rdvur$ that runs $\advse$ internally as a black-box:
-% \begin{itemize} \item The reduction answers both queries to the simulator
-% $\plonkprotfs.\simulator$ and to the random oracle.  It also keeps lists $Q$,
-% for the simulated proofs, and $Q_\ro$ for the random oracle queries.  \item
-% When $\advse$ outputs a fake proof $\zkproof_{\advse}$ for  $\inp_\advse$,
-% $\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds
-% $\zkproof_{\simulator}\range{1}{3}$ such that $\zkproof_{\advse}\range{1}{3} =
-% \zkproof_{\simulator}\range{1}{3}$ and a random oracle query
-% $\zkproof_{\simulator}[3].\ch$ on $\zkproof_{\simulator}\range{1}{3}$. \item
-% $\rdvur$ returns two proofs for $\inp_\advse$: \begin{align*} \zkproof_1 =
-% (\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch,
-% \zkproof_{\simulator}\range{4}{5})\\ \zkproof_2 =
-% (\zkproof_{\simulator}\range{1}{3}, \zkproof_{\simulator}[3].\ch,
-% \zkproof_{\advse}\range{4}{5}) \end{align*} \end{itemize}   If $\zkproof_1 =
-% \zkproof_2$, then $\advse$ fails to break simulation extractability, as
-% $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then
-% $\rdvur$ breaks $\ur{2}$-ness of $\plonkprot$, what may happen with some
-% negligible probability $\epsur$ only, hence 
-% \[ 
-% \prob{\event{\errur}} \leq \epsur\,. 
-% \]
-% 
-% \ngame{2} This is identical to $\game{1}$ except that now the environment
-% aborts also when it fails to build a $(1, 1, 1, \noofc + 3,
-% 1)$-tree of accepting transcripts $\tree$ by rewinding $\advse$. Denote that
-% event by $\event{\errfrk}$. Note that for every acceptable proof
-% $\zkproof_{\advse}$, we may assume that whenever $\advse$ outputs in Round
-% $i$, for $i \in \smallset{4, 5}$, a message $\zkproof_{\advse}[i]$, then
-% $\zkproof_{\advse}\range{1}{i}$ is a query to the random oracle that was made
-% by the adversary, not the simulator\footnote{\cite{INDOCRYPT:FKMV12} calls
-% these queries \emph{fresh}.}. That is, assume that is not true and for some
-% query $\zkproof_{\advse}\range{1}{i}$ holds $\zkproof_{\advse}\range{1}{i} =
-% \zkproof_\simulator\range{1}{i'}$, for $i, i' \in \smallset{4, 5}$, the proof
-% is acceptable and not in $Q$, then the unique response property would be
-% broken.
-% 
-% \ncase{$\game{1} \mapsto \game{2}$}	
-% As previously, 
-% \[
-% 	\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \event{\errfrk}\,.
-% \]
-% Denote by $\accProb$ the probability that $\advse$ outputs a proof which is
-% acceptable and does not break $\ur{2}$-ness of $\plonkprot$. From the
-% generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma},
-% \[
-%   \prob{\event{\errfrk}} \leq 1 - \left(\frac{\accProb^{\noofc +
-%     3}}{q^{\noofc + 2}} - \frac{\accProb \cdot
-%     (\noofc + 2)}{2^\secpar}\right)\,.
-% \]
-% 
-% \ngame{3} This is identical to $\game{2}$ except that now the environment uses
-% the tree $\tree$ to extract the witness for the proven statement and aborts
-% when it fails. Denote that event by $\event{\errss}$.
-% 
-% \ncase{$\game{2} \mapsto \game{3}$}	
-% As previously, 
-% \[
-% 	\abs{\prob{\game{2}} - \prob{\game{3}}} \leq \event{\errss}\,.
-% \]
-% Since $\plonkprot$ is special-sound the probability that $\env$ fails in
-% extracting the witness is upper-bounded by some negligible $\eps_\ss$.
-% 
-% In the last game, Game $\game{3}$, the environment aborts when it fails to
-% extract the correct witness, hence the adversary $\advse$ cannot win. Thus, by
-% the game-hoping argument,
-% \[
-%   \abs{\prob{\game{0}} - \prob{\game{3}}} \leq 1 -
-% 	 \left(\frac{\accProb^{\noofc + 3}}{q^{\noofc +
-%     2}} - \frac{\accProb \cdot (\noofc + 2)}{2^\secpar}\right) +
-% 	 \epsur + \epsss\,.
-% \]
-% Thus the probability that extractor $\extss$ succeeds is at least
-% \[
-%   \left(\frac{\accProb^{\noofc + 3}}{q^{\noofc + 2}}
-%     - \frac{\accProb \cdot (\noofc + 2)}{2^\secpar}\right) -
-%   \epsur - \epsss\,.
-% \]
-% Since $\accProb$ is probability of $\advse$ outputting acceptable transcript
-% that does not break $\ur{2}$-ness of $\plonkprot$, then $\accProb \leq
-% \accProb + \epsur$, where $\accProb$ is the probability of $\advse$ outputing
-% an acceptable proof as defined in \cref{def:simext}. It thus holds
-% \[
-% 	\label{eq:frk}
-% 	\extProb \geq \frac{(\accProb - \epsur)^{\noofc +
-%  3}}{q^{\noofc + 2}} - \underbrace{\frac{(\accProb - \epsur)
-%  \cdot (\noofc + 2)}{2^\secpar} - \epsur - \epsss}_{\eps}\,.
-% \]
-% Note that the part of \cref{eq:frk} denoted by $\eps$ is negligible and 
-% \[
-%   \extProb \geq \frac{1}{q^{\noofc + 2}} (\accProb -
-% 	 \epsur)^{\noofc + 3} -\eps\,.
-% \] 
-% thus
-% $\plonkprot_\fs$ is simulation extractable with extraction error $\epsur$.
-% 	\qed
-% \end{proof}
-
-
-\section{Further work}
-We identify a number of problems which we left as further work. First of all,
-the generalised version of the forking lemma presented in this paper can be
-generalised even further to include protocols where forking soundness holds for
-protocols where $\extt$ extracts a witness from a $(n_1, \ldots, n_\mu)$-tree of
-acceptable transcripts, where more than one $n_j > 1$. I.e.~to include
-protocols that for witness extraction require transcripts that branch at more
-than one point.
-
-Although we picked $\plonk$ and $\sonic$ as examples for our framework, it is
-not limited to SRS-based NIZKs. Thus, it would be interesting to apply it to
-known so-called transparent zkSNARKs like Bulletproofs \cite{SP:BBBPWM18},
-Aurora \cite{EC:BCRSVW19} or AuroraLight \cite{EPRINT:Gabizon19a}.
-
-Since the rewinding technique and the forking lemma used to show simulation
-extractability of $\plonkprotfs$ and $\sonicprotfs$ come with security loss,
-it would be interesting to show SE of these protocols directly in the
-algebraic group model.
-
-Although we focused here only on zkSNARKs, it is worth to
-investigating other protocols that may benefit from our framework, like
-e.g.~identification schemes.
-
-Last, but not least, this paper would benefit greatly if a more tight version
-of the generalised forking lemma was provided. However, we have to note here
-that some of the inequalities used in the proof are already tight, i.e.~for
-specific adversaries, some of the inequalities are already equalities.
-
-% \section*{Acknowledgement}
-% The second author thanks Antoine Rondelet for helpful discussions.
-
-\begin{spacing}{0.93}
-\bibliographystyle{abbrv}
-\bibliography{cryptobib/abbrev3,cryptobib/crypto,additional_bib}
-% \clearpage
-\end{spacing}
-\appendix
-%{\Huge{Supplementary Material}} 
-
-\section{Special simulation-extractability of sigma protocols and forking lemma}
-\label{sec:forking_lemma}
-\begin{theorem}[Special simulation extractability of the Fiat--Shamir transform
-  \cite{INDOCRYPT:FKMV12}]
-	Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a non-trivial sigma
-  protocol with unique responses for a language $\LANG \in \npol$. In the random
-  oracle model, the NIZK proof system $\sigmaprot_\fs = (\prover_\fs,
-  \verifier_\fs, \simulator_{\fs})$ resulting by applying the Fiat--Shamir
-  transform to $\sigmaprot$ is special simulation extractable with extraction error
-  $\eta = q/h$ for the simulator $\simulator$. Here, $q$ is the number of random
-  oracle queries and $h$ is the number of elements in the range of $\ro$.
-\end{theorem}
-
-The theorem relies on the following \emph{general forking lemma} \cite{JC:PoiSte00}.
-
-\begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12,CCS:BelNev06}]
-	\label{lem:forking_lemma}
-	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\zdv$ be a $\ppt$
-  algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $i
-  \in\range{0}{q}$ and $s$ is called a \emph{side output}. Denote by $\ig$ a
-  randomised instance generator. We denote by $\accProb$ the probability
-	\[
-		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_q \sample H; (i, s) \gets
-		\zdv(y, h_1, \ldots, h_q)}\,.
-	\]
-	Let $\forking_\zdv(y)$ denote the algorithm described in
-  \cref{fig:forking_lemma}, then the probability $\frkProb$ defined as $
-  \frkProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\zdv}(y)}
-  $ holds
-	\[
-		\frkProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
-	\]
-	%
-	\begin{figure}
-		\centering
-		\fbox{
-		\procedure{$\forking_\zdv (y)$}
-		{
-			\rho \sample \RND{\zdv}\\
-			h_1, \ldots, h_q \sample H\\
-			(i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)\\
-			\pcif i = 0\ \pcreturn (0, \bot, \bot)\\
-			h'_{i}, \ldots, h'_{q} \sample H\\
-			(i', s') \gets \zdv(y, h_1, \ldots, h_{i - 1}, h'_{i}, \ldots,  h'_{q};
-			\rho)\\
-			\pcif (i = i') \land (h_{i} \neq h'_{i})\ \pcreturn (1, s, s')\\
-			\pcind \pcelse \pcreturn (0, \bot, \bot)
-		}}
-		\caption{Forking algorithm $\forking_\zdv$}
-		\label{fig:forking_lemma}
-\end{figure}
-\end{lemma}
-
-
-
-\section{Omitted lemmas and proofs}
-\begin{lemma}\label{lem:jensen}
-	Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
-	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times
-	H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
-h_{\iota - 1})$ to 
-\[
-  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
-    \ldots, h_q; \rho)}
-	\] 
-	for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
-  $X_\iota$ as a random variable over the uniform distribution on its domain.
-  Then $\expected{X_\iota^m} \geq \expected{X_\iota}^m$.
-\end{lemma}
-\begin{proof}
-	First we recall the Jensen inequality \cite{W:Weissten20}, if for some random
-  variable $X$ holds $\abs{\expected{X}} \leq \infty$ and $f$ is a Borel convex
-  function then
-	\[
-		f(\expected{X}) \leq \expected{f(X)}\,.
-	\] 
-	Finally, we note that $\abs{\expected{X}} \leq \infty$ and taking to the
-  $m$-th power is a Borel convex function on $[0, 1]$ interval. \qed
-\end{proof}
-
-\begin{lemma}[H\"older's inequality. Simplified.]\label{lem:holder}
-	Let $x_i, y_i$, for $i \in \range{1}{q}$, and $p, q$ be real numbers such that
-  $1/p + 1/q = 1$. Then
-	\[
-		\sum_{i = 1}^{q} x_i y_i \leq \left(\sum_{i = 1}^{q}
-      x_i^p\right)^{\frac{1}{p}} \cdot \left(\sum_{i = 1}^{q}
-      y_i^p\right)^{\frac{1}{q}}\,.
-	\]
-\end{lemma}
-
-\begin{remark}[Tightness of the H\"older inequality]
-	In is important to note that Inequality (\ref{eq:tightness}) is tight. More
-  precisely, for $\expected{X_i} = x$, $i \in \range{1}{q}$ we have
-	\begin{gather*}
-		\sum_{i = 1}^q x = \left(\sum_{i = 1}^{q} x^m\right)^\frac{1}{m} \cdot \left(\sum_{i = 1}^{q} 1^{\frac{m}{m - 1}}\right)^{\frac{m - 1}{m}} \\
-		qx = \left(qx^m\right)^\frac{1}{m} \cdot q^{\frac{m - 1}{m}} \\
-		(qx)^m = qx^m \cdot q^{m - 1} \\
-		(qx)^m = (qx)^m\,.
-	\end{gather*}
-\end{remark}
-
-\begin{lemma}
-  \label{lem:root_prob}
-  Let $\p{f}(X)$ be a random degree-$d$ polynomial over $\FF_p[X]$. Then the
-  probability that $\p{f}(X)$ has roots in $\FF_p$ is at least $\infrac{1}{d!}$.
-\end{lemma}
-\begin{proof}
-  First observe that there is $p^{d}$ canonical polynomials in $\FF_p[X]$.  Each
-  of the polynomials may have up to $d$ roots. Consider polynomials which are
-  reducible to polynomials of degree $1$, i.e.~polynomials that have all $d$
-  roots. The roots can be picked in $\bar{C}^{p}_{d}$ ways, where
-  $\bar{C}^{n}_{k}$ is the number of $k$-elements combinations with repetitions
-  from $n$-element set. That is,
-  \[
-    \bar{C}^n_k = \binom{n + k - 1}{k}\,.
-  \]
-  Thus, the probability that a randomly picked polynomial has all $d$ roots is
-  \begin{multline*}
-    p^{-d} \cdot \bar{C}^p_d = p^{-d} \cdot \binom{p + d - 1}{d} =
-    p^{-d} \cdot \frac{(p + d - 1)!}{(p + d - 1 - d)! \cdot d!} = \\
-    p^{-d} \cdot \frac{(p + d - 1) \cdot \ldots \cdot p \cdot (p - 1)!}{(p - 1)!
-      \cdot d!} = p^{-d} \cdot \frac{(p + d - 1)\cdot
-      \ldots \cdot p}{d!} \\
-    \geq p^{-d} \cdot {\frac{p^d}{d!}} = \frac{1}{d!}
-  \end{multline*}
-  \qed
-\end{proof}
-
-\subsection{Uber assumption}
-\label{sec:uber_assumption}
-We show security of our version of the uber assumption using the generic group
-model as introduced by Shoup \cite{EC:Shoup97} where all group elements are
-represented by random binary strings of length $\secpar$. That is, there are
-random encodings $\xi_1, \xi_2, \xi_T$ which are injective functions from
-$\ZZ_p^+$ to $\bin^{\secpar}$. We write
-$\GRP_i = \smallset{\xi_i(x) \mid x \in \ZZ_p^+}$, for
-$i \in \smallset{1, 2, T}$. For the sake of clarity  we denote by $\xi_{i, j}$
-the $j$-th encoding in group $\GRP_i$.
-
-Let
-$\p{P}_i = \smallset{p_1, \ldots, p_{\tau_i}} \subset \FF_p[X_1, \ldots, X_n]$,
-for $i \in \smallset{1, 2, T}, \tau_i, n \in \NN$, be sets of multivariate
-polynomials. Denote by $\p{P}_i(x_1, \ldots, x_n)$ a set of evaluations of
-polynomials in $\p{P_i}$ at $(x_1, \ldots, x_n)$. Denote by
-$L_i = \smallset{(p_j, \xi_{i, j}) \mid j \leq \tau_i}$.
-
-Let $\adv$ be an algorithm that is given encodings $\xi_{i, j_i}$ of polynomials
-in $\p{P}_i$ for $i \in \smallset{1, 2, T}, j_i = \tau_i$. There is an oracle $\oracleo$
-that allows to perform $\adv$ the following queries:
-\begin{description}
-\item[Group operations in $\GRP_1, \GRP_2, \GRP_T$:] On input
-  $(\xi_{i, j}, \xi_{i, j'}, i, op)$, $j, j' \leq \tau_i$,
-  $op \in \smallset{\msg{add}, \msg{sub}}$, $\oracleo$ sets $\tau'_i \gets \tau_i + 1$,
-  computes
-  $p_{i, \tau'_i} = p_{i, j}(x_1, \ldots, x_n) \pm p_{i, j'}(x_1, \ldots, x_n)$
-  respectively to $op$. If there is an element  $p_{i, k} \in L_i$ such 
-  that $p_{i, k} = p_{\tau'_i}$, then the oracle returns encoding of $p_{i,
-    k}$. Otherwise it sets the encoding $\xi_{i, \tau'_i}$ to a new unused
-  random string, adds $(p_{i, \tau'_i}, \xi_{i, \tau'_i})$ to $L_i$, and returns
-  $\xi_{i, \tau'_i}$.
-\item[Bilinear pairing:] On input $(\xi_{1, j}, \xi_{2, j'})$ the oracle sets
-  $\tau' \gets \tau_T + 1$ and computes
-  $r_{\tau'} \gets p_{i, j}(x_1, \ldots, x_n) \cdot p_{i, j'}(x_1, \ldots,
-  x_n)$. If $r_{\tau'} \in L_T$ then return encoding found in the list $L_T$,
-  else pick a new unused random string and set $\xi_{T, \tau'}$ to it. Return
-  the encoding to the algorithm.
-\end{description}
-
-Given that, we are ready to show security of our variant of the Boneh et
-al.~uber assumption. The proof goes similarly to the original proof given in
-\cite{EC:BonBoyGoh05} with minor differences.
-
-\begin{theorem}[Security of the uber assumption]
-  \label{thm:uber_assumption}
-  Let $\p{P}_i \in \FF_p[X_1, \ldots, X_n]^{m_i}$, for
-  $i \in \smallset{1, 2, T}$ be $\tau_i$ tuples of $n$-variate polynomials over
-  $\FF_p$ and let $\p{F} \in \FF_p[X_1, \ldots, X_n]^m$. Let
-  $\xi_0, \xi_1, \xi_T$, $\GRP_1, \GRP_2, \GRP_T$ be as defined above. If
-  polynomials $f \in \p{F}$ are pair-wise independent and are independent of
-  $\p{P}_1, \p{P}_2, \p{P}_T$, then for any $\adv$ that makes up to $q$ queries to the
-  GGM oracle holds:
-  \begin{equation*}
-    \begin{split}
-     \left|\,
-    \Pr\left[
-    \adv\left(
-      \begin{aligned}
-        \xi_1(\p{P}_1(x_1, \ldots, x_n)), \\
-        \xi_2(\p{P}_2(x_1, \ldots, x_n)), \\
-        \xi_T(\p{P}_T(x_1, \ldots, x_n)), \\
-        \xi_{1}(\p{F}_0), \xi_{1}(\p{F}_1)
-      \end{aligned}
-    \right) = b
-    \, \left|\,
-      \begin{aligned}
-        x_1, \ldots, x_n, y_1, \ldots, y_m \sample \FF_p,\\
-        b \sample \bin, \\
-        \p{F}_b \gets \p{F}(x_1, \ldots, x_n),\\
-        \p{F}_{1 - b} \gets (y_1, \ldots, y_m)
-      \end{aligned}
-    \right.  \right] - \frac{1}{2} \, \right| \\
-     \leq \frac{d(q + m_1 + m_2 + m_T +
-      m)^2 }{2p}
-    \end{split}
-  \end{equation*}
-\end{theorem}
-\begin{proof}
-  Let $\cdv$ be a challenger that plays with $\adv$ in the following
-  game. $\cdv$ maintains three lists
-  \[
-    L_i = \smallset{(p_j, \xi_{i, j}) \mid j \in \range{1}{\tau_i}},
-  \]
-  for $i \in \smallset{1, 2, T}$. Invariant $\tau$ states that
-  $\tau_1 + \tau_2 + \tau_T = \tau + m_1 + m_2 + m$.
-
-  Challenger $\cdv$ answers $\adv$'s oracle queries. However, it does it a bit
-  differently that the oracle $\oracleo$ would:
-  \begin{description}
-  \item[Group operations in $\GRP_1, \GRP_2, \GRP_T$:] On input
-    $(\xi_{i, j}, \xi_{i, j'}, i, op)$, $j, j' \leq \tau_i$,
-    $op \in \smallset{\msg{add}, \msg{sub}}$, $\cdv$ sets
-    $\tau' \gets \tau_i + 1$, computes
-    $p_{i, \tau'}(X_1, \ldots, X_n) = p_{i, j}(X_1, \ldots, X_n) \pm p_{i,
-      j'}(X_1, \ldots, X_n)$ respectively to $op$. If there is a polynomial
-    $p_{i, k}(X_1, \ldots, X_n) \in L_i$ such that
-    $p_{i, k}(X_1, \ldots, X_n) = p_{\tau'}(X_1, \ldots, X_n)$, then the
-    challenger returns encoding of $p_{i, k}$. Otherwise it sets the encoding
-    $\xi_{i, \tau'}$ to a new unused random string, adds
-    $(p_{i, \tau'}, \xi_{i, \tau'})$ to $L_i$, and returns $\xi_{i, \tau'}$.
-  \item[Bilinear pairing:] On input $(\xi_{1, j}, \xi_{2, j'})$ the challenger
-    sets $\tau' \gets \tau_T + 1$ and computes
-    $r_{\tau'}(X_1, \ldots, X_n) \gets p_{i, j}(X_1, \ldots, X_n) \cdot p_{i,
-      j'}(X_1, \ldots, X_n)$. If $r_{\tau'}(X_1, \ldots, X_n) \in L_T$, $\cdv$
-    returns encoding found in the list $L_T$. Else it picks a new unused random
-    string and set $\xi_{T, \tau'}$ to it. Finally it returns the encoding to
-    the algorithm.
-\end{description}
   
-After at most $q$ queries to the oracle, the adversary returns a bit $b'$. At
-that point the challenger $\cdv$ chooses randomly $x_1, \ldots, x_n, y_1 \ldots, y_m$,
-random bit $b$, and sets $X_i = x_i$, for $i \in \range{1}{n}$, and $Y_i = y_i$,
-for $i \in \range{1}{m}$; furthermore, $\p{F}_b \gets \p{F}(x_1, \ldots, x_n)$
-and $\p{F}_{1 - b} \gets (y_1, \ldots, y_m)$. Note that $\cdv$ simulates
-perfectly unless the chosen values $x_1, \ldots, x_n, y_1, \ldots, y_m$ result
-in equalities between polynomial evaluations that are not equalities between the
-polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
-\[
-  p_{i, j}(x_1, \ldots, x_n) - p_{i, j'}(x_1, \ldots, x_n) = 0,
-  \]
-  for $p_{i, j}(X_1, \ldots, X_n) \neq p_{i, j'}(X_1, \ldots, X_n)$.  Denote by
-  $\bad$ an event that at least one of the three conditions holds. When $\bad$
-  happens, the answer $\cdv$ gives to $\adv$ differs from an answer that a real
-  oracle would give. We bound the probability that $\bad$ occurs in two steps.
-
-  First we set $\p{F}_b = \p{F}(X_1, \ldots, X_n)$. Note that symbolic
-  substitutions do not introduce any new equalities in $\GRP_1$. That is, if for
-  all $j, j'$ holds $p_{1, j} \neq p_{1, j'}$, then $p_{1, j} \neq p_{1, j'}$
-  even after setting $\p{F}_b = \p{F}(X_1, \ldots, X_n)$. This follows since all
-  polynomials in $\p{F}$ are pairwise independent and $\p{F}$ independent on
-  $\p{P}_1, \p{P}_2, \p{P}_T$. Indeed, $p_{1, j} - p_{1, j'}$ is a polynomial of
-  the form
-  \[
-    \sum_{j = 1}^{m_1}a_j p_{1, j} + \sum_{j = 1}^{m} b_j f_j (X_1, \ldots, X_n),
-  \]
-  for some constants $a_j, b_j$. If the polynomial is non-zero, but setting
-  $\p{F}_b = \p{F}(X_1, \ldots, X_n)$ makes this polynomial vanish, then some
-  $f_k$ must be dependent on some $\p{P}_1, \p{F} \setminus \smallset{f_k}$.
-
-  Now we set $X_1 \ldots, X_n, \p{F}_{1 - b}$ and bound probability that for
-  some $i$ and $j, j'$ holds
-  $(p_{i, j}(x_1, \ldots, x_n) - p_{i, j'}(x_1, \ldots, x_n) = 0$ for
-  $p_{i, j} \neq p_{i, j'}$. By the construction, the maximum total degree of
-  these polynomials is
-  $d = \max(d_{\p{P}_1}+ d_{\p{P}_2}, d_{\p{P}_T}, d_{\p{F}})$, where $d_f$ is
-  the total degree of some polynomial $f$ and for a set of polynomials
-  $F = \smallset{f_1, \ldots, f_k}$, we write
-  $d_F = \smallset{d_{f_1}, \ldots, d_{f_k}}$. Thus, for a given $j, j'$ probability that a random assignment to
-  $X_1, \ldots, X_n, Y_1, \ldots, Y_n$ is a root of $p_{i, j} - p_{i, j'}$ is,
-  by the Schwartz-Zippel lemma, bounded by $\infrac{d}{p}$, which is
-  negligible. There is at most $2 \cdot {q + m_0 + m_1 + m  \choose 2}$ such
-  pairs $p_{i, j}, p_{i, j'}$ we have that
-  \[
-    \prob{\bad} \leq  {q + m_0 + m_1 + m  \choose 2} \cdot \frac{2d}{p} \leq (q
-    + m_0 + m_1 + m)^2 \frac{d}{p}.
-  \]
-
-  As noted, if $\bad$ does not occur then the simulation is perfect. Also the
-  bit $b$ has been chosen independently on the $\adv$'s view, thus $\condprob{b
-    = b'}{\neg \bad} = \infrac{1}{2}$. Hence,
-  \[
-    \begin{aligned}
-      \prob{b = b'} & \leq \condprob{b = b'}{\neg \bad}(1 - \prob{\bad}) + \prob{\bad} =
-      \frac{1}{2} + \frac{\prob{\bad}}{2} \\
-      \prob{b = b'} & \geq \condprob{b = b'}{\neq \bad}(1 - \prob{\bad}) =
-      \frac{1}{2} - \frac{\prob{\bad}}{2}.
-    \end{aligned}
-  \]
-  Finally,
-  \[
-    \abs{\Pr[b = b'] - \frac{1}{2}} \leq \prob{\bad}/2 \leq (q
-    + m_0 + m_1 + m)^2 \frac{d}{2p}
-  \]
-  as required.
-\end{proof}
 
 \end{document}
