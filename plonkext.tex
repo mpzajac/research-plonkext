@@ -1239,127 +1239,10 @@ extract a witness.
 	\label{fig:genforking_lemma}
 \end{figure}
 \end{lemma}
-\begin{proof}
-First denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
-\begin{align*}
-\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s)
-\gets \zdv(y, h_1, \ldots, h_q)}\,.\\
-	\frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
-\genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}\,.
-\end{align*}
-
-We start by claiming that for all $y$ 
-\begin{equation}\label{eq:frkProb_y}
-	\frkProb(y) \geq 
-	\frac{\accProb(y)^m}{q^{m - 1}} - \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - m)! \cdot h^{m}}\right)
-	\end{equation}
-Then with the expectation taken over $y \sample \ig$, we have
-\begin{align}
-	\frkProb & = \expected{\frkProb(y)} \geq
-	\expected{\frac{\accProb(y)^m}{q^{m - 1}} -  \accProb(y) \cdot \left(1 -
-  \frac{h!}{(h - m)! \cdot h^{m}}\right)} \label{eq:use_eq1}\\
-	& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} -
-	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - m)! \cdot
-  h^{m}}\right) \label{eq:by_lemma_jensen}\\
-	& = \frac{\accProb^m}{q^{m - 1}} -  \accProb \cdot \left(1 -
-  \frac{h!}{(h - m)! \cdot h^{m}}\right)\label{eq:by_accProb}\,.
-\end{align}
-Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
-\cref{eq:by_lemma_jensen} comes from linearity of expected value and \cref{lem:jensen}; and
-\cref{eq:by_accProb} holds by the fact that $\expected{\accProb(y)} =
-\accProb$.
-
-We now show \cref{eq:frkProb_y}.
-Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$. 
-For any input $y$, with probabilities taken over the coin tosses of
-$\genforking_{\zdv}^{m}$ we have
-\begin{align*}
-	\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land
-h_{i_j}^{j} \neq h_{i_{j'}}^{j'} \text{ for } (j, j') \in J}	\\
-	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} %\\
-   - \prob{i_j \geq 1 \land h_{i_j}^{j} = h_{i_{j'}}^{j'} \text{ for some } (j, j') \in J}\\
-	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} -
-	\prob{i_j \geq 1} \cdot 
-  \left(1 - \frac{h!}{(h - m)! \cdot h^{m}}\right) \\ 
-	& = \prob{i_j = i_{j'} \land
-	i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 -
-\frac{h!}{(h - m)! \cdot h^{m}}\right)\,.
-\end{align*}
-
-Probability that for some $(j, j') \in J$ and $i_j = i_{j'}$ holds
-$h_{i_j}^{j} \neq h_{i_{j'}}^{j'}$ equals 
-\[
-  \frac{h \cdot (h - 1)
-\cdot \ldots \cdot (h - m - 1)}{h^m} = \frac{h!}{(h - m)! \cdot h^m}.
-\]
-That is, it equals the number
-of all $m$-element strings where each element is different divided by
-the number of all $m$-element strings, where elements are taken from a
-set of size $h$. 
-
-It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j,
-  j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$. Let $\RND{\zdv}$ denote
-the set from which $\zdv$ picks its coins at random. For each $\iota \in
-\range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times H^{\iota - 1} \to [0, 1]$ be
-defined by setting $X_\iota(\rho, h_1, \ldots, h_{\iota - 1})$ to
-\[
-  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
-    \ldots, h_q; \rho)}
-\]
-for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
-$X_\iota$ be a random variable over the uniform distribution on its domain. Then
-\begin{align*}
-	& \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} 
-	 = \sum_{\iota = 1}^{q} \prob{i_1 = \iota \land \ldots \land i_m = \iota} \\
-	& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota} \cdot \condprob{i_2 = \iota}{i_1 = \iota} \cdot \ldots \cdot \condprob{i_m = \iota}{i_1 = \ldots = i_{m - 1} = \iota} \\
-	& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota}
-   (\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\iota - 1}}
-   = \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
-\end{align*}
-Importantly, $\sum_{\iota = 1}^q \expected{X_{\iota}} = \accProb(y)$.
-
-By \cref{lem:jensen} we get
-\[
-	\sum_{\iota = 1}^{q} \expected{X_\iota^m} \geq \sum_{\iota = 1}^{q} \expected{X_\iota}^m\,.
-\]
-Note that for e.g.~$X_i = 1$, $i \in \range{1}{q}$ the inequality becomes equality, that is, it is tight.
- 
-We now use the H\"older inequality, cf.~\cref{lem:holder}, for $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
-\begin{gather}
-	\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
-	\frac{1}{q^{m - 1}} \cdot \accProb(y)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
-\end{gather}
-Finally, we get
-\[
-	\frkProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
-	 \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
-\]
-\qed
-\end{proof}
-
-% \begin{figure}
-% 		\fbox{
-% 		\procedure{$\zdv (y,h_1^{1}, \ldots, h_{q}^{1}; \rho)$}		
-% 		{
-%       (\rho_\sim, \rho_\adv)
-% 		\rho \sample \RND{\zdv}\\
-% 		(i, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; \rho)\\
-%     i_1 \gets i\\
-% 		\pcif i = 0\ \pcreturn (0, \bot)\\
-% 		\pcfor j \in \range{2}{m}\\
-% 		\pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
-% 		h_{i - 1}^{j - 1}\\
-% 		\pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
-% 		\pcind (i_j, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
-% 		\ldots, h_{q}^{j}; \rho)\\
-% 		\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
-%     \pcif \exists (j, j') \in \range{1}{m}^2, j \neq j' : (h_{i}^{j} = h_{i}^{j'})\
-% 	\pcreturn (0, \bot)\\
-% 		\pcelse \pcreturn (1, \vec{s})
-% 	}}
-
-% \end{figure}
+The proof goes similarly to \cite[Lemma 1]{CCS:BelNev06} with some modifications required
+by the fact that the protocol has more than 3 rounds and the number of
+transcripts required is larger. Due to page limit the proof is presented in
+\cref{sec:forking_proof}.
 
 To highlight importance of the generalised forking lemma we describe how we use
 it in our forking simulation-extractability proof.  Let $\proofsystem$ be a
@@ -1650,23 +1533,16 @@ algorithm from the generalized forking lemma.
   for any PPT adversary the probability that
   \[
     \Pr\left[
-      \begin{aligned}
+    %  \begin{aligned}
        % & \forall_{\zkproof \in \tree} \verifier(\srs, \inp, \zkproof) = 1, \\
-        & \wit \gets \extt(\tree), \\
-        & \REL(\tree.\inp, \wit) = 0
-      \end{aligned}
+         \wit \gets \extt(\tree), 
+         \REL(\tree.\inp, \wit) = 0
+    %  \end{aligned}
       \,\left|\,
-        \vphantom{
-          \begin{aligned}
-            \\
-            \\
-            \\
-          \end{aligned}
-        }
-        \begin{aligned}
-          & \srs \sample \kgen(\REL),\\
-          & (1, \tree) \gets \tdv(\adv, \srs)
-        \end{aligned}
+        %\begin{aligned}
+           \srs \sample \kgen(\REL), 
+           (1, \tree) \gets \tdv(\adv, \srs)
+     %   \end{aligned}
       \right.\right] \leq \eps(\secpar).
       \]
 \end{definition}
@@ -3073,6 +2949,106 @@ The theorem relies on the following \emph{general forking lemma} \cite{JC:PoiSte
 
 
 \section{Additional lemmas and proofs}
+\subsection{Proof of \cref{lem:generalised_forking_lemma}}
+\label{sec:forking_proof}
+\begin{proof}
+First denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
+\begin{align*}
+\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s)
+\gets \zdv(y, h_1, \ldots, h_q)}\,.\\
+	\frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
+\genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}\,.
+\end{align*}
+
+We start by claiming that for all $y$ 
+\begin{equation}\label{eq:frkProb_y}
+	\frkProb(y) \geq 
+	\frac{\accProb(y)^m}{q^{m - 1}} - \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)
+	\end{equation}
+Then with the expectation taken over $y \sample \ig$, we have
+\begin{align}
+	\frkProb & = \expected{\frkProb(y)} \geq
+	\expected{\frac{\accProb(y)^m}{q^{m - 1}} -  \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)} \label{eq:use_eq1}\\
+	& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} -
+	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - m)! \cdot
+  h^{m}}\right) \label{eq:by_lemma_jensen}\\
+	& = \frac{\accProb^m}{q^{m - 1}} -  \accProb \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)\label{eq:by_accProb}\,.
+\end{align}
+Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
+\cref{eq:by_lemma_jensen} comes from linearity of expected value and \cref{lem:jensen}; and
+\cref{eq:by_accProb} holds by the fact that $\expected{\accProb(y)} =
+\accProb$.
+
+We now show \cref{eq:frkProb_y}.
+Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$. 
+For any input $y$, with probabilities taken over the coin tosses of
+$\genforking_{\zdv}^{m}$ we have
+\begin{align*}
+	\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land
+h_{i_j}^{j} \neq h_{i_{j'}}^{j'} \text{ for } (j, j') \in J}	\\
+	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} %\\
+   - \prob{i_j \geq 1 \land h_{i_j}^{j} = h_{i_{j'}}^{j'} \text{ for some } (j, j') \in J}\\
+	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} -
+	\prob{i_j \geq 1} \cdot 
+  \left(1 - \frac{h!}{(h - m)! \cdot h^{m}}\right) \\ 
+	& = \prob{i_j = i_{j'} \land
+	i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 -
+\frac{h!}{(h - m)! \cdot h^{m}}\right)\,.
+\end{align*}
+
+Probability that for some $(j, j') \in J$ and $i_j = i_{j'}$ holds
+$h_{i_j}^{j} \neq h_{i_{j'}}^{j'}$ equals 
+\[
+  \frac{h \cdot (h - 1)
+\cdot \ldots \cdot (h - m - 1)}{h^m} = \frac{h!}{(h - m)! \cdot h^m}.
+\]
+That is, it equals the number
+of all $m$-element strings where each element is different divided by
+the number of all $m$-element strings, where elements are taken from a
+set of size $h$. 
+
+It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j,
+  j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$. Let $\RND{\zdv}$ denote
+the set from which $\zdv$ picks its coins at random. For each $\iota \in
+\range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times H^{\iota - 1} \to [0, 1]$ be
+defined by setting $X_\iota(\rho, h_1, \ldots, h_{\iota - 1})$ to
+\[
+  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
+    \ldots, h_q; \rho)}
+\]
+for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
+$X_\iota$ be a random variable over the uniform distribution on its domain. Then
+\begin{align*}
+	& \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} 
+	 = \sum_{\iota = 1}^{q} \prob{i_1 = \iota \land \ldots \land i_m = \iota} \\
+	& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota} \cdot \condprob{i_2 = \iota}{i_1 = \iota} \cdot \ldots \cdot \condprob{i_m = \iota}{i_1 = \ldots = i_{m - 1} = \iota} \\
+	& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota}
+   (\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\iota - 1}}
+   = \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
+\end{align*}
+Importantly, $\sum_{\iota = 1}^q \expected{X_{\iota}} = \accProb(y)$.
+
+By \cref{lem:jensen} we get
+\[
+	\sum_{\iota = 1}^{q} \expected{X_\iota^m} \geq \sum_{\iota = 1}^{q} \expected{X_\iota}^m\,.
+\]
+Note that for e.g.~$X_i = 1$, $i \in \range{1}{q}$ the inequality becomes equality, that is, it is tight.
+ 
+We now use the H\"older inequality, cf.~\cref{lem:holder}, for $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
+\begin{gather}
+	\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
+	\frac{1}{q^{m - 1}} \cdot \accProb(y)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
+\end{gather}
+Finally, we get
+\[
+	\frkProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
+	 \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
+\]
+\qed
+\end{proof}
 \begin{lemma}\label{lem:jensen}
 	Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
 	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times
