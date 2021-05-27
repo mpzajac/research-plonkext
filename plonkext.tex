@@ -74,7 +74,9 @@
 
 \allowdisplaybreaks
 
-\begin{document} \sloppy \maketitle
+\begin{document} \sloppy
+\titlerunning{Non-Malleability of the FS transform Revisited [\ldots]}
+\maketitle
 
 \begin{abstract}
   Faust, Kohlweiss, Marson, and Venturi (INDOCRYPT 2012) showed that  non-interactive zero knowledge (NIZK) proof systems obtained by applying the
@@ -631,7 +633,7 @@ knowledge, which are defined as follows:
 Sometimes a stronger notion of soundness is required---except requiring that the
 verifier rejects proofs of statements outside the language, we request from the
 prover to know a witness corresponding to the proven statement. This property is
-called \emph{knowledge soundness}.\markulf{Commented out the formal definition as we don't use it.}
+called \emph{knowledge soundness}.%\markulf{Commented out the formal definition as we don't use it.}
 
 % We call an interactive proof system $\proofsystem$
 % \emph{knowledge-sound} if for any $\REL \in \RELGEN(\secparam)$ and a $\ppt$
@@ -2758,7 +2760,7 @@ result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $\p{o}(X)$ the
 idealised check verifies that
 \(	\sum_{i = 1}^k \gamma^{i - 1} \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} s_i \equiv \p{o}(X) (X - z)\,.
 	\label{eq:pcom_idealised_check}
-  \)%
+  \)
 Since $\p{o}(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial
 composition, there is only one $\p{o} (X)$ that fulfils the equation above.
 
@@ -2770,7 +2772,7 @@ $\gamma, r'$ picked at random, holds:
 \begin{multline}
 	\label{eq:ver_eq_poly}
 	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} \cdot s_i  + r' \left(\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \right)\\
-	\equiv \p{o}(X)(X - z) + r' \p{o}'(X)(X- z')
+	\equiv \p{o}(X)(X - z) + r' \p{o}'(X)(X- z').
 \end{multline}
 Since $r'$ has been picked at random from $\FF$, probability that \cref{eq:ver_eq_poly}
 holds while either
