@@ -532,10 +532,10 @@ $\pT \in \FF_p[X_1, \ldots, X_c]^t$. Write $\pR = \left( \p{r}_1, \ldots,
 
 For a function $f$ and vector $(x_1, \ldots, x_c)$ we write $f(\pR)$ to
 denote application of $f$ to each element of $\pR$, i.e.
-\[
+\(
 	f(\pR) = \left( f(\p{r}_1 (x_1, \ldots, x_c), \ldots, f(\p{r}_r
 	(x_1, \ldots, x_c) \right).
-\]
+\)
 Similarly for applying $f$ to $\pS$ and $\pT$.
 
 \begin{definition}[Independence of $\pR, \pS, \pT$]
@@ -914,14 +914,14 @@ verifier accepts only when the polynomial \emph{is} zero.
 
 Although ideal verifiers are impractical, the are very useful in our
 proofs. More precisely, we show that
-\begin{enumerate}[(1)]
+\begin{compactenum}
 \item the idealised verifier accepts an incorrect proof (what ``incorrect''
   means depends on the situation) with at most negligible probability (and many
   cases---never);
 \item when the real verifier accepts, but not the idealised one, then we show
   how to use a malicious $\prover$ to break the underlying security assumption
   (in our case---a variant of $\dlog$.)
-\end{enumerate}
+\end{compactenum}
 
 \oursubsub{Sigma protocols}
 A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ for a relation
@@ -1836,12 +1836,13 @@ state that $\waccProb = \waccProb'$.
 Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma}, we get that
 \begin{equation}
   \begin{split}
-    \prob{\event{\errfrk}} \leq 1 - \waccProb \cdot \left(\frac{\waccProb^{n -
-          1}}{q^{n - 1}} + \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
-        (2^\secpar)^{n}} - 1\right) = \\
-    1 - \left(\frac{\waccProb^{n}}{q^{n - 1}} + 
-      \waccProb \cdot \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
-        (2^\secpar)^{n}} - \waccProb\right)\,.
+    \prob{\event{\errfrk}} \leq 1 - \waccProb \cdot \left(\infrac{\waccProb^{n -
+          1}}{q^{n - 1}} + \infrac{(2^\secpar) !}{((2^\secpar - n)! \cdot
+        (2^\secpar)^{n})} - 1\right).
+    % = \\
+    % 1 - \left(\frac{\waccProb^{n}}{q^{n - 1}} + 
+    %   \waccProb \cdot \frac{(2^\secpar) !}{(2^\secpar - n)! \cdot
+    %     (2^\secpar)^{n}} - \waccProb\right)\,.
 \end{split}
 \end{equation}
 
@@ -1897,7 +1898,7 @@ $\epsur(\secpar), \epsss(\secpar)$ are negligible, and
 $\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} \geq
 \left(\infrac{(2^\secpar - n)}{2^\secpar}\right)^{n}$ is overwhelming.  Thus,
 \[
-	\extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,.
+	\extProb \geq q^{-(n - 1)} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,.
 \] 
 and $\psfs$ is forking simulation extractable with extraction error $\epsur(\secpar)$.
 \qed
@@ -2050,13 +2051,13 @@ $\gamma, r'$ picked at random, holds:
 \end{multline}
 Since $r'$ has been picked at random from $\FF$, probability that \cref{eq:ver_eq_poly}
 holds while either
-\[
+\(
 	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}  \gamma^{i - 1} \cdot s_i \not\equiv \p{o}(X)(X - z)
-\text{, or}\]
-\[
+\text{, or}\)
+\(
 	\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \not\equiv \p{o'}(X)(X - z')
-\]
-is $\infrac{1}{\abs{\FF_p}}$~\cite{EPRINT:GabWilCio19}. This brings the proof back to
+\)
+is $\infrac{1}{\abs{\FF_p}}$~cf.~\cite{EPRINT:GabWilCio19}. This brings the proof back to
 Step 1 above. Altogether, Step 2 gives the following bound for the unique
 opening property $\epsop(\secpar) \leq 2\epsdlog(\secpar) + \infrac{1}{\FF_p}$.
 \qed
@@ -2375,7 +2376,7 @@ $\gone{\tb_i \tb_j}$:
 \end{align*}
 where $\psi$ compounds of $\xi_i, \xi_j, \zeta_i, \zeta_j, \chz, \ochz, \chi$ which
 are all known by $\rdv$ and no $b_i$ nor $b_j$.
-Analogously for the triplets and quadruplets and elements dependent on $\vec{w}$. 
+Analogously for the triplets and quadruplets and elements dependent on~$\vec{w}$. 
 
 Next the reduction runs the adversary $\adv(\REL, \srs)$ and obtains from $\adv$ an
 instance--witness pair $(\inp, \wit)$.  $\rdv$ now prepares a simulated proof as follows:
