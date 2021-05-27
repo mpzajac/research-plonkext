@@ -1782,7 +1782,7 @@ and $\psfs$ is forking simulation extractable with extraction error $\epsur(\sec
 In this section we show that $\plonkprotfs$ is simulation-sound and forking simulation-extractable. To that
 end, we proceed as follows. First we show that the version of the KZG polynomial
 commitment scheme that is proposed in the \plonk{} paper has the unique opening
-property, cf.~\cref{sec:poly_com} and \cref{lem:pcomp_unique_op}. This is then
+property, cf.~\cref{sec:poly_com} and \cref{lem:pcomp_op}. This is then
 used to show that $\plonkprot$ has the $\ur{2}$ property,
 cf.~\cref{lem:plonkprot_ur}.
 
@@ -3291,11 +3291,12 @@ h_{\iota - 1})$ to
 \begin{lemma}[H\"older's inequality. Simplified.]\label{lem:holder}
 	Let $x_i, y_i$, for $i \in \range{1}{q}$, and $p, q$ be real numbers such that
   $1/p + 1/q = 1$. Then
-	\[
+	\begin{equation}
+    \label{eq:tightness}
 		\sum_{i = 1}^{q} x_i y_i \leq \left(\sum_{i = 1}^{q}
       x_i^p\right)^{\frac{1}{p}} \cdot \left(\sum_{i = 1}^{q}
       y_i^p\right)^{\frac{1}{q}}\,.
-	\]
+	\end{equation}
 \end{lemma}
 
 \begin{remark}[Tightness of the H\"older inequality]
