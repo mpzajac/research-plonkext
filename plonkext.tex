@@ -64,7 +64,7 @@
 \newcommand{\ourpar}[1] {\smallskip\noindent\emph{#1}}
 
 %\title{On Simulation-Extractability of Universal zkSNARKs}
-\title{Non-Malleability of the Fiat--Shamir Transform Revisited}
+\title{Non-Malleability of the Fiat--Shamir Transform Revisited for Multi-round SRS-Based Protocols}
 \author{Anonymous submission to PKC}
 %\author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} 
 %\iflncs{
@@ -1064,7 +1064,6 @@ polynomially many simulated proofs for any statements it wishes.
   queries to $\ro$ and $\ro$'s answers.
 \end{definition}
 
-\markulf{Removed paragraph on sigma protocols}
 % Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
 % is special-sound and has a unique response property. Let $\sigmaprot_\fs =
 % (\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the
@@ -1073,7 +1072,7 @@ polynomially many simulated proofs for any statements it wishes.
 % presented in \cref{sec:forking_lemma} along with the instrumental forking lemma,
 % cf.~\cite{CCS:BelNev06}.
 
-\oursubsub{Simulation sound NIZKs.}
+\noindent \textbf{Simulation sound NIZKs.}
 Another notion for non-malleable NIZKs is \emph{simulation soundness}. It allows the adversary to see simulated proof, however, in contrast to simulation
 extractability it does not require an extractor to provide a witness for the
 proven statement. Instead, it is only necessary, that an adversary who sees
@@ -2348,27 +2347,44 @@ $\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
 \abs{\prob{\game{0}} - \prob{\game{2}}} \leq \epszk(\secpar) + \epsuber(\secpar).  \) \qed
 \end{proof}
 
-\subsection{From forking soundness and unique response property to forking simulation
-  extractability of $\plonkprotfs$}
+\subsection{Simulation soundness and simulation
+  extractability of~$\plonkprotfs$}
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$
-and forking sound. We now make use of \cref{thm:se} and show that
-$\plonkprot_\fs$ is forking simulation-extractable as defined in
-\cref{def:simext}.
+and forking sound. We now make use of \cref{thm:simsnd} and \cref{thm:se} and show that
+$\plonkprot_\fs$ is simulation sound and forking simulation-extractable as defined in
+\cref{sec:simext_def}.
 
 \begin{corollary}[Forking simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
-Assume that $\plonkprot$ is $\ur{2}$ with security $\epsur(\secpar)$, and
-$(\epsss(\secpar), 3, 3\noofc + 1)$-forking-sound. Let
+Assume that $\plonkprot$ is
+$(\epsss(\secpar), 3, 3\noofc + 1)$-forking-sound and the $\PCOMp$ is a commitment of knowledge with security $\epsk(\secpar)$, binding security
+  $\epsbind(\secpar)$ and has unique opening property with security $\epsop(\secpar)$. Let
 $\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$
 adversary that can make up to $q$ random oracle queries and outputs an
 acceptable proof for $\plonkprotfs$ with probability at least $\accProb$. Then
 $\plonkprotfs$ is forking simulation-extractable with extraction error
 $\eta = \epsur(\secpar)$. The extraction probability $\extProb$ is at least
 \[
-	\extProb \geq \frac{1}{q^{3 \noofc}} (\accProb - \epsur(\secpar))^{3\noofc + 1} -\eps(\secpar)\,,
+	\extProb \geq \frac{1}{q^{3 \noofc}} (\accProb - \epsk(\secpar) - 2\cdot\epsbind(\secpar) -
+  \epsop(\secpar))^{3\noofc + 1} -\eps(\secpar)\,,
 \]
 for some negligible $\eps(\secpar)$ and $\noofc$ being the number of
 constrains in the proven circuit.
+\end{corollary}
+
+\begin{corollary}[Simulation soundness of $\plonkprot_\fs$]
+  \label{thm:simsnd}
+  Assume that $\plonkprot$ is $2$-programmable HVZK in the standard model, that is
+  $\epss(\secpar)$-sound and the $\PCOMp$ is a commitment of knowledge with security $\epsk(\secpar)$, binding security
+  $\epsbind(\secpar)$ and has unique opening property with security $\epsop(\secpar)$. Then the
+  probability that a $\ppt$ adversary $\adv$ breaks simulation soundness of
+  $\ps_{\fs}$ is upper-bounded by
+  \(
+    \epsk(\secpar) + 2\cdot\epsbind(\secpar) +
+  \epsop(\secpar) + q_\ro^4  \epss(\secpar)\,,
+  \)
+  where $q$ is the total number of queries made by the adversary $\adv$ to a
+  random oracle $\ro\colon \bin^{*} \to \bin^{\secpar}$.
 \end{corollary}
 
 
