@@ -1854,52 +1854,43 @@ field used in $\PCOMp$.\end{lemma}
   commitments, $\vec{s} \in \FF_p^k, \vec{s'} \in \FF_p^{k'}$ the evaluations,
   and $\vec{o} = (o, o') \in \FF_p^2$ be the commitment openings.  We need to
   show that the probability a $\ppt$ $\adv$ opens the same commitment in two
-  different ways is at most $\epsop(\secpar)$.
+  different ways is at most $\epsop(\secpar)$, even when the commitment openings
+  are verified in batches.
 
-\ncase{Step 1} First, consider a case where the commitment is limited to commit
-to multiple polynomials which are evaluated at the same point $z$. As noted in
-\cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the probability
-of the adversary succeeding using the idealised verification
-equation\COMMENT{---which considers equality between polynomials---instead of
-  the real verification equation---which consider equality of the polynomials'
-  evaluations}.  This holds since an adversary that manages to provide a
-commitment opening that holds for the real verifier, but does not hold for the
-idealised verifier can be used to break the dlog assumption and reveal the
-secret trapdoor used to produce the commitment's SRS, the probability of such
-event is bounded by the $(\noofc + 2, 1)$-dlog security $\epsdlog(\secpar)$,
-cf.~\cite[Lemma 2.2]{EPRINT:GabWilCio19} for more details.
-
-For polynomials $\vec{\p{f}} = \p{f}_1, \ldots, \p{f}_k$, evaluation point $z$, evaluation
-result $\vec{s} = s_1, \ldots, s_k$, random $\gamma$, and opening $\p{o}(X)$ the
-idealised check verifies that
-\(	\sum_{i = 1}^k \gamma^{i - 1} \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} s_i \equiv \p{o}(X) (X - z)\,.
-	\label{eq:pcom_idealised_check}
+  The idealised verifier checks whether the following equality, for $\gamma, r'$
+  picked at random, holds:
+  \begin{multline}
+    \label{eq:ver_eq_poly}
+    \left(\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}
+      \gamma^{i - 1} \cdot s_i\right) + r' \left(\sum_{i = 1}^{k'} \gamma'^{i -
+        1} \cdot \p{f'}_i(X) -
+      \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \right)\\
+    \equiv \p{o}(X)(X - z) + r' \p{o}'(X)(X- z').
+  \end{multline}
+  Since $r'$ has been picked at random from $\FF$, probability that
+  \cref{eq:ver_eq_poly} holds while either
+  \[
+    \sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}
+    \gamma^{i - 1} \cdot s_i \not\equiv \p{o}(X)(X - z) \text{, or}
+  \]
+  \[
+    \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'}
+    \gamma'^{i - 1} \cdot s'_i \not\equiv \p{o'}(X)(X - z')
+  \]
+  is $\infrac{1}{\abs{\FF_p}}$~cf.~\cite{EPRINT:GabWilCio19}. 
+  When \(
+    \sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}
+    \gamma^{i - 1} \cdot s_i = \p{o}(X)(X - z) 
   \)
-Since $\p{o}(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial
-composition, there is only one $\p{o} (X)$ that fulfils the equation above.
+  holds, polynomial $\p{o}(X)$ is uniquely determined from the uniqueness of
+  polynomial composition. Similarly, $\p{o'}(X)$ is uniquely determined as well.
 
-\ncase{Step 2} Second, consider a case when the polynomials are evaluated on two
-points $\vec{z} = (z, z')$ and the adversary is asked to provide two openings
-$\vec{o} = (o, o')$. Similarly, we analyse the case of the ideal verification.
-In that scenario, the verifier checks whether the following equality, for
-$\gamma, r'$ picked at random, holds:
-\begin{multline}
-	\label{eq:ver_eq_poly}
-	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k} \gamma^{i - 1} \cdot s_i  + r' \left(\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \right)\\
-	\equiv \p{o}(X)(X - z) + r' \p{o}'(X)(X- z').
-\end{multline}
-Since $r'$ has been picked at random from $\FF$, probability that \cref{eq:ver_eq_poly}
-holds while either
-\(
-	\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}  \gamma^{i - 1} \cdot s_i \not\equiv \p{o}(X)(X - z)
-\text{, or}\)
-\(
-	\sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \not\equiv \p{o'}(X)(X - z')
-\)
-is $\infrac{1}{\abs{\FF_p}}$~cf.~\cite{EPRINT:GabWilCio19}. This brings the proof back to
-Step 1 above. Altogether, Step 2 gives the following bound for the unique
-opening property $\epsop(\secpar) \leq 2\epsdlog(\secpar) + \infrac{1}{\FF_p}$.
-\qed
+  Since discrepancy
+  between the idealised verifier rejection and real verifier acceptance allows
+  one to break the discrete logarithm problem, probability that the real
+  verifier accepts in one of the cases above is upper-bounded by
+  $\epsdlog + \infrac{1}{\FF_p}$.
+  \qed
 \end{proof}
 
 
@@ -1907,11 +1898,10 @@ opening property $\epsop(\secpar) \leq 2\epsdlog(\secpar) + \infrac{1}{\FF_p}$.
 \begin{lemma}
 	\label{lem:plonkprot_ur}
   Let $\PCOMp$ be commitment of knowledge with security $\epsk(\secpar)$,
-  $\epsbind(\secpar)$-binding and has unique opening property with security $\epsop(\secpar)$,
-  then probability that a $\ppt$ adversary $\adv$ breaks $\plonkprot$'s $\ur{2}$
-  property is at most $\epsk(\secpar) + 2\cdot\epsbind(\secpar) +
-  \epsop(\secpar)$.% assuming the polynomial commitment scheme $\PCOMp$
-%is of knowledge.
+  $\epsbind(\secpar)$-binding and has unique opening property with security
+  $\epsop(\secpar)$, then probability that a $\ppt$ adversary $\adv$ breaks
+  $\plonkprot$'s $\ur{2}$ property is at most
+  $ 2 \cdot \epsop + 9 \cdot (\epsbind + \infrac{2}{\FF_p}) + \epss.$.
 \end{lemma}
 \begin{proof}
   Let
