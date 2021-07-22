@@ -1,30 +1,45 @@
 We thank the reviewers for their comments. Unfortunatelly, we are able to
-respond only to some of them due to the rebuttal size limit.  Regarding the
-generality of our result, let us focus here on Marlin and the general compiler
-from AHP to zkSNARKs it provides. The resulting zkSNARK is divided into two
-phases -- first, where the prover P sends commitments to some *randomized*
-polynomials, and second, where the verifier V makes its queries and chooses
-evaluation points for the polynomials. We believe that all zkSNARKs achieved
-that way *do fulfil* requirements of our framework given that (1) some of the
-polynomials sent by the prover "encode" witness (e.g. as their coefficients),
-(2) the verifier gets evaluation of these polynomials at some randomly picked
-point.  The crucial point of the compiler is that the only messages that P
-randomizes before sending ar the polynomials used in the first phase. P's
-messages in the second phase are entirely determined by V's queries. Hence, the
-extractor could extract the witness by rewinding P to a point after the
-witness-encoding polynomials are sent, but before they are evaluated --
-providing different evaluation points the extractor could learn the whole
-polynomials. Also, for our reduction to work, the proof system has to be
+respond only to some of them due to the rebuttal size limit.
+
+Regarding the generality of our result, let us focus here on Marlin and the
+general compiler from AHP to zkSNARKs it provides. The resulting zkSNARK is
+divided into two phases -- first, where the prover P sends commitments to some
+*randomized* polynomials, and second, where the verifier V makes its queries and
+chooses evaluation points for the polynomials. We believe that all zkSNARKs
+achieved that way *do fulfil* requirements of our framework given that (1) some
+of the polynomials sent by the prover "encode" witness (e.g. as their
+coefficients), (2) the verifier gets evaluation of these polynomials at some
+randomly picked point.  The crucial point of the compiler is that the only
+messages that P randomizes before sending ar the polynomials used in the first
+phase. P's messages in the second phase are entirely determined by V's
+queries. Hence, the extractor could extract the witness by rewinding P to a
+point after the witness-encoding polynomials are sent, but before they are
+evaluated -- providing different evaluation points the extractor could learn the
+whole polynomials. Also, for our reduction to work, the proof system has to be
 simulatable just by programming the random oracle (without using the
 trapdoor). Here Marlin looks promising as well, as the simulator should be able
 to simulate V's challenges such that the challenges fit to the committed
-polynomials (similarly zero knowledge of PHP is defined in Lunar by Faonio et
-al.).
+polynomials (similarly zero knowledge of PHP is defined in Lunar by Campanelli
+et al.).  \michals{write about concrete Marlin implementation} Regarding using
+our framework in the Rafols-Zapico paper -- one would need to show SE of the
+checkable subspace sampling argument first. Given the concrete instantiation --
+Basilisk -- it looks promising, but we cannot guarantee it indeed works, as the
+verifier gets random-poinmt evaluation only on a part of the witness.
 
-Regarding generalization of our results for transaparent zkSNARKs, the main
+Regarding generalization of our results to transaparent zkSNARKs, the main
 limitation here is that such zkSNARKs have logarithmic number of rounds and
 succinctness is achieved by reccursive composition of proofs. The latter makes
 stating and proving corresponding forking lemma much more difficult task as we
-would need to argue about non-trivially composed probabilistic distributions.
+would need to argue about non-trivially composed probabilistic
+distributions.
 
-Regarding k-programmability
+Regarding k-programmability. We allow the simulator to program the oracle only
+for rounds that come after P's answers become deterministic. However for considered
+zkSNARKs this requirement does not seem to limit applicability of our
+framework. This holds, since in these zkSNARKs P first commits to polynomials
+(using randomness) and then deterministically answers V's queries. It is not
+suprising that the simulator needs to program the oracle only in the "challenge"
+phase, not when the polynomials are picked.
+
+Many comments the reviewers made considered readability of the paper. Here we
+can only promise to apply these comments for the camera-ready version of the paper.
