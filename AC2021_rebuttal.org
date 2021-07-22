@@ -31,10 +31,10 @@ subspace sampling argument. Given the concrete instantiation, Basilisk, it looks
 promising, but we cannot guarantee it indeed works, as the verifier gets
 random-point evaluation only on a part of the witness.
 
-Regarding generalization of our results to transaparent zkSNARKs, the main
-hurdle here is that such zkSNARKs have logarithmic number of rounds and
+Regarding generalization of our results to transparent zkSNARKs, the main
+hurdle here is that such zkSNARKs have a logarithmic number of rounds and
 succinctness is achieved by reccursive composition of proofs. The latter makes
-stating and proving corresponding forking lemma much more difficult task as one
+stating and proving corresponding forking lemma a much more difficult task as one
 would need to argue about non-trivially composed probabilistic distributions.
 
 Regarding k-programmability. We allow the simulator to program the oracle only
