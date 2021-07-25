@@ -20,16 +20,17 @@ be simulatable just by programming the random oracle (without using the
 trapdoor). Here the compiler presented by Chiesa et al. looks promising as well,
 as the simulator should be able to simulate V's challenges such that the
 challenges fit to the committed polynomials (similarly zero knowledge of PHP is
-defined in Lunar by Campanelli et al.). However in Marlin, a concrete
+obtained in Lunar by Campanelli et al.). However in Marlin, a concrete
 instatiation of the compiler, the authors nest sumcheck arguments one in another
 for the sake of verifier's efficiency, what unfortunately may prevent our
 framework from working in this case. OTOH, if we allow V to work in quadratic
 time to the size of the circuit and remove the proposed optimization, our
 framework should work without a fuss. Regarding using our framework in the
-Rafols-Zapico paper. At first, one would need to show SE of the checkable
-subspace sampling argument. Given the concrete instantiation, Basilisk, it looks
-promising, but we cannot guarantee it indeed works, as the verifier gets
-random-point evaluation only on a part of the witness.
+Rafols-Zapico paper. At first, one would need to show SE of an inner product,
+Hadamard product and checkable subspace sampling argument. Given the concrete
+instantiation, Basilisk, it looks promising, but we cannot guarantee it indeed
+works, as the verifier gets random-point evaluation only on a part of the
+witness.
 
 Regarding generalization of our results to transparent zkSNARKs, the main
 hurdle here is that such zkSNARKs have a logarithmic number of rounds and
