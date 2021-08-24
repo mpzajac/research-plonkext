@@ -1,0 +1,99 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{boxes}
+\usefonttheme{professionalfonts,structurebold}
+\usecolortheme{dove}
+
+\usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
+
+
+\title{Non malleability of the Fiat-Shamir transformation}
+\author{\scriptsize{Michal Zajac \inst{1} \and Markulf Kohlweiss \inst{2}}}
+\institute{\inst{1} Clearmatics \inst{2}IOHK}
+\date{}
+
+\include{macros}
+\renewcommand{\emph}[1]{\textbf{#1}}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+  % \frametitle{Prior our work}
+  \begin{block}{Some background}
+    Most efficient \emph{universal} or \emph{updatable} zkSNARKs use random-oracle
+  \end{block}\pause  
+
+  \begin{block}{Prior state-of-the-art}
+    %\begin{itemize}
+    %\item
+    Proven security of the \emph{interactive} proof system
+    % \item
+
+    Security of the \emph{non-interactive} variant conjectured
+      relying on Fiat--Shamir transformation
+    %\end{itemize}
+  \end{block}\pause
+
+  \begin{block}{Problems}
+    Fiat--Shamir transformation relies on \emph{forking lemma}
+
+    Forking lemma shown secure only for a narrow class of protocols
+    that \emph{requires only a single rewinding}
+
+    Not a case for any known zkSNARK
+  \end{block}\pause
+
+  \begin{block}{The result}
+    Generalized Fiat--Shamir transformation to work with wider class of protocols
+    
+     Shown that a wide class of RO-based zkSNARKs are
+     simulation-extractable \emph{out-of-the-box}
+     
+     This includes: Plonk, Sonic, some variants of Marlin
+  \end{block}
+\end{frame}
+
+\section{Fiat--Shamir transformation}
+\begin{frame}
+  \frametitle{Fiat--Shamir transformation}
+  \begin{block}{}
+    
+    \begin{columns}
+      \begin{column}{.4\linewidth}
+        Let $\ps = (\prover, \verifier)$ be a $\Sigma$-protocol which
+        transcript consists of
+        \begin{itemize}
+        \item instance $\inp$
+        \item prover's message $a$
+        \item \fbox{verifier's challenge $b$}
+        \item prover's answer $c$
+        \end{itemize}
+      \end{column}\pause
+      \begin{column}{.4\linewidth}
+        Let $\psfs$ be a variant of $\ps$ which transcript consists of
+        \begin{itemize}
+        \item instance $\inp$
+        \item prover's message $a$
+        \item \fbox{\parbox{3cm}{verifier's challenge $b = \ro(\inp, a)$}}
+        \item prover's answer $c$
+        \end{itemize}
+      \end{column}
+    \end{columns}\pause
+    
+    Then $\psfs$ is sound and zero-knowledge.
+  \end{block}
+
+  \begin{block}{}
+    \centering
+    \fbox{The above says nothing about \emph{multiround} protocols!}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Security of FS transformation---forking lemma}
+\end{frame}
+
+\end{document}
