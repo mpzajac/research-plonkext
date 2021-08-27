@@ -1,4 +1,4 @@
-\documentclass[aspectratio=169]{beamer}
+\documentclass[aspectratio=169,handout]{beamer}
 \usetheme{boxes}
 \usefonttheme{professionalfonts,structurebold}
 \usecolortheme{dove}
@@ -7,6 +7,9 @@
 \usepackage[capitalise]{cleveref}
 \usepackage{scrextend}
 \changefontsizes{9pt}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows}
 
 \title{Non malleability of the Fiat-Shamir transformation}
 \author{\scriptsize{Michal Zajac \inst{1} \and Markulf Kohlweiss \inst{2}}}
@@ -59,8 +62,113 @@
 \end{frame}
 
 \section{Fiat--Shamir transformation}
+\begin{frame}
+  \frametitle{$\Sigma$-protocols}
+  \begin{columns}
+    \begin{column}{.3\linewidth}
+      \begin{tikzpicture}
+        \draw (0, 0) node (prover) {$\prover(\inp, \wit)$}; \draw (2, 0) node
+        (verifier) {$\verifier(\inp)$}; \draw[thick,->] (0, -1) --
+        node[anchor=south] {$a$} (2, -1); \draw[thick,->] (2, -2) --
+        node[anchor=south] {$b$} (0, -2); \draw[thick,->] (0, -3) --
+        node[anchor=south] {$c$} (2, -3);
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{.6\linewidth}
+      \begin{block}{Completeness}
+        Honest verifier accepts proof from an honest prover.
+      \end{block}
+      \begin{block}{Special soundness}
+        Given two transcripts for instance $(\inp, a, b, c)$ and
+        $(\inp, a, b', c')$ one can compute witness $\wit$.
+      \end{block}
+      \begin{block}{Honest verifier zero knowledge}
+        The protocol is zero-knowledge if the verifier picks its challenges randomly.
+      \end{block}
+      \begin{block}{Public coin}
+        The verifier's challenges are public function of its randomness.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{$\Sigma$-protocols -- Fiat--Shamir transformation}
+  \begin{columns}
+    \begin{column}{.3\linewidth}
+      \begin{tikzpicture}
+        \draw (0, 0) node (prover) {$\prover(\inp, \wit)$}; \draw (2, 0) node
+        (verifier) {$\verifier(\inp)$};
+        \draw[thick,->] (0, -1) -- node[anchor=south] {$a$} (2, -1);
+        \draw[thick,->] (2, -2) -- node[anchor=south] {$\ro(\inp, a)$} (0, -2);
+        \draw[thick,->] (0, -3) -- node[anchor=south] {$c$} (2, -3);
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{.6\linewidth}
+      \begin{block}{Completeness}
+        Honest verifier accepts proof from an honest prover.
+      \end{block}
+      \begin{block}{Special soundness}
+        Given two transcripts for instance $(\inp, a, b, c)$ and $(\inp, a, b',
+        c')$ one can compute witness $\wit$.
+      \end{block}
+      \begin{block}{Honest verifier zero knowledge}
+        The protocol is zero-knowledge if the verifier picks its challenges randomly.
+      \end{block}
+      \fbox{\parbox{5cm}{
+      \begin{block}{Public coin}
+        The verifier's challenges are public function of its randomness.
+      \end{block}
+    }}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\newcommand{\advfs}{\adv_\fs}
+\renewcommand{\myskip}{0.5\baselineskip}
+
 \begin{frame}[t]
-  \frametitle{Fiat--Shamir transformation}
+  \frametitle{Soundness of the Fiat--Shamir transformation}
+  \begin{columns}
+    \begin{column}{0.7\linewidth}
+  \begin{block}{How to get two transcripts from $\advfs$}
+    Get one transcript $(\inp, a, b = \ro(\inp, a), c)$.\\
+    Rewind $\advfs$ after it sent $a$.\\
+    Pick new $\ro$ response for $\ro(\inp, a)$
+  \end{block}
+  \begin{block}{Problem}
+    $\adv$ has \emph{one shot} to convince the verifier $\verifier$.
+
+    If $\advfs$ does not like $\verifier$'s challenge, it may pick \emph{another}
+    instance $\inp$ or $a$ and try again.\\[\myskip]
+    The reduction needs to \emph{guess} which random oracle call is going to be
+    used in the final proof.\\
+    If $\advfs$ makes $Q$ querties, this probability is $\frac{1}{Q}$.
+  \end{block}
+
+  \begin{block}{Proof overview}
+    Assume $\PS$ is sound. We show that $\PS_\fs$ is sound as well.\\[\myskip]
+    Reduction $\rdv$ internally runs $\advfs$ and talks to $\PS.\verifier$.\\
+    If $\advfs$ is successful in breaking soundness of $\PS_\fs$, then $\rdv$ is
+    successful in breaking soundness of $\PS$.
+  \end{block}
+\end{column}
+\begin{column}{0.3\linewidth}
+  \begin{tikzpicture}
+    \draw (0, 0) node (reduction) {$\rdv$};
+    \draw (2, 0) node 
+    (verifier) {$\verifier(\inp)$}; \draw[thick,->] (0, -1) --
+    node[anchor=south] {$a$} (2, -1); \draw[thick,->] (2, -2) --
+    node[anchor=south] {$b$} (0, -2); \draw[thick,->] (0, -3) --
+    node[anchor=south] {$c$} (2, -3);
+  \end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\iffalse
+\begin{frame}[t]
+  \frametitle{Security of the Fiat--Shamir transformation}
   \begin{block}{}
     \begin{columns}
       \begin{column}{.4\linewidth}
@@ -92,7 +200,7 @@
     \fbox{The above says nothing about \emph{multiround} protocols!}
   \end{block}
 \end{frame}
-
+\fi
 \begin{frame}
   \frametitle{Security of FS transformation---forking lemma}
   \begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12,CCS:BelNev06}]
