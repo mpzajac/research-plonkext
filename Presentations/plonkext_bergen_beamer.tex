@@ -12,12 +12,15 @@
 \usetikzlibrary{positioning,arrows}
 
 \title{Non malleability of the Fiat-Shamir transformation}
-\author{\scriptsize{Michal Zajac \inst{1} \and Markulf Kohlweiss \inst{2}}}
+\author{\normalsize{Michal Zajac \inst{1} \and Markulf Kohlweiss \inst{2}}}
 \institute{\inst{1} Clearmatics \inst{2}IOHK}
 \date{}
 
 \include{macros}
 \renewcommand{\emph}[1]{\textbf{#1}}
+
+\newcommand{\advfs}{\adv_\fs}
+\renewcommand{\myskip}{0.5\baselineskip}
 
 \begin{document}
 
@@ -68,10 +71,13 @@
     \begin{column}{.3\linewidth}
       \begin{tikzpicture}
         \draw (0, 0) node (prover) {$\prover(\inp, \wit)$}; \draw (2, 0) node
-        (verifier) {$\verifier(\inp)$}; \draw[thick,->] (0, -1) --
-        node[anchor=south] {$a$} (2, -1); \draw[thick,->] (2, -2) --
-        node[anchor=south] {$b$} (0, -2); \draw[thick,->] (0, -3) --
-        node[anchor=south] {$c$} (2, -3);
+        (verifier) {$\verifier(\inp)$};
+
+        \draw[thick,->] (0, -0.5) -- node[anchor=south] {$a$} (2, -0.5);
+
+        \draw[thick,->] (2, -1) -- node[anchor=south] {$b$} (0, -1);
+        
+        \draw[thick,->] (0, -1.5) -- node[anchor=south] {$c$} (2, -1.5);
       \end{tikzpicture}
     \end{column}
     \begin{column}{.6\linewidth}
@@ -93,6 +99,31 @@
 \end{frame}
 
 \begin{frame}
+  \frametitle{$\Sigma$-protocols. Schnorr protocol -- proof of knowledge of a discrete logarithm}
+  \begin{columns}
+    \begin{column}{.5\linewidth}
+      \begin{tikzpicture}
+        \draw (0, 0.5) node (prover) {$\prover(\inp = g^x, \wit = x)$};
+        \draw (2.5, 0.5) node (verifier) {$\verifier(\inp = g^x)$};
+        \draw[thick,->] (0, -0.5) -- node[anchor=south] {$g^r$} (2, -0.5);
+        \draw[thick,->] (2, -1) -- node[anchor=south] {$b$} (0, -1);
+        \draw[thick,->] (0, -1.5) -- node[anchor=south] {$c = r + bx$} (2, -1.5);
+        \draw (2, -2.5) node {$\verifier$ accepts iff $g^c = g^{r+ bx}$};
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{.5\linewidth}
+      \begin{block}{Special soundness}
+        From $(g^r, b, r + bx)$ and $(g^r, b', r + b'x)$, one computes
+        \[
+          r + bx - (r + b'x)  = (b - b')x
+        \]
+        Hence, for $b \neq b'$ one may reveal $x$.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
   \frametitle{$\Sigma$-protocols -- Fiat--Shamir transformation}
   \begin{columns}
     \begin{column}{.3\linewidth}
@@ -100,8 +131,8 @@
         \draw (0, 0) node (prover) {$\prover(\inp, \wit)$}; \draw (2, 0) node
         (verifier) {$\verifier(\inp)$};
         \draw[thick,->] (0, -1) -- node[anchor=south] {$a$} (2, -1);
-        \draw[thick,->] (2, -2) -- node[anchor=south] {$\ro(\inp, a)$} (0, -2);
-        \draw[thick,->] (0, -3) -- node[anchor=south] {$c$} (2, -3);
+        \draw[thick,->] (2, -1.5) -- node[anchor=south] {$\ro(\inp, a)$} (0, -1.5);
+        \draw[thick,->] (0, -2) -- node[anchor=south] {$c$} (2, -2);
       \end{tikzpicture}
     \end{column}
     \begin{column}{.6\linewidth}
@@ -124,83 +155,137 @@
   \end{columns}
 \end{frame}
 
-\newcommand{\advfs}{\adv_\fs}
-\renewcommand{\myskip}{0.5\baselineskip}
-
-\begin{frame}[t]
+\begin{frame}
   \frametitle{Soundness of the Fiat--Shamir transformation}
   \begin{columns}
-    \begin{column}{0.7\linewidth}
+    \begin{column}{0.5\linewidth}
   \begin{block}{How to get two transcripts from $\advfs$}
     Get one transcript $(\inp, a, b = \ro(\inp, a), c)$.\\
     Rewind $\advfs$ after it sent $a$.\\
-    Pick new $\ro$ response for $\ro(\inp, a)$
+    Pick new $\ro$ response $b'$ for $\ro(\inp, a)$.\\
+    Get another transcript $(\inp, a, b', c').$
   \end{block}
+  
   \begin{block}{Problem}
     $\adv$ has \emph{one shot} to convince the verifier $\verifier$.
 
     If $\advfs$ does not like $\verifier$'s challenge, it may pick \emph{another}
     instance $\inp$ or $a$ and try again.\\[\myskip]
-    The reduction needs to \emph{guess} which random oracle call is going to be
-    used in the final proof.\\
-    If $\advfs$ makes $Q$ querties, this probability is $\frac{1}{Q}$.
+    What if the adversary keeps changing the instance so we cannot get $2$
+    transcripts?\\[\myskip]
+    What is the probability that we obtain two acceptable transcripts $(\inp, a,
+    b, c)$ and $(\inp, a, b', c')$?
+    % The reduction needs to \emph{guess} which random oracle call is going to be
+    % used in the final proof.\\
+    % If $\advfs$ makes $Q$ queries, this probability is $\frac{1}{Q}$.
   \end{block}
 
-  \begin{block}{Proof overview}
-    Assume $\PS$ is sound. We show that $\PS_\fs$ is sound as well.\\[\myskip]
-    Reduction $\rdv$ internally runs $\advfs$ and talks to $\PS.\verifier$.\\
-    If $\advfs$ is successful in breaking soundness of $\PS_\fs$, then $\rdv$ is
-    successful in breaking soundness of $\PS$.
+
+% \iffalse
+%   \begin{block}{Proof overview}
+%     Assume $\PS$ is sound. We show that $\PS_\fs$ is sound as well.\\[\myskip]
+%     Reduction $\rdv$ internally runs $\advfs$ and talks to $\PS.\verifier$.\\
+%     If $\advfs$ is successful in breaking soundness of $\PS_\fs$, then $\rdv$ is
+%     successful in breaking soundness of $\PS$.
+%   \end{block}
+% \fi
+\end{column}
+\begin{column}{0.5\linewidth}
+  \begin{block}{Forking lemma}
+    Let $\accProb$ be a probability that $\advfs$ returns an acceptable proof.\\
+    $q$ -- upper bound for a number of random oracle queries $\advfs$ may
+    make.\\
+    $h$ -- range size of the random oracle.
+    \[
+      \frkProb \geq \accProb \left(\frac{\accProb}{q} - \frac{1}{h}\right).
+    \]
+  \end{block}
+    % \begin{tikzpicture}
+  %   \draw (0, 0) node (reduction) {$\rdv$};
+  %   \draw (2, 0) node 
+  %   (verifier) {$\verifier(\inp)$}; \draw[thick,->] (0, -1) --
+  %   node[anchor=south] {$a$} (2, -1); \draw[thick,->] (2, -2) --
+  %   node[anchor=south] {$b$} (0, -2); \draw[thick,->] (0, -3) --
+  %   node[anchor=south] {$c$} (2, -3);
+  % \end{tikzpicture}
+\end{column}
+\end{columns}
+\vspace*{0.5cm}
+\centering\fbox{\parbox{10cm}{\centering What if there is more than just mere $2$
+    rounds?\\
+    What if there is more than just mere $2$ transcripts are
+  necessary?}}
+\end{frame}
+
+% \begin{frame}
+  
+% \end{frame}
+
+\begin{frame}
+  \frametitle{Simulation-extractability of $\Sigma$-protocols}
+  \begin{center}{\fbox{Let
+      $\Psi_\fs$ be a Fiat--Shamir transformed $\Sigma$-protocol $\Psi$. Then
+      $\Psi_\fs$ is simulation-extractable}}
+\end{center}
+\begin{columns}
+  \begin{column}{.4\linewidth}
+  \begin{block}{Caveats}
+    The protocol $\Psi$ has to have \emph{unique response property}\\
+    Simulation extractability depends on the probability $\accProb$
   \end{block}
 \end{column}
-\begin{column}{0.3\linewidth}
-  \begin{tikzpicture}
-    \draw (0, 0) node (reduction) {$\rdv$};
-    \draw (2, 0) node 
-    (verifier) {$\verifier(\inp)$}; \draw[thick,->] (0, -1) --
-    node[anchor=south] {$a$} (2, -1); \draw[thick,->] (2, -2) --
-    node[anchor=south] {$b$} (0, -2); \draw[thick,->] (0, -3) --
-    node[anchor=south] {$c$} (2, -3);
-  \end{tikzpicture}
+\begin{column}{.4\linewidth}
+  \begin{block}{Unique response property}
+    $\Psi$ has unique response property if no $\ppt$ adversary $\adv$ can come
+    up with two acceptable transcripts\\
+    $(\inp, a, b, c)$ and $(\inp, a, b, c')$.
+  \end{block}
 \end{column}
 \end{columns}
 \end{frame}
 
-\iffalse
-\begin{frame}[t]
-  \frametitle{Security of the Fiat--Shamir transformation}
-  \begin{block}{}
-    \begin{columns}
-      \begin{column}{.4\linewidth}
-        Let $\ps = (\prover, \verifier)$ be a $\Sigma$-protocol which
-        transcript consists of
-        \begin{itemize}
-        \item instance $\inp$
-        \item prover's message $a$
-        \item \fbox{verifier's challenge $b$}
-        \item prover's answer $c$
-        \end{itemize}
-      \end{column}\pause
-      \begin{column}{.4\linewidth}
-        Let $\psfs$ be a variant of $\ps$ which transcript consists of
-        \begin{itemize}
-        \item instance $\inp$
-        \item prover's message $a$
-        \item \fbox{\parbox{3cm}{verifier's challenge $b = \ro(\inp, a)$}}
-        \item prover's answer $c$
-        \end{itemize}
-      \end{column}
-    \end{columns}\pause
-    
-    Then $\psfs$ is sound and zero-knowledge.
+\begin{frame}
+  \frametitle{Generalized forking lemma}
+  \begin{columns}
+    \begin{column}{.4\linewidth}
+  \begin{block}{Pros}
+    Covers case of \emph{multiround protocols}\\
+    Fine with protocols that require more than $2$ transcripts to reveal the witness
+  \end{block}
+  
+  \begin{block}{Cons}
+    Huge number of rewinds required to reveal the witness\\
+    (Probably inevitable)
   \end{block}
 
-  \begin{block}{}
-    \centering
-    \fbox{The above says nothing about \emph{multiround} protocols!}
+  \begin{block}{Probability of successful forking}
+    $\accProb$ -- probability that $\advfs$ outputs an acceptable proof\\
+    $q$ -- number of random oracle queries that $\advfs$ makes\\
+    $h$ -- size of the random oracle range\\
+    $m$ -- number of necessary rewinds to reconstruct the witness
+    \[
+      \frac{\accProb}{q^{m - 1}} - \accProb \left(1 - \frac{h!}{h - m}! \cdot
+        h^m\right)
+    \]
   \end{block}
+\end{column}
+\begin{column}{.4\linewidth}
+  \begin{block}{$(n_1, \ldots, n_k)$-tree}
+    Is a tree where every node on depth $i$ has $n_i - 1$ siblings and
+    $n_{i + 1}$ children. (In total $\prod_{i = 1}^k n_i$ paths)
+  \end{block}
+  \begin{block}{Tree of acceptable transcripts}
+    Consider a $(n_1, \ldots, n_k)$-tree. Let nodes be prover's messages and
+    edges between them verifier's challenges. 
+  \end{block}
+\end{column}
+\end{columns}
 \end{frame}
-\fi
+
+\begin{frame}
+  \frametitle{}
+\end{frame}
+
 \begin{frame}
   \frametitle{Security of FS transformation---forking lemma}
   \begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12,CCS:BelNev06}]
