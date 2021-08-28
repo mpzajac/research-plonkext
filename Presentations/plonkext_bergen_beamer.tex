@@ -31,15 +31,61 @@
 \begin{frame}
   \frametitle{Our result}
   \begin{center}
-    \fbox{\parbox{10cm}{We show that a class of RO-based NIZKs is \emph{simulation
-          extractable} \\
-        (for example $\plonk$, $\sonic$)}}
+    \fbox{\parbox{10cm}{\centering We show that a class (for example $\plonk$, $\sonic$)
+        of RO-based NIZKs is \emph{simulation extractable} }}
   \end{center}
+
+  \begin{block}{Simulation extractability}
+    \begin{columns}
+      \begin{column}{0.5\linewidth}
+    Adversary $\adv$ is given oracle access to a simulator $\simulator$, can
+    query it on instances $\inp$ and get a simulated proof $\zkproof$.\\[\myskip]
+    Eventually, $\adv$ outputs instance and proof $\inp', \zkproof'$.\\[\myskip]
+    We say that proof system $\PS$ is \emph{simulation extractable} if there exists an
+    extractor $\ext$ that given $\adv$ and its randomness outputs $\wit'$ such that
+    $\REL(\inp', \wit')$
+  \end{column}
+  \begin{column}{.4\linewidth}
+    \begin{tikzpicture}
+      \draw (0, 0) node (adv) {\Huge $\adv$};
+      \draw (2, 2) node (sim) {\Huge
+        $\simulator$};
+      \draw (2, -1) node (ver) {\Huge $\verifier$}; 
+      \draw[thick,->] (adv.north) to [bend left] node[anchor=south]
+      {\Large$\inp$} (sim.west);
+      \draw[thick,->] (sim.south) to [bend left] node[anchor=north]
+      {\Large$\zkproof$} (adv.east);
+      \draw[thick,->] (adv.south) to [bend right] node[anchor=south]
+      {\Large{$\inp',\zkproof'$}} (ver.west);\pause
+      \draw (4, 1) node (ext) {\Huge $\ext$};
+      \draw (4, -1) node (wit) {\Large $\wit$};
+      \draw[thick,->] (ext.south) to (wit.north);
+    \end{tikzpicture}
+  \end{column}
+  \end{columns}
+  \end{block}
+  
+  \begin{block}{Why simulation extractability matters}
+    Proofs done in a ``stand-alone'' model don't fit well to the real world\\
+    In the real world malicious provers may see multiple proofs and learn from
+    them\\
+    Not covered by standard soundness / knowledge soundness definition
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Our result -- ct'd}
+  \begin{block}{Example}
+  \end{block}
   \begin{block}{Required properties}
     Unique response property\\
     Trapdoor-free simulatability\\
     Generalized general forking lemma
   \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{}
 \end{frame}
 
 \begin{frame}
