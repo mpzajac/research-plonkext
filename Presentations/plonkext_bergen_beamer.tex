@@ -31,21 +31,33 @@
 \begin{frame}
   \frametitle{Our result}
   \begin{center}
-    \fbox{\parbox{10cm}{\centering We show that a class (for example $\plonk$, $\sonic$)
-        of RO-based NIZKs is \emph{simulation extractable} }}
-  \end{center}
+   \fbox{ \begin{minipage}{10cm}
+        \begin{itemize}
+        \item We show that a class (for example $\plonk$, $\sonic$) of RO-based
+          NIZKs is \emph{simulation extractable}
+        \item We show security of non-interactive versions of $\plonk$ and
+          $\sonic$ (previously only interactive protocols were analysed)
+        \end{itemize}
+        \end{minipage}
+    }
+\end{center}
 
+  \begin{columns}
+    \begin{column}{0.63\linewidth}
   \begin{block}{Simulation extractability}
-    \begin{columns}
-      \begin{column}{0.5\linewidth}
     Adversary $\adv$ is given oracle access to a simulator $\simulator$, can
     query it on instances $\inp$ and get a simulated proof $\zkproof$.\\[\myskip]
     Eventually, $\adv$ outputs instance and proof $\inp', \zkproof'$.\\[\myskip]
     We say that proof system $\PS$ is \emph{simulation extractable} if there exists an
     extractor $\ext$ that given $\adv$ and its randomness outputs $\wit'$ such that
-    $\REL(\inp', \wit')$
-  \end{column}
-  \begin{column}{.4\linewidth}
+    $\REL(\inp', \wit')$\\[\myskip]
+
+    Models situation when the adversary may see other proofs before it tries to
+    break knowledge soundness
+      \end{block}
+
+   \end{column}
+  \begin{column}{.3\linewidth}
     \begin{tikzpicture}
       \draw (0, 0) node (adv) {\Huge $\adv$};
       \draw (2, 2) node (sim) {\Huge
@@ -63,15 +75,120 @@
     \end{tikzpicture}
   \end{column}
   \end{columns}
-  \end{block}
   
-  \begin{block}{Why simulation extractability matters}
-    Proofs done in a ``stand-alone'' model don't fit well to the real world\\
-    In the real world malicious provers may see multiple proofs and learn from
-    them\\
-    Not covered by standard soundness / knowledge soundness definition
+\end{frame}
+\begin{frame}
+  \frametitle{Our result -- ct'd}
+    \begin{block}{Why simulation extractability matters}
+      Proofs done in a ``stand-alone'' model don't fit well to the real world\\
+      In the real world malicious provers may see multiple proofs and learn from
+      them\\
+      Not covered by standard soundness / knowledge soundness definition
+    \end{block}
+  
+  \begin{block}{Previous results}
+    Faust et al.~(Indocrypt 2012) shown that $\Sigma$-protocols that has
+    unique-response property are simulation-extractable (after Fiat--Shamir
+    transformation)
+    \begin{itemize}
+    \item Covers only $3$-message protocols
+    \item Doesn't cover protocols with $\srs$
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{Required properties}
+    Unique response property\\
+    Trapdoor-free simulatability\\
+    $k$-simulatability\\
+    Generalized general forking lemma
   \end{block}
 \end{frame}
+
+\begin{frame}[t]
+  \frametitle{$\plonk$ protocol overview (1)}
+  \begin{block}{}
+    $n$ -- number of gates in the circuit\\
+    Witness $\wit$ compounds of $3n$ elements -- left / right / output wires of
+    gates\\
+    Values of some wires may be public
+  \end{block}
+  
+  \begin{columns}
+    \begin{column}{0.5\linewidth}
+      \textbf{Round 1.} $\prover$ encodes witness elements into $3$ polynomials:
+      \begin{itemize}
+      \item \p{a'} with left input values at coefficients
+      \item \p{b'} with left input values at coefficients
+      \item \p{c'} with left input values at coefficients
+      \end{itemize}
+      Polynomials are \emph{masked} to hide coefficients even when some
+      evaluations are revealed\\
+      This results in polynomials $\p{a}, \p{b}, \p{c}$. \\
+      Commitments $\cp{a}, \cp{b}, \cp{c}$ are computed and and sent.
+  \end{column}
+    \begin{column}{0.5\linewidth}
+    \end{column}
+  \end{columns}
+  \begin{columns}
+    \begin{column}{0.5\linewidth}
+    \end{column}
+    \begin{column}{0.5\linewidth}
+      $\verifier$ responds with challenges $\beta, \gamma$.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+  \begin{frame}[t]
+    \frametitle{$\plonk$ protocol overview (2)}
+    $\cp{a}, \cp{b}, \cp{c}, \beta, \gamma$
+  \begin{columns}
+    \begin{column}{0.5\linewidth}
+      \textbf{Round 2.} $\prover$ computes \emph{permutation polynomial}
+      $\p{z'}$ which is used to assure that some relation between left / right /
+      output wires holds.\\
+      $\p{z'}$ is masked, $\p{z}$ is created, committed and sent.
+    \end{column}
+    \begin{column}{0.5\linewidth}
+      \begin{tikzpicture}
+      \draw (0,0) node (gate) {\Huge{$g$}};
+      \draw (-1, -1) node (leftinp) {\Huge{$a_1$}};
+      \draw (1, -1) node (rightinp) {\Huge{$b_7$}};
+      \draw (0, 1.5) node (out) {\Huge{$c_2$}};      
+      \draw[thick,->] (leftinp.north) to (gate.west);
+      \draw[thick,->] (rightinp.north) to (gate.east);
+      \draw[thick,->] (gate.north) to (out.south);
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+  \begin{columns}
+    \begin{column}{0.5\linewidth}
+    \end{column}
+    \begin{column}{0.5\linewidth}
+      $\verifier$ responds with challenge $\alpha$.
+    \end{column}
+  \end{columns}\\[\myskip]
+  
+  \begin{columns}
+    \begin{column}{0.5\linewidth}
+      \textbf{Round 3.} $\prover$ computes polynomial $t$ which is $0 \pmod
+      Z_H(X)$ if fulfilled are
+    \begin{itemize}
+    \item The constraint equation
+    \item Two polynomial argument equations
+    \end{itemize}
+    $\prover$ computes commitment $\p{t}$ and sends it.
+  \end{column}
+  \begin{column}{0.5\linewidth}
+  \end{column}
+\end{columns}
+\begin{columns}
+  \begin{column}{0.5\linewidth}
+  \end{column}
+  \begin{column}{0.5\linewidth}
+    $\verifier$ sends challenge $\chz$
+  \end{column}
+  \end{columns}
+  \end{frame}
 
 \begin{frame}
   \frametitle{Our result -- ct'd}
@@ -80,6 +197,7 @@
   \begin{block}{Required properties}
     Unique response property\\
     Trapdoor-free simulatability\\
+    $k$-simulatability \\
     Generalized general forking lemma
   \end{block}
 \end{frame}
