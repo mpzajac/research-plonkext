@@ -1,7 +1,8 @@
-\documentclass[aspectratio=169,handout]{beamer}
-\usetheme{boxes}
-\usefonttheme{professionalfonts,structurebold}
-\usecolortheme{dove}
+\documentclass[aspectratio=169]{beamer}
+%\usetheme{boxes}
+\usetheme{metropolis}
+%\usefonttheme{professionalfonts,structurebold}
+%\usecolortheme{dove}
 
 \usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
 \usepackage[capitalise]{cleveref}
@@ -24,11 +25,11 @@
 \newcommand{\advfs}{\adv_\fs}
 \renewcommand{\myskip}{0.5\baselineskip}
 
-\addtobeamertemplate{navigation symbols}{}{%
-  \usebeamerfont{footline}%
-  \usebeamercolor[fg]{footline}%
-  \hspace{1em}%
-  \insertframenumber/\inserttotalframenumber }
+% \addtobeamertemplate{navigation symbols}{}{%
+%   \usebeamerfont{footline}%
+%   \usebeamercolor[fg]{footline}%
+%   \hspace{1em}%
+%   \insertframenumber/\inserttotalframenumber }
 
 \setbeamertemplate{section page}
 {
@@ -47,6 +48,18 @@
 \end{frame}
 
 \begin{frame}
+  \frametitle{Today}
+  \begin{enumerate}
+    \item Our result -- what we did and why it matters?
+    \item A few words about $\Sigma$-protocols and Fiat--Shamir transformation
+    \item Short introduction to $\plonk$
+    \item Intuitions about extracting witness from proofs (and some problems
+      we had to solve)
+    \item Glimpse into our main proof for simulaiton extractability
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
   \frametitle{Our result}
   \begin{center}
    \fbox{ \begin{minipage}{10cm}
@@ -59,6 +72,7 @@
         \end{minipage}
     }
   \end{center}
+  \pause
   \begin{block}{Why simulation extractability matters}
     Models situation when the adversary may see other proofs before it tries to
     break knowledge soundness\\
@@ -67,6 +81,7 @@
     them\\
     Not covered by standard soundness / knowledge soundness definition
   \end{block}
+  \pause
 
   \begin{block}{Some background}
     Most efficient \emph{universal} or \emph{updatable} zkSNARKs use random-oracle\\
@@ -77,42 +92,6 @@
   \end{block}
 \end{frame}
 
-\iffalse
-\begin{frame}
-  \frametitle{Simulation extractability}
-  \begin{columns}
-    \begin{column}{0.63\linewidth}
-  \begin{block}{Simulation extractability}
-    Adversary $\adv$ is given oracle access to a simulator $\simulator$, can
-    query it on instances $\inp$ and get a simulated proof $\zkproof$.\\[\myskip]
-    Eventually, $\adv$ outputs instance and proof $\inp', \zkproof'$.\\[\myskip]
-    We say that proof system $\PS$ is \emph{simulation extractable} if there exists an
-    extractor $\ext$ that given $\adv$ and its randomness outputs $\wit'$ such that
-    $\REL(\inp', \wit')$
-      \end{block}
-
-   \end{column}
-  \begin{column}{.3\linewidth}
-    \begin{tikzpicture}
-      \draw (0, 0) node (adv) {\Huge $\adv$};
-      \draw (2, 2) node (sim) {\Huge
-        $\simulator$};
-      \draw (2, -1) node (ver) {\Huge $\verifier$}; 
-      \draw[thick,->] (adv.north) to [bend left] node[anchor=south]
-      {\Large$\inp$} (sim.west);
-      \draw[thick,->] (sim.south) to [bend left] node[anchor=north]
-      {\Large$\zkproof$} (adv.east);
-      \draw[thick,->] (adv.south) to [bend right] node[anchor=south]
-      {\Large{$\inp',\zkproof'$}} (ver.west);\pause
-      \draw (4, 1) node (ext) {\Huge $\ext$};
-      \draw (4, -1) node (wit) {\Large $\wit$};
-      \draw[thick,->] (ext.south) to (wit.north);
-    \end{tikzpicture}
-  \end{column}
-  \end{columns}  
-\end{frame}
-\fi
-
 \begin{frame}
   % \frametitle{Prior our work}
   \begin{block}{Problems}
@@ -121,6 +100,7 @@
     \emph{requires only a single rewinding}\\
     Not a case for any known zkSNARK
   \end{block}
+  \pause
   \begin{columns}[t]
     \begin{column}{0.5\linewidth}
       \begin{block}{Previous results}
@@ -132,6 +112,7 @@
         \item Doesn't cover protocols with $\srs$
         \end{compactitem}
       \end{block}
+      \pause
     \end{column}
     \begin{column}{0.4\linewidth}
       \begin{block}{The result}
@@ -140,13 +121,15 @@
           of protocols (multi-round)
         \item We cover protocols with $\srs$
         \end{compactitem}
-      \end{block}
+      \end{block}\pause
       \begin{block}{Required properties}
-        Unique response property\\
-        Trapdoor-free simulatability\\
-        $k$-simulatability\\
-        Generalized general forking lemma
-      \end{block}
+        \begin{compactitem}
+          \item Unique response property
+          \item Trapdoor-free simulatability
+          \item $k$-simulatability
+          \item Generalized general forking lemma
+          \end{compactitem}
+        \end{block}
     \end{column}
   \end{columns}
 \end{frame}
@@ -254,7 +237,7 @@
     Rewind $\advfs$ after it sent $a$.\\
     Pick new $\ro$ response $b'$ for $\ro(\inp, a)$.\\
     Get another transcript $(\inp, a, b', c').$
-  \end{block}
+  \end{block}\pause
   
   \begin{block}{Problem}
     $\adv$ has \emph{one shot} to convince the verifier $\verifier$.
@@ -265,21 +248,8 @@
     transcripts?\\[\myskip]
     What is the probability that we obtain two acceptable transcripts $(\inp, a,
     b, c)$ and $(\inp, a, b', c')$?
-    % The reduction needs to \emph{guess} which random oracle call is going to be
-    % used in the final proof.\\
-    % If $\advfs$ makes $Q$ queries, this probability is $\frac{1}{Q}$.
   \end{block}
-
-
-% \iffalse
-%   \begin{block}{Proof overview}
-%     Assume $\PS$ is sound. We show that $\PS_\fs$ is sound as well.\\[\myskip]
-%     Reduction $\rdv$ internally runs $\advfs$ and talks to $\PS.\verifier$.\\
-%     If $\advfs$ is successful in breaking soundness of $\PS_\fs$, then $\rdv$ is
-%     successful in breaking soundness of $\PS$.
-%   \end{block}
-% \fi
-\end{column}
+\end{column}\pause
 \begin{column}{0.5\linewidth}
   \begin{block}{Forking lemma}
     Let $\accProb$ be a probability that $\advfs$ returns an acceptable proof.\\
@@ -290,17 +260,9 @@
       \frkProb \geq \accProb \left(\frac{\accProb}{q} - \frac{1}{h}\right).
     \]
   \end{block}
-    % \begin{tikzpicture}
-  %   \draw (0, 0) node (reduction) {$\rdv$};
-  %   \draw (2, 0) node 
-  %   (verifier) {$\verifier(\inp)$}; \draw[thick,->] (0, -1) --
-  %   node[anchor=south] {$a$} (2, -1); \draw[thick,->] (2, -2) --
-  %   node[anchor=south] {$b$} (0, -2); \draw[thick,->] (0, -3) --
-  %   node[anchor=south] {$c$} (2, -3);
-  % \end{tikzpicture}
 \end{column}
 \end{columns}
-\vspace*{0.5cm}
+\vspace*{0.0cm}
 \centering\fbox{\parbox{10cm}{\centering What if there is more than just mere $2$
     rounds?\\
     What if there is more than just mere $2$ transcripts are
@@ -320,7 +282,7 @@
   \end{block}
 \end{column}
 \begin{column}{0.3\linewidth}
-  \begin{tikzpicture}[scale=0.7]
+  \only<2>{\begin{tikzpicture}[scale=0.7]
       \draw (0,0) node (gate1) {\Large{$g_1$}};
       \draw (-1, -1) node (leftinp1) {\Large{$a_1$}};
       \draw (1, -1) node (rightinp1) {\Large{$b_7$}};
@@ -332,10 +294,10 @@
       \draw[thick,->] (gate1.north) to (out1.south);
       \draw[thick,->] (out1.north) to (gate2.west);
       \draw[thick,->] (rightinp2.north) to (gate2.east);
-      \end{tikzpicture}
+      \end{tikzpicture}}
   \end{column}
   \end{columns}
-  \begin{block}{Constraint system}
+  \begin{block}{Constraint system}<2->
     \begin{compactitem}
       \item polynomials $\p{a}(X), \p{b}(X), \p{c} (X)$ with left / right /output  values at coefficients
       \item $\selleft (X), \selright (X), \seloutput (X), \ldots$ -- selector polynomials
@@ -365,7 +327,7 @@
       Polynomials are \emph{masked} to hide coefficients even when some
       evaluations are revealed\\
       This results in polynomials $\p{a}, \p{b}, \p{c}$. \\
-      Commitments $\cp{a}, \cp{b}, \cp{c}$ are computed and and sent.
+      Commitments $\cp{a}, \cp{b}, \cp{c}$ are computed and and sent.\pause
   \end{column}
   \begin{column}{0.5\linewidth}
     \fbox{
@@ -373,17 +335,17 @@
         \begin{block}{Polynomial commitment scheme}
           $\srs = \gone{\chi, \chi^2, \ldots, \chi^d}$\\
           $\td = \chi$\\
-          commitment to $\p{f}$: $\gone{\p{f}(\chi)}$
+          commitment to $\p{f}(X)$: $\gone{\p{f}(\chi)}$
         \end{block}
       \end{minipage}
-    }
+    }\pause
     \end{column}
   \end{columns}
   \begin{columns}
     \begin{column}{0.5\linewidth}
     \end{column}
     \begin{column}{0.5\linewidth}
-      $\verifier$ responds with challenges $\beta, \gamma$.
+      $\verifier$ responds with challenges $\beta, \gamma$.\pause
     \end{column}
   \end{columns}
     \begin{columns}
@@ -392,7 +354,7 @@
       $\p{z'}$ which is used to assure that some relation between left / right /
       output wires holds.\\
       $\p{z'}$ is masked, $\p{z}$ is created, committed and sent.
-    \end{column}
+    \end{column}\pause
     \begin{column}{0.5\linewidth}
     \end{column}
   \end{columns}
@@ -408,7 +370,7 @@
 
   \begin{frame}[t]
     \frametitle{$\plonk$ protocol overview}
-    \fbox{$\cp{a}, \cp{b}, \cp{c}, \beta, \gamma, \p{z}, \alpha$}\\[\myskip]
+    \fbox{$\cp{a}, \cp{b}, \cp{c}, \beta, \gamma, \p{z}, \alpha$}\pause\\[\myskip]
   
   \begin{columns}
     \begin{column}{0.5\linewidth}
@@ -423,6 +385,7 @@
     \fbox{$\p{t}$ depends on $\p{a}, \p{b}, \p{c}, \p{z}, \alpha, \beta, \gamma$}.\\
     $\prover$ computes commitment $\p{t}$ and sends it.
   \end{column}
+  \pause
   \begin{column}{0.5\linewidth}
   \end{column}
 \end{columns}
@@ -430,14 +393,14 @@
   \begin{column}{0.5\linewidth}
   \end{column}
   \begin{column}{0.5\linewidth}
-    $\verifier$ sends challenge $\chz$
+    $\verifier$ sends challenge $\chz$\pause
   \end{column}
 \end{columns}
  \begin{columns}
     \begin{column}{0.5\linewidth}
       \textbf{Round 4.} $\prover$ evaluates polynomials $\p{a}, \p{b}, \p{c},
       \p{t}$ at $\chz$ and $\p{z}$ at $\omega \chz$.\\
-      Shows correctness of the evaluation.
+      Shows correctness of the evaluation.\pause
     \end{column}
     \begin{column}{0.5\linewidth}
     \end{column}
@@ -457,15 +420,15 @@
   \frametitle{How to extract?}
   \begin{block}{}
     \begin{compactenum}
-    \item Let the adversary $\adv$ commit to polynomials $\p{a} (X), \p{b} (X),
+    \item<1-> Let the adversary $\adv$ commit to polynomials $\p{a} (X), \p{b} (X),
       \p{c} (X)$
       (only these polynomials are required to learn the whole witness)
-    \item Run a proof till evaluation challenge $\chz$ is given
-    \item \label{it:challenge} Pick a random $\chz$ and send it to $\adv$
-    \item Get evaluations $\p{a} (\chz), \p{b} (\chz), \p{c} (\chz)$
-    \item Rewind the adversary to Step \ref{it:challenge} and pick a new
+    \item<2-> Run a proof till evaluation challenge $\chz$ is given
+    \item<3-> \label{it:challenge} Pick a random $\chz$ and send it to $\adv$
+    \item<4-> Get evaluations $\p{a} (\chz), \p{b} (\chz), \p{c} (\chz)$
+    \item<5-> Rewind the adversary to Step 3 and pick a new
       challenge $\chz'$ (program the random oracle)
-    \item Repeat till enough evaluations are known to reveal $\p{a} (X), \p{b}
+    \item<6-> Repeat till enough evaluations are known to reveal $\p{a} (X), \p{b}
       (X), \p{c} (X)$. 
     \end{compactenum}
   \end{block}
@@ -475,7 +438,7 @@
   \frametitle{Problems}
   \begin{block}{}
     \begin{enumerate}
-    \item What if $\adv$ utilizes some simulated proof up to Step
+    \item<1-> What if $\adv$ utilizes some simulated proof up to Step
       \ref{it:challenge}?\\
       In that case we \emph{cannot rewind}
       \begin{compactitem}
@@ -487,12 +450,12 @@
       \end{compactitem}
       \fbox{Need to make sure that is not possible -- \emph{unique response
             property}}
-    \item What is the probability that $\adv$ doesn't change its mind after
+    \item<2-> What is the probability that $\adv$ doesn't change its mind after
       seeing new $\chz$? \\
       It could discard previously created proof and start from scratch -- pick
       new instance $\inp'$ and polynomials $\p{a'}, \p{b'}, \p{c'}$\\
       \fbox{Need a generalized version of a \emph{general forking lemma}}
-    \item Standard simulation-extractability definition needs adjustment. \\
+    \item<3-> Standard simulation-extractability definition needs adjustment. \\
       Has to include probability $\accProb$ that adversary returns a valid proof.
     \end{enumerate}
   \end{block}
@@ -505,6 +468,7 @@
     infeasible for a $\ppt$ adversary $\adv$ to produce two \emph{different}
     transcripts that share the first $k$-rounds.
   \end{block}
+  \pause
   \begin{block}{}
     \begin{compactitem}
     \item $\PS$ a $(2\mu + 1)$-message protocol
@@ -593,7 +557,7 @@
         Used to generalize \emph{special soundness}
         $(2,3)$-special sound protocol -- i.e.~we can get a witness from a tree
         of \emph{acceptable} transcripts as above
-      \end{block}
+      \end{block}\pause
     \end{column}
     \begin{column}{.5\linewidth}
       \begin{tikzpicture}
@@ -671,7 +635,9 @@
     \[
       \frkProb \geq \accProb \left(\frac{\accProb}{q} - \frac{1}{h}\right).
     \]
-  \end{block}
+  \end{block}\pause
+\end{column}
+\begin{column}{0.5\linewidth}
   \begin{block}{Generalized forking lemma}
     Let $\Psi$ be a $(2\mu + 1)$-message (interactive) protocol\\
     Assume $\Psi$ is $m$-special sound\\
@@ -683,8 +649,6 @@
         \frac{h!}{(h - m)! \cdot h^{m}}\right).
     \]
   \end{block}
-\end{column}
-\begin{column}{.5\linewidth}
 \end{column}
 \end{columns}
 \end{frame}
@@ -698,42 +662,43 @@
   \frametitle{The main theorem}
 \begin{theorem}[Forking simulation-extractable multi-message protocols]
   \label{thm:se}
-  Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
+  \onslide<1->{Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
   $(2 \mu + 1)$-message proof system for $\RELGEN(\secparam)$ that is
   \begin{compactitem}
   \item honest verifier zero-knowledge in the standard model, 
   \item has $\ur{k}$ property with security $\epsur(\secpar)$, and 
   \item is $(1, \ldots, n, \ldots, 1)$-forking sound.
-  \end{compactitem}
+  \end{compactitem}}
   % for
   % $n_i = 1, i \in \range{1}{\mu} \setminus \smallset{k}$ and $n_k = n$.
 %
-  Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle.
+  \onslide<2->{Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle.}
 
-  Then $\psfs$ is forking simulation-extractable with extraction error
+  \onslide<3->{Then $\psfs$ is forking simulation-extractable with extraction error
   $\epsur(\secpar)$ against $\ppt$ algebraic adversaries that makes up to $q$
   random oracle queries and returns an acceptable proof with probability at
   least $\accProb$.  The extraction probability $\extProb$ is at least
   \( \extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n}
-  -\eps(\secpar)\,, \) for some negligible $\eps(\secpar)$.
+  -\eps(\secpar)\,, \) for some negligible $\eps(\secpar)$.}
 \end{theorem}
 \end{frame}
 
 \begin{frame}
   \frametitle{Proof idea}
   Game hops -- starting from simulation-extractability game.\\
-  Define games and show that probability they abort is negligible
+  Define games and show that probability they abort is negligible\pause
 
 \begin{block}{Game 0}
   Simulation extractability game: $\adv$ has access to $\oracles$ and eventually
   outputs $(\inpa, \zkproofa)$
 
   Game aborts if extractor $\ext_\adv$ fails to extract the corresponding witness
-\end{block}
+\end{block}\pause
 
 \begin{block}{Game 1}
   The game is identical to Game 0, except it additionally aborts if the
-  adversary output proof $\zkproof$ such that
+  adversary output proof $\zkproof$ that matches at first $k$ places with some
+  simulated proof, i.e.
   \[
     (\inpa, \zkproof[1..k]) = (\inpa, \zkproofs[1..k])
   \]
@@ -750,7 +715,7 @@
   fails to build a tree of accepting transcripts $\tree$
 
   Probability of that event is bounded by \emph{generalized forking lemma}
-\end{block}
+\end{block}\pause
 
 \begin{block}{Game 3}
   This game is identical to Game 2, except it additionally aborts if extractor
@@ -765,14 +730,40 @@
 
 \begin{frame}
   \frametitle{More on Game 1}
-  $\rdv(\srs)$ adversary against unique response property\\
-  Internally runs $\adv^\oracles$, $\exta$\\[\myskip]
+  \begin{columns}
+    \begin{column}{0.5\linewidth}
+      $\rdv(\srs)$ adversary against unique response property\\
+      Internally runs $\adv^\oracles$, $\exta$\\[\myskip]
 
-  \emph{Important} $\rdv$ doesn't know the trapdoor!\\[\myskip]
+      \alert{Important} $\rdv$ doesn't know the trapdoor!\\[\myskip]
 
-  \fbox{$\ps$ need to be simulatable without the trapdoor}\\[\myskip]
+      \fbox{$\ps$ need to be simulatable without the trapdoor}\\[\myskip]
 
-  
+      But we can \emph{program the random oracle}
+    \end{column}\pause
+    \begin{column}{0.6\linewidth}
+      $\rdv$ proceeds as follows
+      \begin{compactitem}
+      \item On $\adv$'s queries $(\inp, \wit)$ to $\oracles$, answer with
+        $\simulator(\srs, \inp)$ and produce simulated proof $\zkproofs$.
+      \item When $\adv$ outputs $(\inpa, \zkproofa)$ such that
+          \[
+            (\inpa, \zkproof[1..k]) = (\inpa, \zkproofs[1..k])
+          \]
+          Output proofs
+          \begin{align*}
+            \zkproof = &(\zkproofa[1..k], \ro(\inpa,
+            \zkproofa[1..k]), \zkproofa[k + 1..\mu + 1]) \\
+            \zkproof' = & (\zkproofa[1..k], \ro(\inpa, \zkproofa[1..k]),
+            \zkproofs[k + 1..\mu + 1])
+          \end{align*}
+%          If $\zkproof = \zkproof'$ then $\adv$ didn't break simulation
+%         extractability\\[\myskip] 
+        \end{compactitem}
+        If $\zkproof \neq \zkproof'$ then $\rdv$ breaks the unique response
+        property
+    \end{column}
+  \end{columns}
 \end{frame}
 \begin{frame}
   \frametitle{How to simulate $\plonk$ without a trapdoor?}
@@ -780,27 +771,22 @@
     \begin{column}{0.5\linewidth}
       \begin{block}{}
         \begin{compactenum}
-        \item Pick polynomials $\p{a}, \p{b}, \p{c}$ randomly
-        \item Pick random challenges $\beta, \gamma$
-        \item Pick polynomial $\p{z}$ randomly
-        \item Pick random challenge $\alpha$
-        \item (!) Pick random challenge $\chz$
-        \item Compute $t = \p{t}(\chz)$ (from $\p{a}, \p{b}, \p{c}, \p{z}$ and
+        \item<1-> Pick polynomials $\p{a}, \p{b}, \p{c}$ randomly
+        \item<2-> Pick random challenges $\beta, \gamma$
+        \item<3-> Pick polynomial $\p{z}$ randomly
+        \item<4-> Pick random challenge $\alpha$
+        \item<5-> (!) Pick random challenge $\chz$
+        \item<6-> Compute $t = \p{t}(\chz)$ (from $\p{a}, \p{b}, \p{c}, \p{z}$ and
           challenges)
-        \item Pick random polynomial $\p{t'}(X)$
-        \item Set $\p{\tilde{t}}(X) = \p{t'}(X) (X - \chz) + t$
-        \item Compute $\p{a}(\chz), \p{b}(\chz), \ldots, \p{t}(\chz)$
-        \item Compute openings of evaluations
+        \item<7-> Pick random polynomial $\p{t'}(X)$
+        \item<8-> Set $\p{\tilde{t}}(X) = \p{t'}(X) (X - \chz) + t$
+        \item<9-> Compute $\p{a}(\chz), \p{b}(\chz), \ldots, \p{t}(\chz)$
+        \item<10-> Compute openings of evaluations
         \end{compactenum}
-      \end{block}
-
-      \begin{block}{Caveat}
-        An unbounded adversary can tell commitment to a real $\p{t}(X)$ from a
-        commitment to a random $\p{\tilde{t}}(X)$.
-      \end{block}
+      \end{block}\pause
     \end{column}
     \begin{column}{0.5\linewidth}
-      \footnotesize{
+      {\footnotesize{
         \begin{align*}
           \p{t}(X)  = & 
                         (\p{a}(X) \p{b}(X) \selmulti(X) + \p{a}(X) \selleft(X) + 
@@ -809,11 +795,49 @@
                         \selconst(X)) 
                         \frac{1}{\p{Z_H}(X)} + \ldots
         \end{align*}
-      }
+      }}
+
+    \begin{block}{Caveat}
+        An unbounded adversary $\adv$ could tell commitment to a real $\p{t}(X)$ from a
+        commitment to a random $\p{\tilde{t}}(X)$.
+
+        $\adv$ could compute $\p{t}(\chi)$ from $\p{a}(\chi),
+        \p{b}(\chi), \ldots$. \pause
+
+        \emph{Could a PPT adversary tell the difference?}
+      \end{block}
     \end{column}
     \end{columns}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Uber assumption [Boneh, Boyen, Goh]}
+  \begin{block}{Independent polynomial}
+    Let $F = \smallset{f_1(X), \ldots, f_k(X)}, G = \smallset{g_1(X), \ldots, g_l(X)}$ be
+    families of polynomials
+
+    Let $h(X)$ be a polynomial such that
+    \[
+      a_h h(X) = \sum_{i = 1}^k a_{f, i} f_i (X) + \sum_{j = 1}^l a_{g, j} g_j
+      (X) + \sum_{i, j}^{k, l} a_{f, g, i, j} f_i (X) g_j (X) 
+    \]
+    only iff $a_h, a_{f, i}, \ldots $ are all \emph{zero}. Then we call $h(X)$
+    $(F, G)$-independent
+  \end{block}\pause
+
+  \begin{block}{Uber assumption}
+    Let $F, G$ be families of polynomials and $h$ a $(F, G)$ independent
+    polynomial. Let $\chi$ be a secret and random value and $r$ a random
+    polynomial. Then no $\ppt$
+    advresary can tell
+    \begin{center}
+     $\gone{f_1(\chi), \ldots, f_k(\chi)}, \gtwo{g_1, \ldots, g_l},
+     \gone{r(\chi)}$ and 
+     $\gone{f_1(\chi), \ldots, f_k(\chi)}, \gtwo{g_1, \ldots, g_l},
+     \gone{h(\chi)}$
+     \end{center}
+    \end{block}
+\end{frame}
 
 \section{Questions?}
 
