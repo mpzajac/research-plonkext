@@ -367,7 +367,16 @@
       This results in polynomials $\p{a}, \p{b}, \p{c}$. \\
       Commitments $\cp{a}, \cp{b}, \cp{c}$ are computed and and sent.
   \end{column}
-    \begin{column}{0.5\linewidth}
+  \begin{column}{0.5\linewidth}
+    \fbox{
+      \begin{minipage}{5cm}
+        \begin{block}{Polynomial commitment scheme}
+          $\srs = \gone{\chi, \chi^2, \ldots, \chi^d}$\\
+          $\td = \chi$\\
+          commitment to $\p{f}$: $\gone{\p{f}(\chi)}$
+        \end{block}
+      \end{minipage}
+    }
     \end{column}
   \end{columns}
   \begin{columns}
@@ -411,7 +420,7 @@
     \item Permutation argument equations, i.e.~the gates that should have the
       same value, have the same value.
     \end{compactitem}
-    $\p{t}$ depends on $\p{a}, \p{b}, \p{c}, \p{z}, \alpha, \beta, \gamma$.\\
+    \fbox{$\p{t}$ depends on $\p{a}, \p{b}, \p{c}, \p{z}, \alpha, \beta, \gamma$}.\\
     $\prover$ computes commitment $\p{t}$ and sends it.
   \end{column}
   \begin{column}{0.5\linewidth}
@@ -444,9 +453,8 @@
 \end{frame}
 
 \section*{Towards extractability}
-\begin{frame}[t]
+\begin{frame}
   \frametitle{How to extract?}
-  \vspace*{-0.5cm}
   \begin{block}{}
     \begin{compactenum}
     \item Let the adversary $\adv$ commit to polynomials $\p{a} (X), \p{b} (X),
@@ -461,8 +469,12 @@
       (X), \p{c} (X)$. 
     \end{compactenum}
   \end{block}
-  \begin{block}{Problems}
-    \begin{compactenum}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Problems}
+  \begin{block}{}
+    \begin{enumerate}
     \item What if $\adv$ utilizes some simulated proof up to Step
       \ref{it:challenge}?\\
       In that case we \emph{cannot rewind}
@@ -480,7 +492,9 @@
       It could discard previously created proof and start from scratch -- pick
       new instance $\inp'$ and polynomials $\p{a'}, \p{b'}, \p{c'}$\\
       \fbox{Need a generalized version of a \emph{general forking lemma}}
-    \end{compactenum}
+    \item Standard simulation-extractability definition needs adjustment. \\
+      Has to include probability $\accProb$ that adversary returns a valid proof.
+    \end{enumerate}
   \end{block}
 \end{frame}
 
@@ -577,6 +591,8 @@
         Verifier's challenges $\alpha_k, \beta_l$\\[\myskip]
         We call such a tree a \emph{$(2, 3)$-tree of acceptable transcripts}\\[\myskip]
         Used to generalize \emph{special soundness}
+        $(2,3)$-special sound protocol -- i.e.~we can get a witness from a tree
+        of \emph{acceptable} transcripts as above
       \end{block}
     \end{column}
     \begin{column}{.5\linewidth}
@@ -640,6 +656,7 @@
 
         \draw[thick,->] (e5.south) to node[anchor=west] {$\eta_5$} (f5.north);
       \end{tikzpicture}
+      $(1, 1, 1, 5, 1)$-tree of acceptable transcripts
     \end{column}
   \end{columns}
 \end{frame}
@@ -659,42 +676,146 @@
     Let $\Psi$ be a $(2\mu + 1)$-message (interactive) protocol\\
     Assume $\Psi$ is $m$-special sound\\
     Assume that the witness can be extracted from a $(1, ..., m, ..., 1)$-tree
-    of acceptable transcript
-    \begin{compactitem}
-      \item run $\prover$ 
-    \end{compactitem}
+    of acceptable transcript\\[\myskip]
+
+    \[
+      \frkProb = \frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 -
+        \frac{h!}{(h - m)! \cdot h^{m}}\right).
+    \]
   \end{block}
 \end{column}
 \begin{column}{.5\linewidth}
-  \begin{block}{Tree of accepting transcript}
-    \begin{tikzpicture}
-      \draw (0,0) node (a) {\Large{$a$}};
-      \draw (-2, -1) node (b1) {\Large{$b_1$}};
-      \draw (2, -1) node (b2) {\Large{$b_2$}};
-      \draw (-3, -2) node (c1) {\Large{$c_1$}};
-      \draw (-2, -2) node (c2) {\Large{$c_2$}};
-      \draw (-1, -2) node (c3) {\Large{$c_3$}};
-      \draw (1, -2) node (c4) {\Large{$c_4$}};
-      \draw (2, -2) node (c5) {\Large{$c_5$}};
-      \draw (3, -2) node (c6) {\Large{$c_6$}};
-      \draw[thick,->] (a.south) to node[anchor=south] {$\alpha_1$} (b1.north);
-      \draw[thick,->] (a.south) to node[anchor=south] {$\alpha_1$} (b2.north);
-      \draw[thick,->] (b1.south) to node[anchor=south] {$\beta_1$} (c1.north);
-      \draw[thick,->] (b1.south) to node[anchor=west] {$\beta_2$} (c2.north);
-      \draw[thick,->] (b1.south) to node[anchor=south] {$\beta_3$} (c3.north);
-      \draw[thick,->] (b2.south) to node[anchor=south] {$\beta_4$} (c4.north);
-      \draw[thick,->] (b2.south) to node[anchor=west] {$\beta_5$} (c5.north);
-      \draw[thick,->] (b2.south) to node[anchor=south] {$\beta_6$} (c6.north);
-    \end{tikzpicture}
-    Prover's messages: $a, b_i, c_j$\\
-    Verifier's challenges $\alpha_k, \beta_l$\\[\myskip]
-    We call such a tree a \emph{$(2, 3)$-tree of acceptable transcripts}\\[\myskip]
-    Used to generalized \emph{special soundness}
-  \end{block}
 \end{column}
 \end{columns}
 \end{frame}
 
+\newcommand{\zkproofs}{\zkproof_\simulator}
+\newcommand{\inpa}{\inp_{\adv}}
+\newcommand{\zkproofa}{\zkproof_\adv}
+\newcommand{\exta}{\ext_\adv}
+
+\begin{frame}
+  \frametitle{The main theorem}
+\begin{theorem}[Forking simulation-extractable multi-message protocols]
+  \label{thm:se}
+  Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
+  $(2 \mu + 1)$-message proof system for $\RELGEN(\secparam)$ that is
+  \begin{compactitem}
+  \item honest verifier zero-knowledge in the standard model, 
+  \item has $\ur{k}$ property with security $\epsur(\secpar)$, and 
+  \item is $(1, \ldots, n, \ldots, 1)$-forking sound.
+  \end{compactitem}
+  % for
+  % $n_i = 1, i \in \range{1}{\mu} \setminus \smallset{k}$ and $n_k = n$.
+%
+  Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle.
+
+  Then $\psfs$ is forking simulation-extractable with extraction error
+  $\epsur(\secpar)$ against $\ppt$ algebraic adversaries that makes up to $q$
+  random oracle queries and returns an acceptable proof with probability at
+  least $\accProb$.  The extraction probability $\extProb$ is at least
+  \( \extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n}
+  -\eps(\secpar)\,, \) for some negligible $\eps(\secpar)$.
+\end{theorem}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Proof idea}
+  Game hops -- starting from simulation-extractability game.\\
+  Define games and show that probability they abort is negligible
+
+\begin{block}{Game 0}
+  Simulation extractability game: $\adv$ has access to $\oracles$ and eventually
+  outputs $(\inpa, \zkproofa)$
+
+  Game aborts if extractor $\ext_\adv$ fails to extract the corresponding witness
+\end{block}
+
+\begin{block}{Game 1}
+  The game is identical to Game 0, except it additionally aborts if the
+  adversary output proof $\zkproof$ such that
+  \[
+    (\inpa, \zkproof[1..k]) = (\inpa, \zkproofs[1..k])
+  \]
+
+  If Game 1 aborts with non-negligble probability then $\adv$ may be used to
+  break unique-response property od $\ps$.
+\end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Proof idea}
+\begin{block}{Game 2}
+  This game is identical to Game 1, except it additionally aborts if environment
+  fails to build a tree of accepting transcripts $\tree$
+
+  Probability of that event is bounded by \emph{generalized forking lemma}
+\end{block}
+
+\begin{block}{Game 3}
+  This game is identical to Game 2, except it additionally aborts if extractor
+  $\ext_\tree$ fails to extract the witness from a tree of acceptable
+  transcripts.
+
+  From the $(1, \ldots, n, \ldots, 1)$-special soundness definition -- it is
+  impossible for the adversary to make this game abort.
+\end{block}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{More on Game 1}
+  $\rdv(\srs)$ adversary against unique response property\\
+  Internally runs $\adv^\oracles$, $\exta$\\[\myskip]
+
+  \emph{Important} $\rdv$ doesn't know the trapdoor!\\[\myskip]
+
+  \fbox{$\ps$ need to be simulatable without the trapdoor}\\[\myskip]
+
+  
+\end{frame}
+\begin{frame}
+  \frametitle{How to simulate $\plonk$ without a trapdoor?}
+  \begin{columns}
+    \begin{column}{0.5\linewidth}
+      \begin{block}{}
+        \begin{compactenum}
+        \item Pick polynomials $\p{a}, \p{b}, \p{c}$ randomly
+        \item Pick random challenges $\beta, \gamma$
+        \item Pick polynomial $\p{z}$ randomly
+        \item Pick random challenge $\alpha$
+        \item (!) Pick random challenge $\chz$
+        \item Compute $t = \p{t}(\chz)$ (from $\p{a}, \p{b}, \p{c}, \p{z}$ and
+          challenges)
+        \item Pick random polynomial $\p{t'}(X)$
+        \item Set $\p{\tilde{t}}(X) = \p{t'}(X) (X - \chz) + t$
+        \item Compute $\p{a}(\chz), \p{b}(\chz), \ldots, \p{t}(\chz)$
+        \item Compute openings of evaluations
+        \end{compactenum}
+      \end{block}
+
+      \begin{block}{Caveat}
+        An unbounded adversary can tell commitment to a real $\p{t}(X)$ from a
+        commitment to a random $\p{\tilde{t}}(X)$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.5\linewidth}
+      \footnotesize{
+        \begin{align*}
+          \p{t}(X)  = & 
+                        (\p{a}(X) \p{b}(X) \selmulti(X) + \p{a}(X) \selleft(X) + 
+                        \p{b}(X)\selright(X) + \\
+                      & \p{c}(X)\seloutput(X) + \pubinppoly(X) +
+                        \selconst(X)) 
+                        \frac{1}{\p{Z_H}(X)} + \ldots
+        \end{align*}
+      }
+    \end{column}
+    \end{columns}
+\end{frame}
+
+
+\section{Questions?}
 
 \begin{frame}
   \frametitle{Security of FS transformation---forking lemma}
@@ -702,21 +823,22 @@
     \label{lem:forking_lemma}
     \begin{columns}
       \begin{column}{.5\linewidth}
-	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\zdv$ be a $\ppt$
-  algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $i
-  \in\range{0}{q}$ and $s$ is called a \emph{side output}. Denote by $\ig$ a
-  randomised instance generator. We denote by $\accProb$ the probability
-	\[
-		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_q \sample H; (i, s) \gets
-		\zdv(y, h_1, \ldots, h_q)}\,.
-	\]
-	Let $\forking_\zdv(y)$ denote the algorithm described in
-  \cref{fig:forking_lemma}, then the probability $\frkProb$ defined as $
-  \frkProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\zdv}(y)}
-  $ holds
-	\[
-		\frkProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
-	\]
+        Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\zdv$ be a $\ppt$
+        algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where
+        $i \in\range{0}{q}$ and $s$ is called a \emph{side output}. Denote by
+        $\ig$ a randomised instance generator. We denote by $\accProb$ the
+        probability
+        \[
+          \condprob{i > 0}{y \gets \ig; h_1, \ldots, h_q \sample H; (i, s) \gets
+            \zdv(y, h_1, \ldots, h_q)}\,.
+        \]
+        Let $\forking_\zdv(y)$ denote the algorithm described in
+        \cref{fig:forking_lemma}, then the probability $\frkProb$ defined as
+        $ \frkProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets
+          \forking_{\zdv}(y)} $ holds
+        \[
+          \frkProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
+        \]
       \end{column}
       \begin{column}{.4\linewidth}
 	\begin{figure}
