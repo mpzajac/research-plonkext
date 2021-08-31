@@ -5,8 +5,10 @@
 
 \usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
 \usepackage[capitalise]{cleveref}
-\usepackage{scrextend}
-\changefontsizes{9pt}
+
+\usepackage{scrextend} \changefontsizes{9pt}
+
+\usepackage{paralist}
 
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows}
@@ -21,6 +23,22 @@
 
 \newcommand{\advfs}{\adv_\fs}
 \renewcommand{\myskip}{0.5\baselineskip}
+
+\addtobeamertemplate{navigation symbols}{}{%
+  \usebeamerfont{footline}%
+  \usebeamercolor[fg]{footline}%
+  \hspace{1em}%
+  \insertframenumber/\inserttotalframenumber }
+
+\setbeamertemplate{section page}
+{
+    \begin{centering}
+    \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+    \end{beamercolorbox}
+    \end{centering}
+}
+\AtBeginSection{\frame{\sectionpage}}
 
 \begin{document}
 
@@ -40,8 +58,28 @@
         \end{itemize}
         \end{minipage}
     }
-\end{center}
+  \end{center}
+  \begin{block}{Why simulation extractability matters}
+    Models situation when the adversary may see other proofs before it tries to
+    break knowledge soundness\\
+    Proofs done in a ``stand-alone'' model don't fit well to the real world\\
+    In the real world malicious provers may see multiple proofs and learn from
+    them\\
+    Not covered by standard soundness / knowledge soundness definition
+  \end{block}
 
+  \begin{block}{Some background}
+    Most efficient \emph{universal} or \emph{updatable} zkSNARKs use random-oracle\\
+    Proven security of the \emph{interactive} proof system\\
+    Security of the \emph{non-interactive} variant conjectured relying on
+    Fiat--Shamir transformation
+    % \end{itemize}
+  \end{block}
+\end{frame}
+
+\iffalse
+\begin{frame}
+  \frametitle{Simulation extractability}
   \begin{columns}
     \begin{column}{0.63\linewidth}
   \begin{block}{Simulation extractability}
@@ -50,10 +88,7 @@
     Eventually, $\adv$ outputs instance and proof $\inp', \zkproof'$.\\[\myskip]
     We say that proof system $\PS$ is \emph{simulation extractable} if there exists an
     extractor $\ext$ that given $\adv$ and its randomness outputs $\wit'$ such that
-    $\REL(\inp', \wit')$\\[\myskip]
-
-    Models situation when the adversary may see other proofs before it tries to
-    break knowledge soundness
+    $\REL(\inp', \wit')$
       \end{block}
 
    \end{column}
@@ -74,175 +109,49 @@
       \draw[thick,->] (ext.south) to (wit.north);
     \end{tikzpicture}
   \end{column}
-  \end{columns}
-  
+  \end{columns}  
 \end{frame}
-\begin{frame}
-  \frametitle{Our result -- ct'd}
-    \begin{block}{Why simulation extractability matters}
-      Proofs done in a ``stand-alone'' model don't fit well to the real world\\
-      In the real world malicious provers may see multiple proofs and learn from
-      them\\
-      Not covered by standard soundness / knowledge soundness definition
-    \end{block}
-  
-  \begin{block}{Previous results}
-    Faust et al.~(Indocrypt 2012) shown that $\Sigma$-protocols that has
-    unique-response property are simulation-extractable (after Fiat--Shamir
-    transformation)
-    \begin{itemize}
-    \item Covers only $3$-message protocols
-    \item Doesn't cover protocols with $\srs$
-    \end{itemize}
-  \end{block}
-
-  \begin{block}{Required properties}
-    Unique response property\\
-    Trapdoor-free simulatability\\
-    $k$-simulatability\\
-    Generalized general forking lemma
-  \end{block}
-\end{frame}
-
-\begin{frame}[t]
-  \frametitle{$\plonk$ protocol overview (1)}
-  \begin{block}{}
-    $n$ -- number of gates in the circuit\\
-    Witness $\wit$ compounds of $3n$ elements -- left / right / output wires of
-    gates\\
-    Values of some wires may be public
-  \end{block}
-  
-  \begin{columns}
-    \begin{column}{0.5\linewidth}
-      \textbf{Round 1.} $\prover$ encodes witness elements into $3$ polynomials:
-      \begin{itemize}
-      \item \p{a'} with left input values at coefficients
-      \item \p{b'} with left input values at coefficients
-      \item \p{c'} with left input values at coefficients
-      \end{itemize}
-      Polynomials are \emph{masked} to hide coefficients even when some
-      evaluations are revealed\\
-      This results in polynomials $\p{a}, \p{b}, \p{c}$. \\
-      Commitments $\cp{a}, \cp{b}, \cp{c}$ are computed and and sent.
-  \end{column}
-    \begin{column}{0.5\linewidth}
-    \end{column}
-  \end{columns}
-  \begin{columns}
-    \begin{column}{0.5\linewidth}
-    \end{column}
-    \begin{column}{0.5\linewidth}
-      $\verifier$ responds with challenges $\beta, \gamma$.
-    \end{column}
-  \end{columns}
-\end{frame}
-
-  \begin{frame}[t]
-    \frametitle{$\plonk$ protocol overview (2)}
-    $\cp{a}, \cp{b}, \cp{c}, \beta, \gamma$
-  \begin{columns}
-    \begin{column}{0.5\linewidth}
-      \textbf{Round 2.} $\prover$ computes \emph{permutation polynomial}
-      $\p{z'}$ which is used to assure that some relation between left / right /
-      output wires holds.\\
-      $\p{z'}$ is masked, $\p{z}$ is created, committed and sent.
-    \end{column}
-    \begin{column}{0.5\linewidth}
-      \begin{tikzpicture}
-      \draw (0,0) node (gate) {\Huge{$g$}};
-      \draw (-1, -1) node (leftinp) {\Huge{$a_1$}};
-      \draw (1, -1) node (rightinp) {\Huge{$b_7$}};
-      \draw (0, 1.5) node (out) {\Huge{$c_2$}};      
-      \draw[thick,->] (leftinp.north) to (gate.west);
-      \draw[thick,->] (rightinp.north) to (gate.east);
-      \draw[thick,->] (gate.north) to (out.south);
-      \end{tikzpicture}
-    \end{column}
-  \end{columns}
-  \begin{columns}
-    \begin{column}{0.5\linewidth}
-    \end{column}
-    \begin{column}{0.5\linewidth}
-      $\verifier$ responds with challenge $\alpha$.
-    \end{column}
-  \end{columns}\\[\myskip]
-  
-  \begin{columns}
-    \begin{column}{0.5\linewidth}
-      \textbf{Round 3.} $\prover$ computes polynomial $t$ which is $0 \pmod
-      Z_H(X)$ if fulfilled are
-    \begin{itemize}
-    \item The constraint equation
-    \item Two polynomial argument equations
-    \end{itemize}
-    $\prover$ computes commitment $\p{t}$ and sends it.
-  \end{column}
-  \begin{column}{0.5\linewidth}
-  \end{column}
-\end{columns}
-\begin{columns}
-  \begin{column}{0.5\linewidth}
-  \end{column}
-  \begin{column}{0.5\linewidth}
-    $\verifier$ sends challenge $\chz$
-  \end{column}
-  \end{columns}
-  \end{frame}
-
-\begin{frame}
-  \frametitle{Our result -- ct'd}
-  \begin{block}{Example}
-  \end{block}
-  \begin{block}{Required properties}
-    Unique response property\\
-    Trapdoor-free simulatability\\
-    $k$-simulatability \\
-    Generalized general forking lemma
-  \end{block}
-\end{frame}
-
-\begin{frame}
-  \frametitle{}
-\end{frame}
+\fi
 
 \begin{frame}
   % \frametitle{Prior our work}
-  \begin{block}{Some background}
-    Most efficient \emph{universal} or \emph{updatable} zkSNARKs use random-oracle
-  \end{block}\pause  
-
-  \begin{block}{Prior state-of-the-art}
-    %\begin{itemize}
-    %\item
-    Proven security of the \emph{interactive} proof system
-    % \item
-
-    Security of the \emph{non-interactive} variant conjectured
-      relying on Fiat--Shamir transformation
-    %\end{itemize}
-  \end{block}\pause
-
   \begin{block}{Problems}
-    Fiat--Shamir transformation relies on \emph{forking lemma}
-
-    Forking lemma shown secure only for a narrow class of protocols
-    that \emph{requires only a single rewinding}
-
+    Fiat--Shamir transformation relies on \emph{forking lemma}\\
+    Forking lemma shown secure only for a narrow class of protocols that
+    \emph{requires only a single rewinding}\\
     Not a case for any known zkSNARK
-  \end{block}\pause
-
-  \begin{block}{The result}
-    Generalized Fiat--Shamir transformation to work with wider class of protocols
-    
-     Shown that a wide class of RO-based zkSNARKs are
-     simulation-extractable \emph{out-of-the-box}
-     
-     This includes: Plonk, Sonic, some variants of Marlin
   \end{block}
+  \begin{columns}[t]
+    \begin{column}{0.5\linewidth}
+      \begin{block}{Previous results}
+        Faust et al.~(Indocrypt 2012) shown that $\Sigma$-protocols that has
+        unique-response property are simulation-extractable (after Fiat--Shamir
+        transformation)
+        \begin{compactitem}
+        \item Covers only $3$-message protocols
+        \item Doesn't cover protocols with $\srs$
+        \end{compactitem}
+      \end{block}
+    \end{column}
+    \begin{column}{0.4\linewidth}
+      \begin{block}{The result}
+        \begin{compactitem}
+        \item Generalized Fiat--Shamir transformation to work with wider class
+          of protocols (multi-round)
+        \item We cover protocols with $\srs$
+        \end{compactitem}
+      \end{block}
+      \begin{block}{Required properties}
+        Unique response property\\
+        Trapdoor-free simulatability\\
+        $k$-simulatability\\
+        Generalized general forking lemma
+      \end{block}
+    \end{column}
+  \end{columns}
 \end{frame}
 
-\section{Fiat--Shamir transformation}
+\section*{$\Sigma$-protocols and Fiat--Shamir transformation}
 \begin{frame}
   \frametitle{$\Sigma$-protocols}
   \begin{columns}
@@ -294,6 +203,9 @@
         From $(g^r, b, r + bx)$ and $(g^r, b', r + b'x)$, one computes
         \[
           r + bx - (r + b'x)  = (b - b')x
+        \]
+        \[
+          \frac{r + bx - (r + b'x)}{b - b'} = x
         \]
         Hence, for $b \neq b'$ one may reveal $x$.
       \end{block}
@@ -395,9 +307,442 @@
   necessary?}}
 \end{frame}
 
-% \begin{frame}
+\section*{A short introduction to $\plonk$}
+\begin{frame}[t]
+  \frametitle{$\plonk$ protocol overview}
+  \begin{columns}
+    \begin{column}{0.6\linewidth}
+  \begin{block}{}
+    $n$ -- number of gates in the circuit\\
+    Witness $\wit$ compounds of $3n$ elements -- left / right / output wires of
+    gates\\
+    Values of some wires may be public    
+  \end{block}
+\end{column}
+\begin{column}{0.3\linewidth}
+  \begin{tikzpicture}[scale=0.7]
+      \draw (0,0) node (gate1) {\Large{$g_1$}};
+      \draw (-1, -1) node (leftinp1) {\Large{$a_1$}};
+      \draw (1, -1) node (rightinp1) {\Large{$b_7$}};
+      \draw (0, 1.5) node (out1) {\Large{$c_2$} $(= a_{4})$};
+      \draw (1, 2.5) node (gate2) {\Large{$g_{7}$}};
+      \draw (2, 1.5) node (rightinp2) {\Large{$b_{15}$}};
+      \draw[thick,->] (leftinp1.north) to (gate1.west);
+      \draw[thick,->] (rightinp1.north) to (gate1.east);
+      \draw[thick,->] (gate1.north) to (out1.south);
+      \draw[thick,->] (out1.north) to (gate2.west);
+      \draw[thick,->] (rightinp2.north) to (gate2.east);
+      \end{tikzpicture}
+  \end{column}
+  \end{columns}
+  \begin{block}{Constraint system}
+    \begin{compactitem}
+      \item polynomials $\p{a}(X), \p{b}(X), \p{c} (X)$ with left / right /output  values at coefficients
+      \item $\selleft (X), \selright (X), \seloutput (X), \ldots$ -- selector polynomials
+        tha tells which type the gate is.
+      \end{compactitem}
+      
+    \[
+    \p{a}(X) \p{b}(X) \selmulti (X) + \p{a}(X) \selleft(X) + \p{b}(X) \selright
+    (X) + \p{c} (X) \seloutput (X) + \pubinppoly(X) + \selconst (X) = 0 \mod Z_H(X)
+  \]
+
+  Additionaly need to show that some relation between $\p{a} (X), \p{b} (X),
+  \p{c} (X)$ holds. 
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{$\plonk$ protocol overview}
+  \begin{columns}
+    \begin{column}{0.5\linewidth}
+      \textbf{Round 1.} $\prover$ encodes witness elements into $3$ polynomials:
+      \begin{compactitem}
+      \item \p{a'} with left input values at coefficients
+      \item \p{b'} with left input values at coefficients
+      \item \p{c'} with left input values at coefficients
+      \end{compactitem}
+      Polynomials are \emph{masked} to hide coefficients even when some
+      evaluations are revealed\\
+      This results in polynomials $\p{a}, \p{b}, \p{c}$. \\
+      Commitments $\cp{a}, \cp{b}, \cp{c}$ are computed and and sent.
+  \end{column}
+    \begin{column}{0.5\linewidth}
+    \end{column}
+  \end{columns}
+  \begin{columns}
+    \begin{column}{0.5\linewidth}
+    \end{column}
+    \begin{column}{0.5\linewidth}
+      $\verifier$ responds with challenges $\beta, \gamma$.
+    \end{column}
+  \end{columns}
+    \begin{columns}
+    \begin{column}{0.5\linewidth}
+      \textbf{Round 2.} $\prover$ computes \emph{permutation polynomial}
+      $\p{z'}$ which is used to assure that some relation between left / right /
+      output wires holds.\\
+      $\p{z'}$ is masked, $\p{z}$ is created, committed and sent.
+    \end{column}
+    \begin{column}{0.5\linewidth}
+    \end{column}
+  \end{columns}
+      \begin{columns}
+      \begin{column}{0.5\linewidth}
+    \end{column}
+    \begin{column}{0.5\linewidth}
+      $\verifier$ responds with challenge $\alpha$.
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+  \begin{frame}[t]
+    \frametitle{$\plonk$ protocol overview}
+    \fbox{$\cp{a}, \cp{b}, \cp{c}, \beta, \gamma, \p{z}, \alpha$}\\[\myskip]
   
-% \end{frame}
+  \begin{columns}
+    \begin{column}{0.5\linewidth}
+      \textbf{Round 3.} $\prover$ computes polynomial $t$ which is $0 \pmod
+      Z_H(X)$ if all constraint equations are fulfilled, i.e.~
+    \begin{compactitem}
+    \item The constraint equation for the circuit, i.e.~the gates evaluate to
+      correct values
+    \item Permutation argument equations, i.e.~the gates that should have the
+      same value, have the same value.
+    \end{compactitem}
+    $\p{t}$ depends on $\p{a}, \p{b}, \p{c}, \p{z}, \alpha, \beta, \gamma$.\\
+    $\prover$ computes commitment $\p{t}$ and sends it.
+  \end{column}
+  \begin{column}{0.5\linewidth}
+  \end{column}
+\end{columns}
+\begin{columns}
+  \begin{column}{0.5\linewidth}
+  \end{column}
+  \begin{column}{0.5\linewidth}
+    $\verifier$ sends challenge $\chz$
+  \end{column}
+\end{columns}
+ \begin{columns}
+    \begin{column}{0.5\linewidth}
+      \textbf{Round 4.} $\prover$ evaluates polynomials $\p{a}, \p{b}, \p{c},
+      \p{t}$ at $\chz$ and $\p{z}$ at $\omega \chz$.\\
+      Shows correctness of the evaluation.
+    \end{column}
+    \begin{column}{0.5\linewidth}
+    \end{column}
+  \end{columns}
+  \begin{columns}
+    \begin{column}{0.5\linewidth}
+    \end{column}
+    \begin{column}{0.5\linewidth}
+      $\verifier$ checks that $\p{t}$ is evaluated correctly and checks other
+      evaluations.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section*{Towards extractability}
+\begin{frame}[t]
+  \frametitle{How to extract?}
+  \vspace*{-0.5cm}
+  \begin{block}{}
+    \begin{compactenum}
+    \item Let the adversary $\adv$ commit to polynomials $\p{a} (X), \p{b} (X),
+      \p{c} (X)$
+      (only these polynomials are required to learn the whole witness)
+    \item Run a proof till evaluation challenge $\chz$ is given
+    \item \label{it:challenge} Pick a random $\chz$ and send it to $\adv$
+    \item Get evaluations $\p{a} (\chz), \p{b} (\chz), \p{c} (\chz)$
+    \item Rewind the adversary to Step \ref{it:challenge} and pick a new
+      challenge $\chz'$ (program the random oracle)
+    \item Repeat till enough evaluations are known to reveal $\p{a} (X), \p{b}
+      (X), \p{c} (X)$. 
+    \end{compactenum}
+  \end{block}
+  \begin{block}{Problems}
+    \begin{compactenum}
+    \item What if $\adv$ utilizes some simulated proof up to Step
+      \ref{it:challenge}?\\
+      In that case we \emph{cannot rewind}
+      \begin{compactitem}
+      \item The adversary knows a simulated proof that starts with
+        $(\inp, \p{a}, \ldots, \p{t})$
+      \item Knows $\chz = \ro(\inp, \p{a}, \ldots, \p{t})$
+      \item If we rewind and change $\ro$'s answer for the same
+        query, $\adv$ would notice that
+      \end{compactitem}
+      \fbox{Need to make sure that is not possible -- \emph{unique response
+            property}}
+    \item What is the probability that $\adv$ doesn't change its mind after
+      seeing new $\chz$? \\
+      It could discard previously created proof and start from scratch -- pick
+      new instance $\inp'$ and polynomials $\p{a'}, \p{b'}, \p{c'}$\\
+      \fbox{Need a generalized version of a \emph{general forking lemma}}
+    \end{compactenum}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Problem 1 -- unique response property}
+  \begin{block}{Idea}
+    We say that an NI protocol has \emph{$k$-unique response property} if it is
+    infeasible for a $\ppt$ adversary $\adv$ to produce two \emph{different}
+    transcripts that share the first $k$-rounds.
+  \end{block}
+  \begin{block}{}
+    \begin{compactitem}
+    \item $\PS$ a $(2\mu + 1)$-message protocol
+    \item  Non-interactive by Fiat--Shamir
+    \item $(a_1, \ldots, a_{\mu + 1})$ -- prover's messages
+    \end{compactitem}
+
+    \[
+	\prob{
+		\begin{aligned}
+		&	\inp, \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
+    a'_{\mu + 1})
+		\gets \adv^\ro(\REL, \srs), \\
+    & \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
+    \ldots, a'_{i}, \\
+		& \verifier^\ro_\fs (\REL, \srs, \inp, \vec{a}) =
+		\verifier^\ro_\fs(\REL, \srs, \inp, \vec{a'}) = 1
+		\end{aligned}
+		\ \left|\  
+	\vphantom{\begin{aligned}
+	&	\vec{a} = (a_0, b_0, \ldots, a_j, b_j, a_\mu), \vec{a'} = (a'_0, b'_0, \ldots, a'_j,
+	b'_j a'_\mu) \gets \adv(\REL, \srs), \vec{a} \neq \vec{a'}, \\
+	& b_k = b'_k, k \in \range{1, \mu - 1},\\ a_l = a'_l, l \in
+\range{1}{j}, j > i 
+	\end{aligned}}
+\srs \gets \kgen_\fs(\REL) \right.
+} \leq \negl
+\]
+ \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Problem 2 -- generalizing general forking lemma}
+  \begin{columns}
+    \begin{column}{.5\linewidth}
+      \begin{block}{Tree of accepting transcript}
+        \begin{tikzpicture}
+          \draw (0,0) node (a) {\Large{$a$}};
+
+          \draw (-2, -1) node (b1)
+          {\Large{$b_1$}};
+
+          \draw (2, -1) node (b2) {\Large{$b_2$}};
+
+          \draw (-3, -2.5) node (c1) {\Large{$c_1$}};
+
+          \draw (-2, -2.5) node (c2)
+          {\Large{$c_2$}};
+
+          \draw (-1, -2.5) node (c3) {\Large{$c_3$}};
+
+          \draw (1, -2.5) node (c4) {\Large{$c_4$}};
+
+          \draw (2, -2.5) node (c5)
+          {\Large{$c_5$}};
+
+          \draw (3, -2.5) node (c6) {\Large{$c_6$}};
+          
+          \draw[thick,->] (a.south) to node[anchor=south] {$\alpha_1$}
+          (b1.north);
+          
+          \draw[thick,->] (a.south) to node[anchor=south]
+          {$\alpha_1$} (b2.north);
+          
+          \draw[thick,->] (b1.south) to
+          node[anchor=south] {$\beta_1$} (c1.north);
+
+          \draw[thick,->] (b1.south)
+          to node[anchor=west] {$\beta_2$} (c2.north);
+
+          \draw[thick,->]
+          (b1.south) to node[anchor=south] {$\beta_3$} (c3.north);
+          
+          \draw[thick,->] (b2.south) to node[anchor=south] {$\beta_4$}
+          (c4.north);
+
+          \draw[thick,->] (b2.south) to node[anchor=west]
+          {$\beta_5$} (c5.north);
+
+          \draw[thick,->] (b2.south) to
+          node[anchor=south] {$\beta_6$} (c6.north);
+        \end{tikzpicture}
+        Prover's messages: $a, b_i, c_j$\\
+        Verifier's challenges $\alpha_k, \beta_l$\\[\myskip]
+        We call such a tree a \emph{$(2, 3)$-tree of acceptable transcripts}\\[\myskip]
+        Used to generalize \emph{special soundness}
+      \end{block}
+    \end{column}
+    \begin{column}{.5\linewidth}
+      \begin{tikzpicture}
+        \draw (0,0) node (a) {\Large{$a$}};
+
+        \draw (1, -1) node (b) {\Large{$b$}};
+
+        \draw (2, -2) node (c) {\Large{$c$}};
+
+        \draw (3, -3) node (d) {\Large{$d$}};
+
+        \draw (0, -4.5) node (e1) {\Large{$e_1$}};
+
+        \draw (1, -4.5) node (e2) {\Large{$e_2$}};
+
+        \draw (2, -4.5) node (e3) {\Large{$e_3$}};
+
+        \draw (3, -4.5) node (e4) {\Large{$e_4$}};
+
+        \draw (4, -4.5) node (e5) {\Large{$e_5$}};
+        
+        \draw (0, -6) node (f1) {\Large{$f_1$}};
+
+        \draw (1, -6) node (f2) {\Large{$f_2$}};
+
+        \draw (2, -6) node (f3) {\Large{$f_3$}};
+
+        \draw (3, -6) node (f4) {\Large{$f_4$}};
+
+        \draw (4, -6) node (f5) {\Large{$f_5$}};
+        
+        \draw[thick,->] (a.south) to node[anchor=south] {$\alpha$} (b.north);
+
+        \draw[thick,->] (b.south) to node[anchor=south] {$\beta$} (c.north);
+
+        \draw[thick,->] (c.south) to node[anchor=south] {$\gamma$} (d.north);
+
+        \draw[thick,->] (d.south) to node[fill=white,anchor=south] {$\delta_1$}
+        (e1.north);
+
+        \draw[thick,->] (d.south) to node[fill=white,anchor=south] {$\delta_2$}
+        (e2.north);
+
+        \draw[thick,->] (d.south) to
+        node[fill=white,anchor=south] {$\delta_3$} (e3.north);
+
+        \draw[thick,->] (d.south) to node[fill=white,anchor=south] {$\delta_4$}
+        (e4.north);
+
+        \draw[thick,->] (d.south) to node[fill=white,anchor=south] {$\delta_5$}
+        (e5.north);
+
+        \draw[thick,->] (e1.south) to node[anchor=west] {$\eta_1$} (f1.north);
+
+        \draw[thick,->] (e2.south) to node[anchor=west] {$\eta_2$} (f2.north);
+
+        \draw[thick,->] (e3.south) to node[anchor=west] {$\eta_3$} (f3.north);
+
+        \draw[thick,->] (e4.south) to node[anchor=west] {$\eta_4$} (f4.north);
+
+        \draw[thick,->] (e5.south) to node[anchor=west] {$\eta_5$} (f5.north);
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Problem 2 -- generalizing general forking lemma}
+      \begin{columns}[t]
+      \begin{column}{.5\linewidth}
+        \begin{block}{Recall}
+          Forking lemma states that probability of getting $2$ acceptable
+          transcripts $(\inp, a, b, c)$, $(\inp, a, b', c')$ is at least
+    \[
+      \frkProb \geq \accProb \left(\frac{\accProb}{q} - \frac{1}{h}\right).
+    \]
+  \end{block}
+  \begin{block}{Generalized forking lemma}
+    Let $\Psi$ be a $(2\mu + 1)$-message (interactive) protocol\\
+    Assume $\Psi$ is $m$-special sound\\
+    Assume that the witness can be extracted from a $(1, ..., m, ..., 1)$-tree
+    of acceptable transcript
+    \begin{compactitem}
+      \item run $\prover$ 
+    \end{compactitem}
+  \end{block}
+\end{column}
+\begin{column}{.5\linewidth}
+  \begin{block}{Tree of accepting transcript}
+    \begin{tikzpicture}
+      \draw (0,0) node (a) {\Large{$a$}};
+      \draw (-2, -1) node (b1) {\Large{$b_1$}};
+      \draw (2, -1) node (b2) {\Large{$b_2$}};
+      \draw (-3, -2) node (c1) {\Large{$c_1$}};
+      \draw (-2, -2) node (c2) {\Large{$c_2$}};
+      \draw (-1, -2) node (c3) {\Large{$c_3$}};
+      \draw (1, -2) node (c4) {\Large{$c_4$}};
+      \draw (2, -2) node (c5) {\Large{$c_5$}};
+      \draw (3, -2) node (c6) {\Large{$c_6$}};
+      \draw[thick,->] (a.south) to node[anchor=south] {$\alpha_1$} (b1.north);
+      \draw[thick,->] (a.south) to node[anchor=south] {$\alpha_1$} (b2.north);
+      \draw[thick,->] (b1.south) to node[anchor=south] {$\beta_1$} (c1.north);
+      \draw[thick,->] (b1.south) to node[anchor=west] {$\beta_2$} (c2.north);
+      \draw[thick,->] (b1.south) to node[anchor=south] {$\beta_3$} (c3.north);
+      \draw[thick,->] (b2.south) to node[anchor=south] {$\beta_4$} (c4.north);
+      \draw[thick,->] (b2.south) to node[anchor=west] {$\beta_5$} (c5.north);
+      \draw[thick,->] (b2.south) to node[anchor=south] {$\beta_6$} (c6.north);
+    \end{tikzpicture}
+    Prover's messages: $a, b_i, c_j$\\
+    Verifier's challenges $\alpha_k, \beta_l$\\[\myskip]
+    We call such a tree a \emph{$(2, 3)$-tree of acceptable transcripts}\\[\myskip]
+    Used to generalized \emph{special soundness}
+  \end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Security of FS transformation---forking lemma}
+  \begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12,CCS:BelNev06}]
+    \label{lem:forking_lemma}
+    \begin{columns}
+      \begin{column}{.5\linewidth}
+	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\zdv$ be a $\ppt$
+  algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $i
+  \in\range{0}{q}$ and $s$ is called a \emph{side output}. Denote by $\ig$ a
+  randomised instance generator. We denote by $\accProb$ the probability
+	\[
+		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_q \sample H; (i, s) \gets
+		\zdv(y, h_1, \ldots, h_q)}\,.
+	\]
+	Let $\forking_\zdv(y)$ denote the algorithm described in
+  \cref{fig:forking_lemma}, then the probability $\frkProb$ defined as $
+  \frkProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\zdv}(y)}
+  $ holds
+	\[
+		\frkProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
+	\]
+      \end{column}
+      \begin{column}{.4\linewidth}
+	\begin{figure}
+		\centering
+		\fbox{
+		\procedure{$\forking_\zdv (y)$}
+		{
+			\rho \sample \RND{\zdv}\\
+			h_1, \ldots, h_q \sample H\\
+			(i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)\\
+			\pcif i = 0\ \pcreturn (0, \bot, \bot)\\
+			h'_{i}, \ldots, h'_{q} \sample H\\
+			(i', s') \gets \zdv(y, h_1, \ldots, h_{i - 1}, h'_{i}, \ldots,  h'_{q};
+			\rho)\\
+			\pcif (i = i') \land (h_{i} \neq h'_{i})\ \pcreturn (1, s, s')\\
+			\pcind \pcelse \pcreturn (0, \bot, \bot)
+		}}
+		\caption{Forking algorithm $\forking_\zdv$}
+		\label{fig:forking_lemma}
+              \end{figure}
+            \end{column}
+            \end{columns}
+\end{lemma}
+
+\end{frame}
+
 
 \begin{frame}
   \frametitle{Simulation-extractability of $\Sigma$-protocols}
@@ -458,57 +803,6 @@
   \end{block}
 \end{column}
 \end{columns}
-\end{frame}
-
-\begin{frame}
-  \frametitle{}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Security of FS transformation---forking lemma}
-  \begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12,CCS:BelNev06}]
-    \label{lem:forking_lemma}
-    \begin{columns}
-      \begin{column}{.5\linewidth}
-	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\zdv$ be a $\ppt$
-  algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $i
-  \in\range{0}{q}$ and $s$ is called a \emph{side output}. Denote by $\ig$ a
-  randomised instance generator. We denote by $\accProb$ the probability
-	\[
-		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_q \sample H; (i, s) \gets
-		\zdv(y, h_1, \ldots, h_q)}\,.
-	\]
-	Let $\forking_\zdv(y)$ denote the algorithm described in
-  \cref{fig:forking_lemma}, then the probability $\frkProb$ defined as $
-  \frkProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\zdv}(y)}
-  $ holds
-	\[
-		\frkProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
-	\]
-      \end{column}
-      \begin{column}{.4\linewidth}
-	\begin{figure}
-		\centering
-		\fbox{
-		\procedure{$\forking_\zdv (y)$}
-		{
-			\rho \sample \RND{\zdv}\\
-			h_1, \ldots, h_q \sample H\\
-			(i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)\\
-			\pcif i = 0\ \pcreturn (0, \bot, \bot)\\
-			h'_{i}, \ldots, h'_{q} \sample H\\
-			(i', s') \gets \zdv(y, h_1, \ldots, h_{i - 1}, h'_{i}, \ldots,  h'_{q};
-			\rho)\\
-			\pcif (i = i') \land (h_{i} \neq h'_{i})\ \pcreturn (1, s, s')\\
-			\pcind \pcelse \pcreturn (0, \bot, \bot)
-		}}
-		\caption{Forking algorithm $\forking_\zdv$}
-		\label{fig:forking_lemma}
-              \end{figure}
-            \end{column}
-            \end{columns}
-\end{lemma}
-
 \end{frame}
 
 \end{document}
