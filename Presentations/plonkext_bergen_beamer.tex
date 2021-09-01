@@ -1,8 +1,8 @@
 \documentclass[aspectratio=169]{beamer}
 %\usetheme{boxes}
 \usetheme{metropolis}
-%\usefonttheme{professionalfonts,structurebold}
-%\usecolortheme{dove}
+\usefonttheme{professionalfonts,structurebold}
+\usecolortheme{dove}
 
 \usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
 \usepackage[capitalise]{cleveref}
@@ -15,8 +15,8 @@
 \usetikzlibrary{positioning,arrows}
 
 \title{Non malleability of the Fiat-Shamir transformation}
-\author{\normalsize{Michal Zajac \inst{1} \and Markulf Kohlweiss \inst{2}}}
-\institute{\inst{1} Clearmatics \inst{2}IOHK}
+\author{\normalsize{Markulf Kohlweiss \inst{1} \and Michal Zajac \inst{2}}}
+\institute{\inst{1}IOHK \inst{2} Clearmatics }
 \date{}
 
 \include{macros}
@@ -53,9 +53,9 @@
     \item Our result -- what we did and why it matters?
     \item A few words about $\Sigma$-protocols and Fiat--Shamir transformation
     \item Short introduction to $\plonk$
-    \item Intuitions about extracting witness from proofs (and some problems
-      we had to solve)
-    \item Glimpse into our main proof for simulaiton extractability
+    \item How to extract witness from $\plonk$ proof? Intuitions about
+      extracting and some problems we had to solve
+    \item Glimpse into our main proof for simulation extractability
   \end{enumerate}
 \end{frame}
 
@@ -63,12 +63,12 @@
   \frametitle{Our result}
   \begin{center}
    \fbox{ \begin{minipage}{10cm}
-        \begin{itemize}
-        \item We show that a class (for example $\plonk$, $\sonic$) of RO-based
-          NIZKs is \emph{simulation extractable}
-        \item We show security of non-interactive versions of $\plonk$ and
-          $\sonic$ (previously only interactive protocols were analysed)
-        \end{itemize}
+       \begin{compactitem}
+       \item We show security of non-interactive versions of $\plonk$ and
+         $\sonic$ (previously only interactive protocols were analysed)
+       \item We show that a class (for example $\plonk$, $\sonic$) of RO-based
+         NIZKs is \emph{simulation extractable}
+        \end{compactitem}
         \end{minipage}
     }
   \end{center}
@@ -82,43 +82,52 @@
     Not covered by standard soundness / knowledge soundness definition
   \end{block}
   \pause
+  \begin{block}{Example}
+    Two users $\adv$ and $\bdv$.
 
-  \begin{block}{Some background}
-    Most efficient \emph{universal} or \emph{updatable} zkSNARKs use random-oracle\\
-    Proven security of the \emph{interactive} proof system\\
-    Security of the \emph{non-interactive} variant conjectured relying on
-    Fiat--Shamir transformation
-    % \end{itemize}
+    $\adv$ knows secret $x$ what allows him to transfer money from his
+    accounts. That is, a transfer is done if $\adv$ shows a zkproof of knowledge $\zkproof$
+    that shows knowledge of $x$.
+
+    Assume $\zkproof$ is randomizable. Then $\bdv$ seeing $\zkproof$ can produce
+    a valid PoK $\zkproof'$ and transfer the funds as well. \emph{But $\bdv$
+      doesn't know $x$}!
   \end{block}
 \end{frame}
 
 \begin{frame}
   % \frametitle{Prior our work}
   \begin{block}{Problems}
-    Fiat--Shamir transformation relies on \emph{forking lemma}\\
+    Efficient updatable and universal zkSNARKs use random oracle and FS
+    transformation\\
+    Only security of an \emph{interactive} protocol is proven\\
+    Security of the non-interactive version is only \emph{conjectured}\\
+    Knowledge soundness of Fiat--Shamir transformed protocols rely on \emph{forking lemma}\\
     Forking lemma shown secure only for a narrow class of protocols that
     \emph{requires only a single rewinding}\\
     Not a case for any known zkSNARK
   \end{block}
   \pause
+  \vspace*{-0.5cm}
   \begin{columns}[t]
-    \begin{column}{0.5\linewidth}
+    \begin{column}{0.52\linewidth}
       \begin{block}{Previous results}
-        Faust et al.~(Indocrypt 2012) shown that $\Sigma$-protocols that has
+        Faust et al.~(Indocrypt 2012) shown that $\Sigma$-protocols that have
         unique-response property are simulation-extractable (after Fiat--Shamir
         transformation)
         \begin{compactitem}
         \item Covers only $3$-message protocols
+        \item Witness has to be extractable from $2$ transcripts
         \item Doesn't cover protocols with $\srs$
         \end{compactitem}
       \end{block}
       \pause
     \end{column}
     \begin{column}{0.4\linewidth}
-      \begin{block}{The result}
+      \begin{block}{Here}
         \begin{compactitem}
-        \item Generalized Fiat--Shamir transformation to work with wider class
-          of protocols (multi-round)
+        \item Generalized forking lemma to work with wider class
+          of protocols -- multi-round, many transcripts to extract witness
         \item We cover protocols with $\srs$
         \end{compactitem}
       \end{block}\pause
@@ -126,7 +135,7 @@
         \begin{compactitem}
           \item Unique response property
           \item Trapdoor-free simulatability
-          \item $k$-simulatability
+ %         \item $k$-simulatability
           \item Generalized general forking lemma
           \end{compactitem}
         \end{block}
@@ -173,17 +182,17 @@
   \begin{columns}
     \begin{column}{.5\linewidth}
       \begin{tikzpicture}
-        \draw (0, 0.5) node (prover) {$\prover(\inp = g^x, \wit = x)$};
-        \draw (2.5, 0.5) node (verifier) {$\verifier(\inp = g^x)$};
-        \draw[thick,->] (0, -0.5) -- node[anchor=south] {$g^r$} (2, -0.5);
+        \draw (0, 0.5) node (prover) {$\prover(\inp = \gone{x}, \wit = x)$};
+        \draw (2.5, 0.5) node (verifier) {$\verifier(\inp = \gone{x})$};
+        \draw[thick,->] (0, -0.5) -- node[anchor=south] {$\gone{r}$} (2, -0.5);
         \draw[thick,->] (2, -1) -- node[anchor=south] {$b$} (0, -1);
         \draw[thick,->] (0, -1.5) -- node[anchor=south] {$c = r + bx$} (2, -1.5);
-        \draw (2, -2.5) node {$\verifier$ accepts iff $g^c = g^{r+ bx}$};
+        \draw (2, -2.5) node {$\verifier$ accepts iff $\gone{c} = \gone{r+ bx}$};
       \end{tikzpicture}
     \end{column}
     \begin{column}{.5\linewidth}
       \begin{block}{Special soundness}
-        From $(g^r, b, r + bx)$ and $(g^r, b', r + b'x)$, one computes
+        From $(\gone{r}, b, r + bx)$ and $(\gone{r}, b', r + b'x)$, one computes
         \[
           r + bx - (r + b'x)  = (b - b')x
         \]
@@ -229,15 +238,17 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Soundness of the Fiat--Shamir transformation}
+  \frametitle{Special soundness of the Fiat--Shamir transformation}
   \begin{columns}
     \begin{column}{0.5\linewidth}
   \begin{block}{How to get two transcripts from $\advfs$}
-    Get one transcript $(\inp, a, b = \ro(\inp, a), c)$.\\
-    Rewind $\advfs$ after it sent $a$.\\
-    Pick new $\ro$ response $b'$ for $\ro(\inp, a)$.\\
-    Get another transcript $(\inp, a, b', c').$
-  \end{block}\pause
+  \begin{compactenum} 
+  \item Get one transcript $(\inp, a, b = \ro(\inp, a), c)$ \pause
+  \item Rewind $\advfs$ after it sent $a$ \pause
+  \item Pick new $\ro$ response $b'$ for $\ro(\inp, a)$ \pause
+  \item Get another transcript $(\inp, a, b', c')$
+  \end{compactenum}
+\end{block}\pause
   
   \begin{block}{Problem}
     $\adv$ has \emph{one shot} to convince the verifier $\verifier$.
@@ -246,16 +257,18 @@
     instance $\inp$ or $a$ and try again.\\[\myskip]
     What if the adversary keeps changing the instance so we cannot get $2$
     transcripts?\\[\myskip]
-    What is the probability that we obtain two acceptable transcripts $(\inp, a,
-    b, c)$ and $(\inp, a, b', c')$?
   \end{block}
 \end{column}\pause
 \begin{column}{0.5\linewidth}
+  \begin{block}{}
+    What is the probability that we obtain two acceptable transcripts
+    $(\inp, a, b, c)$ and $(\inp, a, b', c')$?
+  \end{block}\pause
   \begin{block}{Forking lemma}
     Let $\accProb$ be a probability that $\advfs$ returns an acceptable proof.\\
     $q$ -- upper bound for a number of random oracle queries $\advfs$ may
     make.\\
-    $h$ -- range size of the random oracle.
+    $h$ -- random oracle's range size.
     \[
       \frkProb \geq \accProb \left(\frac{\accProb}{q} - \frac{1}{h}\right).
     \]
@@ -263,8 +276,8 @@
 \end{column}
 \end{columns}
 \vspace*{0.0cm}
-\centering\fbox{\parbox{10cm}{\centering What if there is more than just mere $2$
-    rounds?\\
+\centering\fbox{\parbox{10cm}{\centering What if there is more than just mere $3$
+    messages?\\
     What if there is more than just mere $2$ transcripts are
   necessary?}}
 \end{frame}
@@ -282,7 +295,7 @@
   \end{block}
 \end{column}
 \begin{column}{0.3\linewidth}
-  \only<2>{\begin{tikzpicture}[scale=0.7]
+  \onslide<1,2>{\begin{tikzpicture}[scale=0.7]
       \draw (0,0) node (gate1) {\Large{$g_1$}};
       \draw (-1, -1) node (leftinp1) {\Large{$a_1$}};
       \draw (1, -1) node (rightinp1) {\Large{$b_7$}};
@@ -301,28 +314,32 @@
     \begin{compactitem}
       \item polynomials $\p{a}(X), \p{b}(X), \p{c} (X)$ with left / right /output  values at coefficients
       \item $\selleft (X), \selright (X), \seloutput (X), \ldots$ -- selector polynomials
-        tha tells which type the gate is.
+        that tells which type the gate is.
       \end{compactitem}
-      
     \[
-    \p{a}(X) \p{b}(X) \selmulti (X) + \p{a}(X) \selleft(X) + \p{b}(X) \selright
-    (X) + \p{c} (X) \seloutput (X) + \pubinppoly(X) + \selconst (X) = 0 \mod Z_H(X)
-  \]
+      \p{a}(X) \p{b}(X) \selmulti (X) + \p{a}(X) \selleft(X) + \p{b}(X)
+      \selright (X) + \p{c} (X) \seloutput (X) + \pubinppoly(X) + \selconst (X)
+      = 0 \mod Z_H(X)
+    \]
+    for multiplication gates $\selmulti = 1, \seloutput = -1$, the rest is
+    $0$\\
+    for addition gates: $\selleft = 1, \selright = 1, \seloutput = -1$, the rest
+    is $0$ \pause
 
-  Additionaly need to show that some relation between $\p{a} (X), \p{b} (X),
+  Additionally need to show that some relation between $\p{a} (X), \p{b} (X),
   \p{c} (X)$ holds. 
   \end{block}
 \end{frame}
 
 \begin{frame}
   \frametitle{$\plonk$ protocol overview}
-  \begin{columns}
+  \begin{columns}[t]
     \begin{column}{0.5\linewidth}
       \textbf{Round 1.} $\prover$ encodes witness elements into $3$ polynomials:
       \begin{compactitem}
       \item \p{a'} with left input values at coefficients
-      \item \p{b'} with left input values at coefficients
-      \item \p{c'} with left input values at coefficients
+      \item \p{b'} with right input values at coefficients
+      \item \p{c'} with output values at coefficients
       \end{compactitem}
       Polynomials are \emph{masked} to hide coefficients even when some
       evaluations are revealed\\
@@ -415,16 +432,27 @@
   \end{columns}
 \end{frame}
 
-\section*{Towards extractability}
+\section*{On extracting witness}
 \begin{frame}
-  \frametitle{How to extract?}
-  \begin{block}{}
+  \frametitle{Getting witness from $\plonk$ proof}
+  Send commitments to polynomials that \alert{encode witness} $\mapsto$ Commit
+  to polynomial to show that constrains are fulfilled $\mapsto$ Get \emph{opening
+  challenge} $\chz$ $\mapsto$ Give \emph{evaluations} of sent polynomials at $\chz$,
+  prove evaluation correctness
+  \pause
+  \begin{block}{The extractor}
+    \begin{compactitem}
+    \item Internally run $\advfs$ (knows its code)
+    \item Answers $\advfs$'s random oracle queries
+    \end{compactitem}
+  \end{block}\pause
+  \begin{block}{$\ext$:}
     \begin{compactenum}
-    \item<1-> Let the adversary $\adv$ commit to polynomials $\p{a} (X), \p{b} (X),
+    \item<1-> Let the adversary $\advfs$ commit to polynomials $\p{a} (X), \p{b} (X),
       \p{c} (X)$
       (only these polynomials are required to learn the whole witness)
     \item<2-> Run a proof till evaluation challenge $\chz$ is given
-    \item<3-> \label{it:challenge} Pick a random $\chz$ and send it to $\adv$
+    \item<3-> \label{it:challenge} Pick a random $\chz$ and send it to $\advfs$
     \item<4-> Get evaluations $\p{a} (\chz), \p{b} (\chz), \p{c} (\chz)$
     \item<5-> Rewind the adversary to Step 3 and pick a new
       challenge $\chz'$ (program the random oracle)
@@ -438,19 +466,19 @@
   \frametitle{Problems}
   \begin{block}{}
     \begin{enumerate}
-    \item<1-> What if $\adv$ utilizes some simulated proof up to Step
+    \item<1-> What if $\advfs$ utilizes some simulated proof up to Step
       \ref{it:challenge}?\\
       In that case we \emph{cannot rewind}
       \begin{compactitem}
       \item The adversary knows a simulated proof that starts with
-        $(\inp, \p{a}, \ldots, \p{t})$
-      \item Knows $\chz = \ro(\inp, \p{a}, \ldots, \p{t})$
+        $(\inp, \cp{a}, \ldots, \cp{t})$
+      \item Knows $\chz = \ro(\inp, \cp{a}, \ldots, \cp{t})$
       \item If we rewind and change $\ro$'s answer for the same
-        query, $\adv$ would notice that
+        query, $\advfs$ would notice that
       \end{compactitem}
       \fbox{Need to make sure that is not possible -- \emph{unique response
             property}}
-    \item<2-> What is the probability that $\adv$ doesn't change its mind after
+    \item<2-> What is the probability that $\advfs$ doesn't change its mind after
       seeing new $\chz$? \\
       It could discard previously created proof and start from scratch -- pick
       new instance $\inp'$ and polynomials $\p{a'}, \p{b'}, \p{c'}$\\
@@ -465,8 +493,8 @@
   \frametitle{Problem 1 -- unique response property}
   \begin{block}{Idea}
     We say that an NI protocol has \emph{$k$-unique response property} if it is
-    infeasible for a $\ppt$ adversary $\adv$ to produce two \emph{different}
-    transcripts that share the first $k$-rounds.
+    infeasible for a $\ppt$ adversary $\advfs$ to produce two \emph{different}
+    transcripts that have the same first $k$-rounds.
   \end{block}
   \pause
   \begin{block}{}
@@ -497,7 +525,12 @@
 \srs \gets \kgen_\fs(\REL) \right.
 } \leq \negl
 \]
- \end{block}
+\end{block}
+
+\begin{block}{Example -- Schnorr protocol}
+  Transcript for instance $\gone{x}$: $(\gone{r}, b, \gone{r + bx})$\\
+  After challenge $b$ is sent, $\gone{r + bx}$ is \emph{determined}
+\end{block}
 \end{frame}
 
 \begin{frame}
@@ -659,6 +692,48 @@
 \newcommand{\exta}{\ext_\adv}
 
 \begin{frame}
+  \frametitle{Simulation extractability definition}
+  \begin{definition}[Forking simulation-extractable NIZK]
+	\label{def:simext}
+	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a forking-sound HVZK
+  proof and $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$
+  be $\ps$ transformed by the Fiat--Shamir transform. We say that $\ps_\fs$ is
+  \emph{forking simulation-extractable} with \emph{extraction error} $\nu$ if
+  for any $\ppt$ adversary $\adv$ that is given oracle access to a random oracle
+  $\ro$ and simulator $\simulator_\fs$, and produces an accepting transcript of
+  $\ps$ with probability $\accProb$
+	probability
+	\[
+		\extProb = \Pr \left[
+		\begin{aligned}
+			& \verifier_\fs(\REL, \srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
+			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+			& \REL(\inp_{\advse}, \wit_{\advse}) = 1
+		\end{aligned}
+		\, \left| \,
+		\begin{aligned}
+			& \srs \gets \kgen_\fs(\REL), r \sample \RND{\advse},\\
+			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
+			\ro} (\REL, \srs; r) \\
+			& \wit_{\advse} \gets \ext_\se (\REL, \srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+			Q, Q_\ro) 
+		\end{aligned}
+		\right.\right]
+	\]
+	is at at least 
+	\[
+		\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
+	\]
+	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
+  $\accProb \geq \nu$. List $Q$ contains all $(\inp, \zkproof)$ pairs where
+  $\inp$ is an instance provided to the simulator by the adversary and
+  $\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+  queries to $\ro$ and $\ro$'s answers.
+\end{definition}
+
+\end{frame}
+
+\begin{frame}
   \frametitle{The main theorem}
 \begin{theorem}[Forking simulation-extractable multi-message protocols]
   \label{thm:se}
@@ -703,7 +778,7 @@
     (\inpa, \zkproof[1..k]) = (\inpa, \zkproofs[1..k])
   \]
 
-  If Game 1 aborts with non-negligble probability then $\adv$ may be used to
+  If Game 1 aborts with non-negligible probability then $\adv$ may be used to
   break unique-response property od $\ps$.
 \end{block}
 \end{frame}
@@ -829,7 +904,7 @@
     Let $F, G$ be families of polynomials and $h$ a $(F, G)$ independent
     polynomial. Let $\chi$ be a secret and random value and $r$ a random
     polynomial. Then no $\ppt$
-    advresary can tell
+    adversary can tell
     \begin{center}
      $\gone{f_1(\chi), \ldots, f_k(\chi)}, \gtwo{g_1, \ldots, g_l},
      \gone{r(\chi)}$ and 
@@ -843,7 +918,7 @@
 
 \begin{frame}
   \frametitle{Security of FS transformation---forking lemma}
-  \begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12,CCS:BelNev06}]
+  \begin{lemma}[General forking lemma]
     \label{lem:forking_lemma}
     \begin{columns}
       \begin{column}{.5\linewidth}
@@ -913,42 +988,5 @@
 \end{columns}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Generalized forking lemma}
-  \begin{columns}
-    \begin{column}{.4\linewidth}
-  \begin{block}{Pros}
-    Covers case of \emph{multiround protocols}\\
-    Fine with protocols that require more than $2$ transcripts to reveal the witness
-  \end{block}
-  
-  \begin{block}{Cons}
-    Huge number of rewinds required to reveal the witness\\
-    (Probably inevitable)
-  \end{block}
-
-  \begin{block}{Probability of successful forking}
-    $\accProb$ -- probability that $\advfs$ outputs an acceptable proof\\
-    $q$ -- number of random oracle queries that $\advfs$ makes\\
-    $h$ -- size of the random oracle range\\
-    $m$ -- number of necessary rewinds to reconstruct the witness
-    \[
-      \frac{\accProb}{q^{m - 1}} - \accProb \left(1 - \frac{h!}{h - m}! \cdot
-        h^m\right)
-    \]
-  \end{block}
-\end{column}
-\begin{column}{.4\linewidth}
-  \begin{block}{$(n_1, \ldots, n_k)$-tree}
-    Is a tree where every node on depth $i$ has $n_i - 1$ siblings and
-    $n_{i + 1}$ children. (In total $\prod_{i = 1}^k n_i$ paths)
-  \end{block}
-  \begin{block}{Tree of acceptable transcripts}
-    Consider a $(n_1, \ldots, n_k)$-tree. Let nodes be prover's messages and
-    edges between them verifier's challenges. 
-  \end{block}
-\end{column}
-\end{columns}
-\end{frame}
 
 \end{document}
