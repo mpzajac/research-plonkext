@@ -2020,9 +2020,12 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
 \subsection{Forking soundness}
 \begin{lemma}
 \label{lem:plonkprot_ss}
-Assume an idealised $\plonkprot$ verifier fails at most with probability $\epsid(\secpar)$ and the discrete logarithm advantage is bounded by $\epsdlog(\secpar)$,
- $\plonkprot$ is $(\epsss(\secpar), 3, 3 \noofc + 1)$-forking sound
-for $\epsss(\secpar) \leq \epsid(\secpar) + \epsdlog(\secpar)$ against algebraic adversaries.
+Assume an idealised $\plonkprot$ verifier fails at most with probability
+$\epsid(\secpar)$ and the discrete logarithm advantage is bounded by
+$\epsdlog(\secpar)$, $\plonkprot$ is
+$(\epsss(\secpar), 3, 3 \noofc + 1)$-forking sound for
+$\epsss(\secpar) \leq \epsid(\secpar) + \epsdlog(\secpar)$ against algebraic
+adversaries.
 \end{lemma}
 \begin{proof}
   Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
@@ -2037,52 +2040,57 @@ for $\epsss(\secpar) \leq \epsid(\secpar) + \epsdlog(\secpar)$ against algebraic
   where the challenge $\chz$ is presented, thus tree $\tree$ is build using
   different values of $\chz$.
 
-  We consider two mutually disjunctive events. The first, $\event{E}$ holds when
-  all of the transcripts are acceptable by the idealised verification equation,
-  i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}. The second,
-  $\nevent{E}$ holds when there is a transcript that is acceptable by the real
-  verifier, but not by the ideal verifier. That is, for that particular
-  transcript it holds that $\vereq_{\inp, \zkproof}(\chi) = 0$, but
-  $\vereq_{\inp, \zkproof}(X) \neq 0$.  When event $\event{E}$ holds we show
-  that the extractor $\extt$ is successful. If it does not hold, we show a
-  reduction $\rdvdlog$ that breaks the $\dlog$ assumption.
+  We consider two games.
 
-  \ncase{When $\event{E}$ holds} Let $(1, \tree) \gets \tdv(\REL, \srs)$ and
-  $\inp$ be a relation proven in $\tree$. Since the protocol $\plonkprot$,
-  instantiated with the idealised verification equation, is perfectly sound,
-  except with negligible probability of the idealised verifier failure $\epsid(\secpar)$,
-  for a valid proof $\zkproof$ of a statement $\inp$ there exists a witness
-  $\wit$, such that $\REL(\inp, \wit)$ holds. Note that since the $\tdv$
-  produces $(3 \noofc + 1)$ acceptable transcripts for different challenges
-  $\chz$, it obtains the same number of different evaluations of polynomials
-  $\p{a}, \p{b}, \p{c}, \p{z}, \p{t}$. Since the transcripts are acceptable by
-  an idealised verifier, the equality between polynomial $\p{t}$ and combination
-  of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$ described in Round 3 of the
-  protocol holds. Hence, $\p{a}, \p{b}, \p{c}$ encodes the valid witness for the
-  proven statement. Since $\p{a}, \p{b}, \p{c}$ are of degree at most
-  $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their evaluations known,
-  $\extt$ can recreate their coefficients by interpolation and reveal the
-  witness with probability $1$. Hence, the probability that extraction fails in
-  that case is upper-bounded by probability of an idealised verifier failing
+  \ncase{Game 0} In this game the adversary wins if all the transcripts it
+  produced are acceptable by the ideal verifier,
+  i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}, yet the extractor
+  fails to extract a valid witness out of them.
+
+  Probability of $\tdv$ winning this game is $\epsid(\secpar)$ as the protocol
+  $\plonkprot$, instantiated with the idealised verification equation, is
+  perfectly sound except with negligible probability of the idealised verifier
+  failure $\epsid(\secpar)$. Hence for a valid proof $\zkproof$ for a statement
+  $\inp$ there exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note
+  that since the $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for
+  different challenges $\chz$, it obtains the same number of different
+  evaluations of polynomials $\p{a}, \p{b}, \p{c}, \p{z}, \p{t}$. Since the
+  transcripts are acceptable by an idealised verifier, the equality between
+  polynomial $\p{t}$ and combination of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$
+  described in Round 3 of the protocol holds. Hence, $\p{a}, \p{b}, \p{c}$
+  encodes the valid witness for the proven statement. Since
+  $\p{a}, \p{b}, \p{c}$ are of degree at most $(\noofc + 2)$ and there is more
+  than $(\noofc + 2)$ their evaluations known, $\extt$ can recreate their
+  coefficients by interpolation and reveal the witness with probability
+  $1$. Hence, the probability that extraction fails in that case is
+  upper-bounded by probability of an idealised verifier failing
   $\epsid(\secpar)$, which is negligible.
 
-  \ncase{When $\nevent{E}$ holds} Let $\tdv$ be an adversary that for relation
-  $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree of
-  acceptable transcripts such that $\nevent{E}$ holds. Let $\rdvdlog$ be a
+  \ncase{Game 1} In this game the adversary additionally wins if it produces a
+  transcript in $\tree$ such that $\vereq_{\inp, \zkproof}(\chi) = 0$, but
+  $\vereq_{\inp, \zkproof}(X) \neq 0$. That is, the ideal verifier does not
+  accept the proof, but the real verifier does.
+
+  \ncase{$\game{0} \mapsto \game{1}$} Assume the adversary wins in Game 1, but
+  does not win in Game 0. We show that such adversary may be used to break the
+  $\dlog$ assumption. More precisely, let $\tdv$ be an adversary that for
+  relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
+  of acceptable transcripts such that $\nevent{E}$ holds. Let $\rdvdlog$ be a
   reduction that gets as input an $(\noofc + 2, 1)$-dlog instance
   $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$ and is tasked to output
   $\chi$. The reduction proceeds as follows---it gives the input instance to the
   adversary as the SRS. Let $(1, \tree)$ be the output returned by $\adv$. Let
   $\inp$ be a relation proven in $\tree$.  Consider a transcript
   $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
-  $\vereq_{\inp, \zkproof}(\chi) = 0$. Since the adversary is algebraic, all group
-  elements included in $\tree$ are extended by their representation as a
+  $\vereq_{\inp, \zkproof}(\chi) = 0$. Since the adversary is algebraic, all
+  group elements included in $\tree$ are extended by their representation as a
   combination of the input $\GRP_1$-elements. Hence all coefficients of the
-  verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known and $\rdvdlog$
-  can find its zero points. Since $\vereq_{\inp, \zkproof}(\chi) = 0$, the targeted
-  discrete log value $\chi$ is among them.
-  Hence, the probability that this event happens is upper-bounded by $\epsdlog(\secpar)$. \qed
-\end{proof}
+  verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known and
+  $\rdvdlog$ can find its zero points. Since
+  $\vereq_{\inp, \zkproof}(\chi) = 0$, the targeted discrete log value $\chi$ is
+  among them.  Hence, the probability that this event happens is upper-bounded
+  by $\epsdlog(\secpar)$. \qed
+  \end{proof}
 
 \subsection{Honest verifier zero-knowledge}
 \begin{lemma}
@@ -2098,13 +2106,6 @@ for $\epsss(\secpar) \leq \epsid(\secpar) + \epsdlog(\secpar)$ against algebraic
     SRS simulator.}
 \end{lemma}
 \begin{proof}
-  % More precisely, assume that $\plonk$'s SRS simulator
-  % $\simulator_\chi$ produces proof that are distributed at most $\epszk$-far
-  % from real proofs, and $(\pR, \pS, \pT, \pf, 1)$-uber assumption for
-  % $\pR, \pS, \pT, \pf$ as defined in \cref{eq:uber} is $\epsuber$-secure. Then
-  % any $\ppt$ adversary $\adv$ has advantage in telling a proof produced by
-  % $\simulator$ from a real proof upper-bounded by $\epszk + \epsuber$.
-  
   The proof goes by game-hoping. The environment that controls the games
   provides the adversary with a SRS $\srs$, then the adversary outputs an
   instance--witness pair $(\inp, \wit)$ and, depending on the game, is provided
