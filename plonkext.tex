@@ -1833,19 +1833,20 @@ extractability adversary $\advse$ either break the protocol's unique response
 property or based on forking soundness break the $\dlog$ assumption, if extracting a valid witness from a
 tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 
-Due to page limit, we omit description of \plonk{} here and refer to
-\cref{sec:plonk_explained}. Unfortunately, we also have to move some of the
-proofs to the Supplementary Materials as well, cf.~\cref{sec:plonk_supp_mat}
+% Due to page limit, we omit description of \plonk{} here and refer to
+% \cref{sec:plonk_explained}. Unfortunately, we also have to move some of the
+% proofs to the Supplementary Materials as well, cf.~\cref{sec:plonk_supp_mat}
 
   
 \subsection{Unique opening property of $\PCOMp$}
 \begin{lemma}
 \label{lem:pcomp_op}
-Let $\PCOMp$ be a batched version of a batched KZG polynomial
-commitment, cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property
-in the AGM with security $\epsop(\secpar) \leq 2 \epsdlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where
-$\epsdlog(\secpar)$ is security of the $(\noofc + 2, 1)$-dlog assumption and $\FF_p$ is the
-field used in $\PCOMp$.\end{lemma}
+Let $\PCOMp$ be a batched version of a KZG polynomial commitment,
+cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property in the AGM
+with security
+$\epsop(\secpar) \leq 2 \epsdlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where
+$\epsdlog(\secpar)$ is security of the $(\noofc + 2, 1)$-dlog assumption and
+$\FF_p$ is the field used in $\PCOMp$.\end{lemma}
 \begin{proof}
   Let $\vec{z} = (z, z') \in \FF_p^2$ be the two points the polynomials are
   evaluated at, $k \in \NN$ be the number of the committed polynomials to be
@@ -1889,7 +1890,7 @@ field used in $\PCOMp$.\end{lemma}
   between the idealised verifier rejection and real verifier acceptance allows
   one to break the discrete logarithm problem, probability that the real
   verifier accepts in one of the cases above is upper-bounded by
-  $\epsdlog + \infrac{1}{\FF_p}$.
+  $2 \epsdlog + \infrac{1}{\FF_p}$.
   \qed
 \end{proof}
 
@@ -1900,45 +1901,51 @@ field used in $\PCOMp$.\end{lemma}
   Let $\PCOMp$ be commitment of knowledge with security $\epsk(\secpar)$,
   $\epsbind(\secpar)$-binding and has unique opening property with security
   $\epsop(\secpar)$, then probability that a $\ppt$ adversary $\adv$ breaks
-  $\plonkprot$'s $\ur{2}$ property is at most
-  $ 2 \cdot \epsop + 9 \cdot (\epsbind + \infrac{2}{\FF_p}) + \epss.$.
+  $\plonkprotfs$'s $\ur{2}$ property is at most
+  $\epsop + 9 \cdot (\epsbind + \infrac{2}{\FF_p}) + \epss + \epsro$, where
+  $\epsro$ is probability that a $\ppt$ adversary finds collision in a random
+  oracle.
 \end{lemma}
 \begin{proof}
   Let
   $\adv(\REL,\srs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}}, \gtwo{\chi}))$
   be an algebraic adversary tasked to break the $\ur{2}$-ness of
-  $\plonkprot$. We show that the first 2 rounds of the protocol determines,
+  $\plonkprotfs$. We show that the first 2 rounds of the protocol determines,
   along with the verifiers challenges, the rest of it.  This is done by game
   hops. In the games, the adversary outputs two proofs $\zkproof$ and
-  $\zkproof'$ for the same statement that.  To distinguish polynomials and
-  commitments that an honest prover sends in the proof from the polynomials and
+  $\zkproof'$ for the same statement.  To distinguish polynomials and
+  commitments which an honest prover sends in the proof from the polynomials and
   commitments computed by the adversary we write the latter using indices $0$
   and $1$ (two indices as we have two transcripts), e.g.~to describe the
   quotient polynomial provided by the adversary we write $\p{t}^0$ and $\p{t}^1$
   instead of $\p{t}$ as in the description of the protocol.
 
-  \ngame{0} In this game the adversary is given the SRS and provides two
-  transcripts that match on all $5$ messages send by the prover. That is a game
-  the adversary cannot win.
+  \ngame{0} In this game the adversary is given the SRS and wins if provides two
+  transcripts that match on all $5$ messages send by the prover or finds a
+  collision in the random oracle. Since such two transcripts cannot break the
+  unique response property, the adversary wins this game with probability
+  $\epsro$ tops.
 
   \ngame{1} This game is identical to Game $\game{0}$ except that now the
-  adversary wins if it provides two transcripts that matches on the first four
+  adversary additionally wins if it provides two transcripts that matches on the first four
   messages of the proof.
 
   \ncase{$\game{0} \mapsto \game{1}$} We show that the probability that $\adv$
   wins in one game but does not in the other is negligible.  Observe that in
-  Round 5 of the proof, the adversary is given a challenge $v$ and has to give
-  an opening to the previously computed commitments. Since the transcripts match
-  up to Round 4, the challenge is the same in both. Hence, to be able to give
-  two different openings in Round 5, $\adv$ has to break the unique opening
-  property of the KZG commitment scheme which happens with probability $\epsop$
-  tops. Since there are two commitments that the adversary opens, by the union
-  bound probability that $\adv$ wins in one game but not the other is
-  upper-bounded by $2 \cdot \epsop$. 
+  Round 5 of the proof, the adversary is given a challenge $v$ and has to open
+  the previously computed commitments. Since the transcripts match up to Round
+  4, the challenge is the same in both. Hence, to be able to give two different
+  openings in Round 5, $\adv$ has to break the unique opening property of the
+  KZG commitment scheme which happens with probability $\epsop$ tops.
+  % Since
+  % there are two commitments that the adversary opens, by the union bound
+  % probability that $\adv$ wins in one game but not the other is upper-bounded
+  % by
+  % $2 \cdot \epsop$.
 
   \ngame{2} This game is identical to Game $\game{1}$ except that now the
-  adversary wins if it provides two transcripts that matches on the first three
-  messages of the proof.
+  adversary additionally wins if it provides two transcripts that matches on the
+  first three messages of the proof.
 
   \ncase{$\game{0} \mapsto \game{1}$} In Round 4 of the protocol the adversary
   has to provide evaluations
@@ -1947,19 +1954,19 @@ field used in $\PCOMp$.\end{lemma}
       2}}(\chz), z_\chz = \p{z}(\chz \omega)$ of previously committed
   polynomials, and compute and evaluate a linearlization polynomial $\p{r}$.
 
-  Similarly as previously, the adversary cannot provide two different
-  evaluations for the committed polynomials, since that would require it
-  breaking the evaluation binding property, what happens (by the union bound)
-  with probability at most $7 \cdot (\epsbind + \infrac{2}{\abs{\FF_p}})$. The
-  latter terms comes since the adversary does not provide an opening for each of
-  the commitment separately, but does that in batch. That comes with
-  $\infrac{1}{\FF_p}$ of security loss. Another $\infrac{1}{\FF_p}$ security
-  loss comes from the fact that the verifier does not verify each of the
-  commitments openings separately, but does so in batches as well.
+  As previously, the adversary cannot provide two different evaluations for the
+  committed polynomials, since that would require breaking the evaluation
+  binding property, what happens (by the union bound) with probability at most
+  $7 \cdot (\epsbind + \infrac{2}{\abs{\FF_p}})$. The latter terms comes since
+  the adversary does not provide an opening for each of the commitment
+  separately, but does that in batch. That comes with $\infrac{1}{\FF_p}$ of
+  security loss. Another $\infrac{1}{\FF_p}$ security loss comes from the fact
+  that the verifier does not verify each of the commitments openings separately,
+  but does so in batches as well.
 
   The adversary cannot also provide two different linearization polynomials
   $\p{r^0}$ and $\p{r^1}$ evaluations $r^0_\chz$ and $r^1_\chz$ as the
-  linearization polynomial is determined by values known to the verifier, who
+  linearization polynomial is determined by values known to the verifier who
   also can compute a commitment to $\p{r}(X)$ equal $\gone{\p{r}(\chi)}$ by its
   own. The evaluation of $\p{r}$ provided by the adversary is later checked, as
   $\adv$ opens the commitment in Round 5. Hence, the probability that the
@@ -1970,8 +1977,8 @@ field used in $\PCOMp$.\end{lemma}
   other is upper-bounded by $8 \cdot (\epsbind + \infrac{2}{\FF_p})$
 
   \ngame{3} This game is identical to Game $\game{2}$ except that now the
-  adversary wins if it provides two transcripts that matches on the first two
-  messages of the proof.
+  adversary additionally wins if it provides two transcripts that matches on the
+  first two messages of the proof.
 
   \ncase{$\game{2} \mapsto \game{3}$} In Round 3 the adversary computes the
   quotient polynomial $\pt(X)$ and provides its commitment that compounds of
@@ -2004,7 +2011,7 @@ field used in $\PCOMp$.\end{lemma}
   \ncase{Conclusion} Taking all the games together, probability that $\adv$ wins
   in $\game{3}$ is upper-bounded by
   \[
-    2 \cdot \epsop + 9 \cdot (\epsbind + \infrac{2}{\FF_p}) + \epss.
+    2 \cdot \epsop + 9 \cdot (\epsbind + \infrac{2}{\FF_p}) + \epsro + \epss.
   \]
   \qed
   %\michals{01.06}{Ended here}
