@@ -2075,14 +2075,14 @@ adversaries.
   does not win in Game 0. We show that such adversary may be used to break the
   $\dlog$ assumption. More precisely, let $\tdv$ be an adversary that for
   relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
-  of acceptable transcripts such that $\nevent{E}$ holds. Let $\rdvdlog$ be a
-  reduction that gets as input an $(\noofc + 2, 1)$-dlog instance
-  $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$ and is tasked to output
-  $\chi$. The reduction proceeds as follows---it gives the input instance to the
-  adversary as the SRS. Let $(1, \tree)$ be the output returned by $\adv$. Let
-  $\inp$ be a relation proven in $\tree$.  Consider a transcript
-  $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
-  $\vereq_{\inp, \zkproof}(\chi) = 0$. Since the adversary is algebraic, all
+  of acceptable transcripts such that the winning condition of the game
+  holds. Let $\rdvdlog$ be a reduction that gets as input an
+  $(\noofc + 2, 1)$-dlog instance $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$
+  and is tasked to output $\chi$. The reduction proceeds as follows---it gives
+  the input instance to the adversary as the SRS. Let $(1, \tree)$ be the output
+  returned by $\adv$. Let $\inp$ be a relation proven in $\tree$.  Consider a
+  transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$,
+  but $\vereq_{\inp, \zkproof}(\chi) = 0$. Since the adversary is algebraic, all
   group elements included in $\tree$ are extended by their representation as a
   combination of the input $\GRP_1$-elements. Hence all coefficients of the
   verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known and
@@ -2763,10 +2763,105 @@ of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable 
   $(..., 2, |\HHH| + b + 1)$-forking sound.
 \end{lemma}
 \begin{proof}
-  
+  \michals{8.9}{Need to check the degrees}
+  The proof goes similarly to the respective proofs for $\plonk$ and
+  $\sonic$. That is, let $\srs$ be $\marlinprot$'s SRS and denote by $\srs_1$
+  all SRS's $\GRP_1$-elements. Let $\tdv$ be an algebraic adversary that
+  produces a statement $\inp$ and a $(1, |\HHH| + b + 1, 1, 1)$-tree of
+  acceptable transcripts $\tree$. Note that in all transcripts the instance
+  $\inp$, proof elements
+  $\sigma_1, \gone{\p{w}(\chi), \p{z_A}(\chi), \p{z_B}(\chi), \p{z_C}(\chi),
+    \p{h_0}(\chi), \p{s}(\chi)}, \gone{\p{g_1}(\chi), \p{h_1}(\chi)}$
+  % $\sigma_1, \gone{\p{w}(\chi), \p{z_A}(\chi), \p{z_B}(\chi), \p{z_C}(\chi),
+  %   \p{h_0}(\chi), \p{s}(\chi)}, \alpha, \eta_A, \eta_B, \eta_C,
+  % \gone{\p{g_1}(\chi), \p{h_1}(\chi)}, \beta_1, \sigma_2, \gone{\p{g_2}(\chi),
+  % \p{h_2}(\chi)}, \beta_2, \simga_2, \gone{\p{g_3}(\chi), \p{h_3}(\chi)}$
+  and challenges $\alpha, \eta_1, \eta_2, \eta_3$ are common as the transcripts
+  share the first $3$ messages. The tree branches after the third message of the
+  protocol where the challenge $\beta_1$ is presented, thus tree $\tree$ is
+  build using different values of $\beta_1$.
+
+  We consider two games.
+
+  \ncase{Game 0} In this game the adversary wins if all the transcripts it
+  produced are acceptable by the ideal verifier,
+  i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:marlin_ver_eq}, yet the extractor
+  fails to extract a valid witness out of them.
+
+  Probability of $\tdv$ winning this game is $\epsid(\secpar)$ as the protocol
+  $\marlinprot$, instantiated with the idealised verification equation, is
+  perfectly sound except with negligible probability of the idealised verifier
+  failure $\epsid(\secpar)$. Hence for a valid proof $\zkproof$ for a statement
+  $\inp$ there exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note
+  that since the $\tdv$ produces $(|\HHH| + b + 1)$ acceptable transcripts for
+  different challenges $\beta_1$, it obtains the same number of different
+  evaluations of polynomials $\p{z_A}, \p{z_B}, \p{z_C}$.
+
+  Since the transcripts are acceptable by an idealised verifier, the equality
+  $\p{z_A} (X) \p{z_B} (X) - \p{z_C} (X) = \p{h_0} (X) \ZERO_\HHH (X)$
+  holds. Hence, $\p{z_A}, \p{z_B}, \p{z_C}$ encodes the valid witness for the
+  proven statement. Since $\p{z_A}, \p{z_B}, \p{z_C}$ are of degree at most
+  $(|\HHH| + b)$ and there is more than $(|\HHH| + b + 1)$ their evaluations
+  known, $\extt$ can recreate their coefficients by interpolation and reveal the
+  witness with probability $1$. Hence, the probability that extraction fails in
+  that case is upper-bounded by probability of an idealised verifier failing
+  $\epsid(\secpar)$, which is negligible.
+
+  \ncase{Game 1} In this game the adversary additionally wins if it produces a
+  transcript in $\tree$ such that $\vereq_{\inp, \zkproof}(\chi) = 0$, but
+  $\vereq_{\inp, \zkproof}(X) \neq 0$. That is, the ideal verifier does not
+  accept the proof, but the real verifier does.
+
+  \ncase{$\game{0} \mapsto \game{1}$} Assume the adversary wins in Game 1, but
+  does not win in Game 0. We show that such adversary may be used to break the
+  $\dlog$ assumption. More precisely, let $\tdv$ be an adversary that for
+  relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
+  of acceptable transcripts such that the winning condition of the game
+  holds. Let $\rdvdlog$ be a reduction that gets as input an
+  $(|\HHH| + b + 1, 1)$-dlog instance $\gone{1, \ldots, ...}, \gtwo{\chi}$ and
+  is tasked to output $\chi$. The reduction proceeds as follows---it gives the
+  input instance to the adversary as the SRS. Let $(1, \tree)$ be the output
+  returned by $\adv$. Let $\inp$ be a relation proven in $\tree$.  Consider a
+  transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$,
+  but $\vereq_{\inp, \zkproof}(\chi) = 0$. Since the adversary is algebraic, all
+  group elements included in $\tree$ are extended by their representation as a
+  combination of the input $\GRP_1$-elements. Hence all coefficients of the
+  verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known and
+  $\rdvdlog$ can find its zero points. Since
+  $\vereq_{\inp, \zkproof}(\chi) = 0$, the targeted discrete log value $\chi$ is
+  among them.  Hence, the probability that this event happens is upper-bounded
+  by $\epsdlog(\secpar)$. \qed
+
 \end{proof}
 
 \subsection{Honest-verifier zero knowledge}
+\begin{lemma}
+  $\marlinprot$ is HVZK.
+\end{lemma}
+\begin{proof}
+  The simulator follows the protocol, except it picks the challenges
+  $\beta_1, \beta_2, \beta_3$ not randomly, but to make sure the verification
+  equation holds. That is, the simulator
+  \begin{enumerate}
+  \item Picks witness $\wit$ at random, sets $\p{z_A}, \p{z_B}$ as polynomials
+    interpolating $A (\inp^\top, \wit^{\top})^{\top}$ and $\p{z_C}$ such that
+    $\p{z_A} (\beta_1) \p{z_B} (\beta_1) - \p{z_C} (\beta_1) = \p{h_0} (\beta_1)
+    \ZERO_\HHH (\beta_1)$. Then it follows the protocol till the point $\beta_1$
+    is sent.
+  \item Instead of picking $\beta_1$ at random it picks it such that
+    $ \p{s} (\beta_1) + \p{r}(\alpha, \beta_1) (\sum_M \eta_M \p{z_M} (\beta_1)
+    ) - \sigma_2 \p{z} (\beta_1) = \p{h_1} (\beta_1) \ZERO_\HHH (\beta_1) +
+    \beta_1 \p{g_1} (\beta_1) + \sigma_1 / |\HHH|$. The it follows the protocol
+    till $\beta_2$ is picked.
+  \item Instead of picking $\beta_2$ at random, it picks it such that
+    $\p{r} (\alpha, \beta_2) \sigma_3 = \p{h_2} (\beta_2) \ZERO_\HHH(\beta_2) +
+    \beta_2 \p{g_2} (\beta_2) + \sigma_2/|\HHH|$ holds. Then it continues till
+    the challenge $\beta_3$ is picked.
+  \item Instead of picking $\beta_3$ at random, it picks it such that
+    $\p{h_3} (\beta_3 ) \ZERO_\KKK (\beta_3) = \p{a}(\beta_3) - \p{b} (\beta_3)
+    (\beta_3 \p{g_3} (\beta_3) + \sigma_3/|\KKK|)$ holds.
+  \end{enumerate}
+\end{proof}
 \subsection{From forking soundness and unique response property to forking
   simulation extractability of $\marlinprotfs$}
 
