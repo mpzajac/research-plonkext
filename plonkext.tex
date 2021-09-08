@@ -2348,6 +2348,426 @@ constrains in the proven circuit.
   random oracle $\ro\colon \bin^{*} \to \bin^{\secpar}$.
 \end{corollary}
 
+\section{Non-malleability of $\sonicprotfs$}
+\label{sec:sonic}
+\subsection{\sonic{} protocol rolled out}
+In this section we present $\sonic$'s constraint system and algorithms. Reader
+familiar with them may jump directly to the next section.
+
+\oursubsub{The constraint system}
+\label{sec:sonic_constraint_system}
+\sonic's system of constraints composes of three $\multconstr$-long vectors
+$\va, \vb, \vc$ which corresponds to left and right inputs to multiplication
+gates and their outputs. It hence holds $\va \cdot \vb = \vc$.
+
+There is also $\linconstr$ linear constrains of the form
+\[
+  \va \vec{u_q} + \vb \vec{v_q} + \vc \vec{w_q} = k_q,
+\]
+where $\vec{u_q}, \vec{v_q}, \vec{w_q}$ are vectors for the $q$-th linear
+constraint with instance value $k_q \in \FF_p$. Furthermore define polynomials
+\begin{equation}
+  \begin{split}
+    \p{u_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} u_{q, i}\,,\\
+    \p{v_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} v_{q, i}\,,\\
+  \end{split}
+  \qquad
+  \begin{split}
+    \p{w_i}(Y) & = -Y^i - Y^{-i} + \sum_{q = 1}^\linconstr Y^{q +
+      \multconstr} w_{q, i}\,,\\
+    \p{k}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} k_{q}.
+  \end{split}
+\end{equation}
+In \sonic{} we will use commitments to the following polynomials.
+\begin{align*}
+  \pr(X, Y) & = \sum_{i = 1}^{\multconstr} \left(a_i X^i Y^i + b_i X^{-i} Y^{-i}
+              + c_i X^{-i - \multconstr} Y^{-i - \multconstr}\right) \\
+  \p{s}(X, Y) & = \sum_{i = 1}^{\multconstr} \left( u_i (Y) X^{-i} +
+                v_i(Y) X^i + w_i(Y) X^{i + \multconstr}\right)\\
+  \pt(X, Y) & = \pr(X, 1) (\pr(X, Y) + \p{s}(X, Y)) - \p{k}(Y)\,.
+\end{align*}
+	
+\oursubsub{Algorithms rolled out}
+\ourpar{$\sonic$ SRS generation $\kgen(\REL)$.} The SRS generating algorithm picks
+randomly $\alpha, \chi \sample \FF_p$ and outputs
+	\[
+      \srs = \left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
+          \smallset{\alpha \chi^i}_{i = -\dconst, i \neq 0}^{\dconst}},
+        \gtwo{\smallset{\chi^i, \alpha \chi^i}_{i = - \dconst}^{\dconst}},
+        \gtar{\alpha} \right)
+	\]
+\ourpar{$\sonic$ prover $\prover(\REL, \srs, \inp, \wit=\va, \vb, \vc)$.}
+\begin{description}
+\item[Round 1] The prover picks randomly randomisers
+  $c_{\multconstr + 1}, c_{\multconstr + 2}, c_{\multconstr + 3}, c_{\multconstr
+    + 4} \sample \FF_p$. Set
+  $\pr(X, Y) \gets \pr(X, Y) + \sum_{i = 1}^4 c_{\multconstr + i} X^{- 2
+    \multconstr - i}$. Commits to $\pr(X, 1)$ and outputs
+  $\gone{r} \gets \com(\srs, \multconstr, \pr(X, 1))$.  Then it gets challenge $y$ from
+  the verifier.
+\item[Round 2] $\prover$ commits to $\pt(X, y)$ and outputs
+  $\gone{t} \gets \com(\srs, \dconst, \pt(X, y))$. Then it gets a challenge $z$ from
+  the verifier.
+\item[Round 3] The prover computes commitment openings. That is, it outputs
+  \begin{align*}
+    \gone{o_a} & = \open(\srs, z, \pr(z, 1), \pr(X, 1)) \\
+    \gone{o_b} & = \open(\srs, yz, \pr(yz, 1), \pr(X, 1)) \\
+    \gone{o_t} & = \open(\srs, z, \pt(z, y), \pt(X, y)) 
+  \end{align*}
+  along with evaluations $a' = \pr(z, 1), b' = \pr(y, z), t' = \pt(z, y)$.  Then it
+  engages in the signature of correct computation playing the role of the
+  helper, i.e.~it commits to $\p{s}(X, y)$ and sends the commitment $\gone{s}$, commitment opening
+  \begin{align*}
+    \gone{o_s} & = \open(\srs, z, \p{s}(z, y), \p{s}(X, y)), \\
+  \end{align*} and $s'=\p{s}(z, y)$. 
+%
+  Then
+  it obtains a challenge $u$ from the verifier.
+\item[Round 4] In the next round the prover computes
+  $\gone{c} \gets \com(\srs, \dconst, \p{s}(u, Y))$ and
+  computes commitments' openings
+  \begin{align*}
+    \gone{w} & = \open(\srs, u, \p{s}(u, y), \p{s}(X, y)), \\
+    \gone{q_y} & = \open(\srs, y,\p{s}(u, y), \p{s}(u, Y)),
+  \end{align*}
+  and returns $\gone{w}, \gone{q_y}, s = \p{s}(u, y)$. Eventually the prover gets the last challenge
+  from the verifier---$z'$.
+\item[Round 5] In the final round, $\prover$ computes opening
+  $\gone{q_{z'}} = \open(\srs, z', \p{s}(u, z'), \p{s}(u, X))$ and outputs $\gone{q_{z'}}$.
+\end{description}
+
+\ourpar{$\sonic$ verifier $\verifier(\REL, \srs, \inp, \zkproof)$.} The verifier
+in \sonic{} runs as subroutines the verifier for the polynomial commitment. That
+is it sets $t' = a'(b' + s') - \p{k}(y)$ and checks the following:
+\begin{equation*}
+  \begin{split}
+    &\PCOMs.\verifier(\srs, \multconstr, \gone{r}, z, a', \gone{o_a}), \\
+    &\PCOMs.\verifier(\srs, \multconstr, \gone{r}, yz, b', \gone{o_b}),\\
+    &\PCOMs.\verifier(\srs, \dconst, \gone{t}, z, t', \gone{o_t}),\\
+    &\PCOMs.\verifier(\srs, \dconst, \gone{s}, z, s', \gone{o_s}),\\
+  \end{split}
+  \qquad
+  \begin{split}
+    &\PCOMs.\verifier(\srs, \dconst, \gone{s}, u, s, \gone{w}),\\
+    &\PCOMs.\verifier(\srs, \dconst, \gone{c}, y, s, \gone{q_y}),\\
+    &\PCOMs.\verifier(\srs, \dconst, \gone{c}, z', \p{s}(u, z'), \gone{q_{z'}}),
+  \end{split}
+\end{equation*}
+and accepts the proof iff all the checks holds. Note that the value $\p{s}(u, z')$ that is recomputed by the verifier uses separate challenges $u$ and $z'$. This enables the batching of many proof and the outsourcing of this part of the proof to an untrusted helper. 
+
+\subsection{Unique opening property of $\PCOMs$}
+\begin{lemma}
+\label{lem:pcoms_unique_op}
+$\PCOMs$ has the unique opening property in the AGM. 
+\end{lemma}
+\begin{proof}
+Let 
+$z \in \FF_p$ be the attribute the polynomial is evaluated at,
+$\gone{c} \in \GRP$ be the commitment,  
+$s \in \FF_p$ the evaluation value, and 
+$o \in \GRP$ be the commitment opening. 
+We need to show that for every $\ppt$ adversary $\adv$ probability
+\[
+  \Pr \left[
+    \begin{aligned}
+      & \verify(\srs, \gone{c}, z, s, \gone{o}) = 1, \\
+      & \verify(\srs, \gone{c}, z, \tilde{s}, \gone{\tilde{o}}) = 1
+    \end{aligned}
+    \,\left|\, \vphantom{\begin{aligned}
+          & \verify(\srs, \gone{c}, z, s, \gone{o}),\\
+          & \verify(\srs, \gone{c}, z, \tilde{s}, \gone{\tilde{o}}) \\
+          &o \neq \tilde{o})
+		\end{aligned}}
+      \begin{aligned}
+        & \srs \gets \kgen(\secparam, \maxdeg), \\
+        & (\gone{c}, z, s, \tilde{s}, \gone{o}, \gone{\tilde{o}}) \gets \adv(\srs)
+      \end{aligned}
+    \right.\right]
+  % \leq \negl.
+\]
+is at most negligible.
+
+As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the
+probability of the adversary succeeding using the idealised verification
+equation---which considers equality between polynomials---instead of the real
+verification equation---which considers equality of the polynomials' evaluations.
+
+For a polynomial $f$, its degree upper bound $\maxconst$, evaluation point $z$,
+evaluation result $s$, and opening $\gone{o(X)}$ the idealised check verifies that
+\begin{equation}
+  \alpha (X^{\dconst - \maxconst}f(X) \cdot X^{-\dconst + \maxconst} -  s) \equiv \alpha \cdot o(X) (X - z)\,,
+\end{equation}
+what is equivalent to 
+\begin{equation}
+	f(X) -  s \equiv o(X) (X - z)\,.
+	\label{eq:pcoms_idealised_check}
+\end{equation}
+Since $o(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial
+composition, there is only one $o(X)$ that fulfils the equation above.
+\qed
+\end{proof}
+
+
+\subsection{Unique response property}
+The unique response property of $\sonicprot$ follows from the unique opening
+property of the used polynomial commitment scheme $\PCOMs$.
+\begin{lemma}
+\label{lem:sonicprot_ur}
+If a polynomial commitment scheme $\PCOMs$ is evaluation binding with
+parameter $\epsbind(\secpar)$ and has unique openings property with parameter
+$\epsop(\secpar)$, then $\sonicprot$ is $\ur{1}$ with parameter $\epsur(\secpar) \leq
+\epsbind(\secpar) + \epsop(\secpar)$.  
+\end{lemma}
+\begin{proof}
+  Let $\adv$ be an adversary that breaks $\ur{1}$-ness of $\sonicprot$.  We
+  consider two cases, depending on which round $\adv$ is able to provide at
+  least two different outputs such that the resulting transcripts are
+  acceptable.  For the first case we show that $\adv$ can be used to break the
+  evaluation binding property of $\PCOMs$, while for the second case we show
+  that it can be used to break the unique opening property of $\PCOMs$.
+
+  The proof goes similarly to the proof of \cref{lem:plonkprot_ur} thus we
+  provide only draft of it here.  In each Round $i$, for $i > 1$, the prover
+  either commits to some well-defined polynomials (deterministically), evaluates
+  these on randomly picked points, or shows that the evaluations were performed
+  correctly.  Obviously, for a committed polynomial $\p{p}$ evaluated at point
+  $x$ only one value $y = \p{p}(x)$ is correct. If the adversary was able to
+  provide two different values $y$ and $\tilde{y}$ that would be accepted as an
+  evaluation of $\p{p}$ at $x$ then the $\PCOMs$'s evaluation binding would be
+  broken.  Alternatively, if $\adv$ was able to provide two openings $\p{W}$ and
+  $\p{\tilde{W}}$ for $y = \p{p}(x)$ then the unique opening property would be
+  broken.
+%
+Hence the probability that $\adv$ breaks $\ur{1}$-property of $\PCOMs$ is
+upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$. 
+\qed
+
+\end{proof}
+
+\subsection{Forking soundness}
+\begin{lemma}
+	\label{lem:sonicprot_ss}
+  $\sonicprot$ is $(\epsss(\secpar), 2, \multconstr + \linconstr + 1)$-forking sound against
+  algebraic adversaries, with
+  \[
+			\epsss(\secpar) \leq \epss(\secpar) + \epsldlog(\secpar)\,,
+	\]
+	where $\epss(\secpar)$ is a soundness error of the protocol, and $\epsldlog(\secpar)$ is
+  security of $(\dconst, \dconst)$-$\ldlog$ assumption.
+\end{lemma}
+\begin{proof}
+  The proof goes similarly to the proof of \cref{lem:plonkprot_ss}.
+%
+  Let $\adv$ be an adversary that produces a
+  $(1, \multconstr + \linconstr + 1, 1, 1)$-tree of acceptable transcripts
+  $\tree$ for a statement $\inp$. We consider two disjunctive events $\event{E}$
+  and $\nevent{E}$. The first corresponds to a case when all transcripts in
+  $\tree$ are acceptable for the ideal verifier,
+  i.e.~$\vec{\vereq_{\inp, \zkproof}}(X) = \vec{0}$. In that case we show an extractor $\extss$
+  that from $\tree$ extracts a valid witness $\wit$. The second, corresponds to
+  a case when $\tree$ contains a transcript that is acceptable by the real
+  verifier but is not acceptable by the ideal verifier.  In that case we show a
+  reduction $\rdvldlog$ that uses $\adv$ to break the
+  $(\dconst, \dconst)$-$\ldlog$ assumption.
+
+  \ncase{When $\event{E}$ happens} Since $\sonicprot$ is statistically sound
+  regarding the ideal verifier, for an acceptable proof $\zkproof$ for a
+  statement $\inp$ there exists a witness $\wit$ such that $\REL(\inp, \wit)$
+  holds and the polynomial $\p{r}(X, y)$ contains witness at its coefficients.
+  Note that the polynomial $\p{r}(X, y)$, which has witness elements at its
+  coefficients, has degree at most $\multconstr + \linconstr$ and since $\adv$
+  answered correctly on $(\multconstr + \linconstr + 1)$ different challenges
+  $z$ (for the sake of concreteness let us call them
+  $z_1, \ldots, z_{\multconstr + \linconstr + 1}$) then
+  $(\multconstr + \linconstr + 1)$ evaluations
+  $\p{r}(z_1, y), \ldots, \p{r}(z_{\multconstr + \linconstr + 1}, y)$ of
+  $\p{r}(X, y)$ are known. The extractor $\extss$ interpolates $\p{r}(X, y)$ and
+  reveals the corresponding witness $\wit$.
+
+  \ncase{When $\nevent{E}$ happens} Consider a transcript such that for some
+  verification equation $\vereq_{i, \inp, \zkproof}(X) \neq 0$, but
+  $\vereq_{i, \inp, \zkproof}(\chi) = 0$. Since
+  the adversary is algebraic, all group elements included in the tree of
+  transcripts are extended by their representation as a combination of the input
+  $\GRP_1$ or $\GRP_2$-elements. Hence all coefficients of the verification
+  equation polynomial $\vereq_{i,\inp, \zkproof}(X)$ are known and $\rdvdlog$ can find its zero
+  points. Since $\vereq_{i, \inp, \zkproof}(\chi) = 0$, the targeted discrete log value $\chi$ is
+  among them. \qed
+\end{proof}
+
+\subsection{Honest verifier zero-knowledge}
+\begin{lemma}
+\label{lem:sonic_hvzk}
+$\sonic$ is honest verifier
+zero-knowledge.	
+\end{lemma}
+% Here we show that $\sonic$ is trapdoor-less zero-knowledge.
+\begin{proof}
+The simulator proceeds as follows.
+In the first round, it picks randomly vectors $\vec{a}$, $\vec{b}$ and sets
+\begin{equation}
+	\label{eq:ab_eq_c}
+	\vec{c} = \vec{a} \cdot \vec{b}. 
+\end{equation}
+Then it pick randomisers $c_{\multconstr + 1}, \ldots, c_{\multconstr + 4}$,
+honestly computes polynomials $\p{r}(X, Y), \p{r'}(X, Y), \p{s}(X, Y)$ and
+$\p{t}(X, Y)$ and concludes the first round as an honest prover would. Because
+of the randomisers the polynomial $\pr(X, Y)$ computed by the simulator is
+indistinguishable from a polynomial provided by an honest user for an adversary
+that only learns $\gone{r},\gone{t}, a', b'$ from the proof (the other proof elements are
+fixed by these elements and the public information,
+see~\cref{sec:sonic_constraint_system}).
+
+Next, $\simulator$ computes the first verifier's challenge $y$ such that
+$\pt(X, y)$ is a polynomial that has $0$ as a coefficient next to $X^0$.
+I.e.~$\pt(0, y) = 0$. By the definition of $\pt(X, Y)$, the coefficient next to
+$X^0$ in $\p{t}(X, Y)$ equals
+\begin{equation}
+	\label{eq:x0}
+	\pt(0,Y) = 
+	\vec{a} \cdot \vec{\p{u}}(Y) + 
+	\vec{b} \cdot \vec{\p{v}}(Y) + 
+	\vec{c} \cdot \vec{\p{w}}(Y) +	
+	\sum_{i = 1}^{\multconstr} a_i b_i (Y^i + Y^{-i}) - \p{k}(Y), 
+\end{equation}
+for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ as defined
+in \cref{sec:sonic_constraint_system} (Vectors $\vec{u_q}, \vec{v_q}, \vec{w_q}$
+are $\multconstr$-elements long and correspond to $\linconstr$ linear constrains of
+the proof system. Field element $k_{q}$ is the instance value). When the proven
+instance is correct, $\pt(0,Y)$ is a zero polynomial. See \cite{CCS:MBKM19} for
+details. Also, when \cref{eq:ab_eq_c} holds, that polynomial simplifies to
+\begin{equation}
+	\label{eq:x0_simpl}
+	\pt(0,Y) = \vec{a} \cdot \vec{\p{u}}(Y) + 
+	\vec{b} \cdot \vec{\p{v}}(Y) + 
+	\vec{c} \cdot \vec{\p{\tilde{w}}}(Y)	
+	- \p{k}(Y), 
+\end{equation}
+where $\vec{\p{\tilde{w}}}(Y)$ is defined as
+\[
+	\p{\tilde{w}_i}(Y) = \sum_{q = 1}^\linconstr Y^{q +
+	\multconstr} w_{q, i}\,.
+\]
+Note that $\pt(0, Y)$ is a ``classical'', i.e.~non-Laurent, polynomial. Also,
+it is a polynomial of degree $\linconstr + \multconstr$ with $0$
+coefficients for $Y^{i}$, for $i \in \range{0}{\multconstr}$. Also, since
+$\vec{a}, \vec{b}$ were picked at random, $\pt(0,Y) / Y^{\multconstr + 1}$ is a
+degree-$(\linconstr - 1)$ polynomial of random coefficients. Recall, that the
+view of the adversary is independent of $\vec{a}, \vec{b}$ because of
+randomisers $c_{\multconstr + 1}, \ldots, c_{\multconstr + 4}$.
+
+The probability that a random degree-$(\linconstr - 1)$ polynomial over
+$\FF_p[Y]$ has a root is at least $\infrac{1}{(\linconstr - 1) !}$, see
+\cref{lem:root_prob} for a proof of that bound. Since we assume that $\linconstr
+= \poly$, we can say that the polynomial $\pt(0,Y)$ as computed by the simulator
+has roots with non-negligible probability. Furthermore, these roots can be found
+and the simulator picks fresh $\vec{a}, \vec{b}$ until $\pt(0,Y)$ has a root. As
+the roots of a random polynomial are themselves random $\FF_p$ elements, the
+challenge $y$ picked by the simulator comes from the same distribution as if it
+was picked by an honest verifier.
+
+The simulator continues building the transcript by honestly computing the
+prover's messages and by picking verifier's challenges at random. This and the
+fact that $\pt(0,y) = 0$ guarantees that the transcript provided by the simulator is
+acceptable and comes from the same distribution as a transcript of an honest
+prover and verifier. \qed
+\end{proof}
+
+\begin{remark} 
+  As noted in \cite{CCS:MBKM19}, $\sonic$ is statistically subversion-zero
+  knowledge (Sub-ZK). As noted in \cite{AC:ABLZ17}, one way to achieve
+  subversion zero knowledge is to utilise an extractor that extracts a SRS
+  trapdoor from a SRS-generator. Unfortunately, a NIZK made subversion
+  zero-knowledge by this approach cannot achieve perfect Sub-ZK as one has to
+  count in the probability of extraction failure. However, with the simulation
+  presented in \cref{lem:sonic_hvzk}, the trapdoor is not required for the
+  simulator as it is able to simulate the execution of the protocol just by
+  picking appropriate (honest) verifier's challenges. This result transfers to
+  $\sonicprotfs$, where the simulator can program the random oracle to provide
+  challenges that fits it.
+\end{remark}
+
+\subsection{From forking soundness and unique response property to forking
+  simulation extractability of $\sonicprotfs$}
+Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$
+and forking sound. We now make use
+of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable as defined in \cref{def:simext}.
+
+\begin{corollary}[Forking simulation extractability of $\sonicprotfs$]
+  \label{thm:sonicprotfs_se}
+  Assume that $\sonicprot$ is $\ur{1}$ with security $\epsur(\secpar)$, and
+  forking-sound with security $\epsss(\secpar)$. Let $\ro\colon
+  \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$
+  adversary that can make up to $q$ random oracle queries and outputs an
+  acceptable proof for $\sonicprotfs$ with probability at least $\accProb$. Then
+  $\sonicprotfs$ is forking simulation-extractable with extraction error $\eta =
+  \epsur(\secpar)$. The extraction probability $\extProb$ is at least
+\[
+		\extProb  \geq \frac{1}{q^{\multconstr + \linconstr}} (\accProb - \epsur(\secpar))^{\multconstr +
+		\linconstr + 1} - \eps(\secpar).
+	\]
+	for some negligible $\eps(\secpar)$, $\multconstr$ and $\linconstr$ being,
+  respectively, the number of multiplicative and linear constrains of the system.
+\end{corollary}
+
+\section{Non-malleability of $\marlinprotfs$}
+\subsection{$\marlin$ protocol rolled-out}
+\subsection{Unique response property}
+\begin{lemma}
+  Let $\PCOM$ be a commitment of knowledge with security $\epsk(\secpar)$,
+  $\epsbind(\secpar)$ and has unique response property with security
+  $\epsop(\secpar)$. Then probability that a $\ppt$ adversary $\adv$ breaks
+  $\marlinprotfs$ $\ur{1}$ property is at most
+  $6 \cdot (\epsbind + \epsop + \epsk)$ \michals{8.9}{Do we need to add
+    probability that the idealized verifier fails $\epsid$?}
+\end{lemma}
+\begin{proof}
+  As in previous proofs, we show the property by game hops. Let
+  $M = \p{g_1}, \p{h_1}, \p{g_2}, \p{h_2}, \p{g_3}, \p{h_3}$. That is, $M$ is a
+  set of all polynomials which commitments are send during the protocol after
+  Round 1.
+
+  \ncase{Game 0} In this game the adversary wins if it breaks evaluation
+  binding, unique opening property, or knowledge soundness of one of commitments
+  for polynomials in $M$.
+
+  Probability that a $\ppt$ adversary wins in Game 0, is upper bounded by $6
+  \cdot (\epsbind + \epsop + \epsk)$.
+
+  \ncase{Game 1} In this game the adversary additionally wins if it breaks the
+  $\ur{2}$ property of the protocol
+
+  \ncase{$\game{0} \mapsto \game{1}$} Probability that the adversary wins in
+  Game 1 but not in Game 0 is $0$. This is since the polynomials in $M$ are
+  uniquely determined. W.l.o.g.~we analyse probability that adversary is able to
+  produce two (different) pairs of polynomials $(\p{h_2}, \p{g_2})$ and $(\p{h'_2},
+  \p{g'_2})$ such that
+  \begin{align*}
+    \p{h_2} (X) \ZERO_{\HHH} (X) + X \p{g_2} (X) & = \p{h_2} (X) \ZERO_{\HHH} (X) +
+                                                   X \p{g_2} (X)\\
+    (\p{h_2} (X) - \p{h'_2} (X)) \ZERO_{\HHH} (X) & = X (\p{g'_2} (X) - \p{g'_2}
+    (X)).
+  \end{align*}
+  Since $\p{h_2}, \p{g_2} \in \FF^{< |\HHH| - 1} [X]$ and
+  $\ZERO \in \FF^{|\HHH|} [X]$, LHS has different degree than RHS unless both
+  sides have degree $0$. This happens when $\p{h_2} (X) = \p{h'_2} (X)$ and
+  $\p{g_2} (X) - \p{g'_2} (X)$.
+\end{proof}
+
+\subsection{Forking soundness}
+\begin{lemma}
+  Assume that an idealised $\marlinprot$ verifier fails with probability at most
+  $\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks dlog is
+  bounded by $\epsdlog(\secpar)$. Then $\marlinprot$ is
+  $(..., 2, |\HHH| + b + 1)$-forking sound.
+\end{lemma}
+\begin{proof}
+  
+\end{proof}
+
+\subsection{Honest-verifier zero knowledge}
+\subsection{From forking soundness and unique response property to forking
+  simulation extractability of $\marlinprotfs$}
 
 \section{Further work}
 We identify a number of problems which we left as further work. First of all,
@@ -3378,367 +3798,5 @@ h_{\iota - 1})$ to
   \qed
 \end{proof}
 
-\section{Non-malleability of $\sonicprotfs$}
-\label{sec:sonic}
-\subsection{\sonic{} protocol rolled out}
-In this section we present $\sonic$'s constraint system and algorithms. Reader
-familiar with them may jump directly to the next section.
-
-\oursubsub{The constraint system}
-\label{sec:sonic_constraint_system}
-\sonic's system of constraints composes of three $\multconstr$-long vectors
-$\va, \vb, \vc$ which corresponds to left and right inputs to multiplication
-gates and their outputs. It hence holds $\va \cdot \vb = \vc$.
-
-There is also $\linconstr$ linear constrains of the form
-\[
-  \va \vec{u_q} + \vb \vec{v_q} + \vc \vec{w_q} = k_q,
-\]
-where $\vec{u_q}, \vec{v_q}, \vec{w_q}$ are vectors for the $q$-th linear
-constraint with instance value $k_q \in \FF_p$. Furthermore define polynomials
-\begin{equation}
-  \begin{split}
-    \p{u_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} u_{q, i}\,,\\
-    \p{v_i}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} v_{q, i}\,,\\
-  \end{split}
-  \qquad
-  \begin{split}
-    \p{w_i}(Y) & = -Y^i - Y^{-i} + \sum_{q = 1}^\linconstr Y^{q +
-      \multconstr} w_{q, i}\,,\\
-    \p{k}(Y) & = \sum_{q = 1}^\linconstr Y^{q + \multconstr} k_{q}.
-  \end{split}
-\end{equation}
-In \sonic{} we will use commitments to the following polynomials.
-\begin{align*}
-  \pr(X, Y) & = \sum_{i = 1}^{\multconstr} \left(a_i X^i Y^i + b_i X^{-i} Y^{-i}
-              + c_i X^{-i - \multconstr} Y^{-i - \multconstr}\right) \\
-  \p{s}(X, Y) & = \sum_{i = 1}^{\multconstr} \left( u_i (Y) X^{-i} +
-                v_i(Y) X^i + w_i(Y) X^{i + \multconstr}\right)\\
-  \pt(X, Y) & = \pr(X, 1) (\pr(X, Y) + \p{s}(X, Y)) - \p{k}(Y)\,.
-\end{align*}
-	
-\oursubsub{Algorithms rolled out}
-\ourpar{$\sonic$ SRS generation $\kgen(\REL)$.} The SRS generating algorithm picks
-randomly $\alpha, \chi \sample \FF_p$ and outputs
-	\[
-      \srs = \left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
-          \smallset{\alpha \chi^i}_{i = -\dconst, i \neq 0}^{\dconst}},
-        \gtwo{\smallset{\chi^i, \alpha \chi^i}_{i = - \dconst}^{\dconst}},
-        \gtar{\alpha} \right)
-	\]
-\ourpar{$\sonic$ prover $\prover(\REL, \srs, \inp, \wit=\va, \vb, \vc)$.}
-\begin{description}
-\item[Round 1] The prover picks randomly randomisers
-  $c_{\multconstr + 1}, c_{\multconstr + 2}, c_{\multconstr + 3}, c_{\multconstr
-    + 4} \sample \FF_p$. Set
-  $\pr(X, Y) \gets \pr(X, Y) + \sum_{i = 1}^4 c_{\multconstr + i} X^{- 2
-    \multconstr - i}$. Commits to $\pr(X, 1)$ and outputs
-  $\gone{r} \gets \com(\srs, \multconstr, \pr(X, 1))$.  Then it gets challenge $y$ from
-  the verifier.
-\item[Round 2] $\prover$ commits to $\pt(X, y)$ and outputs
-  $\gone{t} \gets \com(\srs, \dconst, \pt(X, y))$. Then it gets a challenge $z$ from
-  the verifier.
-\item[Round 3] The prover computes commitment openings. That is, it outputs
-  \begin{align*}
-    \gone{o_a} & = \open(\srs, z, \pr(z, 1), \pr(X, 1)) \\
-    \gone{o_b} & = \open(\srs, yz, \pr(yz, 1), \pr(X, 1)) \\
-    \gone{o_t} & = \open(\srs, z, \pt(z, y), \pt(X, y)) 
-  \end{align*}
-  along with evaluations $a' = \pr(z, 1), b' = \pr(y, z), t' = \pt(z, y)$.  Then it
-  engages in the signature of correct computation playing the role of the
-  helper, i.e.~it commits to $\p{s}(X, y)$ and sends the commitment $\gone{s}$, commitment opening
-  \begin{align*}
-    \gone{o_s} & = \open(\srs, z, \p{s}(z, y), \p{s}(X, y)), \\
-  \end{align*} and $s'=\p{s}(z, y)$. 
-%
-  Then
-  it obtains a challenge $u$ from the verifier.
-\item[Round 4] In the next round the prover computes
-  $\gone{c} \gets \com(\srs, \dconst, \p{s}(u, Y))$ and
-  computes commitments' openings
-  \begin{align*}
-    \gone{w} & = \open(\srs, u, \p{s}(u, y), \p{s}(X, y)), \\
-    \gone{q_y} & = \open(\srs, y,\p{s}(u, y), \p{s}(u, Y)),
-  \end{align*}
-  and returns $\gone{w}, \gone{q_y}, s = \p{s}(u, y)$. Eventually the prover gets the last challenge
-  from the verifier---$z'$.
-\item[Round 5] In the final round, $\prover$ computes opening
-  $\gone{q_{z'}} = \open(\srs, z', \p{s}(u, z'), \p{s}(u, X))$ and outputs $\gone{q_{z'}}$.
-\end{description}
-
-\ourpar{$\sonic$ verifier $\verifier(\REL, \srs, \inp, \zkproof)$.} The verifier
-in \sonic{} runs as subroutines the verifier for the polynomial commitment. That
-is it sets $t' = a'(b' + s') - \p{k}(y)$ and checks the following:
-\begin{equation*}
-  \begin{split}
-    &\PCOMs.\verifier(\srs, \multconstr, \gone{r}, z, a', \gone{o_a}), \\
-    &\PCOMs.\verifier(\srs, \multconstr, \gone{r}, yz, b', \gone{o_b}),\\
-    &\PCOMs.\verifier(\srs, \dconst, \gone{t}, z, t', \gone{o_t}),\\
-    &\PCOMs.\verifier(\srs, \dconst, \gone{s}, z, s', \gone{o_s}),\\
-  \end{split}
-  \qquad
-  \begin{split}
-    &\PCOMs.\verifier(\srs, \dconst, \gone{s}, u, s, \gone{w}),\\
-    &\PCOMs.\verifier(\srs, \dconst, \gone{c}, y, s, \gone{q_y}),\\
-    &\PCOMs.\verifier(\srs, \dconst, \gone{c}, z', \p{s}(u, z'), \gone{q_{z'}}),
-  \end{split}
-\end{equation*}
-and accepts the proof iff all the checks holds. Note that the value $\p{s}(u, z')$ that is recomputed by the verifier uses separate challenges $u$ and $z'$. This enables the batching of many proof and the outsourcing of this part of the proof to an untrusted helper. 
-
-\subsection{Unique opening property of $\PCOMs$}
-\begin{lemma}
-\label{lem:pcoms_unique_op}
-$\PCOMs$ has the unique opening property in the AGM. 
-\end{lemma}
-\begin{proof}
-Let 
-$z \in \FF_p$ be the attribute the polynomial is evaluated at,
-$\gone{c} \in \GRP$ be the commitment,  
-$s \in \FF_p$ the evaluation value, and 
-$o \in \GRP$ be the commitment opening. 
-We need to show that for every $\ppt$ adversary $\adv$ probability
-\[
-  \Pr \left[
-    \begin{aligned}
-      & \verify(\srs, \gone{c}, z, s, \gone{o}) = 1, \\
-      & \verify(\srs, \gone{c}, z, \tilde{s}, \gone{\tilde{o}}) = 1
-    \end{aligned}
-    \,\left|\, \vphantom{\begin{aligned}
-          & \verify(\srs, \gone{c}, z, s, \gone{o}),\\
-          & \verify(\srs, \gone{c}, z, \tilde{s}, \gone{\tilde{o}}) \\
-          &o \neq \tilde{o})
-		\end{aligned}}
-      \begin{aligned}
-        & \srs \gets \kgen(\secparam, \maxdeg), \\
-        & (\gone{c}, z, s, \tilde{s}, \gone{o}, \gone{\tilde{o}}) \gets \adv(\srs)
-      \end{aligned}
-    \right.\right]
-  % \leq \negl.
-\]
-is at most negligible.
-
-As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the
-probability of the adversary succeeding using the idealised verification
-equation---which considers equality between polynomials---instead of the real
-verification equation---which considers equality of the polynomials' evaluations.
-
-For a polynomial $f$, its degree upper bound $\maxconst$, evaluation point $z$,
-evaluation result $s$, and opening $\gone{o(X)}$ the idealised check verifies that
-\begin{equation}
-  \alpha (X^{\dconst - \maxconst}f(X) \cdot X^{-\dconst + \maxconst} -  s) \equiv \alpha \cdot o(X) (X - z)\,,
-\end{equation}
-what is equivalent to 
-\begin{equation}
-	f(X) -  s \equiv o(X) (X - z)\,.
-	\label{eq:pcoms_idealised_check}
-\end{equation}
-Since $o(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial
-composition, there is only one $o(X)$ that fulfils the equation above.
-\qed
-\end{proof}
-
-
-\subsection{Unique response property}
-The unique response property of $\sonicprot$ follows from the unique opening
-property of the used polynomial commitment scheme $\PCOMs$.
-\begin{lemma}
-\label{lem:sonicprot_ur}
-If a polynomial commitment scheme $\PCOMs$ is evaluation binding with
-parameter $\epsbind(\secpar)$ and has unique openings property with parameter
-$\epsop(\secpar)$, then $\sonicprot$ is $\ur{1}$ with parameter $\epsur(\secpar) \leq
-\epsbind(\secpar) + \epsop(\secpar)$.  
-\end{lemma}
-\begin{proof}
-  Let $\adv$ be an adversary that breaks $\ur{1}$-ness of $\sonicprot$.  We
-  consider two cases, depending on which round $\adv$ is able to provide at
-  least two different outputs such that the resulting transcripts are
-  acceptable.  For the first case we show that $\adv$ can be used to break the
-  evaluation binding property of $\PCOMs$, while for the second case we show
-  that it can be used to break the unique opening property of $\PCOMs$.
-
-  The proof goes similarly to the proof of \cref{lem:plonkprot_ur} thus we
-  provide only draft of it here.  In each Round $i$, for $i > 1$, the prover
-  either commits to some well-defined polynomials (deterministically), evaluates
-  these on randomly picked points, or shows that the evaluations were performed
-  correctly.  Obviously, for a committed polynomial $\p{p}$ evaluated at point
-  $x$ only one value $y = \p{p}(x)$ is correct. If the adversary was able to
-  provide two different values $y$ and $\tilde{y}$ that would be accepted as an
-  evaluation of $\p{p}$ at $x$ then the $\PCOMs$'s evaluation binding would be
-  broken.  Alternatively, if $\adv$ was able to provide two openings $\p{W}$ and
-  $\p{\tilde{W}}$ for $y = \p{p}(x)$ then the unique opening property would be
-  broken.
-%
-Hence the probability that $\adv$ breaks $\ur{1}$-property of $\PCOMs$ is
-upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$. 
-\qed
-
-\end{proof}
-
-\subsection{Forking soundness}
-\begin{lemma}
-	\label{lem:sonicprot_ss}
-  $\sonicprot$ is $(\epsss(\secpar), 2, \multconstr + \linconstr + 1)$-forking sound against
-  algebraic adversaries, with
-  \[
-			\epsss(\secpar) \leq \epss(\secpar) + \epsldlog(\secpar)\,,
-	\]
-	where $\epss(\secpar)$ is a soundness error of the protocol, and $\epsldlog(\secpar)$ is
-  security of $(\dconst, \dconst)$-$\ldlog$ assumption.
-\end{lemma}
-\begin{proof}
-  The proof goes similarly to the proof of \cref{lem:plonkprot_ss}.
-%
-  Let $\adv$ be an adversary that produces a
-  $(1, \multconstr + \linconstr + 1, 1, 1)$-tree of acceptable transcripts
-  $\tree$ for a statement $\inp$. We consider two disjunctive events $\event{E}$
-  and $\nevent{E}$. The first corresponds to a case when all transcripts in
-  $\tree$ are acceptable for the ideal verifier,
-  i.e.~$\vec{\vereq_{\inp, \zkproof}}(X) = \vec{0}$. In that case we show an extractor $\extss$
-  that from $\tree$ extracts a valid witness $\wit$. The second, corresponds to
-  a case when $\tree$ contains a transcript that is acceptable by the real
-  verifier but is not acceptable by the ideal verifier.  In that case we show a
-  reduction $\rdvldlog$ that uses $\adv$ to break the
-  $(\dconst, \dconst)$-$\ldlog$ assumption.
-
-  \ncase{When $\event{E}$ happens} Since $\sonicprot$ is statistically sound
-  regarding the ideal verifier, for an acceptable proof $\zkproof$ for a
-  statement $\inp$ there exists a witness $\wit$ such that $\REL(\inp, \wit)$
-  holds and the polynomial $\p{r}(X, y)$ contains witness at its coefficients.
-  Note that the polynomial $\p{r}(X, y)$, which has witness elements at its
-  coefficients, has degree at most $\multconstr + \linconstr$ and since $\adv$
-  answered correctly on $(\multconstr + \linconstr + 1)$ different challenges
-  $z$ (for the sake of concreteness let us call them
-  $z_1, \ldots, z_{\multconstr + \linconstr + 1}$) then
-  $(\multconstr + \linconstr + 1)$ evaluations
-  $\p{r}(z_1, y), \ldots, \p{r}(z_{\multconstr + \linconstr + 1}, y)$ of
-  $\p{r}(X, y)$ are known. The extractor $\extss$ interpolates $\p{r}(X, y)$ and
-  reveals the corresponding witness $\wit$.
-
-  \ncase{When $\nevent{E}$ happens} Consider a transcript such that for some
-  verification equation $\vereq_{i, \inp, \zkproof}(X) \neq 0$, but
-  $\vereq_{i, \inp, \zkproof}(\chi) = 0$. Since
-  the adversary is algebraic, all group elements included in the tree of
-  transcripts are extended by their representation as a combination of the input
-  $\GRP_1$ or $\GRP_2$-elements. Hence all coefficients of the verification
-  equation polynomial $\vereq_{i,\inp, \zkproof}(X)$ are known and $\rdvdlog$ can find its zero
-  points. Since $\vereq_{i, \inp, \zkproof}(\chi) = 0$, the targeted discrete log value $\chi$ is
-  among them. \qed
-\end{proof}
-
-\subsection{Honest verifier zero-knowledge}
-\begin{lemma}
-\label{lem:sonic_hvzk}
-$\sonic$ is honest verifier
-zero-knowledge.	
-\end{lemma}
-% Here we show that $\sonic$ is trapdoor-less zero-knowledge.
-\begin{proof}
-The simulator proceeds as follows.
-In the first round, it picks randomly vectors $\vec{a}$, $\vec{b}$ and sets
-\begin{equation}
-	\label{eq:ab_eq_c}
-	\vec{c} = \vec{a} \cdot \vec{b}. 
-\end{equation}
-Then it pick randomisers $c_{\multconstr + 1}, \ldots, c_{\multconstr + 4}$,
-honestly computes polynomials $\p{r}(X, Y), \p{r'}(X, Y), \p{s}(X, Y)$ and
-$\p{t}(X, Y)$ and concludes the first round as an honest prover would. Because
-of the randomisers the polynomial $\pr(X, Y)$ computed by the simulator is
-indistinguishable from a polynomial provided by an honest user for an adversary
-that only learns $\gone{r},\gone{t}, a', b'$ from the proof (the other proof elements are
-fixed by these elements and the public information,
-see~\cref{sec:sonic_constraint_system}).
-
-Next, $\simulator$ computes the first verifier's challenge $y$ such that
-$\pt(X, y)$ is a polynomial that has $0$ as a coefficient next to $X^0$.
-I.e.~$\pt(0, y) = 0$. By the definition of $\pt(X, Y)$, the coefficient next to
-$X^0$ in $\p{t}(X, Y)$ equals
-\begin{equation}
-	\label{eq:x0}
-	\pt(0,Y) = 
-	\vec{a} \cdot \vec{\p{u}}(Y) + 
-	\vec{b} \cdot \vec{\p{v}}(Y) + 
-	\vec{c} \cdot \vec{\p{w}}(Y) +	
-	\sum_{i = 1}^{\multconstr} a_i b_i (Y^i + Y^{-i}) - \p{k}(Y), 
-\end{equation}
-for public $\vec{\p{u}}(Y), \vec{\p{v}}(Y), \vec{\p{w}}(Y), \p{k}(Y)$ as defined
-in \cref{sec:sonic_constraint_system} (Vectors $\vec{u_q}, \vec{v_q}, \vec{w_q}$
-are $\multconstr$-elements long and correspond to $\linconstr$ linear constrains of
-the proof system. Field element $k_{q}$ is the instance value). When the proven
-instance is correct, $\pt(0,Y)$ is a zero polynomial. See \cite{CCS:MBKM19} for
-details. Also, when \cref{eq:ab_eq_c} holds, that polynomial simplifies to
-\begin{equation}
-	\label{eq:x0_simpl}
-	\pt(0,Y) = \vec{a} \cdot \vec{\p{u}}(Y) + 
-	\vec{b} \cdot \vec{\p{v}}(Y) + 
-	\vec{c} \cdot \vec{\p{\tilde{w}}}(Y)	
-	- \p{k}(Y), 
-\end{equation}
-where $\vec{\p{\tilde{w}}}(Y)$ is defined as
-\[
-	\p{\tilde{w}_i}(Y) = \sum_{q = 1}^\linconstr Y^{q +
-	\multconstr} w_{q, i}\,.
-\]
-Note that $\pt(0, Y)$ is a ``classical'', i.e.~non-Laurent, polynomial. Also,
-it is a polynomial of degree $\linconstr + \multconstr$ with $0$
-coefficients for $Y^{i}$, for $i \in \range{0}{\multconstr}$. Also, since
-$\vec{a}, \vec{b}$ were picked at random, $\pt(0,Y) / Y^{\multconstr + 1}$ is a
-degree-$(\linconstr - 1)$ polynomial of random coefficients. Recall, that the
-view of the adversary is independent of $\vec{a}, \vec{b}$ because of
-randomisers $c_{\multconstr + 1}, \ldots, c_{\multconstr + 4}$.
-
-The probability that a random degree-$(\linconstr - 1)$ polynomial over
-$\FF_p[Y]$ has a root is at least $\infrac{1}{(\linconstr - 1) !}$, see
-\cref{lem:root_prob} for a proof of that bound. Since we assume that $\linconstr
-= \poly$, we can say that the polynomial $\pt(0,Y)$ as computed by the simulator
-has roots with non-negligible probability. Furthermore, these roots can be found
-and the simulator picks fresh $\vec{a}, \vec{b}$ until $\pt(0,Y)$ has a root. As
-the roots of a random polynomial are themselves random $\FF_p$ elements, the
-challenge $y$ picked by the simulator comes from the same distribution as if it
-was picked by an honest verifier.
-
-The simulator continues building the transcript by honestly computing the
-prover's messages and by picking verifier's challenges at random. This and the
-fact that $\pt(0,y) = 0$ guarantees that the transcript provided by the simulator is
-acceptable and comes from the same distribution as a transcript of an honest
-prover and verifier. \qed
-\end{proof}
-
-\begin{remark} 
-  As noted in \cite{CCS:MBKM19}, $\sonic$ is statistically subversion-zero
-  knowledge (Sub-ZK). As noted in \cite{AC:ABLZ17}, one way to achieve
-  subversion zero knowledge is to utilise an extractor that extracts a SRS
-  trapdoor from a SRS-generator. Unfortunately, a NIZK made subversion
-  zero-knowledge by this approach cannot achieve perfect Sub-ZK as one has to
-  count in the probability of extraction failure. However, with the simulation
-  presented in \cref{lem:sonic_hvzk}, the trapdoor is not required for the
-  simulator as it is able to simulate the execution of the protocol just by
-  picking appropriate (honest) verifier's challenges. This result transfers to
-  $\sonicprotfs$, where the simulator can program the random oracle to provide
-  challenges that fits it.
-\end{remark}
-
-\subsection{From forking soundness and unique response property to forking simulation extractability of $\sonicprotfs$}
-Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$
-and forking sound. We now make use
-of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable as defined in \cref{def:simext}.
-
-\begin{corollary}[Forking simulation extractability of $\sonicprotfs$]
-  \label{thm:sonicprotfs_se}
-  Assume that $\sonicprot$ is $\ur{1}$ with security $\epsur(\secpar)$, and
-  forking-sound with security $\epsss(\secpar)$. Let $\ro\colon
-  \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be a $\ppt$
-  adversary that can make up to $q$ random oracle queries and outputs an
-  acceptable proof for $\sonicprotfs$ with probability at least $\accProb$. Then
-  $\sonicprotfs$ is forking simulation-extractable with extraction error $\eta =
-  \epsur(\secpar)$. The extraction probability $\extProb$ is at least
-\[
-		\extProb  \geq \frac{1}{q^{\multconstr + \linconstr}} (\accProb - \epsur(\secpar))^{\multconstr +
-		\linconstr + 1} - \eps(\secpar).
-	\]
-	for some negligible $\eps(\secpar)$, $\multconstr$ and $\linconstr$ being,
-  respectively, the number of multiplicative and linear constrains of the system.
-\end{corollary}
-
-  
 
 \end{document}
