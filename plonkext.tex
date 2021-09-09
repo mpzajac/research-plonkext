@@ -1345,7 +1345,7 @@ algorithm from the generalized forking lemma.
   $\tdv$ has oracle access to $\adv$ and provides it with (oracle) access to
   random oracle $\ro$ and simulator $\simulator_\fs$ -- more precisely $\tdv$
   has an internal procedure $\bdv$ that provided $\srs$ and random oracle
-  queries' responses $h_1, \ldots, h_1$ gives $\adv$ access to the random oracle
+  queries' responses $h_1, \ldots, h_q$ gives $\adv$ access to the random oracle
   and simulates proof for it. In the end, $\bdv$ returns the index $i$ of the
   random oracle query made for challenge $k$, the set $Q$ of simulator random
   oracle indexes, the instance $\inp$, and the proof $\adv$ returns. Eventually,
@@ -1385,7 +1385,7 @@ algorithm from the generalized forking lemma.
     %  \begin{aligned}
        % & \forall_{\zkproof \in \tree} \verifier(\srs, \inp, \zkproof) = 1, \\
          \wit \gets \extt(\tree), 
-         \REL(\tree.\inp, \wit) = 0
+         \REL(\inp, \wit) = 0
     %  \end{aligned}
       \,\left|\,
         %\begin{aligned}
@@ -2014,7 +2014,6 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
     2 \cdot \epsop + 9 \cdot (\epsbind + \infrac{2}{\FF_p}) + \epsro + \epss.
   \]
   \qed
-  %\michals{01.06}{Ended here}
 \end{proof}
 
 \subsection{Forking soundness}
@@ -2027,6 +2026,62 @@ $(\epsss(\secpar), 3, 3 \noofc + 1)$-forking sound for
 $\epsss(\secpar) \leq \epsid(\secpar) + \epsdlog(\secpar)$ against algebraic
 adversaries.
 \end{lemma}
+
+\begin{proof}
+  We show that the adversary who breaks forking soundness can be used to break
+  hiding properties of the polynomial commitment scheme. The proof goes by game
+  hops. Let $\tree$ be the tree produced by $\tdv$ by rewinding $\adv$. Note
+  that since the tree branches after Round 3, commitments $\gone{\p{a} (\chi),
+    \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}}
+    (\chi), \p{t_{hi}} (\chi)}$, challenges $\alpha, \beta, \gamma$ are the
+  same. 
+
+  \ncase{Game 0} In this game the adversary $\adv$ wins if $\tdv$ fails to
+  output tree $\tree$ such that $\extt$ is able to extract a witness out of
+  it and none of commitments
+  $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
+    (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$ come from a simulated proof.
+
+  \ncase{Probability that $\adv$ wins Game 0 is negligible}
+
+  \ncase{Game 1} In this game the adversary additionally wins if at least one of
+  the commitments $\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi)$ comes
+  from a simulated proof. W.l.o.g assume that this commitment is $\p{c} (\chi)$
+  \michals{9.9}{Need to cover other cases as well, i.e.~the when $\adv$ uses
+    simulated $\p{t_{lo}}$ etc}
+
+  \ncase{$\game{0} \mapsto \game{1}$} We show a reduction $\rdv$ that uses
+  $\adv$ and $\tdv$ to break hiding property \michals{9.9}{Define hiding
+    property -- w.r.t.~masking, adversary can get evaluation at number of points
+    (here -- 1)} of the commitment scheme. $\rdv$ proceeds as follows:
+  \begin{enumerate}
+  \item Given polynomial commitment SRS $\srs_{\PCOM}$, produce $\plonk$'s SRS
+    $\srs$.
+  \item Pick random polynomials $\p{p} (X), \p{p'} (X) \in \FF^{< |\HHH|} [X]$
+    and send them to the polynomial commitment challenger $\cdv$.
+  \item From the challenger get the challenge commitment $c$.
+  \item Let $S$ be the upper bound on the number of simulator oracles queries
+    the adversary can make. \michals{9.9}{Note -- new bound!}
+  \item Guess which simulator's response is going to be used by $\adv$ in its
+    proof. Let $s$ be the index of this response.
+  \item Let $\tdv'$ be an algorithm that behaves exactly as $\tdv$, except when
+    $\adv$ asks for $s$-th simulated proof, $\tdv'$'s internal procedure $\bdv'$
+    provides $\adv$ with a simulated proof such that instead of randomly picked
+    commitment $\p{c} (\chi)$ it gives $c$.
+    \michals{9.9}{Alternatively, we can parametrize $\tdv$ by $\bdv$.}
+  \item Start $\tdv'(\adv, \srs)$ and get the tree $\tree$.
+  \item Since $\tree$ contains $\noofc + 1$ evaluations of $\p{c}$, the
+    polynomial can be reconstructed. Hence $\rdv$ learns whether it equals to
+    $\p{p}$ or $\p{p'}$.
+  \item $\rdv$ returns its guessing bit to $\cdv$.
+  \end{enumerate}
+
+  \ncase{Game 2} In this game the adversary additionally wins if at least one of
+  the commitments $\p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)$
+  comes from a simulated proof.
+\end{proof}
+
+\iffalse
 \begin{proof}
   Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
   $\GRP_1$-elements; that is,
@@ -2090,7 +2145,8 @@ adversaries.
   $\vereq_{\inp, \zkproof}(\chi) = 0$, the targeted discrete log value $\chi$ is
   among them.  Hence, the probability that this event happens is upper-bounded
   by $\epsdlog(\secpar)$. \qed
-  \end{proof}
+\end{proof}
+\fi
 
 \subsection{Honest verifier zero-knowledge}
 \begin{lemma}
