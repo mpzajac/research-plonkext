@@ -43,7 +43,7 @@
 \captionsetup{belowskip=0pt}
 \usepackage{bm}
 \usepackage{url}
-\usepackage{dirtytalk}
+%\usepackage{dirtytalk}
 \usepackage[margin=1in,a4paper]{geometry}
 \usepackage[normalem]{ulem}
 \usepackage{dashbox}
@@ -2045,10 +2045,13 @@ adversaries.
   \ncase{Probability that $\adv$ wins Game 0 is negligible}
 
   \ncase{Game 1} In this game the adversary additionally wins if at least one of
-  the commitments $\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi)$ comes
-  from a simulated proof. W.l.o.g assume that this commitment is $\p{c} (\chi)$
-  \michals{9.9}{Need to cover other cases as well, i.e.~the when $\adv$ uses
-    simulated $\p{t_{lo}}$ etc}
+  the commitments $\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi)$
+  utilizes a commitment that comes from a simulated proof; for example, $\adv$
+  could compute its commitment to $\p{c} (X)$ as follows: it picks a polynomial
+  $\p{p} (X)$, computes $\gone{\p{p} (\chi)}$, and outputs commitment
+  $\gone{\p{c} (\chi)} = \gone{\p{p} (\chi)} + c$, where $c$ is a commitment
+  output by a simulator. In the following, w.l.o.g, we assume that $\adv$ uses
+  some simulated element to compute commitment $\p{c} (\chi)$.
 
   \ncase{$\game{0} \mapsto \game{1}$} We show a reduction $\rdv$ that uses
   $\adv$ and $\tdv$ to break hiding property \michals{9.9}{Define hiding
@@ -2064,19 +2067,25 @@ adversaries.
     the adversary can make. \michals{9.9}{Note -- new bound!}
   \item Guess which simulator's response is going to be used by $\adv$ in its
     proof. Let $s$ be the index of this response.
+  \item Guess which of the simulated polynomials in response $s$ will be
+    used. Let $i$ be the index of this polynomial.
   \item Let $\tdv'$ be an algorithm that behaves exactly as $\tdv$, except when
     $\adv$ asks for $s$-th simulated proof, $\tdv'$'s internal procedure $\bdv'$
     provides $\adv$ with a simulated proof such that instead of randomly picked
     commitment $\p{c} (\chi)$ it gives $c$.
     \michals{9.9}{Alternatively, we can parametrize $\tdv$ by $\bdv$.}
   \item Start $\tdv'(\adv, \srs)$ and get the tree $\tree$.
-  \item If index $s$ has not been guessed correctly, rewind $\adv$ to the start
-    and pick a new $s$. Since $S = \poly$ probability that the correct $s$ will
-    be guessed in polynomial time is overwhelming. That is, the reduction works
-    in expected polynomial time.
-  \item Since $\tree$ contains $\noofc + 1$ evaluations of $\p{c}$, the
-    polynomial can be reconstructed. Hence $\rdv$ learns whether it equals to
-    $\p{p}$ or $\p{p'}$.
+  \item If indices $s$ or $i$ have not been guessed correctly, rewind $\adv$ to
+    the beginning and pick new $s$ and $i$. Since $S = \poly$ probability that
+    the correct $s$ will be guessed in polynomial time is overwhelming. That is,
+    the reduction works in expected polynomial time. Similarly, $i$ takes values
+    from $\range{1}{4}$, hence probability that $\rdv$ guesses $i$ in polynomial
+    time is overwhelming. 
+  \item Since $\tree$ contains $\noofc + 1$ evaluations of $\p{c} (X)$, the
+    polynomial can be reconstructed. 
+  \item Since $\adv$ is algebraic, $\rdv$ learns composition of $\p{c} (X)$ in
+    the $\srs$ and simulated elements. 
+  \item Hence $\rdv$ learns whether $c$ is a commitment to $\p{p}$ or $\p{p'}$.
   \item $\rdv$ returns its guessing bit to $\cdv$.
   \end{enumerate}
 
@@ -2084,11 +2093,12 @@ adversaries.
   the commitments $\p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)$
   comes from a simulated proof.
 
+  \ncase{$\game{1} \mapsto \game{2}$}
   The reduction proceeds as follows
   \begin{enumerate}
   \item Guess the simulation query index $s$ the polynomial(s) come from and
-    whether the polynomial is $\p{t_{lo}} (\chi), \p{t_{mid}} (\chi)$,
-    $\p{t_{hi}} (\chi)$. W.l.o.g.~assume it is $\p{t_{lo}}$.
+    whether the polynomial is $\p{t_{lo}} (X), \p{t_{mid}} (X)$, or
+    $\p{t_{hi}} (X)$. W.l.o.g.~assume it is $\p{t_{lo}} (X)$.
   \item Produce two random polynomials $\p{p_0} (X)$ and $\p{p_1} (X)$ and
     send them to the challenger $\cdv$. Get commitment $c$.
   \item Let $\tdv'$ be an algorithm that behaves exactly as $\tdv$, except when
@@ -2096,10 +2106,12 @@ adversaries.
     provides $\adv$ with a simulated proof such that:
     \begin{enumerate}
     \item Start making the simulated proof as a trapdoor-less simulator would.
-    \item Before polynomials $\p{t}$ are computed, pick random $\chz$ and get
-      evaluation $p_\chz = \p{p_b} (\chz)$. \michals{9.9}{If we give hiding
-        adversary possibility to evaluate polynomials, we need to use masking}
-    \item Let $\ev{t_{lo}}$ be the evaluation of the real $\p{t_{lo}} (\chz)$.
+    \item Before polynomials $\p{t_{lo}} (X), \p{t_{mid}}, \p{t_{hi}}$ are
+      computed, pick random $\chz$ and get evaluation $p_\chz = \p{p_b} (\chz)$,
+      i.e.~evaluate the polynomial in $c$ at $\chz$. \michals{9.9}{If we give
+        hiding adversary possibility to evaluate polynomials, we need to use
+        masking}
+    \item Let $\ev{t_{lo}}$ be the evaluation of the simulated $\p{t_{lo}} (\chz)$.
     \item Pick $r$ such that $p_\chz + r = \p{t_{lo}} (\chz)$.
     \item For the commitment of $\p{t_{lo}}$ output $c' = c + \gone{r}$.
     \item Compute the rest of the simulated proof as a simulator would.
