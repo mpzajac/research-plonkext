@@ -549,8 +549,8 @@ omit here description of the assumptions and refer to
 
 
 
-\ourpar{Proofs by Game-Hoping.}
-Proofs by \emph{game hoping} is a method of writing proofs popularised by
+\ourpar{Proofs by Game-Hopping.}
+Proofs by \emph{game hopping} is a method of writing proofs popularised by
 e.g.~Shoup \cite{EPRINT:Shoup04} and Dent \cite{EPRINT:Dent06c}. The method
 relies on the following lemma.
 
@@ -586,7 +586,7 @@ $\PCOMp$ and the latter by $\PCOMs$ Due to page limit, we omit their
 presentation here and refer to \cref{fig:pcomp} and \cref{fig:pcoms} in the
 \cref{sec:pcom}.
 In this paper we use evaluation binding, commitment of knowledge, and, newly
-introduced, unique opening properties. Formal definitions of these could be find
+introduced, unique opening properties. Formal definitions of these are
 in \cref{sec:pcom}, here we briefly introduce them.  
 \begin{compactdesc}
   \item[Evaluation binding] intuitively, this property assures that no adversary
@@ -598,7 +598,7 @@ in \cref{sec:pcom}, here we briefly introduce them.
     to that value.  \cite{CCS:MBKM19} shows, using AGM, that $\PCOMs$ is a
     commitment of knowledge.  The same reasoning could be used to show that
     property for $\PCOMp$.
-  \item[Unique opening] that property assures that there is
+  \item[Unique opening] this property assures that there is
     only one valid opening for the committed polynomial and given evaluation
     point. This property is crucial in showing forking simulation-extractability
     of $\plonk$ and $\sonic$. We show that the $\plonk$'s and $\sonic$'s
@@ -750,7 +750,7 @@ an additional property of the zero-knowledge  proof system which we call $k$-pro
   \end{compactenum}
 \end{definition}
 We note that $\plonkprot$ is $2$-programmable ZK and $\sonicprot$ is
-$1$-programmable. This follows directly from the proofs of their standard model zero-knowledge property in
+$1$-programmable ZK. This follows directly from the proofs of their standard model zero-knowledge property in
 \cref{lem:plonk_hvzk,lem:sonic_hvzk}.
 
 \oursubsub{Idealised verifier and verification equations} Let
@@ -763,7 +763,7 @@ $\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. On the other hand, the verifier
 $\verifier$ accepts if a (possibly set of) verification equation
 $\vereq_{\inp, \zkproof}$ (note that the verification equation changes relate to
 the instance $\inp$ and proof $\zkproof$), which can also be interpreted as a
-polynomial in $\FF_p[X]$ and which coefficients depend on messages sent by the
+polynomial in $\FF_p[X]$ whose coefficients depend on messages sent by the
 prover, zeroes at $\chi$. Following \cite{EPRINT:GabWilCio19} we call verifiers
 who checks that $\vereq_{\inp, \zkproof}(\chi) = 0$ \emph{real verifiers} as opposed to
 \emph{ideal verifiers} who accepts only when $\vereq_{\inp, \zkproof}(X) = 0$. That is, while a
@@ -783,8 +783,8 @@ proofs. More precisely, we show that
 
 \oursubsub{Sigma protocols}
 A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ for a relation
-$\REL \in \RELGEN(\secparam)$ is a special case of an interactive proof which
-transcript compounds of three messages $(a, b, z)$, the middle being a challenge
+$\REL \in \RELGEN(\secparam)$ is a special case of an interactive proof where a
+transcript consists of three messages $(a, b, z)$, where $b$ is a challenge
 provided by the verifier. Sigma protocols are honest verifier zero-knowledge in
 the standard model and specially-sound. That is, there exists an extractor
 $\ext$ which given two accepting transcripts $(a, b, z)$, $(a, b', z')$ for a
@@ -818,9 +818,9 @@ element. More precisely,
 %\begin{description} 
 \ourpar{Unique response property.} Let
 $\sigmaprot = (\prover, \verifier, \simulator)$ be a sigma-protocol for
-$\REL \in \RELGEN(\secparam)$ which proofs compound of three messages
-$(a, b, z)$. We say that $\sigmaprot$ is has a unique response property if for
-all $\ppt$ algorithms $\adv$ holds
+$\REL \in \RELGEN(\secparam)$ with proofs of the form
+$(a, b, z)$. We say that $\sigmaprot$ has the unique response property if for
+all $\ppt$ algorithms $\adv$, it holds that,
 \[ \condprob{\verifier (\REL, \inp, (a, b, z)) = \verifier (\REL, \inp, (a, b,
     z')) = 1}{(\inp, a, b, z, z') \gets \adv(\REL), z \neq z'} \leq \negl\,.  \]
 %\end{description} 
@@ -871,6 +871,7 @@ by requiring that no adversary can produce a valid proof without knowing the
 corresponding witness. This must hold even if the adversary is allowed to see
 polynomially many simulated proofs for any statements it wishes.
 
+\chaya{remove reference to forking soundness. quantify for $\ext_\se$}
 \begin{definition}[Forking simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
 	\label{def:simext}
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a forking-sound HVZK
@@ -937,7 +938,7 @@ extractability it does not require an extractor to provide a witness for the
 proven statement. Instead, it is only necessary, that an adversary who sees
 simulated proofs cannot make the verifier accept a proof of an incorrect
 statement. More precisely,
-
+\chaya{this definition will go}
 \begin{definition}[Simulation soundness]
   	\label{def:simsnd}
     Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof and
