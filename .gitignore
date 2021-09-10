@@ -7,3 +7,5 @@ plonkext.log
 plonkext.out
 plonkext.pdf
 plonkext.synctex.gz
+.DS_Store
+plonkext.dvi
