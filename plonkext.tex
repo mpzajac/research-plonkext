@@ -549,8 +549,8 @@ omit here description of the assumptions and refer to
 
 
 
-\ourpar{Proofs by Game-Hoping.}
-Proofs by \emph{game hoping} is a method of writing proofs popularised by
+\ourpar{Proofs by Game-Hopping.}
+Proofs by \emph{game hopping} is a method of writing proofs popularised by
 e.g.~Shoup \cite{EPRINT:Shoup04} and Dent \cite{EPRINT:Dent06c}. The method
 relies on the following lemma.
 
@@ -586,7 +586,7 @@ $\PCOMp$ and the latter by $\PCOMs$ Due to page limit, we omit their
 presentation here and refer to \cref{fig:pcomp} and \cref{fig:pcoms} in the
 \cref{sec:pcom}.
 In this paper we use evaluation binding, commitment of knowledge, and, newly
-introduced, unique opening properties. Formal definitions of these could be find
+introduced, unique opening and hiding properties. Formal definitions of these could be find
 in \cref{sec:pcom}, here we briefly introduce them.  
 \begin{compactdesc}
   \item[Evaluation binding] intuitively, this property assures that no adversary
@@ -604,6 +604,8 @@ in \cref{sec:pcom}, here we briefly introduce them.
     of $\plonk$ and $\sonic$. We show that the $\plonk$'s and $\sonic$'s
     polynomial commitment schemes satisfy this requirement in
     \cref{lem:pcomp_op} and \cref{lem:pcoms_unique_op} respectively.
+  \item[Hiding] assures that no adversary is able to tell anything about the
+    polynomial given only its commitment and bounded number of evaluations.
 \end{compactdesc}
 
 
@@ -1402,7 +1404,7 @@ Equipped with definitional framework of \cref{sec:se_definitions} we are ready
 to present the main result of this paper---a proof of simulation soundness and
 forking simulation extractability of Fiat-Shamir NIZK based on multi-round protocols.
 
-The proofs go by game hoping. The games are controlled by an environment $\env$
+The proofs go by game hopping. The games are controlled by an environment $\env$
 that internally runs a simulation extractability adversary $\advse$, provides it
 with access to a random oracle and simulator, and when necessary rewinds it. The
 games differ by various breaking points, i.e.~points where the environment
@@ -1728,7 +1730,7 @@ Since $\ps$ is forking-sound the probability that $\extt(\tree)$
 fails is upper-bounded by $\epsss(\secpar)$. 
 
 Since Game $\game{3}$ is aborted when it is impossible to extract the correct witness
-from $\tree$, hence the adversary $\advse$ cannot win.  Thus, by the game-hoping
+from $\tree$, hence the adversary $\advse$ cannot win.  Thus, by the game-hopping
 argument,
 \[
 	\abs{\prob{\game{0}} - \prob{\game{4}}} \leq 1 -
@@ -2021,30 +2023,30 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
 \label{lem:plonkprot_ss}
 Let KZG be hiding with security $\epsh (\secpar)$, $\plonkprot$'s idealized
 verifier fail with probability $\epsid (\secpar)$, and $(\noofc + 2, 1)$-$\dlog$
-problem by $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
+problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
 $(\epsid (\secpar) + \epsdlog (\secpar) + 2 \cdot \epsh(\secpar) +
 \eps(\secpar), 3, 3 \noofc + 1)$-forking sound against algebraic adversary
 $\adv$ and for some negligible $\eps(\secpar)$.
 \end{lemma}
 
 \begin{proof}
-  We show that the adversary who breaks forking soundness can be used to break
-  hiding properties of the polynomial commitment scheme or a $\dlog$ problem
-  instance. The proof goes by game hops. Let $\tree$ be the tree produced by
-  $\tdv$ by rewinding $\adv$. Note that since the tree branches after Round 3,
-  the instance $\inp$, commitments
+  the idea of the proof is to show that the adversary who breaks forking
+  soundness can be used to break hiding properties of the polynomial commitment
+  scheme or a $\dlog$ problem instance. The proof goes by game hops. Let $\tree$
+  be the tree produced by $\tdv$ by rewinding $\adv$. Note that since the tree
+  branches after Round 3, the instance $\inp$, commitments
   $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
     (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges
   $\alpha, \beta, \gamma$ are the same. The tree branches after the third round
   of the protocol where the challenge $\chz$ is presented, thus tree $\tree$ is
-  build using different values of $\chz$.
-
+  build using different values of $\chz$. 
+%
   % Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
   % $\GRP_1$-elements; that is,
   % $\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc + 2}}$. Let $\tdv$ be an
   % algebraic adversary that produces a statement $\inp$ and a
   % $(1, 1, 3\noofc + 1, 1)$-tree of acceptable transcripts $\tree$. 
-
+%
   We consider the following games.
 
   \ncase{Game 0} In this game the adversary wins if
@@ -2327,7 +2329,7 @@ $\adv$ and for some negligible $\eps(\secpar)$.
     SRS simulator.}
 \end{lemma}
 \begin{proof}
-  The proof goes by game-hoping. The environment that controls the games
+  The proof goes by game-hopping. The environment that controls the games
   provides the adversary with a SRS $\srs$, then the adversary outputs an
   instance--witness pair $(\inp, \wit)$ and, depending on the game, is provided
   with either real or simulated proof for it. In the end of the game the
@@ -3201,6 +3203,39 @@ crucial in showing forking simulation-extractability of $\plonk$ and $\sonic$. W
 that the $\plonk$'s and $\sonic$'s polynomial commitment schemes satisfy this
 requirement in \cref{lem:pcomp_op} and \cref{lem:pcoms_unique_op}
 respectively.
+
+We also formalize notion of $k$-hiding property of a polynomial commitment scheme
+\begin{description}
+\item[Hiding] Let $\HHH$ be a set of size $\maxdeg + 1$ and $\ZERO_\HHH$ its
+  vanishing polynomial. We say that a polynomial scheme is \emph{hiding} with
+  security $\epsh(\secpar)$ if for every $\ppt$ adversary $\adv$, $k \in \NN$,
+  probability
+  \begin{align*}
+    \Pr\left[
+    \begin{aligned}
+      & b' = b
+      \end{aligned}
+        \,\left|\,
+        \begin{aligned}
+    & (\srs, \maxdeg) \sample \kgen(\secparam),
+    (f_0, f_1, c, k, b') \gets \adv^{\oraclec}(\srs), f_0, f_1 \in \FF^{\maxdeg}
+    [X]
+    \end{aligned}
+    \right.\right] \leq \frac{1}{2} + \eps(\secpar)
+  \end{align*}
+  Here, $\oraclec$ is a challenge oracle that
+  \begin{compactenum}
+    \item takes polynomials $f_0, f_1$ provided by the adversary and parameter $k$,
+    \item samples bit $b$,
+    \item samples vector $\vec{a} \in \FF^k$,
+    \item computes polynomial,
+      $f'_b (X) = f_b + \ZERO_\HHH (X) (a_0 + a_1 X + \ldots a_{k - 1} X^{k -
+        1})$,
+    \item outputs polynomial commitment $c = f'_b (\chi)$,
+    \item on adversary's evaluation query $x$ it adds $x$ to initially empty set
+      $Q_x$ and if $|Q_x| \leq k$, it provides $f'_b (x)$.
+    \end{compactenum}
+  \end{description}
 
 \begin{description}
 \item[Commitment of knowledge]  For every $\ppt$ adversary $\adv$ who produces
