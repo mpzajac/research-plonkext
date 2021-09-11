@@ -1818,16 +1818,16 @@ and $\psfs$ is forking simulation extractable with extraction error $\epsur(\sec
 
 \section{Non-Malleability of $\plonkprotfs$} 
 \label{sec:plonk}
-In this section we show that $\plonkprotfs$ is simulation-sound and forking simulation-extractable. To that
-end, we proceed as follows. First we show that the version of the KZG polynomial
+In this section, we show that $\plonkprotfs$ is simulation-sound and forking simulation-extractable. To that
+end, we proceed as follows. First, we show that the version of the KZG polynomial
 commitment scheme that is proposed in the \plonk{} paper has the unique opening
 property, cf.~\cref{sec:poly_com} and \cref{lem:pcomp_op}. This is then
 used to show that $\plonkprot$ has the $\ur{2}$ property,
 cf.~\cref{lem:plonkprot_ur}.
 
 Next, we show that $\plonkprot$ is forking-sound. That is, given a
-number of acceptable transcripts which match on the first 3 rounds of the
-protocol we can either reveal a correct witness for the proven statement or use
+number of accepting transcripts which match on the first 3 rounds of the
+protocol we can either recover a correct witness for the proven statement or use
 one of the transcripts to break the $\dlog$ assumption. This result is shown in
 the AGM, cf.~\cref{lem:plonkprot_ss}.
 
@@ -1891,9 +1891,9 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
   holds, polynomial $\p{o}(X)$ is uniquely determined from the uniqueness of
   polynomial composition. Similarly, $\p{o'}(X)$ is uniquely determined as well.
 
-  Since discrepancy
+  Since any discrepancy
   between the idealised verifier rejection and real verifier acceptance allows
-  one to break the discrete logarithm problem, probability that the real
+  one to break the discrete logarithm problem, the probability that the real
   verifier accepts in one of the cases above is upper-bounded by
   $2 \epsdlog + \infrac{1}{\FF_p}$.
   \qed
@@ -1925,7 +1925,7 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
   quotient polynomial provided by the adversary we write $\p{t}^0$ and $\p{t}^1$
   instead of $\p{t}$ as in the description of the protocol.
 
-  \ngame{0} In this game the adversary is given the SRS and wins if provides two
+  \ngame{0} In this game, the adversary is given the SRS and wins if provides two
   transcripts that match on all $5$ messages send by the prover or finds a
   collision in the random oracle. Since such two transcripts cannot break the
   unique response property, the adversary wins this game with probability
@@ -1952,22 +1952,21 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
   adversary additionally wins if it provides two transcripts that matches on the
   first three messages of the proof.
 
-  \ncase{$\game{0} \mapsto \game{1}$} In Round 4 of the protocol the adversary
+  \ncase{$\game{0} \mapsto \game{1}$} In Round 4 of the protocol, the adversary
   has to provide evaluations
   $a_\chz = \p{a}(\chz), b_\chz = \p{b}(\chz), c_\chz = \p{c}(\chz), t_\chz =
   \p{t}(\chz), S_{1, \chz} = \p{S_{\sigma 1}}(\chz), s_{2, \chz} = \p{S_{\sigma
       2}}(\chz), z_\chz = \p{z}(\chz \omega)$ of previously committed
   polynomials, and compute and evaluate a linearlization polynomial $\p{r}$.
 
-  As previously, the adversary cannot provide two different evaluations for the
+  As before, the adversary cannot provide two different evaluations for the
   committed polynomials, since that would require breaking the evaluation
-  binding property, what happens (by the union bound) with probability at most
-  $7 \cdot (\epsbind + \infrac{2}{\abs{\FF_p}})$. The latter terms comes since
+  binding property, which happens (by the union bound) with probability at most
+  $7 \cdot (\epsbind + \infrac{2}{\abs{\FF_p}})$. The latter terms are since
   the adversary does not provide an opening for each of the commitment
-  separately, but does that in batch. That comes with $\infrac{1}{\FF_p}$ of
+  separately, but only in a batched way. That comes with $\infrac{1}{\FF_p}$ of
   security loss. Another $\infrac{1}{\FF_p}$ security loss comes from the fact
-  that the verifier does not verify each of the commitments openings separately,
-  but does so in batches as well.
+  that the verification of commitment openings are batched as well.
 
   The adversary cannot also provide two different linearization polynomials
   $\p{r^0}$ and $\p{r^1}$ evaluations $r^0_\chz$ and $r^1_\chz$ as the
@@ -1985,7 +1984,7 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
   adversary additionally wins if it provides two transcripts that matches on the
   first two messages of the proof.
 
-  \ncase{$\game{2} \mapsto \game{3}$} In Round 3 the adversary computes the
+  \ncase{$\game{2} \mapsto \game{3}$} In Round 3, the adversary computes the
   quotient polynomial $\pt(X)$ and provides its commitment that compounds of
   three separate commitments
   $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$. Let
@@ -2004,7 +2003,7 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
   them has to be computed incorrectly. 
 
   Importantly, polynomial $\p{t}(X)$ assures that the constraints of the system
-  hold. Hence probability that one of $\p{t^0}(X)$, $\p{t^1}(X)$ is computed
+  hold. Hence, the probability that one of $\p{t^0}(X)$, $\p{t^1}(X)$ is computed
   incorrectly, the adversary gives and opens acceptably a commitment to it, and
   the proof is acceptable, is upper bounded by the soundness of the proof system
   $\epss$. Alternatively, $\adv$ may compute a commitment to an invalid
