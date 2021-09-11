@@ -1016,7 +1016,7 @@ $ \ssndProb = \accProb - \extProb$.
 \section{Definitions and lemmas for multi-round SRS-based protocols}
 \label{sec:se_definitions}
 The result of Faust et al.\cite{INDOCRYPT:FKMV12} do not apply to our setting
-since the protocols we consider have and SRS and more than three messages, require more than
+since the protocols we consider have an SRS, more than three messages, require more than
 just two transcripts for standard model extraction and are not special
 sound. We thus adapt special
 soundness to forking soundness, and generalize the forking lemma and the unique response property to make them compatible with
@@ -1030,20 +1030,20 @@ can be extracted from just two transcripts. To be able to extract a witness
 from, say, an execution of $\plonkprot$ we need to obtain at least
 $(3 \numberofconstrains + 1)$ valid proofs, and $(\multconstr + \linconstr + 1)$ for $\sonicprot$. Here we
 propose a generalisation of the general forking lemma that given probability of
-producing an accepting transcript $\accProb$ lower-bounds the probability of
+producing an accepting transcript, $\accProb$, lower-bounds the probability of
 generating a \emph{tree of accepting transcripts} $\tree$, which allows to
 extract a witness.
 
 \begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
 	\label{def:tree_of_accepting_transcripts}
-	Consider a $(2\mu + 1)$-message interactive proof system $\ps$. An $(n_1,
-  \ldots, n_\mu)$-tree of accepting transcript is a tree where each node on
+	Consider a $(2\mu + 1)$-message interactive proof system $\ps$. A $(n_1,
+  \ldots, n_\mu)$-tree of accepting transcripts is a tree where each node on
   depth $i$, for $i \in \range{1}{\mu + 1}$, is an $i$-th prover's message in an
-  acceptable transcript; edges between the nodes are labeled with verifier's
+  accepting transcript; edges between the nodes are labeled with verifier's
   challenges, such that no two edges on the same depth have the same
   label; and each node on depth $i$ has $n_{i} - 1$ siblings and $n_{i +
-    1}$ children. Altogether, the tree consists of $N = \prod_{i = 1}^\mu n_i$
-  branches, which makes $N$ acceptable transcripts. We require $N = \poly$.
+    1}$ children. The tree consists of $N = \prod_{i = 1}^\mu n_i$
+  branches, where $N$ is the number of accepting transcripts. We require $N = \poly$.
 \end{definition}
 
 
@@ -1092,7 +1092,7 @@ extract a witness.
 \end{lemma}
 The proof goes similarly to \cite[Lemma 1]{CCS:BelNev06} with some modifications required
 by the fact that the protocol has more than 3 rounds and the number of
-transcripts required is larger. Due to page limit the proof is presented in
+transcripts required is larger. Due to page limit, the proof is presented in
 \cref{sec:forking_proof}.
 
 To highlight importance of the generalised forking lemma we describe how we use
@@ -1100,14 +1100,14 @@ it in our forking simulation-extractability proof.  Let $\proofsystem$ be a
 forking sound proof system where for an instance $\inp$ the
 corresponding witness can be extracted from an
 $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\advse$
-be the simulation-extractability adversary that outputs an acceptable proof with
+be the simulation-extractability adversary that outputs an accepting proof with
 probability at least $\accProb$. (Although we use the same $\accProb$ to denote
-probability of $\zdv$ outputing a non-zero $i$ and probability of $\advse$
-outputing an acceptable proof we claim that these probabilities are exactly the
-same what comes from how we define $\zdv$.)  Let $\advse$ produce an acceptable
+probability of $\zdv$ outputing a non-zero $i$ and the probability of $\advse$
+outputing an accepting proof, we claim that these probabilities are exactly the
+same by the way we define $\zdv$.)  Let $\advse$ produce an accepting
 proof $\zkproof_{\advse}$ for instance $\inp_{\advse}$; $r$ be $\advse$'s
-randomness; $Q$ the list of queries submitted by $\advse$ along with simulator's
-$\simulator$ answers; and $Q_\ro$ be the list of all random oracle
+randomness; $Q$ the list of queries submitted by $\advse$ along with simulator
+$\simulator$'s answers; and $Q_\ro$ be the list of all random oracle
 queries made by $\advse$.  All of these are given to the extractor $\ext$ that
 internally runs the forking algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$
 takes $(\REL, \srs, \advse,
@@ -1119,24 +1119,24 @@ h_q^1$.
 pick $h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$
 elements.)  
 
-Next, $\zdv$ runs internally $\advse(\REL, \srs; r)$ and responds to its random
+Next, $\zdv$ internally runs $\advse(\REL, \srs; r)$ and responds to its random
 oracle and simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes
 the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
 as it is run on the same random tape and with the same answers from the
-simulator and random oracle. After $\advse$ finishes its acceptable proof
+simulator and random oracle. Once $\advse$ output 
 $\zkproof_{\advse}$, algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where
-$i$ is the index of a random oracle query submitted by $\advse$ to get the challenge after
+$i$ is the index of a random oracle query submitted by $\advse$ to receive the challenge after the
 $k$-th message from the prover---a message where the tree of transcripts
 branches.
 Then, after the first run of $\advse$ is done, the extractor runs $\zdv$ again,
 but this time it provides fresh random oracle responses $h^2_i, \ldots,
 h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
 before $\advse$ is about to ask its $i$-th random oracle
-query. The probability that the adversary produces an acceptable transcript with the
+query. The probability that the adversary produces an accepting transcript with the
 fresh random oracle responses is at least $\accProb$. This continues until the
 required number of transcripts is obtained. 
 
-We note that in the original forking lemma the forking algorithm $\forking$,
+We note that in the original forking lemma, the forking algorithm $\forking$,
 cf.~\cref{fig:forking_lemma}, gets only as input $y$ and elements $h^1_1, \ldots,
 h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
 that $h^1_1, \ldots, h^1_q$ are random oracle responses, and thus random, makes
@@ -1144,7 +1144,7 @@ the change only notational.
 
 We also note that the general forking lemma proposed in
 \cref{lem:generalised_forking_lemma} works for protocols with an extractor that can obtain the
-witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of acceptable
+witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting
 transcripts. This limitation however does not affect the main result of this
 paper, i.e.~showing that both $\plonk$ and $\sonic$ are forking simulation extractable.
 
@@ -1245,12 +1245,13 @@ We note that the definition above is also meaningful for protocols without an SR
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
 simulation trapdoors for $\plonkprot$ and $\sonicprot$ exist, the protocols
-cannot be special sound in that regard. This comes since an unbounded adversary
-could reveal the trapdoor and build a number of simulated proofs for a fake
+cannot be special sound in that regard. This is because an unbounded adversary
+could recover the trapdoor and build a number of simulated proofs for a fake
 statement. Hence, we provide a weaker, yet sufficient, definition of
 \emph{forking soundness}. More precisely, we state that an
 adversary that is able to answer correctly multiple challenges either knows the
 witness or can be used to break some computational assumption.
+
 
 \begin{definition}[Forking soundness]
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
@@ -1271,12 +1272,13 @@ understood as references to its computational version.
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
 simulation trapdoors for $\plonkprot$ and $\sonicprot$ exist, the protocols
-cannot be special sound in that regard. This comes since an unbounded adversary
-could reveal the trapdoor and build a number of simulated proofs for a fake
+cannot be special sound in that regard. This is because an unbounded adversary
+can recover the trapdoor and build a number of simulated proofs for a fake
 statement. Hence, we provide a weaker, yet sufficient, definition of
 \emph{forking soundness}. More precisely, we state that an
 adversary that is able to answer correctly multiple challenges either knows the
 witness or can be used to break some computational assumption.
+\chaya{a notion of computation special soundness has been used to mean exactly the above in prior works, like BBF19. we should clarify if forking soundness different from computational special soundness? seems to me like the diference is just that here it is tailored for the NI version.}
 
 However, differently from the standard definition of special soundness, we do
 not require from the extractor to be able to extract the witness from \emph{any}
