@@ -1123,7 +1123,7 @@ Next, $\zdv$ internally runs $\advse(\REL, \srs; r)$ and responds to its random
 oracle and simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes
 the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
 as it is run on the same random tape and with the same answers from the
-simulator and random oracle. Once $\advse$ output 
+simulator and random oracle. Once $\advse$ outputs 
 $\zkproof_{\advse}$, algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where
 $i$ is the index of a random oracle query submitted by $\advse$ to receive the challenge after the
 $k$-th message from the prover---a message where the tree of transcripts
@@ -1149,20 +1149,20 @@ transcripts. This limitation however does not affect the main result of this
 paper, i.e.~showing that both $\plonk$ and $\sonic$ are forking simulation extractable.
 
 \subsection{Unique-response protocols}
-Another problem comes with another assumption required by Faust et al.---the
-unique response property of the transformed sigma protocol. The original
+Another technical hurdle is the assumption of unique response property 
+of the transformed sigma protocol required by Faust et al. The original
 Fischlin's formulation, although suitable for applications presented in
-\cite{C:Fischlin05,INDOCRYPT:FKMV12}, is not enough in our case. First of all,
-the property assumes that the protocol has three messages, with the middle being
+\cite{C:Fischlin05,INDOCRYPT:FKMV12}, does not suffice in our case. First,
+the property assumes that the protocol has three messages, with the second being
 the challenge from the verifier. That is not the case we consider here. Second,
 it is not entirely clear how to generalize the property. Should one require that
-after the first challenge from the verifier the prover's responses are fixed?
-That could not work since the prover needs to answer differently on different
+after the first challenge from the verifier, the prover's responses are fixed?
+That does not work since the prover needs to answer differently on different
 verifier's challenges, as otherwise the protocol could have fewer
-rounds. Another problem arises when the protocol contains some message, but not
-the first one, where the prover randomises its message. In that case
-unique-responsiveness can not hold as well. Last but not least, the protocols we
-consider here are not designed to be in the standard model, but utilises SRS
+rounds. Another problem is that the protocol could consist of
+a round other than the first one where the prover message is randomized.
+Unique response cannot hold in this case. Finally, the protocols we
+consider here are not in the standard model, but use an SRS
 what also complicates things considerably.
 
 We walk around these obstacles by providing a generalised notion of the unique
