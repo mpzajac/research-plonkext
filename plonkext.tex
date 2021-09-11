@@ -1409,7 +1409,7 @@ forking simulation extractability of Fiat-Shamir NIZK based on multi-round proto
 
 The proofs go by game hopping. The games are controlled by an environment $\env$
 that internally runs a simulation extractability adversary $\advse$, provides it
-with access to a random oracle and simulator, and when necessary rewinds it. The
+with access to a random oracle and simulator, and when necessary, rewinds it. The
 games differ by various breaking points, i.e.~points where the environment
 decides to abort the game.
 
@@ -1420,7 +1420,7 @@ i.e.~$(2i - 1)$-th message exchanged in the protocol. $\zkproof[i].\ch$ denotes
 the challenge that is given to the prover after $\zkproof[i]$, and
 $\zkproof[i..j]$ to denote all messages of the proof including challenges
 between rounds $i$ and $j$, but not challenge $\zkproof[j].\ch$. When it is not
-explicitly stated we denote the proven instance $\inp$ by $\zkproof[0]$
+explicitly stated, we denote the proven instance $\inp$ by $\zkproof[0]$
 (however, there is no following challenge $\zkproof[0].\ch$).
 
 Without loss of generality, we assume that whenever the accepting proof contains
@@ -1432,7 +1432,7 @@ random oracle and wins with the same probability.
 \begin{theorem}[Simulation soundness]
   \label{thm:simsnd}
   Assume that $\ps$ is $k$-programmable HVZK in the standard model, that is
-  $\epss(\secpar)$-sound and $\ur{k}$ with security $\epsur(\secpar)$. Then the
+  $\epss(\secpar)$-sound and $\ur{k}$ with security $\epsur(\secpar)$. Then, the
   probability that a $\ppt$ adversary $\adv$ breaks simulation soundness of
   $\ps_{\fs}$ is upper-bounded by
   \(
@@ -1444,17 +1444,17 @@ random oracle and wins with the same probability.
 
 \begin{proof}
   \ngame{0} This is a simulation soundness game played between an adversary
-  $\adv$ who has given access to a random oracle $\ro$ and simulator
-  $\psfs.\simulator$. $\adv$ wins if it manages to produce an acceptable proof
-  for a false statement. In the following game hops we upper-bound the
+  $\adv$ who is given access to a random oracle $\ro$ and simulator
+  $\psfs.\simulator$. $\adv$ wins if it manages to produce an accepting proof
+  for a false statement. In the following game hops, we upper-bound the
   probability that this happens.
 
-  \ngame{1} This is identical to $\game{0}$ except now the game is aborted if
+  \ngame{1} This is identical to $\game{0}$ except that the game is aborted if
   there is a simulated proof $\zkproof_\simulator$ for $\inp_{\adv}$ such that
   $(\inp_{\adv}, \zkproof_\simulator[1..k]) = (\inp_{\adv},
   \zkproof_{\adv}[1..k])$. That is, the adversary in its final proof reuses at
   least $k$ messages from a simulated proof it saw before and the proof is
-  acceptable.  Denote that event by $\event{\errur}$.
+  accepting.  Denote this event by $\event{\errur}$.
 
   \ncase{$\game{0} \mapsto \game{1}$} We have, \( \prob{\game{0} \land
     \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}} \) and, from the
