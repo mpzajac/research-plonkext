@@ -17,7 +17,7 @@
 \let\vec\spvec
 \usepackage{newtxmath,newtxtext}
 \usepackage[T1]{fontenc}
-
+\usepackage[most]{tcolorbox}
   \def\vec#1{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
   {\mbox{\boldmath$\textstyle#1$}} {\mbox{\boldmath$\scriptstyle#1$}}
   {\mbox{\boldmath$\scriptscriptstyle#1$}}}
@@ -1018,7 +1018,7 @@ $ \ssndProb = \accProb - \extProb$.
 \section{Definitions and lemmas for multi-round SRS-based protocols}
 \label{sec:se_definitions}
 The result of Faust et al.\cite{INDOCRYPT:FKMV12} do not apply to our setting
-since the protocols we consider have and SRS and more than three messages, require more than
+since the protocols we consider have an SRS, more than three messages, require more than
 just two transcripts for standard model extraction and are not special
 sound. We thus adapt special
 soundness to forking soundness, and generalize the forking lemma and the unique response property to make them compatible with
@@ -1032,20 +1032,20 @@ can be extracted from just two transcripts. To be able to extract a witness
 from, say, an execution of $\plonkprot$ we need to obtain at least
 $(3 \numberofconstrains + 1)$ valid proofs, and $(\multconstr + \linconstr + 1)$ for $\sonicprot$. Here we
 propose a generalisation of the general forking lemma that given probability of
-producing an accepting transcript $\accProb$ lower-bounds the probability of
+producing an accepting transcript, $\accProb$, lower-bounds the probability of
 generating a \emph{tree of accepting transcripts} $\tree$, which allows to
 extract a witness.
 
 \begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
 	\label{def:tree_of_accepting_transcripts}
-	Consider a $(2\mu + 1)$-message interactive proof system $\ps$. An $(n_1,
-  \ldots, n_\mu)$-tree of accepting transcript is a tree where each node on
+	Consider a $(2\mu + 1)$-message interactive proof system $\ps$. A $(n_1,
+  \ldots, n_\mu)$-tree of accepting transcripts is a tree where each node on
   depth $i$, for $i \in \range{1}{\mu + 1}$, is an $i$-th prover's message in an
-  acceptable transcript; edges between the nodes are labeled with verifier's
+  accepting transcript; edges between the nodes are labeled with verifier's
   challenges, such that no two edges on the same depth have the same
   label; and each node on depth $i$ has $n_{i} - 1$ siblings and $n_{i +
-    1}$ children. Altogether, the tree consists of $N = \prod_{i = 1}^\mu n_i$
-  branches, which makes $N$ acceptable transcripts. We require $N = \poly$.
+    1}$ children. The tree consists of $N = \prod_{i = 1}^\mu n_i$
+  branches, where $N$ is the number of accepting transcripts. We require $N = \poly$.
 \end{definition}
 
 
@@ -1094,7 +1094,7 @@ extract a witness.
 \end{lemma}
 The proof goes similarly to \cite[Lemma 1]{CCS:BelNev06} with some modifications required
 by the fact that the protocol has more than 3 rounds and the number of
-transcripts required is larger. Due to page limit the proof is presented in
+transcripts required is larger. Due to page limit, the proof is presented in
 \cref{sec:forking_proof}.
 
 To highlight importance of the generalised forking lemma we describe how we use
@@ -1102,14 +1102,14 @@ it in our forking simulation-extractability proof.  Let $\proofsystem$ be a
 forking sound proof system where for an instance $\inp$ the
 corresponding witness can be extracted from an
 $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\advse$
-be the simulation-extractability adversary that outputs an acceptable proof with
+be the simulation-extractability adversary that outputs an accepting proof with
 probability at least $\accProb$. (Although we use the same $\accProb$ to denote
-probability of $\zdv$ outputing a non-zero $i$ and probability of $\advse$
-outputing an acceptable proof we claim that these probabilities are exactly the
-same what comes from how we define $\zdv$.)  Let $\advse$ produce an acceptable
+probability of $\zdv$ outputing a non-zero $i$ and the probability of $\advse$
+outputing an accepting proof, we claim that these probabilities are exactly the
+same by the way we define $\zdv$.)  Let $\advse$ produce an accepting
 proof $\zkproof_{\advse}$ for instance $\inp_{\advse}$; $r$ be $\advse$'s
-randomness; $Q$ the list of queries submitted by $\advse$ along with simulator's
-$\simulator$ answers; and $Q_\ro$ be the list of all random oracle
+randomness; $Q$ the list of queries submitted by $\advse$ along with simulator
+$\simulator$'s answers; and $Q_\ro$ be the list of all random oracle
 queries made by $\advse$.  All of these are given to the extractor $\ext$ that
 internally runs the forking algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$
 takes $(\REL, \srs, \advse,
@@ -1121,24 +1121,24 @@ h_q^1$.
 pick $h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$
 elements.)  
 
-Next, $\zdv$ runs internally $\advse(\REL, \srs; r)$ and responds to its random
+Next, $\zdv$ internally runs $\advse(\REL, \srs; r)$ and responds to its random
 oracle and simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes
 the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
 as it is run on the same random tape and with the same answers from the
-simulator and random oracle. After $\advse$ finishes its acceptable proof
+simulator and random oracle. Once $\advse$ outputs 
 $\zkproof_{\advse}$, algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where
-$i$ is the index of a random oracle query submitted by $\advse$ to get the challenge after
+$i$ is the index of a random oracle query submitted by $\advse$ to receive the challenge after the
 $k$-th message from the prover---a message where the tree of transcripts
 branches.
 Then, after the first run of $\advse$ is done, the extractor runs $\zdv$ again,
 but this time it provides fresh random oracle responses $h^2_i, \ldots,
 h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
 before $\advse$ is about to ask its $i$-th random oracle
-query. The probability that the adversary produces an acceptable transcript with the
+query. The probability that the adversary produces an accepting transcript with the
 fresh random oracle responses is at least $\accProb$. This continues until the
 required number of transcripts is obtained. 
 
-We note that in the original forking lemma the forking algorithm $\forking$,
+We note that in the original forking lemma, the forking algorithm $\forking$,
 cf.~\cref{fig:forking_lemma}, gets only as input $y$ and elements $h^1_1, \ldots,
 h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
 that $h^1_1, \ldots, h^1_q$ are random oracle responses, and thus random, makes
@@ -1146,25 +1146,25 @@ the change only notational.
 
 We also note that the general forking lemma proposed in
 \cref{lem:generalised_forking_lemma} works for protocols with an extractor that can obtain the
-witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of acceptable
+witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting
 transcripts. This limitation however does not affect the main result of this
 paper, i.e.~showing that both $\plonk$ and $\sonic$ are forking simulation extractable.
 
 \subsection{Unique-response protocols}
-Another problem comes with another assumption required by Faust et al.---the
-unique response property of the transformed sigma protocol. The original
+Another technical hurdle is the assumption of unique response property 
+of the transformed sigma protocol required by Faust et al. The original
 Fischlin's formulation, although suitable for applications presented in
-\cite{C:Fischlin05,INDOCRYPT:FKMV12}, is not enough in our case. First of all,
-the property assumes that the protocol has three messages, with the middle being
+\cite{C:Fischlin05,INDOCRYPT:FKMV12}, does not suffice in our case. First,
+the property assumes that the protocol has three messages, with the second being
 the challenge from the verifier. That is not the case we consider here. Second,
 it is not entirely clear how to generalize the property. Should one require that
-after the first challenge from the verifier the prover's responses are fixed?
-That could not work since the prover needs to answer differently on different
+after the first challenge from the verifier, the prover's responses are fixed?
+That does not work since the prover needs to answer differently on different
 verifier's challenges, as otherwise the protocol could have fewer
-rounds. Another problem arises when the protocol contains some message, but not
-the first one, where the prover randomises its message. In that case
-unique-responsiveness can not hold as well. Last but not least, the protocols we
-consider here are not designed to be in the standard model, but utilises SRS
+rounds. Another problem is that the protocol could consist of
+a round other than the first one where the prover message is randomized.
+Unique response cannot hold in this case. Finally, the protocols we
+consider here are not in the standard model, but use an SRS
 what also complicates things considerably.
 
 We walk around these obstacles by providing a generalised notion of the unique
@@ -1247,12 +1247,13 @@ We note that the definition above is also meaningful for protocols without an SR
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
 simulation trapdoors for $\plonkprot$ and $\sonicprot$ exist, the protocols
-cannot be special sound in that regard. This comes since an unbounded adversary
-could reveal the trapdoor and build a number of simulated proofs for a fake
+cannot be special sound in that regard. This is because an unbounded adversary
+could recover the trapdoor and build a number of simulated proofs for a fake
 statement. Hence, we provide a weaker, yet sufficient, definition of
 \emph{forking soundness}. More precisely, we state that an
 adversary that is able to answer correctly multiple challenges either knows the
 witness or can be used to break some computational assumption.
+
 
 \begin{definition}[Forking soundness]
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
@@ -1273,18 +1274,19 @@ understood as references to its computational version.
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
 simulation trapdoors for $\plonkprot$ and $\sonicprot$ exist, the protocols
-cannot be special sound in that regard. This comes since an unbounded adversary
-could reveal the trapdoor and build a number of simulated proofs for a fake
+cannot be special sound in that regard. This is because an unbounded adversary
+can recover the trapdoor and build a number of simulated proofs for a fake
 statement. Hence, we provide a weaker, yet sufficient, definition of
 \emph{forking soundness}. More precisely, we state that an
 adversary that is able to answer correctly multiple challenges either knows the
 witness or can be used to break some computational assumption.
-
+\chaya{a notion of computational special soundness has been used to mean exactly the above in prior works, like BBF19. we should clarify if forking soundness different from computational special soundness? seems to me like the diference is just that here it is tailored for the NI version.}
+\chaya{I now see that the diff is the access to the simulator that the adversary gets. might be helpful to clarify this, either here or in a tech overview section. I am not sure why this needs to be defined this way by giving access to the simulator.}
 However, differently from the standard definition of special soundness, we do
 not require from the extractor to be able to extract the witness from \emph{any}
-tree of acceptable transcripts. We require that the tree is produced honestly,
-e.g.~all challenges are picked randomly---exactly as an honest verifier would
-pick them. Intuitively, the tree is as it would be generated by a $\genforking$
+tree of acceptable transcripts. We require that the tree be produced honestly,
+that is, all challenges are picked randomly---exactly as an honest verifier would pick.
+Intuitively, the tree is as it would be generated by a $\genforking$
 algorithm from the generalized forking lemma.
 
 % \begin{definition}[Forking soundness]
@@ -1409,7 +1411,7 @@ forking simulation extractability of Fiat-Shamir NIZK based on multi-round proto
 
 The proofs go by game hopping. The games are controlled by an environment $\env$
 that internally runs a simulation extractability adversary $\advse$, provides it
-with access to a random oracle and simulator, and when necessary rewinds it. The
+with access to a random oracle and simulator, and when necessary, rewinds it. The
 games differ by various breaking points, i.e.~points where the environment
 decides to abort the game.
 
@@ -1420,7 +1422,7 @@ i.e.~$(2i - 1)$-th message exchanged in the protocol. $\zkproof[i].\ch$ denotes
 the challenge that is given to the prover after $\zkproof[i]$, and
 $\zkproof[i..j]$ to denote all messages of the proof including challenges
 between rounds $i$ and $j$, but not challenge $\zkproof[j].\ch$. When it is not
-explicitly stated we denote the proven instance $\inp$ by $\zkproof[0]$
+explicitly stated, we denote the proven instance $\inp$ by $\zkproof[0]$
 (however, there is no following challenge $\zkproof[0].\ch$).
 
 Without loss of generality, we assume that whenever the accepting proof contains
@@ -1432,7 +1434,7 @@ random oracle and wins with the same probability.
 \begin{theorem}[Simulation soundness]
   \label{thm:simsnd}
   Assume that $\ps$ is $k$-programmable HVZK in the standard model, that is
-  $\epss(\secpar)$-sound and $\ur{k}$ with security $\epsur(\secpar)$. Then the
+  $\epss(\secpar)$-sound and $\ur{k}$ with security $\epsur(\secpar)$. Then, the
   probability that a $\ppt$ adversary $\adv$ breaks simulation soundness of
   $\ps_{\fs}$ is upper-bounded by
   \(
@@ -1444,17 +1446,17 @@ random oracle and wins with the same probability.
 
 \begin{proof}
   \ngame{0} This is a simulation soundness game played between an adversary
-  $\adv$ who has given access to a random oracle $\ro$ and simulator
-  $\psfs.\simulator$. $\adv$ wins if it manages to produce an acceptable proof
-  for a false statement. In the following game hops we upper-bound the
+  $\adv$ who is given access to a random oracle $\ro$ and simulator
+  $\psfs.\simulator$. $\adv$ wins if it manages to produce an accepting proof
+  for a false statement. In the following game hops, we upper-bound the
   probability that this happens.
 
-  \ngame{1} This is identical to $\game{0}$ except now the game is aborted if
+  \ngame{1} This is identical to $\game{0}$ except that the game is aborted if
   there is a simulated proof $\zkproof_\simulator$ for $\inp_{\adv}$ such that
   $(\inp_{\adv}, \zkproof_\simulator[1..k]) = (\inp_{\adv},
   \zkproof_{\adv}[1..k])$. That is, the adversary in its final proof reuses at
   least $k$ messages from a simulated proof it saw before and the proof is
-  acceptable.  Denote that event by $\event{\errur}$.
+  accepting.  Denote this event by $\event{\errur}$.
 
   \ncase{Game 0 to Game 1} We have, \( \prob{\game{0} \land
     \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}} \) and, from the
@@ -1551,7 +1553,7 @@ random oracle and wins with the same probability.
 \end{proof}
 
 
-We conjecture that based on the recent results on state restoration attack secure soundness\cite{cryptoeprint:2020:1351}, which effectively allows to query the verifier multiple times on different overlapping transcripts the $q^{\mu}$ loss could be avoided. However, this would reduce the class of protocols covered by our results. 
+We conjecture that based on the recent results on state restoration soundness~\cite{cryptoeprint:2020:1351}, which effectively allows to query the verifier multiple times on different overlapping transcripts, the $q^{\mu}$ loss could be avoided. However, this would reduce the class of protocols covered by our results. 
 
 
 \begin{theorem}[Forking simulation-extractable multi-message protocols]
@@ -1818,16 +1820,16 @@ and $\psfs$ is forking simulation extractable with extraction error $\epsur(\sec
 
 \section{Non-Malleability of $\plonkprotfs$} 
 \label{sec:plonk}
-In this section we show that $\plonkprotfs$ is simulation-sound and forking simulation-extractable. To that
-end, we proceed as follows. First we show that the version of the KZG polynomial
+In this section, we show that $\plonkprotfs$ is simulation-sound and forking simulation-extractable. To that
+end, we proceed as follows. First, we show that the version of the KZG polynomial
 commitment scheme that is proposed in the \plonk{} paper has the unique opening
 property, cf.~\cref{sec:poly_com} and \cref{lem:pcomp_op}. This is then
 used to show that $\plonkprot$ has the $\ur{2}$ property,
 cf.~\cref{lem:plonkprot_ur}.
 
 Next, we show that $\plonkprot$ is forking-sound. That is, given a
-number of acceptable transcripts which match on the first 3 rounds of the
-protocol we can either reveal a correct witness for the proven statement or use
+number of accepting transcripts which match on the first 3 rounds of the
+protocol we can either recover a correct witness for the proven statement or use
 one of the transcripts to break the $\dlog$ assumption. This result is shown in
 the AGM, cf.~\cref{lem:plonkprot_ss}.
 
@@ -1891,9 +1893,9 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
   holds, polynomial $\p{o}(X)$ is uniquely determined from the uniqueness of
   polynomial composition. Similarly, $\p{o'}(X)$ is uniquely determined as well.
 
-  Since discrepancy
+  Since any discrepancy
   between the idealised verifier rejection and real verifier acceptance allows
-  one to break the discrete logarithm problem, probability that the real
+  one to break the discrete logarithm problem, the probability that the real
   verifier accepts in one of the cases above is upper-bounded by
   $2 \epsdlog + \infrac{1}{\FF_p}$.
   \qed
@@ -1925,7 +1927,7 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
   quotient polynomial provided by the adversary we write $\p{t}^0$ and $\p{t}^1$
   instead of $\p{t}$ as in the description of the protocol.
 
-  \ngame{0} In this game the adversary is given the SRS and wins if provides two
+  \ngame{0} In this game, the adversary is given the SRS and wins if provides two
   transcripts that match on all $5$ messages send by the prover or finds a
   collision in the random oracle. Since such two transcripts cannot break the
   unique response property, the adversary wins this game with probability
@@ -1959,15 +1961,14 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
       2}}(\chz), z_\chz = \p{z}(\chz \omega)$ of previously committed
   polynomials, and compute and evaluate a linearlization polynomial $\p{r}$.
 
-  As previously, the adversary cannot provide two different evaluations for the
+  As before, the adversary cannot provide two different evaluations for the
   committed polynomials, since that would require breaking the evaluation
-  binding property, what happens (by the union bound) with probability at most
-  $7 \cdot (\epsbind + \infrac{2}{\abs{\FF_p}})$. The latter terms comes since
+  binding property, which happens (by the union bound) with probability at most
+  $7 \cdot (\epsbind + \infrac{2}{\abs{\FF_p}})$. The latter terms are since
   the adversary does not provide an opening for each of the commitment
-  separately, but does that in batch. That comes with $\infrac{1}{\FF_p}$ of
+  separately, but only in a batched way. That comes with $\infrac{1}{\FF_p}$ of
   security loss. Another $\infrac{1}{\FF_p}$ security loss comes from the fact
-  that the verifier does not verify each of the commitments openings separately,
-  but does so in batches as well.
+  that the verification of commitment openings are batched as well.
 
   The adversary cannot also provide two different linearization polynomials
   $\p{r^0}$ and $\p{r^1}$ evaluations $r^0_\chz$ and $r^1_\chz$ as the
@@ -2004,7 +2005,7 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
   them has to be computed incorrectly. 
 
   Importantly, polynomial $\p{t}(X)$ assures that the constraints of the system
-  hold. Hence probability that one of $\p{t^0}(X)$, $\p{t^1}(X)$ is computed
+  hold. Hence, the probability that one of $\p{t^0}(X)$, $\p{t^1}(X)$ is computed
   incorrectly, the adversary gives and opens acceptably a commitment to it, and
   the proof is acceptable, is upper bounded by the soundness of the proof system
   $\epss$. Alternatively, $\adv$ may compute a commitment to an invalid
@@ -4131,5 +4132,6 @@ h_{\iota - 1})$ to
   \qed
 \end{proof}
 
+%\input{updatable}
 
 \end{document}
