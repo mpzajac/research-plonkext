@@ -386,68 +386,74 @@ Lastly, we give a lemma which relates USE to late-USE. This lemma will provide a
 
 \begin{figure}[!ht]
 	\begin{center}
-		\begin{minipage}[t]{0.4\linewidth}
 			\fbox{
-				\procedure[codesize=\footnotesize,headlinesep=0.2\baselineskip,bodylinesep=-0.2\baselineskip]{}{
-					\underline{\simO(x')}\\
-					\pcif (\srs = \bot): return \bot \\
-					% \hamid{should we formalize this extractor?}\\
-					\pi'  \gets \Sim(\srs, \td, x')\\
-					\mathcal{Q}_{\srs} = \mathcal{Q}_{\srs} \cup \{(\srs, x', \pi')\}\\
-					\pcreturn  \pi'\\
-					%
-					\\
-					%
-					\underline{\initU(\mathsf{intent}, \srs_n,\{\rho_i \}_{i=1}^n)}\\
-					\dottedbox{\pcif \srs \neq \bot: \pcreturn \bot} \\
-					\pcif (\mathsf{intent} = \mathsf{setup}): \\
-					\t (\srs',\rho') \leftarrow \setup(1^\secp)\\
-					\t \mathcal{Q} \gets \mathcal{Q} \cup \{\rho'\}\\
-					\t \pcreturn (\srs',\rho')\\
-					%
-					\pcif (\mathsf{intent} = \mathsf{update}): \\
-					\t b \gets \verifyCRS(1^\secp,\srs_n,\{\rho_i \}_{i=1}^{n})\\
-					\t \pcif (b=0): \pcreturn \bot \\
-					\t (\srs',\rho') \leftarrow \upd(1^\secp,\srs_n,\{\rho_i \}_{i=1}^n)\\
-					\t \mathcal{Q} \gets \mathcal{Q} \cup \{\rho'\}\\
-					\t \pcreturn (\srs',\rho')\\
-					%
-					\pcif (\mathsf{intent} = \mathsf{final}): \\
-					\t b \gets \verifyCRS(1^\secp,\srs_n,\{\rho_i \}_{i=1}^{n})\\
-					\t \pcif (b=0) \vee \mathcal{Q} \cap \{ \rho_i \}_i = \emptyset: \pcreturn \bot \\
-					\t \dashedbox{
-						\td_n \gets \ext_\adv(\srs_n,\{\rho_i \}_{i=1}^{n}; r), \td \gets \td_n} \\
-					\t \srs \gets \srs_n, \pcreturn \srs \\
-					%
-					\pcelse \pcreturn \bot
-			}}	
-		\end{minipage}
+				\begin{minipage}[t]{0.95\linewidth}
+					\centering
+				$\dottedbox{\mathsf{UKS}_{\adv,\ext_{\adv}}(\secp)}$ / $\dashedbox{\mathsf{LUSE}^{\simO}_{\adv,\ext_{\adv}}(\secp)}$ / $\fedbox{\mathsf{USE}^{\simO}_{\adv,\ext_{\adv}}(\secp)}$
+			\end{minipage}
+			}
+		\fbox{
 		\begin{minipage}[t]{0.5\linewidth}
-			\fbox{
-			\procedure[codesize=\footnotesize,headlinesep=0.2\baselineskip,bodylinesep=-0.2\baselineskip]{$\dottedbox{\mathsf{UKS}_{\adv,\ext_{\adv}}(\secp)}$ / $\dashedbox{\mathsf{LUSE}^{\simO}_{\adv,\ext_{\adv}}(\secp)}$ / $\fedbox{\mathsf{USE}^{\simO}_{\adv,\ext_{\adv}}(\secp)}$}{
-			\underline{\mathsf{UKS}_{\adv,\ext_{\adv}}(\secp)}\\
+			\procedure[codesize=\footnotesize,headlinesep=0.2\baselineskip,bodylinesep=-0.2\baselineskip]{}{
+			\underline{\dottedbox{\mathsf{UKS}_{\adv,\ext_{\adv}}(\secp)}}\\
 			\srs \gets \bot, \mathcal{Q} \gets \emptyset \\
 			(x,\pi) \stackrel{r}\gets \adv^{\initU}(1^\secp) \\
 			w \gets \ext_{\adv}(\srs,r) \\
 			\pcreturn \verify(\srs,x,\pi) \wedge (\srs,x,w) \notin \Rel \\
 			%
 			\\
-				\underline{\mathsf{LUSE}_{\adv,\ext_{\adv}}(\secp)}\\
+				\underline{\dashedbox{\mathsf{LUSE}^{\simO}_{\adv,\ext_{\adv}}(\secp)}}\\
 				\srs \gets \bot, \mathcal{Q} \gets \emptyset \\
-				(x,\pi) \gets \adv^{\initU, \simO}(1^\secp; r) \\
+				(x,\pi) \stackrel{r}\gets \adv^{\initU, \simO}(1^\secp) \\
 				w \gets \ext_{\adv}(\srs,r) \\
 				\pcreturn \verify(\srs,x,\pi) \wedge (\srs, x, \pi) \not \in \mathcal{Q}_{\srs} \wedge (\srs,x,w) \notin \Rel\\				
 				%
 				\\
 				%
-				\underline{\mathsf{USE}_{\adv,\ext_{\adv}}(\secp)}\\
+				\underline{\fedbox{\mathsf{USE}^{\simO}_{\adv,\ext_{\adv}}(\secp)}}\\
 				\srs \gets \bot, \mathcal{Q} \gets \emptyset \\
-				(x,\pi) \gets \adv^{\initU, \simO}(1^\secp; r) \\
+				(x,\pi) \stackrel{r}\gets \adv^{\initU, \simO}(1^\secp) \\
 				w \gets \ext_{\adv}(\srs,r) \\
 				\pcreturn \verify(\srs,x,\pi) \wedge (\srs, x, \pi) \not \in \mathcal{Q}_{\srs} \wedge (\srs,x,w) \notin \Rel
 				\\
-		}}
+		}
 		\end{minipage}
+	\begin{minipage}[t]{0.45\linewidth}
+		\procedure[codesize=\footnotesize,headlinesep=0.2\baselineskip,bodylinesep=-0.2\baselineskip]{}{
+			\underline{\simO(x')}\\
+			\pcif (\srs = \bot): return \bot \\
+			% \hamid{should we formalize this extractor?}\\
+			\pi'  \gets \Sim(\srs, \td, x')\\
+			\mathcal{Q}_{\srs} = \mathcal{Q}_{\srs} \cup \{(\srs, x', \pi')\}\\
+			\pcreturn  \pi'\\
+			%
+			\\
+			%
+			\underline{\initU(\mathsf{intent}, \srs_n,\{\rho_i \}_{i=1}^n)}\\
+			\dashedbox{\dottedbox{\pcif \srs \neq \bot: \pcreturn \bot}} \\
+			\pcif (\mathsf{intent} = \mathsf{setup}): \\
+			\t (\srs',\rho') \leftarrow \setup(1^\secp)\\
+			\t \mathcal{Q} \gets \mathcal{Q} \cup \{\rho'\}\\
+			\t \pcreturn (\srs',\rho')\\
+			%
+			\pcif (\mathsf{intent} = \mathsf{update}): \\
+			\t b \gets \verifyCRS(1^\secp,\srs_n,\{\rho_i \}_{i=1}^{n})\\
+			\t \pcif (b=0): \pcreturn \bot \\
+			\t (\srs',\rho') \leftarrow \upd(1^\secp,\srs_n,\{\rho_i \}_{i=1}^n)\\
+			\t \mathcal{Q} \gets \mathcal{Q} \cup \{\rho'\}\\
+			\t \pcreturn (\srs',\rho')\\
+			%
+			\pcif (\mathsf{intent} = \mathsf{final}): \\
+			\t b \gets \verifyCRS(1^\secp,\srs_n,\{\rho_i \}_{i=1}^{n})\\
+			\t \pcif (b=0) \vee \mathcal{Q} \cap \{ \rho_i \}_i = \emptyset: \pcreturn \bot \\
+			\t \dashedbox{
+				\td_n \gets \ext_\adv(\srs_n,\{\rho_i \}_{i=1}^{n}; r), \td \gets \td_n} \\
+			\t \srs \gets \srs_n, \pcreturn \srs \\
+			%
+			\pcelse \pcreturn \bot
+		}
+	\end{minipage}
+	}
 		\caption{Games in the Updatable SRS setting} 
 		\label{fig:upd}
 	\end{center}
