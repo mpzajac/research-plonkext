@@ -2796,10 +2796,11 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
   $\sonicprot$ is $(\epsss(\secpar), 2, \multconstr + \linconstr + 1)$-forking sound against
   algebraic adversaries, with
   \[
-			\epsss(\secpar) \leq \epss(\secpar) + \epsldlog(\secpar)\,,
+			\epss(\secpar) \leq \epsid(\secpar) + \epsldlog(\secpar) + 2\cdot \epsh(\secpar)\,,
 	\]
-	where $\epss(\secpar)$ is a soundness error of the protocol, and $\epsldlog(\secpar)$ is
-  security of $(\dconst, \dconst)$-$\ldlog$ assumption.
+	where $\epsid(\secpar)$ is a soundness error of the idealized verifier, $\epsldlog(\secpar)$ is
+  security of $(\dconst, \dconst)$-$\ldlog$ assumption, and $\epsh (\secpar)$ is
+  a security of hiding of the polynomial commitment scheme.
 \end{lemma}
 \begin{proof}
   Similarly as in the case of $\plonk$, the main idea of the proof is to show
@@ -2852,7 +2853,7 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
       $\srs \sample \kgen(\REL)$ produces a tree of acceptable transcripts such
       that the winning condition of the game holds. Let $\rdvdlog$ be a
       reduction that gets as input an
-      $((-\dconst, \dconst), (- \dconst, \dconst))$-ldlog instance
+      $(\dconst, \dconst)$-ldlog instance
       $\gone{\chi^{-\dconst}, \ldots, \chi^{\dconst}}, \gtwo{\chi^{-\dconst},
         \ldots, \chi^{\dconst}}$ and is tasked to output $\chi$.
 
