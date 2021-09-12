@@ -2860,10 +2860,10 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
       The reduction $\rdvdlog$ proceeds as follows.
   \begin{enumerate}
   \item Build $\sonicprot$'s SRS $\srs$: pick a random $\alpha$ and compute
-    $\gone{\chi^{-\alpha \dconst}, \ldots, \chi^{\alpha \dconst}} \setminus
-    \smallset{\gone{\chi^{\alpha}}}$,
-    $\gtwo{\chi^{-\alpha \dconst}, \ldots, \chi^{\alpha \dconst}} \setminus
-    \smallset{\gone{\chi^{\alpha}}}$. Compose the SRS.
+    $\gone{\alpha \chi^{- \dconst}, \ldots, \alpha \chi^{-1}, \alpha \chi,
+      \ldots, \alpha \chi^{\dconst}}$,
+    $\gtwo{\alpha \chi^{- \dconst}, \ldots, \alpha \chi^{-1}, \alpha \chi,
+      \ldots, \alpha \chi^{\dconst}}$. Compose the SRS.
   \item Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a
     relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such
     that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
