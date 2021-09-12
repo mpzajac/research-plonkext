@@ -1,311 +1,38 @@
 %!TEX root=plonkext.tex
 
-\newcommand{\algorithm}[1]{\textsf{#1}}
-\newcommand{\variable}[1]{\mathsf{#1}}
-%
 
-%lETTERS
-\renewcommand{\FF}{\mathbf{F}}
-\renewcommand{\GG}{\mathbf{G}}
-\renewcommand{\ZZ}{\mathbf{Z}}
-\renewcommand{\NN}{\mathbf{N}}
-\renewcommand{\RR}{\mathbf{R}}
-\newcommand{\Q}{\mathcal{Q}}
-
-\newcommand{\bool}{\{0,1\}}
-\def\Z{Z} 
-\newcommand{\proveo}{\textsc{Prove}}
-\newcommand{\encodeo}{\textsc{Encode}}
-\newcommand{\bottom}{\perp}
-\renewcommand{\dec}{\mathsf{D}}
-\newcommand{\machine}{\mathsf{M}}
-\renewcommand{\H}{\mathcal{H}}
-\newcommand{\statpar}{\kappa}
-\newcommand{\statparam}{1^\statpar}
-
-\newcommand{\hats}{\hat{\sigma}}
-\newcommand{\hatS}{\hat{\Sigma}}
-\newcommand{\SignKG}{\textsf{SignKG}}
-\newcommand{\Sign}{\textsf{Sign}}
-\newcommand{\SignVer}{\textsf{SignVer}}  
-
-\newcommand{\rem}{\operatorname{rem} }
-
-\newcommand{\protocol}{\mathsf{\Pi}}
-\newcommand{\messagespace}{{\FF}}
-\newcommand{\ciphertextspace}{{R_q}}
-\newcommand{\defeq}{\coloneqq}
-\newcommand{\relfamily}{\mathcal{R}}
-\newcommand{\Span}{\operatorname{Span}}
-
-\newcommand{\statement}{u}
-\newcommand{\encscheme}{\mathsf{Enc}}
-\newcommand{\encspace}{S}
-%\newcommand{\rl}{\mathsf{rl}(\secpar)}
-%\newcommand{\game}[3][]{\operatorname{#2}^{#1}_{#3}(\secpar)}
-\newcommand{\sgame}[3][]{\operatorname{#2}^{#1}_{#3}(\secpar, \statpar)}
-
-\renewcommand{\enc}{\mathsf{E}}
-\newcommand{\circuit}{\texttt{C}}
-
-%symbols
-
-%\newcommand{\vv}[1]{{\vec #1}}
-\newcommand{\vs}{\vv s}
-%\newcommand{\vx}{\vv x}
-\newcommand{\vy}{\vv y}
-%\newcommand{\vc}{\vv c}
-%\newcommand{\va}{\vv a}
-%\newcommand{\vb}{\vv b}
-\renewcommand{\vc}{\vv c}
-\newcommand{\ve}{\vv e}
-\def\NP{_{\sf NP}}
-\def\sA{_{\sf a}}
-\def\sB{_{\sf b}}
-\def\sC{_{\sf c}}
-
-
-%Linear Algebra Vectors/matrices etc
-\newcommand{\matr}[1]{\mathbf{#1}}
-\newcommand{\matrA}{\matr{A}}
-\newcommand{\cspan}{\mathop{\text{Im}}}
-\newcommand{\ofamily}{\mathbb{O}}
-\newcommand{\OO}{\mathbb{O}}
-\renewcommand{\O}{\mathcal{O}}
-\newcommand{\M}{\mathcal{M}}
-\newcommand{\osnark}{\sf O\mbox{-}\sf SNARK}
-\newcommand{\seosnark}{\sf SE\mbox{-}O\mbox{-}\sf SNARK}
-
-%Oracles:
-\def\xor{\oplus}
-
-\def\pp{{\sf pp}}
-\def\blin{{\sf bg}}
-\def\blinpp{{\sf bgpp}}
-\def\td{{\sf td}}
-\def\prfpp{{\sf prfpp}}
-
-\def\gate{{f_{g}}}
-\def\gateadd{{f_{+}}}
-\def\gatemult{{f_{\times}}}
-
-
-% System / Scheme
-\def\SNARG{\ensuremath{{\sf SNARG}}\xspace}
-\def\SNARK{\ensuremath{{\sf SNARK}}\xspace}
-
-
-% Primitive
-
-\def\APoK{{\sf AdPoK}}
-\def\OAPoK{{\sf O\mbox{-}AdPoK}}
-\def\win{\mathsf{win}}
-
-\def\multisig{\ensuremath{{\sf m\Sigma}}}
-
-\newcommand{\gen}[1]{\langle #1 \rangle}
-
-% Algorithms
-
-\newcommand{\fresh}{\mathsf{fresh}}
-\newcommand{\keygen}{\mathsf{K}}
-%\newcommand{\setup}{\mathsf{G}}
-%\newcommand{\pgen}{\mathsf{Pg}}
-%%
-%Updatable setting
-\newcommand{\secp}{\lambda}
-\renewcommand{\secpar}{\lambda}
-
-\newcommand{\Rel}{\mathcal{R}}
-\newcommand{\usrs}{\variable{usrs}}
-%\newcommand{\srs}{\variable{srs}}
-\newcommand{\vsrs}{\variable{vsrs}}
-\newcommand{\upd}{\algorithm{Update}}
-\newcommand{\verifyCRS}{\algorithm{VerifySRS}}
-\newcommand{\simu}{\mathcal{S}}
-%%% oracles and simulators
-\newcommand{\proofO}{\mathcal{O}_{pf}}
-\newcommand{\sprove}{\algorithm{SimProve}}
-\newcommand{\initU}{\mathsf{U}\mbox{-}\mathcal{O}_s}
-\newcommand{\initS}{\mathsf{S}\mbox{-}\mathcal{O}_s}
-\newcommand{\Adv}{\mathsf{Adv}}
-\newcommand{\ssetup}{\algorithm{SimSetup}}
-\newcommand{\supd}{\algorithm{SimUpdate}}
-%%
-
-%%%% credentials
-\newcommand{\Setup}{\mathsf{Setup}}
-\newcommand{\Show}{\mathsf{Show}}
-\newcommand{\issue}{\mathsf{Issue}}
-% \newcommand{\ind}{{\mathsf IND\text{-}CPA}}
-\newcommand{\gamefont}{\operatorname}
-\newcommand{\lo}{\gamefont{LO}}
-\newcommand{\pke}{\gamefont{PKE}}
-\newcommand{\qpke}{q\text{-}\!\gamefont{PKE}}
-\newcommand{\dpke}{d\text{-}\!\gamefont{PKE}}
-\newcommand{\qpkeq}{q\text{-}\!\gamefont{PKEQ}}
-
-\newcommand{\pkeq}{\gamefont{PKEQ}}
-\newcommand{\qpdh}{q\text{-}\!\gamefont{PDH}}
-\newcommand{\dpdh}{d\text{-}\!\gamefont{PDH}}
-\newcommand{\pdh}{\gamefont{PDH}}
-\newcommand{\qpddh}{q\text{-}\!\gamefont{PDDH}}
-\newcommand{\pddh}{\gamefont{PDDH}}
-\newcommand{\qsdh}{q\text{-}\!\gamefont{SDH}}
-\newcommand{\sdh}{\gamefont{SDH}}
-\newcommand{\qkea}{q\text{-}\!\gamefont{KEA}}
-\newcommand{\dlwe}{\gamefont{dLWE}}
-
-\newcommand{\CDH}{\mathsf{CDH}}
-\newcommand{\DDH}{\mathsf{DDH}}
-\newcommand{\ddh}{\mathsf{ddh}}
-\newcommand{\snark}{\mathsf{SNARK}}
-\newcommand{\ssp}{\mathsf{SSP}}
-\newcommand{\Ssp}{\mathsf{ssp}}
-%\newcommand{\eval}{\mathsf{Eval}}
-
-\newcommand{\R}{\mathcal{R}}
-\newcommand{\uc}{C_\mathcal{U}}
-\def\bits{\{0,1\}}
-\newcommand\att[1]{\colorbox{attacker}{\ensuremath{#1}}}
-
-
-\newcommand{\pcnot}{\textbf{not}\xspace}
-\newcommand{\pcand}{\textbf{and}}
-\renewcommand{\pcfalse}{\textbf{false}\xspace}
-\renewcommand{\pctrue}{\textbf{true}\xspace}
-
-\newcommand{\cclass}[1]{\mathsf{#1}}
-%\newcommand{\crs}{\mathsf{crs}}
-\newcommand{\vrs}{\mathsf{vrs}}
-\newcommand{\prs}{\mathsf{prs}}
-\newcommand{\trap}{\mathsf{trap}}
-\newcommand{\Sim}{\mathsf{Sim}}
-\newcommand{\ct}{\mathsf{ct}}
-\newcommand{\qt}{\mathsf{qt}}
-\newcommand{\simprove}{\mathsf{SimP}}
-\newcommand{\oprove}{\mathsf{OProve}}
-\newcommand{\witspace}{\mathsf{WitnessUniverse}}
-\newcommand{\exta}{\varepsilon_\adv}
-%\newcommand{\aux}{\mathsf{aux}}
-\newcommand{\pbl}[1]{\mathsf{#1}}
-\renewcommand{\mid}{\mathsf{mid}}
-
-
-\newcommand{\acomment}[1]{\todo[color=green!30, inline]{{\bf Anca's note}:#1}}
-
-%\newcommand{\chaya}[1]{\textcolor{blue}{[{\footnotesize {\bf Chaya:} { {#1}}}]}}
-
-\newcommand{\hamid}[1]{\textcolor{red}{[{\footnotesize {\bf Hamid:} { {#1}}}]}}
-
-\newcommand{\scal}[1]{
-	\scalebox{\iffull 0.9 \else 0.8 \fi}{\parbox{\linewidth}{
-			{\iffull\centering\fi #1}
-}}}
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "main"
-%%% End:
-
-\newcommand{\parens}[1]{\left(#1\right)}
-\newcommand{\bracks}[1]{\left[#1\right]}
-\newcommand{\curly}[1]{\left\{#1\right\}}
-
-\renewcommand{\hat}{\widehat}
-\newcommand{\etest}{\textsf{test-error}}
-\newcommand{\ie}{i.e.}
-\newcommand{\eg}{e.g.}
-\newcommand{\lb}{\linebreak}
-
-\newcommand{\cmark}{\ding{51}}
-\newcommand{\xmark}{\ding{55}}
-\newcommand{\minent}{H_{\infty}}
-\newcommand{\calH}{\mathcal{H}}
-\newcommand{\matA}{\matr{A}}
-\newcommand{\statind}{\approx_s}
-
-%%%% theorem environment %%%
-%\newtheorem{theorem}{Theorem}
-%\newtheorem{corollary}{Corollary}
-%\newtheorem{definition}{Definition}
-
-\newcommand{\SigmaFS}{\Sigma_{\mathsf{FS}}}
-\newcommand{\proverFS}{\prover_{\mathsf{FS}}}
-\newcommand{\verifierFS}{\verifier_{\mathsf{FS}}}
-\newcommand{\SimFS}{\Sim_{\mathsf{FS}}}
-%\newcommand{\LANG}{\mathcal{L}}
-%\newcommand{\REL}{\mathcal{R}}
-%\renewcommand{\ext}{\mathsf{Ext}}
-
-\newcommand{\multilinePr}[2]{\Pr\left[\begin{aligned}#1\end{aligned} \;:\; \begin{aligned}#2\end{aligned}\right]}
-
-
-%%%%%%%%%%%%%%%%COMMITMENTS%%%%%%%%%%%%%%%%%%
-\def\comscheme{{\mathcal Com}}
-
-\def\encsc{{\mathcal Enc}}
-\def\imver{{\sf ImVer}}
-
-\def\cgen{{\sf ComGen}}
-\def\commit{{\sf Com}}
-\def\comopen{{\sf ComOpen}}
-\def\openver{{\sf OpenVer}}
-\newcommand{\comkg}{\mathsf{KG}}
-\newcommand{\PC}{\mathsf{PC}}  
-\newcommand{\CM}{\commit}
-
-\def\open{{\sf Open}}
-\def\check{{\sf Check}} 
-
-\def\witness{{\sf wit}}
-\def\gk{{\sf gk}}
-\def\ck{{\sf ck}}
-
-
-\def\verifier{{\sf Ver}}
-\def\chall{{\sf challenge}}
-\def\RO{{\sf Hash}}
-\def\qap{\mathsf{QAP}}
-
-\def\Pv{{\sf Prove}}
-\def\Ver{{\sf Ver}}
-\def\Verify{{\sf Ver}}
-\def\fhe{{\sf FHE}}
-\def\kg{{\sf KeyGen}}
-\def\eval{{\sf Eval}}
-
-\def\Derive{{\sf Derive}}
-
-
-\newcommand{\Kzg}{\mathsf{KZG}}
-\newcommand{\kzg}{\mathsf{kzg}}
-
-\def\GRP{\mathbb{G}}
-\def\FFF{\mathbb{F}}
-
-%\newcommand{\gone}[1]{[#1]_1}
-%\newcommand{\gtwo}[1]{[#1]_2}
-
-\def\extr{\mathcal{E}}
-
-\def\ext{\mathsf{ext}}
-\def\acc{\mathsf{acc}}
-
-\def\spann{{\sf span}}
-
-\newcommand{\simO}{\mathsf{Sim}\O}
-
-
-
-
-\newcommand{\newdefst}[1] {\setlength{\fboxsep}{1pt}\colorbox{gray!20}{#1}}
-%\newcommand{\newdefs}[1] {\setlength{\fboxsep}{1pt}\colorbox{gray!20}{\(#1\)}}
-\newcommand{\onlyin}[1] {\mbox{\hspace{1.1cm}$\triangleright$ only in #1}}
-
-\renewcommand{\pcbox}[1]{%
-	{\setlength{\fboxsep}{1.9pt}        \fbox{$\displaystyle#1$}}
+\newcommand{\upd}{\pcalgostyle{Upd}}
+\newcommand{\verifyCRS}{\pcalgostyle{VerifySRS}}
+\newcommand{\simO}{\simulator\oracleo}
+\newcommand{\initU}{\upd\oracleo}
+\newcommand{\Adv}{\pcalgostyle{Adv}}
+
+\newcommand{\uks}{\pcvarstyle{uks}}
+\newcommand{\use}{\pcvarstyle{use}}
+\newcommand{\luse}{\pcvarstyle{luse}}
+\newcommand{\UKS}{\pcvarstyle{UKS}}
+\newcommand{\USE}{\pcvarstyle{USE}}
+\newcommand{\LUSE}{\pcvarstyle{LUSE}}
+
+\newtcbox{\dottedbox}[1][]{
+	math upper,
+	baseline=0.3\baselineskip,
+	%	equal height group=dashedbox,
+	nobeforeafter,
+	colback=white,
+	boxrule=0pt,
+	enhanced jigsaw,
+	boxsep=0pt,
+	top=2pt,
+	bottom=2pt,
+	left=2pt,
+	right=2pt,
+	borderline horizontal={0.5pt}{0pt}{dotted},
+	borderline vertical={0.5pt}{0pt}{dotted},
+	%	drop lifted shadow,
+	#1
 }
+
 
 \newtcbox{\dashedbox}[1][]{
 	math upper,
@@ -345,154 +72,173 @@
 	#1
 }
 
-\newtcbox{\dottedbox}[1][]{
-	math upper,
-	baseline=0.3\baselineskip,
-	%	equal height group=dashedbox,
-	nobeforeafter,
-	colback=white,
-	boxrule=0pt,
-	enhanced jigsaw,
-	boxsep=0pt,
-	top=2pt,
-	bottom=2pt,
-	left=2pt,
-	right=2pt,
-	borderline horizontal={0.5pt}{0pt}{dotted},
-	borderline vertical={0.5pt}{0pt}{dotted},
-	%	drop lifted shadow,
-	#1
-}
-
 \pagebreak
 
 \section{Updatable Simulation Extractable SNARKs}
+
+\paragraph{Updatable SRS setting.} Let us recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which consists of the following algorithms.
+
+\begin{itemize}
+	\item
+	$(\srs,\rho) \leftarrow \kgen(\secparam)$ is a PPT algorithm that takes a security parameter $\secpar$ and outputs a SRS $\srs$, and correctness proof $\rho$.
+	\item
+	$ (\srs',\rho') \leftarrow \upd(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a PPT algorithm that takes as input the security parameter $\secpar$, a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
+	\item
+	$b \leftarrow \verifyCRS(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not. 
+\end{itemize}
+
+\begin{definition}
+	An updatable SRS scheme is correct if the following completeness properties are satisfied.
+	
+	\begin{itemize}
+		
+		\item
+		For all $\secpar \in \NN$
+		\[
+		\condprob{\verifyCRS(1^\secpar,\srs,\rho) = 1}{(\srs,\rho) \leftarrow \kgen(1^\secpar)} = 1
+		\]
+		\item
+		
+		For all $(\srs,\{\rho_i \}_{i=1}^n)$ such that $\verifyCRS(1^\secpar,\srs,\{\rho_i \}_{i=1}^n))=1$,
+		\[
+		\condprob{\verifyCRS(1^\secpar,\srs',\{\rho_i \}_{i=1}^{n+1}))=1}{(\srs',\rho_{n+1}) \leftarrow \upd(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)} = 1
+		\]
+		
+	\end{itemize}
+\end{definition} 
+
 Intuitively, the updatability of the srs should allow an adversarial prover to contribute to updating, and see proofs with respect to different updated srs'es before attempting to provide a proof for a false statement (potentially output a proof w.r.t. a srs that is different from the srs'es corresponding to all the simulated proofs seen). This capability of the adversary is not completely modeled in previous works where the adversary sees simulated proofs only with respect to the last SRS. We first formalize this version of updatable simulation extractability (USE) called \emph{late updatable simulation extractability} (LUSE). We then give a more standard definition of USE that models a real-world adversary capable of seeing simulated proofs with respect to different (finalized) SRSs.
 Lastly, we give a lemma which relates USE to late-USE. This lemma will provide a clean and modular approach for proving USE property of zkSNARKs constructions.
 
 %\subsection{Late Updatable Simulation Extractability (late-USE)}
 
 \begin{definition}[Updatable knowledge soundness]\label{upd-KS}
-	An argument system for a relation $\Rel$ is updatable knowledge-sound if for all PPT algorithms $\adv$, there exists an extractor $\ext_{\adv}$ such that the advantage $\Adv_{UKS} := \Pr \left( \mathsf{UKS}_{\adv,\ext_{\adv}}(\secp)\right)$ of $\adv$ in the game defined in~\cref{fig:upd} is negligible in $\secp$.
+	An argument system for a relation $\REL$ is updatable knowledge-sound if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\advse}$ such that the advantage $\Adv_{\uks} := \prob{\UKS_{\advse,\ext_{\advse}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
 \end{definition}
 
 \begin{definition}[Late Updatable Simulation Extractability]\label{late-use}
-	An argument system for a relation $\Rel$ is late updatable simulation-extractable if for all PPT algorithms $\adv$, there exists an extractor $\ext_{\adv}$ such that the advantage $\Adv_{LUSE}:=\Pr \left( \mathsf{LUSE}^{\simO}_{\adv,\ext_{\adv}}(\secp)\right)$ of $\adv$ in the game defined in~\cref{fig:upd} is negligible in $\secp$.
+	An argument system for a relation $\REL$ is late updatable simulation-extractable if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\advse}$ such that the advantage $\Adv_{\luse}:=\prob{ \LUSE_{\advse,\ext_{\advse}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
 \end{definition}
 
 \begin{definition}[Updatable Simulation Extractability]\label{USE}
-	An argument system for a relation $\Rel$ is updatable simulation-extractable if for all PPT algorithms $\adv$, there exists an extractor $\ext_{\adv}$ such that the advantage $\Adv_{USE} := \Pr \left( \mathsf{USE}^{\simO}_{\adv,\ext_{\adv}}(\secp)\right)$ of $\adv$ in the game defined in~\cref{fig:upd} is negligible in $\secp$.
+	An argument system for a relation $\REL$ is updatable simulation-extractable if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\advse}$ such that the advantage $\Adv_{\use} := \prob{ \USE_{\advse,\ext_{\advse}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
 \end{definition}
 
 \begin{figure}[!ht]
 	\begin{center}
-		\begin{minipage}[t]{0.4\linewidth}
 			\fbox{
-				\procedure[codesize=\footnotesize,headlinesep=0.2\baselineskip,bodylinesep=-0.2\baselineskip]{}{
-					\underline{\simO(x')}\\
-					\pcif (\srs = \bot): return \bot \\
-					% \hamid{should we formalize this extractor?}\\
-					\pi'  \gets \Sim(\srs, \td, x')\\
-					\mathcal{Q}_{\srs} = \mathcal{Q}_{\srs} \cup \{(\srs, x', \pi')\}\\
-					\pcreturn  \pi'\\
-					%
-					\\
-					%
-					\underline{\initU(\mathsf{intent}, \srs_n,\{\rho_i \}_{i=1}^n)}\\
-					\dottedbox{\pcif \srs \neq \bot: \pcreturn \bot} \\
-					\pcif (\mathsf{intent} = \mathsf{setup}): \\
-					\t (\srs',\rho') \leftarrow \setup(1^\secp)\\
-					\t \mathcal{Q} \gets \mathcal{Q} \cup \{\rho'\}\\
-					\t \pcreturn (\srs',\rho')\\
-					%
-					\pcif (\mathsf{intent} = \mathsf{update}): \\
-					\t b \gets \verifyCRS(1^\secp,\srs_n,\{\rho_i \}_{i=1}^{n})\\
-					\t \pcif (b=0): \pcreturn \bot \\
-					\t (\srs',\rho') \leftarrow \upd(1^\secp,\srs_n,\{\rho_i \}_{i=1}^n)\\
-					\t \mathcal{Q} \gets \mathcal{Q} \cup \{\rho'\}\\
-					\t \pcreturn (\srs',\rho')\\
-					%
-					\pcif (\mathsf{intent} = \mathsf{final}): \\
-					\t b \gets \verifyCRS(1^\secp,\srs_n,\{\rho_i \}_{i=1}^{n})\\
-					\t \pcif (b=0) \vee \mathcal{Q} \cap \{ \rho_i \}_i = \emptyset: \pcreturn \bot \\
-					\t \dashedbox{
-						\td_n \gets \ext_\adv(\srs_n,\{\rho_i \}_{i=1}^{n}; r), \td \gets \td_n} \\
-					\t \srs \gets \srs_n, \pcreturn \srs \\
-					%
-					\pcelse \pcreturn \bot
-			}}	
-		\end{minipage}
+				\begin{minipage}[t]{0.95\linewidth}
+					\centering
+				$\dottedbox{\UKS_{\advse,\ext_{\advse}}(\secpar)}$ / $\dashedbox{\LUSE_{\advse,\ext_{\advse}}(\secpar)}$ / $\fedbox{\USE_{\advse,\ext_{\advse}}(\secpar)}$
+			\end{minipage}
+			}
+		\fbox{
 		\begin{minipage}[t]{0.5\linewidth}
-			\fbox{
-			\procedure[codesize=\footnotesize,headlinesep=0.2\baselineskip,bodylinesep=-0.2\baselineskip]{$\dottedbox{\mathsf{UKS}_{\adv,\ext_{\adv}}(\secp)}$ / $\dashedbox{\mathsf{LUSE}^{\simO}_{\adv,\ext_{\adv}}(\secp)}$ / $\fedbox{\mathsf{USE}^{\simO}_{\adv,\ext_{\adv}}(\secp)}$}{
-			\underline{\mathsf{UKS}_{\adv,\ext_{\adv}}(\secp)}\\
+			\procedure[codesize=\footnotesize,headlinesep=0.2\baselineskip,bodylinesep=-0.2\baselineskip]{}{
+			\underline{\dottedbox{\UKS_{\advse,\ext_{\advse}}(\secpar)}}\\
 			\srs \gets \bot, \mathcal{Q} \gets \emptyset \\
-			(x,\pi) \stackrel{r}\gets \adv^{\initU}(1^\secp) \\
-			w \gets \ext_{\adv}(\srs,r) \\
-			\pcreturn \verify(\srs,x,\pi) \wedge (\srs,x,w) \notin \Rel \\
+			(\inp, \zkproof) \stackrel{r}\gets \advse^{\initU}(1^\secpar) \\
+			\wit \gets \ext_{\advse}(\srs,r) \\
+			\pcreturn \verifier(\srs, \inp, \zkproof) \wedge (\srs, \inp, \wit) \notin \REL \\
 			%
 			\\
-				\underline{\mathsf{LUSE}_{\adv,\ext_{\adv}}(\secp)}\\
+				\underline{\dashedbox{\LUSE_{\advse,\ext_{\advse}}(\secpar)}}\\
 				\srs \gets \bot, \mathcal{Q} \gets \emptyset \\
-				(x,\pi) \gets \adv^{\initU, \simO}(1^\secp; r) \\
-				w \gets \ext_{\adv}(\srs,r) \\
-				\pcreturn \verify(\srs,x,\pi) \wedge (\srs, x, \pi) \not \in \mathcal{Q}_{\srs} \wedge (\srs,x,w) \notin \Rel\\				
+				(\inp, \zkproof) \stackrel{r}\gets \advse^{\initU, \simO}(1^\secpar) \\
+				\wit \gets \ext_{\advse}(\srs,r) \\
+				\pcreturn \verifier(\srs, \inp, \zkproof) \wedge (\srs, \inp, \zkproof) \not \in \mathcal{Q}_{\srs} \wedge (\srs, \inp, \wit) \notin \REL\\				
 				%
 				\\
 				%
-				\underline{\mathsf{USE}_{\adv,\ext_{\adv}}(\secp)}\\
+				\underline{\fedbox{\USE_{\advse,\ext_{\advse}}(\secpar)}}\\
 				\srs \gets \bot, \mathcal{Q} \gets \emptyset \\
-				(x,\pi) \gets \adv^{\initU, \simO}(1^\secp; r) \\
-				w \gets \ext_{\adv}(\srs,r) \\
-				\pcreturn \verify(\srs,x,\pi) \wedge (\srs, x, \pi) \not \in \mathcal{Q}_{\srs} \wedge (\srs,x,w) \notin \Rel
+				(\inp, \zkproof) \stackrel{r}\gets \advse^{\initU, \simO}(1^\secpar) \\
+				\wit \gets \ext_{\advse}(\srs,r) \\
+				\pcreturn \verifier(\srs, \inp, \zkproof) \wedge (\srs, \inp, \zkproof) \not \in \mathcal{Q}_{\srs} \wedge (\srs, \inp, \wit) \notin \REL
 				\\
-		}}
+		}
 		\end{minipage}
-		\caption{Games in the Updatable SRS setting} 
+	\begin{minipage}[t]{0.45\linewidth}
+		\procedure[codesize=\footnotesize,headlinesep=0.2\baselineskip,bodylinesep=-0.2\baselineskip]{}{
+			\underline{\simO(\inp')}\\
+			\pcif (\srs = \bot): \pcreturn \bot \\
+			% \hamid{should we formalize this extractor?}\\
+			\zkproof'  \gets \simulator(\srs, \td, \inp')\\
+			\mathcal{Q}_{\srs} = \mathcal{Q}_{\srs} \cup \{(\srs, \inp', \zkproof')\}\\
+			\pcreturn  \zkproof' \\
+			%
+			\\
+			%
+			\underline{\initU(\intent, \srs_n,\{\rho_i \}_{i=1}^n)}\\
+			\dashedbox{\dottedbox{\pcif \srs \neq \bot: \pcreturn \bot}} \\
+			\pcif (\intent = \setup): \\
+			\t (\srs',\rho') \leftarrow \kgen(\REL)\\
+			\t \mathcal{Q} \gets \mathcal{Q} \cup \{\rho'\}\\
+			\t \pcreturn (\srs',\rho')\\
+			%
+			\pcif (\intent = \update): \\
+			\t b \gets \verifyCRS(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^{n})\\
+			\t \pcif (b=0): \pcreturn \bot \\
+			\t (\srs',\rho') \leftarrow \upd(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^n)\\
+			\t \mathcal{Q} \gets \mathcal{Q} \cup \{\rho'\}\\
+			\t \pcreturn (\srs',\rho')\\
+			%
+			\pcif (\intent = \final): \\
+			\t b \gets \verifyCRS(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^{n})\\
+			\t \pcif (b=0) \vee \mathcal{Q} \cap \{ \rho_i \}_i = \emptyset: \pcreturn \bot \\
+			\t \fedbox{\dashedbox{
+				\td_n \gets \ext_\advse(\srs_n,\{\rho_i \}_{i=1}^{n}; r), \td \gets \td_n}} \\
+			\t \srs \gets \srs_n, \pcreturn \srs \\
+			%
+			\pcelse \pcreturn \bot
+		}
+	\end{minipage}
+	}
+		\caption{Games in the Updatable SRS setting. The boxed/dashed-box/dotted-box part is only present in the boxed/dashed-boxed/dotted-boxed game.} 
 		\label{fig:upd}
 	\end{center}
 \end{figure}
 
-The following lemma relates the definition of updatable simulation extractability to the definition of late updatable simulation extractability and updatable knowledge soundness. More specifically, the lemma shows that for any PPT adversary $\adv$ that has a non-negligible advantage in the USE game, there exists a PPT adversary $\bdv$ that can win with non-negligible advantage either the late-USE game or the updatable knowledge-soundness game.
+The following lemma relates the definition of updatable simulation extractability to the definition of late updatable simulation extractability and updatable knowledge soundness. More specifically, the lemma shows that for any PPT adversary $\advse$ that has a non-negligible advantage in $\USE_{\advse,\ext_{\advse}}(\secpar)$, there exists a PPT adversary $\bdv$ that can win with non-negligible advantage either $\LUSE_{\advse,\ext_{\advse}}(\secpar)$ or $\UKS_{\advse,\ext_{\advse}}(\secpar)$.
 
 %\chaya{as we discussed we should probably be explicit about the simulator using trapdoor or being trapdoor less. and give both reductions}
 \begin{lemma}
-	Let $\Pi$ be a proof system that satisfies updatable knowledge soundness and late-updatable simulation extractability. Then, $\Pi$
+	Let $\zkproof$ be a proof system that satisfies updatable knowledge soundness and late-updatable simulation extractability. Then, $\zkproof$
 	satisfies updatable simulation extractability.
 \end{lemma}
 \begin{proof}
-	Let $\adv$ be an adversary against strong updatable simulation extractability. We construct an adversary $\bdv$ that breaks either updatable knowledge soundness or late-updatable simulation extractability.
-	%$\bdv = \{\bdv_0, \bdv_1, \ldots \}$ consisting of a polynomial-size set of adversaries such that $\bdv_0$ is against updatable knowledge soundness game and $\{\bdv_1, \bdv_2, \ldots \}$ all against weak updatable simulation extractability game. We show how a successful $\adv$ can be efficiently transformed into a successful $\bdv$. 
+	Let $\advse$ be an adversary against strong updatable simulation extractability. We construct an adversary $\bdv$ that breaks either updatable knowledge soundness or late-updatable simulation extractability.
+	%$\bdv = \{\bdv_0, \bdv_1, \ldots \}$ consisting of a polynomial-size set of adversaries such that $\bdv_0$ is against updatable knowledge soundness game and $\{\bdv_1, \bdv_2, \ldots \}$ all against weak updatable simulation extractability game. We show how a successful $\advse$ can be efficiently transformed into a successful $\bdv$. 
 	The key idea is to construct adversaries $\bdv_0$ and $\{\bdv_1, \bdv_2\ldots \}$ against updatable knowledge soundness and against late-updatable simulation extractability respectively. 
-	In more detail, every time $\adv$ makes a simulation query with respect to a SRS $\srs_i$, the adversary $\bdv$ plays the role of a late-updatable simulation extractable adversary and forwards the same  
+	In more detail, every time $\advse$ makes a simulation query with respect to a SRS $\srs_i$, the adversary $\bdv$ plays the role of a late-updatable simulation extractable adversary and forwards the same  
 	statement to its own simulator, after finalizing $\srs_i$. 
-	That is, whenever $\bdv$ receives a query $(\srs_i, \mathcal{P}_i, x)$ from $\adv$ who asks for a simulated proof with respect to SRS $\srs_i$ (with $\mathcal{P}_i$ being the set of its update proofs) and statement $x$, it does the following: 
+	That is, whenever $\bdv$ receives a query $(\srs_i, \mathcal{P}_i, \inp)$ from $\advse$ who asks for a simulated proof with respect to SRS $\srs_i$ (with $\mathcal{P}_i$ being the set of its update proofs) and statement $\inp$, it does the following: 
 	
 	\begin{itemize}
 		\item 
 		$\bdv$ first checks if the conditions
-		$\verifyCRS(1^\secp,\srs_i, \mathcal{P}_i) = 1$ and $\mathcal{Q} \cap \mathcal{P}_i \neq \emptyset$ hold. The first condition checks if $\srs_i$ is well formed. The second condition verifies if $\mathcal{P}_i$ contains at least
+		$\verifyCRS(1^\secpar,\srs_i, \mathcal{P}_i) = 1$ and $\mathcal{Q} \cap \mathcal{P}_i \neq \emptyset$ hold. The first condition checks if $\srs_i$ is well formed. The second condition verifies if $\mathcal{P}_i$ contains at least
 		one honest update proof, where $\mathcal{Q}$ is the set of all honest update proofs maintained by $\bdv$. 
-		\item If the conditions verify, it plays the role of $\bdv_i$, and finalizes $\srs_i$ by calling the update oracle with intent ``finalize". 
+		\item If the conditions verify, it plays the role of $\bdv_i$, and finalizes $\srs_i$ by calling the update oracle with intent ``$\final$". 
 		
 		\item
-		$\bdv_i$ then makes a query $x$ to its own simulation oracle with respect to the finalized SRS in the corresponding simulation extractability game.
+		$\bdv_i$ then makes a query $\inp$ to its own simulation oracle with respect to the finalized SRS in the corresponding simulation extractability game.
 		
-		Note that for $\bdv$ to be able to engage in the $i$-th updatable SE game with respect to the fresh SRS $\srs_{i}$ and get access to a simulator for $\srs_{i}$, it needs to perform all previous updates up to that point and finalize $\srs_{i}$. To this end, $\bdv$  internally keeps track of all the updates $\adv$ has made up to $i$, including any honest updates.
+		Note that for $\bdv$ to be able to engage in the $i$-th updatable SE game with respect to the fresh SRS $\srs_{i}$ and get access to a simulator for $\srs_{i}$, it needs to perform all previous updates up to that point and finalize $\srs_{i}$. To this end, $\bdv$  internally keeps track of all the updates $\advse$ has made up to $i$, including any honest updates.
 		
 		\item
-		Upon receiving the proof $\pi$ from its simulation oracle, $\bdv_i$ returns $\pi$ to $\adv$.
+		Upon receiving the proof $\zkproof$ from its simulation oracle, $\bdv_i$ returns $\zkproof$ to $\advse$.
 		
 	\end{itemize}
 	
-	%Note that $\srs_i$ refers to the $i$-th fresh SRS that is returned by $\adv$ and whenever $\adv$ makes a query on a previously queried SRS $\srs_i$ but on a new statement, $\bdv$ just emulates the same adversary $\bdv_i$ on the new statement. 
-	\chaya{we are assuming that once the adversary updates the srs, it loses access to the simulation oracle wrt the previous srs. It can only see proofs already queried before the updation. Discuss if this is reasonable. may not even be necessary.}
+	%Note that $\srs_i$ refers to the $i$-th fresh SRS that is returned by $\advse$ and whenever $\advse$ makes a query on a previously queried SRS $\srs_i$ but on a new statement, $\bdv$ just emulates the same adversary $\bdv_i$ on the new statement. 
+	\chaya{we are assuming that once the adversary updates the srs, it loses access to the simulation oracle wrt the previous srs. It can only see proofs already queried before the updation. Discuss if this is reasonable. may not even be necessary.}\hamid{The current argument is with respect to this (restricted) definition, but such restriction seems natural, because even a real-world adversary cannot control provers to generate proofs with respect to outdated SRSs.}
 	
-	Let us assume that $\srs_\ell$ is the last distinct SRS updated by $\adv$. 
-	At the end of the game, $\adv$ returns $(\srs^*, x^*, \pi^*)$, and since $\adv$ wins, $\srs^* = \srs_\ell$. Now, $\bdv$ checks whether 
-	$\adv$ previously made a simulation query with
+	Let us assume that $\srs_\ell$ is the last distinct SRS updated by $\advse$. 
+	At the end of the game, $\advse$ returns $(\srs^*, \inp^*, \pi^*)$, and since $\advse$ wins, $\srs^* = \srs_\ell$. Now, $\bdv$ checks whether 
+	$\advse$ previously made a simulation query with
 	$\srs^*$, that is, whether $\bdv_\ell$ was invoked. 
-	If so, it plays the role of $\bdv_\ell$ and returns $(x^*, \pi^*)$ to the challenger in the corresponding simulation extractability game. 
-	Otherwise, if $\srs^*$ is an SRS for which $\adv$ made no simulation queries, then $\bdv$ plays the role of $\bdv_0$ and returns $(\srs^*, x^*, \pi^*)$ to its updatable knowledge soundness challenger. It is easy to see that if $\adv$ has a non-negligible advantage, then $\bdv$, as constructed above, also has the same advantage (with $1/k$ loss where $k$ is total number of updates made by $\adv$) in breaking either updatable knowledge soundness or weak simulation extractability.
+	If so, it plays the role of $\bdv_\ell$ and returns $(\inp^*, \pi^*)$ to the challenger in the corresponding simulation extractability game. 
+	Otherwise, if $\srs^*$ is an SRS for which $\advse$ made no simulation queries, then $\bdv$ plays the role of $\bdv_0$ and returns $(\srs^*, \inp^*, \zkproof^*)$ to its updatable knowledge soundness challenger. It is easy to see that if $\advse$ has a non-negligible advantage, then $\bdv$, as constructed above, also has the same advantage (with $1/k$ loss where $k$ is total number of updates made by $\advse$) in breaking either updatable knowledge soundness or weak simulation extractability.
 \qed
 \end{proof}
