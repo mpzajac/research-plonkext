@@ -377,11 +377,11 @@ Lastly, we give a lemma which relates USE to late-USE. This lemma will provide a
 \end{definition}
 
 \begin{definition}[Late Updatable Simulation Extractability]\label{late-use}
-	An argument system for a relation $\Rel$ is late updatable simulation-extractable if for all PPT algorithms $\adv$, there exists an extractor $\ext_{\adv}$ such that the advantage $\Adv_{LUSE}:=\Pr \left( \mathsf{LUSE}_{\adv,\ext_{\adv}}(\secp)\right)$ of $\adv$ in the game defined in~\cref{fig:upd} is negligible in $\secp$.
+	An argument system for a relation $\Rel$ is late updatable simulation-extractable if for all PPT algorithms $\adv$, there exists an extractor $\ext_{\adv}$ such that the advantage $\Adv_{LUSE}:=\Pr \left( \mathsf{LUSE}^{\simO}_{\adv,\ext_{\adv}}(\secp)\right)$ of $\adv$ in the game defined in~\cref{fig:upd} is negligible in $\secp$.
 \end{definition}
 
 \begin{definition}[Updatable Simulation Extractability]\label{USE}
-	An argument system for a relation $\Rel$ is updatable simulation-extractable if for all PPT algorithms $\adv$, there exists an extractor $\ext_{\adv}$ such that the advantage $\Adv_{USE} := \Pr \left( \mathsf{USE}_{\adv,\ext_{\adv}}(\secp)\right)$ of $\adv$ in the game defined in~\cref{fig:upd} is negligible in $\secp$.
+	An argument system for a relation $\Rel$ is updatable simulation-extractable if for all PPT algorithms $\adv$, there exists an extractor $\ext_{\adv}$ such that the advantage $\Adv_{USE} := \Pr \left( \mathsf{USE}^{\simO}_{\adv,\ext_{\adv}}(\secp)\right)$ of $\adv$ in the game defined in~\cref{fig:upd} is negligible in $\secp$.
 \end{definition}
 
 \begin{figure}[!ht]
@@ -452,126 +452,6 @@ Lastly, we give a lemma which relates USE to late-USE. This lemma will provide a
 		\label{fig:upd}
 	\end{center}
 \end{figure}
-
-%\begin{figure}[!ht]
-%	\begin{center}
-%		\begin{minipage}[t]{0.8\linewidth}
-%			\fbox{
-%				\procedure[codesize=\footnotesize,headlinesep=0.2\baselineskip,bodylinesep=-0.2\baselineskip]{$\dottedbox{\mathsf{UKS}_{\adv,\ext_{\adv}}(\secp)}$ / $\dashedbox{\mathsf{LATE\mbox{-}USE}_{\adv,\ext_{\adv}}(\secp)}$}{}}
-%			\underline{$\mathsf{UKS}_{\adv,\ext_{\adv}}(\secp)$}\\
-%			$\srs \gets \bot, \mathcal{Q} \gets \emptyset$ \\
-%			$(x,\pi) \stackrel{r}\gets \adv^{\initU}(1^\secp)$ \\
-%			$w \gets \ext_{\adv}(\srs,r)$ \\
-%			return $\verify(\srs,x,\pi) \wedge (\srs,x,w) \notin \Rel$ \\
-%			
-%			\underline{$\mathsf{LATE\mbox{-}USE}_{\adv,\ext_{\adv}}(\secp)$}\\
-%			$\srs \gets \bot, \mathcal{Q} \gets \emptyset$ \\
-%			$(x,\pi) \gets \adv^{\initU, \simO}(1^\secp; r)$ \\
-%			$w \gets \ext_{\adv}(\srs,r)$ \\
-%			return $\verify(\srs,x,\pi) \wedge (\srs, x, \pi) \not \in \mathcal{Q}_{\srs} \wedge (\srs,x,w) \notin \Rel$\\				
-%			
-%			
-%			\underline{$\mathsf{USE}_{\adv,\ext_{\adv}}(\secp)$}\\
-%			$\srs \gets \bot, \mathcal{Q} \gets \emptyset$ \\
-%			$(x,\pi) \gets \adv^{\initU, \simO}(1^\secp; r)$ \\
-%			$w \gets \ext_{\adv}(\srs,r)$ \\
-%			return $\verify(\srs,x,\pi) \wedge (\srs, x, \pi) \not \in \mathcal{Q}_{\srs} \wedge (\srs,x,w) \notin \Rel$
-%			\\
-%			
-%			\underline{$\simO(x')$}\\
-%			if $(\srs = \bot)$: return $\bot$ \\
-%			% \hamid{should we formalize this extractor?}\\
-%			$\pi'  \gets \Sim(\srs, \td, x')$\\
-%			$\mathcal{Q}_{\srs} = \mathcal{Q}_{\srs} \cup \{(\srs, x', \pi')\}$\\
-%			return  $\pi'$\\
-%			
-%			\underline{$\initU(\mathsf{intent}, \srs_n,\{\rho_i \}_{i=1}^n)$}\\
-%			$\dottedbox{\text{if } \srs \neq \bot: \text{ return } \bot}$ \\
-%			if $(\mathsf{intent} = \mathsf{setup})$: \\
-%			$(\srs',\rho') \leftarrow \setup(1^\secp)$\\
-%			$\mathcal{Q} \gets \mathcal{Q} \cup \{\rho'\}$\\
-%			return $(\srs',\rho')$\\
-%			
-%			if $(\mathsf{intent} = \mathsf{update})$: \\
-%			$b \gets \verifyCRS(1^\secp,\srs_n,\{\rho_i \}_{i=1}^{n})$\\
-%			if $(b=0)$: return $\bot$ \\
-%			$(\srs',\rho') \leftarrow \upd(1^\secp,\srs_n,\{\rho_i \}_{i=1}^n)$\\
-%			$\mathcal{Q} \gets \mathcal{Q} \cup \{\rho'\}$\\
-%			return $(\srs',\rho')$\\
-%			
-%			
-%			if $(\mathsf{intent} = \mathsf{final})$: \\
-%			$b \gets \verifyCRS(1^\secp,\srs_n,\{\rho_i \}_{i=1}^{n})$\\
-%			if $(b=0) \vee \mathcal{Q} \cap \{ \rho_i \}_i = \emptyset$ return $\bot$ \\
-%			$\dashedbox{
-%				\td_n \gets \ext_\adv(\srs_n,\{\rho_i \}_{i=1}^{n}; r), \td \gets \td_n}$ \\
-%			$\srs \gets \srs_n$, return $\srs$ \\
-%		\end{minipage}
-%		
-%		\caption{Games in the Updatable SRS setting} 
-%		\label{fig:upd}
-%	\end{center}
-%\end{figure}
-
-%\begin{minipage}[t]{0.7\linewidth}
-%	\fbox{
-%		\procedure[codesize=\footnotesize,headlinesep=0.2\baselineskip,bodylinesep=-0.2\baselineskip]{$\dottedbox{\mathsf{UKS}_{\adv,\ext_{\adv}}(\secp)}$ / $\dashedbox{\mathsf{LATE\mbox{-}USE}_{\adv,\ext_{\adv}}(\secp)}$}{
-%			\underline{\mathsf{UKS}_{\adv,\ext_{\adv}}(\secp)}\\
-%			\srs \gets \bot, \mathcal{Q} \gets \emptyset \\
-%			(x,\pi) \stackrel{r}\gets \adv^{\initU}(1^\secp) \\
-%			w \gets \ext_{\adv}(\srs,r) \\
-%			\pcreturn \verify(\srs,x,\pi) \wedge (\srs,x,w) \notin \Rel \\
-%			%
-%			\\
-%			\underline{\mathsf{LATE\mbox{-}USE}_{\adv,\ext_{\adv}}(\secp)}\\
-%			\srs \gets \bot, \mathcal{Q} \gets \emptyset \\
-%			(x,\pi) \gets \adv^{\initU, \simO}(1^\secp; r) \\
-%			w \gets \ext_{\adv}(\srs,r) \\
-%			\pcreturn \verify(\srs,x,\pi) \wedge (\srs, x, \pi) \not \in \mathcal{Q}_{\srs} \wedge (\srs,x,w) \notin \Rel\\				
-%			%
-%			\\
-%			%
-%			\underline{\mathsf{USE}_{\adv,\ext_{\adv}}(\secp)}\\
-%			\srs \gets \bot, \mathcal{Q} \gets \emptyset \\
-%			(x,\pi) \gets \adv^{\initU, \simO}(1^\secp; r) \\
-%			w \gets \ext_{\adv}(\srs,r) \\
-%			\pcreturn \verify(\srs,x,\pi) \wedge (\srs, x, \pi) \not \in \mathcal{Q}_{\srs} \wedge (\srs,x,w) \notin \Rel
-%			\\
-%			%
-%			\\
-%			\underline{\simO(x')}\\
-%			\pcif (\srs = \bot): return \bot \\
-%			% \hamid{should we formalize this extractor?}\\
-%			\pi'  \gets \Sim(\srs, \td, x')\\
-%			\mathcal{Q}_{\srs} = \mathcal{Q}_{\srs} \cup \{(\srs, x', \pi')\}\\
-%			\pcreturn  \pi'\\
-%			%
-%			\\
-%			%
-%			\underline{\initU(\mathsf{intent}, \srs_n,\{\rho_i \}_{i=1}^n)}\\
-%			\dottedbox{\pcif \srs \neq \bot: \pcreturn \bot} \\
-%			\pcif (\mathsf{intent} = \mathsf{setup}): \\
-%			\t (\srs',\rho') \leftarrow \setup(1^\secp)\\
-%			\t \mathcal{Q} \gets \mathcal{Q} \cup \{\rho'\}\\
-%			\t \pcreturn (\srs',\rho')\\
-%			%
-%			\pcif (\mathsf{intent} = \mathsf{update}): \\
-%			\t b \gets \verifyCRS(1^\secp,\srs_n,\{\rho_i \}_{i=1}^{n})\\
-%			\t \pcif (b=0): \pcreturn \bot \\
-%			\t (\srs',\rho') \leftarrow \upd(1^\secp,\srs_n,\{\rho_i \}_{i=1}^n)\\
-%			\t \mathcal{Q} \gets \mathcal{Q} \cup \{\rho'\}\\
-%			\t \pcreturn (\srs',\rho')\\
-%			%
-%			\pcif (\mathsf{intent} = \mathsf{final}): \\
-%			\t b \gets \verifyCRS(1^\secp,\srs_n,\{\rho_i \}_{i=1}^{n})\\
-%			\t \pcif (b=0) \vee \mathcal{Q} \cap \{ \rho_i \}_i = \emptyset: \pcreturn \bot \\
-%			\t \dashedbox{
-%				\td_n \gets \ext_\adv(\srs_n,\{\rho_i \}_{i=1}^{n}; r), \td \gets \td_n} \\
-%			\t \srs \gets \srs_n, \pcreturn \srs \\
-%			%
-%			\pcelse \pcreturn \bot
-%	}}
-%\end{minipage}
 
 The following lemma relates the definition of updatable simulation extractability to the definition of late updatable simulation extractability and updatable knowledge soundness. More specifically, the lemma shows that for any PPT adversary $\adv$ that has a non-negligible advantage in the USE game, there exists a PPT adversary $\bdv$ that can win with non-negligible advantage either the late-USE game or the updatable knowledge-soundness game.
 
