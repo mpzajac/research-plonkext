@@ -4315,4 +4315,88 @@ h_{\iota - 1})$ to
 
 \input{updatable}
 
+\section{From a late updatable SE to SE}
+\michals{13.09}{Here I want to show an idea of a reduction of a late updatable
+  SE to SE}
+
+Let $\plonk$ be a forking simulation extractable proof system. Let $\bdv$ be a
+SE adversary. Let $\adv$ be an \emph{algebraic} LUSE adversary. We show that existence of an
+extractor for $\bdv$, $\ext_\bdv$, assures existence of $\ext_\adv$ -- extractor
+for $\adv$.
+
+Here we simplify $\plonk$ a bit and assume that polynomials are written in
+standard bases instead of Lagrange. That is, for instance, $\p{a} (X) = \sum_{i
+  = 0}^n a_i X^i + \ZERO_\HHH (X) (b_1 + b_2 X)$
+ 
+The argument goes as follows.  Let $\srs_0 \to \srs_1 \to \ldots \srs_n$ be the
+sequence of SRS co-produced by $\adv$. Let $\srs_k$ be the last SRS
+honestly computed.
+
+The adversary $\bdv$ proceeds as follows:
+\begin{enumerate}
+\item Get as input an SRS $srs$ honestly created using some trapdoor $\chi$.
+\item Internally run adversary $\adv$. Process $\adv$'s SRS update queries.
+\item Guess index $k$ of the last honest update, set $\srs_k = \srs$. (From now
+  on we will denote this SRS by $\srs$.)
+\item Let $\adv$ update $\srs$ according to its wishes. Let's the final SRS be
+  $\srs_n$ computed using some trapdoor $\alpha \chi$. ($\alpha$ picked by $\adv$)
+\item Since $\adv$ is algebraic, $\bdv$ learns $\alpha$.
+\item $\bdv$ processes $\adv$ simulation queries (that should be done according
+  to $\srs_n$).
+  \begin{enumerate}
+  \item On instance and witness $\wit'$ (note that in $\plonk$ the instance is a
+    part of the witness) compute $\wit$ such that $\wit_i = \alpha^i \wit_i$,
+    for $i = 1 .. (n - 1)$; ($\bdv$ gives as instance/witness the coefficients
+    of some polynomial $\p{\tilde{a}'}$ which commitment is its evaluation at
+    $\alpha \chi$. We need to express it the basis related to $\chi$ as the
+    obtained polynomial $\p{\tilde{a}}$ will be committed at $\chi$. We observe
+    $\p{\tilde{a}'} (\alpha \chi) = \p{\tilde{a}} (\chi)$, for some $\p{\tilde{a}}$ we are now
+    computing) $\wit_{i + n} = \alpha^i \wit_{i + n}$,
+    $\wit_{i + 2n} = \alpha^i \wit_{i+ 2n}$ (the last two translations are
+    since we need to compute $\p{\tilde{b}}$ from $\p{\tilde{b}'}$ and $\p{\tilde{c}}$ from $\p{\tilde{c}'}$)
+  \item Provide $\wit$ to the simulator.
+  \item Get simulated proof $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi)}$
+    , $\beta, \gamma$, $\p{z} (\chi)$,
+    $\alpha$, $\p{t} (\chi)$, $\chz$,
+    $\p{a} (\chz), \ldots, \p{t} (\chz), \p{z} (\chz \omega)$, $\delta$. The
+    simulator (which uses trapdoor, that's fine here and simplifies things)
+    simply takes random polynomials $\p{a}, \p{b}, \p{c}$, random challenges,
+    compute $\p{z}, \p{t}$ in regard with the picked polynomials and
+    challenges. Commits to polynomials. $\simulator$ uses trapdoor to commit to
+    $\p{t}$ (it is infeasible for an adversary which doesn't know the instance's
+    witness.)
+  \item Translate the proof.
+    \begin{enumerate}
+    \item Since simulator for $\adv$ would pick random polynomials $\p{a'},
+      \p{b'}, \p{c'}$ and send $\gone{\p{a'} (\alpha \chi), \p{b'} (\alpha
+        \chi), \p{c'} (\alpha \chi)}$. Just send $\p{a} (\chi), \p{b} (\chi),
+      \p{c} (\chi)$. That is $\p{a'} (\alpha \chi) = \p{a} (\chi)$ and 
+      $\p{a'} (\alpha X) = a'_0 + a'_1( \alpha X) + \ldots + a'_n (\alpha^n
+      X^n)= a_0 + a_1 \alpha X + \ldots + (a_n \alpha^n) X^n$. Output
+      commitments to primed polynomials.
+    \item The polynomials are the same, hence RO answers $\beta, \gamma$ are the
+      same as well.
+    \item Polynomial $\p{z}$ can also be picked by the simulator at random,
+      hence $\p{z'} (\alpha \chi) := \p{z} (\chi)$. Output $\gone{\p{z'}
+        (\alpha \chi)}$
+    \item Again, the random oracle response is the same: $\alpha$.
+    \item Since $\p{t'} (X)$ is determined by $\p{a'} (X), \p{b'} (X), \p{c'}
+      (X), \p{z'} (X)$ and some publicly known polynomials, and $\gone{\p{a'}
+        (\alpha \chi)} = \gone{\p{a} (\chi)}, \ldots$ we set $\p{t'} (\alpha
+      \chi) = \p{t} (\chi)$ and output $\gone{\p{t'} (\alpha \chi)}$.
+    \item Get evaluation challenge $\chz$ and compute $\chz' = \chz / \alpha$
+      (need to adjust evaluation point to have the same evaluation values for
+      primed and non-primed polynomials). 
+    \item Get evaluations $\p{a} (\chz), \ldots$; output them as evaluations
+      $\p{a'} (\chz'), \ldots$.
+    \item Get the opening challenge $\nu$ \emph{program $\adv$'s oracle to
+        output $\nu$} \michals{13.09}{we changed the partial transcript hence we need to
+      program the oracle. Is that a problem?}
+  \item Compute evaluations' openings \michals{13.09}{Ended here} 
+    \end{enumerate}
+    \begin{align}
+    \end{align}
+  \end{enumerate}
+\end{enumerate}
+
 \end{document}
