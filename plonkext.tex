@@ -4384,7 +4384,7 @@ The adversary $\bdv$ proceeds as follows:
       (X), \p{z'} (X)$ and some publicly known polynomials, and $\gone{\p{a'}
         (\alpha \chi)} = \gone{\p{a} (\chi)}, \ldots$ we set $\p{t'} (\alpha
       \chi) = \p{t} (\chi)$ and output $\gone{\p{t'} (\alpha \chi)}$.
-    \item Get evaluation challenge $\chz$ and compute $\chz' = \chz / \alpha$
+    \item Get evaluation challenge $\chz$ and compute $\chz' = \chz \alpha$
       (need to adjust evaluation point to have the same evaluation values for
       primed and non-primed polynomials). 
     \item Get evaluations $\p{a} (\chz), \ldots$; output them as evaluations
@@ -4392,11 +4392,25 @@ The adversary $\bdv$ proceeds as follows:
     \item Get the opening challenge $\nu$ \emph{program $\adv$'s oracle to
         output $\nu$} \michals{13.09}{we changed the partial transcript hence we need to
       program the oracle. Is that a problem?}
-  \item Compute evaluations' openings \michals{13.09}{Ended here} 
+  \item Compute evaluations' openings. Observe that (here simplification -- we
+    show correctness of evaluation to $\p{a}$ but batched version should work similarly)
     \end{enumerate}
     \begin{align}
+      W_{\chz} (\chi) & = \frac{\p{a} (\chi) - \p{a} (\chz)}{\chi - \chz} = \\
+                      & \frac{\p{a'} (\alpha \chi) - \p{a'} (\alpha \chz)}{\chi - \chz} = \\
+                      & \alpha \frac{\p{a'} (\alpha \chi) - \p{a'} (\alpha \chz)}{\alpha \chi -
+                        \alpha \chz} \\
+                      & = \alpha W_{\chz \alpha} (\alpha \chi).
     \end{align}
-  \end{enumerate}
+    Hence $\bdv$ sends to $\adv$ opening $W_{\chz \alpha} (\alpha \chi) =
+    \frac{1}{\alpha} W_{\chz} (\chi)$.
+  \item Also, the verification of the correctness of the opening
+    holds. \michals{13.09}{Note, for the batched version we need to query random
+    oracle to get batching coefficients. Here we need to program RO again, to
+    have the same coeffs.}
+\end{enumerate}
+\item Now we need to show that proof output by $\adv$ for $\srs_n$ can be translated to
+  a proof in $\srs$. This is done similarly to the above. Will continue in tomorrow.
 \end{enumerate}
 
 \end{document}
