@@ -106,7 +106,7 @@ care.
 Nevertheless, the FS transform is a popular design tool when it comes to
 constructing \emph{zero knowledge succinct arguments of knowledge}
 (zkSNARKs). In recent years, zkSNARKs have seen indisputable
-progress~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16,SP:BBBPWM18}
+progress~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16,SP:BBBPWM18}.
 Their succinctness make them especially useful for deployment in real
 systems~\cite{REPO:Zcash20,ARXIV:RonZaj19,REPO:Zeth20,REPO:Celo20,REPO:Aztec20}. However,
 many works, including \sonic{}~\cite{CCS:MBKM19}
@@ -186,13 +186,13 @@ proof with probability $\accProb$ smaller than knowledge error $\nu$. On the
 other hand, we show that this $\nu$ can be arbitrarily small, even
 negligible. However, for $\accProb$ close to $\nu$ the extractor becomes fairly
 inefficient. Since our extractor is based on a \emph{forking lemma}, we call
-notion \emph{forking} simulation extractability. This is also to avoid confusion
+notion \emph{forking} simulation extractability\hamid{The sentence looks unclear to me.}. This is also to avoid confusion
 with weakly simulation extractable protocols,
 which %provide simulation extractability given that the
 % adversary cannot output a proof for a statement it saw a simulated proof
 % for. Importantly, weakly simulation extractable proof systems are (often)
 can be re-randomizable. Since our notion prevents proof malleability, in this
-work we often simply refer to it as simulation extractability.
+work we often simply refer to it as simulation extractability.\hamid{Here it says we refer to it as "simulation extractability", but the last sentence says we call it "forking simulation extractability"; I think better to be consistent here!}
 
 Our extractor is non-blackbox as it needs to
 rewind the adversary (to run it with different random oracle responses). On
@@ -202,7 +202,7 @@ it does not rely on knowledge assumptions. Our proof, however, requires the prot
 number of properties, which can be proven in the algebraic group model (AGM).
 
 We note that when the extractor rewinds the adversary, it is expected that its
-success probability dependent on the adversary's probability of returning a
+success probability depends on the adversary's probability of returning a
 valid proof.  Unfortunately, the extraction technique we use is quite
 inefficient as the security loss is exponential in the number of transcripts
 required to extract the witness. Our analysis thus also serves as a
@@ -211,7 +211,7 @@ result in a huge security loss.
 
 
 In addition to simulation extractability we also give a proof of simulation
-soundness for the same generic class of protocols.  On the up side, we show that
+soundness for the same generic class of protocols.  On the upside, we show that
 despite the fairly inefficient extraction we can prove a much tighter result for
 simulation soundness.
 
@@ -253,7 +253,7 @@ Second, both protocols rely on structured reference strings which come with
 trapdoors. If in possession of the trapdoor, an adversary can produce multiple
 valid proof transcripts without knowing the witness and potentially for false
 statements. Recall that the standard special soundness definition requires
-witness extraction from \emph{any} tree of acceptable transcripts that share a
+witness extraction from \emph{any} tree of acceptable transcripts\hamid{the paper sometimes says "accepting transcripts" and sometimes "acceptable transcripts". I think it would be nice to make this consistent.} that share a
 common root. This means that there are no such trees for incorrect
 statements. In this paper we define a different, forking lemma-related, version
 of soundness which we call \emph{forking soundness}. That is, we show that it is
@@ -406,7 +406,7 @@ that are undoubtedly much simpler protocols than the considered proof systems.
 In the next section we present necessary
 preliminaries. \cref{sec:se_definitions} gives definitions and lemmas for multi-round SRS-based protocol needed to
 instantiate our framework. In \cref{sec:general}, we present our main result,
-a proof of simulation-soundness and simulation-extraction for multi-round SRS-based zero-knowledge proofs systems. In \cref{sec:plonk} and \cref{sec:sonic} we show that $\plonk$ and
+a proof of simulation-soundness and simulation-extraction \hamid{forking simulation-extraction?}for multi-round SRS-based zero-knowledge proofs systems. In \cref{sec:plonk} and \cref{sec:sonic} we show that $\plonk$ and
 $\sonic$ fulfill the requirements of our framework and are in fact simulation sound and forking
 simulation extractable.
 
@@ -474,7 +474,7 @@ protocols. \cite{cryptoeprint:2020:1351} combine this approach with the
 algebraic group model to obtain tight security guarantees for the
 non-interactive versions of Bulletproof~\cite{SP:BBBPWM18} and \sonic. A similar
 approach is also taken by~\cite{cryptoeprint:2019:1177}. These works however are
-focused on showing security of concrete proof systems, while we are show
+focused on showing security of concrete proof systems, while we show
 security of an arguably wide class of protocols. They also do not consider
 simulation soundness and simulation extractability. Last, but not least, our
 high-level security proof relies only on random oracle, while
@@ -565,7 +565,7 @@ relies on the following lemma.
 \end{lemma}
 \subsection{Algebraic Group Model}
 The algebraic group model (AGM) introduced in \cite{C:FucKilLos18} lies between
-the standard model and generic bilinear group model. In the AGM it is assumed
+the standard model and generic bilinear group model\hamid{not clear why generic bilinear group model and not just generic group model!}. In the AGM it is assumed
 that an adversary $\adv$ can output a group element $\gnone{y} \in \GRP$ if
 $\gnone{y}$ has been computed by applying group operations to group elements
 given to $\adv$ as input. It is further assumed, that $\adv$ knows how to
@@ -580,9 +580,17 @@ AGM. An adversary that works in the AGM is called \emph{algebraic}.
 In the polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$ the
 committer $\committer$ can convince the receiver $\receiver$ that some
 polynomial $\p{f}$ which $\committer$ committed to evaluates to $s$ at some
-point $z$ chosen by $\receiver$. $\plonk$ and $\sonic$ use variants of the KZG
+point $z$ chosen by $\receiver$.\hamid{The definition of polynomial commitment and how the algorithms $(\kgen, \com, \open, \verify)$ are defined is not given neither here nor in the appendix. I think it would be nice to define these algorithms somewhere even informally. My suggestion is as follows:
+\begin{description}
+	\item[$\kgen(1^\secpar, \maxdeg)$.] The key generation algorithm $\kgen(1^\secpar, \maxdeg)$ takes in a security parameter $1^\secpar$ and a parameter $\maxdeg$ which determines the maximal degree of the committed polynomial. It outputs a structured reference string $\srs$ (including a commitment key).
+	\item[$\com(\srs, \p{f})$.] The commitment algorithm $\com(\srs, \p{f})$ takes in $\srs$ and a polynomial $\p{f}$ with maximum degree $\maxdeg$, and outputs a commitment $c$.
+	\item[$\open(\srs, z, s, \p{f})$.] The opening algorithm $\open(\srs, z, s \p{f})$ takes as input $\srs$, an evaluation point $z$, a value $s$ and the polynomial $\p{f}$. It outputs an opening $o$.
+	\item[$\verify(\srs, c, z, s, o)$.] The verification algorithm takes in $\srs$, a commitment $c$, an evaluation point $z$, a value $s$ and an opening $o$. It outputs 1 if $o$ is a valid opening for $(c, z, s)$ and 0 otherwise.
+\end{description}}
+
+$\plonk$ and $\sonic$ use variants of the KZG
 polynomial commitment scheme \cite{AC:KatZavGol10}. We denote the first by
-$\PCOMp$ and the latter by $\PCOMs$ Due to page limit, we omit their
+$\PCOMp$ and the latter by $\PCOMs$. Due to page limit, we omit their
 presentation here and refer to \cref{fig:pcomp} and \cref{fig:pcoms} in the
 \cref{sec:pcom}.  In this paper we use evaluation binding, commitment of
 knowledge, and, newly introduced, unique opening and hiding properties. Formal
@@ -661,6 +669,13 @@ knowledge, which are defined as follows:
         1}{\srs \gets \kgen(\REL), \inp \gets \adv(\REL, \srs); \inp \not\in
         \LANG_\REL} \leq \negl\,;
 	\]
+	\hamid{I suggest to have all conditions on the left, like this:
+\[
+\condprob{\ip{\adv(\REL, \srs, \inp)}{\verifier(\REL, \srs, \inp)} =
+	1 \land \inp \not\in
+	\LANG_\REL}{\srs \gets \kgen(\REL), \inp \gets \adv(\REL, \srs)} \leq \negl\,;
+\]	
+}
 %\end{description}
 Sometimes a stronger notion of soundness is required---except requiring that the
 verifier rejects proofs of statements outside the language, we request from the
@@ -706,7 +721,9 @@ called \emph{knowledge soundness}.%\markulf{Commented out the formal definition 
  \ourpar{Zero knowledge.}
  We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
  $\REL \in \RELGEN(\secparam)$, $(\inp, \wit) \in \REL$, and adversary $\adv$
- there exists a $\ppt$ simulator $\simulator$ such that
+ there exists a $\ppt$ simulator $\simulator$ such that \hamid{Shouldn't be for any
+ 	$\REL \in \RELGEN(\secparam)$, and adversary $\adv$
+ 	there exists a $\ppt$ simulator $\simulator$ such that for any $(\inp, \wit) \in \REL$...?}
 	\begin{multline*}
 	  \left\{\ip{\prover(\REL, \srs, \inp, \wit)}{\adv(\REL, \srs, \inp, \wit)}
       \,\left|\, \srs \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
@@ -718,7 +735,7 @@ called \emph{knowledge soundness}.%\markulf{Commented out the formal definition 
 \end{multline*}
 	%
 We call zero knowledge \emph{perfect} if the distributions are equal and
-\emph{computational} if they are indistinguishable for any $\nuppt$
+\emph{computational} if they are indistinguishable for any $\nuppt$ \hamid{This acronym for "non-uniform PPT" is not defined in the paper.}
 distinguisher.
 
 % \end{description}
@@ -737,7 +754,7 @@ outputs as challenges its random coins) can be made non-interactive and
 zero-knowledge in the random oracle model by using the Fiat--Shamir
 transformation.
 
-In our simulation soundness proof (but not simulation extractability) we need
+In our simulation soundness proof (but not simulation extractability \hamid{you mean forking simulation extractability?}) we need
 an additional property of the zero-knowledge  proof system which we call $k$-programmable ZK.
 \begin{definition}[$k$-programmable ZK]
   \label{def:kzk}
@@ -747,7 +764,7 @@ an additional property of the zero-knowledge  proof system which we call $k$-pro
   \begin{compactenum}
   \item produces proofs indistinguishable from proofs output by an honest
     prover;
-  \item $\simulator_\fs$ program the random oracle \emph{only} for
+  \item $\simulator_\fs$ programs the random oracle \emph{only} for
     challenges from round $k$ to $\mu + 1$.
   \end{compactenum}
 \end{definition}
@@ -757,7 +774,7 @@ $1$-programmable ZK. This follows directly from the proofs of their standard mod
 
 \oursubsub{Idealised verifier and verification equations} Let
 $(\kgen, \prover, \verifier)$ be a protocol---in this paper, either a proof
-system or a polynomial commitment scheme. Observe that the $\kgen$ algorithm
+system or a polynomial commitment scheme\hamid{might be unclear as we are defining polynomial commitments as $(\kgen, \com, \open, \verify)$.}. Observe that the $\kgen$ algorithm
 provides an SRS which can be interpreted as a set of group representation of
 polynomials evaluated at trapdoor elements. E.g.~for a trapdoor $\chi$ the SRS
 contains $\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for some polynomials
@@ -772,7 +789,7 @@ who checks that $\vereq_{\inp, \zkproof}(\chi) = 0$ \emph{real verifiers} as opp
 real verifier accepts when a polynomial \emph{evaluates} to zero, an ideal
 verifier accepts only when the polynomial \emph{is} zero.
 
-Although ideal verifiers are impractical, the are very useful in our
+Although ideal verifiers are impractical, they are very useful in our
 proofs. More precisely, we show that
 \begin{compactenum}
 \item the idealised verifier accepts an incorrect proof (what ``incorrect''
@@ -793,7 +810,7 @@ $\ext$ which given two accepting transcripts $(a, b, z)$, $(a, b', z')$ for a
 statement $\inp$ can recreate the corresponding witness if $b \neq b'$.
 Formally,
 %\begin{description}
-\ourpar{Special soundness.} A sigma protocol $\sigmaprot$ is \emph{specially-sound}
+\ourpar{Special soundness.}\hamid{The last (short) sentence looks a little unclear.} A sigma protocol $\sigmaprot$ is \emph{specially-sound}
   if for any adversary $\adv$ the probability
 	\[
 		\Pr\left[
@@ -810,6 +827,22 @@ Formally,
 		\end{aligned}
 		\right.\right]
 \]
+\hamid{I would suggest this (although I agree this looks uglier):
+\[
+\Pr\left[
+\begin{aligned}
+& \verifier(\REL, \inp, (a, b, z)) = %\\
+\verifier(\REL, \inp, (a, b', z')) = 1 \\
+& \land b \neq b' \land \REL(\inp, \wit) = 0 \\
+\end{aligned}
+\,\left|\,
+\begin{aligned}
+& (\inp, (a, b, z), (a, b', z')) \gets \adv(\REL), \\ %\\
+& \wit \gets \ext(\REL, \inp, (a, b, z), (a, b', z'))\\
+\end{aligned}
+\right.\right]
+\]
+}
 is upper-bounded by some negligible function $\negl$.
 %\end{description}
 
@@ -825,6 +858,10 @@ $(a, b, z)$. We say that $\sigmaprot$ has the unique response property if for
 all $\ppt$ algorithms $\adv$, it holds that,
 \[ \condprob{\verifier (\REL, \inp, (a, b, z)) = \verifier (\REL, \inp, (a, b,
     z')) = 1}{(\inp, a, b, z, z') \gets \adv(\REL), z \neq z'} \leq \negl\,.  \]
+\hamid{I would suggest:
+\[ \condprob{\verifier (\REL, \inp, (a, b, z)) = \verifier (\REL, \inp, (a, b,
+	z')) = 1 \land z \neq z'}{(\inp, a, b, z, z') \gets \adv(\REL)} \leq \negl\,.  \]
+}
 %\end{description} 
 If this property holds even against unbounded adversaries, it is called
 \emph{strict}, cf.~\cite{INDOCRYPT:FKMV12}. Later on we call protocols that
@@ -838,7 +875,7 @@ interactive proof system
 $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for
 $\REL \in \RELGEN(\secparam)$.  Let $\zkproof$ be a proof performed by the
 prover $\prover$ and verifier $\verifier$ compound of messages
-$(a_1, b_1, \ldots, a_{\mu - 1}, b_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
+$(a_1, b_1, \ldots, a_{\mu}, b_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
 $\prover$ and $b_i$ comes from $\verifier$.  Denote by $\ro$ a random oracle.
 Let $\proofsystem_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$
 be a proof system such that
