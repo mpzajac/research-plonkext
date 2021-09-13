@@ -108,7 +108,7 @@
 \end{definition} 
 
 Intuitively, the updatability of the srs should allow an adversarial prover to contribute to updating, and see proofs with respect to different updated srs'es before attempting to provide a proof for a false statement (potentially output a proof w.r.t. a srs that is different from the srs'es corresponding to all the simulated proofs seen). This capability of the adversary is not completely modeled in previous works where the adversary sees simulated proofs only with respect to the last SRS. We first formalize this version of updatable simulation extractability (USE) called \emph{late updatable simulation extractability} (LUSE). We then give a more standard definition of USE that models a real-world adversary capable of seeing simulated proofs with respect to different (finalized) SRSs.
-Lastly, we give a lemma which relates USE to late-USE. This lemma will provide a clean and modular approach for proving USE property of zkSNARKs constructions. 
+Lastly, we give a lemma which relates USE to late USE. This lemma will provide a clean and modular approach for proving USE property of zkSNARKs constructions. 
 Below, we also recall the definition of updatable knowledge soundness from~\cite{C:GKMMM18} which we use in the lemma.
 
 %\subsection{Late Updatable Simulation Extractability (late-USE)}
@@ -204,14 +204,14 @@ The following lemma relates the definition of updatable simulation extractabilit
 
 %\chaya{as we discussed we should probably be explicit about the simulator using trapdoor or being trapdoor less. and give both reductions}
 \begin{lemma}
-	Let $\zkproof$ be a proof system that satisfies updatable knowledge soundness and late-updatable simulation extractability. Then, $\zkproof$
+	Let $\zkproof$ be a proof system that satisfies updatable knowledge soundness and late updatable simulation extractability. Then, $\zkproof$
 	satisfies updatable simulation extractability.
 \end{lemma}
 \begin{proof}
-	Let $\advse$ be an adversary against strong updatable simulation extractability. We construct an adversary $\bdv$ that breaks either updatable knowledge soundness or late-updatable simulation extractability.
+	Let $\advse$ be an adversary against updatable simulation extractability. We construct an adversary $\bdv$ that breaks either updatable knowledge soundness or late updatable simulation extractability.
 	%$\bdv = \{\bdv_0, \bdv_1, \ldots \}$ consisting of a polynomial-size set of adversaries such that $\bdv_0$ is against updatable knowledge soundness game and $\{\bdv_1, \bdv_2, \ldots \}$ all against weak updatable simulation extractability game. We show how a successful $\advse$ can be efficiently transformed into a successful $\bdv$. 
-	The key idea is to construct adversaries $\bdv_0$ and $\{\bdv_1, \bdv_2\ldots \}$ against updatable knowledge soundness and against late-updatable simulation extractability respectively. 
-	In more detail, every time $\advse$ makes a simulation query with respect to a SRS $\srs_i$, the adversary $\bdv$ plays the role of a late-updatable simulation extractable adversary and forwards the same  
+	The key idea is to construct adversaries $\bdv_0$ and $\{\bdv_1, \bdv_2\ldots \}$ against updatable knowledge soundness and against late updatable simulation extractability respectively. 
+	In more detail, every time $\advse$ makes a simulation query with respect to a SRS $\srs_i$, the adversary $\bdv$ plays the role of a late updatable simulation extractable adversary and forwards the same  
 	statement to its own simulator, after finalizing $\srs_i$. 
 	That is, whenever $\bdv$ receives a query $(\srs_i, \mathcal{P}_i, \inp)$ from $\advse$ who asks for a simulated proof with respect to SRS $\srs_i$ (with $\mathcal{P}_i$ being the set of its update proofs) and statement $\inp$, it does the following: 
 	
@@ -240,6 +240,6 @@ The following lemma relates the definition of updatable simulation extractabilit
 	$\advse$ previously made a simulation query with
 	$\srs^*$, that is, whether $\bdv_\ell$ was invoked. 
 	If so, it plays the role of $\bdv_\ell$ and returns $(\inp^*, \pi^*)$ to the challenger in the corresponding simulation extractability game. 
-	Otherwise, if $\srs^*$ is an SRS for which $\advse$ made no simulation queries, then $\bdv$ plays the role of $\bdv_0$ and returns $(\srs^*, \inp^*, \zkproof^*)$ to its updatable knowledge soundness challenger. It is easy to see that if $\advse$ has a non-negligible advantage, then $\bdv$, as constructed above, also has the same advantage (with $1/k$ loss where $k$ is total number of updates made by $\advse$) in breaking either updatable knowledge soundness or weak simulation extractability.
+	Otherwise, if $\srs^*$ is an SRS for which $\advse$ made no simulation queries, then $\bdv$ plays the role of $\bdv_0$ and returns $(\srs^*, \inp^*, \zkproof^*)$ to its updatable knowledge soundness challenger. It is easy to see that if $\advse$ has a non-negligible advantage, then $\bdv$, as constructed above, also has the same advantage (with $1/k$ loss where $k$ is total number of updates made by $\advse$) in breaking either updatable knowledge soundness or late updatable simulation extractability.
 \qed
 \end{proof}
