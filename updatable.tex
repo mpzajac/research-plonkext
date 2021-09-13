@@ -108,11 +108,12 @@
 \end{definition} 
 
 Intuitively, the updatability of the srs should allow an adversarial prover to contribute to updating, and see proofs with respect to different updated srs'es before attempting to provide a proof for a false statement (potentially output a proof w.r.t. a srs that is different from the srs'es corresponding to all the simulated proofs seen). This capability of the adversary is not completely modeled in previous works where the adversary sees simulated proofs only with respect to the last SRS. We first formalize this version of updatable simulation extractability (USE) called \emph{late updatable simulation extractability} (LUSE). We then give a more standard definition of USE that models a real-world adversary capable of seeing simulated proofs with respect to different (finalized) SRSs.
-Lastly, we give a lemma which relates USE to late-USE. This lemma will provide a clean and modular approach for proving USE property of zkSNARKs constructions.
+Lastly, we give a lemma which relates USE to late-USE. This lemma will provide a clean and modular approach for proving USE property of zkSNARKs constructions. 
+Below, we also recall the definition of updatable knowledge soundness from~\cite{C:GKMMM18} which we use in the lemma.
 
 %\subsection{Late Updatable Simulation Extractability (late-USE)}
 
-\begin{definition}[Updatable knowledge soundness]\label{upd-KS}
+\begin{definition}[Updatable knowledge soundness~\cite{C:GKMMM18}]\label{upd-KS}
 	An argument system for a relation $\REL$ is updatable knowledge-sound if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\advse}$ such that the advantage $\Adv_{\uks} := \prob{\UKS_{\advse,\ext_{\advse}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
 \end{definition}
 
