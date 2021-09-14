@@ -165,8 +165,7 @@ Another property required to show USE is the unique response property~\cite{C:Fi
 says that for $3$-messages sigma
 protocols, all but the first message sent by the prover are
 deterministic (intuitively, the prover can only employ fresh randomness in the
-first message of the protocol). We cannot use this definition as is since the protocols we consider have other rounds where the prover messages are randomized. In $\plonkprotfs$, both the first and the second prover's messages are randomized. Although $\sonicprot$ prover is deterministic
-after it picks its first message, the protocol has more than $3$ rounds. We propose a generalisation of the
+first message of the protocol). We cannot use this definition as is since the protocols we consider have other rounds where the prover messages are randomized. In $\plonkprotfs$, both the first and the second prover's messages are randomized. Although $\sonicprot$ prover is deterministic after it picks its first message, the protocol has more than $3$ rounds. We propose a generalisation of the
 definition which states that a protocol is $\ur{i}$ if the prover is
 deterministic starting from its $(i + 1)$-th message. For our proof it is
 sufficient that this property is met by $\plonkprot$ for $i = 2$. Since
@@ -187,7 +186,7 @@ simulator is required only to produce a transcript and is not involved in a real
 conversation with a real verifier). We show simulators
 for $\plonkprotfs$ and $\sonicprotfs$ that rely only on the programmability of
 the RO, where programmability is only needed from some round $i$ onwards.
-\chaya{revisit this. is HVZK for the interactive protocol? then why programming?}
+\chaya{revisit this. is HVZK for the interactive protocol? then why programming? it might be a good idea to elaborate on why a trapdoor-based simulator does not work in the reduction. I am not sure I have clarity on this.}
 
 \oursubsub{Generalisation of the general forking lemma.} 
 Consider an interactive $3$-message special-sound protocol $\ps$ and its
