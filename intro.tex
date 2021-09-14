@@ -56,11 +56,13 @@ can check that a statement is true (e.g.,validity of a transaction, claims of st
 
 Despite their massive adoption in practice,  zkSNARKs schemes used today are still not well adapted or defined accordingly for the needs of such applications. 
 More concretely,  the security definitions are based on unrealistic trust requirements or are formalised without taking into consideration real-world scenarios. 
-Most SNARK schemes require the generation of trusted setups which are hard to consider in practice.  Another concern is that classical soundness  definitions for SNARKs are not adapted to the descentralised scenarios, so there is the need to handle additional security requirements, e.g.non-malleability of proofs is done by composing SNARKs with additional signature schemes.  
+Most SNARK schemes require the generation of trusted setups which are hard to consider in practice.  Another concern is that classical soundness  definitions for SNARKs are not adapted to the descentralised scenarios, so there is still the need to handle additional security requirements, e.g. non-malleability of proofs
+%Zcash protocol
+ is achieved by composing SNARKs with additional signature schemes.  
 This introduces another concern: composing SNARKs with other cryptographic primitives had been shown not always to be secure \cite{STOC:BCPR14,TCC:FioNit16}.
 When using SNARKs in larger cryptographic protocols in real-world scenarios, 
 adversarial provers
-may get additional information which can contribute to the generation of adversarial proofs. To address this problem,  stronger, and more useful, definitions
+may get additional information which can contribute to the generation of cheating proofs. To address this problem,  stronger, and more useful, definitions
 of proof of knowledge were defined in the literature, but they also introduces other
 subtleties.
 % as discussed in worls like \cite{C:HadTan98,CCS:AbdRamSla20}.
