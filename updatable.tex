@@ -12,6 +12,7 @@
 \newcommand{\luse}{\pcvarstyle{luse}}
 \newcommand{\UKS}{\pcvarstyle{UKS}}
 \newcommand{\USE}{\pcvarstyle{USE}}
+\newcommand{\SE}{\pcvarstyle{SE}}
 \newcommand{\LUSE}{\pcvarstyle{LUSE}}
 
 \newtcbox{\dottedbox}[1][]{
@@ -108,13 +109,18 @@
 \end{definition} 
 
 Intuitively, the updatability of the srs should allow an adversarial prover to contribute to updating, and see proofs with respect to different updated srs'es before attempting to provide a proof for a false statement (potentially output a proof w.r.t. a srs that is different from the srs'es corresponding to all the simulated proofs seen). This capability of the adversary is not completely modeled in previous works where the adversary sees simulated proofs only with respect to the last SRS. We first formalize this version of updatable simulation extractability (USE) called \emph{late updatable simulation extractability} (LUSE). We then give a more standard definition of USE that models a real-world adversary capable of seeing simulated proofs with respect to different (finalized) SRSs.
+
 Lastly, we give a lemma which relates USE to late USE. This lemma will provide a clean and modular approach for proving USE property of zkSNARKs constructions. 
-Below, we also recall the definition of updatable knowledge soundness from~\cite{C:GKMMM18} which we use in the lemma.
+For the sake of completeness, here we also recall the definitions of standard simulation extractability and updatable knowledge soundness from~\cite{C:GKMMM18} which we use in the lemma.
 
 %\subsection{Late Updatable Simulation Extractability (late-USE)}
 
 \begin{definition}[Updatable knowledge soundness~\cite{C:GKMMM18}]\label{upd-KS}
 	An argument system for a relation $\REL$ is updatable knowledge-sound if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\advse}$ such that the advantage $\Adv_{\uks} := \prob{\UKS_{\advse,\ext_{\advse}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
+\end{definition}
+
+\begin{definition}[Simulation Extractability]\label{se}
+	An argument system for a relation $\REL$ is simulation-extractable if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\advse}$ such that the advantage $\Adv_{\se}:=\prob{ \SE_{\advse,\ext_{\advse}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
 \end{definition}
 
 \begin{definition}[Late Updatable Simulation Extractability]\label{late-use}
@@ -130,7 +136,8 @@ Below, we also recall the definition of updatable knowledge soundness from~\cite
 			\fbox{
 				\begin{minipage}[t]{0.95\linewidth}
 					\centering
-				$\dottedbox{\UKS_{\advse,\ext_{\advse}}(\secpar)}$ / $\dashedbox{\LUSE_{\advse,\ext_{\advse}}(\secpar)}$ / $\fedbox{\USE_{\advse,\ext_{\advse}}(\secpar)}$
+				$\dottedbox{\UKS_{\advse,\ext_{\advse}}(\secpar)}$ /
+				$\SE_{\advse,\ext_{\advse}}(\secpar)$ / $\dashedbox{\LUSE_{\advse,\ext_{\advse}}(\secpar)}$ / $\fedbox{\USE_{\advse,\ext_{\advse}}(\secpar)}$
 			\end{minipage}
 			}
 		\fbox{
@@ -141,6 +148,14 @@ Below, we also recall the definition of updatable knowledge soundness from~\cite
 			(\inp, \zkproof) \stackrel{r}\gets \advse^{\initU}(1^\secpar) \\
 			\wit \gets \ext_{\advse}(\srs,r) \\
 			\pcreturn \verifier(\srs, \inp, \zkproof) \wedge (\srs, \inp, \wit) \notin \REL \\
+			%				%
+			\\
+			%
+			\underline{\SE_{\advse,\ext_{\advse}}(\secpar)}\\
+			(\srs, \td) \leftarrow \kgen(\REL)\\
+			(\inp, \zkproof) \stackrel{r}\gets \advse^{\simO}(1^\secpar) \\
+			\wit \gets \ext_{\advse}(\srs,r) \\
+			\pcreturn \verifier(\srs, \inp, \zkproof) \wedge (\srs, \inp, \zkproof) \not \in \mathcal{Q}_{\srs} \wedge (\srs, \inp, \wit) \notin \REL \\
 			%
 			\\
 				\underline{\dashedbox{\LUSE_{\advse,\ext_{\advse}}(\secpar)}}\\
@@ -155,8 +170,7 @@ Below, we also recall the definition of updatable knowledge soundness from~\cite
 				\srs \gets \bot, \mathcal{Q} \gets \emptyset \\
 				(\inp, \zkproof) \stackrel{r}\gets \advse^{\initU, \simO}(1^\secpar) \\
 				\wit \gets \ext_{\advse}(\srs,r) \\
-				\pcreturn \verifier(\srs, \inp, \zkproof) \wedge (\srs, \inp, \zkproof) \not \in \mathcal{Q}_{\srs} \wedge (\srs, \inp, \wit) \notin \REL
-				\\
+				\pcreturn \verifier(\srs, \inp, \zkproof) \wedge (\srs, \inp, \zkproof) \not \in \mathcal{Q}_{\srs} \wedge (\srs, \inp, \wit) \notin \REL \\
 		}
 		\end{minipage}
 	\begin{minipage}[t]{0.45\linewidth}
