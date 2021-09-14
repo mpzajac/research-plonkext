@@ -197,22 +197,31 @@ AGM. An adversary that works in the AGM is called \emph{algebraic}.
 In the polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$ the
 committer $\committer$ can convince the receiver $\receiver$ that some
 polynomial $\p{f}$ which $\committer$ committed to evaluates to $s$ at some
-point $z$ chosen by $\receiver$.\hamid{The definition of polynomial commitment and how the algorithms $(\kgen, \com, \open, \verify)$ are defined is not given neither here nor in the appendix. I think it would be nice to define these algorithms somewhere even informally. My suggestion is as follows:
+point $z$ chosen by $\receiver$. $\PCOM$'s subroutines are defined as follows 
 \begin{description}
-	\item[$\kgen(1^\secpar, \maxdeg)$.] The key generation algorithm $\kgen(1^\secpar, \maxdeg)$ takes in a security parameter $1^\secpar$ and a parameter $\maxdeg$ which determines the maximal degree of the committed polynomial. It outputs a structured reference string $\srs$ (including a commitment key).
-	\item[$\com(\srs, \p{f})$.] The commitment algorithm $\com(\srs, \p{f})$ takes in $\srs$ and a polynomial $\p{f}$ with maximum degree $\maxdeg$, and outputs a commitment $c$.
-	\item[$\open(\srs, z, s, \p{f})$.] The opening algorithm $\open(\srs, z, s \p{f})$ takes as input $\srs$, an evaluation point $z$, a value $s$ and the polynomial $\p{f}$. It outputs an opening $o$.
-	\item[$\verify(\srs, c, z, s, o)$.] The verification algorithm takes in $\srs$, a commitment $c$, an evaluation point $z$, a value $s$ and an opening $o$. It outputs 1 if $o$ is a valid opening for $(c, z, s)$ and 0 otherwise.
-\end{description}}
+\item[$\kgen(1^\secpar, \maxdeg)$:] The key generation algorithm
+  $\kgen(1^\secpar, \maxdeg)$ takes in a security parameter $1^\secpar$ and a
+  parameter $\maxdeg$ which determines the maximal degree of the committed
+  polynomial. It outputs a structured reference string $\srs$ (including a
+  commitment key).
+\item[$\com(\srs, \p{f})$:] The commitment algorithm $\com(\srs, \p{f})$ takes
+  in $\srs$ and a polynomial $\p{f}$ with maximum degree $\maxdeg$, and outputs
+  a commitment $c$.
+\item[$\open(\srs, z, s, \p{f})$:] The opening algorithm
+  $\open(\srs, z, s \p{f})$ takes as input $\srs$, an evaluation point $z$, a
+  value $s$ and the polynomial $\p{f}$. It outputs an opening $o$.
+\item[$\verify(\srs, c, z, s, o)$:] The verification algorithm takes in $\srs$,
+  a commitment $c$, an evaluation point $z$, a value $s$ and an opening $o$. It
+  outputs 1 if $o$ is a valid opening for $(c, z, s)$ and 0 otherwise.
+\end{description}
 
-$\plonk$ and $\sonic$ use variants of the KZG
-polynomial commitment scheme \cite{AC:KatZavGol10}. We denote the first by
-$\PCOMp$ and the latter by $\PCOMs$. Due to page limit, we omit their
-presentation here and refer to \cref{fig:pcomp} and \cref{fig:pcoms} in the
-\cref{sec:pcom}.  In this paper we use evaluation binding, commitment of
-knowledge, and, newly introduced, unique opening and hiding properties. Formal
-definitions of these could be find in \cref{sec:pcom}, here we briefly introduce
-them.
+$\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme
+\cite{AC:KatZavGol10}. We denote the first by $\PCOMp$ and the latter by
+$\PCOMs$. Due to page limit, we omit their presentation here and refer to
+\cref{fig:pcomp} and \cref{fig:pcoms} in the \cref{sec:pcom}.  In this paper we
+use evaluation binding, commitment of knowledge, and, newly introduced, unique
+opening and hiding properties. Formal definitions of these could be find in
+\cref{sec:pcom}, here we briefly introduce them.
 \begin{compactdesc}
   \item[Evaluation binding] intuitively, this property assures that no adversary
     could provide two valid openings for two different evaluations of the same
@@ -286,17 +295,10 @@ knowledge, which are defined as follows:
   proof for a false statement $\inp \not\in\LANG$. More precisely, for
   all $\REL \in \RELGEN(\secparam)$
 	\[
-      \condprob{\ip{\adv(\srs, \inp)}{\verifier(\srs, \inp)} =
-        1}{\srs \gets \kgen(\REL), \inp \gets \adv(\srs); \inp \not\in
-        \LANG_\REL} \leq \negl\,;
+    \condprob{\ip{\adv(\srs, \inp)}{\verifier(\srs, \inp)} = 1 \land \inp
+      \not\in \LANG_\REL}{\srs \gets \kgen(\REL), \inp \gets \adv(\srs)} \leq
+    \negl\,;
 	\]
-	\hamid{I suggest to have all conditions on the left, like this:
-\[
-\condprob{\ip{\adv(\srs, \inp)}{\verifier(\srs, \inp)} =
-	1 \land \inp \not\in
-	\LANG_\REL}{\srs \gets \kgen(\REL), \inp \gets \adv(\srs)} \leq \negl\,;
-\]	
-} \markulf{12 Sep}{I agree with that.}
 %\end{description}
 Sometimes a stronger notion of soundness is required---except requiring that the
 verifier rejects proofs of statements outside the language, we request from the
@@ -339,13 +341,11 @@ called \emph{knowledge soundness}.%\markulf{Commented out the formal definition 
  % $\vereq_i(X)$ evaluates to $0$ at $\chi$ just checks that $\vereq_i(X)$ is a
  % zero polynomial.
 
- \ourpar{Zero knowledge.}
- We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
- $\REL \in \RELGEN(\secparam)$, $(\inp, \wit) \in \REL$, and adversary $\adv$
- there exists a $\ppt$ simulator $\simulator$ such that \hamid{Shouldn't be for any
- 	$\REL \in \RELGEN(\secparam)$, and adversary $\adv$
- 	there exists a $\ppt$ simulator $\simulator$ such that for any $(\inp, \wit) \in \REL$...?}
-	\begin{multline*}
+\ourpar{Zero knowledge.}  We call a proof system $\proofsystem$
+\emph{zero-knowledge} if for any $\REL \in \RELGEN(\secparam)$, and adversary
+$\adv$ there exists a $\ppt$ simulator $\simulator$ such that for any
+$(\inp, \wit) \in \REL$
+\begin{multline*}
 	  \left\{\ip{\prover(\srs, \inp, \wit)}{\adv(\srs, \inp, \wit)}
       \,\left|\, \srs \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
           \srs)}\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
@@ -356,8 +356,7 @@ called \emph{knowledge soundness}.%\markulf{Commented out the formal definition 
 \end{multline*}
 	%
 We call zero knowledge \emph{perfect} if the distributions are equal and
-\emph{computational} if they are indistinguishable for any $\nuppt$ \hamid{This acronym for "non-uniform PPT" is not defined in the paper.}
-distinguisher.
+\emph{computational} if they are indistinguishable for any $\ppt$ distinguisher.
 
 % \end{description}
 Alternatively, zero-knowledge can be defined by allowing the simulator to use
@@ -375,8 +374,8 @@ outputs as challenges its random coins) can be made non-interactive and
 zero-knowledge in the random oracle model by using the Fiat--Shamir
 transformation.
 
-In our simulation soundness proof (but not simulation extractability \hamid{you mean forking simulation extractability?}) we need
-an additional property of the zero-knowledge  proof system which we call $k$-programmable ZK.
+% In our simulation soundness proof (but not simulation extractability \hamid{you mean forking simulation extractability?}) we need
+% an additional property of the zero-knowledge  proof system which we call $k$-programmable ZK.
 \begin{definition}[$k$-programmable ZK]
   \label{def:kzk}
   Let $\ps$ be a $(2\mu + 1)$-message ZK proof system and let $\ps_\fs$ be its
@@ -429,9 +428,11 @@ provided by the verifier. Sigma protocols are honest verifier zero-knowledge in
 the standard model and specially-sound. That is, there exists an extractor
 $\ext$ which given two accepting transcripts $(a, b, z)$, $(a, b', z')$ for a
 statement $\inp$ can recreate the corresponding witness if $b \neq b'$.
-Formally,
+More formally:
 %\begin{description}
-\ourpar{Special soundness.}\hamid{The last (short) sentence looks a little unclear.} A sigma protocol $\sigmaprot$ is \emph{specially-sound}
+\ourpar{Special soundness.}
+% \hamid{The last (short) sentence looks a little unclear.}
+A sigma protocol $\sigmaprot$ is \emph{specially-sound}
   if for any adversary $\adv$ the probability
 	\[
 		\Pr\left[
@@ -4069,8 +4070,25 @@ The adversary $\bdv$ proceeds as follows:
     oracle to get batching coefficients. Here we need to program RO again, to
     have the same coeffs.}
 \end{enumerate}
-\item Now we need to show that proof output by $\adv$ for $\srs_n$ can be translated to
-  a proof in $\srs$. This is done similarly to the above. Will continue in tomorrow.
+\item Now we need to show that proof output by $\adv$ for $\srs_n$ can be
+  translated to a proof in $\srs$. This is done similarly to the above. All RO
+  queries $\adv$ makes to create the proof are answered honestly by $\bdv$
+  except the query that gives challenge $\chz'$\michals{14.09}{Check!}. Unique
+  response property assures that the output proof will not share the first 3
+  rounds with some simulated proof. Hence we do not need to worry about mismatch
+  between the programmed random oracle and the real random oracle. (That is, the
+  fact that $\bdv$ programmed RO to have challenge $\chz'$ instead of $\chz$
+  will not be noticed.)  Given proof
+  $\zkproof' = \gone{\p{a'} (\alpha \chi), \p{b'} (\alpha \chi), \p{c'} (\alpha
+    \chi)} \ldots$ for instance $\inp'$, output by $\adv$ adversary $\bdv$
+  proceeds as follows
+  \begin{enumerate}
+  \item Translate $\inp'$ into a corresponding relation in $\srs$: $\inp$. More
+    precisely for known $\wit'_i$ set $\wit_i = \wit'_i \alpha^i$,
+    $\wit_{i + n} = \wit'_{i + n} \alpha^i$,
+    $\wit_{i + 2n} = \wit'_{i + 2n} \alpha^i$ for $i \in \range{1}{\noofc}$.
+  \item Output 
+  \end{enumerate}
 \end{enumerate}
 
 \end{document}
