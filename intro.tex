@@ -33,72 +33,30 @@
 
 
 \section{Introduction}
+Zero-knowledge proof systems that allow a prover to convince a verifier of a statement without revealing anything beyond the truth of the statement have applications in cryptography and theory of computation~\cite{FOCS:GolMicWig86,STOC:Fortnow87,C:BGGHKMR88}. 
+When restricted to computationally sound proofs, called \emph{argument systems}, proof length can be shorter than the length of the witness~\cite{brassard1988minimum}. 
+Zero-knowledge Succinct Non-interactive ARguments of Knowledge (zkSNARKs) are zero-knowledge argument systems that additionally have a succinctness property -- small proof sizes and fast verification. 
+Since their introduction in~\cite{micali1994cs}, zk-SNARKs have been a powerful and versatile design tool for secure cryptographic protocols.
 
-\chaya{general ZK}
-
-\paragraph{zkSNARKs.}
-
-Zero-knowledge Succinct Non-interactive ARguments of Knowledge (zkSNARKs) are  proof systems that allow a prover to generate
-short and efficiently verifiable proofs which do not reveal anything more than the correctness of a statement.  
-
-The research on SNARKs has been very fruitful since their introduction in the 80s, leading to schemes that are now deployed in practice.
-
-Preliminary works in the field~\cite{IKO07,AC:Groth10a,TCC:Lipmaa12}.
-lead to a common framework showed by~\cite{EC:GGPR13} to construct a pairing-based zkSNARKs for general NP statements with constant-size proofs.  
- This framework led to several new schemes~\cite{TCC:BCIOP13,SP:PHGR13,C:BCGTV13,AC:Lipmaa13,USENIX:BCTV14,EC:Groth16} with very short proof sizes and fast verification. 
- 
- Most modern SNARK constructions follow a slightly different blueprint: a modular approach that consists of an information theoretic protocol, e.g. an Interactive Oracle Proof (IOP),  that is then compiled via cryptographic 
- tools to obtain an interactive argument system.  The later is then turned into a SNARK using Fiat-Shamir transformation in the Random Oracle Model (ROM). 
- In particular, several schemes 
- $\sonic$~in \cite{CCS:MBKM19}, $\plonk$~\cite{EPRINT:GabWilCio19} or $\textsf{Marlin}$~\cite{EC:CHMMVW20} 
+Motivated by applications such as privacy-preserving cryptocurrencies~\cite{SP:BCGGMT14}, and uses in the context of Zcash, Ethereum system\footnote{Zcash \url{https://z.cash/}, Ethereum \url{https://ethereum.org}} for privacy and scalability of smart contracts that demand short proofs and fast verification, there has been a series of works on constructing zkSNARKs. 
+The seminal work of~\cite{EC:GGPR13} proposed a pairing-based zk-SNARK for general NP statements based on the NP complete langauge of Quadratic Span Programs (QSP) for Boolean circuits and Quadratic Arithmetic Programs (QAP) for arithmetic circuits. This built on previous works of~\cite{IKO07,AC:Groth10a,TCC:Lipmaa12} and led to several works~\cite{TCC:BCIOP13,SP:PHGR13,C:BCGTV13,AC:Lipmaa13,USENIX:BCTV14,EC:Groth16} with very short proof sizes and fast verification. 
+This line of work on (pre-processing) zkSNARKs has seen rapid progress with many works proposing significant improvements in efficiency of different parameters of interest like proof size, verifier efficiency, complexity of setup, prover efficiency, among others.
+Most modern zkSNARK constructions follow a rather modular blueprint that consists of designing an information theoretic interactive protocol, e.g. an Interactive Oracle Proof (IOP), that is then compiled via cryptographic tools to obtain an interactive argument system.  This is then later  turned into a SNARK using the Fiat-Shamir transformation in the Random Oracle Model (ROM). 
+In particular, several schemes 
+$\sonic$~in \cite{CCS:MBKM19}, $\plonk$~\cite{EPRINT:GabWilCio19}, $\textsf{Marlin}$~\cite{EC:CHMMVW20} 
 follow this approach where the information theoretic object is an algebraic variant of IOP, and the cryptographic primitive in the compiler is a polynomial commitment scheme (PC).  
-%This line of work on (pre-processing) zkSNARKs has seen rapid progress with many works proposing significant improvements in efficiency of different parameters of interest like proof size, verifier efficiency, complexity of setup, prover efficiency, among others.
-
-\paragraph{Applications.}
-
-In the last decade, zkSNARKs have been adopted by many real-world applications such as decentralised systems and blockchains to improve scalability and privacy. 
-Commonly, in such systems zkSNARKs are broadcast in a peer-to-peer network and redundantly stored at every network node in the blockchain.
-A series of works focused on constructing and implementing zkSNARKs for blockchain use-cases, such as cryptocurrencies. Zerocash~\cite{SP:BCGGMT14}showed how to use zk-SNARKs in distributed ledgers to achieve privacy-preserving digital payment systems. 
-  
-Some examples of practival use of zkSNARKs are in the context of Zcash or in Ethereum system\footnote{Zcash \url{https://z.cash/}, Ethereum \url{https://ethereum.org}} for boosting the privacy and scalability of smart contracts. 
-A different important SNARK application in blockchain is the Filecoin System\footnote{Filecoin,  \url{https://filecoin.io}} that implements a decentralized storage solution by means of Proof of Space via SNARKs. 
-
-Remark that in all these usages, proofs are posted on the public chain so that any user 
-can check that a statement is true (e.g.,validity of a transaction, claims of storage etc.), while idealy expending few resources.
-
-Despite their massive adoption in practice,  zkSNARKs schemes used today are still not well adapted or defined accordingly for the needs of such applications. 
-More concretely,  the security definitions are based on unrealistic trust requirements or are formalised without taking into consideration real-world scenarios. 
-Most SNARK schemes require the generation of trusted setups which are hard to consider in practice.  Another concern is that classical soundness  definitions for SNARKs are not adapted to the descentralised scenarios, so there is still the need to handle additional security requirements, e.g. non-malleability of proofs
-%Zcash protocol
- is achieved by composing SNARKs with additional signature schemes.  
-This introduces another concern: composing SNARKs with other cryptographic primitives had been shown not always to be secure \cite{STOC:BCPR14,TCC:FioNit16}.
-When using SNARKs in larger cryptographic protocols in real-world scenarios, 
-adversarial provers
-may get additional information which can contribute to the generation of cheating proofs. To address this problem,  stronger, and more useful, definitions
-of proof of knowledge were defined in the literature, but they also introduces other
-subtleties.
-% as discussed in worls like \cite{C:HadTan98,CCS:AbdRamSla20}.
-
-  
-\noindent \emph{Trusted Setup Ceremony.} All the  constant-size zk-SNARK schemes have a common major disadvantage in practice:
-they rely on some public parameters, the structured reference string (SRS), that are generated by a trusted setup. In theory, this setup is run by a trusted-third party, while in practice, such a string can be generated by a so called "ceremony", a multi-party
-computation between participants who are believed not to collude as shown in \cite{AFRICACRYPT:ABLSZ19,EPRINT:BowGabMie17,SP:BCGTV15}.
-Generating such trusted setup is a cumbersome task. 
-These ceremonies are expensive in terms of resources, they must follow specific rules and are generally hard to organise: hundreds of participants with powerful machines need to join efforts to perform a multi-party computation over multiple months. 
-
-
 
 \paragraph{Simulation extractability.}
-Most zkSNARKs are shown to satisfy a standard knowledge soundness property. 
-Intuitively, this guarantees that
-a prover that creates a valid proof knew a satisfactory witness.  
-This definition ignores the ability of an adversary to see other valid proofs that may occur in real-world applications. 
-Moreover, in the context of malleable SNARKs, seeing other valid proofs allows one to construct related proofs to new statements whithout knowing the witness. 
 
+Most zkSNARKs are shown to satisfy a standard knowledge soundness property. Intuitively, this guarantees that
+a prover that creates a valid proof knew a valid witness. However, deployments of zkSNARKs in real-world applications require a stronger property -- \textit{simulation-extractability} (SE). 
+This is because, in practice, an adversary against the zkSNARK has access to proofs provided by other parties using the same
+zkSNARK. The definition of knowledge soundness ignores the ability of an adversary to see other valid proofs that may occur in real-world applications.  For instance, in applications of
+zkSNARKs in privacy-preserving blockchains, proofs are posted on the chain for all
+blockchain-participants to see. Therefore, it is necessary for a zero-knowledge proof system to be \emph{non-malleable}, that is, resilient against adversaries that additionally get to see proofs generated by different parties before trying to forge.
 Therefore, it is necessary for a zero-knowledge proof system to be \emph{simulation-extractable}, that is, resilient against adversaries that additionally get to see proofs generated by different parties before trying to forge.
-This captures the more general scenario where an adversary against the zkSNARK has access to proofs provided by other parties as it is the case in applications of
-zkSNARKs in privacy-preserving blockchains,  where proofs are posted on the chain for all
-participants in the network to check them. 
+This captures the more general scenario where an adversary against the zkSNARK has access to proofs provided by other parties as it is in applications of zkSNARKs in privacy-preserving blockchains, where proofs are posted on the chain for all
+participants in the network to verify. 
 
 \paragraph{zkSNARKs in the updatable setting.}
 One of the downsides of efficient zkSNARKs like~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16} is that they rely on a \textit{trusted setup}, where there is a structured reference string (SRS) that is assumed to be generated by a trusted party. In practice, however, this assumption is not well founded; if the party that generates the SRS is not honest, then they can produce proofs of false statement. That is, if the trusted setup assumption does not hold, knowledge soundness breaks down.
@@ -113,12 +71,12 @@ most efficient updatable universal zkSNARK. Independently, Chiesa et
 al.~\cite{EC:CHMMVW20} proposed $\textsf{Marlin}$ with comparable efficiency to
 $\plonk$.
 
-\paragraph{The challenge of SE in the updatable SRS setting.}
+\paragraph{The challenge of SE in the updatable setting.}
 
 The notion of simulation-extractability for zkSNARKs which is well motivated in practice has not been studied in this updatable setting. As it turns out, defining SE for updatable SRS zkSNARKs requires some care. Since the SRS is being continually updated, there are proofs with respect to \textit{different} SRS'es available for the adversary to see before attempting to forge a proof with respect to a current SRS. 
 That is, each SRS in the update chain spawns a simulation oracle. Intuitively, the updatability of the SRS allows an adversarial prover to contribute to updating, and see proofs with respect to different updated SRS'es before attempting to provide a proof for a false statement (potentially output a proof wrt a SRS that is different from the SRS'es corresponding to all the simulated proofs seen). A definition of SE in the updatable setting should take into account this additional power of the adversary, which is not captured by existing definitions of SE.
 
-While the generic lifting techniques/compilers of~\cite{EPRINT:KZMQCP15,CCS:AbdRamSla20} can be applied to updatable SRS SNARKs to obtain SE, not only do they inevitably incur overheads and lead to efficiency loss, we contend that the standard definition of SE does not suffice in the updatable setting.
+While generic lifting techniques/compilers~\cite{EPRINT:KZMQCP15,CCS:AbdRamSla20} can be applied to updatable SRS SNARKs to obtain SE, not only do they inevitably incur overheads and lead to efficiency loss, we contend that the standard definition of SE does not suffice in the updatable setting.
 
 
 \paragraph{Fiat--Shamir.}
