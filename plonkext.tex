@@ -631,15 +631,19 @@ $\npol$ relations. Denote by $\LANG_\REL$ the language determined by $\REL$. Let
 $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
 and the latter \emph{verifier}. We allow our proof system to have a setup,
 i.e.~there is a $\kgen$ algorithm that takes as input the relation description
-$\REL$ and outputs a common reference string $\srs$. We denote by
-$\ip{\prover(\REL, \srs, \inp, \wit)}{\verifier(\REL, \srs,\inp)}$ a
+$\REL$ and outputs a common reference string $\srs$. We assume that the $\srs$
+defines the relation and for universal prove systems, such as Plonk and Sonic,
+we treat both the reference string and the relation as universal.
+
+We denote by
+$\ip{\prover(\srs, \inp, \wit)}{\verifier(\srs,\inp)}$ a
 \emph{transcript} (also called \emph{proof}) $\zkproof$ of a conversation
-between $\prover$ with input $(\REL, \srs, \inp, \wit)$ and $\verifier$ with
-input $(\REL, \srs, \inp)$. We write
-$\ip{\prover (\REL, \srs, \inp, \wit)}{\verifier(\REL, \srs, \inp)} = 1$ if in
+between $\prover$ with input $(\srs, \inp, \wit)$ and $\verifier$ with
+input $(\srs, \inp)$. We write
+$\ip{\prover (\srs, \inp, \wit)}{\verifier(\srs, \inp)} = 1$ if in
 the end of the transcript the verifier $\verifier$ returns $1$ and say that
 $\verifier$ accepts it. We sometimes abuse notation and write
-$\verifier(\REL, \srs, \inp, \zkproof) = 1$ to denote a fact that $\zkproof$ is
+$\verifier(\srs, \inp, \zkproof) = 1$ to denote a fact that $\zkproof$ is
 accepted by the verifier. (This is especially handy when the proof system is
 non-interactive, i.e.~the whole conversation between the prover and verifier
 consists of a single message $\zkproof$ sent by $\prover$).
@@ -655,7 +659,7 @@ knowledge, which are defined as follows:
   \emph{complete} if an honest prover always convinces an honest verifier, that
   is for all $\REL \in \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
 	\[
-		\condprob{\ip{\prover (\REL, \srs, \inp, \wit)}{\verifier (\REL, \srs,
+		\condprob{\ip{\prover (\srs, \inp, \wit)}{\verifier (\srs,
         \inp)} = 1}{\srs \gets \kgen(\REL)} = 1\,.
 	\]
     % \item[Soundness]
@@ -665,17 +669,17 @@ knowledge, which are defined as follows:
   proof for a false statement $\inp \not\in\LANG$. More precisely, for
   all $\REL \in \RELGEN(\secparam)$
 	\[
-      \condprob{\ip{\adv(\REL, \srs, \inp)}{\verifier(\REL, \srs, \inp)} =
-        1}{\srs \gets \kgen(\REL), \inp \gets \adv(\REL, \srs); \inp \not\in
+      \condprob{\ip{\adv(\srs, \inp)}{\verifier(\srs, \inp)} =
+        1}{\srs \gets \kgen(\REL), \inp \gets \adv(\srs); \inp \not\in
         \LANG_\REL} \leq \negl\,;
 	\]
 	\hamid{I suggest to have all conditions on the left, like this:
 \[
-\condprob{\ip{\adv(\REL, \srs, \inp)}{\verifier(\REL, \srs, \inp)} =
+\condprob{\ip{\adv(\srs, \inp)}{\verifier(\srs, \inp)} =
 	1 \land \inp \not\in
-	\LANG_\REL}{\srs \gets \kgen(\REL), \inp \gets \adv(\REL, \srs)} \leq \negl\,;
+	\LANG_\REL}{\srs \gets \kgen(\REL), \inp \gets \adv(\srs)} \leq \negl\,;
 \]	
-}
+} \markulf{12 Sep}{I agree with that.}
 %\end{description}
 Sometimes a stronger notion of soundness is required---except requiring that the
 verifier rejects proofs of statements outside the language, we request from the
@@ -688,13 +692,13 @@ called \emph{knowledge soundness}.%\markulf{Commented out the formal definition 
 % 	\[
 % 	\Pr\left[
 % 		\begin{aligned}
-% 			& \verifier(\REL, \srs, \inp, \zkproof) = 1, \\
+% 			& \verifier(\srs, \inp, \zkproof) = 1, \\
 % 			& \REL(\inp, \wit) = 0
 % 	 \end{aligned}
 % 	  \,\left|\,
 % 	 \begin{aligned}
-% 		 & \srs \gets \kgen(\REL), \inp \gets \adv(\REL, \srs), \\
-% 		 & (\wit, \zkproof) \gets \ext^{\ip{\adv(\REL, \srs, \inp)}{\verifier(\REL, \srs, \inp)}}(\REL, \inp)
+% 		 & \srs \gets \kgen(\REL), \inp \gets \adv(\srs), \\
+% 		 & (\wit, \zkproof) \gets \ext^{\ip{\adv(\srs, \inp)}{\verifier(\srs, \inp)}}(\REL, \inp)
 % 	 \end{aligned}
 % 	 \vphantom{\begin{aligned}
 % 		 \adv (\zkproof) = 1, \\
@@ -725,11 +729,11 @@ called \emph{knowledge soundness}.%\markulf{Commented out the formal definition 
  	$\REL \in \RELGEN(\secparam)$, and adversary $\adv$
  	there exists a $\ppt$ simulator $\simulator$ such that for any $(\inp, \wit) \in \REL$...?}
 	\begin{multline*}
-	  \left\{\ip{\prover(\REL, \srs, \inp, \wit)}{\adv(\REL, \srs, \inp, \wit)}
+	  \left\{\ip{\prover(\srs, \inp, \wit)}{\adv(\srs, \inp, \wit)}
       \,\left|\, \srs \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
           \srs)}\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
 		%\\
-		\left\{\simulator^{\adv}(\REL, \srs, \inp)\,\left|\, \srs \gets
+		\left\{\simulator^{\adv}(\srs, \inp)\,\left|\, \srs \gets
         \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
           \srs)}\vphantom{\simulator^\adv}\right.\right\}\,.
 \end{multline*}
@@ -923,14 +927,14 @@ polynomially many simulated proofs for any statements it wishes.
 	\[
 		\accProb = \Pr \left[
 		\begin{aligned}
-			& \verifier_\fs(\REL, \srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
+			& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
 			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q
 		\end{aligned}
 		\, \left| \,
 		\begin{aligned}
 			& \srs \gets \kgen_\fs(\REL), r \sample \RND{\advse}, \\
 			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
-			\ro} (\REL, \srs; r) 
+			\ro} (\srs; r)
 		\end{aligned}
 		\right.\right]\,,
 	\]
@@ -938,7 +942,7 @@ polynomially many simulated proofs for any statements it wishes.
 	\[
 		\extProb = \Pr \left[
 		\begin{aligned}
-			& \verifier_\fs(\REL, \srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
+			& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
 			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
 			& \REL(\inp_{\advse}, \wit_{\advse}) = 1
 		\end{aligned}
@@ -946,8 +950,8 @@ polynomially many simulated proofs for any statements it wishes.
 		\begin{aligned}
 			& \srs \gets \kgen_\fs(\REL), r \sample \RND{\advse},\\
 			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
-			\ro} (\REL, \srs; r) \\
-			& \wit_{\advse} \gets \ext_\se (\REL, \srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+			\ro} (\srs; r) \\
+			& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
 			Q, Q_\ro) 
 		\end{aligned}
 		\right.\right]
@@ -991,20 +995,20 @@ statement. More precisely,
       \ssndProb =
       \Pr\left[
         \begin{aligned}
-          & \verifier_\fs(\REL, \srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
+          & \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
           & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
           & \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
         \end{aligned}
         \, \left| \,
           \vphantom{\begin{aligned}
-          & \verifier_\fs(\REL, \srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
+          & \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
           & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
           & \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
         \end{aligned}}
       \begin{aligned}
         & \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
         & (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
-          \ro} (\REL, \srs; r)
+          \ro} (\srs; r)
       \end{aligned}
 		\right.  \right]
     \]
@@ -1024,7 +1028,7 @@ statement. More precisely,
       \ssndProb =
       \Pr\left[
         \begin{aligned}
-          & \verifier_\fs(\REL, \srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
+          & \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
           & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
           & \REL(\inp_{\adv}, \wit_{\adv}) = 0
         \end{aligned}
@@ -1032,8 +1036,8 @@ statement. More precisely,
       \begin{aligned}
         & \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
         & (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
-          \ro} (\REL, \srs; r)\\
-        & \wit_{\adv} \gets \ext(\REL, \srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+          \ro} (\srs; r)\\
+        & \wit_{\adv} \gets \ext(\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
 			Q, Q_\ro,) 
       \end{aligned}
 		\right.  \right].
@@ -1149,7 +1153,7 @@ randomness; $Q$ the list of queries submitted by $\advse$ along with simulator
 $\simulator$'s answers; and $Q_\ro$ be the list of all random oracle
 queries made by $\advse$.  All of these are given to the extractor $\ext$ that
 internally runs the forking algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$
-takes $(\REL, \srs, \advse,
+takes $(\srs, \advse,
 %\inp_\advse,
 %\zkproof_\advse, 
 Q, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
@@ -1158,7 +1162,7 @@ h_q^1$.
 pick $h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$
 elements.)  
 
-Next, $\zdv$ internally runs $\advse(\REL, \srs; r)$ and responds to its random
+Next, $\zdv$ internally runs $\advse(\srs; r)$ and responds to its random
 oracle and simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes
 the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
 as it is run on the same random tape and with the same answers from the
@@ -1222,16 +1226,16 @@ by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$
 		\begin{aligned}
 		&	\inp, \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
     a'_{\mu + 1})
-		\gets \adv^\ro(\REL, \srs), \\
+		\gets \adv^\ro(\srs), \\
     & \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
     \ldots, a'_{i}, \\
-		& \verifier^\ro_\fs (\REL, \srs, \inp, \vec{a}) =
-		\verifier^\ro_\fs(\REL, \srs, \inp, \vec{a'}) = 1
+		& \verifier^\ro_\fs (\srs, \inp, \vec{a}) =
+		\verifier^\ro_\fs(\srs, \inp, \vec{a'}) = 1
 		\end{aligned}
 		\ \left|\  
 	\vphantom{\begin{aligned}
 	&	\vec{a} = (a_0, b_0, \ldots, a_j, b_j, a_\mu), \vec{a'} = (a'_0, b'_0, \ldots, a'_j,
-	b'_j a'_\mu) \gets \adv(\REL, \srs), \vec{a} \neq \vec{a'}, \\
+	b'_j a'_\mu) \gets \adv(\srs), \vec{a} \neq \vec{a'}, \\
 	& b_k = b'_k, k \in \range{1, \mu - 1},\\ a_l = a'_l, l \in
 \range{1}{j}, j > i 
 	\end{aligned}}
@@ -1250,19 +1254,19 @@ is upper-bounded by some negligible function $\negl$.
 % 		\begin{aligned}
 %     & \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
 %     \ldots, a'_{i}, \\
-% 		& \verifier (\REL, \srs, \inp, \vec{a}; r) =
-% 		\verifier(\REL, \srs, \inp, \vec{a'}; r) = 1
+% 		& \verifier (\srs, \inp, \vec{a}; r) =
+% 		\verifier(\srs, \inp, \vec{a'}; r) = 1
 % 		\end{aligned}
 % 		\ \left|\  
 % 	\vphantom{\begin{aligned}
 % 	&	\vec{a} = (a_0, b_0, \ldots, a_j, b_j, a_\mu), \vec{a'} = (a'_0, b'_0, \ldots, a'_j,
-% 	b'_j a'_\mu) \gets \adv(\REL, \srs), \vec{a} \neq \vec{a'}, \\
+% 	b'_j a'_\mu) \gets \adv(\srs), \vec{a} \neq \vec{a'}, \\
 % 	& b_k = b'_k, k \in \range{1, \mu - 1},\\ a_l = a'_l, l \in
 % \range{1}{j}, j > i 
 % 	\end{aligned}}
 %   \begin{aligned}
 % &\srs \gets \kgen(\REL) \\
-% &\inp, \vec{a}, \vec{a'} \gets \adv(\REL, \srs) \\
+% &\inp, \vec{a}, \vec{a'} \gets \adv(\srs) \\
 % & r_1, \ldots, r_i \gets H^i\\
 % &    r_{i+1}, \ldots r_\mu \gets H^{\mu-i}, r'_{i+1}, \ldots r'_\mu \gets H^{\mu-i} 
 % \end{aligned}
@@ -1338,7 +1342,7 @@ algorithm from the generalized forking lemma.
 %   % exists an extractor $\extt$ that given an $ (n_1, \ldots, n_\mu)$-tree of
 %   % acceptable transcripts $\tree$ for an instance $\inp \in \LANG_\REL$ output by
 %   % a $\ppt$ tree building adversary $\tdv$ some $\ppt$ adversary
-%   % $\adv(\REL, \srs)$, for $\srs \sample \kgen(\REL)$, outputs $\wit$ such that
+%   % $\adv(\srs)$, for $\srs \sample \kgen(\REL)$, outputs $\wit$ such that
 %   % $\REL(\inp, \wit) = 1$ with probability at least $1 - \epsss$.
 %   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
 %   $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\tree$ be an
@@ -1359,12 +1363,12 @@ algorithm from the generalized forking lemma.
 %   % exists an extractor $\extt$ that given an $ (n_1, \ldots, n_\mu)$-tree of
 %   % acceptable transcripts $\tree$ for an instance $\inp \in \LANG_\REL$ output by
 %   % a $\ppt$ tree building adversary $\tdv$ some $\ppt$ adversary
-%   % $\adv(\REL, \srs)$, for $\srs \sample \kgen(\REL)$, outputs $\wit$ such that
+%   % $\adv(\srs)$, for $\srs \sample \kgen(\REL)$, outputs $\wit$ such that
 %   % $\REL(\inp, \wit) = 1$ with probability at least $1 - \epsss$.
 %   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
 %   $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\tree$ be the
 %   algorithm below that rewinds $\advse^{\simulator_\fs,
-%           \ro} (\REL, \srs; r)$ to produce a $(1, n_k, 1)$-tree of
+%           \ro} (\srs; r)$ to produce a $(1, n_k, 1)$-tree of
 %   transcripts such that none of the challenges in round $k$ were used in
 %   simulated proofs. We say that $\ps$ is $(\epsss, ((1, n_k, 1)))$-forking
 %   special sound if there is an extractor $\extt$ that given a tree produced by
@@ -1376,13 +1380,52 @@ algorithm from the generalized forking lemma.
 % even unbounded, adversaries) all references to that property should be
 % understood as references to its computational version.
 
+
+
+\begin{definition}[$(\eps(\secpar), k,n)$-forking soundness]
+  Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
+  $(2 \mu + 1)$-message proof system for a relation $\REL$.
+
+For any $\ppt$ adversary $\advse^{\simulator_\fs,
+  \ro} (\srs; r)$ we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r, Q, Q_{H})$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
+and simulated proofs. While $Q_{H}$ is consistent with $h_1, \ldots, h_q$, it replays the proofs of $Q$.
+%
+$\zdv$ returns the index $i$ of the
+  random oracle query made for challenge $k$ and the proof $\adv$ returns
+
+  Consider the algorithm $\genforking_{\zdv}^{n}$
+  that rewinds $\zdv$ to produce a $(1,\dots, n,\dots, 1)$-tree of
+  transcripts such that none of the $n$ challenges in round $k$ were used in
+  simulated proofs.
+
+  We say that $\ps$ is $(\eps(\secpar), k,n)$-forking sound if
+  for any PPT adversary the probability that
+  \begin{align*}
+    Pr\left[
+    \REL(\inp, \wit) = 0
+    \,\Biggl|\,
+    \begin{aligned}
+       & \srs \sample \kgen(\REL),
+        r \sample \RND{\advse},
+         (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,\ro} (\srs; r), \\
+       &    (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r,Q, Q_{H}),Q_{H}),
+           \wit \gets \extt(\tree)
+    \end{aligned}
+    \right] \leq \eps(\secpar).
+  \end{align*}
+   List $Q$ contains all $(\inp, \zkproof)$ pairs where
+  $\inp$ is an instance provided to the simulator by the adversary and
+  $\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+  queries to $\ro$ and $\ro$'s answers.
+\end{definition}
+
 \begin{definition}[$(\eps(\secpar), k,n)$-forking soundness]
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
   $(2 \mu + 1)$-message proof system for a relation $\REL$.
 
   Let $\tdv$, called tree creator, be the
   algorithm below that rewinds the $\ppt$ adversary $\advse^{\simulator_\fs,
-          \ro} (\REL, \srs; r)$ to produce a $(1,\dots, n,\dots, 1)$-tree of
+          \ro} (\srs; r)$ to produce a $(1,\dots, n,\dots, 1)$-tree of
   transcripts such that none of the $n$ challenges in round $k$ were used in
   simulated proofs.
 
@@ -1698,7 +1741,7 @@ $\inp_{\advse}$ and proof $\zkproof_{\advse}$, as well as the list $Q$ of
 simulated proofs (and their instances) and the list of random oracle queries and
 responses $Q_\ro$. Then, $\ext$ starts a forking algorithm
 $\genforking^{n}_\zdv(y,h_1, \ldots, h_q)$ for
-$y = (\REL, \srs, \advse, r, \inp_{\advse}, \zkproof_{\advse}, Q)$ where we set
+$y = (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse}, Q)$ where we set
 $h_1, \ldots, h_q$ to be the consecutive queries from list $Q_\ro$. We run
 $\advse$ internally in $\zdv$.% which returns the proof $\zkproof$ and index $i$
 %of the random oracle query that $\advse$ used to answer $\zkproof$'s $k$-th challenge. 
@@ -2374,10 +2417,10 @@ negligible $\eps(\secpar)$.
   adversary outputs either $0$ if it believes that the proof it saw was provided
   by the simulator and $1$ in the other case.
 
-  \ngame{0} In this game $\adv(\REL, \srs)$ picks an instance--witness pair
+  \ngame{0} In this game $\adv(\srs)$ picks an instance--witness pair
   $(\inp, \wit)$ and gets a real proof $\zkproof$ for it.
 
-  \ngame{1} In this game for $\adv(\REL, \srs)$ picks an instance--witness pair
+  \ngame{1} In this game for $\adv(\srs)$ picks an instance--witness pair
   $(\inp, \wit)$ and gets a proof $\zkproof$ that is simulated by a simulator
   $\simulator_\chi$ which utilises for the simulation the SRS trapdoor and
   proceeds as described in \cref{sec:plonk_explained}.
@@ -2407,7 +2450,7 @@ negligible $\eps(\secpar)$.
 	\abs{\prob{\game{0}} - \prob{\game{1}}} \leq \epszk(\secpar).
 \)
 
-\ngame{2} In this game $\adv(\REL, \srs)$ picks an instance--witness pair
+\ngame{2} In this game $\adv(\srs)$ picks an instance--witness pair
 $(\inp, \wit)$ and gets a proof $\zkproof$ simulated by the simulator
 $\simulator$ which proceeds as follows.
 
@@ -2527,7 +2570,7 @@ where $\psi$ compounds of $\xi_i, \xi_j, \zeta_i, \zeta_j, \chz, \ochz, \chi$ wh
 are all known by $\rdv$ and no $b_i$ nor $b_j$.
 Analogously for the triplets and quadruplets and elements dependent on~$\vec{w}$. 
 
-Next the reduction runs the adversary $\adv(\REL, \srs)$ and obtains from $\adv$ an
+Next the reduction runs the adversary $\adv(\srs)$ and obtains from $\adv$ an
 instance--witness pair $(\inp, \wit)$.  $\rdv$ now prepares a simulated proof as follows:
 \begin{compactdesc} 
 \item[Round 1] $\rdv$ computes $\gone{\pa(\chi)}$ using as
@@ -2679,7 +2722,7 @@ randomly $\alpha, \chi \sample \FF_p$ and outputs
         \gtwo{\smallset{\chi^i, \alpha \chi^i}_{i = - \dconst}^{\dconst}},
         \gtar{\alpha} \right)
 	\]
-\ourpar{$\sonic$ prover $\prover(\REL, \srs, \inp, \wit=\va, \vb, \vc)$.}
+\ourpar{$\sonic$ prover $\prover(\srs, \inp, \wit=\va, \vb, \vc)$.}
 \begin{description}
 \item[Round 1] The prover picks randomly randomisers
   $c_{\multconstr + 1}, c_{\multconstr + 2}, c_{\multconstr + 3}, c_{\multconstr
@@ -2719,7 +2762,7 @@ randomly $\alpha, \chi \sample \FF_p$ and outputs
   $\gone{q_{z'}} = \open(\srs, z', \p{s}(u, z'), \p{s}(u, X))$ and outputs $\gone{q_{z'}}$.
 \end{description}
 
-\ourpar{$\sonic$ verifier $\verifier(\REL, \srs, \inp, \zkproof)$.} The verifier
+\ourpar{$\sonic$ verifier $\verifier(\srs, \inp, \zkproof)$.} The verifier
 in \sonic{} runs as subroutines the verifier for the polynomial commitment. That
 is it sets $t' = a'(b' + s') - \p{k}(y)$ and checks the following:
 \begin{equation*}
@@ -3651,7 +3694,7 @@ such that
 \end{equation*}
 
 \ourpar{$\plonk$ prover
-  $\prover(\REL, \srs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot
+  $\prover(\srs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot
       \noofc}})$.}
 \begin{description}
 \item[Round 1] Sample $b_1, \ldots, b_9 \sample \FF_p$; compute
@@ -3737,7 +3780,7 @@ such that
 	Output $\gone{\p{W_{\chz}}(\chi), \p{W_{\chz \omega}}(\chi)}$.
 \end{description}
 
-\ncase{$\plonk$ verifier $\verifier(\REL, \srs, \inp, \zkproof)$}\ \newline
+\ncase{$\plonk$ verifier $\verifier(\srs, \inp, \zkproof)$}\ \newline
 The \plonk{} verifier works as follows
 \begin{description}
 	\item[Step 1] Validate all obtained group elements.
@@ -3818,7 +3861,7 @@ The \plonk{} verifier works as follows
   polynomial at one point).
 \end{description}
 
-\ncase{$\plonk$ simulator $\simulator_\chi(\REL, \srs, \td= \chi, \inp)$}\ \newline
+\ncase{$\plonk$ simulator $\simulator_\chi(\srs, \td= \chi, \inp)$}\ \newline
 The \plonk{} simulator proceeds as an honest prover would, except:
 \begin{enumerate}
   \item In the first round, it sets $\wit = (\wit_i)_{i \in \range{1}{3 \noofc}}
