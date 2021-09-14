@@ -41,7 +41,17 @@
 Zero-knowledge Succinct Non-interactive ARguments of Knowledge (zkSNARKs) are  proof systems that allow a prover to generate
 short and efficiently verifiable proofs which do not reveal anything more than the correctness of a statement.  
 
-The research on SNARKs has been very fruitful since their introduction in the 80s, leading to schemes that are now deployed in practice.The seminal work of~\cite{EC:GGPR13} proposed a pairing-based zk-SNARK for general NP statements with constant-size proofs. This built on previous works of~\cite{IKO07,AC:Groth10a,TCC:Lipmaa12} and led to several new schemes~\cite{TCC:BCIOP13,SP:PHGR13,C:BCGTV13,AC:Lipmaa13,USENIX:BCTV14,EC:Groth16} with very short proof sizes and fast verification. 
+The research on SNARKs has been very fruitful since their introduction in the 80s, leading to schemes that are now deployed in practice.
+
+Preliminary works in the field~\cite{IKO07,AC:Groth10a,TCC:Lipmaa12}.
+lead to a common framework showed by~\cite{EC:GGPR13} to construct a pairing-based zkSNARKs for general NP statements with constant-size proofs.  
+ This framework led to several new schemes~\cite{TCC:BCIOP13,SP:PHGR13,C:BCGTV13,AC:Lipmaa13,USENIX:BCTV14,EC:Groth16} with very short proof sizes and fast verification. 
+ 
+ Most modern SNARK constructions follow a slightly different blueprint: a modular approach that consists of an information theoretic protocol, e.g. an Interactive Oracle Proof (IOP),  that is then compiled via cryptographic 
+ tools to obtain an interactive argument system.  The later is then turned into a SNARK using Fiat-Shamir transformation in the Random Oracle Model (ROM). 
+ In particular, several schemes 
+ $\sonic$~in \cite{CCS:MBKM19}, $\plonk$~\cite{EPRINT:GabWilCio19} or $\textsf{Marlin}$~\cite{EC:CHMMVW20} 
+follow this approach where the information theoretic object is an algebraic variant of IOP, and the cryptographic primitive in the compiler is a polynomial commitment scheme (PC).  
 %This line of work on (pre-processing) zkSNARKs has seen rapid progress with many works proposing significant improvements in efficiency of different parameters of interest like proof size, verifier efficiency, complexity of setup, prover efficiency, among others.
 
 In the last decade, zkSNARKs have been adopted by many real-world applications such as decentralised systems and blockchains to improve scalability and privacy. 
