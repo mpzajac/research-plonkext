@@ -272,13 +272,13 @@ possible actions--when the protocol is non-interactive the prover may
 adapt its strategy based on the random oracle outputs. 
 This is reminiscent of \emph{state restoration} security~\cite{TCC:BenChiSpo16,EPRINT:Holmgren19} which is also about the security loss incurred by FS transformation for knowledge soundness from witness extended emulation.
 
-Here, we directly capture the state restoration capability of the prover in the forking lemma instead of defining an interactive game where the prover can rewind the verifier to an earlier state as is done in~\cite{C:GhoTes20}. 
-The work of~\cite{C:GhoTes20} further shows that state restoration security gives tight security guarantees for the
+Here, we directly capture the state restoration capability of the prover in the forking lemma instead of defining an interactive game where the prover can rewind the verifier to an earlier state as is done in~\cite{C:GhoTes21}. 
+The work of~\cite{C:GhoTes21} further shows that state restoration security gives tight security guarantees for the
 non-interactive versions of Bulletproof~\cite{SP:BBBPWM18} and \sonic~. 
-Our work differs from~\cite{C:GhoTes20} in the following ways. First, they
+Our work differs from~\cite{C:GhoTes21} in the following ways. First, they
 focus on showing security of concrete proof systems, while we show
 a general theorem about the security of a wide class of protocols. 
-Second, they only consider knowledge soundness, while we focus on the stronger notion of simulation extractability. Third, the proof of~\cite{C:GhoTes20} is in the AGM which allows for online extraction, whereas we aim to minimize our reliance on the AGM. In partiular, our main theorem does not rely on AGM and we tackle technical challenges arising from extraction by rewinding. 
+Second, they only consider knowledge soundness, while we focus on the stronger notion of simulation extractability. Third, the proof of~\cite{C:GhoTes21} is in the AGM which allows for online extraction, whereas we aim to minimize our reliance on the AGM. In partiular, our main theorem does not rely on AGM and we tackle technical challenges arising from extraction by rewinding. 
 However, note that we show that concrete protocols satisfy the preconditions of our main theorem in the AGM.
 
 
