@@ -4052,12 +4052,15 @@ The adversary $\bdv$ proceeds as follows:
 \item Now we need to show that proof output by $\adv$ for $\srs_n$ can be
   translated to a proof in $\srs$. This is done similarly to the above. All RO
   queries $\adv$ makes to create the proof are answered honestly by $\bdv$
-  except the query that gives challenge $\chz'$\michals{14.09}{Check!}. Unique
-  response property assures that the output proof will not share the first 3
-  rounds with some simulated proof. Hence we do not need to worry about mismatch
-  between the programmed random oracle and the real random oracle. (That is, the
-  fact that $\bdv$ programmed RO to have challenge $\chz'$ instead of $\chz$
-  will not be noticed.)  Given proof
+  except the query that gives challenge $\chz'$. More precisely, when $\adv$
+  passes a partial transcript produced by $\adv$ to get $\chz'$ it gets RO's
+  answer $\chz$ and set $\chz' = \alpha \chz$.
+
+  Unique response property assures that the output proof will not share the
+  first 3 rounds with some simulated proof. Hence we do not need to worry about
+  mismatch between the programmed random oracle and the real random
+  oracle. (That is, the fact that $\bdv$ programmed RO to have challenge $\chz'$
+  instead of $\chz$ will not be noticed.)  Given proof
   $\zkproof' = \gone{\p{a'} (\alpha \chi), \p{b'} (\alpha \chi), \p{c'} (\alpha
     \chi)} \ldots$ for instance $\inp'$, output by $\adv$ adversary $\bdv$
   proceeds as follows
@@ -4066,8 +4069,39 @@ The adversary $\bdv$ proceeds as follows:
     precisely for known $\wit'_i$ set $\wit_i = \wit'_i \alpha^i$,
     $\wit_{i + n} = \wit'_{i + n} \alpha^i$,
     $\wit_{i + 2n} = \wit'_{i + 2n} \alpha^i$ for $i \in \range{1}{\noofc}$.
-  \item Output 
+  \item Get commitments $\gone{\p{a'} (\alpha \chi), \p{b'} (\alpha \chi), \p{c'} (\alpha
+      \chi)}$ and pass them to the random oracle as $\gone{\p{a} (\chi), \p{b} (\chi),
+    \p{c} (\chi)}$, get challenge $\beta, \gamma$. 
+\item Add the commitments and challenges to the proof $\zkproof$.
+  \item Set $\beta' = \beta$ and $\gamma' = \gamma$. Pass the challenges to $\adv$.
+  \item Get commitment $\gone{\p{z'} (\alpha \chi)}$ and pass it as
+    $\gone{\p{z} (\chi)}$, get challenge $\alpha$.
+  \item Add the commitments and challenges to the proof $\zkproof$.
+  \item Set $\alpha' = \alpha$ and pass it to $\adv$.
+  \item Get commitments
+    $\gone{\p{t'_{lo}} (\alpha \chi), \p{t'_{mid}} (\alpha \chi), \p{t'_{hi}}
+    (\alpha \chi)}$ and pass them the random oracle as
+    $\gone{\p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$. Get
+    challenge $\chz$.
+  \item Add the commitments and challenges to the proof $\zkproof$.
+  \item Set $\chz' = \alpha \chz$ and give $\chz'$ to $\adv$.
+  \item Get evaluations $\p{a'} (\chz'), \ldots$.
+  \item Add evaluations to the proof $\zkproof$.
+  \item Pass the partial transcript to the random oracle and get challenge $\nu$.
+  \item Set $\nu' = \nu$ and pass it to $\adv$.
+  \item Get polynomial openings $\gone{W_{\chz'} (\alpha \chi)}$ and $\gone{W_{{\chz'}
+        \omega} (\alpha \chi)}$.
+  \item Set $\gone{W_\chz (\chi)} = \gone{\alpha W_{\chz'} (\alpha \chi)}$, and
+    $\gone{W_{\chz \omega} (\chi)} = \gone{\alpha W_{{\chz'}
+        \omega} (\alpha \chi)}$.
   \end{enumerate}
 \end{enumerate}
+Since the $\adv$'s proof is acceptable, $\bdv$'s proof is acceptable as
+well. Hence there is an extractor $\ext_\bdv$ that outputs witness $\wit$ given:
+$\bdv$, its randomness $r_\bdv$, $Q$ -- the list of simulated proofs, $Q_\ro$ -- the list
+of random oracle responses.
 
+$\ext_\adv$ is constructed as follows: $r_\adv = r_\bdv$, $Q'$ -- is a list of
+simulated proofs, but w.r.t.~translations $\bdv$ made, $Q'_\ro$ is a list of
+random oracle responses, but, as in the case of $Q'$, with changes introduced by $\bdv$.
 \end{document}
