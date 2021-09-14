@@ -429,27 +429,12 @@ the standard model and specially-sound. That is, there exists an extractor
 $\ext$ which given two accepting transcripts $(a, b, z)$, $(a, b', z')$ for a
 statement $\inp$ can recreate the corresponding witness if $b \neq b'$.
 More formally:
-%\begin{description}
+% \begin{description}
+
 \ourpar{Special soundness.}
 % \hamid{The last (short) sentence looks a little unclear.}
 A sigma protocol $\sigmaprot$ is \emph{specially-sound}
   if for any adversary $\adv$ the probability
-	\[
-		\Pr\left[
-		\begin{aligned}
-				& \wit \gets \ext(\REL, \inp, (a, b, z), (a, b', z')),\\
-				& \REL(\inp, \wit) = 0
-		\end{aligned}
-		\,\left|\,
-		\begin{aligned}
-          & (\inp, (a, b, z), (a, b', z')) \gets \adv(\REL), %\\
-           b \neq b',  \\
-          & \verifier(\REL, \inp, (a, b, z)) = %\\
-            \verifier(\REL, \inp, (a, b', z')) = 1, \\
-		\end{aligned}
-		\right.\right]
-\]
-\hamid{I would suggest this (although I agree this looks uglier):
 \[
 \Pr\left[
 \begin{aligned}
@@ -464,7 +449,6 @@ A sigma protocol $\sigmaprot$ is \emph{specially-sound}
 \end{aligned}
 \right.\right]
 \]
-}
 is upper-bounded by some negligible function $\negl$.
 %\end{description}
 
@@ -477,13 +461,9 @@ element. More precisely,
 $\sigmaprot = (\prover, \verifier, \simulator)$ be a sigma-protocol for
 $\REL \in \RELGEN(\secparam)$ with proofs of the form
 $(a, b, z)$. We say that $\sigmaprot$ has the unique response property if for
-all $\ppt$ algorithms $\adv$, it holds that,
-\[ \condprob{\verifier (\REL, \inp, (a, b, z)) = \verifier (\REL, \inp, (a, b,
-    z')) = 1}{(\inp, a, b, z, z') \gets \adv(\REL), z \neq z'} \leq \negl\,.  \]
-\hamid{I would suggest:
+all $\ppt$ algorithms $\adv$, it holds that,:
 \[ \condprob{\verifier (\REL, \inp, (a, b, z)) = \verifier (\REL, \inp, (a, b,
 	z')) = 1 \land z \neq z'}{(\inp, a, b, z, z') \gets \adv(\REL)} \leq \negl\,.  \]
-}
 %\end{description} 
 If this property holds even against unbounded adversaries, it is called
 \emph{strict}, cf.~\cite{INDOCRYPT:FKMV12}. Later on we call protocols that
@@ -535,13 +515,12 @@ polynomially many simulated proofs for any statements it wishes.
 \chaya{remove reference to forking soundness. quantify for $\ext_\se$}
 \begin{definition}[Forking simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
 	\label{def:simext}
-	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a forking-sound HVZK
-  proof and $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$
-  be $\ps$ transformed by the Fiat--Shamir transform. We say that $\ps_\fs$ is
-  \emph{forking simulation-extractable} with \emph{extraction error} $\nu$ if
-  for any $\ppt$ adversary $\adv$ that is given oracle access to a random oracle
-  $\ro$ and simulator $\simulator_\fs$, and produces an accepting transcript of
-  $\ps$ with probability $\accProb$, that is \hamid{I think a part of the sentence saying ``there exists an extractor $\ext_\se$'' is missing.}
+  Let $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be a
+  HVZK proof system. We say that $\ps_\fs$ is \emph{forking
+    simulation-extractable} with \emph{extraction error} $\nu$ if for any $\ppt$
+  adversary $\adv$ that is given oracle access to a random oracle $\ro$ and
+  simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with
+  probability $\accProb$, where
 	\[
 		\accProb = \Pr \left[
 		\begin{aligned}
@@ -556,7 +535,7 @@ polynomially many simulated proofs for any statements it wishes.
 		\end{aligned}
 		\right.\right]\,,
 	\]
-	probability
+	there exists an extractor $\extse$ such that
 	\[
 		\extProb = \Pr \left[
 		\begin{aligned}
