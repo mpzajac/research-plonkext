@@ -2727,14 +2727,16 @@ of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable 
 
 \begin{corollary}[Forking simulation extractability of $\sonicprotfs$]
   \label{thm:sonicprotfs_se}
-  Assume that $\sonicprot$ is $\ur{1}$ with security $\epsur(\secpar)$, and
-  forking-sound with security $\epsss(\secpar)$. Let
-  $\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be an
-  algebraic adversary that can make up to $q$ random oracle queries, up to $S$
-  simulation oracle queries, and outputs an acceptable proof for $\sonicprotfs$
-  with probability at least $\accProb$. Then $\sonicprotfs$ is forking
-  simulation-extractable with extraction error $\eta = \epsur(\secpar)$. The
-  extraction probability $\extProb$ is at least
+  Assume that $\sonicprot$ is $\ur{1}$ with security
+  $\epsur(\secpar) = \epsbind(\secpar) + \epsop(\secpar)$ -- where
+  $\epsbind (\secpar)$ is polynomial commitment's binding security, $\epsop$ is
+  polynomial commitment unique opening security -- and forking-sound with
+  security $\epsss(\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
+  random oracle. Let $\advse$ be an algebraic adversary that can make up to $q$
+  random oracle queries, up to $S$ simulation oracle queries, and outputs an
+  acceptable proof for $\sonicprotfs$ with probability at least $\accProb$. Then
+  $\sonicprotfs$ is forking simulation-extractable with extraction error
+  $\eta = \epsur(\secpar)$. The extraction probability $\extProb$ is at least
 \[
 		\extProb  \geq \frac{1}{q^{\multconstr + \linconstr}} (\accProb - \epsur(\secpar))^{\multconstr +
 		\linconstr + 1} - \eps(\secpar).
@@ -2788,7 +2790,8 @@ The ideal verifier checks the following equalities
     \sigma_2 \p{z} (\beta_1) & = \p{h_1} (\beta_1) \ZERO_\HHH (\beta_1) +
     \beta_1
     \p{g_1} (\beta_1) + \sigma_1/|\HHH| \\
-    \p{z_A} (\beta_1) \p{z_B} (\beta_1) - \p{z_C} (\beta_1) & = \p{h_0} (\beta_1) \ZERO_\HHH (\beta_1)
+    \p{z_A} (\beta_1) \p{z_B} (\beta_1) - \p{z_C} (\beta_1) & = \p{h_0}
+    (\beta_1) \ZERO_\HHH (\beta_1)
   \end{aligned}
 \end{equation}
 where $\p{g_i} (X), \p{h_i} (X)$, $i \in \range{1}{3}$,
@@ -2808,13 +2811,13 @@ verify that \cref{eq:marlin_eq_2} holds.
 \end{lemma}
 \begin{proof}
   As in previous proofs, we show the property by game hops. Let
-  $M = \p{g_1}, \p{h_1}, \p{g_2}, \p{h_2}, \p{g_3}, \p{h_3}$. That is, $M$ is a
+  $N = \p{g_1}, \p{h_1}, \p{g_2}, \p{h_2}, \p{g_3}, \p{h_3}$. That is, $M$ is a
   set of all polynomials which commitments are send during the protocol after
   Round 1.
 
   \ncase{Game 0} In this game the adversary wins if it breaks evaluation
   binding, unique opening property, or knowledge soundness of one of commitments
-  for polynomials in $M$.
+  for polynomials in $N$.
 
   Probability that a $\ppt$ adversary wins in Game 0, is upper bounded by $6
   \cdot (\epsbind + \epsop + \epsk)$.
@@ -2823,7 +2826,7 @@ verify that \cref{eq:marlin_eq_2} holds.
   $\ur{2}$ property of the protocol
 
   \ncase{Game 0 to Game 1} Probability that the adversary wins in
-  Game 1 but not in Game 0 is $0$. This is since the polynomials in $M$ are
+  Game 1 but not in Game 0 is $0$. This is since the polynomials in $N$ are
   uniquely determined. W.l.o.g.~we analyse probability that adversary is able to
   produce two (different) pairs of polynomials $(\p{h_2}, \p{g_2})$ and $(\p{h'_2},
   \p{g'_2})$ such that
@@ -3036,40 +3039,29 @@ Then the simulator starts the protocol and follows it, except it programs the
 random oracle that on partial transcripts it returns the challenges picked by
 $\simulator$.
 \end{proof}
-% Note that the challenges are picked randomly, hence at this aspect the simulated
-% proof is not distinguishable from a real proof.
 
-
-\iffalse
-\begin{proof}
-  The simulator follows the protocol, except it picks the challenges
-  $\beta_1, \beta_2, \beta_3$ not randomly, but to make sure the verification
-  equation holds. That is, the simulator
-  \begin{enumerate}
-  \item Picks witness $\wit$ at random, sets $\p{z_A}, \p{z_B}$ as polynomials
-    interpolating $A (\inp^\top, \wit^{\top})^{\top}$ and $\p{z_C}$ such that
-    $\p{z_A} (\beta_1) \p{z_B} (\beta_1) - \p{z_C} (\beta_1) = \p{h_0} (\beta_1)
-    \ZERO_\HHH (\beta_1)$. Then it follows the protocol till the point $\beta_1$
-    is sent.
-  \item Instead of picking $\beta_1$ at random it picks it such that
-    $ \p{s} (\beta_1) + \p{r}(\alpha, \beta_1) (\sum_M \eta_M \p{z_M} (\beta_1)
-    ) - \sigma_2 \p{z} (\beta_1) = \p{h_1} (\beta_1) \ZERO_\HHH (\beta_1) +
-    \beta_1 \p{g_1} (\beta_1) + \sigma_1 / |\HHH|$. The it follows the protocol
-    till $\beta_2$ is picked.
-  \item Instead of picking $\beta_2$ at random, it picks it such that
-    $\p{r} (\alpha, \beta_2) \sigma_3 = \p{h_2} (\beta_2) \ZERO_\HHH(\beta_2) +
-    \beta_2 \p{g_2} (\beta_2) + \sigma_2/|\HHH|$ holds. Then it continues till
-    the challenge $\beta_3$ is picked.
-  \item Instead of picking $\beta_3$ at random, it picks it such that
-    $\p{h_3} (\beta_3 ) \ZERO_\KKK (\beta_3) = \p{a}(\beta_3) - \p{b} (\beta_3)
-    (\beta_3 \p{g_3} (\beta_3) + \sigma_3/|\KKK|)$ holds.
-  \end{enumerate}
-\end{proof}
-\fi
 \subsection{From forking soundness and unique response property to forking
   simulation extractability of $\marlinprotfs$}
 \begin{corollary}
-  $\marlinprotfs$ is forking simulation-extractable.
+  Assume that $\marlinprot$ is $\ur{1}$ with security
+  $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and forking-sound
+  with security $\epsfor (\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
+  random oracle. Let $\advse$ be an algebraic adversary that can make up to $q$
+  random oracle queries, up to $S$ simulation oracle queries, and outputs an
+  acceptable proof for $\marlinprotfs$ with probability at least
+  $\accProb$. Then $\marlinprotfs$ is forking simulation-extractable with
+  extraction error $\eta = \epsur(\secpar)$. The extraction probability
+  $\extProb$ is at least
+\[
+  \extProb \geq \frac{1}{q^{\dconst}} (\accProb - \epsur(\secpar))^{\dconst + 1}
+  - \eps(\secpar).
+	\]
+	for some negligible $\eps(\secpar)$, $\dconst$ being, the upper bound of
+  constrains of the system.
+  \[
+    \extProb \geq q^{-(\dconst - 1)} (\accProb - 6 \cdot (\epsbind + \epsop +
+    \epsk))^{\dconst} -\eps(\secpar)\,.
+\]
 \end{corollary}
 
 \section{Further work}
