@@ -393,21 +393,25 @@ $1$-programmable ZK. This follows directly from the proofs of their standard mod
 \cref{lem:plonk_hvzk,lem:sonic_hvzk}.
 
 \oursubsub{Idealised verifier and verification equations} Let
-$(\kgen, \prover, \verifier)$ be a protocol---in this paper, either a proof
-system or a polynomial commitment scheme\hamid{might be unclear as we are defining polynomial commitments as $(\kgen, \com, \open, \verify)$.}. Observe that the $\kgen$ algorithm
-provides an SRS which can be interpreted as a set of group representation of
-polynomials evaluated at trapdoor elements. E.g.~for a trapdoor $\chi$ the SRS
-contains $\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for some polynomials
+$(\kgen, \prover, \verifier)$ be a proof system
+% or a polynomial commitment
+% scheme\hamid{might be unclear as we are defining polynomial commitments as
+%   $(\kgen, \com, \open, \verify)$.}.
+Observe that the $\kgen$ algorithm provides an SRS which can be interpreted as a
+set of group representation of polynomials evaluated at trapdoor
+elements. E.g.~for a trapdoor $\chi$ the SRS contains
+$\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for some polynomials
 $\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. On the other hand, the verifier
 $\verifier$ accepts if a (possibly set of) verification equation
 $\vereq_{\inp, \zkproof}$ (note that the verification equation changes relate to
 the instance $\inp$ and proof $\zkproof$), which can also be interpreted as a
 polynomial in $\FF_p[X]$ whose coefficients depend on messages sent by the
 prover, zeroes at $\chi$. Following \cite{EPRINT:GabWilCio19} we call verifiers
-who checks that $\vereq_{\inp, \zkproof}(\chi) = 0$ \emph{real verifiers} as opposed to
-\emph{ideal verifiers} who accepts only when $\vereq_{\inp, \zkproof}(X) = 0$. That is, while a
-real verifier accepts when a polynomial \emph{evaluates} to zero, an ideal
-verifier accepts only when the polynomial \emph{is} zero.
+who checks that $\vereq_{\inp, \zkproof}(\chi) = 0$ \emph{real verifiers} as
+opposed to \emph{ideal verifiers} who accepts only when
+$\vereq_{\inp, \zkproof}(X) = 0$. That is, while a real verifier accepts when a
+polynomial \emph{evaluates} to zero, an ideal verifier accepts only when the
+polynomial \emph{is} zero.
 
 Although ideal verifiers are impractical, they are very useful in our
 proofs. More precisely, we show that
@@ -419,6 +423,8 @@ proofs. More precisely, we show that
   how to use a malicious $\prover$ to break the underlying security assumption
   (in our case---a variant of $\dlog$.)
 \end{compactenum}
+
+Analogously, idealised verifier can also be defined for polynomial commitment scheme.
 
 \oursubsub{Sigma protocols}
 A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ for a relation
@@ -512,7 +518,7 @@ by requiring that no adversary can produce a valid proof without knowing the
 corresponding witness. This must hold even if the adversary is allowed to see
 polynomially many simulated proofs for any statements it wishes.
 
-\chaya{remove reference to forking soundness. quantify for $\ext_\se$}
+%\chaya{remove reference to forking soundness. quantify for $\ext_\se$}
 \begin{definition}[Forking simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
 	\label{def:simext}
   Let $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be a
@@ -1883,9 +1889,11 @@ $\adv$ who makes up to $S = \poly$ simulation oracle queries.
 
   \ncase{Game 2 to Game 3} Given adversary $\adv$ that wins in Game
   3, but not in Game 2, we show a reduction $\rdv$ that uses $\adv$ and $\tdv$
-  to break hiding property \michals{9.9}{Define hiding property --
-    w.r.t.~masking, adversary can get evaluation at number of points (here --
-    1)} of the commitment scheme. $\rdv$ proceeds as follows:
+  to break hiding property
+  % \michals{9.9}{Define hiding property --
+  %   w.r.t.~masking, adversary can get evaluation at number of points (here --
+  %   1)}
+  of the commitment scheme. $\rdv$ proceeds as follows:
   \begin{enumerate}
   \item Guess the simulation query index $s$ the polynomial(s) come from and
     whether the polynomial is $\p{t_{lo}} (X), \p{t_{mid}} (X)$, or
