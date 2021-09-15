@@ -2761,6 +2761,42 @@ $|\KKK| \leq |\HHH|^2$. Let $b = 3$, the upper-bound of polynomial evaluations
 the prover has to provide for each of the sent polynomials.  Denote by $\dconst$
 an upper-bound for $\smallset{|\HHH| + 2b -1, 2 |\HHH| + b - 1, 6 |\KKK| - 6}$.
 
+The idea of showing that the constraint system is fulfilled is as
+follows. Denote by $\vec{z} = (\inp, \wit)$. The prover computes polynomials
+$\p{z_A} (X), \p{z_B} (X), \p{z_C} (X)$ which encode vectors
+$\vec{A} \vec{z}, \vec{B} \vec{z}, \vec{C} \vec{z}$ and have degree $<
+|\HHH|$. Importantly, when constrains are fulfilled,
+$ \p{z_A} (X) \p{z_B} (X) - \p{z_C} (X) = \p{h_0} (X) \ZERO_\HHH (X)$, for some
+$\p{h_0} (X)$ and vanishing polynomial $\ZERO_\HHH (X)$. The prover sends
+commitments to these polynomials and shows that they have been computed
+correctly. More precisely, it shows that
+\begin{equation}
+  \label{eq:marlin_eq_2}
+\forall \vec{M} \in \smallset{\vec{A}, \vec{B}, \vec{C}},  \forall \kappa \in \HHH,
+\p{z_M} (\kappa) = \sum_{\iota \in \HHH} \vec{M}[\kappa, \iota] \p{z}(\iota).
+\end{equation}
+
+The ideal verifier checks the following equalities
+\begin{equation}
+  \label{eq:marlin_ver_eq}
+  \begin{aligned}
+    \p{h}_3 (\beta_3) \ZERO_\KKK (\beta_3) & = \p{a} (\beta_3) - \p{b} (\beta_3)
+    (\beta_3 \p{g_3} (\beta_3) + \sigma_3 / |\KKK|)\\
+    \p{r}(\alpha, \beta_2) \sigma_3 & = \p{h_2} (\beta_2) \ZERO_\HHH (\beta_2) +
+    \beta_2 \p{g2} (\beta_2) + \sigma_2/|\HHH|\\
+    \p{s}(\beta_1) + \p{r}(\alpha, \beta_1) (\sum_M \eta_M \p{z_M} (\beta_1)) -
+    \sigma_2 \p{z} (\beta_1) & = \p{h_1} (\beta_1) \ZERO_\HHH (\beta_1) +
+    \beta_1
+    \p{g_1} (\beta_1) + \sigma_1/|\HHH| \\
+    \p{z_A} (\beta_1) \p{z_B} (\beta_1) - \p{z_C} (\beta_1) & = \p{h_0} (\beta_1) \ZERO_\HHH (\beta_1)
+  \end{aligned}
+\end{equation}
+where $\p{g_i} (X), \p{h_i} (X)$, $i \in \range{1}{3}$,
+$\p{a} (X), \p{b} (X), \sigma_1, \sigma_2, \sigma_3$ are polynomials and
+variables required by the sumcheck protocol which allows verifier to efficiently
+verify that \cref{eq:marlin_eq_2} holds.
+                         
+
 \subsection{Unique response property}
 \begin{lemma}
   Let $\PCOM$ be a commitment of knowledge with security $\epsk(\secpar)$,
