@@ -66,7 +66,8 @@
 %\title{On Simulation-Extractability of Universal zkSNARKs}
 \title{Non-Malleability of the Fiat--Shamir Transform Revisited for Multi-round SRS-Based Protocols}
 %\author{Anonymous submission to Asiacrypt}
-\author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} 
+\author{Chaya Ganesh \and Hamidreza Khoshakhlagh \and Markulf
+  Kohlweiss\inst{1,2} \and Anca Nitulescu \and Michał Zając\inst{3}} 
 \institute{University of Edinburgh, Edinburgh, UK \and IOHK \\
 \email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London, UK \\
 \email{m.p.zajac@gmail.com}}
@@ -86,21 +87,19 @@ In the ROM, we obtain simulation-extractable and updatable NIZKs. Importantly, w
   % non-interactive zero knowledge (NIZK) proof systems obtained by applying the
   % Fiat--Shamir transformation to a public-coin sigma protocol are simulation
   % sound and simulation extractable under lenient conditions. In this paper, we
-  % extend this work and formally define simulation extractability for protocols
-  % in the random oracle model (ROM) which also use a structured reference string
-  % (SRS). Furthermore, we show that NIZK proof systems obtained by applying the
-  % Fiat--Shamir transformation to a public-coin multi-round interactive protocol
-  % with SRS are simulation-extractable under lenient conditions. A consequence of
-  % our result is that, in the ROM, we obtain non-malleable NIZKs essentially for
-  % free from a much wider class of protocols than Faust et al. Importantly, we
-  % show that two popular zero knowledge SNARKs ---
-  % \plonk{}~\cite{EPRINT:GabWilCio19} and \sonic{}~\cite{CCS:MBKM19} --- are
-  % simulation extractable out-of-the-box.
+  % extend this work and formally define (updatable) simulation extractability for
+  % protocols in the random oracle model (ROM) which also use a structured
+  % reference string (SRS). Furthermore, we show that NIZK proof systems obtained
+  % by applying the Fiat--Shamir transformation to a public-coin multi-round
+  % interactive protocol with SRS are updatable simulation-extractable under
+  % lenient conditions. A consequence of our result is that, in the ROM, we obtain
+  % non-malleable NIZKs essentially for free from a much wider class of protocols
+  % than Faust et al. Importantly, we show that three popular zero knowledge
+  % SNARKs --- \plonk{}~\cite{EPRINT:GabWilCio19}, \sonic{}~\cite{CCS:MBKM19}, and
+  % $\marlin$~\cite{EC:CHMMVW20} --- are updatable simulation extractable.
 \end{abstract}
 
 \input{intro}
-
-
 
 \section{Preliminaries}
 \label{sec:preliminaries}
@@ -257,22 +256,21 @@ infeasible to convince a verifier on a false statement. Here, we focus on proof
 systems that guarantee soundness against $\ppt$ malicious provers.
 
 More precisely, let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of
-$\npol$ relations. Denote by $\LANG_\REL$ the language determined by $\REL$. Let
-$\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
-and the latter \emph{verifier}. We allow our proof system to have a setup,
-i.e.~there is a $\kgen$ algorithm that takes as input the relation description
-$\REL$ and outputs a common reference string $\srs$. We assume that the $\srs$
-defines the relation and for universal prove systems, such as Plonk and Sonic,
-we treat both the reference string and the relation as universal.
+$\npol$ relations. Denote by $\LANG_\REL$ the language determined by $\REL$.
+Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called
+\emph{prover} and the latter \emph{verifier}. We allow our proof system to have
+a setup, i.e.~there is a $\kgen$ algorithm that takes as input the relation
+description $\REL$ and outputs a common reference string $\srs$. We assume that
+the $\srs$ defines the relation and for universal prove systems, such as Plonk
+and Sonic, we treat both the reference string and the relation as universal.
 
-We denote by
-$\ip{\prover(\srs, \inp, \wit)}{\verifier(\srs,\inp)}$ a
+We denote by $\ip{\prover(\srs, \inp, \wit)}{\verifier(\srs,\inp)}$ a
 \emph{transcript} (also called \emph{proof}) $\zkproof$ of a conversation
-between $\prover$ with input $(\srs, \inp, \wit)$ and $\verifier$ with
-input $(\srs, \inp)$. We write
-$\ip{\prover (\srs, \inp, \wit)}{\verifier(\srs, \inp)} = 1$ if in
-the end of the transcript the verifier $\verifier$ returns $1$ and say that
-$\verifier$ accepts it. We sometimes abuse notation and write
+between $\prover$ with input $(\srs, \inp, \wit)$ and $\verifier$ with input
+$(\srs, \inp)$. We write
+$\ip{\prover (\srs, \inp, \wit)}{\verifier(\srs, \inp)} = 1$ if in the end of
+the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$
+accepts it. We sometimes abuse notation and write
 $\verifier(\srs, \inp, \zkproof) = 1$ to denote a fact that $\zkproof$ is
 accepted by the verifier. (This is especially handy when the proof system is
 non-interactive, i.e.~the whole conversation between the prover and verifier
@@ -369,17 +367,55 @@ simulators that requires a trapdoor to simulate and those that do not. We call
 the former \emph{SRS-simulators}. We say that a protocol is zero knowledge in
 the standard model if its simulator does not require the trapdoor.
 
-Occasionally, a weaker version of zero knowledge is sufficient. So called
-\emph{honest verifier zero knowledge} (HVZK) assumes that the verifier's
-challenges are picked at random from some predefined set. Although weaker, this
-definition suffices in many applications. Especially, an interactive
-zero-knowledge proof that is HVZK and \emph{public-coin} (i.e.~the verifier
-outputs as challenges its random coins) can be made non-interactive and
-zero-knowledge in the random oracle model by using the Fiat--Shamir
-transformation.
+% Occasionally, a weaker version of zero knowledge is sufficient. So called
+% \emph{honest verifier zero knowledge} (HVZK) assumes that the verifier's
+% challenges are picked at random from some predefined set. Although weaker, this
+% definition suffices in many applications. Especially, an interactive
+% zero-knowledge proof that is HVZK and \emph{public-coin} (i.e.~the verifier
+% outputs as challenges its random coins) can be made non-interactive and
+% zero-knowledge in the random oracle model by using the Fiat--Shamir
+% transformation.
 
-% In our simulation soundness proof (but not simulation extractability \hamid{you mean forking simulation extractability?}) we need
-% an additional property of the zero-knowledge  proof system which we call $k$-programmable ZK.
+In security reductions in this paper it is sometimes needed to produce
+simulated NIZK proofs without knowning the trapdoor, just by
+programming the random oracle. We call protocols which allow for such kind of
+simulation \emph{trapdoor-less simulatable} (TLS). More precisely,
+
+\begin{definition}[Trapdoor-less simulatable proof system]
+  Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof
+  system and $\ro$ a random oracle. Let $\simulator$ be ana pair of
+  algorithms: $\simulator_\ro$ that takes random oracle queries and
+  answers them, $\simulator_\prover$ that takes as input an SRS $\srs$
+  and instance $\inp$ and outputs a proof $\zkproof_\simulator$.  We
+  call $\ps$ \emph{trapdoor-less simulatable} if for any adversary
+  $\adv$, $\eps_0 \approx \eps_1$, where
+  \begin{align}
+    \eps_b = \Pr\left[
+    \begin{aligned}
+      \adv^{\oracleo_b}(\srs) = 0
+    \end{aligned}
+    \, \left| \,
+    \begin{aligned}
+      \srs \sample \kgen(\secpar)
+    \end{aligned}
+    \right.\right]
+  \end{align}
+  where $\oracleo_b$ takes two types of adversary's queries:
+  \begin{description}
+  \item[random oracle calls:] on $\adv$'s query $x$, $\oracleo_b$
+    responds with $\ro(x)$ if $b = 0$, and with $y \gets
+    \simulator_\ro(\srs, x)$, if $b = 1$.
+  \item[proof calls:] on $\adv$'s query $\inp, \wit$ responds
+  with a real proof $\zkproof_\prover \gets
+  \prover(\srs, \inp, \wit)$ if $b = 0q$ or a simulated proof $\zkproof_\simulator \gets \simulator (\srs,
+  \inp)$ if $b = 1$. 
+  \end{description} 
+\end{definition}
+
+% In our simulation soundness proof (but not simulation extractability
+% \hamid{you mean forking simulation extractability?}) we need an
+% additional property of the zero-knowledge proof system which we call
+% $k$-programmable ZK.
 \begin{definition}[$k$-programmable ZK]
   \label{def:kzk}
   Let $\ps$ be a $(2\mu + 1)$-message ZK proof system and let $\ps_\fs$ be its
@@ -392,9 +428,10 @@ transformation.
     challenges from round $k$ to $\mu + 1$.
   \end{compactenum}
 \end{definition}
-We note that $\plonkprot$ is $2$-programmable ZK and $\sonicprot$ is
-$1$-programmable ZK. This follows directly from the proofs of their standard model zero-knowledge property in
-\cref{lem:plonk_hvzk,lem:sonic_hvzk}.
+We note that $\plonk$ is $2$-programmable ZK, $\sonic$ is $1$-programmable ZK,
+and $\marlin$ is $1$-programmable ZK. This follows directly from the proofs of
+their standard model zero-knowledge property in
+\cref{lem:plonk_hvzk,lem:sonic_hvzk, lem:marlin_hvzk}. 
 
 \oursubsub{Idealised verifier and verification equations} Let
 $(\kgen, \prover, \verifier)$ be a proof system
@@ -1011,7 +1048,7 @@ $\zdv$ returns the index $i$ of the
   We say that $\ps$ is $(\eps(\secpar), k,n)$-forking sound if
   for any PPT adversary the probability that
   \begin{align*}
-    Pr\left[
+    \Pr\left[
     \REL(\inp, \wit) = 0
     \,\Biggl|\,
     \begin{aligned}
@@ -3031,6 +3068,7 @@ verify that \cref{eq:marlin_eq_2} holds.
 
 \subsection{Honest-verifier zero knowledge}
 \begin{lemma}
+  \label{lem:marlin_hvzk}
   $\marlinprot$ is honest verifier zero-knowledge.
 \end{lemma}
 \begin{proof}
@@ -4290,3 +4328,8 @@ $\ext_\adv$ is constructed as follows: $r_\adv = r_\bdv$, $Q'$ -- is a list of
 simulated proofs, but w.r.t.~translations $\bdv$ made, $Q'_\ro$ is a list of
 random oracle responses, but, as in the case of $Q'$, with changes introduced by $\bdv$.
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
