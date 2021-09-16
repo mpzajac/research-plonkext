@@ -66,7 +66,8 @@
 %\title{On Simulation-Extractability of Universal zkSNARKs}
 \title{Non-Malleability of the Fiat--Shamir Transform Revisited for Multi-round SRS-Based Protocols}
 %\author{Anonymous submission to Asiacrypt}
-\author{Markulf Kohlweiss\inst{1,2} \and Michał Zając\inst{3}} 
+\author{Chaya Ganesh \and Hamidreza Khoshakhlagh \and Markulf
+  Kohlweiss\inst{1,2} \and Anca Nitulescu \and Michał Zając\inst{3}} 
 \institute{University of Edinburgh, Edinburgh, UK \and IOHK \\
 \email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London, UK \\
 \email{m.p.zajac@gmail.com}}
@@ -253,22 +254,21 @@ infeasible to convince a verifier on a false statement. Here, we focus on proof
 systems that guarantee soundness against $\ppt$ malicious provers.
 
 More precisely, let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of
-$\npol$ relations. Denote by $\LANG_\REL$ the language determined by $\REL$. Let
-$\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
-and the latter \emph{verifier}. We allow our proof system to have a setup,
-i.e.~there is a $\kgen$ algorithm that takes as input the relation description
-$\REL$ and outputs a common reference string $\srs$. We assume that the $\srs$
-defines the relation and for universal prove systems, such as Plonk and Sonic,
-we treat both the reference string and the relation as universal.
+$\npol$ relations. Denote by $\LANG_\REL$ the language determined by $\REL$.
+Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called
+\emph{prover} and the latter \emph{verifier}. We allow our proof system to have
+a setup, i.e.~there is a $\kgen$ algorithm that takes as input the relation
+description $\REL$ and outputs a common reference string $\srs$. We assume that
+the $\srs$ defines the relation and for universal prove systems, such as Plonk
+and Sonic, we treat both the reference string and the relation as universal.
 
-We denote by
-$\ip{\prover(\srs, \inp, \wit)}{\verifier(\srs,\inp)}$ a
+We denote by $\ip{\prover(\srs, \inp, \wit)}{\verifier(\srs,\inp)}$ a
 \emph{transcript} (also called \emph{proof}) $\zkproof$ of a conversation
-between $\prover$ with input $(\srs, \inp, \wit)$ and $\verifier$ with
-input $(\srs, \inp)$. We write
-$\ip{\prover (\srs, \inp, \wit)}{\verifier(\srs, \inp)} = 1$ if in
-the end of the transcript the verifier $\verifier$ returns $1$ and say that
-$\verifier$ accepts it. We sometimes abuse notation and write
+between $\prover$ with input $(\srs, \inp, \wit)$ and $\verifier$ with input
+$(\srs, \inp)$. We write
+$\ip{\prover (\srs, \inp, \wit)}{\verifier(\srs, \inp)} = 1$ if in the end of
+the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$
+accepts it. We sometimes abuse notation and write
 $\verifier(\srs, \inp, \zkproof) = 1$ to denote a fact that $\zkproof$ is
 accepted by the verifier. (This is especially handy when the proof system is
 non-interactive, i.e.~the whole conversation between the prover and verifier
@@ -388,9 +388,10 @@ transformation.
     challenges from round $k$ to $\mu + 1$.
   \end{compactenum}
 \end{definition}
-We note that $\plonkprot$ is $2$-programmable ZK and $\sonicprot$ is
-$1$-programmable ZK. This follows directly from the proofs of their standard model zero-knowledge property in
-\cref{lem:plonk_hvzk,lem:sonic_hvzk}.
+We note that $\plonk$ is $2$-programmable ZK, $\sonic$ is $1$-programmable ZK,
+and $\marlin$ is $1$-programmable ZK. This follows directly from the proofs of
+their standard model zero-knowledge property in
+\cref{lem:plonk_hvzk,lem:sonic_hvzk, lem:marlin_hvzk}. 
 
 \oursubsub{Idealised verifier and verification equations} Let
 $(\kgen, \prover, \verifier)$ be a proof system
@@ -1007,7 +1008,7 @@ $\zdv$ returns the index $i$ of the
   We say that $\ps$ is $(\eps(\secpar), k,n)$-forking sound if
   for any PPT adversary the probability that
   \begin{align*}
-    Pr\left[
+    \Pr\left[
     \REL(\inp, \wit) = 0
     \,\Biggl|\,
     \begin{aligned}
@@ -3027,6 +3028,7 @@ verify that \cref{eq:marlin_eq_2} holds.
 
 \subsection{Honest-verifier zero knowledge}
 \begin{lemma}
+  \label{lem:marlin_hvzk}
   $\marlinprot$ is honest verifier zero-knowledge.
 \end{lemma}
 \begin{proof}
