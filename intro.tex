@@ -175,21 +175,23 @@ sufficient that this property is met by $\plonkprot$ for $i = 2$. Since
 \sonic{}'s prover is deterministic from the second message on, it is $\ur{1}$.
 
 
-\oursubsub{HVZK.}
-In order to invoke our main theorem on $\plonkprotfs$ and
-$\sonicprotfs$ to conclude USE, we also need to show that (interactive) $\plonkprot$ and
-$\sonicprot$ are HVZK in the standard model. Although both $\sonic$ and $\plonk$ are
-zero-knowledge, their simulators utilize trapdoors. However, for our reduction,
-we need simulators that rely only on
-reordering the messages and picking suitable verifier challenges, without knowing the SRS trapdoor.
-That is, any
-PPT party should be able to produce a simulated proof by its own in a trapdoor-less wat. (Note that
-this property does not necessary break soundness of the protocol as the
-simulator is required only to produce a transcript and is not involved in a real
-conversation with a real verifier). We show simulators
-for $\plonkprotfs$ and $\sonicprotfs$ that rely only on the programmability of
-the RO, where programmability is only needed from some round $i$ onwards.
-\chaya{revisit this. is HVZK for the interactive protocol? then why programming? it might be a good idea to elaborate on why a trapdoor-based simulator does not work in the reduction. I am not sure I have clarity on this.}
+\oursubsub{HVZK.}  In order to invoke our main theorem on $\plonkprotfs$ and
+$\sonicprotfs$ to conclude USE, we also need to show that (interactive)
+$\plonkprot$ and $\sonicprot$ are HVZK in the standard model. Although both
+$\sonic$ and $\plonk$ are zero-knowledge, their simulators utilize
+trapdoors. However, for our reduction, we need simulators that rely only on
+reordering the messages and picking suitable verifier challenges, without
+knowing the SRS trapdoor.  That is, any PPT party should be able to produce a
+simulated proof by its own in a trapdoor-less wat. (Note that this property does
+not necessary break soundness of the protocol as the simulator is required only
+to produce a transcript and is not involved in a real conversation with a real
+verifier). We show simulators for $\plonkprotfs$ and $\sonicprotfs$ that rely
+only on the programmability of the RO, where programmability is only needed from
+some round $i$ onwards.  \chaya{revisit this. is HVZK for the interactive
+  protocol? then why programming? it might be a good idea to elaborate on why a
+  trapdoor-based simulator does not work in the reduction. I am not sure I have
+  clarity on this.}
+\michals{16.09}{maybe we should just define Trapdoor-less simulatable (TLS) protocols?}
 
 \oursubsub{Generalisation of the general forking lemma.} 
 Consider an interactive $3$-message special-sound protocol $\ps$ and its

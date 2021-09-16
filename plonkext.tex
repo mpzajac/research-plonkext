@@ -83,21 +83,19 @@
   non-interactive zero knowledge (NIZK) proof systems obtained by applying the
   Fiat--Shamir transformation to a public-coin sigma protocol are simulation
   sound and simulation extractable under lenient conditions. In this paper, we
-  extend this work and formally define simulation extractability for protocols
-  in the random oracle model (ROM) which also use a structured reference string
-  (SRS). Furthermore, we show that NIZK proof systems obtained by applying the
-  Fiat--Shamir transformation to a public-coin multi-round interactive protocol
-  with SRS are simulation-extractable under lenient conditions. A consequence of
-  our result is that, in the ROM, we obtain non-malleable NIZKs essentially for
-  free from a much wider class of protocols than Faust et al. Importantly, we
-  show that two popular zero knowledge SNARKs ---
-  \plonk{}~\cite{EPRINT:GabWilCio19} and \sonic{}~\cite{CCS:MBKM19} --- are
-  simulation extractable out-of-the-box.
+  extend this work and formally define (updatable) simulation extractability for
+  protocols in the random oracle model (ROM) which also use a structured
+  reference string (SRS). Furthermore, we show that NIZK proof systems obtained
+  by applying the Fiat--Shamir transformation to a public-coin multi-round
+  interactive protocol with SRS are updatable simulation-extractable under
+  lenient conditions. A consequence of our result is that, in the ROM, we obtain
+  non-malleable NIZKs essentially for free from a much wider class of protocols
+  than Faust et al. Importantly, we show that three popular zero knowledge
+  SNARKs --- \plonk{}~\cite{EPRINT:GabWilCio19}, \sonic{}~\cite{CCS:MBKM19}, and
+  $\marlin$~\cite{EC:CHMMVW20} --- are updatable simulation extractable.
 \end{abstract}
 
 \input{intro}
-
-
 
 \section{Preliminaries}
 \label{sec:preliminaries}
