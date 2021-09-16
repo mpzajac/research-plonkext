@@ -36,13 +36,12 @@
 Zero-knowledge proof systems that allow a prover to convince a verifier of a statement without revealing anything beyond the truth of the statement have applications in cryptography and theory of computation~\cite{FOCS:GolMicWig86,STOC:Fortnow87,C:BGGHKMR88}. 
 When restricted to computationally sound proofs, called \emph{argument systems}, proof length can be shorter than the length of the witness~\cite{brassard1988minimum}. 
 Zero-knowledge Succinct Non-interactive ARguments of Knowledge (zkSNARKs) are zero-knowledge argument systems that additionally have a succinctness property -- small proof sizes and fast verification. 
-Since their introduction in~\cite{micali1994cs}, zk-SNARKs have been a powerful and versatile design tool for secure cryptographic protocols.
+Since their introduction in~\cite{micali1994cs}, zk-SNARKs have been a powerful and versatile design tool for secure cryptographic protocols. They became particularly relevant for blockchain applications that demand short proofs and fast verification, such as privacy-preserving cryptocurrencies~\cite{SP:BCGGMT14} in Zcash and scalable and private smart contracts in Ethereum\footnote{\url{https://z.cash/},\url{https://ethereum.org}}.
 
-Motivated by applications such as privacy-preserving cryptocurrencies~\cite{SP:BCGGMT14}, and uses in the context of Zcash, Ethereum system\footnote{Zcash \url{https://z.cash/}, Ethereum \url{https://ethereum.org}} for privacy and scalability of smart contracts that demand short proofs and fast verification, there has been a series of works on constructing zkSNARKs. 
 The work of~\cite{EC:GGPR13} proposed a preprocessing zk-SNARK for general NP statements phrased in the language of Quadratic Span Programs (QSP) and Quadratic Arithmetic Programs (QAP) for Boolean and arithmetic circuits respectively. This built on previous works of~\cite{IKO07,AC:Groth10a,TCC:Lipmaa12} and led to several works~\cite{TCC:BCIOP13,SP:PHGR13,C:BCGTV13,AC:Lipmaa13,USENIX:BCTV14,EC:Groth16} with very short proof sizes and fast verification. 
 The line of work on pre-processing zkSNARKs has seen rapid progress with many works proposing significant improvements in efficiency of different parameters like proof size, verifier efficiency, complexity of setup etc.
-Most modern zkSNARK constructions follow a rather modular blueprint that consists of designing an information theoretic interactive protocol, e.g. an Interactive Oracle Proof (IOP), that is then compiled via cryptographic tools to obtain an interactive argument system.  This is then turned into a zkSNARK using the Fiat-Shamir transformation in the Random Oracle Model (ROM). 
-In particular, several schemes 
+Most modern zkSNARK constructions follow a modular blueprint that involves the design of an information theoretic interactive protocol, e.g. an Interactive Oracle Proof (IOP), that is then compiled via cryptographic tools to obtain an interactive argument system.  This is then turned into a zkSNARK using the Fiat-Shamir transformation in the Random Oracle Model (ROM).
+In particular, several schemes such as
 $\sonic$~in \cite{CCS:MBKM19}, $\plonk$~\cite{EPRINT:GabWilCio19}, $\textsf{Marlin}$~\cite{EC:CHMMVW20} 
 follow this approach where the information theoretic object is an algebraic variant of IOP, and the cryptographic primitive in the compiler is a polynomial commitment scheme (PC).  
 
@@ -293,3 +292,8 @@ However, note that we show that concrete protocols satisfy the preconditions of 
 
 
 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "plonkext"
+%%% End:
