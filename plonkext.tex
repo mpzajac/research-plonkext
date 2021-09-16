@@ -363,17 +363,55 @@ simulators that requires a trapdoor to simulate and those that do not. We call
 the former \emph{SRS-simulators}. We say that a protocol is zero knowledge in
 the standard model if its simulator does not require the trapdoor.
 
-Occasionally, a weaker version of zero knowledge is sufficient. So called
-\emph{honest verifier zero knowledge} (HVZK) assumes that the verifier's
-challenges are picked at random from some predefined set. Although weaker, this
-definition suffices in many applications. Especially, an interactive
-zero-knowledge proof that is HVZK and \emph{public-coin} (i.e.~the verifier
-outputs as challenges its random coins) can be made non-interactive and
-zero-knowledge in the random oracle model by using the Fiat--Shamir
-transformation.
+% Occasionally, a weaker version of zero knowledge is sufficient. So called
+% \emph{honest verifier zero knowledge} (HVZK) assumes that the verifier's
+% challenges are picked at random from some predefined set. Although weaker, this
+% definition suffices in many applications. Especially, an interactive
+% zero-knowledge proof that is HVZK and \emph{public-coin} (i.e.~the verifier
+% outputs as challenges its random coins) can be made non-interactive and
+% zero-knowledge in the random oracle model by using the Fiat--Shamir
+% transformation.
 
-% In our simulation soundness proof (but not simulation extractability \hamid{you mean forking simulation extractability?}) we need
-% an additional property of the zero-knowledge  proof system which we call $k$-programmable ZK.
+In security reductions in this paper it is sometimes needed to produce
+simulated NIZK proofs without knowning the trapdoor, just by
+programming the random oracle. We call protocols which allow for such kind of
+simulation \emph{trapdoor-less simulatable} (TLS). More precisely,
+
+\begin{definition}[Trapdoor-less simulatable proof system]
+  Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof
+  system and $\ro$ a random oracle. Let $\simulator$ be ana pair of
+  algorithms: $\simulator_\ro$ that takes random oracle queries and
+  answers them, $\simulator_\prover$ that takes as input an SRS $\srs$
+  and instance $\inp$ and outputs a proof $\zkproof_\simulator$.  We
+  call $\ps$ \emph{trapdoor-less simulatable} if for any adversary
+  $\adv$, $\eps_0 \approx \eps_1$, where
+  \begin{align}
+    \eps_b = \Pr\left[
+    \begin{aligned}
+      \adv^{\oracleo_b}(\srs) = 0
+    \end{aligned}
+    \, \left| \,
+    \begin{aligned}
+      \srs \sample \kgen(\secpar)
+    \end{aligned}
+    \right.\right]
+  \end{align}
+  where $\oracleo_b$ takes two types of adversary's queries:
+  \begin{description}
+  \item[random oracle calls:] on $\adv$'s query $x$, $\oracleo_b$
+    responds with $\ro(x)$ if $b = 0$, and with $y \gets
+    \simulator_\ro(\srs, x)$, if $b = 1$.
+  \item[proof calls:] on $\adv$'s query $\inp, \wit$ responds
+  with a real proof $\zkproof_\prover \gets
+  \prover(\srs, \inp, \wit)$ if $b = 0q$ or a simulated proof $\zkproof_\simulator \gets \simulator (\srs,
+  \inp)$ if $b = 1$. 
+  \end{description} 
+\end{definition}
+
+% In our simulation soundness proof (but not simulation extractability
+% \hamid{you mean forking simulation extractability?}) we need an
+% additional property of the zero-knowledge proof system which we call
+% $k$-programmable ZK.
 \begin{definition}[$k$-programmable ZK]
   \label{def:kzk}
   Let $\ps$ be a $(2\mu + 1)$-message ZK proof system and let $\ps_\fs$ be its
@@ -4286,3 +4324,8 @@ $\ext_\adv$ is constructed as follows: $r_\adv = r_\bdv$, $Q'$ -- is a list of
 simulated proofs, but w.r.t.~translations $\bdv$ made, $Q'_\ro$ is a list of
 random oracle responses, but, as in the case of $Q'$, with changes introduced by $\bdv$.
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
