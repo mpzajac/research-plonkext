@@ -33,8 +33,8 @@
 
 
 \section{Introduction}
-Zero-knowledge proof systems that allow a prover to convince a verifier of a statement without revealing anything beyond the truth of the statement have applications in cryptography and theory of computation~\cite{FOCS:GolMicWig86,STOC:Fortnow87,C:BGGHKMR88}. 
-When restricted to computationally sound proofs, called \emph{argument systems}, proof length can be shorter than the length of the witness~\cite{brassard1988minimum}. 
+Zero-knowledge proof systems that allow a prover to convince a verifier of a statement without revealing anything beyond the truth of the statement have applications in cryptography and the theory of computation~\cite{FOCS:GolMicWig86,STOC:Fortnow87,C:BGGHKMR88}.
+When restricted to computationally sound proofs, called \emph{argument systems}, proof length can be shorter than the length of the witness~\cite{brassbard1988minimum}.
 Zero-knowledge Succinct Non-interactive ARguments of Knowledge (zkSNARKs) are zero-knowledge argument systems that additionally have a succinctness property -- small proof sizes and fast verification. 
 Since their introduction in~\cite{micali1994cs}, zk-SNARKs have been a powerful and versatile design tool for secure cryptographic protocols. They became particularly relevant for blockchain applications that demand short proofs and fast verification, such as privacy-preserving cryptocurrencies~\cite{SP:BCGGMT14} in Zcash and scalable and private smart contracts in Ethereum\footnote{\url{https://z.cash/},\url{https://ethereum.org}}.
 
@@ -42,7 +42,7 @@ The work of~\cite{EC:GGPR13} proposed a preprocessing zk-SNARK for general NP st
 The line of work on pre-processing zkSNARKs has seen rapid progress with many works proposing significant improvements in efficiency of different parameters like proof size, verifier efficiency, complexity of setup etc.
 Most modern zkSNARK constructions follow a modular blueprint that involves the design of an information theoretic interactive protocol, e.g. an Interactive Oracle Proof (IOP), that is then compiled via cryptographic tools to obtain an interactive argument system.  This is then turned into a zkSNARK using the Fiat-Shamir transformation in the Random Oracle Model (ROM).
 In particular, several schemes such as
-$\sonic$~in \cite{CCS:MBKM19}, $\plonk$~\cite{EPRINT:GabWilCio19}, $\textsf{Marlin}$~\cite{EC:CHMMVW20} 
+$\sonic$~\cite{CCS:MBKM19}, $\plonk$~\cite{EPRINT:GabWilCio19}, and $\textsf{Marlin}$~\cite{EC:CHMMVW20}
 follow this approach where the information theoretic object is an algebraic variant of IOP, and the cryptographic primitive in the compiler is a polynomial commitment scheme (PC).  
 
 \paragraph{Simulation extractability.}
