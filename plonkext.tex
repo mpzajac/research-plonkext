@@ -4327,6 +4327,29 @@ of random oracle responses.
 $\ext_\adv$ is constructed as follows: $r_\adv = r_\bdv$, $Q'$ -- is a list of
 simulated proofs, but w.r.t.~translations $\bdv$ made, $Q'_\ro$ is a list of
 random oracle responses, but, as in the case of $Q'$, with changes introduced by $\bdv$.
+
+\begin{theorem}
+Let $\PS$ be an AHP proof system instantiated using KZG commitment scheme. Let $\bdv$ be an adversary who can program random oracle. Then $\bdv$ can move proofs from SRS $\srs$ to $\srs'$ if it knows all partial trapdoors between them.
+\end{theorem}
+\begin{proof}
+  Let $\srs$ be an SRS created by using trapdoor $\chi$ and let
+  $\srs'$ be created using trapdoor $\alpha \chi$. Although $\chi$ may
+  not be known to $\bdv$, $\alpha$ is known. Note that a zkSNARK
+  compiled from a AHP consists of the following:
+  \begin{itemize}
+  \item Polynomials $f^i$ sent by the prover;
+  \item Challenges $\beta_i$ sent by the verifier;
+  \item Evaluation challenge $\chz$ sent by the verifier;
+  \item Polynomial evaluations at $\chz$ and proofs of correct evaluations sent by the prover.
+  \end{itemize}
+  In the following we denote polynomials sent w.r.t.~SRS $\srs$ by
+  $f_i$, challenges by $\beta_i$ and evaluation challenge by
+  $\chz$. Openings are denoted by $W$. For SRS $\srs'$ we denote
+  polynomials by $f'_i$, challenges by $\beta'_i$ and $\chz'$ and
+  openings by $W'$.
+  
+  $\bdv$ moves proofs as follows. For every commitent $c$ output by  
+\end{proof}
 \end{document}
 
 %%% Local Variables:
