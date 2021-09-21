@@ -263,6 +263,12 @@
 \newcommand{\forking}{\pcalgostyle{F}}
 \newcommand{\genforking}{\pcalgostyle{GF}}
 
+%moving proofs and instances
+\newcommand{\MoveInstanceForward}{\pcalgostyle{MoveInstanceForward}}
+\newcommand{\MoveInstanceBackward}{\pcalgostyle{MoveInstanceBackward}}
+\newcommand{\MoveProofForward}{\pcalgostyle{MoveProofForward}}
+\newcommand{\MoveProofBackward}{\pcalgostyle{MoveProofBackward}}
+
 %colors
 \definecolor{darkmagenta}{rgb}{0.5,0,0.5}
 \definecolor{lightmagenta}{rgb}{1,0.85,1}
@@ -276,7 +282,7 @@
 
 %comments
 \DeclareRobustCommand{\markulf}[2]  {{\color{darkmagenta}\hl{\scriptsize\textsf{Markulf #1:} #2}}}
-\DeclareRobustCommand{\michals}[2]  {{\color{blueish}\sethlcolor{pinkish}\hl{\scriptsize\textsf{Michal #1:} #2}}}
+\DeclareRobustCommand{\michals}[2]  {{\color{blueish}{\scriptsize\textsf{Michal #1:}} #2}}
 \newcommand{\chaya}[1]{\textcolor{magenta}{[{\footnotesize {\bf Chaya:} { {#1}}}]}}
 \newcommand{\hamid}[1]{\textcolor{blue}{[{\footnotesize {\bf Hamid:} { {#1}}}]}}
 \newcommand{\task}[2]{\todo[author=\textbf{Task},inline]{({\textit{#1}}) #2}}
