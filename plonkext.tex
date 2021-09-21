@@ -4375,10 +4375,15 @@ random oracle responses, but, as in the case of $Q'$, with changes introduced by
   \item On $\bdv$'s proof $(\srs', \inp', \zkproof')$, $\adv$ proceeds as follows:
     \begin{enumerate}
     \item $(\inp, \wit) \gets \MoveInstanceBackward(\srs', \inp', \wit')$
-    \item $\zkproof \gets \MoveProofBAckward (\srs', \inp', \zkproof')$
+    \item $\zkproof \gets \MoveProofBackward (\srs', \inp', \zkproof')$
     \item Return $(\srs, \inp, \zkproof)$
     \end{enumerate}
   \item On $\bdv$'s proof $(\srs, \inp, \zkproof)$, $\adv$ returns $(\srs, \inp, \zkproof)$.
+  \end{itemize}
+
+  Since $\proofsystem$ is FSE there exists an extractor $\ext_\adv(r_\adv, Q_\adv, Q_\adv^\ro)$ for $\adv$ that returns witness $\wit$ such that $\REL(\srs, \inp, \wit) = 1$. We show existance of extractor $\ext_\bdv$. More precisely $\ext_\bdv (r_\bdv, Q_\bdv, Q^\ro_\bdv, Q^\srs_\bdv)$ proceeds as follows:
+  \begin{itemize}
+  \item Set $r_\adv = r_\bdv$, 
   \end{itemize}
 
   \michals{21.09}{Need to argue that $(\srs, \inp, \zkproof)$ returned by $\adv$ is not in $Q$ (use updatable unique response property to that end.)}
