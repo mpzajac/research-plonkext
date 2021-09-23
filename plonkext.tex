@@ -563,7 +563,7 @@ polynomially many simulated proofs for any statements it wishes.
 \begin{definition}[Forking simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
 	\label{def:simext}
   Let $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be a
-  HVZK proof system. We say that $\ps_\fs$ is \emph{forking
+  HVZK proof system\hamid{$\ps_\fs$ is the Fiat-Shamir variant of the underlying proof system. So maybe we mean the underlying proof system is HVZK?}. We say that $\ps_\fs$ is \emph{forking
     simulation-extractable} with \emph{extraction error} $\nu$ if for any $\ppt$
   adversary $\adv$ that is given oracle access to a random oracle $\ro$ and
   simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with
@@ -1287,7 +1287,7 @@ We conjecture that based on the recent results on state restoration soundness~\c
   \label{thm:se}
   Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
   $(2 \mu + 1)$-message proof system for $\RELGEN(\secparam)$ that is honest
-  verifier zero-knowledge in the standard model\footnote{Crucially, we require
+  verifier zero-knowledge in the standard model\hamid{Is this different from Trapdoor-less simulatable proof system (def. 1)?}\footnote{Crucially, we require
     that one can provide an indistinguishable simulated proof without any
     additional knowledge, as e.g~knowledge of a SRS trapdoor.}, has $\ur{k}$
   property with security $\epsur(\secpar)$, and is $(\epss(\secpar), k, n)$-forking sound.
