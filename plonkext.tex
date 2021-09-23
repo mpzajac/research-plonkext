@@ -4330,8 +4330,19 @@ random oracle responses, but, as in the case of $Q'$, with changes introduced by
 
 \michals{20.09}{The following is for the setting when there is anhonest SRS at the begining and then the adversary updates it once.}
 
+\newcommand{\inpa}{\inp_\adv}
+\newcommand{\inpb}{\inp_\bdv}
+\newcommand{\zkproofa}{\zkproof_\adv}
+\newcommand{\zkproofb}{\zkproof_\bdv}
+\newcommand{\tra}{\trans_\adv}
+\newcommand{\trb}{\trans_\bdv}
+
 \begin{theorem}
-  Let $\proofsystem$ be an FSE zkSNARK compiled from an AHP proof system with KZG as the commitment scheme. Then $\proofsystem$ is also USE.
+  Let $\proofsystem$ be an $(2\mu + 1)$-message $\ur{k}$ FSE zkSNARK
+  compiled from an AHP proof system with KZG as the commitment
+  scheme. Let $i_\chz$ be an index of a round where $\prover$ gets its
+  evaluation challenge $\chz$, $i_\chz > k$. Then $\proofsystem$ is
+  also USE.
 \end{theorem}
 \begin{proof}
   Let $\adv$ be an SE adversary. Since the SNARK is SE, then for
@@ -4345,23 +4356,47 @@ random oracle responses, but, as in the case of $Q'$, with changes introduced by
 
   Denote by $\srs$ the SRS for $\adv$ and by $\srs'$ the updated
   SRS. Let $\chi$ be a trapdoor for $\srs$ and $\alpha \chi$ be a
-  trapdoor for $\srs'$.
+  trapdoor for $\srs'$. As previously, we denote by $q$ the upper bound of the number of random oracle queries $\bdv$ can make.
 
-  Note that a zkSNARK compiled from a AHP consists of the following:
+  Note that a zkSNARK compiled from an AHP consists of the following:
   \begin{itemize}
-  \item Commitments to polynomials $f_i$ sent by the prover; we denote the list of these by $C$.
+  \item Commitments to polynomials $P$ sent by the prover; we denote the list of these by $C$.
   \item Challenges $\beta_i$ sent by the verifier; the corresponding list is denoted by $B$.
   \item Evaluation challenge $\chz$ sent by the verifier;
   \item Polynomial evaluations at $\chz$ and proofs of correct evaluations sent by the prover. The list of the former is denoted by $E$ and of the latter by $W$.
   \end{itemize}
+  We denote by index $i$ the round when the particular proof element is sent. For example for commitments sent in the second round we write $C_2$.
+  Here we also additionally require that the set of polynomials sent by the prover in the first round encodes the statement's witness and are masked using vanishing set. \michals{23.09}{Formalize it} 
   In the following we denote elements sent w.r.t.~SRS $\srs$ without \emph{apostrophe} and w.r.t~$\srs'$ \emph{with} an apostrophe.
+  % To distinguish instances and proofs used by $\bdv$ and $\adv$ from the final instance and proof output by $\bdv$ ($\adv$) we denote the latter by $(\inpb, \zkproofb)$ (resp.~($\inpa, \zkproofa$)).
+  Eventually, $\adv$ and $\bdv$ outputs proofs, we denote by $\tra$ and $\trb$ partial transcripts of those.
 
-  Idea for the proof goes as follows. Adversary $\adv$ internally runs adversary $\bdv$ and on its queries it answers as follows:
-  \begin{itemize}
-  %\item On a random oracle query on a partial transcript to get challenge $\beta_i$ $\adv$ passes the query to the random oracle $\ro$ and returns its answer.
-  \item On a random oracle query on a partial transcript to get evaluation challenge $\chz$, $\adv$ passes the query, gets answer $\chz$ and returns to $\bdv$ challenge $\chz' \gets \alpha \chz$. 
-  \item On other random oracle queries, $\adv$ passes the queries to $\ro$ and returns its answer. 
-  \item On $\bdv$ request to see simulated proof for
+  Idea for the proof goes as follows. We define adversary $\adv$ that  internally runs adversary $\bdv$. Then we show existance of extractor $\ext_\bdv$ using  existance of $\ext_\adv$. $\adv$ responds $\bdv$'s queries it answers as follows:
+  \begin{enumerate}
+  \item Set $Q_m = \emptyset$, $\tra = \emptyset$.
+  \item Guess indices $I = \smallset{i_1, \ldots, i_k}$ of random oracle queries used to compute the final proof $\zkproofb$. (We allow $\adv$ to guess this list adaptively.)
+  \item \label{it:used-transcript} If query $x$ has index in $I$ then
+    \begin{enumerate}
+   % \item Parse instance $\inpb$ from $x$;
+    \item Parse the last message $m$ in $x$.
+      \begin{itemize}
+      \item If $\trb$ is a partial transcript for an SRS $\srs$ then add $m$ to $\tra$
+      \item If $\trb$ is a partial transcript for an SRS $\srs$:
+        \begin{inparaenum}[(a)]
+        \item if $m$ is the proven instance, then add $m / \alpha$ to $\tra$;
+        \item if $m \in C$, then add $m$ to $\tra$;
+        \item if $m \in E$ then add $m \alpha$;
+        \item if $m \in W$ then add $m / \alpha$.
+        \end{inparaenum}
+      \end{itemize}
+    \item Compute $y \gets \ro(\tra)$;
+    \item Append $y$ to $\tra$.
+    \item Return $y$.
+    \end{enumerate}
+ % \item \label{it:evaluation-challenge} On a random oracle query $x$ on a partial transcript to get evaluation challenge $\chz$, pass the query, get answer $\chz$ and return to $\bdv$ challenge $\chz' \gets \alpha \chz$. 
+  \item \label{it:partial-transcript} If there is a partial transcript $t$ of a proof in $Q_m$, such that $t = x$, pick a random element $y$ and set $\ro(x) = y$. 
+  \item On other random oracle queries, pass the queries to $\ro$ and returns its answer.
+  \item On $\bdv$'s request to see simulated proof for
     $(\srs, \inp, \wit)$, $\adv$ passes the query to its $\simO$ and
     returns its answer $\zkproof$. 
   \item On $\bdv$ request to see simulated proof for
@@ -4370,18 +4405,31 @@ random oracle responses, but, as in the case of $Q'$, with changes introduced by
     \item $(\inp, \wit) \gets \MoveInstanceBackward(\srs', \inp', \wit')$
     \item Ask $\simO$ for a simulated proof $\zkproof$ for $(\inp, \wit)$
     \item $\zkproof' \gets \MoveProofForward(\srs, \inp, \zkproof)$
-    \item Return $\zkproof'$ 
+    \item Return $\zkproof'$
+    \item Add all partial transcripts of $(\inp, \zkproof)$, $(\inp', \zkproof')$ to $Q_m$ 
     \end{enumerate}
-  \item On $\bdv$'s proof $(\srs', \inp', \zkproof')$, $\adv$ proceeds as follows:
-    \begin{enumerate}
-    \item $(\inp, \wit) \gets \MoveInstanceBackward(\srs', \inp', \wit')$
-    \item $\zkproof \gets \MoveProofBackward (\srs', \inp', \zkproof')$
-    \item Return $(\srs, \inp, \zkproof)$
-    \end{enumerate}
-  \item On $\bdv$'s proof $(\srs, \inp, \zkproof)$, $\adv$ returns $(\srs, \inp, \zkproof)$.
-  \end{itemize}
+  \item On $\bdv$'s final proof $\zkproofb$, $\adv$ outputs $\zkproofa \gets \tra$.
+    %$(\srs', \inp', \zkproof')$, $\adv$
+    % proceeds as follows:
+  %   \begin{enumerate}
+  %   \item $(\inp, \wit) \gets \MoveInstanceBackward(\srs', \inp', \wit')$
+  %   \item $\zkproof \gets \MoveProofBackward (\srs', \inp', \zkproof')$
+  %   \item Return $(\srs, \inp, \zkproof)$
+  %   \end{enumerate}
+  % \item On $\bdv$'s proof $(\srs, \inp, \zkproof)$, $\adv$ returns $(\srs, \inp, \zkproof)$.
+  \end{enumerate}
 
-  Since $\proofsystem$ is FSE there exists an extractor $\ext_\adv(r_\adv, Q_\adv, Q_\adv^\ro)$ for $\adv$ that returns witness $\wit$ such that $\REL(\srs, \inp, \wit) = 1$. We show existance of extractor $\ext_\bdv$. More precisely $\ext_\bdv (r_\bdv, Q_\bdv, Q^\ro_\bdv, Q^\srs_\bdv)$ proceeds as follows:
+  \ncase{On using programmed RO outputs} Note that the adversary $\bdv$ could output a final proof $\zkproofb$ that utilizes a query programmed by $\adv$, cf.~\cref{it:partial-transcript}. In that case, $\adv$ could not return such a proof as it is not valid, because the challenges are computed incorrectly. We argue that probability that $\bdv$ outputs a valid proof with a programmed RO output is negligible.
+
+  First, we note that if $\zkproofb$ is w.r.t.~SRS $\srs'$ then $\bdv$ tries to utilize a partial transcript of a simulated proof for the instance it asked for. Especially, commitments sent in the first round of the proof are the same as in the simulated proof. Since $\proofsystem$ is $\ur{k}$ and the evaluation challenge $\chz$ is given to $\bdv$ after it outputs its $k$-th message, then $\bdv$'s transcript differs from the transcript of the simulated proof before the evaluation challenge is computed. (Otherwise, $\bdv$ would break $\ur{k}$ property.) Hence, the evaluation challenge $\chz$ the adversary $\bdv$ answers is different from the simulated proof evaluation challenge $\chz_\simulator$. As $\zkproofb$ is acceptable, $\bdv$ manages to give a correct evaluation of masked polynomials in $P_1$ that encode the witness on a point it did not see evaluation for. Hence, it breaks the hiding property of the polynomial commitment scheme.
+
+%  \ncase{Case 1. \cref{it:evaluation-challenge}} To show that this case happens with negligible probability we
+
+  %\ncase{Case 2. \cref{it:partial-transcript}}
+
+  \ncase{Probability of guessing $I$ correctly} Rough lower-bound for the probability that $\adv$ guesses correctly all indices in $I$, what is necessary for $\adv$ to succeed, is $q^{-\mu}$. Fortunatelly, this bound can be make much tighter. Observe, that if $\proofsystem$ is $\ur{k}$, then $\adv$ can tell, after $k$-th challenge, whether the random oracle query given by $\bdv$ is for the final proof or not -- after $k$-th challenge $\bdv$'s messages are already determined by the previous messages and challenges. Hence, probability that $\adv$ guesses $I$ correctly is at least $q^{-k}$.
+
+  \ncase{Extractor $\ext_\bdv$} Since $\proofsystem$ is FSE there exists an extractor $\ext_\adv(\srs, r_\adv, Q_\adv, Q_\adv^\ro)$ for $\adv$ that returns witness $\wit$ such that $\REL(\srs, \inp, \wit) = 1$. We show existance of extractor $\ext_\bdv$. More precisely $\ext_\bdv ((\srs, \srs'), r_\bdv, Q_\bdv, Q^\ro_\bdv, Q^\srs_\bdv)$ proceeds as follows:
   \begin{itemize}
   \item Set $r_\adv = r_\bdv$, 
   \end{itemize}
