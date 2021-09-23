@@ -4332,13 +4332,15 @@ random oracle responses, but, as in the case of $Q'$, with changes introduced by
 
 \newcommand{\inpa}{\inp_\adv}
 \newcommand{\inpb}{\inp_\bdv}
+\newcommand{\inps}{\inp_\simulator}
 \newcommand{\zkproofa}{\zkproof_\adv}
 \newcommand{\zkproofb}{\zkproof_\bdv}
+\newcommand{\zkproofs}{\zkproof_\simulator}
 \newcommand{\tra}{\trans_\adv}
 \newcommand{\trb}{\trans_\bdv}
 
 \begin{theorem}
-  Let $\proofsystem$ be an $(2\mu + 1)$-message $\ur{k}$ FSE zkSNARK
+  Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an $(2\mu + 1)$-message $\ur{k}$ FSE zkSNARK
   compiled from an AHP proof system with KZG as the commitment
   scheme. Let $i_\chz$ be an index of a round where $\prover$ gets its
   evaluation challenge $\chz$, $i_\chz > k$. Then $\proofsystem$ is
@@ -4419,7 +4421,38 @@ random oracle responses, but, as in the case of $Q'$, with changes introduced by
   % \item On $\bdv$'s proof $(\srs, \inp, \zkproof)$, $\adv$ returns $(\srs, \inp, \zkproof)$.
   \end{enumerate}
 
-  \ncase{On using programmed RO outputs} Note that the adversary $\bdv$ could output a final proof $\zkproofb$ that utilizes a query programmed by $\adv$, cf.~\cref{it:partial-transcript}. In that case, $\adv$ could not return such a proof as it is not valid, because the challenges are computed incorrectly. We argue that probability that $\bdv$ outputs a valid proof with a programmed RO output is negligible.
+  We show that probability that $\adv$ fails in outputting an acceptable proof is negligible by a series of games. 
+
+  \ncase{Game 0} In this game the adversary $\bdv$ wins if it outputs an acceptable instance and proof $\inpb, \zkproofb$ such that $\ext_\bdv$ fails to extract the corresponding witness with non-negligible probability. This is a standard USE winning condition for $\bdv$.
+
+  \ncase{Game 1} In this game the environment aborts if the proof $\zkproofb$ adversary outputs utilizes a programmed random oracle response.
+  %has the same first message as a first message of some simulated proof $\zkproofs$.
+
+  \ncase{Game 0 to Game 1} Note that the adversary $\bdv$ could output a final proof $\zkproofb$ that utilizes a query programmed by $\adv$, cf.~\cref{it:partial-transcript}. In that case, $\adv$ could not return such a proof as it is not valid, because the challenges are computed incorrectly. We argue that probability that $\bdv$ outputs a valid proof with a programmed RO output is negligible.
+
+  Note that the only possibility for $\bdv$ to utilize a programmed random oracle response while producing an acceptable proof is to have partial proof matching the partial simulated proof. More precisely, if the used programmed challenge $\beta$ is after $m$-th message, then $\zkproofb[0..m] = \zkproofs[0..m]$, for some simulated proof $\zkproofs$. Importantly, $m < k$, otherwise the adversary breaks $k$ unique response property.
+
+  Obviously, if $\zkproofb[0..m] = \zkproofs[0..m]$ then $\zkproofb[0..m'] = \zkproofs[0..m']$ for $m' < m$. We show that it is infeasible to $\bdv$ to output $\zkproofb$ such that  $\zkproofb[0..1] = \zkproofs[0..1]$. This is done by showing a reduction to a hiding property of the polynomial commitment scheme. More precisely, let $\rdv$ be a reduction that utilizes $\bdv$ to break the hiding property, it proceeds as follows:
+  \begin{compactenum}
+  \item Get $\srs_{\PCOM}$ and compute proof system's SRS $\srs$, present the SRS to $\bdv$.
+  \item Get instance $c$ -- a commitment to unknown polynomial.
+  \item Set the adversary $\adv$ proceedsing as above and oracles: random oracle and simulator oracle for $\adv$.
+  \item For random oracle queries response honestly, i.e.~by picking random elements, for simulator oracle response with simulated proof computed using trapdoor-less simulator.
+  \item Guess which simulated proof $\zkproofs$ will be utilized in the final proof $\bdv$ eventually outputs $\zkproofb$. Denote $\zkproofs$ instance by $\inps$.
+  \item When $\adv$ asks $\simO$ for a simulated proof for $\inps$, (i.e.~$\bdv$ asks for $\inps$ w.r.t.~SRS $\srs$) or $\inps / \alpha$ (i.e.~$\bdv$ asks for $\inps$ w.r.t.~$\srs'$ and $\adv$ translates it into $\inp / \alpha$ to make it work with $\srs$) include $c$ to the first message of the simulated proof.
+  \item Eventually, $\bdv$ asks for evaluation challenge $\chz$ and outputs a proof $\zkproofb$.
+  \item Since the proof $\bdv$ output was acceptable, $\bdv$ correctly evaluated the polynomials sent in the first round. Especially, it evaluated polynomial that commits to $c$.
+  \item \label{it:rewind} Rewind $\bdv$ up to the point challenge $\chz$ is presented and picks another challenge $\chz'$. If for $\chz'$ adversary $\bdv$ does not output a proof for $\inpb$ -- rewind the adversary and pick another evaluation challenge.
+  \item Eventually, get as many evaluation as necessary to interpolate the polynomial in $c$. Reveal and return the polynomial.
+  \end{compactenum}
+
+  We note that since the probability that $\bdv$ outputs a valid proof is non-negligible we can use forking lemma and conclude that with overwhelming probability $\rdv$ will get necessary number of transcripts in polnomial time, cf.~\cref{it:rewind}.
+
+  Hence the probability that the adversary wins in Game 0, but not in Game 1 is negligible.
+
+  \ncase{Game 2} In this game the environment additionally aborts if $\bdv$ returns a proof that shares the first round messages with some simulated proof it asked for. 
+
+  % \ncase{On using programmed RO outputs} Note that the adversary $\bdv$ could output a final proof $\zkproofb$ that utilizes a query programmed by $\adv$, cf.~\cref{it:partial-transcript}. In that case, $\adv$ could not return such a proof as it is not valid, because the challenges are computed incorrectly. We argue that probability that $\bdv$ outputs a valid proof with a programmed RO output is negligible.
 
   First, we note that if $\zkproofb$ is w.r.t.~SRS $\srs'$ then $\bdv$ tries to utilize a partial transcript of a simulated proof for the instance it asked for. Especially, commitments sent in the first round of the proof are the same as in the simulated proof. Since $\proofsystem$ is $\ur{k}$ and the evaluation challenge $\chz$ is given to $\bdv$ after it outputs its $k$-th message, then $\bdv$'s transcript differs from the transcript of the simulated proof before the evaluation challenge is computed. (Otherwise, $\bdv$ would break $\ur{k}$ property.) Hence, the evaluation challenge $\chz$ the adversary $\bdv$ answers is different from the simulated proof evaluation challenge $\chz_\simulator$. As $\zkproofb$ is acceptable, $\bdv$ manages to give a correct evaluation of masked polynomials in $P_1$ that encode the witness on a point it did not see evaluation for. Hence, it breaks the hiding property of the polynomial commitment scheme.
 
@@ -4475,6 +4508,33 @@ random oracle responses, but, as in the case of $Q'$, with changes introduced by
 	\label{fig:operations}
   \end{figure}
 \end{proof}
+
+\begin{definition}[Witness-first proof system]
+  \newcommand{\encode}{\pcalgostyle{Encode}}
+  \newcommand{\decode}{\pcalgostyle{Decode}}
+  We say that an AHP NIZK proof system $\proofsystem$ is \emph{witness-first} if
+  \begin{compactenum}
+  \item there are efficient algorithms $\encode, \decode$ such that
+    for instance $\inp$, witness $\wit$, polynomials
+    $P = \{\p{p_1}, \ldots, \p{p_k}\}$ sent by the prover in the first
+    round:
+    \begin{compactitem}
+    \item $\encode(\inp, \wit) = P$,
+    \item $\decode(P) = (\inp, \wit)$.
+    \end{compactitem}
+  \item The proof contains evaluations of each of polynomials in $P$ at evaluation challenge $\chz$.
+  \end{compactenum}
+  
+\end{definition}
+That is, given polynomials sent by the prover in the first round one
+can efficiently compute instance's witness.
+
+\begin{lemma}[$k$-unique response property to $1$-unique response property]
+  Let $\propofsystem$ be witness-first proof system compiled from AHP $\PCOM$ polynomial commitment scheme. Let $P$ be a set of polynomials that are committed to by a prover in the first round. Let $\chz$ be an evaluation challenge that is given to the prover in Round $k'$, for some $k' > k$. Then ...
+\end{lemma}
+
+\begin{proof}
+  \end{proof}
 \end{document}
 
 %%% Local Variables:
