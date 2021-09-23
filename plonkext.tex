@@ -4450,24 +4450,26 @@ random oracle responses, but, as in the case of $Q'$, with changes introduced by
 
   Hence the probability that the adversary wins in Game 0, but not in Game 1 is negligible.
 
-  \ncase{Game 2} In this game the environment additionally aborts if $\bdv$ returns a proof that shares the first round messages with some simulated proof it asked for. 
-
-  % \ncase{On using programmed RO outputs} Note that the adversary $\bdv$ could output a final proof $\zkproofb$ that utilizes a query programmed by $\adv$, cf.~\cref{it:partial-transcript}. In that case, $\adv$ could not return such a proof as it is not valid, because the challenges are computed incorrectly. We argue that probability that $\bdv$ outputs a valid proof with a programmed RO output is negligible.
-
-  First, we note that if $\zkproofb$ is w.r.t.~SRS $\srs'$ then $\bdv$ tries to utilize a partial transcript of a simulated proof for the instance it asked for. Especially, commitments sent in the first round of the proof are the same as in the simulated proof. Since $\proofsystem$ is $\ur{k}$ and the evaluation challenge $\chz$ is given to $\bdv$ after it outputs its $k$-th message, then $\bdv$'s transcript differs from the transcript of the simulated proof before the evaluation challenge is computed. (Otherwise, $\bdv$ would break $\ur{k}$ property.) Hence, the evaluation challenge $\chz$ the adversary $\bdv$ answers is different from the simulated proof evaluation challenge $\chz_\simulator$. As $\zkproofb$ is acceptable, $\bdv$ manages to give a correct evaluation of masked polynomials in $P_1$ that encode the witness on a point it did not see evaluation for. Hence, it breaks the hiding property of the polynomial commitment scheme.
-
-%  \ncase{Case 1. \cref{it:evaluation-challenge}} To show that this case happens with negligible probability we
-
-  %\ncase{Case 2. \cref{it:partial-transcript}}
-
-  \ncase{Probability of guessing $I$ correctly} Rough lower-bound for the probability that $\adv$ guesses correctly all indices in $I$, what is necessary for $\adv$ to succeed, is $q^{-\mu}$. Fortunatelly, this bound can be make much tighter. Observe, that if $\proofsystem$ is $\ur{k}$, then $\adv$ can tell, after $k$-th challenge, whether the random oracle query given by $\bdv$ is for the final proof or not -- after $k$-th challenge $\bdv$'s messages are already determined by the previous messages and challenges. Hence, probability that $\adv$ guesses $I$ correctly is at least $q^{-k}$.
-
-  \ncase{Extractor $\ext_\bdv$} Since $\proofsystem$ is FSE there exists an extractor $\ext_\adv(\srs, r_\adv, Q_\adv, Q_\adv^\ro)$ for $\adv$ that returns witness $\wit$ such that $\REL(\srs, \inp, \wit) = 1$. We show existance of extractor $\ext_\bdv$. More precisely $\ext_\bdv ((\srs, \srs'), r_\bdv, Q_\bdv, Q^\ro_\bdv, Q^\srs_\bdv)$ proceeds as follows:
+  We now show that $\bdv$ wins Game 1 with negligible
+  probability. More precisely, we show how $\ext_\bdv$ is constructed.
+  Since $\proofsystem$ is FSE there exists an extractor
+  $\ext_\adv(\srs, r_\adv, Q_\adv, Q_\adv^\ro)$ for $\adv$ that
+  returns witness $\wit$ such that $\REL(\srs, \inp, \wit) = 1$. Extractor 
+  $\ext_\bdv ((\srs, \srs'), r_\bdv, Q_\bdv, Q^\ro_\bdv, Q^\srs_\bdv)$
+  proceeds as follows:
   \begin{itemize}
   \item Set $r_\adv = r_\bdv$, 
+  \item Set $Q_\adv = $
+  \item Set $Q_\adv^\ro = $
   \end{itemize}
+  
+  \ncase{Probability of guessing $I$ correctly} Rough lower-bound for the probability that $\adv$ guesses correctly all indices in $I$, what is necessary for $\adv$ to succeed, is $q^{-\mu}$. Fortunatelly, this bound can be make much tighter. Observe, that if $\proofsystem$ is $\ur{k}$, then $\adv$ can tell, after $k$-th challenge, whether the random oracle query given by $\bdv$ is for the final proof or not -- after $k$-th challenge $\bdv$'s messages are already determined by the previous messages and challenges. Hence, probability that $\adv$ guesses $I$ correctly is at least $q^{-k}$.
 
-  \michals{21.09}{Need to argue that $(\srs, \inp, \zkproof)$ returned by $\adv$ is not in $Q$ (use updatable unique response property to that end.)}
+  % \ncase{Extractor $\ext_\bdv$} Since $\proofsystem$ is FSE there exists an extractor $\ext_\adv(\srs, r_\adv, Q_\adv, Q_\adv^\ro)$ for $\adv$ that returns witness $\wit$ such that $\REL(\srs, \inp, \wit) = 1$. We show existance of extractor $\ext_\bdv$. More precisely $\ext_\bdv ((\srs, \srs'), r_\bdv, Q_\bdv, Q^\ro_\bdv, Q^\srs_\bdv)$ proceeds as follows:
+  % \begin{itemize}
+  % \item Set $r_\adv = r_\bdv$, 
+  % \end{itemize}
+
 
   \begin{figure}
 \centering
@@ -4504,7 +4506,7 @@ random oracle responses, but, as in the case of $Q'$, with changes introduced by
       \pcreturn \zkproof}
 		\end{pchstack}
 	\end{pcvstack}
-	\caption{Moving elements between SRS-s.}
+	\caption{Moving elements between SRS-s. \michals{23.09}{I think that figure may not be needed now.}}
 	\label{fig:operations}
   \end{figure}
 \end{proof}
@@ -4530,7 +4532,7 @@ That is, given polynomials sent by the prover in the first round one
 can efficiently compute instance's witness.
 
 \begin{lemma}[$k$-unique response property to $1$-unique response property]
-  Let $\propofsystem$ be witness-first proof system compiled from AHP $\PCOM$ polynomial commitment scheme. Let $P$ be a set of polynomials that are committed to by a prover in the first round. Let $\chz$ be an evaluation challenge that is given to the prover in Round $k'$, for some $k' > k$. Then ...
+  Let $\proofsystem$ be witness-first proof system compiled from AHP $\PCOM$ polynomial commitment scheme. Let $P$ be a set of polynomials that are committed to by a prover in the first round. Let $\chz$ be an evaluation challenge that is given to the prover in Round $k'$, for some $k' > k$. Then ...
 \end{lemma}
 
 \begin{proof}
