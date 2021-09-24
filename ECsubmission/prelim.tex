@@ -2,7 +2,7 @@
 % !TEX spellcheck = en-US
 \section{Preliminaries}
 \label{sec:preliminaries}
-Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
+\subsection{Notations} Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
 security parameter. All adversaries are stateful. For an algorithm $\adv$, let
 $\image (\adv)$ be the image of $\adv$ (the set of valid outputs of $\adv$), let
 $\RND{\adv}$ denote the set of random tapes of correct length for $\adv$
@@ -19,19 +19,14 @@ Y_\secpar) \leq \negl$. For values $a(\secpar)$ and $b(\secpar)$ we write
 $a(\secpar) \approx_\secpar b(\secpar)$ if $\abs{a(\secpar) - b(\secpar)} \leq
 \negl$.
 
-\newcommand{\samplespace}{\Omega}
-\newcommand{\eventspace}{\mathcal{F}}
-\newcommand{\probfunction}{\mu}
-
 For a probability space $(\samplespace, \eventspace, \probfunction)$ and event
 $\event{E} \in \eventspace$ we denote by $\nevent{E}$ an event that is
 complementary to $\event{E}$,
 i.e.~$\nevent{E} = \samplespace \setminus \event{E}$.
 
 Denote by $\RELGEN = \smallset{\REL}$ a family of relations. We assume that if
-$\REL$ comes with any auxiliary input, it is benign. Directly from the
-description of $\REL$ one learns security parameter $\secpar$ and other
-necessary information like public parameters $\pp$ containing description of a
+$\REL$ comes with any auxiliary input, the later is benign. Directly from the
+description of $\REL$ one learns security parameter $\secpar$ and description of the
 group $\GRP$, if the relation is a relation of group elements (as it usually is
 in case of zkSNARKs).
 
@@ -53,25 +48,6 @@ $\vec{A} \grpgi{\vec{B}} = \grpgi{\vec{C}}$ and $\gone{\vec{A}}\bullet
 the public parameters we skip them when describing $\adv$'s input. Similarly, we
 do not explicitly state that each protocol starts with generating these
 parameters by $\pgen$.
-
-\subsection{Computational assumptions.}
-
-\ourpar{Discrete-log assumptions.}  Security of $\plonk$ and $\sonic$ relies on
-two discrete-log based security assumptions---$(q_1, q_2)$-$\dlog$ assumption
-and its variant that allows for negative exponents $(q_1, q_2)$-$\ldlog$
-assumption\footnote{Note that \cite{CCS:MBKM19} dubs their assumption \emph{a
-    dlog assumption}. We changed that name to distinguish it from the more
-  standard dlog assumption used in \cite{EPRINT:GabWilCio19}. ``l'' in
-  \emph{ldlog} relates to use of Laurent polynomials in the assumption.}. We
-omit here description of the assumptions and refer to
-\cref{sec:dlog_assumptions}.
-
-
-
-\ourpar{Proofs by Game-Hopping.}
-Proofs by \emph{game hopping} is a method of writing proofs popularised by
-e.g.~Shoup \cite{EPRINT:Shoup04} and Dent \cite{EPRINT:Dent06c}. The method
-relies on the following lemma.
 
 \begin{lemma}[Difference lemma,~{\cite[Lemma 1]{EPRINT:Shoup04}}]
 	\label{lem:difference_lemma}
@@ -145,19 +121,10 @@ opening and hiding properties. Formal definitions of these could be find in
 \end{compactdesc}
 
 
-\subsection{Zero knowledge}
-In a zero-knowledge proof system, a prover convinces the verifier of veracity of
-a statement without leaking any other information. The zero-knowledge property
-is proven by constructing a simulator that can simulate the view of a cheating
-verifier without knowing the secret information---witness---of the prover. A
-proof system has to be sound as well, i.e.~for a malicious prover it should be
-infeasible to convince a verifier on a false statement. Here, we focus on proof
-systems that guarantee soundness against $\ppt$ malicious provers.
-
-More precisely, let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of
+\subsection{Zero-Knowledge Proof Systems}
+Let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of
 $\npol$ relations. Denote by $\LANG_\REL$ the language determined by $\REL$.
-Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called
-\emph{prover} and the latter \emph{verifier}. We allow our proof system to have
+Let $\prover$ be a \emph{prover} and $\verifier$ be the \emph{verifier}, both $\ppt$ algorithms. We allow our proof system to have
 a setup, i.e.~there is a $\kgen$ algorithm that takes as input the relation
 description $\REL$ and outputs a common reference string $\srs$. We assume that
 the $\srs$ defines the relation and for universal prove systems, such as Plonk
@@ -169,11 +136,9 @@ between $\prover$ with input $(\srs, \inp, \wit)$ and $\verifier$ with input
 $(\srs, \inp)$. We write
 $\ip{\prover (\srs, \inp, \wit)}{\verifier(\srs, \inp)} = 1$ if in the end of
 the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$
-accepts it. We sometimes abuse notation and write
+accepts it.  For non-interactive proof systems we abuse notation and write
 $\verifier(\srs, \inp, \zkproof) = 1$ to denote a fact that $\zkproof$ is
-accepted by the verifier. (This is especially handy when the proof system is
-non-interactive, i.e.~the whole conversation between the prover and verifier
-consists of a single message $\zkproof$ sent by $\prover$).
+accepted by the verifier.  
 
 A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for
 $\RELGEN$ is required to have three properties: completeness, soundness and zero
@@ -205,43 +170,7 @@ Sometimes a stronger notion of soundness is required---except requiring that the
 verifier rejects proofs of statements outside the language, we request from the
 prover to know a witness corresponding to the proven statement. This property is
 called \emph{knowledge soundness}.%\markulf{Commented out the formal definition as we don't use it.}
-
-% We call an interactive proof system $\proofsystem$
-% \emph{knowledge-sound} if for any $\REL \in \RELGEN(\secparam)$ and a $\ppt$
-% adversary $\adv$
-% 	\[
-% 	\Pr\left[
-% 		\begin{aligned}
-% 			& \verifier(\srs, \inp, \zkproof) = 1, \\
-% 			& \REL(\inp, \wit) = 0
-% 	 \end{aligned}
-% 	  \,\left|\,
-% 	 \begin{aligned}
-% 		 & \srs \gets \kgen(\REL), \inp \gets \adv(\srs), \\
-% 		 & (\wit, \zkproof) \gets \ext^{\ip{\adv(\srs, \inp)}{\verifier(\srs, \inp)}}(\REL, \inp)
-% 	 \end{aligned}
-% 	 \vphantom{\begin{aligned}
-% 		 \adv (\zkproof) = 1, \\
-% 		 \text{if $\zkproof{}$ is accepting} \\
-% 		 \pcind \text{then $\REL(\inp, \wit)$}
-% 	 \end{aligned}}\right.
-% 	 \right] \leq \negl\,,
-%  \]
  
- % \end{description}
-
- % Usually the verifier verifies messages send by the prover by checking a number
- % of equations depend on the instance, SRS and the proof sent. These equations
- % are often called \emph{verification equations} and denoted $\vereq_i$, for $i$
- % being an index of the equation. It is usually required that an acceptable proof
- % yields $\vereq_i = 0$. In the proof systems we consider---$\plonk$ and
- % $\sonic$---verification equations can be seen as polynomials evaluated at the
- % trapdoor $\chi$. Thus, the verifier checks that $\vereq_i(\chi) =
- % 0$. Sometimes, we consider an \emph{idealised verifier},
- % cf.~\cite{EPRINT:GabWilCio19}, who instead of checking that polynomial
- % $\vereq_i(X)$ evaluates to $0$ at $\chi$ just checks that $\vereq_i(X)$ is a
- % zero polynomial.
-
 \ourpar{Zero knowledge.}  We call a proof system $\proofsystem$
 \emph{zero-knowledge} if for any $\REL \in \RELGEN(\secparam)$, and adversary
 $\adv$ there exists a $\ppt$ simulator $\simulator$ such that for any
@@ -333,7 +262,7 @@ their standard model zero-knowledge property in
 \cref{lem:plonk_hvzk,lem:sonic_hvzk, lem:marlin_hvzk}. 
 
 \oursubsub{Idealised verifier and verification equations} Let
-$(\kgen, \prover, \verifier)$ be a proof system
+$(\kgen, \prover, \verifier)$ be a proof system.
 % or a polynomial commitment
 % scheme\hamid{might be unclear as we are defining polynomial commitments as
 %   $(\kgen, \com, \open, \verify)$.}.

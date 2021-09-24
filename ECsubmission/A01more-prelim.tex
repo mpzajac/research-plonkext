@@ -1,8 +1,26 @@
 % !TEX root = main.tex
 % !TEX spellcheck = en-US
 
-
 \section{Additional Preliminaries}
+
+\subsection{Computational assumptions.}
+
+\ourpar{Discrete-log assumptions.}  Security of $\plonk$ and $\sonic$ relies on
+two discrete-log based security assumptions---$(q_1, q_2)$-$\dlog$ assumption
+and its variant that allows for negative exponents $(q_1, q_2)$-$\ldlog$
+assumption\footnote{Note that \cite{CCS:MBKM19} dubs their assumption \emph{a
+    dlog assumption}. We changed that name to distinguish it from the more
+  standard dlog assumption used in \cite{EPRINT:GabWilCio19}. ``l'' in
+  \emph{ldlog} relates to use of Laurent polynomials in the assumption.}. We
+omit here description of the assumptions and refer to
+\cref{sec:dlog_assumptions}.
+
+
+\ourpar{Proofs by Game-Hopping.}
+Proofs by \emph{game hopping} is a method of writing proofs popularised by
+e.g.~Shoup \cite{EPRINT:Shoup04} and Dent \cite{EPRINT:Dent06c}. The method
+relies on the following lemma.
+
 \subsection{Dlog assumptions}
 \label{sec:dlog_assumptions}
 \begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]
