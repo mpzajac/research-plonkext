@@ -1,0 +1,110 @@
+
+% !TEX spellcheck = en-US
+% \let\accentvec\vec              
+\documentclass[runningheads,11pt]{llncs}
+\let\spvec\vec
+\let\vec\accentvec
+
+\newcommand\hmmax{0}
+\newcommand\bmmax{0}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\widebar}{0}{mathx}{"73}
+
+\let\spvec\vec
+\usepackage{amssymb,amsmath}
+\let\vec\spvec
+\usepackage{newtxmath,newtxtext}
+\usepackage[T1]{fontenc}
+\usepackage[most]{tcolorbox}
+  \def\vec#1{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
+  {\mbox{\boldmath$\textstyle#1$}} {\mbox{\boldmath$\scriptstyle#1$}}
+  {\mbox{\boldmath$\scriptscriptstyle#1$}}}
+
+% lncs size (as printed in books, with small margins):
+ % \usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={13.2cm,20.3cm},centering]{geometry}
+ %\usepackage{fullpage}
+\usepackage{soulutf8} \soulregister\cite7 \soulregister\ref7
+\soulregister\pageref7
+\usepackage{hyperref}
+\usepackage[color=yellow]{todonotes} \hypersetup{final}
+\usepackage{mathrsfs}
+\usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
+
+\usepackage[capitalise]{cleveref}
+%\crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
+%\Crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
+\usepackage{cite} 
+\usepackage{booktabs}
+\usepackage{paralist}
+\usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed}
+\usepackage{caption}
+\captionsetup{belowskip=0pt}
+\usepackage{bm}
+\usepackage{url}
+%\usepackage{dirtytalk}
+\usepackage[margin=1in,a4paper]{geometry}
+\usepackage[normalem]{ulem}
+\usepackage{dashbox}
+\newcommand\dboxed[1]{\dbox{\ensuremath{#1}}}
+\usepackage{setspace}
+\include{macros}
+
+%% Save the class definition of \subparagraph
+\let\llncssubparagraph\subparagraph
+%% Provide a definition to \subparagraph to keep titlesec happy
+\let\subparagraph\paragraph
+%% Load titlesec
+\usepackage[compact]{titlesec}
+%% Revert \subparagraph to the llncs definition
+\let\subparagraph\llncssubparagraph
+
+\newcommand{\oursubsub}[1] {\smallskip\noindent\textbf{#1}}
+\newcommand{\ourpar}[1] {\smallskip\noindent\emph{#1}}
+
+%\title{On Simulation-Extractability of Universal zkSNARKs}
+\title{Non-Malleability of the Fiat--Shamir Transform Revisited for Multi-round SRS-Based Protocols}
+%\author{Anonymous submission to Asiacrypt}
+\author{Chaya Ganesh \and Hamidreza Khoshakhlagh \and Markulf
+  Kohlweiss\inst{1,2} \and Anca Nitulescu \and Michał Zając\inst{3}} 
+\institute{University of Edinburgh, Edinburgh, UK \and IOHK \\
+\email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London, UK \\
+\email{m.p.zajac@gmail.com}}
+
+\allowdisplaybreaks
+
+\begin{document} \sloppy
+\titlerunning{Non-Malleability of the FS transform Revisited [\ldots]}
+\maketitle
+
+\begin{abstract}
+The Fiat--Shamir transformation turns public-coin (three round) sigma protocol into signature schemes, non-interactive proof systems, and signatures of knowledge (SoK).  The security of the transformation relies on a powerful forking lemma that extracts the secret key or the witness, even in the presence of signing queries for signatures and simulation queries for prove systems and SoK, respectively.
+We extend this line of work and formally define simulation extractability for protocols in the random oracle model (ROM) which use a structured reference string (SRS). We then show sufficient conditions for compiling via the Fiat--Shamir transformation public-coin multi-round interactive protocol with SRS into simulation-extractable NIZK proof systems. We also consider the case that the SRS is updatable and define a strong simulation extractability notion that allows for simulated proofs with respect to past and present SRS.
+In the ROM, we obtain simulation-extractable and updatable NIZKs. Importantly, we show that thee popular zero knowledge SNARKs --- Plonk, Sonic, and Marlin --- are simulation extractable out-of-the-box. This also results in the first construction of update simulation-extractable SNARKs and succinct updatable SoK.
+
+\end{abstract}
+
+\input{intro}
+
+\input{prelim}
+\input{01definitions}
+\input{01updatable}
+\input{01fromLSEtoSE}
+\input{02forkingSE}
+\input{03plonkSE}
+\input{04sonicSE}
+\input{05marlinSE}
+\clearpage
+
+\appendix
+\input{A01more-prelim}
+\input{A02protocols}
+\input{A03plonk-proofs}
+
+\bibliographystyle{abbrv}
+\bibliography{cryptobib/abbrev3,cryptobib/crypto,additional_bib}
+
+ 
+\end{document}

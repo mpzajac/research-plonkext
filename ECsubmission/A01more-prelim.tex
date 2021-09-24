@@ -1,0 +1,486 @@
+% !TEX root = main.tex
+% !TEX spellcheck = en-US
+
+
+\section{Additional Preliminaries}
+\subsection{Dlog assumptions}
+\label{sec:dlog_assumptions}
+\begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]
+	Let $\adv$ be a $\ppt$ adversary that gets as input
+  $\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}}$, for
+  some randomly picked $\chi \in \FF_p$, then
+	\[
+		\condprob{\chi \gets \adv(\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi,
+        \ldots, \chi^{q_2} })}{\chi \sample \FF_p} \leq \negl.
+	\]
+\end{definition}
+
+\begin{definition}[$(q_1, q_2)\mhyph\ldlog$ assumption]
+  Let $\adv$ be a $\ppt$ adversary that gets as input
+  $\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots, \chi^{q_1}}, \gtwo{\chi^{-q_2},
+    \ldots, 1, \chi, \ldots, \chi^{q_2}}$, for some randomly picked
+  $\chi \in \FF_p$, then
+	\[
+    \condprob{\chi \gets \adv(\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots,
+        \chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \chi, \ldots, \chi^{q_2}
+      })}{\chi \sample \FF_p} \leq \negl.
+	\]
+\end{definition}
+
+\subsection{Uber assumption}
+\label{sec:uber_assumption}
+\ourpar{BBG uber assumption.}
+Also, to be able to show computational honest verifier zero knowledge of
+$\plonk$ in the standard model, what is required by our reduction, we rely on the
+\emph{uber assumption} introduced by Boneh et
+al.~\cite{EC:BonBoyGoh05} as presented by Boyen in \cite{PAIRING:Boyen08}.
+
+Let $r, s, t, c \in \NN \setminus \smallset{0}$, Consider vectors of polynomials
+$\pR \in \FF_p[X_1, \ldots, X_c]^r$, $\pS \in \FF_p[X_1, \ldots, X_c]^s$ and
+$\pT \in \FF_p[X_1, \ldots, X_c]^t$. Write $\pR = \left( \p{r}_1, \ldots,
+  \p{r}_r \right)$, $\pS = \left( \p{s}_1, \ldots, \p{s}_s \right)$ and $\pT =
+\left( \p{t}_1, \ldots, \p{t}_t \right)$ for polynomials $\p{r}_i, \p{s}_j,
+\p{t}_k$.
+
+For a function $f$ and vector $(x_1, \ldots, x_c)$ we write $f(\pR)$ to
+denote application of $f$ to each element of $\pR$, i.e.
+\(
+	f(\pR) = \left( f(\p{r}_1 (x_1, \ldots, x_c), \ldots, f(\p{r}_r
+	(x_1, \ldots, x_c) \right).
+\)
+Similarly for applying $f$ to $\pS$ and $\pT$.
+
+\begin{definition}[Independence of $\pR, \pS, \pT$]
+	\label{def:independence}
+	Let $\pR, \pS, \pT$ be defined as above. We say that polynomial $\p{f} \in
+  \FF_p[X_1, \ldots, X_c]$ is \emph{dependent} on $\pR, \pS, \pT$ if there
+  exists $rs + t$ constants $a_{i, j}, b_k$ such that $ \p{f} = \sum_{i = 1}^{r}
+  \sum_{j = 1}^{s} a_{i, j} \p{r}_i \p{s}_j + \sum_{k = 1}^{t} b_k \p{t}_k. $ We
+  say that $\p{f}$ is \emph{independent} if it is not dependent.
+\end{definition}
+
+To show (standard-model) zero knowledge of $\plonk$ we utilize a generalization
+of Boneh-Boyen-Goh's \emph{uber assumption} \cite{EC:BonBoyGoh05} stated as
+follows (the changed element has been put into a \dbox{dashbox})
+\begin{definition}[$(\pR, \pS, \pT, \p{F}, 1)$-uber assumption]
+	\label{def:uber_assumption}
+	Let $\pR, \pS, \pT$ be defined as above,
+    $(x_1, \ldots, x_c, y_1, \ldots, y_{d}) \sample \FF_p^{c + d}$ and let
+    $\p{F}$ be a cardinality-$d$ set of pair-wise independent polynomials which are also
+    independent of $(\pR, \pS, \pT)$, cf.~\cref{def:independence}.  Then, for
+    any $\ppt$ adversary $\adv$
+	\begin{multline*}
+      \Pr\left[\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
+		\gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{\p{F}(x_1, \ldots, x_c)}}) = 1\right] \approx_\secpar \\
+      \Pr\left[\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
+        \gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{y_1, \ldots, y_{d}}}) =
+        1\right].
+	\end{multline*}
+  \end{definition}
+
+  Compared to the original uber assumptions, there are two major changes. First,
+  we require not target group $\GRP_T$ elements to be indistinguishable, but
+  elements of $\GRP_1$. Second, Boneh et al.'s assumption works for
+  distinguishers who are given only one challenge polynomial $\p{f}$,
+  i.e.~$\abs{\p{F}} = 1$.
+  
+We show security of our version of the uber assumption using the generic group
+model as introduced by Shoup \cite{EC:Shoup97} where all group elements are
+represented by random binary strings of length $\secpar$. That is, there are
+random encodings $\xi_1, \xi_2, \xi_T$ which are injective functions from
+$\ZZ_p^+$ to $\bin^{\secpar}$. We write
+$\GRP_i = \smallset{\xi_i(x) \mid x \in \ZZ_p^+}$, for
+$i \in \smallset{1, 2, T}$. For the sake of clarity  we denote by $\xi_{i, j}$
+the $j$-th encoding in group $\GRP_i$.
+
+Let
+$\p{P}_i = \smallset{p_1, \ldots, p_{\tau_i}} \subset \FF_p[X_1, \ldots, X_n]$,
+for $i \in \smallset{1, 2, T}, \tau_i, n \in \NN$, be sets of multivariate
+polynomials. Denote by $\p{P}_i(x_1, \ldots, x_n)$ a set of evaluations of
+polynomials in $\p{P_i}$ at $(x_1, \ldots, x_n)$. Denote by
+$L_i = \smallset{(p_j, \xi_{i, j}) \mid j \leq \tau_i}$.
+
+Let $\adv$ be an algorithm that is given encodings $\xi_{i, j_i}$ of polynomials
+in $\p{P}_i$ for $i \in \smallset{1, 2, T}, j_i = \tau_i$. There is an oracle $\oracleo$
+that allows to perform $\adv$ the following queries:
+\begin{description}
+\item[Group operations in $\GRP_1, \GRP_2, \GRP_T$:] On input
+  $(\xi_{i, j}, \xi_{i, j'}, i, op)$, $j, j' \leq \tau_i$,
+  $op \in \smallset{\msg{add}, \msg{sub}}$, $\oracleo$ sets $\tau'_i \gets \tau_i + 1$,
+  computes
+  $p_{i, \tau'_i} = p_{i, j}(x_1, \ldots, x_n) \pm p_{i, j'}(x_1, \ldots, x_n)$
+  respectively to $op$. If there is an element  $p_{i, k} \in L_i$ such 
+  that $p_{i, k} = p_{\tau'_i}$, then the oracle returns encoding of $p_{i,
+    k}$. Otherwise it sets the encoding $\xi_{i, \tau'_i}$ to a new unused
+  random string, adds $(p_{i, \tau'_i}, \xi_{i, \tau'_i})$ to $L_i$, and returns
+  $\xi_{i, \tau'_i}$.
+\item[Bilinear pairing:] On input $(\xi_{1, j}, \xi_{2, j'})$ the oracle sets
+  $\tau' \gets \tau_T + 1$ and computes
+  $r_{\tau'} \gets p_{i, j}(x_1, \ldots, x_n) \cdot p_{i, j'}(x_1, \ldots,
+  x_n)$. If $r_{\tau'} \in L_T$ then return encoding found in the list $L_T$,
+  else pick a new unused random string and set $\xi_{T, \tau'}$ to it. Return
+  the encoding to the algorithm.
+\end{description}
+
+Given that, we are ready to show security of our variant of the Boneh et
+al.~uber assumption. The proof goes similarly to the original proof given in
+\cite{EC:BonBoyGoh05} with minor differences.
+
+\begin{theorem}[Security of the uber assumption]
+  \label{thm:uber_assumption}
+  Let $\p{P}_i \in \FF_p[X_1, \ldots, X_n]^{m_i}$, for
+  $i \in \smallset{1, 2, T}$ be $\tau_i$ tuples of $n$-variate polynomials over
+  $\FF_p$ and let $\p{F} \in \FF_p[X_1, \ldots, X_n]^m$. Let
+  $\xi_0, \xi_1, \xi_T$, $\GRP_1, \GRP_2, \GRP_T$ be as defined above. If
+  polynomials $f \in \p{F}$ are pair-wise independent and are independent of
+  $\p{P}_1, \p{P}_2, \p{P}_T$, then for any $\adv$ that makes up to $q$ queries to the
+  GGM oracle holds:
+  \begin{equation*}
+    \begin{split}
+     \left|\,
+    \Pr\left[
+    \adv\left(
+      \begin{aligned}
+        \xi_1(\p{P}_1(x_1, \ldots, x_n)), \\
+        \xi_2(\p{P}_2(x_1, \ldots, x_n)), \\
+        \xi_T(\p{P}_T(x_1, \ldots, x_n)), \\
+        \xi_{1}(\p{F}_0), \xi_{1}(\p{F}_1)
+      \end{aligned}
+    \right) = b
+    \, \left|\,
+      \begin{aligned}
+        x_1, \ldots, x_n, y_1, \ldots, y_m \sample \FF_p,\\
+        b \sample \bin, \\
+        \p{F}_b \gets \p{F}(x_1, \ldots, x_n),\\
+        \p{F}_{1 - b} \gets (y_1, \ldots, y_m)
+      \end{aligned}
+    \right.  \right] - \frac{1}{2} \, \right| \\
+     \leq \frac{d(q + m_1 + m_2 + m_T +
+      m)^2 }{2p}
+    \end{split}
+  \end{equation*}
+\end{theorem}
+\begin{proof}
+  Let $\cdv$ be a challenger that plays with $\adv$ in the following
+  game. $\cdv$ maintains three lists
+  \[
+    L_i = \smallset{(p_j, \xi_{i, j}) \mid j \in \range{1}{\tau_i}},
+  \]
+  for $i \in \smallset{1, 2, T}$. Invariant $\tau$ states that
+  $\tau_1 + \tau_2 + \tau_T = \tau + m_1 + m_2 + m$.
+
+  Challenger $\cdv$ answers $\adv$'s oracle queries. However, it does it a bit
+  differently that the oracle $\oracleo$ would:
+  \begin{description}
+  \item[Group operations in $\GRP_1, \GRP_2, \GRP_T$:] On input
+    $(\xi_{i, j}, \xi_{i, j'}, i, op)$, $j, j' \leq \tau_i$,
+    $op \in \smallset{\msg{add}, \msg{sub}}$, $\cdv$ sets
+    $\tau' \gets \tau_i + 1$, computes
+    $p_{i, \tau'}(X_1, \ldots, X_n) = p_{i, j}(X_1, \ldots, X_n) \pm p_{i,
+      j'}(X_1, \ldots, X_n)$ respectively to $op$. If there is a polynomial
+    $p_{i, k}(X_1, \ldots, X_n) \in L_i$ such that
+    $p_{i, k}(X_1, \ldots, X_n) = p_{\tau'}(X_1, \ldots, X_n)$, then the
+    challenger returns encoding of $p_{i, k}$. Otherwise it sets the encoding
+    $\xi_{i, \tau'}$ to a new unused random string, adds
+    $(p_{i, \tau'}, \xi_{i, \tau'})$ to $L_i$, and returns $\xi_{i, \tau'}$.
+  \item[Bilinear pairing:] On input $(\xi_{1, j}, \xi_{2, j'})$ the challenger
+    sets $\tau' \gets \tau_T + 1$ and computes
+    $r_{\tau'}(X_1, \ldots, X_n) \gets p_{i, j}(X_1, \ldots, X_n) \cdot p_{i,
+      j'}(X_1, \ldots, X_n)$. If $r_{\tau'}(X_1, \ldots, X_n) \in L_T$, $\cdv$
+    returns encoding found in the list $L_T$. Else it picks a new unused random
+    string and set $\xi_{T, \tau'}$ to it. Finally it returns the encoding to
+    the algorithm.
+\end{description}
+  
+After at most $q$ queries to the oracle, the adversary returns a bit $b'$. At
+that point the challenger $\cdv$ chooses randomly $x_1, \ldots, x_n, y_1 \ldots, y_m$,
+random bit $b$, and sets $X_i = x_i$, for $i \in \range{1}{n}$, and $Y_i = y_i$,
+for $i \in \range{1}{m}$; furthermore, $\p{F}_b \gets \p{F}(x_1, \ldots, x_n)$
+and $\p{F}_{1 - b} \gets (y_1, \ldots, y_m)$. Note that $\cdv$ simulates
+perfectly unless the chosen values $x_1, \ldots, x_n, y_1, \ldots, y_m$ result
+in equalities between polynomial evaluations that are not equalities between the
+polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
+\[
+  p_{i, j}(x_1, \ldots, x_n) - p_{i, j'}(x_1, \ldots, x_n) = 0,
+  \]
+  for $p_{i, j}(X_1, \ldots, X_n) \neq p_{i, j'}(X_1, \ldots, X_n)$.  Denote by
+  $\bad$ an event that at least one of the three conditions holds. When $\bad$
+  happens, the answer $\cdv$ gives to $\adv$ differs from an answer that a real
+  oracle would give. We bound the probability that $\bad$ occurs in two steps.
+
+  First we set $\p{F}_b = \p{F}(X_1, \ldots, X_n)$. Note that symbolic
+  substitutions do not introduce any new equalities in $\GRP_1$. That is, if for
+  all $j, j'$ holds $p_{1, j} \neq p_{1, j'}$, then $p_{1, j} \neq p_{1, j'}$
+  even after setting $\p{F}_b = \p{F}(X_1, \ldots, X_n)$. This follows since all
+  polynomials in $\p{F}$ are pairwise independent and $\p{F}$ independent on
+  $\p{P}_1, \p{P}_2, \p{P}_T$. Indeed, $p_{1, j} - p_{1, j'}$ is a polynomial of
+  the form
+  \[
+    \sum_{j = 1}^{m_1}a_j p_{1, j} + \sum_{j = 1}^{m} b_j f_j (X_1, \ldots, X_n),
+  \]
+  for some constants $a_j, b_j$. If the polynomial is non-zero, but setting
+  $\p{F}_b = \p{F}(X_1, \ldots, X_n)$ makes this polynomial vanish, then some
+  $f_k$ must be dependent on some $\p{P}_1, \p{F} \setminus \smallset{f_k}$.
+
+  Now we set $X_1 \ldots, X_n, \p{F}_{1 - b}$ and bound probability that for
+  some $i$ and $j, j'$ holds
+  $(p_{i, j}(x_1, \ldots, x_n) - p_{i, j'}(x_1, \ldots, x_n) = 0$ for
+  $p_{i, j} \neq p_{i, j'}$. By the construction, the maximum total degree of
+  these polynomials is
+  $d = \max(d_{\p{P}_1}+ d_{\p{P}_2}, d_{\p{P}_T}, d_{\p{F}})$, where $d_f$ is
+  the total degree of some polynomial $f$ and for a set of polynomials
+  $F = \smallset{f_1, \ldots, f_k}$, we write
+  $d_F = \smallset{d_{f_1}, \ldots, d_{f_k}}$. Thus, for a given $j, j'$ probability that a random assignment to
+  $X_1, \ldots, X_n, Y_1, \ldots, Y_n$ is a root of $p_{i, j} - p_{i, j'}$ is,
+  by the Schwartz-Zippel lemma, bounded by $\infrac{d}{p}$, which is
+  negligible. There is at most $2 \cdot {q + m_0 + m_1 + m  \choose 2}$ such
+  pairs $p_{i, j}, p_{i, j'}$ we have that
+  \[
+    \prob{\bad} \leq  {q + m_0 + m_1 + m  \choose 2} \cdot \frac{2d}{p} \leq (q
+    + m_0 + m_1 + m)^2 \frac{d}{p}.
+  \]
+
+  As noted, if $\bad$ does not occur then the simulation is perfect. Also the
+  bit $b$ has been chosen independently on the $\adv$'s view, thus $\condprob{b
+    = b'}{\neg \bad} = \infrac{1}{2}$. Hence,
+  \[
+    \begin{aligned}
+      \prob{b = b'} & \leq \condprob{b = b'}{\neg \bad}(1 - \prob{\bad}) + \prob{\bad} =
+      \frac{1}{2} + \frac{\prob{\bad}}{2} \\
+      \prob{b = b'} & \geq \condprob{b = b'}{\neq \bad}(1 - \prob{\bad}) =
+      \frac{1}{2} - \frac{\prob{\bad}}{2}.
+    \end{aligned}
+  \]
+  Finally,
+  \[
+    \abs{\Pr[b = b'] - \frac{1}{2}} \leq \prob{\bad}/2 \leq (q
+    + m_0 + m_1 + m)^2 \frac{d}{2p}
+  \]
+  as required.
+\end{proof}
+
+\subsection{Special simulation-extractability of sigma protocols and forking lemma}
+\label{sec:forking_lemma}
+\begin{theorem}[Special simulation extractability of the Fiat--Shamir transform
+  \cite{INDOCRYPT:FKMV12}]
+	Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a non-trivial sigma
+  protocol with unique responses for a language $\LANG \in \npol$. In the random
+  oracle model, the NIZK proof system $\sigmaprot_\fs = (\prover_\fs,
+  \verifier_\fs, \simulator_{\fs})$ resulting by applying the Fiat--Shamir
+  transform to $\sigmaprot$ is special simulation extractable with extraction error
+  $\eta = q/h$ for the simulator $\simulator$. Here, $q$ is the number of random
+  oracle queries and $h$ is the number of elements in the range of $\ro$.
+\end{theorem}
+
+The theorem relies on the following \emph{general forking lemma} \cite{JC:PoiSte00}.
+
+\begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12,CCS:BelNev06}]
+	\label{lem:forking_lemma}
+	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\zdv$ be a $\ppt$
+  algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $i
+  \in\range{0}{q}$ and $s$ is called a \emph{side output}. Denote by $\ig$ a
+  randomised instance generator. We denote by $\accProb$ the probability
+	\[
+		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_q \sample H; (i, s) \gets
+		\zdv(y, h_1, \ldots, h_q)}\,.
+	\]
+	Let $\forking_\zdv(y)$ denote the algorithm described in
+  \cref{fig:forking_lemma}, then the probability $\frkProb$ defined as $
+  \frkProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\zdv}(y)}
+  $ holds
+	\[
+		\frkProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
+	\]
+	%
+	\begin{figure}
+		\centering
+		\fbox{
+		\procedure{$\forking_\zdv (y)$}
+		{
+			\rho \sample \RND{\zdv}\\
+			h_1, \ldots, h_q \sample H\\
+			(i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)\\
+			\pcif i = 0\ \pcreturn (0, \bot, \bot)\\
+			h'_{i}, \ldots, h'_{q} \sample H\\
+			(i', s') \gets \zdv(y, h_1, \ldots, h_{i - 1}, h'_{i}, \ldots,  h'_{q};
+			\rho)\\
+			\pcif (i = i') \land (h_{i} \neq h'_{i})\ \pcreturn (1, s, s')\\
+			\pcind \pcelse \pcreturn (0, \bot, \bot)
+		}}
+		\caption{Forking algorithm $\forking_\zdv$}
+		\label{fig:forking_lemma}
+\end{figure}
+\end{lemma}
+
+\subsection{Proof of the generalized forking lemma (\cref{lem:generalised_forking_lemma})}
+\label{sec:forking_proof}
+\begin{proof}
+First denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
+\begin{align*}
+\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s)
+\gets \zdv(y, h_1, \ldots, h_q)}\,.\\
+	\frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
+\genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}\,.
+\end{align*}
+
+We start by claiming that for all $y$ 
+\begin{equation}\label{eq:frkProb_y}
+	\frkProb(y) \geq 
+	\frac{\accProb(y)^m}{q^{m - 1}} - \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)
+	\end{equation}
+Then with the expectation taken over $y \sample \ig$, we have
+\begin{align}
+	\frkProb & = \expected{\frkProb(y)} \geq
+	\expected{\frac{\accProb(y)^m}{q^{m - 1}} -  \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)} \label{eq:use_eq1}\\
+	& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} -
+	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - m)! \cdot
+  h^{m}}\right) \label{eq:by_lemma_jensen}\\
+	& = \frac{\accProb^m}{q^{m - 1}} -  \accProb \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)\label{eq:by_accProb}\,.
+\end{align}
+Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
+\cref{eq:by_lemma_jensen} comes from linearity of expected value and \cref{lem:jensen}; and
+\cref{eq:by_accProb} holds by the fact that $\expected{\accProb(y)} =
+\accProb$.
+
+We now show \cref{eq:frkProb_y}.
+Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$. 
+For any input $y$, with probabilities taken over the coin tosses of
+$\genforking_{\zdv}^{m}$ we have
+\begin{align*}
+	\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land
+h_{i_j}^{j} \neq h_{i_{j'}}^{j'} \text{ for } (j, j') \in J}	\\
+	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} %\\
+   - \prob{i_j \geq 1 \land h_{i_j}^{j} = h_{i_{j'}}^{j'} \text{ for some } (j, j') \in J}\\
+	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} -
+	\prob{i_j \geq 1} \cdot 
+  \left(1 - \frac{h!}{(h - m)! \cdot h^{m}}\right) \\ 
+	& = \prob{i_j = i_{j'} \land
+	i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 -
+\frac{h!}{(h - m)! \cdot h^{m}}\right)\,.
+\end{align*}
+
+Probability that for some $(j, j') \in J$ and $i_j = i_{j'}$ holds
+$h_{i_j}^{j} \neq h_{i_{j'}}^{j'}$ equals 
+\[
+  \frac{h \cdot (h - 1)
+\cdot \ldots \cdot (h - m - 1)}{h^m} = \frac{h!}{(h - m)! \cdot h^m}.
+\]
+That is, it equals the number
+of all $m$-element strings where each element is different divided by
+the number of all $m$-element strings, where elements are taken from a
+set of size $h$. 
+
+It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j,
+  j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$. Let $\RND{\zdv}$ denote
+the set from which $\zdv$ picks its coins at random. For each $\iota \in
+\range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times H^{\iota - 1} \to [0, 1]$ be
+defined by setting $X_\iota(\rho, h_1, \ldots, h_{\iota - 1})$ to
+\[
+  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
+    \ldots, h_q; \rho)}
+\]
+for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
+$X_\iota$ be a random variable over the uniform distribution on its domain. Then
+\begin{align*}
+	& \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} 
+	 = \sum_{\iota = 1}^{q} \prob{i_1 = \iota \land \ldots \land i_m = \iota} \\
+	& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota} \cdot \condprob{i_2 = \iota}{i_1 = \iota} \cdot \ldots \cdot \condprob{i_m = \iota}{i_1 = \ldots = i_{m - 1} = \iota} \\
+	& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota}
+   (\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\iota - 1}}
+   = \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
+\end{align*}
+Importantly, $\sum_{\iota = 1}^q \expected{X_{\iota}} = \accProb(y)$.
+
+By \cref{lem:jensen} we get
+\[
+	\sum_{\iota = 1}^{q} \expected{X_\iota^m} \geq \sum_{\iota = 1}^{q} \expected{X_\iota}^m\,.
+\]
+Note that for e.g.~$X_i = 1$, $i \in \range{1}{q}$ the inequality becomes equality, that is, it is tight.
+ 
+We now use the H\"older inequality, cf.~\cref{lem:holder}, for $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
+\begin{gather}
+	\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
+	\frac{1}{q^{m - 1}} \cdot \accProb(y)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
+\end{gather}
+Finally, we get
+\[
+	\frkProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
+	 \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
+\]
+\qed
+\end{proof}
+\begin{lemma}\label{lem:jensen}
+	Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
+	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times
+	H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
+h_{\iota - 1})$ to 
+\[
+  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
+    \ldots, h_q; \rho)}
+	\] 
+	for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
+  $X_\iota$ as a random variable over the uniform distribution on its domain.
+  Then $\expected{X_\iota^m} \geq \expected{X_\iota}^m$.
+\end{lemma}
+\begin{proof}
+	First we recall the Jensen inequality \cite{W:Weissten20}, if for some random
+  variable $X$ holds $\abs{\expected{X}} \leq \infty$ and $f$ is a Borel convex
+  function then
+	\[
+		f(\expected{X}) \leq \expected{f(X)}\,.
+	\] 
+	Finally, we note that $\abs{\expected{X}} \leq \infty$ and taking to the
+  $m$-th power is a Borel convex function on $[0, 1]$ interval. \qed
+\end{proof}
+
+\begin{lemma}[H\"older's inequality. Simplified.]\label{lem:holder}
+	Let $x_i, y_i$, for $i \in \range{1}{q}$, and $p, q$ be real numbers such that
+  $1/p + 1/q = 1$. Then
+	\begin{equation}
+    \label{eq:tightness}
+		\sum_{i = 1}^{q} x_i y_i \leq \left(\sum_{i = 1}^{q}
+      x_i^p\right)^{\frac{1}{p}} \cdot \left(\sum_{i = 1}^{q}
+      y_i^p\right)^{\frac{1}{q}}\,.
+	\end{equation}
+\end{lemma}
+
+\begin{remark}[Tightness of the H\"older inequality]
+	In is important to note that Inequality (\ref{eq:tightness}) is tight. More
+  precisely, for $\expected{X_i} = x$, $i \in \range{1}{q}$ we have
+	\begin{gather*}
+		\sum_{i = 1}^q x = \left(\sum_{i = 1}^{q} x^m\right)^\frac{1}{m} \cdot \left(\sum_{i = 1}^{q} 1^{\frac{m}{m - 1}}\right)^{\frac{m - 1}{m}} \\
+		qx = \left(qx^m\right)^\frac{1}{m} \cdot q^{\frac{m - 1}{m}} \\
+		(qx)^m = qx^m \cdot q^{m - 1} \\
+		(qx)^m = (qx)^m\,.
+	\end{gather*}
+\end{remark}
+
+\begin{lemma}
+  \label{lem:root_prob}
+  Let $\p{f}(X)$ be a random degree-$d$ polynomial over $\FF_p[X]$. Then the
+  probability that $\p{f}(X)$ has roots in $\FF_p$ is at least $\infrac{1}{d!}$.
+\end{lemma}
+\begin{proof}
+  First observe that there is $p^{d}$ canonical polynomials in $\FF_p[X]$.  Each
+  of the polynomials may have up to $d$ roots. Consider polynomials which are
+  reducible to polynomials of degree $1$, i.e.~polynomials that have all $d$
+  roots. The roots can be picked in $\bar{C}^{p}_{d}$ ways, where
+  $\bar{C}^{n}_{k}$ is the number of $k$-elements combinations with repetitions
+  from $n$-element set. That is,
+  \[
+    \bar{C}^n_k = \binom{n + k - 1}{k}\,.
+  \]
+  Thus, the probability that a randomly picked polynomial has all $d$ roots is
+  \begin{multline*}
+    p^{-d} \cdot \bar{C}^p_d = p^{-d} \cdot \binom{p + d - 1}{d} =
+    p^{-d} \cdot \frac{(p + d - 1)!}{(p + d - 1 - d)! \cdot d!} = \\
+    p^{-d} \cdot \frac{(p + d - 1) \cdot \ldots \cdot p \cdot (p - 1)!}{(p - 1)!
+      \cdot d!} = p^{-d} \cdot \frac{(p + d - 1)\cdot
+      \ldots \cdot p}{d!} \\
+    \geq p^{-d} \cdot {\frac{p^d}{d!}} = \frac{1}{d!}
+  \end{multline*}
+  \qed
+\end{proof}
