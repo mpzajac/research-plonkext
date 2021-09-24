@@ -111,27 +111,32 @@
 
 Intuitively, the updatability of the SRS should allow an adversarial prover to contribute to updating, and see proofs with respect to different updated SRS'es before attempting to provide a proof for a false statement. Note that, the adversary's output could be a proof w.r.t. a SRS that is different from the SRSs corresponding to all the simulated proofs seen. In addition, since the SRS is universal, the adversary could ask for a simulated proof for different statements as well. We think of the instance $\inp$ as consisting of the relation as well as the public input. This is without loss of generality since the SRS specialization for a relation is deterministic, and derived from an updated universal SRS. In concrete zkSNARKs, there is a preprocessing phase that corresponds to this specialization, which we hide in the definition by absorbing the relation into the instance.
 
-We first formalize an intermediate notion of updatable simulation extractability (USE) called \emph{late updatable simulation extractability} (LUSE), where the adversary sees simulated proofs only with respect to the last SRS. We then give our definition of USE that models a real-world adversary capable of seeing simulated proofs with respect to different (finalized) SRSes.
+We first formalize an intermediate notion of updatable simulation extractability (USE) called \emph{late updatable simulation extractability} (LUSE), where the adversary sees simulated proofs only with respect to the last SRS. We then give our definition of USE that models a real-world adversary capable of seeing simulated proofs with respect to different (finalized) SRS'es.
 
 We then prove a lemma that relates USE to LUSE. This lemma provides a clean and modular approach for proving USE property of zkSNARKs. 
-For the sake of completeness, we recall the definitions of standard simulation extractability and updatable knowledge soundness from~\cite{C:GKMMM18} which we use in the proof.
+For the sake of completeness, we also recall the definitions of standard simulation extractability and updatable knowledge soundness.
+In~\cref{fig:upd}, list $Q$ contains all $(\inp, \zkproof)$ pairs where
+$\inp$ is an instance provided to the simulator by the adversary and
+$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+queries to $\ro$ and $\ro$'s answers, and $Q_\srs$ contains proofs of all honest SRS updates.
+
 
 %\subsection{Late Updatable Simulation Extractability (late-USE)}
 
 \begin{definition}[Updatable knowledge soundness~\cite{C:GKMMM18}]\label{upd-KS}
-	An argument system for a relation $\REL$ is updatable knowledge-sound if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\advse}$ such that the advantage $\Adv_{\uks} := \prob{\UKS_{\advse,\ext_{\advse}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
+	An argument system for a relation $\REL$ is updatable knowledge-sound if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\uks}$ such that the advantage $\Adv_{\uks} := \prob{\UKS_{\advse,\ext_{\uks}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
 \end{definition}
 
 \begin{definition}[Simulation Extractability]\label{se}
-	An argument system for a relation $\REL$ is simulation-extractable if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\advse}$ such that the advantage $\Adv_{\se}:=\prob{ \SE_{\advse,\ext_{\advse}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
+	An argument system for a relation $\REL$ is simulation-extractable if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\se}$ such that the advantage $\Adv_{\se}:=\prob{ \SE_{\advse,\ext_{\se}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
 \end{definition}
 
 \begin{definition}[Late Updatable Simulation Extractability]\label{late-use}
-	An argument system for a relation $\REL$ is late updatable simulation-extractable if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\advse}$ such that the advantage $\Adv_{\luse}:=\prob{ \LUSE_{\advse,\ext_{\advse}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
+	An argument system for a relation $\REL$ is late updatable simulation-extractable if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\luse}$ such that the advantage $\Adv_{\luse}:=\prob{ \LUSE_{\advse,\ext_{\luse}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
 \end{definition}
 
 \begin{definition}[Updatable Simulation Extractability]\label{USE}
-	An argument system for a relation $\REL$ is updatable simulation-extractable if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\advse}$ such that the advantage $\Adv_{\use} := \prob{ \USE_{\advse,\ext_{\advse}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
+	An argument system for a relation $\REL$ is updatable simulation-extractable if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\use}$ such that the advantage $\Adv_{\use} := \prob{ \USE_{\advse,\ext_{\use}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
 \end{definition}
 
 \begin{figure}[!ht]
@@ -139,50 +144,50 @@ For the sake of completeness, we recall the definitions of standard simulation e
 			\fbox{
 				\begin{minipage}[t]{0.95\linewidth}
 					\centering
-				$\dottedbox{\UKS_{\advse,\ext_{\advse}}(\secpar)}$ /
-				$\SE_{\advse,\ext_{\advse}}(\secpar)$ / $\dashedbox{\LUSE_{\advse,\ext_{\advse}}(\secpar)}$ / $\fedbox{\USE_{\advse,\ext_{\advse}}(\secpar)}$
+				$\dottedbox{\UKS_{\advse,\ext_{\uks}}(\secpar)}$ /
+				$\SE_{\advse,\ext_\se}(\secpar)$ / $\dashedbox{\LUSE_{\advse,\ext_{\luse}(\secpar)}}$ / $\fedbox{\USE_{\advse,\ext_{\use}(\secpar)}}$
 			\end{minipage}
 			}
 		\fbox{
-		\begin{minipage}[t]{0.5\linewidth}
+		\begin{minipage}[t]{0.6\linewidth}
 			\procedure[codesize=\footnotesize,headlinesep=0.2\baselineskip,bodylinesep=-0.2\baselineskip]{}{
-			\underline{\dottedbox{\UKS_{\advse,\ext_{\advse}}(\secpar)}}\\
-			\srs \gets \bot, \mathcal{Q} \gets \emptyset \\
-			(\inp, \zkproof) \stackrel{r}\gets \advse^{\initU}(1^\secpar) \\
-			\wit \gets \ext_{\advse}(\srs,r) \\
-			\pcreturn \verifier(\srs, \inp, \zkproof) \wedge (\srs, \inp, \wit) \notin \REL \\
+			\underline{\dottedbox{\UKS_{\advse,\ext_{\uks}}(\secpar)}}\\
+			\srs \gets \bot, Q_\srs \gets \emptyset \\
+			(\inp_\advse, \zkproof_\advse) \gets \advse^{\initU, \ro}(1^\secpar; r) \\
+			\wit_\advse \gets \ext_\uks(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro) \\
+			\pcreturn \verifier(\srs, \inp_\advse, \zkproof_\advse) \wedge (\srs, \inp_\advse, \wit_\advse) \notin \REL \\
 			%				%
 			\\
 			%
-			\underline{\SE_{\advse,\ext_{\advse}}(\secpar)}\\
+			\underline{\SE_{\advse,\ext_{\se}}(\secpar)}\\
 			(\srs, \td) \leftarrow \kgen(\REL)\\
-			(\inp, \zkproof) \stackrel{r}\gets \advse^{\simO}(1^\secpar) \\
-			\wit \gets \ext_{\advse}(\srs,r) \\
-			\pcreturn \verifier(\srs, \inp, \zkproof) \wedge (\srs, \inp, \zkproof) \not \in \mathcal{Q}_{\srs} \wedge (\srs, \inp, \wit) \notin \REL \\
+			(\inp_\advse, \zkproof_\advse)\gets \advse^{\simO, \ro}(1^\secpar; r) \\
+			\wit_\advse \gets \ext_\se(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro) \\
+			\pcreturn \verifier(\srs, \inp_\advse, \zkproof_\advse) \wedge (\srs, \inp_\advse, \zkproof_\advse) \not \in Q \wedge (\srs, \inp_\advse, \wit_\advse) \notin \REL \\
 			%
 			\\
-				\underline{\dashedbox{\LUSE_{\advse,\ext_{\advse}}(\secpar)}}\\
-				\srs \gets \bot, \mathcal{Q} \gets \emptyset \\
-				(\inp, \zkproof) \stackrel{r}\gets \advse^{\initU, \simO}(1^\secpar) \\
-				\wit \gets \ext_{\advse}(\srs,r) \\
-				\pcreturn \verifier(\srs, \inp, \zkproof) \wedge (\srs, \inp, \zkproof) \not \in \mathcal{Q}_{\srs} \wedge (\srs, \inp, \wit) \notin \REL\\				
+				\underline{\dashedbox{\LUSE_{\advse,\ext_{\luse}}(\secpar)}}\\
+				\srs \gets \bot, Q_\srs \gets \emptyset \\
+				(\inp_\advse, \zkproof_\advse) \gets \advse^{\initU, \simO, \ro}(1^\secpar; r) \\
+				\wit_\advse \gets \ext_{\luse}(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro) \\
+				\pcreturn \verifier(\srs, \inp_\advse, \zkproof_\advse) \wedge (\srs, \inp_\advse, \zkproof_\advse) \not \in Q \wedge (\srs, \inp_\advse, \wit_\advse) \notin \REL\\				
 				%
 				\\
 				%
-				\underline{\fedbox{\USE_{\advse,\ext_{\advse}}(\secpar)}}\\
-				\srs \gets \bot, \mathcal{Q} \gets \emptyset \\
-				(\inp, \zkproof) \stackrel{r}\gets \advse^{\initU, \simO}(1^\secpar) \\
-				\wit \gets \ext_{\advse}(\srs,r) \\
-				\pcreturn \verifier(\srs, \inp, \zkproof) \wedge (\srs, \inp, \zkproof) \not \in \mathcal{Q}_{\srs} \wedge (\srs, \inp, \wit) \notin \REL \\
+				\underline{\fedbox{\USE_{\advse,\ext_{\use}}(\secpar)}}\\
+				\srs \gets \bot, Q_\srs \gets \emptyset \\
+				(\inp_\advse, \zkproof_\advse) \gets \advse^{\initU, \simO, \ro}(1^\secpar; r) \\
+				\wit_\advse \gets \ext_{\use}(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro) \\
+				\pcreturn \verifier(\srs, \inp_\advse, \zkproof_\advse) \wedge (\srs, \inp_\advse, \zkproof_\advse) \not \in Q \wedge (\srs, \inp_\advse, \wit_\advse) \notin \REL \\
 		}
 		\end{minipage}
-	\begin{minipage}[t]{0.45\linewidth}
+	\begin{minipage}[t]{0.37\linewidth}
 		\procedure[codesize=\footnotesize,headlinesep=0.2\baselineskip,bodylinesep=-0.2\baselineskip]{}{
 			\underline{\simO(\inp')}\\
 			\pcif (\srs = \bot): \pcreturn \bot \\
 			% \hamid{should we formalize this extractor?}\\
 			\zkproof'  \gets \simulator(\srs, \td, \inp')\\
-			\mathcal{Q}_{\srs} = \mathcal{Q}_{\srs} \cup \{(\srs, \inp', \zkproof')\}\\
+			Q = Q \cup \{(\srs, \inp', \zkproof')\}\\
 			\pcreturn  \zkproof' \\
 			%
 			\\
@@ -191,21 +196,21 @@ For the sake of completeness, we recall the definitions of standard simulation e
 			\dashedbox{\dottedbox{\pcif \srs \neq \bot: \pcreturn \bot}} \\
 			\pcif (\intent = \setup): \\
 			\t (\srs',\rho') \leftarrow \kgen(\REL)\\
-			\t \mathcal{Q} \gets \mathcal{Q} \cup \{\rho'\}\\
+			\t Q_\srs \gets Q_\srs \cup \{\rho'\}\\
 			\t \pcreturn (\srs',\rho')\\
 			%
 			\pcif (\intent = \update): \\
 			\t b \gets \verifyCRS(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^{n})\\
 			\t \pcif (b=0): \pcreturn \bot \\
 			\t (\srs',\rho') \leftarrow \upd(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^n)\\
-			\t \mathcal{Q} \gets \mathcal{Q} \cup \{\rho'\}\\
+			\t Q_\srs \gets Q_\srs \cup \{\rho'\}\\
 			\t \pcreturn (\srs',\rho')\\
 			%
 			\pcif (\intent = \final): \\
 			\t b \gets \verifyCRS(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^{n})\\
-			\t \pcif (b=0) \vee \mathcal{Q} \cap \{ \rho_i \}_i = \emptyset: \pcreturn \bot \\
+			\t \pcif (b=0) \vee Q_\srs \cap \{ \rho_i \}_i = \emptyset: \pcreturn \bot \\
 			\t \fedbox{\dashedbox{
-				\td_n \gets \ext_\advse(\srs_n,\{\rho_i \}_{i=1}^{n}; r), \td \gets \td_n}} \\
+				\td \gets \ext_\srs(\srs_n,, Q_\srs, \{\rho_i \}_{i=1}^{n})}} \\
 			\t \srs \gets \srs_n, \pcreturn \srs \\
 			%
 			\pcelse \pcreturn \bot
@@ -217,7 +222,7 @@ For the sake of completeness, we recall the definitions of standard simulation e
 	\end{center}
 \end{figure}
 
-The following lemma relates the definition of updatable simulation extractability to the definition of late updatable simulation extractability and updatable knowledge soundness. More specifically, the lemma shows that for any PPT adversary $\advse$ that has a non-negligible advantage in $\USE_{\advse,\ext_{\advse}}(\secpar)$, there exists a PPT adversary $\bdv$ that can win with non-negligible advantage either $\LUSE_{\advse,\ext_{\advse}}(\secpar)$ or $\UKS_{\advse,\ext_{\advse}}(\secpar)$.
+The following lemma relates the definition of updatable simulation extractability to the definition of late updatable simulation extractability and updatable knowledge soundness. More specifically, the lemma shows that for any PPT adversary $\advse$ that has a non-negligible advantage in $\USE_{\advse,\ext_{\use}}(\secpar)$, there exists a PPT adversary $\bdv$ that can win with non-negligible advantage either $\LUSE_{\advse,\ext_{\luse}}(\secpar)$ or $\UKS_{\advse,\ext_{\uks}}(\secpar)$.
 
 %\chaya{as we discussed we should probably be explicit about the simulator using trapdoor or being trapdoor less. and give both reductions}
 \begin{lemma}
