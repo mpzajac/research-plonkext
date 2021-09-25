@@ -41,10 +41,10 @@ i.e., that there is no efficient isomorphism from $\GRP_1$ to $\GRP_2$ or from
 $\GRP_2$ to $\GRP_1$. We use the by now standard bracket notation, i.e., we
 write $\bmap{a}{\gi}$ to denote $a g_{\gi}$ where $g_{\gi}$ is a fixed generator
 of $\GRP_{\gi}$. We denote $\pair (\gone{a}, \gtwo{b})$ as $\gone{a} \bullet
-\gtwo{b}$. Thus, $\gone{a} \bullet \gtwo{b} = \gtar{a b}$. We freely use the
-bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \vec{C}$ then
-$\vec{A} \grpgi{\vec{B}} = \grpgi{\vec{C}}$ and $\gone{\vec{A}}\bullet
-\gtwo{\vec{B}} = \gtar{\vec{C}}$. Since every algorithm $\adv$ takes as input
+\gtwo{b}$. Thus, $\gone{a} \bullet \gtwo{b} = \gtar{a b}$. 
+%We freely use the bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \vec{C}$ then
+%$\vec{A} \grpgi{\vec{B}} = \grpgi{\vec{C}}$ and $\gone{\vec{A}}\bullet\gtwo{\vec{B}} = \gtar{\vec{C}}$. 
+Since every algorithm $\adv$ takes as input
 the public parameters we skip them when describing $\adv$'s input. Similarly, we
 do not explicitly state that each protocol starts with generating these
 parameters by $\pgen$.
@@ -60,11 +60,10 @@ parameters by $\pgen$.
 \end{lemma}
 \subsection{Algebraic Group Model}
 The algebraic group model (AGM) introduced in \cite{C:FucKilLos18} lies between
-the standard model and generic bilinear group model\hamid{not clear why generic bilinear group model and not just generic group model!}. In the AGM it is assumed
+the standard model and generic group model. In the AGM it is assumed
 that an adversary $\adv$ can output a group element $\gnone{y} \in \GRP$ if
-$\gnone{y}$ has been computed by applying group operations to group elements
-given to $\adv$ as input. It is further assumed, that $\adv$ knows how to
-``build'' $\gnone{y}$ from that elements. More precisely, the AGM requires that
+$\gnone{y}$ has been computed by applying known group operations to group elements
+given to $\adv$ as input.  More precisely, the AGM requires that
 whenever $\adv(\gnone{\vec{x}})$ outputs a group element $\gnone{y}$ then it
 also outputs $\vec{c}$ such that $\gnone{y} = \vec{c}^\top \cdot
 \gnone{\vec{x}}$. Both $\plonk$ and $\sonic$ have been shown secure using the
@@ -347,7 +346,7 @@ that many sigma protocols, like e.g.~Schnorr's protocol \cite{C:Schnorr89},
 fulfil this property.
 
 \subsection{From interactive to non-interactive---the Fiat--Shamir transform}
-Consider a $(2\mu + 1)$-message, public-coin, honest verifier zero-knowledge
+Consider a $(2\mu + 1)$-message, public-coin, honest verifier zero-knowledge (HVZK)
 interactive proof system
 $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for
 $\REL \in \RELGEN(\secparam)$.  Let $\zkproof$ be a proof performed by the
@@ -390,8 +389,9 @@ polynomially many simulated proofs for any statements it wishes.
 %\chaya{remove reference to forking soundness. quantify for $\ext_\se$}
 \begin{definition}[Forking simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
 	\label{def:simext}
-  Let $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be a
-  HVZK proof system\hamid{$\ps_\fs$ is the Fiat-Shamir variant of the underlying proof system. So maybe we mean the underlying proof system is HVZK?}. We say that $\ps_\fs$ is \emph{forking
+  Let $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be a non-interactive proof system. 
+%  HVZK proof system\hamid{$\ps_\fs$ is the Fiat-Shamir variant of the underlying proof system. So maybe we mean the underlying proof system is HVZK?}. 
+We say that $\ps_\fs$ is \emph{forking
     simulation-extractable} with \emph{extraction error} $\nu$ if for any $\ppt$
   adversary $\adv$ that is given oracle access to a random oracle $\ro$ and
   simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with
