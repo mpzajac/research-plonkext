@@ -75,7 +75,7 @@ We propose a definition of simulation extractability in the updatable SRS settin
 \item 
 \emph{General theorem for USE of FS-compiled interactive protocols.}
 We then show that a class of interactive proofs of knowledge that are honest-verifier zero-knowledge,
-have a unique response property, and satify a property we define called forking soundness \emph{are USE out-of-the box} in the random oracle model when the Fiat--Shamir transformation is applied to them. 
+have a unique response property, and satisfy a property we define called forking soundness \emph{are USE out-of-the box} in the random oracle model when the Fiat--Shamir transformation is applied to them. 
 Informally, our notion of forking soundness is a variant of special soundness where the transcripts provided to the extractor are
 obtained through interaction with an honest verifier, and the extraction guarantee is computational instead of unconditional. 
 Our extractor only needs oracle access to the adversary, it does not depend on the adversary’s code, nor relies on knowledge
@@ -149,7 +149,7 @@ $\sonic$ and $\plonk$ are zero-knowledge, their simulators utilize
 trapdoors. However, for our reduction, we need simulators that rely only on
 reordering the messages and picking suitable verifier challenges, without
 knowing the SRS trapdoor.  That is, any PPT party should be able to produce a
-simulated proof by its own in a trapdoor-less wat. (Note that this property does
+simulated proof by its own in a trapdoor-less way. (Note that this property does
 not necessary break soundness of the protocol as the simulator is required only
 to produce a transcript and is not involved in a real conversation with a real
 verifier). We show simulators for $\plonkprotfs$ and $\sonicprotfs$ that rely
@@ -248,7 +248,7 @@ non-interactive versions of Bulletproof~\cite{SP:BBBPWM18} and \sonic~.
 Our work differs from~\cite{C:GhoTes21} in the following ways. First, they
 focus on showing security of concrete proof systems, while we show
 a general theorem about the security of a wide class of protocols. 
-Second, they only consider knowledge soundness, while we focus on the stronger notion of simulation extractability. Third, the proof of~\cite{C:GhoTes21} is in the AGM which allows for online extraction, whereas we aim to minimize our reliance on the AGM. In partiular, our main theorem does not rely on AGM and we tackle technical challenges arising from extraction by rewinding. 
+Second, they only consider knowledge soundness, while we focus on the stronger notion of simulation extractability. Third, the proof of~\cite{C:GhoTes21} is in the AGM which allows for online extraction, whereas we aim to minimize our reliance on the AGM. In particular, our main theorem does not rely on AGM and we tackle technical challenges arising from extraction by rewinding. 
 However, note that we show that concrete protocols satisfy the preconditions of our main theorem in the AGM.
 
  

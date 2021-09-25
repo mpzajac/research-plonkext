@@ -75,8 +75,8 @@ We propose a definition of simulation extractability in the updatable SRS settin
 \item 
 \emph{General theorem for USE of FS-compiled interactive protocols.}
 We then show that a class of interactive proofs of knowledge that are honest-verifier zero-knowledge,
-have a unique response property, and satify a property we define called forking soundness \emph{are USE out-of-the box} in the random oracle model when the Fiat--Shamir transformation is applied to them. 
-Informally, our notion of forking soundness is a variant of special soundness where the transcripts provided to the extractor are
+have a unique response property \hamid{in the updatable setting}, and satisfy a property we define called \hamid{updatable} forking soundness \emph{are USE out-of-the box} in the random oracle model when the Fiat--Shamir transformation is applied to them. 
+Informally, our notion of \hamid{updatable} forking soundness is a variant of special soundness where the transcripts provided to the extractor are
 obtained through interaction with an honest verifier, and the extraction guarantee is computational instead of unconditional. 
 Our extractor only needs oracle access to the adversary, it does not depend on the adversary’s code, nor relies on knowledge
 assumptions.
@@ -97,7 +97,7 @@ Proving that these protocols satisfy the required properties is done in the alge
 
 The proof of our general theorem for USE is, at a high level, along the lines of the proof of SE for FS-compiled sigma protocol
 from~\cite{INDOCRYPT:FKMV12}. However, we need new and stronger notions as we consider proof systems that are
-richer than simple sigma protocols. We discuss some of the technical challenges below.
+richer than simple sigma protocols \hamid{and moreover they are in the stronger updatable setting}. We discuss some of the technical challenges below.
 
 \plonk~\cite{EPRINT:GabWilCio19} and \sonic~\cite{CCS:MBKM19} were originally presented
 as interactive proofs of knowledge that are made non-interactive by the Fiat--Shamir transform. In the following,
@@ -105,9 +105,9 @@ we denote the underlying interactive protocols by $\plonkprot$ (for $\plonk$)
 and $\sonicprot$ (for $\sonic$) and the resulting non-interactive proof systems by
 $\plonkprotfs$ and $\sonicprotfs$, respectively.
 
-\oursubsub{Forking soundness.} 
+\oursubsub{\hamid{Updatable} Forking soundness.} 
 Following~\cite{INDOCRYPT:FKMV12}, one would have to show that for the protocols we consider, a witness can be extracted from sufficiently many valid transcripts with a common prefix. However, many protocols
-do not meet the standard definition of special soundness for sigma protocols, that requires extraction of a witness from any two transcripts, with the same first message. We put forth a notion analogous to special soundness, that is more general and applicable to a wider class of protocols -- protocols that are more than three rounds, and rely on an SRS. For $\plonkprot$ and
+do not meet the standard definition of special soundness for sigma protocols, that requires extraction of a witness from any two transcripts, with the same first message. We put forth a notion analogous to special soundness, that is more general and applicable to a wider class of protocols -- protocols that are more than three rounds, and rely on an \hamid{updatable} SRS. For $\plonkprot$ and
 $\sonicprot$ that are not three move protocols, the definition needs to be adapted. Furthermore, the number of transcripts
 required for extraction is more than two. Concretely, $(3 \noofc + 1)$---where $\noofc$ is the
 number of constraints in the proven circuit---for $\plonkprot$ and
@@ -116,27 +116,27 @@ numbers of multiplicative and linear constraints---for $\sonicprot$. Hence, we
 do not have a pair of transcripts, but a \emph{tree of transcripts}.
 
 In protocols that rely on SRS that come with a
-trapdoors, an adversary in posession of the trapdoor can produce multiple
+trapdoor, an adversary in possession of the trapdoor can produce multiple
 valid proof transcripts without knowing the witness and potentially for false
 statements. This is true even in the updatable setting, where there exists a trapdoor for any updated SRS.
 Recall that the standard special soundness definition requires
 witness extraction from \emph{any} tree of acceptable transcripts that share a
 common root. This means that there are no such trees for false
 statements. We define a different, forking lemma-related, version
-of soundness that we call \emph{forking soundness}. Forking soundness guarantees that it is
+of soundness that we call \emph{\hamid{updatable} forking soundness}. \hamid{Updatable} Forking soundness guarantees that it is
 possible to extract a witness from all (but negligibly many) trees of accepting
 transcripts produced by probabilistic polynomial time (PPT) adversaries, given
 that the trees are generated as interactions between a (possibly malicious)
 prover and an honest verifier. That is, if extraction from such a tree fails, then we break an
-underlying computational assumption.
+underlying computational assumption.\hamid{The fact that the definition is in the updatable setting indicates that this should hold even against adversaries that contribute in the SRS generation.}
 
-\oursubsub{Unique response property.} 
+\oursubsub{Unique response property \hamid{in the updatable setting}.} 
 Another property required to show USE is the unique response property~\cite{C:Fischlin05} which
 says that for $3$-messages sigma
 protocols, all but the first message sent by the prover are
 deterministic (intuitively, the prover can only employ fresh randomness in the
 first message of the protocol). We cannot use this definition as is since the protocols we consider have other rounds where the prover messages are randomized. In $\plonkprotfs$, both the first and the second prover's messages are randomized. Although $\sonicprot$ prover is deterministic after it picks its first message, the protocol has more than $3$ rounds. We propose a generalisation of the
-definition which states that a protocol is $\ur{i}$ if the prover is
+definition \hamid{in the updatable setting} which states that a protocol is $\ur{i}$ if \hamid{for any (finalised) SRS,} the prover is
 deterministic starting from its $(i + 1)$-th message. For our proof it is
 sufficient that this property is met by $\plonkprot$ for $i = 2$. Since
 \sonic{}'s prover is deterministic from the second message on, it is $\ur{1}$.
@@ -149,7 +149,7 @@ $\sonic$ and $\plonk$ are zero-knowledge, their simulators utilize
 trapdoors. However, for our reduction, we need simulators that rely only on
 reordering the messages and picking suitable verifier challenges, without
 knowing the SRS trapdoor.  That is, any PPT party should be able to produce a
-simulated proof by its own in a trapdoor-less wat. (Note that this property does
+simulated proof by its own in a trapdoor-less way. (Note that this property does
 not necessary break soundness of the protocol as the simulator is required only
 to produce a transcript and is not involved in a real conversation with a real
 verifier). We show simulators for $\plonkprotfs$ and $\sonicprotfs$ that rely
@@ -248,7 +248,7 @@ non-interactive versions of Bulletproof~\cite{SP:BBBPWM18} and \sonic~.
 Our work differs from~\cite{C:GhoTes21} in the following ways. First, they
 focus on showing security of concrete proof systems, while we show
 a general theorem about the security of a wide class of protocols. 
-Second, they only consider knowledge soundness, while we focus on the stronger notion of simulation extractability. Third, the proof of~\cite{C:GhoTes21} is in the AGM which allows for online extraction, whereas we aim to minimize our reliance on the AGM. In partiular, our main theorem does not rely on AGM and we tackle technical challenges arising from extraction by rewinding. 
+Second, they only consider knowledge soundness, while we focus on the stronger notion of simulation extractability. Third, the proof of~\cite{C:GhoTes21} is in the AGM which allows for online extraction, whereas we aim to minimize our reliance on the AGM. In particular, our main theorem does not rely on AGM and we tackle technical challenges arising from extraction by rewinding. 
 However, note that we show that concrete protocols satisfy the preconditions of our main theorem in the AGM.
 
  
