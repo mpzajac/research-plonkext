@@ -45,7 +45,7 @@ Intuitively, the updatability of the SRS should allow an adversarial prover to c
 	Let $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be a
 	HVZK proof system\hamid{$\ps_\fs$ is the Fiat-Shamir variant of the underlying proof system. So maybe we mean the underlying proof system is HVZK?}. We say that $\ps_\fs$ is \emph{updatable forking
 		simulation-extractable} with \emph{extraction error} $\nu$ if for any $\ppt$
-	adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a random oracle $\ro$ and
+	adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$\hamid{TODO: clarify that we mean the LUSE version of $\initU$ here!}, a random oracle $\ro$ and
 	simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with
 	probability $\accProb$, where
 	\[

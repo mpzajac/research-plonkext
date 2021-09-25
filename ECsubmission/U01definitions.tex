@@ -212,12 +212,12 @@ is upper-bounded by some negligible function $\negl$.
 	\,\left|\,
 	\begin{aligned}
 	& \inp, \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
-	a'_{\mu + 1}), \srs
+	a'_{\mu + 1})
 	\gets \adv^{\ro, \initU}(1^\secpar) \\
 	\end{aligned}
 	\right.\right]
 	\]
-	is upper-bounded by some negligible function $\negl$.
+	is upper-bounded by some negligible function $\negl$. \hamid{Note that $\srs$ is the last updated SRS finalised by $\initU$.}
 \end{definition}
 
 
@@ -415,7 +415,7 @@ $\zdv$ returns the index $i$ of the
 	transcripts such that none of the $n$ challenges in round $k$ were used in
 	simulated proofs.
 	
-	We say that $\ps$ is $(\eps(\secpar), k,n)$-forking sound if
+	We say that $\ps$ is $(\eps(\secpar), k,n)$-forking sound \hamid{in the updatable setting} if
 	for any PPT adversary the probability that
 	\begin{align*}
 	\Pr\left[
