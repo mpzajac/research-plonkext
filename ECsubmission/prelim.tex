@@ -3,7 +3,11 @@
 \section{Preliminaries}
 \label{sec:preliminaries}
 \subsection{Notations} Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
-security parameter. All adversaries are stateful. For an algorithm $\adv$, let
+security parameter. All adversaries $\adv$  are stateful. 
+Since every algorithm $\adv$ takes as input
+the public parameters we skip them when describing $\adv$'s input. 
+
+For an algorithm $\adv$, let
 $\image (\adv)$ be the image of $\adv$ (the set of valid outputs of $\adv$), let
 $\RND{\adv}$ denote the set of random tapes of correct length for $\adv$
 (assuming the given value of $\secpar$), and let $r \sample \RND{\adv}$ denote
@@ -30,24 +34,21 @@ description of $\REL$ one learns security parameter $\secpar$ and description of
 group $\GRP$, if the relation is a relation of group elements (as it usually is
 in case of zkSNARKs).
 
-\ourpar{Bilinear groups.}
+\ourpar{Bilinear groups.} We use the  standard bracket notation for groups $\GRP_{\gi}$. i.e., we
+write $\bmap{a}{\gi}$ to denote $a g_{\gi}$ where $g_{\gi}$ is a fixed generator
+of $\GRP_{\gi}$. 
 A bilinear group generator $\pgen (\secparam)$ returns public parameters $ \pp =
 (p, \GRP_1, \GRP_2, \GRP_T, \pair, \gone{1}, \gtwo{1})$, where $\GRP_1$,
 $\GRP_2$, and $\GRP_T$ are additive cyclic groups of prime order $p = 2^{\Omega
   (\secpar)}$, $\gone{1}, \gtwo{1}$ are generators of $\GRP_1$, $\GRP_2$, resp.,
 and $\pair: \GRP_1 \times \GRP_2 \to \GRP_T$ is a non-degenerate
-$\ppt$-computable bilinear pairing. We assume the bilinear pairing to be Type-3,
+$\ppt$-computable bilinear pairing $\pair (\gone{a}, \gtwo{b}) := \gone{a} \bullet
+\gtwo{b}= \gtar{a b}$. We assume the bilinear pairing to be Type-3,
 i.e., that there is no efficient isomorphism from $\GRP_1$ to $\GRP_2$ or from
-$\GRP_2$ to $\GRP_1$. We use the by now standard bracket notation, i.e., we
-write $\bmap{a}{\gi}$ to denote $a g_{\gi}$ where $g_{\gi}$ is a fixed generator
-of $\GRP_{\gi}$. We denote $\pair (\gone{a}, \gtwo{b})$ as $\gone{a} \bullet
-\gtwo{b}$. Thus, $\gone{a} \bullet \gtwo{b} = \gtar{a b}$. 
+$\GRP_2$ to $\GRP_1$. 
 %We freely use the bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \vec{C}$ then
 %$\vec{A} \grpgi{\vec{B}} = \grpgi{\vec{C}}$ and $\gone{\vec{A}}\bullet\gtwo{\vec{B}} = \gtar{\vec{C}}$. 
-Since every algorithm $\adv$ takes as input
-the public parameters we skip them when describing $\adv$'s input. Similarly, we
-do not explicitly state that each protocol starts with generating these
-parameters by $\pgen$.
+
 
 \begin{lemma}[Difference lemma,~{\cite[Lemma 1]{EPRINT:Shoup04}}]
 	\label{lem:difference_lemma}

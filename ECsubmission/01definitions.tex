@@ -3,13 +3,12 @@
 \section{Definitions and lemmas for multi-round SRS-based protocols}
 \label{sec:se_definitions}
 
-\chaya{move the USE definition to this section?}
+%\chaya{move the USE definition to this section?}
 
-The result of Faust et al.\cite{INDOCRYPT:FKMV12} do not apply to our setting
-since the protocols we consider have an SRS, more than three messages, require more than
+Yhe protocols we consider have an SRS, more than three messages, require more than
 just two transcripts for standard model extraction and are not special
-sound. We thus adapt special
-soundness to forking soundness, and generalize the forking lemma and the unique response property to make them compatible with
+sound. As a first step to prove non-malleability of such protocols, we need to consider a special
+soundness property adapted to the forking soundness definition in the case of multi-round SRS-based protocols. We also need to consider a more general forking lemma and to introduce unique response property compatible with
 multi-round SRS-based protocols.
 
 \subsection{Generalised forking lemma.}
