@@ -184,12 +184,12 @@ for some negligible $\eps(\secpar)$.
   $\wit_{\advse}$ such that $\REL(\inp_{\advse}, \wit_{\advse})$ holds. $\advse$ wins
   if it manages to produce an acceptable proof and the extractor fails to reveal
   the corresponding witness. In the following game hops we upper-bound the
-  probability that this happens.
+  probability that this happens.\hamid{In the following games, $\srs$ denotes the finalised SRS with respect to which $\adv$ makes queries to the simulation oracle and outputs $(\inp_\advse, \zkproof_{\advse})$.}\hamid{This will be different if we consider USE.}
 
   \ngame{1} This is identical to $\game{0}$ except that now the game is aborted
   if there is a simulated proof $\zkproof_\simulator$ for $\inp_{\advse}$ such
   that $(\inp_{\advse}, \zkproof_\simulator[1..k]) = (\inp_{\advse},
-  \zkproof_{\advse}[1..k])$. That is, the adversary in its final proof
+  \zkproof_{\advse}[1..k])$. \hamid{should be: ...is aborted if there is a tuple $(\srs, \inp_\advse, \zkproof_{\simulator}) \in Q$ such that $\zkproof_\simulator[1..k] = \zkproof_{\advse}[1..k]$.}\hamid{In the case of USE, nothing changes. This is because freshness of $(\inp_{\advse}, \zkproof_\simulator)$ is still checked w.r.t. the last finalised SRS.} That is, the adversary in its final proof
   reuses at least $k$ messages from a simulated proof it saw before and the proof is acceptable.
   Denote that event by $\event{\errur}$.
 
@@ -234,7 +234,7 @@ for some negligible $\eps(\secpar)$.
 }
 
   \ngame{2} This is identical to $\game{1}$ except that now the environment
-  aborts also when it fails to build a $(1, \ldots, 1, n, 1, \ldots, 1)$-tree
+  aborts also when it fails to build a $(1, \ldots, 1, n\hamid{n_k}, 1, \ldots, 1)$-tree
   of accepting transcripts $\tree$ by rewinding $\advse$. Denote that event by
   $\event{\errfrk}$. 
 
@@ -255,10 +255,10 @@ for some negligible $\eps(\secpar)$.
 We describe our extractor $\ext$ here. The extractor takes as input relation
 $\REL$, SRS $\srs$, $\advse$'s code, its randomness $r$, the output instance
 $\inp_{\advse}$ and proof $\zkproof_{\advse}$, as well as the list $Q$ of
-simulated proofs (and their instances) and the list of random oracle queries and
-responses $Q_\ro$. Then, $\ext$ starts a forking algorithm
+simulated proofs (and their instances \hamid{with SRS $\srs$}\hamid{in the case of USE, this can be with respect to different SRS's $\srs_i$}), the list of random oracle queries and
+responses $Q_\ro$, \hamid{and the list $Q_\srs$ of proofs for honest SRS updates}. Then, $\ext$ starts a forking algorithm
 $\genforking^{n}_\zdv(y,h_1, \ldots, h_q)$ for
-$y = (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse}, Q)$ where we set
+$y = (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse}, Q, \hamid{Q_\ro, Q_\srs})$ where we set
 $h_1, \ldots, h_q$ to be the consecutive queries from list $Q_\ro$. We run
 $\advse$ internally in $\zdv$.% which returns the proof $\zkproof$ and index $i$
 %of the random oracle query that $\advse$ used to answer $\zkproof$'s $k$-th challenge. 
@@ -266,9 +266,9 @@ $\advse$ internally in $\zdv$.% which returns the proof $\zkproof$ and index $i$
 To assure that in the first execution of $\zdv$ the adversary $\advse$ produce
 the same $(\inp_{\advse}, \zkproof_{\advse})$ as in the extraction game, $\zdv$
 provides $\advse$ with the same randomness $r$ and answers queries to the random
-oracle and simulator with pre-recorded responses in $Q_\ro$ and $Q$.
+oracle, simulator \hamid{and SRS update oracle} with pre-recorded responses in $Q_\ro$, $Q$ \hamid{and $Q_\srs$}.\hamid{How $\zdv$ can answer queries to the SRS update oracle with $Q_\srs$? We are storing only update proofs in $Q_\srs$ and not the SRSs itself. Is the update proof enough, or we should also add the SRSs to the list $Q_\srs$?}
 %
-Note, that since the view of the adversary when run inside $\zdv$ is the same as its
+Note that since the view of the adversary when run inside $\zdv$ is the same as its
 view with access to the real random oracle and simulator, it produces exactly the
 same output. After the first run, $\zdv$ outputs the index $i$ of a random oracle
 query that was used by $\advse$ to compute the challenge $\zkproof[k].\ch =
@@ -285,9 +285,9 @@ the simulated proof on its own. Eventually, $\zdv$ outputs index $i'$ of a query
 that was used by the adversary to compute $\ro(\zkproof_{\advse}[0..k])$, and a
 new transcript $s_2$. $\zdv$ is run $n$ times with different random oracle
 responses. If a tree $\tree$ of $n$ transcripts is built then $\ext$
-runs internally the tree extractor $\extt(\tree)$ and outputs what it returns.
+runs internally the tree extractor $\extt(\tree)$ and outputs what it returns.\hamid{Since the randomness of $\advse$ is fixed, I think there isn't any specific problem in the proof in the updatable setting.}
 
-We emphasize here the importance of the unique response property. If it does not
+We emphasize here the importance of the \hamid{updatble} unique response property. If it does not
 hold then in some $j$-th execution of $\zdv$ the adversary could reuse a
 challenge that it learned from observing proofs in $Q$. In that case, $\zdv$
 would output $i = 0$, making the extractor fail. Fortunately, the case that the
@@ -328,7 +328,7 @@ Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemm
 $\extt(\tree)$ run by $\ext$ fails to extract the witness. 
 
 \ncase{Game 2 to Game 3}	
-Since $\ps$ is forking-sound the probability that $\extt(\tree)$
+Since $\ps$ is \hamid{updatable} forking-sound the probability that $\extt(\tree)$
 fails is upper-bounded by $\epsss(\secpar)$. 
 
 Since Game $\game{3}$ is aborted when it is impossible to extract the correct witness
@@ -349,7 +349,7 @@ Thus the probability that extractor $\extss$ succeeds is at least
   - \epsss(\secpar)\,.
 \]
 Since $\waccProb$ is probability of $\advse$ outputting acceptable transcript
-that does not break $\ur{k}$-ness of $\ps$, then $\waccProb \geq \accProb -
+that does not break \hamid{updatable} $\ur{k}$-ness of $\ps$, then $\waccProb \geq \accProb -
 \epsur(\secpar)$, where $\accProb$ is the probability of $\advse$ outputing an acceptable
 proof as defined in \cref{def:simext}. It thus holds
 \begin{equation}

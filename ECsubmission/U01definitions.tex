@@ -97,10 +97,11 @@ outputing an accepting proof, we claim that these probabilities are exactly the
 same by the way we define $\zdv$.)  Let $\advse$ produce an accepting
 proof $\zkproof_{\advse}$ for instance $\inp_{\advse}$; $r$ be $\advse$'s
 randomness; $Q$ the list of queries submitted by $\advse$ along with simulator
-$\simulator$'s answers; and $Q_\ro$ be the list of all random oracle
+$\simulator$'s answers; \hamid{$Q_\srs$ be the list of proofs for SRS honest updates;} and $Q_\ro$ be the list of all random oracle
 queries made by $\advse$.  All of these are given to the extractor $\ext$ that
 internally runs the forking algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$
 takes $(\srs, \advse,
+\hamid{Q_\srs},
 %\inp_\advse,
 %\zkproof_\advse, 
 Q, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
@@ -109,8 +110,8 @@ h_q^1$.
 pick $h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$
 elements.)  
 
-Next, $\zdv$ internally runs $\advse(\srs; r)$ and responds to its random
-oracle and simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes
+Next, $\zdv$ internally runs $\advse(\srs; r)$ \hamid{$\advse(1^\secpar; r)$} and responds to its random
+oracle, simulator queries \hamid{and SRS update queries} by using $Q_\ro$, $Q$ \hamid{and $Q_\srs$}. Note that $\advse$ makes
 the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
 as it is run on the same random tape and with the same answers from the
 simulator and random oracle. Once $\advse$ outputs 
@@ -217,7 +218,7 @@ is upper-bounded by some negligible function $\negl$.
 	\end{aligned}
 	\right.\right]
 	\]
-	is upper-bounded by some negligible function $\negl$. \hamid{Note that $\srs$ is the last updated SRS finalised by $\initU$.}
+	is upper-bounded by some negligible function $\negl$. \hamid{Note that $\srs$ is the last updated SRS finalised by $\initU$.}\hamid{UPDATE: maybe we should say this should hold w.r.t all finalised SRSs and not just the last one? (discuss this with Chaya)}
 \end{definition}
 
 
@@ -360,42 +361,42 @@ algorithm from the generalized forking lemma.
 
 
 
-\begin{definition}[$(\eps(\secpar), k,n)$-forking soundness]
-  Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
-  $(2 \mu + 1)$-message proof system for a relation $\REL$.
-
-For any $\ppt$ adversary $\advse^{\simulator_\fs,
-  \ro} (\srs; r)$ we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r, Q, Q_{H})$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
-and simulated proofs. While $Q_{H}$ is consistent with $h_1, \ldots, h_q$, it replays the proofs of $Q$.
+%\begin{definition}[$(\eps(\secpar), k,n)$-forking soundness]
+%  Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
+%  $(2 \mu + 1)$-message proof system for a relation $\REL$.
 %
-$\zdv$ returns the index $i$ of the
-  random oracle query made for challenge $k$ and the proof $\adv$ returns.
-
-  Consider the algorithm $\genforking_{\zdv}^{n}$
-  that rewinds $\zdv$ to produce a $(1,\dots, n,\dots, 1)$-tree of
-  transcripts such that none of the $n$ challenges in round $k$ were used in
-  simulated proofs.
-
-  We say that $\ps$ is $(\eps(\secpar), k,n)$-forking sound if
-  for any PPT adversary the probability that
-  \begin{align*}
-    \Pr\left[
-    \REL(\inp, \wit) = 0
-    \,\Biggl|\,
-    \begin{aligned}
-       & \srs \sample \kgen(\REL),
-        r \sample \RND{\advse},
-         (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,\ro} (\srs; r), \\
-       &    (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r,Q, Q_{H}),Q_{H}),
-           \wit \gets \extt(\tree)
-    \end{aligned}
-    \right] \leq \eps(\secpar).
-  \end{align*}
-   List $Q$ contains all $(\inp, \zkproof)$ pairs where
-  $\inp$ is an instance provided to the simulator by the adversary and
-  $\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-  queries to $\ro$ and $\ro$'s answers.
-\end{definition}
+%For any $\ppt$ adversary $\advse^{\simulator_\fs,
+%  \ro} (\srs; r)$ we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r, Q, Q_{H})$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
+%and simulated proofs. While $Q_{H}$ is consistent with $h_1, \ldots, h_q$, it replays the proofs of $Q$.
+%%
+%$\zdv$ returns the index $i$ of the
+%  random oracle query made for challenge $k$ and the proof $\adv$ returns.
+%
+%  Consider the algorithm $\genforking_{\zdv}^{n}$
+%  that rewinds $\zdv$ to produce a $(1,\dots, n,\dots, 1)$-tree of
+%  transcripts such that none of the $n$ challenges in round $k$ were used in
+%  simulated proofs.
+%
+%  We say that $\ps$ is $(\eps(\secpar), k,n)$-forking sound if
+%  for any PPT adversary the probability that
+%  \begin{align*}
+%    \Pr\left[
+%    \REL(\inp, \wit) = 0
+%    \,\Biggl|\,
+%    \begin{aligned}
+%       & \srs \sample \kgen(\REL),
+%        r \sample \RND{\advse},
+%         (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,\ro} (\srs; r), \\
+%       &    (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r,Q, Q_{H}),Q_{H}),
+%           \wit \gets \extt(\tree)
+%    \end{aligned}
+%    \right] \leq \eps(\secpar).
+%  \end{align*}
+%   List $Q$ contains all $(\inp, \zkproof)$ pairs where
+%  $\inp$ is an instance provided to the simulator by the adversary and
+%  $\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+%  queries to $\ro$ and $\ro$'s answers.
+%\end{definition}
 
 \hamid{The definition in the updatable setting should look like this:}
 

@@ -67,8 +67,8 @@ Intuitively, the updatability of the SRS should allow an adversarial prover to c
 	\extProb = \Pr \left[
 	\begin{aligned}
 	& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \ \wedge \\
-	& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q \wedge
-	\REL(\inp_{\advse}, \wit_{\advse}) = 1
+	& (\textcolor{blue}{\srs}, \inp_{\advse}, \zkproof_{\advse}) \not\in Q \wedge
+	\REL(\textcolor{blue}{\srs}, \inp_{\advse}, \wit_{\advse}) = 1
 	\end{aligned}
 	\, \left| \,
 	\begin{aligned}
@@ -85,7 +85,7 @@ Intuitively, the updatability of the SRS should allow an adversarial prover to c
 	\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
 	\]
 	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
-	$\accProb \geq \nu$. List $Q$ contains all $(\inp, \zkproof)$ pairs where
+	$\accProb \geq \nu$. List $Q$ contains all \hamid{$(\srs, \inp, \zkproof)$ tuples} where \hamid{$\srs$ is the finalised SRS.}\hamid{In the case of USE, this should be: $\srs$ is the finalised SRS at the time of making the query to $\simulator$.}
 	$\inp$ is an instance provided to the simulator by the adversary and
 	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
 	queries to $\ro$ and $\ro$'s answers. List $Q_\srs$ contains the proofs of all honest SRS updates.
