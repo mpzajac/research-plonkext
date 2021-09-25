@@ -337,7 +337,7 @@ For any $\ppt$ adversary $\advse^{\simulator_\fs,
 and simulated proofs. While $Q_{H}$ is consistent with $h_1, \ldots, h_q$, it replays the proofs of $Q$.
 %
 $\zdv$ returns the index $i$ of the
-  random oracle query made for challenge $k$ and the proof $\adv$ returns
+  random oracle query made for challenge $k$ and the proof $\adv$ returns.
 
   Consider the algorithm $\genforking_{\zdv}^{n}$
   that rewinds $\zdv$ to produce a $(1,\dots, n,\dots, 1)$-tree of
@@ -365,6 +365,7 @@ $\zdv$ returns the index $i$ of the
   queries to $\ro$ and $\ro$'s answers.
 \end{definition}
 
+\hamid{next definition should be commented!}
 \begin{definition}[$(\eps(\secpar), k,n)$-forking soundness]
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
   $(2 \mu + 1)$-message proof system for a relation $\REL$.

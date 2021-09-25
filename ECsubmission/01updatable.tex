@@ -81,7 +81,7 @@ queries to $\ro$ and $\ro$'s answers, and $Q_\srs$ contains proofs of all honest
 			\underline{\dottedbox{\UKS_{\advse,\ext_{\uks}}(\secpar)}}\\
 			\srs \gets \bot, Q_\srs \gets \emptyset \\
 			(\inp_\advse, \zkproof_\advse) \gets \advse^{\initU, \ro}(1^\secpar; r) \\
-			\wit_\advse \gets \ext_\uks(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro) \\
+			\wit_\advse \gets \ext_\uks(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro, Q_\srs) \\
 			\pcreturn \verifier(\srs, \inp_\advse, \zkproof_\advse) \wedge (\srs, \inp_\advse, \wit_\advse) \notin \REL \\
 			%				%
 			\\
@@ -96,7 +96,7 @@ queries to $\ro$ and $\ro$'s answers, and $Q_\srs$ contains proofs of all honest
 				\underline{\dashedbox{\LUSE_{\advse,\ext_{\luse}}(\secpar)}}\\
 				\srs \gets \bot, Q_\srs \gets \emptyset \\
 				(\inp_\advse, \zkproof_\advse) \gets \advse^{\initU, \simO, \ro}(1^\secpar; r) \\
-				\wit_\advse \gets \ext_{\luse}(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro) \\
+				\wit_\advse \gets \ext_{\luse}(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro, Q_\srs) \\
 				\pcreturn \verifier(\srs, \inp_\advse, \zkproof_\advse) \wedge (\srs, \inp_\advse, \zkproof_\advse) \not \in Q \wedge (\srs, \inp_\advse, \wit_\advse) \notin \REL\\				
 				%
 				\\
@@ -104,7 +104,7 @@ queries to $\ro$ and $\ro$'s answers, and $Q_\srs$ contains proofs of all honest
 				\underline{\fedbox{\USE_{\advse,\ext_{\use}}(\secpar)}}\\
 				\srs \gets \bot, Q_\srs \gets \emptyset \\
 				(\inp_\advse, \zkproof_\advse) \gets \advse^{\initU, \simO, \ro}(1^\secpar; r) \\
-				\wit_\advse \gets \ext_{\use}(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro) \\
+				\wit_\advse \gets \ext_{\use}(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro, Q_\srs) \\
 				\pcreturn \verifier(\srs, \inp_\advse, \zkproof_\advse) \wedge (\srs, \inp_\advse, \zkproof_\advse) \not \in Q \wedge (\srs, \inp_\advse, \wit_\advse) \notin \REL \\
 		}
 		\end{minipage}

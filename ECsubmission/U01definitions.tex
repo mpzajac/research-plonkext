@@ -190,6 +190,37 @@ by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$
 }
 \]
 is upper-bounded by some negligible function $\negl$.
+\end{definition}
+
+\hamid{The new definition for updatable setting should be like this:}
+\begin{definition}[$\ur{i}$-protocol in the updatable setting]
+	\label{def:wiuru}
+	Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
+	$\ps = (\kgen, \prover, \verifier, \simulator)$. Let $\proofsystem_\fs$ be
+	$\proofsystem$ after the Fiat--Shamir transform and $\ro$ the random
+	oracle. Denote by $a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output
+	by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$
+		on} \hamid{in the updatable setting} if for any $\ppt$ adversary $\adv$:
+	\[
+	\Pr\left[
+	\begin{aligned}
+	& \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
+	\ldots, a'_{i}, \\
+	& \verifier^\ro_\fs (\srs, \inp, \vec{a}) =
+	\verifier^\ro_\fs(\srs, \inp, \vec{a'}) = 1  \\
+	\end{aligned}
+	\,\left|\,
+	\begin{aligned}
+	& \inp, \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
+	a'_{\mu + 1}), \srs
+	\gets \adv^{\ro, \initU}(1^\secpar) \\
+	\end{aligned}
+	\right.\right]
+	\]
+	is upper-bounded by some negligible function $\negl$.
+\end{definition}
+
+
 % Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
 % $\ps = (\kgen, \prover, \verifier, \simulator)$ and let $r$ be verifier's
 % randomness which determines its challenges $r_1, \ldots, r_\mu$. Denote by
@@ -220,7 +251,7 @@ is upper-bounded by some negligible function $\negl$.
 %      \right.
 % } \leq \negl.
 % \]
-\end{definition}
+
 Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary
 to produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$
 that are the same on  first $i$ messages. 
@@ -338,7 +369,7 @@ For any $\ppt$ adversary $\advse^{\simulator_\fs,
 and simulated proofs. While $Q_{H}$ is consistent with $h_1, \ldots, h_q$, it replays the proofs of $Q$.
 %
 $\zdv$ returns the index $i$ of the
-  random oracle query made for challenge $k$ and the proof $\adv$ returns
+  random oracle query made for challenge $k$ and the proof $\adv$ returns.
 
   Consider the algorithm $\genforking_{\zdv}^{n}$
   that rewinds $\zdv$ to produce a $(1,\dots, n,\dots, 1)$-tree of
@@ -366,6 +397,46 @@ $\zdv$ returns the index $i$ of the
   queries to $\ro$ and $\ro$'s answers.
 \end{definition}
 
+\hamid{The definition in the updatable setting should look like this:}
+
+\begin{definition}[$(\eps(\secpar), k,n)$-forking soundness in the updatable setting]
+	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
+	$(2 \mu + 1)$-message proof system for a relation $\REL$.
+	
+	For any $\ppt$ adversary $\advse^{\initU, \simulator_\fs,
+		\ro} (1^\secpar; r)$ we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r, Q, Q_H, Q_\srs)$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
+	and simulated proofs. While $Q_{H}$ is consistent with $h_1, \ldots, h_q$, it replays the proofs of $Q$.
+	%
+	$\zdv$ returns the index $i$ of the
+	random oracle query made for challenge $k$ and the proof $\adv$ returns.
+	
+	Consider the algorithm $\genforking_{\zdv}^{n}$
+	that rewinds $\zdv$ to produce a $(1,\dots, n,\dots, 1)$-tree of
+	transcripts such that none of the $n$ challenges in round $k$ were used in
+	simulated proofs.
+	
+	We say that $\ps$ is $(\eps(\secpar), k,n)$-forking sound if
+	for any PPT adversary the probability that
+	\begin{align*}
+	\Pr\left[
+	\REL(\inp, \wit) = 0
+	\,\Biggl|\,
+	\begin{aligned}
+	%& \srs \sample \kgen(\REL),
+	& r \sample \RND{\advse},
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator_\fs,\ro} (1^\secpar; r), \\
+	&    (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r,Q, Q_{H}, Q_\srs),Q_{H}),
+	\wit \gets \extt(\tree)
+	\end{aligned}
+	\right] \leq \eps(\secpar).
+	\end{align*}
+	List $Q$ contains all $(\inp, \zkproof)$ pairs where
+	$\inp$ is an instance provided to the simulator by the adversary and
+	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+	queries to $\ro$ and $\ro$'s answers. List $Q_\srs$ contains the proofs of all honest SRS updates.
+\end{definition}
+
+\hamid{next definition should be commented!}
 \begin{definition}[$(\eps(\secpar), k,n)$-forking soundness]
   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
   $(2 \mu + 1)$-message proof system for a relation $\REL$.

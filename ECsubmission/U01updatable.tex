@@ -38,14 +38,68 @@
 
 Intuitively, the updatability of the SRS should allow an adversarial prover to contribute to updating, and see proofs with respect to different updated SRS'es before attempting to provide a proof for a false statement. Note that, the adversary's output could be a proof w.r.t. a SRS that is different from the SRSs corresponding to all the simulated proofs seen. In addition, since the SRS is universal, the adversary could ask for a simulated proof for different statements as well. We think of the instance $\inp$ as consisting of the relation as well as the public input. This is without loss of generality since the SRS specialization for a relation is deterministic, and derived from an updated universal SRS. In concrete zkSNARKs, there is a preprocessing phase that corresponds to this specialization, which we hide in the definition by absorbing the relation into the instance.
 
-We first formalize an intermediate notion of updatable simulation extractability (USE) called \emph{late updatable simulation extractability} (LUSE), where the adversary sees simulated proofs only with respect to the last SRS. We then give our definition of USE that models a real-world adversary capable of seeing simulated proofs with respect to different (finalized) SRS'es.
+\hamid{Maybe we can comment all the rest of this section and just add the definition of LUSE in the different format of~\cref{def:simext} as follows:}
+
+\begin{definition}[Updatable Forking simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
+	\label{def:updsimext}
+	Let $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be a
+	HVZK proof system\hamid{$\ps_\fs$ is the Fiat-Shamir variant of the underlying proof system. So maybe we mean the underlying proof system is HVZK?}. We say that $\ps_\fs$ is \emph{updatable forking
+		simulation-extractable} with \emph{extraction error} $\nu$ if for any $\ppt$
+	adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a random oracle $\ro$ and
+	simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with
+	probability $\accProb$, where
+	\[
+	\accProb = \Pr \left[
+	\begin{aligned}
+	& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \wedge
+	(\inp_{\advse}, \zkproof_{\advse}) \not\in Q
+	\end{aligned}
+	 \left| \,
+	\begin{aligned}
+	& r \sample \RND{\advse},
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator_\fs,
+		\ro} (1^\secpar; r)
+	\end{aligned}
+	\right.\right],
+	\]
+	there exists an extractor $\extse$ such that
+	\[
+	\extProb = \Pr \left[
+	\begin{aligned}
+	& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \ \wedge \\
+	& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q \wedge
+	\REL(\inp_{\advse}, \wit_{\advse}) = 1
+	\end{aligned}
+	\, \left| \,
+	\begin{aligned}
+	& r \sample \RND{\advse},
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator_\fs,
+		\ro} (1^\secpar; r) \\
+	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+	Q, Q_\ro, Q_\srs) 
+	\end{aligned}
+	\right.\right]
+	\]
+	is at at least 
+	\[
+	\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
+	\]
+	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
+	$\accProb \geq \nu$. List $Q$ contains all $(\inp, \zkproof)$ pairs where
+	$\inp$ is an instance provided to the simulator by the adversary and
+	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+	queries to $\ro$ and $\ro$'s answers. List $Q_\srs$ contains the proofs of all honest SRS updates.
+\end{definition}
+
+---------CAN BE REMOVED---------\\
+We first formalize an intermediate notion of updatable simulation extractability (USE) called \emph{late updatable simulation extractability} (LUSE), where the adversary sees simulated proofs only with respect to the last SRS. We then give our definition of USE that models a real-world adversary capable of seeing simulated proofs with respect to different (finalized) SRS's.
 
 We then prove a lemma that relates USE to LUSE. This lemma provides a clean and modular approach for proving USE property of zkSNARKs. 
 For the sake of completeness, we also recall the definitions of standard simulation extractability and updatable knowledge soundness.
 In~\cref{fig:upd}, list $Q$ contains all $(\inp, \zkproof)$ pairs where
 $\inp$ is an instance provided to the simulator by the adversary and
 $\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-queries to $\ro$ and $\ro$'s answers, and $Q_\srs$ contains proofs of all honest SRS updates.
+queries to $\ro$ and $\ro$'s answers, and $Q_\srs$ contains the proofs of all honest SRS updates.
 
 
 %\subsection{Late Updatable Simulation Extractability (late-USE)}
@@ -81,7 +135,7 @@ queries to $\ro$ and $\ro$'s answers, and $Q_\srs$ contains proofs of all honest
 			\underline{\dottedbox{\UKS_{\advse,\ext_{\uks}}(\secpar)}}\\
 			\srs \gets \bot, Q_\srs \gets \emptyset \\
 			(\inp_\advse, \zkproof_\advse) \gets \advse^{\initU, \ro}(1^\secpar; r) \\
-			\wit_\advse \gets \ext_\uks(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro) \\
+			\wit_\advse \gets \ext_\uks(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro, Q_\srs) \\
 			\pcreturn \verifier(\srs, \inp_\advse, \zkproof_\advse) \wedge (\srs, \inp_\advse, \wit_\advse) \notin \REL \\
 			%				%
 			\\
@@ -96,7 +150,7 @@ queries to $\ro$ and $\ro$'s answers, and $Q_\srs$ contains proofs of all honest
 				\underline{\dashedbox{\LUSE_{\advse,\ext_{\luse}}(\secpar)}}\\
 				\srs \gets \bot, Q_\srs \gets \emptyset \\
 				(\inp_\advse, \zkproof_\advse) \gets \advse^{\initU, \simO, \ro}(1^\secpar; r) \\
-				\wit_\advse \gets \ext_{\luse}(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro) \\
+				\wit_\advse \gets \ext_{\luse}(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro, Q_\srs) \\
 				\pcreturn \verifier(\srs, \inp_\advse, \zkproof_\advse) \wedge (\srs, \inp_\advse, \zkproof_\advse) \not \in Q \wedge (\srs, \inp_\advse, \wit_\advse) \notin \REL\\				
 				%
 				\\
@@ -104,7 +158,7 @@ queries to $\ro$ and $\ro$'s answers, and $Q_\srs$ contains proofs of all honest
 				\underline{\fedbox{\USE_{\advse,\ext_{\use}}(\secpar)}}\\
 				\srs \gets \bot, Q_\srs \gets \emptyset \\
 				(\inp_\advse, \zkproof_\advse) \gets \advse^{\initU, \simO, \ro}(1^\secpar; r) \\
-				\wit_\advse \gets \ext_{\use}(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro) \\
+				\wit_\advse \gets \ext_{\use}(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro, Q_\srs) \\
 				\pcreturn \verifier(\srs, \inp_\advse, \zkproof_\advse) \wedge (\srs, \inp_\advse, \zkproof_\advse) \not \in Q \wedge (\srs, \inp_\advse, \wit_\advse) \notin \REL \\
 		}
 		\end{minipage}
