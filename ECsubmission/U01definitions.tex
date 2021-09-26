@@ -446,9 +446,9 @@ algorithm from the generalized forking lemma.
 	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
 	$(2 \mu + 1)$-message proof system for a relation $\REL$.
 	
-	For any $\ppt$ adversary $\advse^{\initU, \simulator_\fs,
-		\ro} (1^\secpar; r)$ \hamid{with access to oracles $\initU$ and $\simO$ defined in~\cref{fig:upd}, and random oracle $\ro$,} we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r, Q_H)$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
-	and simulated proofs. While $Q_{H}$ is consistent with $h_1, \ldots, h_q$, it replays the proofs of $Q$.
+	For any $\ppt$ adversary $\advse^{\initU,
+		\ro} (1^\secpar; r)$ \hamid{with access to oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$,} we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r, Q_H)$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
+	and simulated proofs \hamid{1-why simulated proofs? 2-...and update oracle queries?}. While $Q_{H}$ is consistent with $h_1, \ldots, h_q$, it replays the proofs of $Q$.
 	%
 	$\zdv$ returns the index $i$ of the
 	random oracle query made for challenge $k$ and the proof $\adv$ returns.
@@ -456,7 +456,7 @@ algorithm from the generalized forking lemma.
 	Consider the algorithm $\genforking_{\zdv}^{n}$
 	that rewinds $\zdv$ to produce a $(1,\dots, \hamid{n_k=n},\dots, 1)$-tree of
 	transcripts such that none of the $n$ challenges in round $k$ were used in
-	simulated proofs.
+	simulated proofs.\hamid{what are simulated proofs? we don't have it anymore, no?}
 	
 	We say that $\ps$ is $(\eps(\secpar), k,n)$-forking if
 	for any PPT adversary the probability that
@@ -550,7 +550,7 @@ algorithm from the generalized forking lemma.
 	Let $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be a
 	HVZK proof system\hamid{$\ps_\fs$ is the Fiat-Shamir variant of the underlying proof system. So maybe we mean the underlying proof system is HVZK?}. We say that $\ps_\fs$ is \emph{updatable forking
 		simulation-extractable} with \emph{extraction error} $\nu$ if for any $\ppt$
-	adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a simulation oracle $\simulator_\fs$ \hamid{(See~\cref{fig:upd})}, and a random oracle $\ro$, and produces an accepting transcript of $\ps$ with
+	adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a simulation oracle $\simO$ \hamid{(See~\cref{fig:upd})}, and a random oracle $\ro$, and produces an accepting transcript of $\ps$ with
 	probability $\accProb$, where
 	\[
 	\accProb = \Pr \left[
@@ -561,7 +561,7 @@ algorithm from the generalized forking lemma.
 	\left| \,
 	\begin{aligned}
 	& r \sample \RND{\advse},
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator_\fs,
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
 		\ro} (1^\secpar; r)
 	\end{aligned}
 	\right.\right],
@@ -577,7 +577,7 @@ algorithm from the generalized forking lemma.
 	\, \left| \,
 	\begin{aligned}
 	& r \sample \RND{\advse},
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator_\fs,
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
 		\ro} (1^\secpar; r) \\
 	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
 	Q, Q_\ro, Q_\srs) 

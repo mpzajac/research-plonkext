@@ -177,8 +177,8 @@ for some negligible $\eps(\secpar)$.
 \begin{proof}		
 
   \ngame{0} This is simulation extraction game played between an adversary
-  $\advse$ who is given access to \hamid{an oracle $\initU$ that defines an updatable SRS setup,} a random oracle $\ro$ and simulator
-  $\psfs.\simulator$. There is also an extractor $\ext$ that, from a proof
+  $\advse$ who is given access to \hamid{an oracle $\initU$ that defines an updatable SRS setup,} a random oracle $\ro$ and a simulation oracle
+  $\simO$. There is also an extractor $\ext$ that, from a proof
   $\zkproof_{\advse}$ for instance $\inp_{\advse}$ output by the adversary and from
    transcripts of $\advse$'s operations is tasked to extract a witness
   $\wit_{\advse}$ such that $\REL(\inp_{\advse}, \wit_{\advse})$ holds. $\advse$ wins
