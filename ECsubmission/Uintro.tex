@@ -75,8 +75,8 @@ We propose a definition of simulation extractability in the updatable SRS settin
 \item 
 \emph{General theorem for USE of FS-compiled interactive protocols.}
 We then show that a class of interactive proofs of knowledge that are honest-verifier zero-knowledge,
-have a unique response property \hamid{in the updatable setting}, and satisfy a property we define called \hamid{updatable} forking soundness \emph{are USE out-of-the box} in the random oracle model when the Fiat--Shamir transformation is applied to them. 
-Informally, our notion of \hamid{updatable} forking soundness is a variant of special soundness where the transcripts provided to the extractor are
+have a unique response property in the updatable setting, and satisfy a property we define called forking soundness \emph{are USE out-of-the box} in the random oracle model when the Fiat--Shamir transformation is applied to them. 
+Informally, our notion of forking soundness is a variant of special soundness where the transcripts provided to the extractor are
 obtained through interaction with an honest verifier, and the extraction guarantee is computational instead of unconditional. 
 Our extractor only needs oracle access to the adversary, it does not depend on the adversary’s code, nor relies on knowledge
 assumptions.
@@ -105,9 +105,9 @@ we denote the underlying interactive protocols by $\plonkprot$ (for $\plonk$)
 and $\sonicprot$ (for $\sonic$) and the resulting non-interactive proof systems by
 $\plonkprotfs$ and $\sonicprotfs$, respectively.
 
-\oursubsub{\hamid{Updatable} Forking soundness.} 
+\oursubsub{Forking soundness in the updatable setting.} 
 Following~\cite{INDOCRYPT:FKMV12}, one would have to show that for the protocols we consider, a witness can be extracted from sufficiently many valid transcripts with a common prefix. However, many protocols
-do not meet the standard definition of special soundness for sigma protocols, that requires extraction of a witness from any two transcripts, with the same first message. We put forth a notion analogous to special soundness, that is more general and applicable to a wider class of protocols -- protocols that are more than three rounds, and rely on an \hamid{updatable} SRS. For $\plonkprot$ and
+do not meet the standard definition of special soundness for sigma protocols, that requires extraction of a witness from any two transcripts, with the same first message. We put forth a notion analogous to special soundness, that is more general and applicable to a wider class of protocols -- protocols that are more than three rounds, and rely on an updatable SRS. For $\plonkprot$ and
 $\sonicprot$ that are not three move protocols, the definition needs to be adapted. Furthermore, the number of transcripts
 required for extraction is more than two. Concretely, $(3 \noofc + 1)$---where $\noofc$ is the
 number of constraints in the proven circuit---for $\plonkprot$ and
@@ -123,20 +123,20 @@ Recall that the standard special soundness definition requires
 witness extraction from \emph{any} tree of acceptable transcripts that share a
 common root. This means that there are no such trees for false
 statements. We define a different, forking lemma-related, version
-of soundness that we call \emph{\hamid{updatable} forking soundness}. \hamid{Updatable} Forking soundness guarantees that it is
+of soundness that we call forking soundness. Forking soundness guarantees that it is
 possible to extract a witness from all (but negligibly many) trees of accepting
 transcripts produced by probabilistic polynomial time (PPT) adversaries, given
 that the trees are generated as interactions between a (possibly malicious)
 prover and an honest verifier. That is, if extraction from such a tree fails, then we break an
 underlying computational assumption.\hamid{The fact that the definition is in the updatable setting indicates that this should hold even against adversaries that contribute in the SRS generation.}
 
-\oursubsub{Unique response property \hamid{in the updatable setting}.} 
+\oursubsub{Unique response property in the updatable setting.} 
 Another property required to show USE is the unique response property~\cite{C:Fischlin05} which
 says that for $3$-messages sigma
 protocols, all but the first message sent by the prover are
 deterministic (intuitively, the prover can only employ fresh randomness in the
 first message of the protocol). We cannot use this definition as is since the protocols we consider have other rounds where the prover messages are randomized. In $\plonkprotfs$, both the first and the second prover's messages are randomized. Although $\sonicprot$ prover is deterministic after it picks its first message, the protocol has more than $3$ rounds. We propose a generalisation of the
-definition \hamid{in the updatable setting} which states that a protocol is $\ur{i}$ if \hamid{for any (finalised) SRS,} the prover is
+definition which states that a protocol is $\ur{i}$ if the prover is
 deterministic starting from its $(i + 1)$-th message. For our proof it is
 sufficient that this property is met by $\plonkprot$ for $i = 2$. Since
 \sonic{}'s prover is deterministic from the second message on, it is $\ur{1}$.

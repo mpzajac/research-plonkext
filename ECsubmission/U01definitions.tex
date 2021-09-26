@@ -101,7 +101,7 @@ $\simulator$'s answers; \hamid{$Q_\srs$ be the list of proofs for SRS honest upd
 queries made by $\advse$.  All of these are given to the extractor $\ext$ that
 internally runs the forking algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$
 takes $(\srs, \advse,
-\hamid{Q_\srs},
+%\hamid{Q_\srs},
 %\inp_\advse,
 %\zkproof_\advse, 
 Q, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
@@ -111,7 +111,7 @@ pick $h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$
 elements.)  
 
 Next, $\zdv$ internally runs $\advse(\srs; r)$ \hamid{$\advse(1^\secpar; r)$} and responds to its random
-oracle, simulator queries \hamid{and SRS update queries} by using $Q_\ro$, $Q$ \hamid{and $Q_\srs$}. Note that $\advse$ makes
+oracle and simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes
 the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
 as it is run on the same random tape and with the same answers from the
 simulator and random oracle. Once $\advse$ outputs 
@@ -161,39 +161,40 @@ response property. More precisely, we say that a $(2\mu + 1)$-message protocol
 has \emph{unique responses from $i$}, and call it an $\ur{i}$-protocol, if it
 follows the definition below:
 
-\begin{definition}[$\ur{i}$-protocol]
-\label{def:wiur}
-Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
-$\ps = (\kgen, \prover, \verifier, \simulator)$. Let $\proofsystem_\fs$ be
-$\proofsystem$ after the Fiat--Shamir transform and $\ro$ the random
-oracle. Denote by $a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output
-by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$
-  on} if for any $\ppt$ adversary $\adv$:
-\[
-	\prob{
-		\begin{aligned}
-		&	\inp, \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
-    a'_{\mu + 1})
-		\gets \adv^\ro(\srs), \\
-    & \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
-    \ldots, a'_{i}, \\
-		& \verifier^\ro_\fs (\srs, \inp, \vec{a}) =
-		\verifier^\ro_\fs(\srs, \inp, \vec{a'}) = 1
-		\end{aligned}
-		\ \left|\  
-	\vphantom{\begin{aligned}
-	&	\vec{a} = (a_0, b_0, \ldots, a_j, b_j, a_\mu), \vec{a'} = (a'_0, b'_0, \ldots, a'_j,
-	b'_j a'_\mu) \gets \adv(\srs), \vec{a} \neq \vec{a'}, \\
-	& b_k = b'_k, k \in \range{1, \mu - 1},\\ a_l = a'_l, l \in
-\range{1}{j}, j > i 
-	\end{aligned}}
-\srs \gets \kgen_\fs(\REL) \right.
-}
-\]
-is upper-bounded by some negligible function $\negl$.
-\end{definition}
+%\begin{definition}[$\ur{i}$-protocol]
+%\label{def:wiur}
+%Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
+%$\ps = (\kgen, \prover, \verifier, \simulator)$. Let $\proofsystem_\fs$ be
+%$\proofsystem$ after the Fiat--Shamir transform and $\ro$ the random
+%oracle. Denote by $a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output
+%by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$
+%  on} if for any $\ppt$ adversary $\adv$:
+%\[
+%	\prob{
+%		\begin{aligned}
+%		&	\inp, \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
+%    a'_{\mu + 1})
+%		\gets \adv^\ro(\srs), \\
+%    & \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
+%    \ldots, a'_{i}, \\
+%		& \verifier^\ro_\fs (\srs, \inp, \vec{a}) =
+%		\verifier^\ro_\fs(\srs, \inp, \vec{a'}) = 1
+%		\end{aligned}
+%		\ \left|\  
+%	\vphantom{\begin{aligned}
+%	&	\vec{a} = (a_0, b_0, \ldots, a_j, b_j, a_\mu), \vec{a'} = (a'_0, b'_0, \ldots, a'_j,
+%	b'_j a'_\mu) \gets \adv(\srs), \vec{a} \neq \vec{a'}, \\
+%	& b_k = b'_k, k \in \range{1, \mu - 1},\\ a_l = a'_l, l \in
+%\range{1}{j}, j > i 
+%	\end{aligned}}
+%\srs \gets \kgen_\fs(\REL) \right.
+%}
+%\]
+%is upper-bounded by some negligible function $\negl$.
+%\end{definition}
+%
+%\hamid{The new definition for updatable setting should be like this:}
 
-\hamid{The new definition for updatable setting should be like this:}
 \begin{definition}[$\ur{i}$-protocol in the updatable setting]
 	\label{def:wiuru}
 	Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
@@ -201,7 +202,7 @@ is upper-bounded by some negligible function $\negl$.
 	$\proofsystem$ after the Fiat--Shamir transform and $\ro$ the random
 	oracle. Denote by $a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output
 	by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$
-		on} \hamid{in the updatable setting} if for any $\ppt$ adversary $\adv$:
+		on} if for any $\ppt$ adversary $\adv$:
 	\[
 	\Pr\left[
 	\begin{aligned}
@@ -218,8 +219,49 @@ is upper-bounded by some negligible function $\negl$.
 	\end{aligned}
 	\right.\right]
 	\]
-	is upper-bounded by some negligible function $\negl$. \hamid{Note that $\srs$ is the last updated SRS finalised by $\initU$.}\hamid{UPDATE: maybe we should say this should hold w.r.t all finalised SRSs and not just the last one? (discuss this with Chaya)}
+	is upper-bounded by some negligible function $\negl$. \hamid{TODO: rephrase this: Note that in the updatable setting, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$, defined in~\cref{fig:upd}.}
 \end{definition}
+
+\begin{figure}[t]
+	\centering
+	\fbox{
+		\begin{minipage}[t]{0.5\linewidth}
+			\procedure{$\initU(\intent, \srs_n,\{\rho_i \}_{i=1}^n)$}{
+				\pcif \srs \neq \bot: \pcreturn \bot \\
+				\pcif (\intent = \setup): \\
+				\t (\srs',\rho') \leftarrow \kgen(\REL)\\
+				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+				\t \pcreturn (\srs',\rho')\\
+				%
+				\pcif (\intent = \update): \\
+				\t b \gets \verifyCRS(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^{n})\\
+				\t \pcif (b=0): \pcreturn \bot \\
+				\t (\srs',\rho') \leftarrow \upd(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^n)\\
+				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+				\t \pcreturn (\srs',\rho')\\
+				%
+				\pcif (\intent = \final): \\
+				\t b \gets \verifyCRS(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^{n})\\
+				\t \pcif (b=0) \vee \hamid{Q_\srs \cap \{ \rho_i \}_i} = \emptyset: \pcreturn \bot \\
+				\t 
+				\td \gets \ext_\srs(\srs_n,, Q_\srs, \{\rho_i \}_{i=1}^{n}) \\
+				\t \srs \gets \srs_n, \pcreturn \srs \\
+				%
+				\pcelse \pcreturn \bot
+			}
+		\end{minipage}
+		\begin{minipage}[t]{0.2\linewidth}
+			\procedure{$\simO(\inp')$}{
+				\pcif (\srs = \bot): \pcreturn \bot \\
+				% \hamid{should we formalize this extractor?}\\
+				\zkproof'  \gets \hamid{\simulator_\FS}(\srs, \td, \inp')\\
+				Q = Q \cup \{(\inp', \zkproof')\}\\
+				\pcreturn  \zkproof' \\
+			}
+	\end{minipage}}
+	\caption{The left oracle defines the notion of updatable SRS setup. The right oracle is the simulation oracle.} 
+	\label{fig:upd}
+\end{figure}
 
 
 % Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
@@ -300,8 +342,8 @@ statement. Hence, we provide a weaker, yet sufficient, definition of
 \emph{forking soundness}. More precisely, we state that an
 adversary that is able to answer correctly multiple challenges either knows the
 witness or can be used to break some computational assumption.
-\chaya{a notion of computational special soundness has been used to mean exactly the above in prior works, like BBF19. we should clarify if forking soundness different from computational special soundness? seems to me like the diference is just that here it is tailored for the NI version.}
-\chaya{I now see that the diff is the access to the simulator that the adversary gets. might be helpful to clarify this, either here or in a tech overview section. I am not sure why this needs to be defined this way by giving access to the simulator.}
+%\chaya{a notion of computational special soundness has been used to mean exactly the above in prior works, like BBF19. we should clarify if forking soundness different from computational special soundness? seems to me like the difference is just that here it is tailored for the NI version.}
+%\chaya{I now see that the diff is the access to the simulator that the adversary gets. might be helpful to clarify this, either here or in a tech overview section. I am not sure why this needs to be defined this way by giving access to the simulator.}
 However, differently from the standard definition of special soundness, we do
 not require from the extractor to be able to extract the witness from \emph{any}
 tree of acceptable transcripts. We require that the tree be produced honestly,
@@ -398,25 +440,25 @@ algorithm from the generalized forking lemma.
 %  queries to $\ro$ and $\ro$'s answers.
 %\end{definition}
 
-\hamid{The definition in the updatable setting should look like this:}
+%\hamid{The definition in the updatable setting should look like this:}
 
 \begin{definition}[$(\eps(\secpar), k,n)$-forking soundness in the updatable setting]
 	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
 	$(2 \mu + 1)$-message proof system for a relation $\REL$.
 	
 	For any $\ppt$ adversary $\advse^{\initU, \simulator_\fs,
-		\ro} (1^\secpar; r)$ we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r, Q, Q_H, Q_\srs)$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
+		\ro} (1^\secpar; r)$ \hamid{with access to oracles $\initU$ and $\simO$ defined in~\cref{fig:upd}, and random oracle $\ro$,} we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r, Q_H)$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
 	and simulated proofs. While $Q_{H}$ is consistent with $h_1, \ldots, h_q$, it replays the proofs of $Q$.
 	%
 	$\zdv$ returns the index $i$ of the
 	random oracle query made for challenge $k$ and the proof $\adv$ returns.
 	
 	Consider the algorithm $\genforking_{\zdv}^{n}$
-	that rewinds $\zdv$ to produce a $(1,\dots, n,\dots, 1)$-tree of
+	that rewinds $\zdv$ to produce a $(1,\dots, \hamid{n_k=n},\dots, 1)$-tree of
 	transcripts such that none of the $n$ challenges in round $k$ were used in
 	simulated proofs.
 	
-	We say that $\ps$ is $(\eps(\secpar), k,n)$-forking sound \hamid{in the updatable setting} if
+	We say that $\ps$ is $(\eps(\secpar), k,n)$-forking if
 	for any PPT adversary the probability that
 	\begin{align*}
 	\Pr\left[
@@ -425,79 +467,134 @@ algorithm from the generalized forking lemma.
 	\begin{aligned}
 	%& \srs \sample \kgen(\REL),
 	& r \sample \RND{\advse},
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator_\fs,\ro} (1^\secpar; r), \\
-	&    (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r,Q, Q_{H}, Q_\srs),Q_{H}),
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \ro} (1^\secpar; r), \\
+	&    (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r, Q_{H}),Q_{H}),
 	\wit \gets \extt(\tree)
 	\end{aligned}
 	\right] \leq \eps(\secpar).
 	\end{align*}
-	List $Q$ contains all $(\inp, \zkproof)$ pairs where
-	$\inp$ is an instance provided to the simulator by the adversary and
-	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-	queries to $\ro$ and $\ro$'s answers. List $Q_\srs$ contains the proofs of all honest SRS updates.
+	\hamid{We should add this: Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.} 
+	%List $Q$ contains all $(\inp, \zkproof)$ pairs where $\inp$ is an instance provided to the simulator by the adversary and $\zkproof$ is the simulator's answer. 
+	List $Q_\ro$ contains all $\advse$'s
+	queries to $\ro$ and $\ro$'s answers. 
+	%List $Q_\srs$ contains the proofs of all honest SRS updates.
 \end{definition}
 
-\hamid{next definition should be commented!}
-\begin{definition}[$(\eps(\secpar), k,n)$-forking soundness]
-  Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
-  $(2 \mu + 1)$-message proof system for a relation $\REL$.
-
-  Let $\tdv$, called tree creator, be the
-  algorithm below that rewinds the $\ppt$ adversary $\advse^{\simulator_\fs,
-          \ro} (\srs; r)$ to produce a $(1,\dots, n,\dots, 1)$-tree of
-  transcripts such that none of the $n$ challenges in round $k$ were used in
-  simulated proofs.
-
-  $\tdv$ has oracle access to $\adv$ and provides it with (oracle) access to
-  random oracle $\ro$ and simulator $\simulator_\fs$ -- more precisely $\tdv$
-  has an internal procedure $\bdv$ that provided $\srs$ and random oracle
-  queries' responses $h_1, \ldots, h_q$ gives $\adv$ access to the random oracle
-  and simulates proof for it. In the end, $\bdv$ returns the index $i$ of the
-  random oracle query made for challenge $k$, the set $Q$ of simulator random
-  oracle indexes, the instance $\inp$, and the proof $\adv$ returns. Eventually,
-  $\tdv$ returns a $(1, \ldots, n, \dots, 1)$ tree of acceptable
-  transcripts~$\tree$.
-
-
-  \begin{figure}
-    \centering
- 		\fbox{ \procedure{$\tdv(\adv, \srs \sample \kgen(\REL))$}
-      {h_1^{1}, \ldots,
-      h_{q}^1 \sample H \\
-      (i, Q, \inp, \zkproof_1) \gets \bdv(\adv, \srs, h_1^{1}, \ldots, h_{q}^{1})\\
-        % i_1 \gets i\\
-        \pcif i\in Q \lor \verifier(\srs, \inp, \zkproof_1) = 0\ \pcreturn (0, \bot)\\
-        \pcfor j \in \range{2}{m}\\
-        \pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
-        h_{i - 1}^{j - 1}\\
-        \pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
-        \pcind (i_j, Q_j, \inp_j, \zkproof_j) \gets \bdv(\adv, \srs, h_1^{j}, \ldots, h_{i -
-          1}^{j}, h_{i}^{j},
-        \ldots, h_{q}^{j})\\
-        \pcind \pcif i \neq i_j \lor i_j \in Q_j \lor \inp \neq \inp_j \lor \verifier(\srs, \inp_j, \zkproof_i) = 0\ \pcreturn (0, \bot)\\
-        %\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
-        % \pcif \exists (j, j') \in \range{1}{m}^2, j \neq j' : (h_{i}^{j} =
-        % h_{i}^{j'})\
-        % 
-        % pcreturn (0, \bot)\\
-        \pcelse \pcreturn (1, \tree = (\inp, \pmb{\pi}))}
-    }
-  \end{figure}
+%\hamid{next definition should be commented!}
+%\begin{definition}[$(\eps(\secpar), k,n)$-forking soundness]
+%  Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
+%  $(2 \mu + 1)$-message proof system for a relation $\REL$.
 %
-  We say that $\ps$ is $(\eps(\secpar), k,n)$-forking sound if
-  for any PPT adversary the probability that
-  \[
-    \Pr\left[
-    %  \begin{aligned}
-       % & \forall_{\zkproof \in \tree} \verifier(\srs, \inp, \zkproof) = 1, \\
-         \wit \gets \extt(\tree), 
-         \REL(\inp, \wit) = 0
-    %  \end{aligned}
-      \,\left|\,
-        %\begin{aligned}
-           \srs \sample \kgen(\REL), 
-           (1, \tree) \gets \tdv(\adv, \srs)
-     %   \end{aligned}
-      \right.\right] \leq \eps(\secpar).
-      \]
+%  Let $\tdv$, called tree creator, be the
+%  algorithm below that rewinds the $\ppt$ adversary $\advse^{\simulator_\fs,
+%          \ro} (\srs; r)$ to produce a $(1,\dots, n,\dots, 1)$-tree of
+%  transcripts such that none of the $n$ challenges in round $k$ were used in
+%  simulated proofs.
+%
+%  $\tdv$ has oracle access to $\adv$ and provides it with (oracle) access to
+%  random oracle $\ro$ and simulator $\simulator_\fs$ -- more precisely $\tdv$
+%  has an internal procedure $\bdv$ that provided $\srs$ and random oracle
+%  queries' responses $h_1, \ldots, h_q$ gives $\adv$ access to the random oracle
+%  and simulates proof for it. In the end, $\bdv$ returns the index $i$ of the
+%  random oracle query made for challenge $k$, the set $Q$ of simulator random
+%  oracle indexes, the instance $\inp$, and the proof $\adv$ returns. Eventually,
+%  $\tdv$ returns a $(1, \ldots, n, \dots, 1)$ tree of acceptable
+%  transcripts~$\tree$.
+%
+%
+%  \begin{figure}
+%    \centering
+% 		\fbox{ \procedure{$\tdv(\adv, \srs \sample \kgen(\REL))$}
+%      {h_1^{1}, \ldots,
+%      h_{q}^1 \sample H \\
+%      (i, Q, \inp, \zkproof_1) \gets \bdv(\adv, \srs, h_1^{1}, \ldots, h_{q}^{1})\\
+%        % i_1 \gets i\\
+%        \pcif i\in Q \lor \verifier(\srs, \inp, \zkproof_1) = 0\ \pcreturn (0, \bot)\\
+%        \pcfor j \in \range{2}{m}\\
+%        \pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
+%        h_{i - 1}^{j - 1}\\
+%        \pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
+%        \pcind (i_j, Q_j, \inp_j, \zkproof_j) \gets \bdv(\adv, \srs, h_1^{j}, \ldots, h_{i -
+%          1}^{j}, h_{i}^{j},
+%        \ldots, h_{q}^{j})\\
+%        \pcind \pcif i \neq i_j \lor i_j \in Q_j \lor \inp \neq \inp_j \lor \verifier(\srs, \inp_j, \zkproof_i) = 0\ \pcreturn (0, \bot)\\
+%        %\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
+%        % \pcif \exists (j, j') \in \range{1}{m}^2, j \neq j' : (h_{i}^{j} =
+%        % h_{i}^{j'})\
+%        % 
+%        % pcreturn (0, \bot)\\
+%        \pcelse \pcreturn (1, \tree = (\inp, \pmb{\pi}))}
+%    }
+%  \end{figure}
+%%
+%  We say that $\ps$ is $(\eps(\secpar), k,n)$-forking sound if
+%  for any PPT adversary the probability that
+%  \[
+%    \Pr\left[
+%    %  \begin{aligned}
+%       % & \forall_{\zkproof \in \tree} \verifier(\srs, \inp, \zkproof) = 1, \\
+%         \wit \gets \extt(\tree), 
+%         \REL(\inp, \wit) = 0
+%    %  \end{aligned}
+%      \,\left|\,
+%        %\begin{aligned}
+%           \srs \sample \kgen(\REL), 
+%           (1, \tree) \gets \tdv(\adv, \srs)
+%     %   \end{aligned}
+%      \right.\right] \leq \eps(\secpar).
+%      \]
+%\end{definition}
+\subsection{Forking simulation extractability}
+\begin{definition}[Forking simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
+	\label{def:updsimext}
+	Let $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be a
+	HVZK proof system\hamid{$\ps_\fs$ is the Fiat-Shamir variant of the underlying proof system. So maybe we mean the underlying proof system is HVZK?}. We say that $\ps_\fs$ is \emph{updatable forking
+		simulation-extractable} with \emph{extraction error} $\nu$ if for any $\ppt$
+	adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a simulation oracle $\simulator_\fs$ \hamid{(See~\cref{fig:upd})}, and a random oracle $\ro$, and produces an accepting transcript of $\ps$ with
+	probability $\accProb$, where
+	\[
+	\accProb = \Pr \left[
+	\begin{aligned}
+	& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \wedge
+	(\inp_{\advse}, \zkproof_{\advse}) \not\in Q
+	\end{aligned}
+	\left| \,
+	\begin{aligned}
+	& r \sample \RND{\advse},
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator_\fs,
+		\ro} (1^\secpar; r)
+	\end{aligned}
+	\right.\right],
+	\]
+	there exists an extractor $\extse$ such that
+	\[
+	\extProb = \Pr \left[
+	\begin{aligned}
+	& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \ \wedge \\
+	& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q \wedge
+	\REL(\inp_{\advse}, \wit_{\advse}) = 1
+	\end{aligned}
+	\, \left| \,
+	\begin{aligned}
+	& r \sample \RND{\advse},
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator_\fs,
+		\ro} (1^\secpar; r) \\
+	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+	Q, Q_\ro, Q_\srs) 
+	\end{aligned}
+	\right.\right]
+	\]
+	is at at least 
+	\[
+	\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
+	\]
+	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
+	$\accProb \geq \nu$. 
+	\hamid{We should add this: Here, $\srs$ is the finalised SRS.}
+	List $Q$ contains all $(\inp, \zkproof)$ pairs where 
+	%	\hamid{$\srs$ is the finalised SRS.}\hamid{In the case of USE, this should be: $\srs$ is the finalised SRS at the time of making the query to $\simulator$.}
+	$\inp$ is an instance provided to the simulator by the adversary and
+	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+	queries to $\ro$ and $\ro$'s answers. 
+	%List $Q_\srs$ contains the proofs of all honest SRS updates.
 \end{definition}

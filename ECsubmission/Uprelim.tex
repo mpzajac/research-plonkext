@@ -439,6 +439,19 @@ polynomially many simulated proofs for any statements it wishes.
   queries to $\ro$ and $\ro$'s answers.
 \end{definition}
 
+
+\subsection{Updatable SRS schemes}
+We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which consists of the following algorithms.
+
+\begin{itemize}
+	\item
+	$(\srs,\rho) \leftarrow \kgen(\secparam)$ is a PPT algorithm that takes a security parameter $\secpar$ and outputs a SRS $\srs$, and correctness proof $\rho$.
+	\item
+	$ (\srs',\rho') \leftarrow \upd(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a PPT algorithm that takes as input the security parameter $\secpar$, a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
+	\item
+	$b \leftarrow \verifyCRS(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
+\end{itemize}
+	\hamid{TODO: add a paragraph here about the universality!}
 % Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
 % is special-sound and has a unique response property. Let $\sigmaprot_\fs =
 % (\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the
