@@ -1,9 +1,9 @@
 % !TEX root = main.tex
 % !TEX spellcheck = en-US
-\section{Simulation soundness and forking simulation-extractability---the general result}
+\section{Forking simulation-extractability---the general result}
 \label{sec:general}
 Equipped with definitional framework of \cref{sec:se_definitions} we are ready
-to present the main result of this paper---a proof of simulation soundness and
+to present the main result of this paper---a proof of
 forking simulation extractability of Fiat-Shamir NIZK based on multi-round protocols.
 
 The proofs go by game hopping. The games are controlled by an environment $\env$
@@ -28,132 +28,132 @@ oracle to get it. It is straightforward to transform any adversary that violates
 this condition into an adversary that makes these additional queries to the
 random oracle and wins with the same probability.
 
-\begin{theorem}[Simulation soundness]
-  \label{thm:simsnd}
-  Assume that $\ps$ is $k$-programmable HVZK in the standard model, that is
-  $\epss(\secpar)$-sound and $\ur{k}$ with security $\epsur(\secpar)$. Then, the
-  probability that a $\ppt$ adversary $\adv$ breaks simulation soundness of
-  $\ps_{\fs}$ is upper-bounded by
-  \(
-    \epsur(\secpar) + q_\ro^\mu  \epss(\secpar)\,,
-  \)
-  where $q$ is the total number of queries made by the adversary $\adv$ to a
-  random oracle $\ro\colon \bin^{*} \to \bin^{\secpar}$.
-\end{theorem}
-
-\begin{proof}
-  \ngame{0} This is a simulation soundness game played between an adversary
-  $\adv$ who is given access to a random oracle $\ro$ and simulator
-  $\psfs.\simulator$. $\adv$ wins if it manages to produce an accepting proof
-  for a false statement. In the following game hops, we upper-bound the
-  probability that this happens.
-
-  \ngame{1} This is identical to $\game{0}$ except that the game is aborted if
-  there is a simulated proof $\zkproof_\simulator$ for $\inp_{\adv}$ such that
-  $(\inp_{\adv}, \zkproof_\simulator[1..k]) = (\inp_{\adv},
-  \zkproof_{\adv}[1..k])$. That is, the adversary in its final proof reuses at
-  least $k$ messages from a simulated proof it saw before and the proof is
-  accepting.  Denote this event by $\event{\errur}$.
-
-  \ncase{Game 0 to Game 1} We have, \( \prob{\game{0} \land
-    \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}} \) and, from the
-  difference lemma, cf.~\cref{lem:difference_lemma},
-  $ \abs{\prob{\game{0}} - \prob{\game{1}}} \leq \prob{\event{\errur}}\,$.
-  Thus, to show that the transition from one game to another introduces only
-  minor change in probability of $\adv$ winning it should be shown that
-  $\prob{\event{\errur}}$ is small.
-
-  We can assume that $\adv$ queried the simulator on the instance it wishes to
-  output, i.e.~$\inp_{\adv}$. We show a reduction $\rdvur$ that utilises $\adv$
-  to break the $\ur{k}$ property of $\ps$. Let $\rdvur$ run $\advse$ internally
-  as a black-box:
-  \begin{compactitem}
-	\item The reduction answers both queries to the simulator $\psfs.\simulator$
-    and to the random oracle.  It also keeps lists $Q$, for the simulated
-    proofs, and $Q_\ro$ for the random oracle queries.
-  \item When $\adv$ makes a fake proof $\zkproof_{\adv}$ for $\inp_{\adv}$,
-    $\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds
-    $\zkproof_{\simulator}[0..k]$ such that
-    $\zkproof_{\adv}[0..k] = \zkproof_{\simulator}[0..k]$ and a random oracle
-    query $\zkproof_{\simulator}[k].\ch$ on $\zkproof_{\simulator}[0..k]$.
-	\item $\rdvur$ returns two proofs for $\inp_{\adv}$:
-	\begin{align*}
-		\zkproof_1 = (\zkproof_{\simulator}[1..k],
-		\zkproof_{\simulator}[k].\ch, \zkproof_{\simulator}[k + 1..\mu + 1])\\
-		\zkproof_2 = (\zkproof_{\simulator}[1..k],
-		\zkproof_{\simulator}[k].\ch, \zkproof_{\adv}[k + 1..\mu + 1])
-	\end{align*}
-	\end{compactitem}  
-	If $\zkproof_1 = \zkproof_2$, then $\adv$ fails to break simulation soundness,
-  as $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then
-  $\rdvur$ breaks $\ur{k}$-ness of $\ps$. This happens only with negligible
-  probability $\epsur(\secpar)$, hence
-  \( \prob{\event{\errur}} \leq \epsur(\secpar)\,. \)
-	
-  \ngame{2} This is identical to $\game{1}$ except that now the environment
-  aborts if the instance the adversary proves is not in the language.
-
-  \ncase{Game 1 to Game 2} 
-  % REDUCTION TO INTERACTIVE SOUNDNESS:
-  We show that
-  $\abs{\prob{\game{1}} - \prob{\game{2}}} \leq q^{\mu} \cdot \epss(\secpar)$,
-  where $\epss(\secpar)$ is the probability of breaking soundness of the underlying
-  \emph{interactive} protocol $\ps$. Note that
-  $\abs{\prob{\game{1}} - \prob{\game{2}}}$ is the probability that $\adv$
-  outputs an acceptable proof for a false statement which does not break the
-  unique response property (such proofs have been excluded by
-  $\game{1}$). Consider a soundness adversary $\adv'$ who initiates a proof with
-  $\ps$'s verifier $\ps.\verifier$, internally runs $\adv$ and proceeds as
-  follows:
-  \begin{compactitem}
-  \item It guesses indices $i_1, \ldots, i_\mu$ such that random oracle queries
-    $h_{i_1}, \ldots, h_{i_\mu}$ are the queries used in the $\zkproof_\adv$
-    proof eventually output by $\adv$. This is done with probability at least
-    $1/q^\mu$ (since there are $\mu$ challenges from the verifier in
-    $\ps$).
-  \item On input $h$ for the $i$-th,
-    $i \not\in \smallset{{i_1}, \ldots, {i_\mu}}$, random oracle query, $\adv'$
-    returns randomly picked $y$, sets $\ro(h) = y $ and stores $(h, y)$ in
-    $Q_\ro$ if $h$ is sent to $\ro$ the first time. If that is not the case,
-    $\adv$ finds $h$ in $Q_\ro$ and returns the corresponding $y$.
-  \item On input $h_{i_j}$ for the $i_j$-th,
-    $i_j \in \smallset{{i_1}, \ldots, {i_\mu}}$, random oracle query, $\adv'$
-    parses $h_{i_j}$ as a partial proof transcript $\zkproof_\adv[1..j]$ and
-    runs $\ps$ using $\zkproof_\adv[j]$ as a $\ps.\prover$'s $j$-th message to
-    $\ps.\verifier$. The verifier responds with a challenge
-    $\zkproof_\adv[j].\ch$. $\adv'$ sets $\ro(h_{i_j}) =
-    \zkproof_\adv[j].\ch$. If we guessed the indices correctly we have that
-    $h_{i_{j'}}$, for $j' \leq j$, parsed as $\zkproof_\adv[1..j']$ is a prefix
-    of $\zkproof_\adv[1..j]$.
-  \item On query $\inp_\simulator$ to $\simulator$, $\adv'$ runs the simulator
-    $\ps.\simulator$ internally. Note that we require a simulator that only
-    programs the random oracle for $j \geq k$.  If the simulator makes a
-    previously unanswered random oracle query with input
-    $\zkproof_\simulator[1..j]$, $1 \leq j < k$, and this is the $i_j$-th query,
-    it generates $\zkproof_\simulator[j].\ch$ by invoking $\ps.\verifier$ on
-    $\zkproof_\simulator[j]$ and programs
-    $\ro(h_{i_j}) = \zkproof_\simulator[j].\ch$.  It returns
-    $\zkproof_\simulator$.
-  \item Answers $\ps.\verifier$'s final challenge $\zkproof_\adv[\mu].\ch$ using the
-    answer given by $\adv$, i.e.~$\zkproof_\adv[\mu]$.
-  \end{compactitem}
-  That is, $\adv'$ manages to break soundness of $\ps$ if $\adv$ manages to
-  break simulation soundness without breaking the unique response property and
-  $\adv'$ correctly guesses the indices of $\adv$ random oracle queries. This
-  happens with probability upper-bounded by $\abs{\prob{\game{1}} -
-    \prob{\game{2}}} \cdot \infrac{1}{q^{\mu}}$. Hence $\abs{\prob{\game{1}} -
-    \prob{\game{2}}} \leq q^{\mu} \cdot \epss(\secpar)$.
-
-  Note that in $\game{2}$ the adversary cannot win. Thus the probability
-  that $\advss$ is successful is upper-bounded by
-  $\epsur(\secpar) + q^{\mu} \cdot \epss(\secpar)$.  \qed
-\end{proof}
+%\begin{theorem}[Simulation soundness]
+%  \label{thm:simsnd}
+%  Assume that $\ps$ is $k$-programmable HVZK in the standard model, that is
+%  $\epss(\secpar)$-sound and $\ur{k}$ with security $\epsur(\secpar)$. Then, the
+%  probability that a $\ppt$ adversary $\adv$ breaks simulation soundness of
+%  $\ps_{\fs}$ is upper-bounded by
+%  \(
+%    \epsur(\secpar) + q_\ro^\mu  \epss(\secpar)\,,
+%  \)
+%  where $q$ is the total number of queries made by the adversary $\adv$ to a
+%  random oracle $\ro\colon \bin^{*} \to \bin^{\secpar}$.
+%\end{theorem}
+%
+%\begin{proof}
+%  \ngame{0} This is a simulation soundness game played between an adversary
+%  $\adv$ who is given access to a random oracle $\ro$ and simulator
+%  $\psfs.\simulator$. $\adv$ wins if it manages to produce an accepting proof
+%  for a false statement. In the following game hops, we upper-bound the
+%  probability that this happens.
+%
+%  \ngame{1} This is identical to $\game{0}$ except that the game is aborted if
+%  there is a simulated proof $\zkproof_\simulator$ for $\inp_{\adv}$ such that
+%  $(\inp_{\adv}, \zkproof_\simulator[1..k]) = (\inp_{\adv},
+%  \zkproof_{\adv}[1..k])$. That is, the adversary in its final proof reuses at
+%  least $k$ messages from a simulated proof it saw before and the proof is
+%  accepting.  Denote this event by $\event{\errur}$.
+%
+%  \ncase{Game 0 to Game 1} We have, \( \prob{\game{0} \land
+%    \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}} \) and, from the
+%  difference lemma, cf.~\cref{lem:difference_lemma},
+%  $ \abs{\prob{\game{0}} - \prob{\game{1}}} \leq \prob{\event{\errur}}\,$.
+%  Thus, to show that the transition from one game to another introduces only
+%  minor change in probability of $\adv$ winning it should be shown that
+%  $\prob{\event{\errur}}$ is small.
+%
+%  We can assume that $\adv$ queried the simulator on the instance it wishes to
+%  output, i.e.~$\inp_{\adv}$. We show a reduction $\rdvur$ that utilises $\adv$
+%  to break the $\ur{k}$ property of $\ps$. Let $\rdvur$ run $\advse$ internally
+%  as a black-box:
+%  \begin{compactitem}
+%	\item The reduction answers both queries to the simulator $\psfs.\simulator$
+%    and to the random oracle.  It also keeps lists $Q$, for the simulated
+%    proofs, and $Q_\ro$ for the random oracle queries.
+%  \item When $\adv$ makes a fake proof $\zkproof_{\adv}$ for $\inp_{\adv}$,
+%    $\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds
+%    $\zkproof_{\simulator}[0..k]$ such that
+%    $\zkproof_{\adv}[0..k] = \zkproof_{\simulator}[0..k]$ and a random oracle
+%    query $\zkproof_{\simulator}[k].\ch$ on $\zkproof_{\simulator}[0..k]$.
+%	\item $\rdvur$ returns two proofs for $\inp_{\adv}$:
+%	\begin{align*}
+%		\zkproof_1 = (\zkproof_{\simulator}[1..k],
+%		\zkproof_{\simulator}[k].\ch, \zkproof_{\simulator}[k + 1..\mu + 1])\\
+%		\zkproof_2 = (\zkproof_{\simulator}[1..k],
+%		\zkproof_{\simulator}[k].\ch, \zkproof_{\adv}[k + 1..\mu + 1])
+%	\end{align*}
+%	\end{compactitem}  
+%	If $\zkproof_1 = \zkproof_2$, then $\adv$ fails to break simulation soundness,
+%  as $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then
+%  $\rdvur$ breaks $\ur{k}$-ness of $\ps$. This happens only with negligible
+%  probability $\epsur(\secpar)$, hence
+%  \( \prob{\event{\errur}} \leq \epsur(\secpar)\,. \)
+%	
+%  \ngame{2} This is identical to $\game{1}$ except that now the environment
+%  aborts if the instance the adversary proves is not in the language.
+%
+%  \ncase{Game 1 to Game 2} 
+%  % REDUCTION TO INTERACTIVE SOUNDNESS:
+%  We show that
+%  $\abs{\prob{\game{1}} - \prob{\game{2}}} \leq q^{\mu} \cdot \epss(\secpar)$,
+%  where $\epss(\secpar)$ is the probability of breaking soundness of the underlying
+%  \emph{interactive} protocol $\ps$. Note that
+%  $\abs{\prob{\game{1}} - \prob{\game{2}}}$ is the probability that $\adv$
+%  outputs an acceptable proof for a false statement which does not break the
+%  unique response property (such proofs have been excluded by
+%  $\game{1}$). Consider a soundness adversary $\adv'$ who initiates a proof with
+%  $\ps$'s verifier $\ps.\verifier$, internally runs $\adv$ and proceeds as
+%  follows:
+%  \begin{compactitem}
+%  \item It guesses indices $i_1, \ldots, i_\mu$ such that random oracle queries
+%    $h_{i_1}, \ldots, h_{i_\mu}$ are the queries used in the $\zkproof_\adv$
+%    proof eventually output by $\adv$. This is done with probability at least
+%    $1/q^\mu$ (since there are $\mu$ challenges from the verifier in
+%    $\ps$).
+%  \item On input $h$ for the $i$-th,
+%    $i \not\in \smallset{{i_1}, \ldots, {i_\mu}}$, random oracle query, $\adv'$
+%    returns randomly picked $y$, sets $\ro(h) = y $ and stores $(h, y)$ in
+%    $Q_\ro$ if $h$ is sent to $\ro$ the first time. If that is not the case,
+%    $\adv$ finds $h$ in $Q_\ro$ and returns the corresponding $y$.
+%  \item On input $h_{i_j}$ for the $i_j$-th,
+%    $i_j \in \smallset{{i_1}, \ldots, {i_\mu}}$, random oracle query, $\adv'$
+%    parses $h_{i_j}$ as a partial proof transcript $\zkproof_\adv[1..j]$ and
+%    runs $\ps$ using $\zkproof_\adv[j]$ as a $\ps.\prover$'s $j$-th message to
+%    $\ps.\verifier$. The verifier responds with a challenge
+%    $\zkproof_\adv[j].\ch$. $\adv'$ sets $\ro(h_{i_j}) =
+%    \zkproof_\adv[j].\ch$. If we guessed the indices correctly we have that
+%    $h_{i_{j'}}$, for $j' \leq j$, parsed as $\zkproof_\adv[1..j']$ is a prefix
+%    of $\zkproof_\adv[1..j]$.
+%  \item On query $\inp_\simulator$ to $\simulator$, $\adv'$ runs the simulator
+%    $\ps.\simulator$ internally. Note that we require a simulator that only
+%    programs the random oracle for $j \geq k$.  If the simulator makes a
+%    previously unanswered random oracle query with input
+%    $\zkproof_\simulator[1..j]$, $1 \leq j < k$, and this is the $i_j$-th query,
+%    it generates $\zkproof_\simulator[j].\ch$ by invoking $\ps.\verifier$ on
+%    $\zkproof_\simulator[j]$ and programs
+%    $\ro(h_{i_j}) = \zkproof_\simulator[j].\ch$.  It returns
+%    $\zkproof_\simulator$.
+%  \item Answers $\ps.\verifier$'s final challenge $\zkproof_\adv[\mu].\ch$ using the
+%    answer given by $\adv$, i.e.~$\zkproof_\adv[\mu]$.
+%  \end{compactitem}
+%  That is, $\adv'$ manages to break soundness of $\ps$ if $\adv$ manages to
+%  break simulation soundness without breaking the unique response property and
+%  $\adv'$ correctly guesses the indices of $\adv$ random oracle queries. This
+%  happens with probability upper-bounded by $\abs{\prob{\game{1}} -
+%    \prob{\game{2}}} \cdot \infrac{1}{q^{\mu}}$. Hence $\abs{\prob{\game{1}} -
+%    \prob{\game{2}}} \leq q^{\mu} \cdot \epss(\secpar)$.
+%
+%  Note that in $\game{2}$ the adversary cannot win. Thus the probability
+%  that $\advss$ is successful is upper-bounded by
+%  $\epsur(\secpar) + q^{\mu} \cdot \epss(\secpar)$.  \qed
+%\end{proof}
 
 
 We conjecture that based on the recent results on state restoration soundness~\cite{cryptoeprint:2020:1351}, which effectively allows to query the verifier multiple times on different overlapping transcripts, the $q^{\mu}$ loss could be avoided. However, this would reduce the class of protocols covered by our results. 
 
 %\hamid{The following theorem is changed from the original to the one in the updatable setting!}
-\begin{theorem}[Updatable Forking simulation-extractable multi-message protocols]
+\begin{theorem}[Forking simulation-extractable multi-message protocols]
   \label{thm:se}
   Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
   $(2 \mu + 1)$-message proof system for $\RELGEN(\secparam)$ that is honest
@@ -231,11 +231,11 @@ for some negligible $\eps(\secpar)$.
   \epsur(\secpar)\,. \)
 }
 %
-		\ngame{2} Define an algorithm\hamid{adversary?} $\bdv$ \hamid{against forking soundness} such that given access to oracles $\initU$ and $\ro$, randomness $r_\bdv$ internally runs $\advse^{\initU, \simO, \ro} (1^\secpar; r_\adv)$, where
+		\ngame{2} Define an adversary $\bdv$ against forking soundness such that given access to oracles $\initU$ and $\ro$, randomness $r_\bdv$ internally runs $\advse^{\initU, \simO, \ro} (1^\secpar; r_\adv)$, where
 		\begin{compactenum}
 			\item $r_\bdv$ is split into two substrings $r_\adv$ and $r_\simulator$;
-			\item \hamid{$\bdv$ answers $\adv$ update queries by asking the same query from its own update oracle. Also, when $\adv$ finalised an SRS $\srs$, $\bdv$ does the same.}
-			\item $\bdv$ answers $\adv$ simulator queries itself by programming the random oracle locally. Coins from $r_\simulator$ are use to that.\hamid{!}
+			\item $\bdv$ answers $\adv$ update queries by asking the same query from its own update oracle. Also, when $\adv$ finalised an SRS $\srs$, $\bdv$ does the same.
+			\item $\bdv$ answers $\adv$ simulator queries itself by programming the random oracle locally. Coins from $r_\simulator$ are use to that.
 			\item Eventually $\adv$ outputs instance $\inp_\advse$ and  proof $\zkproof_\advse$. The same instance and proof are output by $\bdv$.
 			\item $\bdv$ sets up (initially empty) list $Q$ where all simulated proofs that $\adv$ asked for are kept.
 		\end{compactenum}

@@ -377,67 +377,67 @@ be a proof system such that
 The Fiat--Shamir heuristic states that $\proofsystem_\fs$ is a zero-knowledge
 non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
 
-\subsection{Non-malleability definitions for NIZKs}
-\label{sec:simext_def}
-Real life applications often require a NIZK proof system to be
-non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement
-$\inp$ should be able to provide a new proof $\zkproof'$ related to $\zkproof$.
-\emph{Simulation extractability} formalizes a strong version of non-malleability
-by requiring that no adversary can produce a valid proof without knowing the
-corresponding witness. This must hold even if the adversary is allowed to see
-polynomially many simulated proofs for any statements it wishes.
-
-%\chaya{remove reference to forking soundness. quantify for $\ext_\se$}
-\begin{definition}[Forking simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
-	\label{def:simext}
-  Let $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be a
-  HVZK proof system\hamid{$\ps_\fs$ is the Fiat-Shamir variant of the underlying proof system. So maybe we mean the underlying proof system is HVZK?}. We say that $\ps_\fs$ is \emph{forking
-    simulation-extractable} with \emph{extraction error} $\nu$ if for any $\ppt$
-  adversary $\adv$ that is given oracle access to a random oracle $\ro$ and
-  simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with
-  probability $\accProb$, where
-	\[
-		\accProb = \Pr \left[
-		\begin{aligned}
-			& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
-			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q
-		\end{aligned}
-		\, \left| \,
-		\begin{aligned}
-			& \srs \gets \kgen_\fs(\REL), r \sample \RND{\advse}, \\
-			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
-			\ro} (\srs; r)
-		\end{aligned}
-		\right.\right]\,,
-	\]
-	there exists an extractor $\extse$ such that
-	\[
-		\extProb = \Pr \left[
-		\begin{aligned}
-			& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
-			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
-			& \REL(\inp_{\advse}, \wit_{\advse}) = 1
-		\end{aligned}
-		\, \left| \,
-		\begin{aligned}
-			& \srs \gets \kgen_\fs(\REL), r \sample \RND{\advse},\\
-			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
-			\ro} (\srs; r) \\
-			& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
-			Q, Q_\ro) 
-		\end{aligned}
-		\right.\right]
-	\]
-	is at at least 
-	\[
-		\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
-	\]
-	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
-  $\accProb \geq \nu$. List $Q$ contains all $(\inp, \zkproof)$ pairs where
-  $\inp$ is an instance provided to the simulator by the adversary and
-  $\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-  queries to $\ro$ and $\ro$'s answers.
-\end{definition}
+%\subsection{Non-malleability definitions for NIZKs}
+%\label{sec:simext_def}
+%Real life applications often require a NIZK proof system to be
+%non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement
+%$\inp$ should be able to provide a new proof $\zkproof'$ related to $\zkproof$.
+%\emph{Simulation extractability} formalizes a strong version of non-malleability
+%by requiring that no adversary can produce a valid proof without knowing the
+%corresponding witness. This must hold even if the adversary is allowed to see
+%polynomially many simulated proofs for any statements it wishes.
+%
+%%\chaya{remove reference to forking soundness. quantify for $\ext_\se$}
+%\begin{definition}[Forking simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
+%	\label{def:simext}
+%  Let $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be a
+%  HVZK proof system\hamid{$\ps_\fs$ is the Fiat-Shamir variant of the underlying proof system. So maybe we mean the underlying proof system is HVZK?}. We say that $\ps_\fs$ is \emph{forking
+%    simulation-extractable} with \emph{extraction error} $\nu$ if for any $\ppt$
+%  adversary $\adv$ that is given oracle access to a random oracle $\ro$ and
+%  simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with
+%  probability $\accProb$, where
+%	\[
+%		\accProb = \Pr \left[
+%		\begin{aligned}
+%			& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
+%			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q
+%		\end{aligned}
+%		\, \left| \,
+%		\begin{aligned}
+%			& \srs \gets \kgen_\fs(\REL), r \sample \RND{\advse}, \\
+%			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
+%			\ro} (\srs; r)
+%		\end{aligned}
+%		\right.\right]\,,
+%	\]
+%	there exists an extractor $\extse$ such that
+%	\[
+%		\extProb = \Pr \left[
+%		\begin{aligned}
+%			& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
+%			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+%			& \REL(\inp_{\advse}, \wit_{\advse}) = 1
+%		\end{aligned}
+%		\, \left| \,
+%		\begin{aligned}
+%			& \srs \gets \kgen_\fs(\REL), r \sample \RND{\advse},\\
+%			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
+%			\ro} (\srs; r) \\
+%			& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+%			Q, Q_\ro) 
+%		\end{aligned}
+%		\right.\right]
+%	\]
+%	is at at least 
+%	\[
+%		\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
+%	\]
+%	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
+%  $\accProb \geq \nu$. List $Q$ contains all $(\inp, \zkproof)$ pairs where
+%  $\inp$ is an instance provided to the simulator by the adversary and
+%  $\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+%  queries to $\ro$ and $\ro$'s answers.
+%\end{definition}
 
 
 \subsection{Updatable SRS schemes}
@@ -451,7 +451,52 @@ We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which 
 	\item
 	$b \leftarrow \verifyCRS(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
 \end{itemize}
-	\hamid{TODO: add a paragraph here about the universality!}
+
+\hamid{Please uncomment if you agree: In the next section, we define security notions in the updatable setting. To this end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary finalises the SRS. We also define the simulation oracle $\simO$ in~\cref{fig:upd} that is the simulator w.r.t. the SRS finalised by $\initU$. This simulation oracle will be used in the SE definition.}
+
+\begin{figure}[t]
+	\centering
+	\fbox{
+		\begin{minipage}[t]{0.7\linewidth}
+			\procedure{$\initU(\intent, \srs_n,\{\rho_i \}_{i=1}^n)$}{
+				\pcif \srs \neq \bot: \pcreturn \bot \\
+				\pcif (\intent = \setup): \\
+				\t (\srs',\rho') \leftarrow \kgen(\REL)\\
+				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+				\t \pcreturn (\srs',\rho')\\
+				%
+				\pcif (\intent = \update): \\
+				\t b \gets \verifyCRS(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^{n})\\
+				\t \pcif (b=0): \pcreturn \bot \\
+				\t (\srs',\rho') \leftarrow \upd(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^n)\\
+				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+				\t \pcreturn (\srs',\rho')\\
+				%
+				\pcif (\intent = \final): \\
+				\t b \gets \verifyCRS(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^{n})\\
+				\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_i \}_i = \emptyset: \pcreturn \bot \  // Q_\srs = (Q^{(1)}_\srs, Q^{(2)}_\srs) \text{ s.t. } Q^{(2)}_\srs \text{ contains the update proofs in } Q_\srs \\
+				\t 
+				\td \gets \ext_\srs(\srs_n,, Q_\srs, \{\rho_i \}_{i=1}^{n}) \\
+				\t \srs \gets \srs_n, \pcreturn \srs \\
+				%
+				\pcelse \pcreturn \bot
+			}
+		\end{minipage}
+		\begin{minipage}[t]{0.3\linewidth}
+			\procedure{$\simO(\inp')$}{
+				\pcif (\srs = \bot): \pcreturn \bot \\
+				% \hamid{should we formalize this extractor?}\\
+				\zkproof'  \gets \hamid{\simulator_\FS}(\srs, \td, \inp')\\
+				Q = Q \cup \{(\inp', \zkproof')\}\\
+				\pcreturn  \zkproof' \\
+			}
+	\end{minipage}}
+	\caption{The left oracle defines the notion of updatable SRS setup. The right oracle is the simulation oracle.} 
+	\label{fig:upd}
+\end{figure}
+
+
+\hamid{TODO: add a paragraph here about the universality!}
 % Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
 % is special-sound and has a unique response property. Let $\sigmaprot_\fs =
 % (\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the
