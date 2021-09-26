@@ -177,7 +177,7 @@ for some negligible $\eps(\secpar)$.
 \begin{proof}		
 
   \ngame{0} This is simulation extraction game played between an adversary
-  $\advse$ who is given access to \hamid{an oracle $\initU$ that defines an updatable SRS setup,} a random oracle $\ro$ and a simulation oracle
+  $\advse$ who is given access to an oracle $\initU$ that defines an updatable SRS setup, a random oracle $\ro$ and a simulation oracle
   $\simO$. There is also an extractor $\ext$ that, from a proof
   $\zkproof_{\advse}$ for instance $\inp_{\advse}$ output by the adversary and from
    transcripts of $\advse$'s operations is tasked to extract a witness
@@ -231,10 +231,11 @@ for some negligible $\eps(\secpar)$.
   \epsur(\secpar)\,. \)
 }
 %
-		\ngame{2} Define an algorithm $\bdv$ such that given SRS $\srs$ and access to $\ro$, randomness $r_\bdv$ internally runs $\advse^{\simO, \ro} (\srs; r_\adv)$, where
+		\ngame{2} Define an algorithm\hamid{adversary?} $\bdv$ \hamid{against forking soundness} such that given access to oracles $\initU$ and $\ro$, randomness $r_\bdv$ internally runs $\advse^{\initU, \simO, \ro} (1^\secpar; r_\adv)$, where
 		\begin{compactenum}
 			\item $r_\bdv$ is split into two substrings $r_\adv$ and $r_\simulator$;
-			\item $\bdv$ answers $\adv$ simulator queries itself by programming the random oracle locally. Coins from $r_\simulator$ are use to that.
+			\item \hamid{$\bdv$ answers $\adv$ update queries by asking the same query from its own update oracle. Also, when $\adv$ finalised an SRS $\srs$, $\bdv$ does the same.}
+			\item $\bdv$ answers $\adv$ simulator queries itself by programming the random oracle locally. Coins from $r_\simulator$ are use to that.\hamid{!}
 			\item Eventually $\adv$ outputs instance $\inp_\advse$ and  proof $\zkproof_\advse$. The same instance and proof are output by $\bdv$.
 			\item $\bdv$ sets up (initially empty) list $Q$ where all simulated proofs that $\adv$ asked for are kept.
 		\end{compactenum}
