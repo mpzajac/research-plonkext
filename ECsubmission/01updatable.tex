@@ -1,0 +1,194 @@
+% !TEX root = main.tex
+% !TEX spellcheck = en-US
+
+
+\section{Updatable Simulation Extractable Soundness}
+
+\paragraph{Updatable SRS setting.} Let us recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which consists of the following algorithms.
+
+\begin{itemize}
+	\item
+	$(\srs,\rho) \leftarrow \kgen(\secparam)$ is a PPT algorithm that takes a security parameter $\secpar$ and outputs a SRS $\srs$, and correctness proof $\rho$.
+	\item
+	$ (\srs',\rho') \leftarrow \upd(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a PPT algorithm that takes as input the security parameter $\secpar$, a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
+	\item
+	$b \leftarrow \verifyCRS(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not. 
+\end{itemize}
+
+\begin{definition}
+	An updatable SRS scheme is correct if the following completeness properties are satisfied.
+	
+	\begin{itemize}
+		
+		\item
+		For all $\secpar \in \NN$
+		\[
+		\condprob{\verifyCRS(1^\secpar,\srs,\rho) = 1}{(\srs,\rho) \leftarrow \kgen(1^\secpar)} = 1
+		\]
+		\item
+		
+		For all $(\srs,\{\rho_i \}_{i=1}^n)$ such that $\verifyCRS(1^\secpar,\srs,\{\rho_i \}_{i=1}^n))=1$,
+		\[
+		\condprob{\verifyCRS(1^\secpar,\srs',\{\rho_i \}_{i=1}^{n+1}))=1}{(\srs',\rho_{n+1}) \leftarrow \upd(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)} = 1
+		\]
+		
+	\end{itemize}
+\end{definition} 
+
+
+Intuitively, the updatability of the SRS should allow an adversarial prover to contribute to updating, and see proofs with respect to different updated SRS'es before attempting to provide a proof for a false statement. Note that, the adversary's output could be a proof w.r.t. a SRS that is different from the SRSs corresponding to all the simulated proofs seen. In addition, since the SRS is universal, the adversary could ask for a simulated proof for different statements as well. We think of the instance $\inp$ as consisting of the relation as well as the public input. This is without loss of generality since the SRS specialization for a relation is deterministic, and derived from an updated universal SRS. In concrete zkSNARKs, there is a preprocessing phase that corresponds to this specialization, which we hide in the definition by absorbing the relation into the instance.
+
+We first formalize an intermediate notion of updatable simulation extractability (USE) called \emph{late updatable simulation extractability} (LUSE), where the adversary sees simulated proofs only with respect to the last SRS. We then give our definition of USE that models a real-world adversary capable of seeing simulated proofs with respect to different (finalized) SRS'es.
+
+We then prove a lemma that relates USE to LUSE. This lemma provides a clean and modular approach for proving USE property of zkSNARKs. 
+For the sake of completeness, we also recall the definitions of standard simulation extractability and updatable knowledge soundness.
+In~\cref{fig:upd}, list $Q$ contains all $(\inp, \zkproof)$ pairs where
+$\inp$ is an instance provided to the simulator by the adversary and
+$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+queries to $\ro$ and $\ro$'s answers, and $Q_\srs$ contains proofs of all honest SRS updates.
+
+
+%\subsection{Late Updatable Simulation Extractability (late-USE)}
+
+\begin{definition}[Updatable knowledge soundness~\cite{C:GKMMM18}]\label{upd-KS}
+	An argument system for a relation $\REL$ is updatable knowledge-sound if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\uks}$ such that the advantage $\Adv_{\uks} := \prob{\UKS_{\advse,\ext_{\uks}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
+\end{definition}
+
+\begin{definition}[Simulation Extractability]\label{se}
+	An argument system for a relation $\REL$ is simulation-extractable if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\se}$ such that the advantage $\Adv_{\se}:=\prob{ \SE_{\advse,\ext_{\se}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
+\end{definition}
+
+\begin{definition}[Late Updatable Simulation Extractability]\label{late-use}
+	An argument system for a relation $\REL$ is late updatable simulation-extractable if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\luse}$ such that the advantage $\Adv_{\luse}:=\prob{ \LUSE_{\advse,\ext_{\luse}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
+\end{definition}
+
+\begin{definition}[Updatable Simulation Extractability]\label{USE}
+	An argument system for a relation $\REL$ is updatable simulation-extractable if for all PPT algorithms $\advse$, there exists an extractor $\ext_{\use}$ such that the advantage $\Adv_{\use} := \prob{ \USE_{\advse,\ext_{\use}}(\secpar) = 1}$ of $\advse$ in the game defined in~\cref{fig:upd} is negligible in $\secpar$.
+\end{definition}
+
+\begin{figure}[!ht]
+	\begin{center}
+			\fbox{
+				\begin{minipage}[t]{0.95\linewidth}
+					\centering
+				$\dottedbox{\UKS_{\advse,\ext_{\uks}}(\secpar)}$ /
+				$\SE_{\advse,\ext_\se}(\secpar)$ / $\dashedbox{\LUSE_{\advse,\ext_{\luse}(\secpar)}}$ / $\fedbox{\USE_{\advse,\ext_{\use}(\secpar)}}$
+			\end{minipage}
+			}
+		\fbox{
+		\begin{minipage}[t]{0.6\linewidth}
+			\procedure[codesize=\footnotesize,headlinesep=0.2\baselineskip,bodylinesep=-0.2\baselineskip]{}{
+			\underline{\dottedbox{\UKS_{\advse,\ext_{\uks}}(\secpar)}}\\
+			\srs \gets \bot, Q_\srs \gets \emptyset \\
+			(\inp_\advse, \zkproof_\advse) \gets \advse^{\initU, \ro}(1^\secpar; r) \\
+			\wit_\advse \gets \ext_\uks(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro, Q_\srs) \\
+			\pcreturn \verifier(\srs, \inp_\advse, \zkproof_\advse) \wedge (\srs, \inp_\advse, \wit_\advse) \notin \REL \\
+			%				%
+			\\
+			%
+			\underline{\SE_{\advse,\ext_{\se}}(\secpar)}\\
+			(\srs, \td) \leftarrow \kgen(\REL)\\
+			(\inp_\advse, \zkproof_\advse)\gets \advse^{\simO, \ro}(1^\secpar; r) \\
+			\wit_\advse \gets \ext_\se(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro) \\
+			\pcreturn \verifier(\srs, \inp_\advse, \zkproof_\advse) \wedge (\srs, \inp_\advse, \zkproof_\advse) \not \in Q \wedge (\srs, \inp_\advse, \wit_\advse) \notin \REL \\
+			%
+			\\
+				\underline{\dashedbox{\LUSE_{\advse,\ext_{\luse}}(\secpar)}}\\
+				\srs \gets \bot, Q_\srs \gets \emptyset \\
+				(\inp_\advse, \zkproof_\advse) \gets \advse^{\initU, \simO, \ro}(1^\secpar; r) \\
+				\wit_\advse \gets \ext_{\luse}(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro, Q_\srs) \\
+				\pcreturn \verifier(\srs, \inp_\advse, \zkproof_\advse) \wedge (\srs, \inp_\advse, \zkproof_\advse) \not \in Q \wedge (\srs, \inp_\advse, \wit_\advse) \notin \REL\\				
+				%
+				\\
+				%
+				\underline{\fedbox{\USE_{\advse,\ext_{\use}}(\secpar)}}\\
+				\srs \gets \bot, Q_\srs \gets \emptyset \\
+				(\inp_\advse, \zkproof_\advse) \gets \advse^{\initU, \simO, \ro}(1^\secpar; r) \\
+				\wit_\advse \gets \ext_{\use}(\srs, \advse, r, \inp_{\advse}, \zkproof_\advse, Q, Q_\ro, Q_\srs) \\
+				\pcreturn \verifier(\srs, \inp_\advse, \zkproof_\advse) \wedge (\srs, \inp_\advse, \zkproof_\advse) \not \in Q \wedge (\srs, \inp_\advse, \wit_\advse) \notin \REL \\
+		}
+		\end{minipage}
+	\begin{minipage}[t]{0.37\linewidth}
+		\procedure[codesize=\footnotesize,headlinesep=0.2\baselineskip,bodylinesep=-0.2\baselineskip]{}{
+			\underline{\simO(\inp')}\\
+			\pcif (\srs = \bot): \pcreturn \bot \\
+			% \hamid{should we formalize this extractor?}\\
+			\zkproof'  \gets \simulator(\srs, \td, \inp')\\
+			Q = Q \cup \{(\srs, \inp', \zkproof')\}\\
+			\pcreturn  \zkproof' \\
+			%
+			\\
+			%
+			\underline{\initU(\intent, \srs_n,\{\rho_i \}_{i=1}^n)}\\
+			\dashedbox{\dottedbox{\pcif \srs \neq \bot: \pcreturn \bot}} \\
+			\pcif (\intent = \setup): \\
+			\t (\srs',\rho') \leftarrow \kgen(\REL)\\
+			\t Q_\srs \gets Q_\srs \cup \{\rho'\}\\
+			\t \pcreturn (\srs',\rho')\\
+			%
+			\pcif (\intent = \update): \\
+			\t b \gets \verifyCRS(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^{n})\\
+			\t \pcif (b=0): \pcreturn \bot \\
+			\t (\srs',\rho') \leftarrow \upd(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^n)\\
+			\t Q_\srs \gets Q_\srs \cup \{\rho'\}\\
+			\t \pcreturn (\srs',\rho')\\
+			%
+			\pcif (\intent = \final): \\
+			\t b \gets \verifyCRS(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^{n})\\
+			\t \pcif (b=0) \vee Q_\srs \cap \{ \rho_i \}_i = \emptyset: \pcreturn \bot \\
+			\t \fedbox{\dashedbox{
+				\td \gets \ext_\srs(\srs_n,, Q_\srs, \{\rho_i \}_{i=1}^{n})}} \\
+			\t \srs \gets \srs_n, \pcreturn \srs \\
+			%
+			\pcelse \pcreturn \bot
+		}
+	\end{minipage}
+	}
+		\caption{Games in the Updatable SRS setting. The boxed/dashed-box/dotted-box part is only present in the boxed/dashed-boxed/dotted-boxed game.} 
+		\label{fig:upd}
+	\end{center}
+\end{figure}
+
+The following lemma relates the definition of updatable simulation extractability to the definition of late updatable simulation extractability and updatable knowledge soundness. More specifically, the lemma shows that for any PPT adversary $\advse$ that has a non-negligible advantage in $\USE_{\advse,\ext_{\use}}(\secpar)$, there exists a PPT adversary $\bdv$ that can win with non-negligible advantage either $\LUSE_{\advse,\ext_{\luse}}(\secpar)$ or $\UKS_{\advse,\ext_{\uks}}(\secpar)$.
+
+%\chaya{as we discussed we should probably be explicit about the simulator using trapdoor or being trapdoor less. and give both reductions}
+\begin{lemma}
+	Let $\zkproof$ be a proof system that satisfies updatable knowledge soundness and late updatable simulation extractability. Then, $\zkproof$
+	satisfies updatable simulation extractability.
+\end{lemma}
+\begin{proof}
+	Let $\advse$ be an adversary against updatable simulation extractability. We construct an adversary $\bdv$ that breaks either updatable knowledge soundness or late updatable simulation extractability.
+	%$\bdv = \{\bdv_0, \bdv_1, \ldots \}$ consisting of a polynomial-size set of adversaries such that $\bdv_0$ is against updatable knowledge soundness game and $\{\bdv_1, \bdv_2, \ldots \}$ all against weak updatable simulation extractability game. We show how a successful $\advse$ can be efficiently transformed into a successful $\bdv$. 
+	The key idea is to construct adversaries $\bdv_0$ and $\{\bdv_1, \bdv_2\ldots \}$ against updatable knowledge soundness and against late updatable simulation extractability respectively. 
+	In more detail, every time $\advse$ makes a simulation query with respect to a SRS $\srs_i$, the adversary $\bdv$ plays the role of a late updatable simulation extractable adversary and forwards the same  
+	statement to its own simulator, after finalizing $\srs_i$. 
+	That is, whenever $\bdv$ receives a query $(\srs_i, \mathcal{P}_i, \inp)$ from $\advse$ who asks for a simulated proof with respect to SRS $\srs_i$ (with $\mathcal{P}_i$ being the set of its update proofs) and statement $\inp$, it does the following: 
+	
+	\begin{itemize}
+		\item 
+		$\bdv$ first checks if the conditions
+		$\verifyCRS(1^\secpar,\srs_i, \mathcal{P}_i) = 1$ and $\mathcal{Q} \cap \mathcal{P}_i \neq \emptyset$ hold. The first condition checks if $\srs_i$ is well formed. The second condition verifies if $\mathcal{P}_i$ contains at least
+		one honest update proof, where $\mathcal{Q}$ is the set of all honest update proofs maintained by $\bdv$. 
+		\item If the conditions verify, it plays the role of $\bdv_i$, and finalizes $\srs_i$ by calling the update oracle with intent ``$\final$". 
+		
+		\item
+		$\bdv_i$ then makes a query $\inp$ to its own simulation oracle with respect to the finalized SRS in the corresponding simulation extractability game.
+		
+		Note that for $\bdv$ to be able to engage in the $i$-th updatable SE game with respect to the fresh SRS $\srs_{i}$ and get access to a simulator for $\srs_{i}$, it needs to perform all previous updates up to that point and finalize $\srs_{i}$. To this end, $\bdv$  internally keeps track of all the updates $\advse$ has made up to $i$, including any honest updates.
+		
+		\item
+		Upon receiving the proof $\zkproof$ from its simulation oracle, $\bdv_i$ returns $\zkproof$ to $\advse$.
+		
+	\end{itemize}
+	
+	%Note that $\srs_i$ refers to the $i$-th fresh SRS that is returned by $\advse$ and whenever $\advse$ makes a query on a previously queried SRS $\srs_i$ but on a new statement, $\bdv$ just emulates the same adversary $\bdv_i$ on the new statement. 
+	\chaya{we are assuming that once the adversary updates the srs, it loses access to the simulation oracle wrt the previous srs. It can only see proofs already queried before the updation. Discuss if this is reasonable. may not even be necessary.}\hamid{The current argument is with respect to this (restricted) definition, but such restriction seems natural, because even a real-world adversary cannot control provers to generate proofs with respect to outdated SRSs.}
+	
+	Let us assume that $\srs_\ell$ is the last distinct SRS updated by $\advse$. 
+	At the end of the game, $\advse$ returns $(\srs^*, \inp^*, \pi^*)$, and since $\advse$ wins, $\srs^* = \srs_\ell$. Now, $\bdv$ checks whether 
+	$\advse$ previously made a simulation query with
+	$\srs^*$, that is, whether $\bdv_\ell$ was invoked. 
+	If so, it plays the role of $\bdv_\ell$ and returns $(\inp^*, \pi^*)$ to the challenger in the corresponding simulation extractability game. 
+	Otherwise, if $\srs^*$ is an SRS for which $\advse$ made no simulation queries, then $\bdv$ plays the role of $\bdv_0$ and returns $(\srs^*, \inp^*, \zkproof^*)$ to its updatable knowledge soundness challenger. It is easy to see that if $\advse$ has a non-negligible advantage, then $\bdv$, as constructed above, also has the same advantage (with $1/k$ loss where $k$ is total number of updates made by $\advse$) in breaking either updatable knowledge soundness or late updatable simulation extractability.
+\qed
+\end{proof}

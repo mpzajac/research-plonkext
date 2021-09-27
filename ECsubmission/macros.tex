@@ -1,3 +1,97 @@
+%%%%%%%%%%%Algorithms and  inputs%%%%%%%%%%%
+\newcommand{\inpa}{\inp_\adv}
+\newcommand{\inpb}{\inp_\bdv}
+\newcommand{\inps}{\inp_\simulator}
+\newcommand{\zkproofa}{\zkproof_\adv}
+\newcommand{\zkproofb}{\zkproof_\bdv}
+\newcommand{\zkproofs}{\zkproof_\simulator}
+\newcommand{\tra}{\trans_\adv}
+\newcommand{\trb}{\trans_\bdv}
+
+%%%%%%Preliminaries%%%
+\newcommand{\samplespace}{\Omega}
+\newcommand{\eventspace}{\mathcal{F}}
+\newcommand{\probfunction}{\mu}
+
+
+%%%%%%%%%%%%%SE MAcros%%%%%%%%%%%%
+
+
+\newcommand{\upd}{\pcalgostyle{Upd}}
+\newcommand{\verifyCRS}{\pcalgostyle{VerifySRS}}
+\newcommand{\simO}{\simulator\oracleo}
+\newcommand{\initU}{\upd\oracleo}
+\newcommand{\Adv}{\pcalgostyle{Adv}}
+
+\newcommand{\uks}{\pcvarstyle{uks}}
+\newcommand{\use}{\pcvarstyle{use}}
+\newcommand{\luse}{\pcvarstyle{luse}}
+\newcommand{\UKS}{\pcvarstyle{UKS}}
+\newcommand{\USE}{\pcvarstyle{USE}}
+\newcommand{\SE}{\pcvarstyle{SE}}
+\newcommand{\LUSE}{\pcvarstyle{LUSE}}
+
+
+\newtcbox{\dottedbox}[1][]{
+	math upper,
+	baseline=0.3\baselineskip,
+	%	equal height group=dashedbox,
+	nobeforeafter,
+	colback=white,
+	boxrule=0pt,
+	enhanced jigsaw,
+	boxsep=0pt,
+	top=2pt,
+	bottom=2pt,
+	left=2pt,
+	right=2pt,
+	borderline horizontal={0.5pt}{0pt}{dotted},
+	borderline vertical={0.5pt}{0pt}{dotted},
+	%	drop lifted shadow,
+	#1
+}
+
+
+\newtcbox{\dashedbox}[1][]{
+	math upper,
+	baseline=0.3\baselineskip,
+	%	equal height group=dashedbox,
+	nobeforeafter,
+	colback=white,
+	boxrule=0pt,
+	enhanced jigsaw,
+	boxsep=0pt,
+	top=2pt,
+	bottom=2pt,
+	left=2pt,
+	right=2pt,
+	borderline horizontal={0.5pt}{0pt}{dashed},
+	borderline vertical={0.5pt}{0pt}{dashed},
+	%	drop lifted shadow,
+	#1
+}
+
+\newtcbox{\fedbox}[1][]{
+	math upper,
+	baseline=0.3\baselineskip,
+	%	equal height group=dashedbox,
+	nobeforeafter,
+	colback=white,
+	boxrule=0pt,
+	enhanced jigsaw,
+	boxsep=0pt,
+	top=2pt,
+	bottom=2pt,
+	left=2pt,
+	right=2pt,
+	borderline horizontal={0.5pt}{0pt}{black},
+	borderline vertical={0.5pt}{0pt}{black},
+	%	drop lifted shadow,
+	#1
+}
+
+
+%%%%%%%%%%%%%%5
 \newcommand{\newdefs}[1] {\setlength{\fboxsep}{1pt}\colorbox{gray!20}{\(#1\)}}
 
 \newcommand{\COMMENT}[1]  {}
@@ -288,4 +382,4 @@
 \newcommand{\task}[2]{\todo[author=\textbf{Task},inline]{({\textit{#1}}) #2}}
 % \newcommand{\task}[2] {\xcommenti{Task}{#1}{#2}}
 % \DeclareRobustCommand{\task}[2]  {{\color{black}\sethlcolor{yellow}\hl{\textsf{TASK #1:} #2}}}
-\DeclareRobustCommand{\changedm}[1] {{\color{violet} #1}}
+\DeclareRobustCommand{\changedm}[1] {{\color{blueish} #1}}

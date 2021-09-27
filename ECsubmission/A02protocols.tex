@@ -1,0 +1,262 @@
+% !TEX root = main.tex
+% !TEX spellcheck = en-US
+
+
+\section{Omitted protocols descriptions}
+\subsection{Polynomial commitment schemes}
+\label{sec:pcom}
+\cref{fig:pcomp,fig:pcoms} present variants of KZG polynomial commitment schemes
+used in \plonk{} and \sonic{}. The key generation algorithm $\kgen$ takes as
+input a security parameter $\secparam$ and a parameter $\maxdeg$ which
+determines the maximal degree of the committed polynomial. We assume that
+$\maxdeg$ can be read from the output SRS.
+
+
+We emphasize the following properties of a secure polynomial commitment
+$\PCOM$:
+\begin{description}
+\item[Evaluation binding:] A $\ppt$ adversary $\adv$ which outputs a commitment
+  $\vec{c}$ and evaluation points $\vec{z}$ has at most negligible chances to open
+  the commitment to two different evaluations $\vec{s}, \vec{s'}$. That is, let
+  $k \in \NN$ be the number of committed polynomials, $l \in \NN$ number of
+  evaluation points, $\vec{c} \in \GRP^k$ be the commitments, $\vec{z} \in
+  \FF_p^l$ be the arguments the polynomials are evaluated at, $\vec{s},\vec{s}'
+  \in \FF_p^k$ the evaluations, and $\vec{o},\vec{o}' \in \FF_p^l$ be the
+  commitment openings. Then for every $\ppt$ adversary $\adv$
+	\[
+		\Pr
+			\left[
+			\begin{aligned}
+				& \verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o}) = 1,  \\ 
+				& \verify(\srs, \vec{c}, \vec{z}, \vec{s}', \vec{o}') = 1, \\
+				& \vec{s} \neq \vec{s}'
+			\end{aligned}
+			\,\left|\,\vphantom{\begin{aligned}
+                  & \\
+                  & \\
+                  &
+                \end{aligned}}
+			\begin{aligned}
+				& \srs \gets \kgen(\secparam, \maxdeg),\\
+				& (\vec{c}, \vec{z}, \vec{s}, \vec{s}', \vec{o}, \vec{o}') \gets \adv(\srs)
+			\end{aligned}
+			\right.\right] \leq \negl\,.
+	\]
+
+\end{description}
+	
+We say that $\PCOM$ has the unique opening property if the following holds:
+\begin{description}
+\item[Opening uniqueness:] Let $k \in \NN$ be the number of committed
+  polynomials, $l \in \NN$ number of evaluation points, $\vec{c} \in \GRP^k$ be
+  the commitments, $\vec{z} \in \FF_p^l$ be the arguments the polynomials are
+  evaluated at, $\vec{s} \in \FF_p^k$ the evaluations, and $\vec{o} \in \FF_p^l$
+  be the commitment openings. Then for every $\ppt$ adversary $\adv$
+	\[
+		\Pr
+			\left[
+			\begin{aligned}
+				& \verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o}) = 1,  \\ 
+				& \verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o'}) = 1, \\
+				& \vec{o} \neq \vec{o'}
+			\end{aligned}
+			\,\left|\, \vphantom{\begin{aligned}
+                  & \\
+                  & \\
+                  &
+                \end{aligned}}
+			\begin{aligned}
+				& \srs \gets \kgen(\secparam, \maxdeg),\\
+				& (\vec{c}, \vec{z}, \vec{s}, \vec{o}, \vec{o'}) \gets \adv(\srs)
+			\end{aligned}
+			\right.\right] \leq \negl\,.
+	\]
+\end{description}
+Intuitively, opening uniqueness assures that there is only one valid opening
+for the committed polynomial and given evaluation point. This property is
+crucial in showing forking simulation-extractability of $\plonk$ and $\sonic$. We show
+that the $\plonk$'s and $\sonic$'s polynomial commitment schemes satisfy this
+requirement in \cref{lem:pcomp_op} and \cref{lem:pcoms_unique_op}
+respectively.
+
+We also formalize notion of $k$-hiding property of a polynomial commitment scheme
+\begin{description}
+\item[Hiding] Let $\HHH$ be a set of size $\maxdeg + 1$ and $\ZERO_\HHH$ its
+  vanishing polynomial. We say that a polynomial scheme is \emph{hiding} with
+  security $\epsh(\secpar)$ if for every $\ppt$ adversary $\adv$, $k \in \NN$,
+  probability
+  \begin{align*}
+    \Pr\left[
+    \begin{aligned}
+      & b' = b
+      \end{aligned}
+        \,\left|\,
+        \begin{aligned}
+    & (\srs, \maxdeg) \sample \kgen(\secparam),
+    (f_0, f_1, c, k, b') \gets \adv^{\oraclec}(\srs), f_0, f_1 \in \FF^{\maxdeg}
+    [X]
+    \end{aligned}
+    \right.\right] \leq \frac{1}{2} + \eps(\secpar)
+  \end{align*}
+  Here, $\oraclec$ is a challenge oracle that
+  \begin{compactenum}
+    \item takes polynomials $f_0, f_1$ provided by the adversary and parameter $k$,
+    \item samples bit $b$,
+    \item samples vector $\vec{a} \in \FF^k$,
+    \item computes polynomial,
+      $f'_b (X) = f_b + \ZERO_\HHH (X) (a_0 + a_1 X + \ldots a_{k - 1} X^{k -
+        1})$,
+    \item outputs polynomial commitment $c = f'_b (\chi)$,
+    \item on adversary's evaluation query $x$ it adds $x$ to initially empty set
+      $Q_x$ and if $|Q_x| \leq k$, it provides $f'_b (x)$.
+    \end{compactenum}
+  \end{description}
+
+\begin{description}
+\item[Commitment of knowledge]  For every $\ppt$ adversary $\adv$ who produces
+  commitment $c$, evaluation $s$ and opening $o$ there
+  exists a $\ppt$ extractor $\ext$ such that
+\[
+  \Pr \left[
+    \begin{aligned}
+      & \deg \p{f} \leq \maxdeg\\
+      & c = \com(\srs, \p{f}),\\
+      & \verify(\srs, c, z, s, o) = 1
+    \end{aligned}
+    \,\left|\,
+      \vphantom{
+        \begin{aligned}
+          & \\
+          & \\
+          &
+        \end{aligned}
+        }
+    \begin{aligned}
+      & \srs \gets \kgen(\secparam, \maxdeg),\\
+      & c \gets \adv(\srs),
+      z \sample \FF_p \\
+      & (s, o) \gets \adv(\srs, c, z), \\
+      & \p{f} = \ext_\adv(\srs, c)\\
+    \end{aligned}
+  \right.\right]
+  \geq 1 - \epsk(\secpar).
+\]
+In that case we say that $\PCOM$ is $\epsk(\secpar)$-knowledge.
+\end{description}
+Intuitively when a commitment scheme is ``of knowledge'' then if an
+adversary produces a (valid) commitment $c$, which it can open, then it also
+knows the underlying polynomial $\p{f}$ which commits to that value.
+\cite{CCS:MBKM19} shows, using AGM, that $\PCOMs$ is a commitment of knowledge.
+The same reasoning could be used to show that property for $\PCOMp$.
+
+% We require $\PCOM$ to have the following properties:
+\begin{figure}
+\centering
+	\begin{pcvstack}[center,boxed]
+		\begin{pchstack}
+			\procedure{$\kgen(\secparam, \maxdeg)$}
+			{
+			\chi \sample \FF^2_p \\ [\myskip]
+			\pcreturn \gone{1, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}\\ [\myskip]
+				\hphantom{\hspace*{5.5cm}}	
+        %\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1}
+        %\frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
+      }
+			
+			\pchspace
+			
+			\procedure{$\com(\srs, \vec{\p{f}}(X))$}
+			{ 
+				\pcreturn \gone{\vec{c}} = \gone{\vec{\p{f}}(\chi)}\\ [\myskip]
+				\hphantom{\pcind \pcif 
+					\sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j}
+					\gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet
+				\gtwo{1} + }
+			}
+		\end{pchstack}
+		% \pcvspace
+    
+		\begin{pchstack}
+			\procedure{$\open(\srs, \vec{\gamma}, \vec{z}, \vec{s}, \vec{\p{f}}(X))$}
+			{
+			\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo\\ [\myskip]
+      \pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1}
+      \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}\\ [\myskip] \pcreturn
+      \vec{o} = \gone{\vec{\p{o}}(\chi)}\\ [\myskip]
+				\hphantom{\hspace*{5.5cm}}	
+			}
+			
+			\pchspace
+			
+			\procedure{$\verify(\srs, \gone{c}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
+			{
+				\vec{r} \gets \FF_p^{\abs{\vec{z}}}\\ [\myskip]
+				\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo \\ [\myskip]
+				\pcind \pcif 
+          \sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j}
+          \gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet
+          \gtwo{1} + \\ [\myskip] \pcind \sum_{i = 1}^{\abs{\vec{z}}} r_i z_i
+          o_i
+          \bullet \gtwo{1} \neq \gone{- \sum_{i = 1}^{\abs{\vec{z}}} r_i o_i }
+          \bullet \gtwo{\chi} \pcthen  \\
+					\pcind \pcreturn 0\\ [\myskip]
+					\pcreturn 1.
+			}
+		\end{pchstack}
+	\end{pcvstack}
+	\caption{$\PCOMp$ polynomial commitment scheme.}
+	\label{fig:pcomp}
+  \end{figure}
+
+\begin{figure}
+\centering
+	\begin{pcvstack}[center,boxed]
+		\begin{pchstack}
+			\procedure{$\kgen(\secparam, \maxdeg)$} {
+				\alpha, \chi \sample \FF^2_p \\ [\myskip]
+				\pcreturn \gone{\smallset{\chi^i}_{i = -\multconstr}^{\multconstr},
+          \smallset{\alpha \chi^i}_{i = -\multconstr, i \neq
+            0}^{\multconstr}},\\
+        \pcind \gtwo{\smallset{\chi^i, \alpha \chi^i}_{i =
+            -\multconstr}^{\multconstr}}, \gtar{\alpha}\\
+				%\markulf{03.11.2020}{} \\
+			%	\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
+				\hphantom{\hspace*{5.5cm}}	
+		}
+			
+			\pchspace
+			
+			\procedure{$\com(\srs, \maxconst, \p{f}(X))$} {
+				\p{c}(X) \gets \alpha \cdot X^{\dconst - \maxconst} \p{f}(X) \\ [\myskip]
+				\pcreturn \gone{c} = \gone{\p{c}(\chi)}\\ [\myskip]
+				\hphantom{\pcind \pcif \sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot
+          \gone{\sum_{j = 1}^{t_j} \gamma_i^{j - 1} c_{i, j} - \sum_{j = 1}^{t_j}
+            s_{i, j}} \bullet \gtwo{1} + } }
+		\end{pchstack}
+		% \pcvspace
+    
+		\begin{pchstack}
+			\procedure{$\open(\srs, z, s, f(X))$}
+			{
+				\p{o}(X) \gets \frac{\p{f}(X) - \p{f}(z)}{X - z}\\ [\myskip]
+				\pcreturn \gone{\p{o}(\chi)}\\ [\myskip]
+				\hphantom{\hspace*{5.5cm}}	
+			}
+			
+			\pchspace
+			
+			\procedure{$\verify(\srs, \maxconst, \gone{c}, z, s, \gone{\p{o}(\chi)})$}
+      {
+        \pcif \gone{\p{o}(\chi)} \bullet \gtwo{\alpha \chi} + \gone{s - z
+        \p{o}(\chi)} \bullet \gtwo{\alpha} = \\ [\myskip] \pcind \gone{c}
+        \bullet \gtwo{\chi^{- \dconst + \maxconst}} \pcthen  \pcreturn 1\\
+        [\myskip]
+        \rlap{\pcelse \pcreturn 0.} \hphantom{\pcind \pcif \sum_{i =
+            1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j} \gamma_i^{j -
+              1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet \gtwo{1} + } }
+		\end{pchstack}
+	\end{pcvstack}
+	
+	\caption{$\PCOMs$ polynomial commitment scheme.}
+	\label{fig:pcoms}
+\end{figure}
