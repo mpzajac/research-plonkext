@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.7.21)  27 SEP 2021 16:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.7.21)  27 SEP 2021 18:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1758,8 +1758,8 @@ LaTeX Font Warning: Font shape `OT1/cmr/b/n' in size <5.5> not available
 
 [7]
 
-LaTeX Warning: Reference ` lem:marlin_hvzk' on page 1 undefined on input line 2
-62.
+LaTeX Warning: Reference `lem:marlin_hvzk' on page 1 undefined on input line 26
+2.
 
 
 LaTeX Warning: Reference `lem:sonic_hvzk' on page 1 undefined on input line 262
@@ -1830,61 +1830,66 @@ LaTeX Warning: Reference `sec:forking_proof' on page 1 undefined on input line
 LaTeX Warning: Reference `fig:forking_lemma' on page 1 undefined on input line 
 129.
 
+[11]
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
 (Font)              scaled to size 8.0pt on input line 196.
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
 (Font)              scaled to size 6.1pt on input line 196.
-[11]
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
 (Font)              scaled to size 9.0pt on input line 220.
  [12]) (./U02forkingSE.tex
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
 (Font)              scaled to size 6.1pt on input line 159.
-
+ [13]
 
 LaTeX Warning: Reference `thm:simsnd' on page 1 undefined on input line 186.
 
-[13] [14]
+[14]
 
 LaTeX Warning: Reference `def:simext' on page 1 undefined on input line 329.
 
 ) (./U03plonkSE.tex
+LaTeX Font Info:    Font shape `T1/qhv/m/n' will be
+(Font)              scaled to size 8.09995pt on input line 32.
 
-LaTeX Warning: Reference `fig:pcomp' on page 1 undefined on input line 39.
+
+LaTeX Warning: Reference `sec:plonk_explained' on page 1 undefined on input lin
+e 32.
+
+
+LaTeX Warning: Reference `fig:pcomp' on page 1 undefined on input line 43.
 
 [15] [16]
-Underfull \hbox (badness 7540) in paragraph at lines 188--193
+Underfull \hbox (badness 7540) in paragraph at lines 192--197
 []\T1/ntxtlf/m/n/10.95 If the ad-ver-sary picks two dif-fer-ent poly-no-mi-als:
  $[]\LMS/ntxsy/m/n/10.95 ¹\OML/ntxmi/m/it/10.95 X\LMS/ntxsy/m/n/10.95 º$\T1/ntx
 tlf/m/n/10.95 , that is com-mit-ted as
  []
 
+[17]
 
-LaTeX Warning: Reference `eq:ver_eq' on page 1 undefined on input line 241.
+LaTeX Warning: Reference `eq:ver_eq' on page 1 undefined on input line 245.
 
-[17] [18]
+[18]
 LaTeX Font Info:    Font shape `T1/ntxsups/m/it' will be
-(Font)              scaled to size 10.95pt on input line 518.
-LaTeX Font Info:    Font shape `T1/qhv/m/n' will be
-(Font)              scaled to size 8.09995pt on input line 521.
+(Font)              scaled to size 10.95pt on input line 522.
+ [19]
+
+LaTeX Warning: Reference `sec:plonk_explained' on page 1 undefined on input lin
+e 541.
 
 
 LaTeX Warning: Reference `sec:plonk_explained' on page 1 undefined on input lin
-e 537.
-
-[19]
-
-LaTeX Warning: Reference `sec:plonk_explained' on page 1 undefined on input lin
-e 597.
+e 601.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 599--608
+Underfull \hbox (badness 10000) in paragraph at lines 603--612
 []\T1/ntxtlf/m/n/10.95 The rest of the eval-u-a-tions are al-ready com-puted, t
 hus $[]$ sim-ply out-puts
  []
 
 
-Underfull \hbox (badness 1082) in paragraph at lines 599--608
+Underfull \hbox (badness 1082) in paragraph at lines 603--612
 \OT1/cmss/b/n/10.95 a\LMS/ntxsy/m/n/10.95 ¹\U/ntxmia/m/it/10.95 z\LMS/ntxsy/m/n
 /10.95 º\OML/ntxmi/m/it/10.95 ; \OT1/cmss/b/n/10.95 b\LMS/ntxsy/m/n/10.95 ¹\U/n
 txmia/m/it/10.95 z\LMS/ntxsy/m/n/10.95 º\OML/ntxmi/m/it/10.95 ; \OT1/cmss/b/n/1
@@ -1901,18 +1906,18 @@ n/10.95 , pro-
 
 
 LaTeX Warning: Reference `sec:uber_assumption' on page 1 undefined on input lin
-e 610.
+e 614.
 
-
-Underfull \hbox (badness 1112) in paragraph at lines 659--666
+[20]
+Underfull \hbox (badness 1112) in paragraph at lines 663--670
 \T1/ntxtlf/m/n/10.95 such that $[][] \LMS/ntxsy/m/n/10.95 2 \OT1/cmss/b/n/10.95
  R$\T1/ntxtlf/m/n/10.95 . This is pos-si-ble since $\LMS/ntxsy/m/n/10.95 R$ \T1
 /ntxtlf/m/n/10.95 knows all sin-gle-tons
  []
 
-[20]) [21] (./main.bbl [22
+[21]) [22] (./main.bbl [23
 
-]) [23] (./main.aux)
+]) [24] (./main.aux)
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 0.5pt have occurred.
@@ -1927,13 +1932,13 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: EA93F6FC7EDDC1DE7906616D1D523534;528.
  ) 
 Here is how much of TeX's memory you used:
- 37547 strings out of 478994
- 702417 string characters out of 5858184
- 1077083 words of memory out of 5000000
- 54079 multiletter control sequences out of 15000+600000
+ 37550 strings out of 478994
+ 702443 string characters out of 5858184
+ 1077087 words of memory out of 5000000
+ 54080 multiletter control sequences out of 15000+600000
  552767 words of font info for 269 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 112i,20n,117p,818b,798s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 112i,20n,117p,884b,798s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{Hfootnote.3} has been referenced but does not exi
 st, replaced by a fixed one
 
@@ -1975,10 +1980,10 @@ nts/type1/public/newtx/txsys.pfb></usr/local/texlive/2021/texmf-dist/fonts/type
 1/public/newtx/ztmb.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/
 newtx/ztmr.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/newtx/ztm
 ri.pfb>
-Output written on main.pdf (23 pages, 515697 bytes).
+Output written on main.pdf (24 pages, 515863 bytes).
 PDF statistics:
- 641 PDF objects out of 1000 (max. 8388607)
- 526 compressed objects within 6 object streams
- 193 named destinations out of 1000 (max. 500000)
+ 646 PDF objects out of 1000 (max. 8388607)
+ 530 compressed objects within 6 object streams
+ 195 named destinations out of 1000 (max. 500000)
  165 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -211,7 +211,7 @@ simulation \emph{trapdoor-less simulatable} (TLS). More precisely,
 
 \begin{definition}[Trapdoor-less simulatable proof system]
   Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof
-  system and $\ro$ a random oracle. Let $\simulator$ be ana pair of
+  system and $\ro$ a random oracle. Let $\simulator$ be a pair of
   algorithms: $\simulator_\ro$ that takes random oracle queries and
   answers them, $\simulator_\prover$ that takes as input an SRS $\srs$
   and instance $\inp$ and outputs a proof $\zkproof_\simulator$.  We
@@ -235,15 +235,15 @@ simulation \emph{trapdoor-less simulatable} (TLS). More precisely,
     \simulator_\ro(\srs, x)$, if $b = 1$.
   \item[proof calls:] on $\adv$'s query $\inp, \wit$ responds
   with a real proof $\zkproof_\prover \gets
-  \prover(\srs, \inp, \wit)$ if $b = 0q$ or a simulated proof $\zkproof_\simulator \gets \simulator (\srs,
+  \prover(\srs, \inp, \wit)$ if $b = 0$ or a simulated proof $\zkproof_\simulator \gets \simulator (\srs,
   \inp)$ if $b = 1$. 
   \end{description} 
 \end{definition}
 
-% In our simulation soundness proof (but not simulation extractability
-% \hamid{you mean forking simulation extractability?}) we need an
-% additional property of the zero-knowledge proof system which we call
-% $k$-programmable ZK.
+\begin{remark}[TLS vs HVZK]
+  We note that TLS notion is closely related to honest-verifier zero knowledge in the standard model. That is, if we consider an interactive proof system $\proofsystem$ that is HVZK in the standard model then its Fiat--Shamir compiled version $\proofsystem_\fs$ is TLS. This comes as the simulator $\simulator$ in $\proofsystem$ produces a valid simulated proof by picking verifier's challenges according to a predefined distribution and $\proofsystem_\fs$'s simulator $\simulator_\fs$ produces its proofs similarly by picking the challenges and additionally programming the random oracle to return the picked challenges. Importantly, in both $\proofsystem$ and $\proofsystem_\fs$ success of the simulator does not depend on access to an SRS trapdoor (which may not even exists if the proof systems are transparent).
+\end{remark}
+
 \begin{definition}[$k$-programmable ZK]
   \label{def:kzk}
   Let $\ps$ be a $(2\mu + 1)$-message ZK proof system and let $\ps_\fs$ be its
@@ -259,7 +259,7 @@ simulation \emph{trapdoor-less simulatable} (TLS). More precisely,
 We note that $\plonk$ is $2$-programmable ZK, $\sonic$ is $1$-programmable ZK,
 and $\marlin$ is $1$-programmable ZK. This follows directly from the proofs of
 their standard model zero-knowledge property in
-\cref{lem:plonk_hvzk,lem:sonic_hvzk, lem:marlin_hvzk}. 
+\cref{lem:plonk_hvzk,lem:sonic_hvzk,lem:marlin_hvzk}. 
 
 \oursubsub{Idealised verifier and verification equations} Let
 $(\kgen, \prover, \verifier)$ be a proof system.
@@ -586,3 +586,8 @@ $ \ssndProb = \accProb - \extProb$.
 % (probability of extraction failure in \cref{def:simext}).
 
 \fi
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
