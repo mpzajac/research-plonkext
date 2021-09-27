@@ -86,7 +86,7 @@ point $z$ chosen by $\receiver$. $\PCOM$'s subroutines are defined as follows
   in $\srs$ and a polynomial $\p{f}$ with maximum degree $\maxdeg$, and outputs
   a commitment $c$.
 \item[$\open(\srs, z, s, \p{f})$:] The opening algorithm
-  $\open(\srs, z, s \p{f})$ takes as input $\srs$, an evaluation point $z$, a
+  $\open(\srs, z, s, \p{f})$ takes as input $\srs$, an evaluation point $z$, a
   value $s$ and the polynomial $\p{f}$. It outputs an opening $o$.
 \item[$\verify(\srs, c, z, s, o)$:] The verification algorithm takes in $\srs$,
   a commitment $c$, an evaluation point $z$, a value $s$ and an opening $o$. It
@@ -452,7 +452,7 @@ We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which 
 	$b \leftarrow \verifyCRS(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
 \end{itemize}
 
-In the next section, we define security notions in the updatable setting. To this end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary updates the SRS. We also define the simulation oracle $\simO$ in~\cref{fig:upd} that is the simulator w.r.t. the SRS finalised by the adversary using $\initU$. This simulation oracle will be used in the SE definition.
+In the next section, we define security notions in the updatable setting. To this end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary updates the SRS. We also define the simulation oracle $\simO$ in~\cref{fig:upd} that is the simulator w.r.t. the SRS finalised by the adversary using $\initU$. This simulation oracle will be used in the definition of forking simulation extractability.
 
 \begin{figure}[t]
 	\centering
