@@ -51,9 +51,9 @@
 \citation{EPRINT:GabWilCio19}
 \citation{CCS:MBKM19}
 \citation{INDOCRYPT:FKMV12}
-\citation{C:Fischlin05}
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Our Contributions}{3}{subsection.1.1.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Technical Overview}{3}{subsection.1.1.2}\protected@file@percent }
+\citation{C:Fischlin05}
 \citation{CCS:BelNev06}
 \citation{SP:BBBPWM18,CCS:MBKM19}
 \citation{cryptoeprint:2020:1351}
@@ -82,240 +82,109 @@
 \@writefile{toc}{\contentsline {section}{\numberline {2}Preliminaries}{5}{section.1.2}\protected@file@percent }
 \newlabel{sec:preliminaries}{{2}{5}{Preliminaries}{section.1.2}{}}
 \newlabel{sec:preliminaries@cref}{{[section][2][]2}{[1][5][]5}}
-\citation{CCS:MBKM19}
-\citation{EPRINT:GabWilCio19}
-\citation{EPRINT:Shoup04}
-\citation{EPRINT:Dent06c}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Notations}{5}{subsection.1.2.1}\protected@file@percent }
 \citation{EPRINT:Shoup04}
 \citation{C:FucKilLos18}
 \citation{AC:KatZavGol10}
 \citation{CCS:MBKM19}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Computational assumptions.}{6}{subsection.1.2.1}\protected@file@percent }
-\newlabel{lem:difference_lemma}{{1}{6}{Computational assumptions}{lemma.1.1}{}}
+\newlabel{lem:difference_lemma}{{1}{6}{Notations}{lemma.1.1}{}}
 \newlabel{lem:difference_lemma@cref}{{[lemma][1][1]1}{[1][6][]6}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Algebraic Group Model}{6}{subsection.1.2.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Polynomial commitment}{6}{subsection.1.2.3}\protected@file@percent }
 \newlabel{sec:poly_com}{{2.3}{6}{Polynomial commitment}{subsection.1.2.3}{}}
 \newlabel{sec:poly_com@cref}{{[subsection][3][2]2.3}{[1][6][]6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Zero knowledge}{7}{subsection.1.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Zero-Knowledge Proof Systems}{7}{subsection.1.2.4}\protected@file@percent }
 \citation{EPRINT:GabWilCio19}
 \citation{C:Fischlin05}
-\newlabel{def:kzk}{{2}{8}{Zero knowledge}{definition.1.2}{}}
-\newlabel{def:kzk@cref}{{[definition][2][1]2}{[1][8][]8}}
 \citation{INDOCRYPT:FKMV12}
 \citation{C:Schnorr89}
-\citation{INDOCRYPT:FKMV12}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}From interactive to non-interactive---the Fiat--Shamir transform}{9}{subsection.1.2.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.6}Non-malleability definitions for NIZKs}{9}{subsection.1.2.6}\protected@file@percent }
-\newlabel{sec:simext_def}{{2.6}{9}{Non-malleability definitions for NIZKs}{subsection.1.2.6}{}}
-\newlabel{sec:simext_def@cref}{{[subsection][6][2]2.6}{[1][9][]9}}
-\newlabel{def:simext}{{3}{9}{Non-malleability definitions for NIZKs}{definition.1.3}{}}
-\newlabel{def:simext@cref}{{[definition][3][1]3}{[1][9][]9}}
+\newlabel{def:kzk}{{2}{8}{Zero-Knowledge Proof Systems}{definition.1.2}{}}
+\newlabel{def:kzk@cref}{{[definition][2][1]2}{[1][8][]8}}
+\citation{C:GKMMM18}
 \citation{INDOCRYPT:FKMV12}
 \citation{EC:BCCGP16}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}From interactive to non-interactive---the Fiat--Shamir transform}{9}{subsection.1.2.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6}Updatable SRS schemes}{9}{subsection.1.2.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Definitions and lemmas for multi-round SRS-based protocols}{9}{section.1.3}\protected@file@percent }
+\newlabel{sec:se_definitions}{{3}{9}{Definitions and lemmas for multi-round SRS-based protocols}{section.1.3}{}}
+\newlabel{sec:se_definitions@cref}{{[section][3][]3}{[1][9][]9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Generalised forking lemma.}{9}{subsection.1.3.1}\protected@file@percent }
+\newlabel{def:tree_of_accepting_transcripts}{{3}{9}{Generalised forking lemma}{definition.1.3}{}}
+\newlabel{def:tree_of_accepting_transcripts@cref}{{[definition][3][1]3}{[1][9][]9}}
 \citation{CCS:BelNev06}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Generalised forking algorithm $\ensuremath  {\mathsf  {GF}}_{\mathcal  {Z}}^{m}$\relax }}{10}{figure.caption.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The left oracle defines the notion of updatable SRS setup. The right oracle is the simulation oracle.\relax }}{10}{figure.caption.2}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:genforking_lemma}{{1}{10}{Generalised forking algorithm $\genforking _{\zdv }^{m}$\relax }{figure.caption.2}{}}
-\newlabel{fig:genforking_lemma@cref}{{[figure][1][]1}{[1][10][]10}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Definitions and lemmas for multi-round SRS-based protocols}{10}{section.1.3}\protected@file@percent }
-\newlabel{sec:se_definitions}{{3}{10}{Definitions and lemmas for multi-round SRS-based protocols}{section.1.3}{}}
-\newlabel{sec:se_definitions@cref}{{[section][3][]3}{[1][9][]10}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Generalised forking lemma.}{10}{subsection.1.3.1}\protected@file@percent }
-\newlabel{def:tree_of_accepting_transcripts}{{4}{10}{Generalised forking lemma}{definition.1.4}{}}
-\newlabel{def:tree_of_accepting_transcripts@cref}{{[definition][4][1]4}{[1][10][]10}}
+\newlabel{fig:upd}{{1}{10}{The left oracle defines the notion of updatable SRS setup. The right oracle is the simulation oracle.\relax }{figure.caption.2}{}}
+\newlabel{fig:upd@cref}{{[figure][1][]1}{[1][9][]10}}
 \newlabel{lem:generalised_forking_lemma}{{2}{10}{Generalised forking lemma}{lemma.1.2}{}}
-\newlabel{lem:generalised_forking_lemma@cref}{{[lemma][2][1]2}{[1][10][]10}}
+\newlabel{lem:generalised_forking_lemma@cref}{{[lemma][2][1]2}{[1][9][]10}}
 \citation{C:Fischlin05,INDOCRYPT:FKMV12}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Generalised forking algorithm $\ensuremath  {\mathsf  {GF}}_{\ensuremath  {\mathcal  {Z}}}^{m}$\relax }}{11}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:genforking_lemma}{{2}{11}{Generalised forking algorithm $\genforking _{\zdv }^{m}$\relax }{figure.caption.3}{}}
+\newlabel{fig:genforking_lemma@cref}{{[figure][2][]2}{[1][10][]11}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Unique-response protocols}{11}{subsection.1.3.2}\protected@file@percent }
-\newlabel{def:wiur}{{5}{11}{Unique-response protocols}{definition.1.5}{}}
-\newlabel{def:wiur@cref}{{[definition][5][1]5}{[1][11][]11}}
+\citation{INDOCRYPT:FKMV12}
+\newlabel{def:wiuru}{{4}{12}{Unique-response protocols}{definition.1.4}{}}
+\newlabel{def:wiuru@cref}{{[definition][4][1]4}{[1][11][]12}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Forking soundness}{12}{subsection.1.3.3}\protected@file@percent }
-\citation{C:GKMMM18}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Updatable Simulation Extractable SNARKs}{13}{section.1.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Updatable SRS setting.}{13}{section.1.4}\protected@file@percent }
-\citation{C:GKMMM18}
-\newlabel{upd-KS}{{9}{14}{Updatable SRS setting}{definition.1.9}{}}
-\newlabel{upd-KS@cref}{{[definition][9][1]9}{[1][14][]14}}
-\newlabel{se}{{10}{14}{Updatable SRS setting}{definition.1.10}{}}
-\newlabel{se@cref}{{[definition][10][1]10}{[1][14][]14}}
-\newlabel{late-use}{{11}{14}{Updatable SRS setting}{definition.1.11}{}}
-\newlabel{late-use@cref}{{[definition][11][1]11}{[1][14][]14}}
-\newlabel{USE}{{12}{14}{Updatable SRS setting}{definition.1.12}{}}
-\newlabel{USE@cref}{{[definition][12][1]12}{[1][14][]14}}
-\pgfsyspdfmark {pgfid13}{5138512}{48154795}
-\pgfsyspdfmark {pgfid14}{5138512}{36216394}
-\pgfsyspdfmark {pgfid15}{5138512}{30127016}
-\pgfsyspdfmark {pgfid28}{23260591}{41335159}
-\pgfsyspdfmark {pgfid29}{23129519}{41204087}
-\pgfsyspdfmark {pgfid30}{23850415}{27554669}
-\pgfsyspdfmark {pgfid31}{23719343}{27423597}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Games in the Updatable SRS setting. The boxed/dashed-box/dotted-box part is only present in the boxed/dashed-boxed/dotted-boxed game.\relax }}{15}{figure.caption.4}\protected@file@percent }
-\newlabel{fig:upd}{{2}{15}{Games in the Updatable SRS setting. The boxed/dashed-box/dotted-box part is only present in the boxed/dashed-boxed/dotted-boxed game.\relax }{figure.caption.4}{}}
-\newlabel{fig:upd@cref}{{[figure][2][]2}{[1][14][]15}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}From a late updatable SE to SE}{15}{section.1.5}\protected@file@percent }
-\newlabel{it:used-transcript}{{3}{18}{From a late updatable SE to SE}{Item.44}{}}
-\newlabel{it:used-transcript@cref}{{[enumi][3][]3}{[1][18][]18}}
-\newlabel{it:partial-transcript}{{4}{18}{From a late updatable SE to SE}{Item.53}{}}
-\newlabel{it:partial-transcript@cref}{{[enumi][4][]4}{[1][18][]18}}
-\newlabel{it:rewind}{{9}{19}{From a late updatable SE to SE}{Item.71}{}}
-\newlabel{it:rewind@cref}{{[enumi][9][]9}{[1][19][]19}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Moving elements between SRS-s. \michals  {23.09}{I think that figure may not be needed now.}\relax }}{20}{figure.caption.5}\protected@file@percent }
-\newlabel{fig:operations}{{3}{20}{Moving elements between SRS-s. \michals {23.09}{I think that figure may not be needed now.}\relax }{figure.caption.5}{}}
-\newlabel{fig:operations@cref}{{[figure][3][]3}{[1][19][]20}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Simulation soundness and forking simulation-extractability---the general result}{20}{section.1.6}\protected@file@percent }
-\newlabel{sec:general}{{6}{20}{Simulation soundness and forking simulation-extractability---the general result}{section.1.6}{}}
-\newlabel{sec:general@cref}{{[section][6][]6}{[1][20][]20}}
-\newlabel{thm:simsnd}{{2}{20}{Simulation soundness and forking simulation-extractability---the general result}{theorem.1.6.2}{}}
-\newlabel{thm:simsnd@cref}{{[theorem][2][1]2}{[1][20][]20}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Forking simulation extractability}{12}{subsection.1.3.4}\protected@file@percent }
+\newlabel{def:updsimext}{{6}{12}{Forking simulation extractability}{definition.1.6}{}}
+\newlabel{def:updsimext@cref}{{[definition][6][1]6}{[1][12][]12}}
 \citation{cryptoeprint:2020:1351}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Forking simulation-extractability---the general result}{13}{section.1.4}\protected@file@percent }
+\newlabel{sec:general}{{4}{13}{Forking simulation-extractability---the general result}{section.1.4}{}}
+\newlabel{sec:general@cref}{{[section][4][]4}{[1][13][]13}}
+\newlabel{thm:se}{{1}{13}{Forking simulation-extractability---the general result}{theorem.1.4.1}{}}
+\newlabel{thm:se@cref}{{[theorem][1][1]1}{[1][13][]13}}
 \citation{INDOCRYPT:FKMV12}
-\newlabel{thm:se}{{3}{22}{Simulation soundness and forking simulation-extractability---the general result}{theorem.1.6.3}{}}
-\newlabel{thm:se@cref}{{[theorem][3][1]3}{[1][22][]22}}
-\citation{INDOCRYPT:FKMV12}
-\newlabel{eq:frk}{{7}{23}{Simulation soundness and forking simulation-extractability---the general result}{equation.1.6.7}{}}
-\newlabel{eq:frk@cref}{{[equation][7][]7}{[1][23][]23}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Non-Malleability of $\bm  {\mathsf  {P}}_\ensuremath  {\mathsf  {FS}}$}{23}{section.1.7}\protected@file@percent }
-\newlabel{sec:plonk}{{7}{23}{Non-Malleability of $\plonkprotfs $}{section.1.7}{}}
-\newlabel{sec:plonk@cref}{{[section][7][]7}{[1][23][]23}}
-\citation{EPRINT:GabWilCio19}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Unique opening property of $\bm  {\mathsf  {PC}}_{\bm  {\mathsf  {P}}}$}{24}{subsection.1.7.1}\protected@file@percent }
-\newlabel{lem:pcomp_op}{{5}{24}{Unique opening property of $\PCOMp $}{lemma.1.5}{}}
-\newlabel{lem:pcomp_op@cref}{{[lemma][5][1]5}{[1][24][]24}}
-\newlabel{eq:ver_eq_poly}{{8}{24}{Unique opening property of $\PCOMp $}{equation.1.7.8}{}}
-\newlabel{eq:ver_eq_poly@cref}{{[equation][8][]8}{[1][24][]24}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Unique response property}{24}{subsection.1.7.2}\protected@file@percent }
-\newlabel{lem:plonkprot_ur}{{6}{24}{Unique response property}{lemma.1.6}{}}
-\newlabel{lem:plonkprot_ur@cref}{{[lemma][6][1]6}{[1][24][]24}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Forking soundness}{26}{subsection.1.7.3}\protected@file@percent }
-\newlabel{lem:plonkprot_ss}{{7}{26}{Forking soundness}{lemma.1.7}{}}
-\newlabel{lem:plonkprot_ss@cref}{{[lemma][7][1]7}{[1][26][]26}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Honest verifier zero-knowledge}{28}{subsection.1.7.4}\protected@file@percent }
-\newlabel{lem:plonk_hvzk}{{8}{28}{Honest verifier zero-knowledge}{lemma.1.8}{}}
-\newlabel{lem:plonk_hvzk@cref}{{[lemma][8][1]8}{[1][27][]28}}
-\newlabel{eq:uber}{{9}{28}{Honest verifier zero-knowledge}{equation.1.7.9}{}}
-\newlabel{eq:uber@cref}{{[equation][9][]9}{[1][28][]28}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Simulation soundness and simulation extractability of\nobreakspace  {}$\bm  {\mathsf  {P}}_\ensuremath  {\mathsf  {FS}}$}{29}{subsection.1.7.5}\protected@file@percent }
-\newlabel{thm:plonkprotfs_se}{{1}{30}{Simulation soundness and simulation extractability of~$\plonkprotfs $}{corollary.1.1}{}}
-\newlabel{thm:plonkprotfs_se@cref}{{[corollary][1][1]1}{[1][29][]30}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Non-malleability of $\bm  {\mathsf  {S}}_\ensuremath  {\mathsf  {FS}}$}{30}{section.1.8}\protected@file@percent }
-\newlabel{sec:sonic}{{8}{30}{Non-malleability of $\sonicprotfs $}{section.1.8}{}}
-\newlabel{sec:sonic@cref}{{[section][8][]8}{[1][30][]30}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}{\ensuremath  {\textnormal  {\textsf  {Sonic}}}}{} protocol rolled out}{30}{subsection.1.8.1}\protected@file@percent }
-\newlabel{sec:sonic_constraint_system}{{8.1}{30}{\sonic {} protocol rolled out}{subsection.1.8.1}{}}
-\newlabel{sec:sonic_constraint_system@cref}{{[subsection][1][8]8.1}{[1][30][]30}}
-\newlabel{eq:sonic_constraint}{{12}{30}{\sonic {} protocol rolled out}{equation.1.8.12}{}}
-\newlabel{eq:sonic_constraint@cref}{{[equation][12][]12}{[1][30][]30}}
-\citation{EPRINT:GabWilCio19}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Unique opening property of $\bm  {\mathsf  {PC}}_{\bm  {\mathsf  {S}}}$}{31}{subsection.1.8.2}\protected@file@percent }
-\newlabel{lem:pcoms_unique_op}{{9}{31}{Unique opening property of $\PCOMs $}{lemma.1.9}{}}
-\newlabel{lem:pcoms_unique_op@cref}{{[lemma][9][1]9}{[1][31][]31}}
-\citation{CCS:MBKM19}
-\newlabel{eq:pcoms_idealised_check}{{14}{32}{Unique opening property of $\PCOMs $}{equation.1.8.14}{}}
-\newlabel{eq:pcoms_idealised_check@cref}{{[equation][14][]14}{[1][32][]32}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Unique response property}{32}{subsection.1.8.3}\protected@file@percent }
-\newlabel{lem:sonicprot_ur}{{10}{32}{Unique response property}{lemma.1.10}{}}
-\newlabel{lem:sonicprot_ur@cref}{{[lemma][10][1]10}{[1][32][]32}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Forking soundness}{32}{subsection.1.8.4}\protected@file@percent }
-\newlabel{lem:sonicprot_ss}{{11}{32}{Forking soundness}{lemma.1.11}{}}
-\newlabel{lem:sonicprot_ss@cref}{{[lemma][11][1]11}{[1][32][]32}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.5}Honest verifier zero-knowledge}{34}{subsection.1.8.5}\protected@file@percent }
-\newlabel{lem:sonic_hvzk}{{12}{34}{Honest verifier zero-knowledge}{lemma.1.12}{}}
-\newlabel{lem:sonic_hvzk@cref}{{[lemma][12][1]12}{[1][34][]34}}
-\newlabel{eq:ab_eq_c}{{15}{34}{Honest verifier zero-knowledge}{equation.1.8.15}{}}
-\newlabel{eq:ab_eq_c@cref}{{[equation][15][]15}{[1][34][]34}}
-\citation{CCS:MBKM19}
-\citation{AC:ABLZ17}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.6}From forking soundness and unique response property to forking simulation extractability of $\bm  {\mathsf  {S}}_\ensuremath  {\mathsf  {FS}}$}{35}{subsection.1.8.6}\protected@file@percent }
-\newlabel{thm:sonicprotfs_se}{{2}{35}{From forking soundness and unique response property to forking simulation extractability of $\sonicprotfs $}{corollary.1.2}{}}
-\newlabel{thm:sonicprotfs_se@cref}{{[corollary][2][1]2}{[1][35][]35}}
-\@writefile{toc}{\contentsline {section}{\numberline {9}Non-malleability of $\bm  {\mathsf  {M}}_\ensuremath  {\mathsf  {FS}}$}{35}{section.1.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}${\ensuremath  {\textnormal  {\textsf  {Marlin}}}}$ protocol rolled-out}{35}{subsection.1.9.1}\protected@file@percent }
-\newlabel{eq:marlin_eq_2}{{16}{36}{$\marlin $ protocol rolled-out}{equation.1.9.16}{}}
-\newlabel{eq:marlin_eq_2@cref}{{[equation][16][]16}{[1][35][]36}}
-\newlabel{eq:marlin_ver_eq}{{17}{36}{$\marlin $ protocol rolled-out}{equation.1.9.17}{}}
-\newlabel{eq:marlin_ver_eq@cref}{{[equation][17][]17}{[1][36][]36}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Unique response property}{36}{subsection.1.9.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.3}Forking soundness}{36}{subsection.1.9.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.4}Honest-verifier zero knowledge}{38}{subsection.1.9.4}\protected@file@percent }
-\newlabel{lem:marlin_hvzk}{{15}{38}{Honest-verifier zero knowledge}{lemma.1.15}{}}
-\newlabel{lem:marlin_hvzk@cref}{{[lemma][15][1]15}{[1][38][]38}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.5}From forking soundness and unique response property to forking simulation extractability of $\bm  {\mathsf  {M}}_\ensuremath  {\mathsf  {FS}}$}{38}{subsection.1.9.5}\protected@file@percent }
-\citation{SP:BBBPWM18}
-\citation{EC:BCRSVW19}
-\citation{EPRINT:Gabizon19a}
-\citation{EC:BonBoyGoh05}
-\citation{PAIRING:Boyen08}
-\citation{EC:BonBoyGoh05}
-\@writefile{toc}{\contentsline {section}{\numberline {10}Further work}{39}{section.1.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A}Additional Preliminaries}{39}{section.A.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Dlog assumptions}{39}{subsection.A.1.1}\protected@file@percent }
-\newlabel{sec:dlog_assumptions}{{A.1}{39}{Dlog assumptions}{subsection.A.1.1}{}}
-\newlabel{sec:dlog_assumptions@cref}{{[subsubappendix][1][2147483647,1]A.1}{[1][39][]39}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Uber assumption}{39}{subsection.A.1.2}\protected@file@percent }
-\newlabel{sec:uber_assumption}{{A.2}{39}{Uber assumption}{subsection.A.1.2}{}}
-\newlabel{sec:uber_assumption@cref}{{[subsubappendix][2][2147483647,1]A.2}{[1][39][]39}}
-\newlabel{def:independence}{{16}{39}{Uber assumption}{definition.A.16}{}}
-\newlabel{def:independence@cref}{{[definition][16][2147483647,1]16}{[1][39][]39}}
-\newlabel{def:uber_assumption}{{17}{39}{Uber assumption}{definition.A.17}{}}
-\newlabel{def:uber_assumption@cref}{{[definition][17][2147483647,1]17}{[1][39][]39}}
-\citation{EC:Shoup97}
-\citation{EC:BonBoyGoh05}
-\newlabel{thm:uber_assumption}{{4}{40}{Uber assumption}{theorem.A.1.4}{}}
-\newlabel{thm:uber_assumption@cref}{{[theorem][4][2147483647,1]4}{[1][40][]40}}
-\citation{INDOCRYPT:FKMV12}
-\citation{JC:PoiSte00}
-\citation{INDOCRYPT:FKMV12,CCS:BelNev06}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Special simulation-extractability of sigma protocols and forking lemma}{41}{subsection.A.1.3}\protected@file@percent }
-\newlabel{sec:forking_lemma}{{A.3}{41}{Special simulation-extractability of sigma protocols and forking lemma}{subsection.A.1.3}{}}
-\newlabel{sec:forking_lemma@cref}{{[subsubappendix][3][2147483647,1]A.3}{[1][41][]41}}
-\newlabel{lem:forking_lemma}{{16}{42}{Special simulation-extractability of sigma protocols and forking lemma}{lemma.A.16}{}}
-\newlabel{lem:forking_lemma@cref}{{[lemma][16][2147483647,1]16}{[1][41][]42}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Forking algorithm $\ensuremath  {\mathsf  {F}}_\mathcal  {Z}$\relax }}{42}{figure.caption.6}\protected@file@percent }
-\newlabel{fig:forking_lemma}{{4}{42}{Forking algorithm $\forking _\zdv $\relax }{figure.caption.6}{}}
-\newlabel{fig:forking_lemma@cref}{{[figure][4][2147483647]4}{[1][42][]42}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Proof of the generalized forking lemma (\cref  {lem:generalised_forking_lemma})}{42}{subsection.A.1.4}\protected@file@percent }
-\newlabel{sec:forking_proof}{{A.4}{42}{Proof of the generalized forking lemma (\cref {lem:generalised_forking_lemma})}{subsection.A.1.4}{}}
-\newlabel{sec:forking_proof@cref}{{[subsubappendix][4][2147483647,1]A.4}{[1][42][]42}}
-\newlabel{eq:frkProb_y}{{18}{42}{Proof of the generalized forking lemma (\cref {lem:generalised_forking_lemma})}{equation.A.1.18}{}}
-\newlabel{eq:frkProb_y@cref}{{[equation][18][2147483647]18}{[1][42][]42}}
-\newlabel{eq:use_eq1}{{19}{42}{Proof of the generalized forking lemma (\cref {lem:generalised_forking_lemma})}{equation.A.1.19}{}}
-\newlabel{eq:use_eq1@cref}{{[equation][19][2147483647]19}{[1][42][]42}}
-\newlabel{eq:by_lemma_jensen}{{20}{42}{Proof of the generalized forking lemma (\cref {lem:generalised_forking_lemma})}{equation.A.1.20}{}}
-\newlabel{eq:by_lemma_jensen@cref}{{[equation][20][2147483647]20}{[1][42][]42}}
-\newlabel{eq:by_accProb}{{21}{42}{Proof of the generalized forking lemma (\cref {lem:generalised_forking_lemma})}{equation.A.1.21}{}}
-\newlabel{eq:by_accProb@cref}{{[equation][21][2147483647]21}{[1][42][]42}}
-\citation{W:Weissten20}
-\newlabel{lem:jensen}{{17}{43}{Proof of the generalized forking lemma (\cref {lem:generalised_forking_lemma})}{lemma.A.17}{}}
-\newlabel{lem:jensen@cref}{{[lemma][17][2147483647,1]17}{[1][43][]43}}
-\newlabel{lem:holder}{{18}{44}{Proof of the generalized forking lemma (\cref {lem:generalised_forking_lemma})}{lemma.A.18}{}}
-\newlabel{lem:holder@cref}{{[lemma][18][2147483647,1]18}{[1][44][]44}}
-\newlabel{eq:tightness}{{24}{44}{Proof of the generalized forking lemma (\cref {lem:generalised_forking_lemma})}{equation.A.1.24}{}}
-\newlabel{eq:tightness@cref}{{[equation][24][2147483647]24}{[1][44][]44}}
-\newlabel{lem:root_prob}{{19}{44}{Proof of the generalized forking lemma (\cref {lem:generalised_forking_lemma})}{lemma.A.19}{}}
-\newlabel{lem:root_prob@cref}{{[lemma][19][2147483647,1]19}{[1][44][]44}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}Omitted protocols descriptions}{44}{section.A.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Polynomial commitment schemes}{44}{subsection.A.2.1}\protected@file@percent }
-\newlabel{sec:pcom}{{B.1}{44}{Polynomial commitment schemes}{subsection.A.2.1}{}}
-\newlabel{sec:pcom@cref}{{[subsubappendix][1][2147483647,2]B.1}{[1][44][]44}}
-\citation{CCS:MBKM19}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces $\bm  {\mathsf  {PC}}_{\bm  {\mathsf  {P}}}$ polynomial commitment scheme.\relax }}{46}{figure.caption.7}\protected@file@percent }
-\newlabel{fig:pcomp}{{5}{46}{$\PCOMp $ polynomial commitment scheme.\relax }{figure.caption.7}{}}
-\newlabel{fig:pcomp@cref}{{[figure][5][2147483647]5}{[1][45][]46}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces $\bm  {\mathsf  {PC}}_{\bm  {\mathsf  {S}}}$ polynomial commitment scheme.\relax }}{46}{figure.caption.8}\protected@file@percent }
-\newlabel{fig:pcoms}{{6}{46}{$\PCOMs $ polynomial commitment scheme.\relax }{figure.caption.8}{}}
-\newlabel{fig:pcoms@cref}{{[figure][6][2147483647]6}{[1][45][]46}}
-\citation{EPRINT:GabWilCio19}
-\@writefile{toc}{\contentsline {section}{\numberline {C}Non-malleability of \ensuremath  {\textnormal  {\textsf  {Plonk}}}{}, omitted proofs and descriptions}{47}{section.A.3}\protected@file@percent }
-\newlabel{sec:plonk_supp_mat}{{C}{47}{Non-malleability of \plonk {}, omitted proofs and descriptions}{section.A.3}{}}
-\newlabel{sec:plonk_supp_mat@cref}{{[subappendix][3][2147483647]C}{[1][45][]47}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.1}$\ensuremath  {\textnormal  {\textsf  {Plonk}}}$ protocol rolled out}{47}{subsection.A.3.1}\protected@file@percent }
-\newlabel{sec:plonk_explained}{{C.1}{47}{$\plonk $ protocol rolled out}{subsection.A.3.1}{}}
-\newlabel{sec:plonk_explained@cref}{{[subsubappendix][1][2147483647,3]C.1}{[1][45][]47}}
-\newlabel{sec:plonk_explained}{{C.1}{47}{$\plonk $ protocol rolled out}{subsection.A.3.1}{}}
-\newlabel{sec:plonk_explained@cref}{{[subsubappendix][1][2147483647,3]C.1}{[1][47][]47}}
-\citation{AC:KatZavGol10}
+\newlabel{eq:frk}{{3}{15}{Forking simulation-extractability---the general result}{equation.1.4.3}{}}
+\newlabel{eq:frk@cref}{{[equation][3][]3}{[1][15][]15}}
 \bibstyle{abbrv}
-\bibdata{cryptobib/abbrev3,cryptobib/crypto,additional_bib}
-\newlabel{eq:ver_eq}{{25}{50}{$\plonk $ protocol rolled out}{equation.A.3.25}{}}
-\newlabel{eq:ver_eq@cref}{{[equation][25][2147483647]25}{[1][49][]50}}
+\bibdata{../cryptobib/abbrev3,../cryptobib/crypto,../additional_bib}
+\bibcite{CCS:AbdRamSla20}{1}
+\bibcite{EPRINT:AtaBag19}{2}
+\bibcite{EPRINT:BKSV20}{3}
+\bibcite{CCS:BagCheJar08}{4}
+\bibcite{AC:BelDaiLi19}{5}
+\bibcite{CCS:BelNev06}{6}
+\bibcite{CCS:BelRog93}{7}
+\bibcite{C:BGGHKMR88}{8}
+\bibcite{SP:BCGGMT14}{9}
+\bibcite{C:BCGTV13}{10}
+\bibcite{TCC:BenChiSpo16}{11}
+\bibcite{USENIX:BCTV14}{12}
+\bibcite{TCC:BCIOP13}{13}
+\bibcite{EC:BCCGP16}{14}
+\bibcite{EPRINT:BowGab18}{15}
+\bibcite{SP:BBBPWM18}{16}
+\bibcite{EPRINT:Canetti00}{17}
+\bibcite{EC:CHMMVW20}{18}
+\bibcite{AC:DFGK14}{19}
+\bibcite{AC:DHLW10}{20}
+\bibcite{INDOCRYPT:FKMV12}{21}
+\bibcite{C:Fischlin05}{22}
+\bibcite{STOC:Fortnow87}{23}
+\bibcite{C:FucKilLos18}{24}
+\bibcite{EPRINT:GabWilCio19}{25}
+\bibcite{EC:GGPR13}{26}
+\bibcite{cryptoeprint:2020:1351}{27}
+\bibcite{FOCS:GolMicWig86}{28}
+\bibcite{FOCS:GolKal03}{29}
+\bibcite{AC:Groth07}{30}
+\bibcite{AC:Groth10a}{31}
+\bibcite{EC:Groth16}{32}
+\bibcite{C:GKMMM18}{33}
+\bibcite{C:GroMal17}{34}
+\bibcite{INDOCRYPT:HerSae03}{35}
+\bibcite{EPRINT:Holmgren19}{36}
+\bibcite{AC:KatZavGol10}{37}
+\bibcite{EPRINT:KZMQCP15}{38}
+\bibcite{TCC:Lipmaa12}{39}
+\bibcite{AC:Lipmaa13}{40}
+\bibcite{EPRINT:Lipmaa19a}{41}
+\bibcite{CCS:MBKM19}{42}
+\bibcite{SP:PHGR13}{43}
+\bibcite{JC:PoiSte00}{44}
+\bibcite{C:Schnorr89}{45}
+\bibcite{EPRINT:Shoup04}{46}
+\gdef \@abspage@last{17}
