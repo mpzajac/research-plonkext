@@ -152,27 +152,18 @@ random oracle and wins with the same probability.
 
 We conjecture that based on the recent results on state restoration soundness~\cite{cryptoeprint:2020:1351}, which effectively allows to query the verifier multiple times on different overlapping transcripts, the $q^{\mu}$ loss could be avoided. However, this would reduce the class of protocols covered by our results. 
 
-%\hamid{The following theorem is changed from the original to the one in the updatable setting!}
 \begin{theorem}[Forking simulation-extractable multi-message protocols]
   \label{thm:se}
-  Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
-  $(2 \mu + 1)$-message proof system for $\RELGEN(\secparam)$ that is honest
-  verifier zero-knowledge in the standard model\hamid{Is this different from Trapdoor-less simulatable proof system (def. 1)?}\footnote{Crucially, we require
-    that one can provide an indistinguishable simulated proof without any
-    additional knowledge, as e.g~knowledge of a SRS trapdoor.}, has $\ur{k}$
-  property with security $\epsur(\secpar)$, and is $(\epss(\secpar), k, n)$-forking sound.
-  % for
-  % $n_i = 1, i \in \range{1}{\mu} \setminus \smallset{k}$ and $n_k = n$.
-%
-Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. 
-Then $\psfs$ is forking simulation-extractable with extraction error $\epsur(\secpar)$
-against $\ppt$ algebraic adversaries that makes up to $q$ random oracle queries and
-returns an acceptable proof with probability at least $\accProb$. 
-The extraction probability $\extProb$ is at least
-\(
-	\extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,,
-\)
-for some negligible $\eps(\secpar)$.	
+  Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive $(2 \mu + 1)$-message
+  zero-knowledge proof system for $\RELGEN(\secparam)$, which is trapdoor-less simulatable, has
+  $\ur{k}$ property with security $\epsur(\secpar)$, and is $(\epss(\secpar), k, n)$-forking
+  sound.  Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle.  Then $\psfs$ is
+  forking simulation-extractable with extraction error $\epsur(\secpar)$ against $\ppt$
+  algebraic adversaries that makes up to $q$ random oracle queries and returns an acceptable
+  proof with probability at least $\accProb$.  The extraction probability $\extProb$ is at
+  least
+  \( \extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,, \)
+  for some negligible $\eps(\secpar)$.
 \end{theorem}
 \begin{proof}		
 
@@ -354,3 +345,7 @@ for some negligible $\eps(\secpar)$.
 		and $\psfs$ is forking simulation extractable with extraction error $\epsur(\secpar)$.
 	\qed
 \end{proof}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

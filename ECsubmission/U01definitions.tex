@@ -503,15 +503,15 @@ algorithm from the generalized forking lemma.
 \subsection{Forking simulation extractability}
 \begin{definition}[Forking simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
 	\label{def:updsimext}
-	Let $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be a
-	HVZK proof system\hamid{$\ps_\fs$ is the Fiat-Shamir variant of the underlying proof system. So maybe we mean the underlying proof system is HVZK?}. We say that $\ps_\fs$ is \emph{updatable forking
+	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a
+	NIZK proof system. We say that $\ps$ is \emph{updatable forking
 		simulation-extractable} with \emph{extraction error} $\nu$ if for any $\ppt$
-	adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a simulation oracle $\simO$ \hamid{(See~\cref{fig:upd})}, and a random oracle $\ro$, and produces an accepting transcript of $\ps$ with
+	adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a simulation oracle $\simO$, cf.~\cref{fig:upd}, and a random oracle $\ro$, and produces an accepting transcript of $\ps$ with
 	probability $\accProb$, where
 	\[
 	\accProb = \Pr \left[
 	\begin{aligned}
-	& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \wedge
+	& \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \wedge
 	(\inp_{\advse}, \zkproof_{\advse}) \not\in Q
 	\end{aligned}
 	\left| \,
@@ -526,7 +526,7 @@ algorithm from the generalized forking lemma.
 	\[
 	\extProb = \Pr \left[
 	\begin{aligned}
-	& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \ \wedge \\
+	& \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \ \wedge \\
 	& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q \wedge
 	\REL(\inp_{\advse}, \wit_{\advse}) = 1
 	\end{aligned}
@@ -546,11 +546,13 @@ algorithm from the generalized forking lemma.
 	\]
 	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
 	$\accProb \geq \nu$. 
-	\hamid{We should add this: Here, $\srs$ is the finalised SRS.}
-	List $Q$ contains all $(\inp, \zkproof)$ pairs where 
-	%	\hamid{$\srs$ is the finalised SRS.}\hamid{In the case of USE, this should be: $\srs$ is the finalised SRS at the time of making the query to $\simulator$.}
+	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
 	$\inp$ is an instance provided to the simulator by the adversary and
 	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
 	queries to $\ro$ and $\ro$'s answers. 
-	%List $Q_\srs$ contains the proofs of all honest SRS updates.
 \end{definition}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
