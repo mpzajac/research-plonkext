@@ -404,7 +404,7 @@ algorithm from the generalized forking lemma.
 	
 	For any $\ppt$ adversary $\advse^{\initU,
 		\ro} (1^\secpar; r)$ with access to oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r, Q_H)$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
-	and update oracle queries. While $Q_{H}$ is consistent with $h_1, \ldots, h_q$, it replays the proofs of $Q$.
+	and update oracle queries.
 	%
 	$\zdv$ returns the index $i$ of the
 	random oracle query made for challenge $k$ and the proof $\adv$ returns.
@@ -428,12 +428,13 @@ algorithm from the generalized forking lemma.
 	\end{aligned}
 	\right] \leq \eps(\secpar).
 	\end{align*}
-	\hamid{We should add this: Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.} 
+	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
 	%List $Q$ contains all $(\inp, \zkproof)$ pairs where $\inp$ is an instance provided to the simulator by the adversary and $\zkproof$ is the simulator's answer. 
 	List $Q_\ro$ contains all $\advse$'s
 	queries to $\ro$ and $\ro$'s answers. 
 	%List $Q_\srs$ contains the proofs of all honest SRS updates.
 \end{definition}
+\chaya{why does $\genforking$ get $Q_H$ twice?}
 
 %\hamid{next definition should be commented!}
 %\begin{definition}[$(\eps(\secpar), k,n)$-forking soundness]
