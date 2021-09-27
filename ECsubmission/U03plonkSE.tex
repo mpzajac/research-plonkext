@@ -27,7 +27,11 @@ tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 \hamid{Maybe last paragraph can be shortened as follows: Given forking-soundness of $\plonkprot$, and the fact that it is also
 	$\ur{2}$, we make use of \cref{thm:se} and show that
 	$\plonkprot_\fs$ is forking simulation-extractable.}
-% Due to page limit, we omit description of \plonk{} here and refer to
+
+\hamid{Should we uncomment this: Due to page limit, we omit description of \plonk{} here and refer to
+	 \cref{sec:plonk_explained}}. 
+
+%Due to page limit, we omit description of \plonk{} here and refer to
 % \cref{sec:plonk_explained}. Unfortunately, we also have to move some of the
 % proofs to the Supplementary Materials as well, cf.~\cref{sec:plonk_supp_mat}
 
@@ -102,7 +106,7 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
 \end{lemma}
 \begin{proof}
   Let
-  $\adv(\REL,\srs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}}, \gtwo{\chi}))$
+  $\adv(\REL,\srs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}}, \gtwo{\chi}))$ \hamid{what are $\adv$'s inputs in the updatable case?}
   be an algebraic adversary tasked to break the $\ur{2}$-ness of
   $\plonkprotfs$. We show that the first 2 rounds of the protocol determines,
   along with the verifiers challenges, the rest of it.  This is done by game
@@ -114,8 +118,8 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
   quotient polynomial provided by the adversary we write $\p{t}^0$ and $\p{t}^1$
   instead of $\p{t}$ as in the description of the protocol.
 
-  \ngame{0} In this game, the adversary is given the SRS and wins if provides two
-  transcripts that match on all $5$ messages send by the prover or finds a
+  \ngame{0} In this game, the adversary is \hamid{given the SRS} and wins if provides two
+  transcripts that match on all $5$ messages sent by the prover or finds a
   collision in the random oracle. Since such two transcripts cannot break the
   unique response property, the adversary wins this game with probability
   $\epsro$ tops.
