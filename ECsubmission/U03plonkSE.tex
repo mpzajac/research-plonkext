@@ -4,7 +4,7 @@
 
 \section{Non-Malleability of $\plonkprotfs$} 
 \label{sec:plonk}
-In this section, we show that $\plonkprotfs$ is simulation-sound and forking simulation-extractable. To that
+In this section, we show that $\plonkprotfs$ is forking simulation-extractable. To that
 end, we proceed as follows. First, we show that the version of the KZG polynomial
 commitment scheme that is proposed in the \plonk{} paper has the unique opening
 property, cf.~\cref{sec:poly_com} and \cref{lem:pcomp_op}. This is then
@@ -24,6 +24,9 @@ extractability adversary $\advse$ either break the protocol's unique response
 property or based on forking soundness break the $\dlog$ assumption, if extracting a valid witness from a
 tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 
+\hamid{Maybe last paragraph can be shortened as follows: Given forking-soundness of $\plonkprot$, and the fact that it is also
+	$\ur{2}$, we make use of \cref{thm:se} and show that
+	$\plonkprot_\fs$ is forking simulation-extractable.}
 % Due to page limit, we omit description of \plonk{} here and refer to
 % \cref{sec:plonk_explained}. Unfortunately, we also have to move some of the
 % proofs to the Supplementary Materials as well, cf.~\cref{sec:plonk_supp_mat}
@@ -722,12 +725,11 @@ $\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
 \abs{\prob{\game{0}} - \prob{\game{2}}} \leq \epszk(\secpar) + \epsuber(\secpar).  \) \qed
 \end{proof}
 
-\subsection{Simulation soundness and simulation
-  extractability of~$\plonkprotfs$}
+\subsection{Simulation extractability of~$\plonkprotfs$}
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$
-and forking sound. We now make use of \cref{thm:simsnd} and \cref{thm:se} and show that
-$\plonkprot_\fs$ is simulation sound and forking simulation-extractable as defined in
-\cref{sec:simext_def}.
+and forking sound. We now make use of \cref{thm:se} and show that
+$\plonkprot_\fs$ is forking simulation-extractable as defined in
+\cref{def:updsimext}.
 
 \begin{corollary}[Forking simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
