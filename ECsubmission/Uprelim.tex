@@ -2,7 +2,7 @@
 % !TEX spellcheck = en-US
 \section{Preliminaries}
 \label{sec:preliminaries}
-\subsection{Notations} Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
+\paragraph{Notation.} Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
 security parameter. All adversaries are stateful. For an algorithm $\adv$, let
 $\image (\adv)$ be the image of $\adv$ (the set of valid outputs of $\adv$), let
 $\RND{\adv}$ denote the set of random tapes of correct length for $\adv$
@@ -24,8 +24,9 @@ $\event{E} \in \eventspace$ we denote by $\nevent{E}$ an event that is
 complementary to $\event{E}$,
 i.e.~$\nevent{E} = \samplespace \setminus \event{E}$.
 
+\chaya{revisit after agreeing on how we deal with relations.}
 Denote by $\RELGEN = \smallset{\REL}$ a family of relations. We assume that if
-$\REL$ comes with any auxiliary input, the later is benign. Directly from the
+$\REL$ comes with any auxiliary input, the latter is benign. Directly from the
 description of $\REL$ one learns security parameter $\secpar$ and description of the
 group $\GRP$, if the relation is a relation of group elements (as it usually is
 in case of zkSNARKs).
