@@ -1,18 +1,16 @@
 % !TEX root = main.tex
 % !TEX spellcheck = en-US
 
-
-\section{Omitted protocols descriptions}
-\subsection{Polynomial commitment schemes}
+\section{Polynomial Commitment Schemes}
 \label{sec:pcom}
 \cref{fig:pcomp,fig:pcoms} present variants of KZG polynomial commitment schemes
 used in \plonk{} and \sonic{}. The key generation algorithm $\kgen$ takes as
 input a security parameter $\secparam$ and a parameter $\maxdeg$ which
 determines the maximal degree of the committed polynomial. We assume that
-$\maxdeg$ can be read from the output SRS.\hamid{While the figures only describe trusted SRS setup, it is not hard to lift the SRS generation into the updatable setting by defining the extra algorithms $\upd$, $\verifyCRS$ as defined in~\cref{def:upd-scheme}.}
+$\maxdeg$ can be read from the output SRS. While the figures only describe trusted SRS setup, it is not hard to lift the SRS generation into the updatable setting by defining the extra algorithms $\upd$, $\verifyCRS$ as defined in~\cref{def:upd-scheme}.
 
 
-We emphasize the following properties of a secure polynomial commitment $\PCOM$: \hamid{Note that since we are in the updatable setting, $\srs$ in the following definitions is the SRS that $\advse$ finalises using the update oracle $\initU$ (See~\cref{fig:upd}).}
+The following properties are expected of a secure polynomial commitment $\PCOM$. Note that since we are in the updatable setting, $\srs$ in the following definitions is the SRS that $\advse$ finalises using the update oracle $\initU$ (See~\cref{fig:upd}).
 
 \begin{description}
 \item[Evaluation binding:] A $\ppt$ adversary $\adv$ which outputs a commitment
