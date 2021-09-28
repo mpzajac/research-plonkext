@@ -36,7 +36,7 @@ The following properties are expected of a secure polynomial commitment $\PCOM$.
                 \end{aligned}}
 			\begin{aligned}
 %				& \srs \gets \kgen(\secparam, \maxdeg),\\
-				& (\vec{c}, \vec{z}, \vec{s}, \vec{s}', \vec{o}, \vec{o}') \gets \adv(\secparam, \maxdeg)
+				& (\vec{c}, \vec{z}, \vec{s}, \vec{s}', \vec{o}, \vec{o}') \gets \adv^{\initU}(\secparam, \maxdeg)
 			\end{aligned}
 			\right.\right] \leq \negl\,.
 	\]
@@ -65,7 +65,7 @@ We say that $\PCOM$ has the unique opening property if the following holds:
                 \end{aligned}}
 			\begin{aligned}
 %				& \srs \gets \kgen(\secparam, \maxdeg),\\
-				& (\vec{c}, \vec{z}, \vec{s}, \vec{o}, \vec{o'}) \gets \adv(\secparam, \maxdeg)
+				& (\vec{c}, \vec{z}, \vec{s}, \vec{o}, \vec{o'}) \gets \adv^{\initU}(\secparam, \maxdeg)
 			\end{aligned}
 			\right.\right] \leq \negl\,.
 	\]
@@ -90,7 +90,7 @@ We also formalize notion of $k$-hiding property of a polynomial commitment schem
       \end{aligned}
         \,\left|\,
         \begin{aligned}
-    & (f_0, f_1, c, k, b') \gets \adv^{\oraclec}(\secparam, \maxdeg), f_0, f_1 \in \FF^{\maxdeg}
+    & (f_0, f_1, c, k, b') \gets \adv^{\initU, \oraclec}(\secparam, \maxdeg), f_0, f_1 \in \FF^{\maxdeg}
     [X]
     \end{aligned}
     \right.\right] \leq \frac{1}{2} + \eps(\secpar)
@@ -131,7 +131,7 @@ We also formalize notion of $k$-hiding property of a polynomial commitment schem
     \begin{aligned}
       %
      % & \srs \gets \kgen(\secparam, \maxdeg),\\
-      & c \gets \adv(\secparam, \maxdeg),
+      & c \gets \adv^{\initU}(\secparam, \maxdeg),
       z \sample \FF_p \\
       & (s, o) \gets \adv(c, z), \\
       & \p{f} = \ext_\adv(\srs, c)\\
@@ -148,7 +148,7 @@ knows the underlying polynomial $\p{f}$ which commits to that value.
 The same reasoning could be used to show that property for $\PCOMp$.
 
 % We require $\PCOM$ to have the following properties:
-\begin{figure}
+\begin{figure}[h!]
 \centering
 	\begin{pcvstack}[center,boxed]
 		\begin{pchstack}
@@ -206,7 +206,7 @@ The same reasoning could be used to show that property for $\PCOMp$.
 	\label{fig:pcomp}
   \end{figure}
 
-\begin{figure}
+\begin{figure}[h!]
 \centering
 	\begin{pcvstack}[center,boxed]
 		\begin{pchstack}

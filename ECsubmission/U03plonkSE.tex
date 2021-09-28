@@ -375,10 +375,9 @@ $\adv$ who makes up to $S = \poly$ simulation oracle queries.\hamid{In the new d
   \item From the challenger get the challenge commitment $c$.
   \item Let $S$ be the upper bound on the number of simulator oracles queries
     the adversary can make. %\michals{9.9}{Note -- new bound!}
-  \item Guess which simulator's response is going to be used by $\adv$ in its
-    proof. Let $s$ be the index of this response.
+  \item Guess which simulator's response is going to be used by $\adv$ in its proof. Let $s$ be the index of this response.\hamid{should be changed!}
   \item Guess which of the simulated polynomials in response $s$ will be
-    used. Let $i$ be the index of this polynomial.
+    used. Let $i$ be the index of this polynomial.\hamid{should be changed!}
   \item Let $\tdv'$ be an algorithm that behaves exactly as $\tdv$, except when
     $\adv$ asks for $s$-th simulated proof, $\tdv'$'s internal procedure $\bdv'$
     provides $\adv$ with a simulated proof such that instead of randomly picked
