@@ -2,17 +2,68 @@
 % !TEX spellcheck = en-US
 \section{Definitions and lemmas for multi-round SRS-based protocols}
 \label{sec:se_definitions}
+The result of Faust et al.\cite{INDOCRYPT:FKMV12} is for $3$-round protocols that require two tramscripts for standard model extraction. Here, not only do we consider multi-round protocols, they require more than
+just two transcripts for extraction and are not special
+sound. Moreover, they rely on an SRS, and in the updatable setting, the adversary gets to contribute to the SRS in the updatable setting which makes the analysis more complicated.
+We first give an definition of simulation-extractability which is the one in~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then, we adapt special soundness to forking soundness, and generalize the forking lemma and the unique response property for
+multi-round SRS-based protocols.
 
-The result of Faust et al.\cite{INDOCRYPT:FKMV12} do not apply to our setting
-since the protocols we consider have an SRS, more than three messages, require more than
-just two transcripts for standard model extraction and are not special
-sound. Furthermore, the adversary gets to contribute to the SRS in the updatable setting which makes the analysis more complicated. We thus adapt special
-soundness to forking soundness, and generalize the forking lemma and the unique response property for
-multi-round SRS-based protocols in the updatable setting.
+%\subsection{Forking simulation extractability}
+\begin{definition}[Forking simulation-extractable NIZK]
+	\label{def:updsimext}
+	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a
+	NIZK proof system. We say that $\ps$ is \emph{updatable forking
+		simulation-extractable} with \emph{extraction error} $\nu$ if for any $\ppt$
+	adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a simulation oracle $\simO$, cf.~\cref{fig:upd}, and a random oracle $\ro$, and produces an accepting transcript of $\ps$ with
+	probability $\accProb$, where
+	\[
+	\accProb = \Pr \left[
+	\begin{aligned}
+	& \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \wedge
+	(\inp_{\advse}, \zkproof_{\advse}) \not\in Q
+	\end{aligned}
+	\left| \,
+	\begin{aligned}
+	& r \sample \RND{\advse},
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
+		\ro} (1^\secpar; r)
+	\end{aligned}
+	\right.\right],
+	\]
+	there exists an extractor $\extse$ such that
+	\[
+	\extProb = \Pr \left[
+	\begin{aligned}
+	& \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \ \wedge \\
+	& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q \wedge
+	\REL(\inp_{\advse}, \wit_{\advse}) = 1
+	\end{aligned}
+	\, \left| \,
+	\begin{aligned}
+	& r \sample \RND{\advse},
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
+		\ro} (1^\secpar; r) \\
+	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+	Q, Q_\ro, Q_\srs) 
+	\end{aligned}
+	\right.\right]
+	\]
+	is at at least 
+	\[
+	\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
+	\]
+	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
+	$\accProb \geq \nu$. 
+	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
+	$\inp$ is an instance provided to the simulator by the adversary and
+	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+	queries to $\ro$ and $\ro$'s answers. 
+\end{definition}
+
 
 \subsection{Generalised forking lemma.}
 %\label{sec:forking_lemma}
-First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not
+Although dubbed ``general'', the forking lemma of~\cref{lem:forking_lemma} is not
 general enough for our purpose as it is useful only for protocols where a witness
 can be extracted from just two transcripts. To be able to extract a witness
 from, say, an execution of $\plonkprot$ we need at least
@@ -83,61 +134,6 @@ by the fact that the protocol has more than $3$ rounds and the number of
 transcripts required is larger. We defer the proof to
 \cref{sec:forking_proof}.
 
-\chaya{forking soundness, forking SE are all undefined at this point. rewrite below. or move the general forking lemma to after the SE definition.}
-
-To highlight importance of the generalised forking lemma, we describe how we use
-it in our forking simulation-extractability proof.  Let $\proofsystem$ be a
-forking sound proof system where for an instance $\inp$ the
-corresponding witness can be extracted from an
-$(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\advse$
-be the simulation-extractability adversary that outputs an accepting proof with
-probability at least $\accProb$. (Although we use the same $\accProb$ to denote
-probability of $\zdv$ outputing a non-zero $i$ and the probability of $\advse$
-outputing an accepting proof, we claim that these probabilities are exactly the
-same by the way we define $\zdv$.)  Let $\advse$ produce an accepting
-proof $\zkproof_{\advse}$ for instance $\inp_{\advse}$; $r$ be $\advse$'s
-randomness; $Q$ the list of queries submitted by $\advse$ along with simulator
-$\simulator$'s answers; \hamid{$Q_\srs$ be the list of proofs for SRS honest updates;} and $Q_\ro$ be the list of all random oracle
-queries made by $\advse$.  All of these are given to the extractor $\ext$ that
-internally runs the forking algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$
-takes $(\srs, \advse,
-%\hamid{Q_\srs},
-%\inp_\advse,
-%\zkproof_\advse, 
-Q, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
-h_q^1$. 
-(For the sake of completeness, we allow $\genforking_\zdv^{n_k}$ to
-pick $h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$
-elements.)  
-
-Next, $\zdv$ internally runs $\advse(\srs; r)$ \hamid{$\advse(1^\secpar; r)$} and responds to its random
-oracle and simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes
-the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
-as it is run on the same random tape and with the same answers from the
-simulator and random oracle. Once $\advse$ outputs 
-$\zkproof_{\advse}$, algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where
-$i$ is the index of a random oracle query submitted by $\advse$ to receive the challenge after the
-$k$-th message from the prover---a message where the tree of transcripts
-branches.
-Then, after the first run of $\advse$ is done, the extractor runs $\zdv$ again,
-but this time it provides fresh random oracle responses $h^2_i, \ldots,
-h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
-before $\advse$ is about to ask its $i$-th random oracle
-query. The probability that the adversary produces an accepting transcript with the
-fresh random oracle responses is at least $\accProb$. This continues until the
-required number of transcripts is obtained. 
-
-We note that in the original forking lemma, the forking algorithm $\forking$,
-cf.~\cref{fig:forking_lemma}, gets only as input $y$ and elements $h^1_1, \ldots,
-h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
-that $h^1_1, \ldots, h^1_q$ are random oracle responses, and thus random, makes
-the change only notational.
-
-We also note that the general forking lemma proposed in
-\cref{lem:generalised_forking_lemma} works for protocols with an extractor that can obtain the
-witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting
-transcripts. This limitation however does not affect the main result of this
-paper, i.e.~showing that both $\plonk$ and $\sonic$ are forking simulation extractable.
 
 \subsection{Unique-response protocols}
 Another technical hurdle is the assumption of unique response property 
@@ -406,6 +402,60 @@ algorithm from the generalized forking lemma.
 \end{definition}
 \chaya{why does $\genforking$ get $Q_H$ twice?}
 
+
+\paragraph{Importance of the general forking lemma.}
+To highlight the importance of the generalised forking lemma, we outline 
+how it is used in our forking simulation-extractability proof.  Let $\proofsystem$ be a
+forking sound proof system where for an instance $\inp$ the
+corresponding witness can be extracted from a
+$(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\advse$
+be the simulation-extractability adversary that outputs an accepting proof with
+probability at least $\accProb$. (Although we use the same $\accProb$ to denote
+probability of $\zdv$ outputing a non-zero $i$ and the probability of $\advse$
+outputing an accepting proof, we claim that these probabilities are exactly the
+same by the way we define $\zdv$.) Let $\advse$ output an accepting instance-proof pair
+$(\inp_{\advse},\zkproof_{\advse})$ ; $r$ be $\advse$'s
+randomness; $Q$ the list of simulator queries made by $\advse$ along with 
+$\simulator$'s answers; %\hamid{$Q_\srs$ be the list of proofs for SRS honest updates;} 
+and $Q_\ro$ be the list of all random oracle
+queries made by $\advse$.  All of these are given to the extractor $\ext$ that
+internally runs the forking algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$
+takes $(\srs, \advse,Q, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
+h_q^1$. 
+(For the sake of completeness, we allow $\genforking_\zdv^{n_k}$ to
+pick $h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$
+elements.)  
+
+Next, $\zdv$ internally runs $\advse(\srs; r)$ %\hamid{$\advse(1^\secpar; r)$} 
+and responds to its random
+oracle and simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes
+the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
+as it is run on the same random tape and with the same answers from the
+simulator and random oracle. Once $\advse$ outputs 
+$\zkproof_{\advse}$, algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where
+$i$ is the index of a random oracle query submitted by $\advse$ to receive the challenge after the
+$k$-th message from the prover---a message where the tree of transcripts
+branches.
+Then, after the first run of $\advse$ is done, the extractor runs $\zdv$ again,
+but this time it provides fresh random oracle responses $h^2_i, \ldots,
+h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
+before $\advse$ is about to ask its $i$-th random oracle
+query. The probability that the adversary produces an accepting transcript with the
+fresh random oracle responses is at least $\accProb$. This continues until the
+required number of transcripts is obtained. 
+
+We note that in the original forking lemma, the forking algorithm $\forking$,
+cf.~\cref{fig:forking_lemma}, gets as input only $y$ and elements $h^1_1, \ldots,
+h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
+that $h^1_1, \ldots, h^1_q$ are random oracle responses, and thus random, makes
+the change only notational.
+
+We also note that the general forking lemma from
+\cref{lem:generalised_forking_lemma} works for protocols with an extractor that can obtain the
+witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting
+transcripts. This limitation however does not affect the main result of this
+paper, i.e.~showing that both $\plonk$ and $\sonic$ are forking simulation extractable.
+
 %\hamid{next definition should be commented!}
 %\begin{definition}[$(\eps(\secpar), k,n)$-forking soundness]
 %  Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
@@ -470,57 +520,6 @@ algorithm from the generalized forking lemma.
 %      \right.\right] \leq \eps(\secpar).
 %      \]
 %\end{definition}
-\subsection{Forking simulation extractability}
-\begin{definition}[Forking simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
-	\label{def:updsimext}
-	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a
-	NIZK proof system. We say that $\ps$ is \emph{updatable forking
-		simulation-extractable} with \emph{extraction error} $\nu$ if for any $\ppt$
-	adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a simulation oracle $\simO$, cf.~\cref{fig:upd}, and a random oracle $\ro$, and produces an accepting transcript of $\ps$ with
-	probability $\accProb$, where
-	\[
-	\accProb = \Pr \left[
-	\begin{aligned}
-	& \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \wedge
-	(\inp_{\advse}, \zkproof_{\advse}) \not\in Q
-	\end{aligned}
-	\left| \,
-	\begin{aligned}
-	& r \sample \RND{\advse},
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
-		\ro} (1^\secpar; r)
-	\end{aligned}
-	\right.\right],
-	\]
-	there exists an extractor $\extse$ such that
-	\[
-	\extProb = \Pr \left[
-	\begin{aligned}
-	& \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \ \wedge \\
-	& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q \wedge
-	\REL(\inp_{\advse}, \wit_{\advse}) = 1
-	\end{aligned}
-	\, \left| \,
-	\begin{aligned}
-	& r \sample \RND{\advse},
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
-		\ro} (1^\secpar; r) \\
-	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
-	Q, Q_\ro, Q_\srs) 
-	\end{aligned}
-	\right.\right]
-	\]
-	is at at least 
-	\[
-	\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
-	\]
-	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
-	$\accProb \geq \nu$. 
-	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
-	$\inp$ is an instance provided to the simulator by the adversary and
-	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-	queries to $\ro$ and $\ro$'s answers. 
-\end{definition}
 
 %%% Local Variables:
 %%% mode: latex
