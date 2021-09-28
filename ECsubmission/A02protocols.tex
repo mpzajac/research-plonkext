@@ -9,11 +9,11 @@
 used in \plonk{} and \sonic{}. The key generation algorithm $\kgen$ takes as
 input a security parameter $\secparam$ and a parameter $\maxdeg$ which
 determines the maximal degree of the committed polynomial. We assume that
-$\maxdeg$ can be read from the output SRS.
+$\maxdeg$ can be read from the output SRS.\hamid{While the figures only describe trusted SRS setup, it is not hard to lift the SRS generation into the updatable setting by defining the extra algorithms $\upd$, $\verifyCRS$ as defined in~\cref{def:upd-scheme}.}
 
 
-We emphasize the following properties of a secure polynomial commitment
-$\PCOM$:
+We emphasize the following properties of a secure polynomial commitment $\PCOM$: \hamid{Note that since we are in the updatable setting, $\srs$ in the following definitions is the SRS that $\advse$ finalises using the update oracle $\initU$ (See~\cref{fig:upd}).}
+
 \begin{description}
 \item[Evaluation binding:] A $\ppt$ adversary $\adv$ which outputs a commitment
   $\vec{c}$ and evaluation points $\vec{z}$ has at most negligible chances to open
@@ -37,8 +37,8 @@ $\PCOM$:
                   &
                 \end{aligned}}
 			\begin{aligned}
-				& \srs \gets \kgen(\secparam, \maxdeg),\\
-				& (\vec{c}, \vec{z}, \vec{s}, \vec{s}', \vec{o}, \vec{o}') \gets \adv(\srs)
+%				& \srs \gets \kgen(\secparam, \maxdeg),\\
+				& (\vec{c}, \vec{z}, \vec{s}, \vec{s}', \vec{o}, \vec{o}') \gets \adv(\secparam, \maxdeg)
 			\end{aligned}
 			\right.\right] \leq \negl\,.
 	\]
@@ -66,8 +66,8 @@ We say that $\PCOM$ has the unique opening property if the following holds:
                   &
                 \end{aligned}}
 			\begin{aligned}
-				& \srs \gets \kgen(\secparam, \maxdeg),\\
-				& (\vec{c}, \vec{z}, \vec{s}, \vec{o}, \vec{o'}) \gets \adv(\srs)
+%				& \srs \gets \kgen(\secparam, \maxdeg),\\
+				& (\vec{c}, \vec{z}, \vec{s}, \vec{o}, \vec{o'}) \gets \adv(\secparam, \maxdeg)
 			\end{aligned}
 			\right.\right] \leq \negl\,.
 	\]
@@ -81,7 +81,7 @@ respectively.
 
 We also formalize notion of $k$-hiding property of a polynomial commitment scheme
 \begin{description}
-\item[Hiding] Let $\HHH$ be a set of size $\maxdeg + 1$ and $\ZERO_\HHH$ its
+\item[Hiding:] Let $\HHH$ be a set of size $\maxdeg + 1$ and $\ZERO_\HHH$ its
   vanishing polynomial. We say that a polynomial scheme is \emph{hiding} with
   security $\epsh(\secpar)$ if for every $\ppt$ adversary $\adv$, $k \in \NN$,
   probability
@@ -92,8 +92,7 @@ We also formalize notion of $k$-hiding property of a polynomial commitment schem
       \end{aligned}
         \,\left|\,
         \begin{aligned}
-    & (\srs, \maxdeg) \sample \kgen(\secparam),
-    (f_0, f_1, c, k, b') \gets \adv^{\oraclec}(\srs), f_0, f_1 \in \FF^{\maxdeg}
+    & (f_0, f_1, c, k, b') \gets \adv^{\oraclec}(\secparam, \maxdeg), f_0, f_1 \in \FF^{\maxdeg}
     [X]
     \end{aligned}
     \right.\right] \leq \frac{1}{2} + \eps(\secpar)
@@ -132,10 +131,11 @@ We also formalize notion of $k$-hiding property of a polynomial commitment schem
         \end{aligned}
         }
     \begin{aligned}
-      & \srs \gets \kgen(\secparam, \maxdeg),\\
-      & c \gets \adv(\srs),
+      %
+     % & \srs \gets \kgen(\secparam, \maxdeg),\\
+      & c \gets \adv(\secparam, \maxdeg),
       z \sample \FF_p \\
-      & (s, o) \gets \adv(\srs, c, z), \\
+      & (s, o) \gets \adv(c, z), \\
       & \p{f} = \ext_\adv(\srs, c)\\
     \end{aligned}
   \right.\right]

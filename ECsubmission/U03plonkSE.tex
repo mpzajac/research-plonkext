@@ -17,16 +17,14 @@ protocol we can either recover a correct witness for the proven statement or use
 one of the transcripts to break the $\dlog$ assumption. This result is shown in
 the AGM, cf.~\cref{lem:plonkprot_ss}.
 
-Given forking-soundness of $\plonkprot$, we use the fact that it is also
-$\ur{2}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is
-simulation-extractable. That is, we build reductions that given a simulation
-extractability adversary $\advse$ either break the protocol's unique response
-property or based on forking soundness break the $\dlog$ assumption, if extracting a valid witness from a
-tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
+%Given forking-soundness of $\plonkprot$, we use the fact that it is also
+%$\ur{2}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is
+%simulation-extractable. That is, we build reductions that given a simulation
+%extractability adversary $\advse$ either break the protocol's unique response
+%property or based on forking soundness break the $\dlog$ assumption, if extracting a valid witness from a
+%tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 
-\hamid{Maybe last paragraph can be shortened as follows: Given forking-soundness of $\plonkprot$, and the fact that it is also
-	$\ur{2}$, we make use of \cref{thm:se} and show that
-	$\plonkprot_\fs$ is forking simulation-extractable.}
+Given forking-soundness of $\plonkprot$, and the fact that it is also $\ur{2}$, we make use of \cref{thm:se} and show that $\plonkprot_\fs$ is forking simulation-extractable.
 
 \hamid{Should we uncomment this: Due to page limit, we omit description of \plonk{} here and refer to
 	 \cref{sec:plonk_explained}}. 
@@ -40,7 +38,7 @@ tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 \begin{lemma}
 \label{lem:pcomp_op}
 Let $\PCOMp$ be a batched version of a KZG polynomial commitment,
-cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property in the AGM
+cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property \hamid{(see~\cref{sec:pcom})} in the AGM
 with security
 $\epsop(\secpar) \leq 2 \epsdlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where
 $\epsdlog(\secpar)$ is security of the $(\noofc + 2, 1)$-dlog assumption and
@@ -90,6 +88,9 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
   verifier accepts in one of the cases above is upper-bounded by
   $2 \epsdlog + \infrac{1}{\FF_p}$.
   \qed
+  
+  \hamid{The reduction $\rdvdlog$ in the case of updatable setting proceeds as follows: $\rdvdlog$ builds a SRS $\srs$ using the input $\dlog$ instance and answers $\adv$'s queries for SRS updates. It sets the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS. Now, any discrepancy between the idealised verifier rejection and real verifier acceptance indicates that $\adv$ can break $\dlog$ assumption for $\srs'$ by computing the exponent $\chi'$.
+  Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates. These trapdoors can be extracted by $\rdvdlog$ from the $\adv$'s update proofs. $\rdvdlog$ returns $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.}
 \end{proof}
 
 
@@ -106,7 +107,7 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
 \end{lemma}
 \begin{proof}
   Let
-  $\adv(\REL,\srs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}}, \gtwo{\chi}))$ \hamid{what are $\adv$'s inputs in the updatable case?}
+  $\adv$
   be an algebraic adversary tasked to break the $\ur{2}$-ness of
   $\plonkprotfs$. We show that the first 2 rounds of the protocol determines,
   along with the verifiers challenges, the rest of it.  This is done by game
@@ -118,7 +119,7 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
   quotient polynomial provided by the adversary we write $\p{t}^0$ and $\p{t}^1$
   instead of $\p{t}$ as in the description of the protocol.
 
-  \ngame{0} In this game, the adversary is \hamid{given the SRS} and wins if provides two
+  \ngame{0} In this game, the adversary wins if provides two
   transcripts that match on all $5$ messages sent by the prover or finds a
   collision in the random oracle. Since such two transcripts cannot break the
   unique response property, the adversary wins this game with probability
@@ -221,7 +222,7 @@ verifier fail with probability $\epsid (\secpar)$, and $(\noofc + 2, 1)$-$\dlog$
 problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
 $(\epsid (\secpar) + \epsdlog (\secpar) + 8 \cdot S \cdot \epsh(\secpar) +
 , 3, 3 \noofc + 1)$-forking sound against algebraic adversary
-$\adv$ who makes up to $S = \poly$ simulation oracle queries.
+$\adv$ who makes up to $S = \poly$ simulation oracle queries.\hamid{In the new definition, $\adv$ does not have access to the simulation oracle; so this should be changed!}
 \end{lemma}
 
 \begin{proof}
@@ -294,24 +295,24 @@ $\adv$ who makes up to $S = \poly$ simulation oracle queries.
   relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
   of acceptable transcripts such that the winning condition of the game
   holds. Let $\rdvdlog$ be a reduction that gets as input an
-  $(\noofc + 2, 1)$-dlog instance $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$
+  $(\noofc + 2, 1)$-dlog instance $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$ \hamid{shouldn't be $\gone{1, \ldots, \chi^{\noofc+2}}, \gtwo{\chi}$}
   and is tasked to output $\chi$.
 
   The reduction $\rdvdlog$ proceeds as follows.
-  \begin{enumerate}
-  \item Build $\plonkprot$'s SRS $\srs$ using the input $\dlog$ instance and
-    start $\tdv(\adv, \srs)$;
+  \hamid{\begin{enumerate}
+  \item Build a SRS $\srs$ using the input $\dlog$ instance. Answer $\adv$'s queries for SRS updates and set the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS. Start $\tdv(\adv, \srs')$;
   \item Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a
     relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such
     that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
-    $\vereq_{\inp, \zkproof}(\chi) = 0$. Since $\adv$ is algebraic, all group
+    $\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all group
     elements included in $\tree$ are extended by their representation as a
     combination of the input $\GRP_1$-elements. Hence, all coefficients of the
     verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known.
-  \item Find $\vereq_{\inp, \zkproof}(X)$ zero points and find $\chi$ among
+  \item Find $\vereq_{\inp, \zkproof}(X)$ zero points and find $\chi'$ among
     them.
-  \item Return $\chi$.
-  \end{enumerate}
+  \item Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates. These trapdoors can be extracted by the reduction from the update proofs given by $\adv$.
+  \item Return  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.
+  \end{enumerate}}
   Hence, the probability that the adversary wins Game 1 is upper-bounded by
   $\epsdlog(\secpar)$.
 
@@ -355,8 +356,8 @@ $\adv$ who makes up to $S = \poly$ simulation oracle queries.
   % 1)}
   of the commitment scheme. $\rdv$ proceeds as follows:
   \begin{enumerate}
-  \item Given polynomial commitment SRS $\srs_{\PCOM}$, produce $\plonk$'s SRS
-    $\srs$.
+  \item \hamid{Given polynomial commitment SRS $\srs_{\PCOM}$, produce $\plonk$'s SRS
+    $\srs$.}
   \item Pick random polynomials $\p{p} (X), \p{p'} (X) \in \FF^{< |\HHH|} [X]$,
     hiding parameter $k = 2$ and send them to the polynomial commitment
     challenger $\cdv$.
