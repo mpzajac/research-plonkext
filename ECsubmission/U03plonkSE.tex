@@ -4,13 +4,9 @@
 
 \section{Non-Malleability of $\plonkprotfs$} 
 \label{sec:plonk}
-In this section, we show that $\plonkprotfs$ is forking simulation-extractable. To that
-end, we proceed as follows. First, we show that the version of the KZG polynomial
-commitment scheme that is used in \plonk{} has the unique opening
-property, cf.~\cref{sec:poly_com} and \cref{lem:pcomp_op}. This is then
-used to show that $\plonkprot$ has the $\ur{2}$ property,
+In this section, we show that $\plonkprotfs$ is forking simulation-extractable. Towards this end, we first use the unique opening property to show that
+$\plonkprot$ has the $\ur{2}$ property,
 cf.~\cref{lem:plonkprot_ur}.
-
 Next, we show that $\plonkprot$ is forking-sound. That is, given a
 number of accepting transcripts whose messages match on the first $3$ rounds of the
 protocolm we can either extract a witness for the proven statement or use
@@ -30,81 +26,7 @@ Due to page limit, we omit description of \plonk{} here and refer to
 %Unfortunately, we also have to move some of the
 % proofs to the Supplementary Materials as well, cf.~\cref{sec:plonk_supp_mat}
 
-  
-\subsection{Unique opening property of $\PCOMp$}
-\begin{lemma}
-\label{lem:pcomp_op}
-Let $\PCOMp$ be a batched version of a KZG polynomial commitment,
-cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property (see~\cref{sec:pcom}) in the AGM
-with security
-$\epsop(\secpar) \leq 2 \epsdlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where
-$\epsdlog(\secpar)$ is security of the $(\noofc + 2, 1)$-dlog assumption and
-$\FF_p$ is the field used in $\PCOMp$.\end{lemma}
-\begin{proof}
-  Let $\vec{z} = (z, z') \in \FF_p^2$ be the two points the polynomials are
-  evaluated at, $k \in \NN$ be the number of the committed polynomials to be
-  evaluated at $z$, $k' \in \NN$ be the number of the committed polynomials
-  to be evaluated at $z'$, $\vec{c} \in \GRP^k, \vec{c'} \in \GRP^{k'}$ be the
-  commitments, $\vec{s} \in \FF_p^k, \vec{s'} \in \FF_p^{k'}$ the evaluations,
-  and $\vec{o} = (o, o') \in \FF_p^2$ be the commitment openings.  We need to
-  show that the probability a $\ppt$ $\adv$ opens the same commitment in two
-  different ways is at most $\epsop(\secpar)$, even when the commitment openings
-  are verified in batches.
-
-  The idealised verifier checks whether the following equality, for $\gamma, r'$
-  picked at random, holds:
-  \begin{multline}
-    \label{eq:ver_eq_poly}
-    \left(\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}
-      \gamma^{i - 1} \cdot s_i\right) + r' \left(\sum_{i = 1}^{k'} \gamma'^{i -
-        1} \cdot \p{f'}_i(X) -
-      \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \right)\\
-    \equiv \p{o}(X)(X - z) + r' \p{o}'(X)(X- z').
-  \end{multline}
-  Since $r'$ has been picked at random from $\FF$, probability that
-  \cref{eq:ver_eq_poly} holds while either
-  \[
-    \sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}
-    \gamma^{i - 1} \cdot s_i \not\equiv \p{o}(X)(X - z) \text{, or}
-  \]
-  \[
-    \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'}
-    \gamma'^{i - 1} \cdot s'_i \not\equiv \p{o'}(X)(X - z')
-  \]
-  is $\infrac{1}{\abs{\FF_p}}$~cf.~\cite{EPRINT:GabWilCio19}. 
-  When \(
-    \sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}
-    \gamma^{i - 1} \cdot s_i = \p{o}(X)(X - z) 
-  \)
-  holds, polynomial $\p{o}(X)$ is uniquely determined from the uniqueness of
-  polynomial composition. Similarly, $\p{o'}(X)$ is uniquely determined as well.
-
-  Any discrepancy
-  between the idealised verifier rejection and real verifier acceptance allows
-  one to break the discrete logarithm problem.
-
-  The reduction $\rdvdlog$ proceeds as follows: $\rdvdlog$ initializes the SRS $\srs$ using the input $\dlog$ instance, and then answers $\adv$'s queries for SRS updates. Let $\srs'$ be the finalised SRS. 
-  Consider a proof $\zkproof$ such
-      that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
-      $\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all proof
-      elements are extended by their representation as a
-      combination of the input $\GRP_1$-elements. Therefore, all coefficients of the
-      verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known.
-   Now, $\rdvdlog$ computes the roots of $\vereq_{\inp, \zkproof}(X)$ and finds $\chi'$ among
-      them.
-    Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates that are extracted by $\rdvdlog$ from the update proofs given by $\adv$.
-  $\rdvdlog$ returns $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.
-  
-  Since any discrepancy
-  between the idealised verifier and real verifier rejection allows
-  one to break the discrete logarithm problem, the probability that the real
-  verifier accepts in one of the cases above is upper-bounded by
-  $2 \epsdlog + \infrac{1}{\FF_p}$.
-
-    \qed
-\end{proof}
-
-
+ 
 \subsection{Unique response property}
 \begin{lemma}
 	\label{lem:plonkprot_ur}
