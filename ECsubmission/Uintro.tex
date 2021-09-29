@@ -23,12 +23,24 @@ blockchain-participants to see.
 %This captures the more general scenario where an adversary against the zkSNARK has access to proofs provided by other parties as it is in applications of zkSNARKs in privacy-preserving blockchains, where proofs are posted on the chain for all
 %participants in the network to verify.
 
-\emph{Fiat-Shamir based zkSNARKs.}
-Most modern zkSNARK constructions follow a modular blueprint that involves the design of an information theoretic interactive protocol, e.g. an Interactive Oracle Proof (IOP), that is then compiled via cryptographic tools to obtain an interactive argument system.  This is then turned into a zkSNARK using the Fiat-Shamir transformation in the Random Oracle Model (ROM).
+\paragraph{Fiat-Shamir based zkSNARKs.}
+Most modern zkSNARK constructions follow a modular blueprint that involves the design of an information theoretic interactive protocol, e.g. an Interactive Oracle Proof (IOP), that is then compiled via cryptographic tools to obtain an interactive argument system.  This is then turned into a zkSNARK using the Fiat-Shamir transformation. While well understood for 3-round protocols and justifiable in the random oracle
+model (ROM)~\cite{CCS:BelRog93}, it is theoretically
+unsound~\cite{FOCS:GolKal03} and so only a heuristic that should be used with
+care.
+
+%The Fiat--Shamir (FS) transform takes a public-coin interactive protocol and makes it interactive by hashing the current protocol transcript to compute the verifier's public coins.
+%
+i%The FS transform is a popular design tool for constructing
+%zkSNARKs. In the updatable universal SRS setting, works like \sonic{}~\cite{CCS:MBKM19}
+%\plonk{}~\cite{EPRINT:GabWilCio19}, and \marlin~\cite{EC:CHMMVW20} are designed
+%and proven secure as multi-round interactive protocols. Security is then only
+%\emph{conjectured} for their non-interactive variants by employing the FS
+%transform.
+
 In particular, several schemes such as
 $\sonic$~in \cite{CCS:MBKM19}, $\plonk$~\cite{EPRINT:GabWilCio19}, $\textsf{Marlin}$~\cite{EC:CHMMVW20} 
-follow this approach where the information theoretic object is an algebraic variant of IOP, and the cryptographic primitive in the compiler is a polynomial commitment scheme (PC). To date, this blueprint lacks an analysis in terms of simulation extractability.
-
+follow this approach where the information theoretic object is a multi-round algebraic variant of IOP, and the cryptographic primitive in the compiler is a polynomial commitment scheme (PC) that requires a trusted setup. To date, this blueprint lacks an analysis in terms of simulation extractability.
 
 
 \paragraph{Updateable setup zkSNARKs}
@@ -55,20 +67,7 @@ That is, each SRS in the update chain spawns a simulation oracle. Intuitively, t
 While generic lifting techniques/compilers~\cite{EPRINT:KZMQCP15,CCS:AbdRamSla20} can be applied to updatable SRS SNARKs to obtain SE, not only do they inevitably incur overheads and lead to efficiency loss, we contend that the standard definition of SE does not suffice in the updatable setting.
 
 
-\paragraph{Fiat--Shamir.}
-The Fiat--Shamir (FS) transform takes a public-coin interactive protocol and
-makes it interactive by hashing the current protocol transcript to compute the
-verifier's public coins. While in principle justifiable in the random oracle
-model (ROM)~\cite{CCS:BelRog93}, it is theoretically
-unsound~\cite{FOCS:GolKal03} and so only a heuristic that should be used with
-care.
-%
-The FS transform is a popular design tool for constructing
-zkSNARKs. In the updatable universal SRS setting, works like \sonic{}~\cite{CCS:MBKM19}
-\plonk{}~\cite{EPRINT:GabWilCio19}, and \marlin~\cite{EC:CHMMVW20} are designed
-and proven secure as multi-round interactive protocols. Security is then only
-\emph{conjectured} for their non-interactive variants by employing the FS
-transform.
+
 
 We investigate the non-malleability properties of a class of zkSNARK protocols obtained by FS-compiling multi-round protocols in the updatable SRS setting and give a modular approach to analyze the simulation-extractability of zkSNARKs.
 \subsection{Our Contributions}
