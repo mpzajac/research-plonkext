@@ -8,6 +8,100 @@ sound. Moreover, they rely on an SRS, and in the updatable setting, the adversar
 We first give a definition of simulation-extractability which is the one in~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then, we adapt special soundness to forking soundness, and generalize the forking lemma and the unique response property for
 multi-round SRS-based protocols.
 
+
+ \subsection{Trapdoor-Less Simulation}
+In security reductions in this paper it is sometimes needed to produce
+simulated NIZK proofs without knowning the trapdoor, just by
+programming the random oracle. We call protocols which allow for such kind of
+simulation \emph{trapdoor-less simulatable} (TLS). More precisely,
+
+\begin{definition}[Trapdoor-Less Simulatable Proof System]
+  Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof
+  system and $\ro$ a random oracle. Let $\simulator$ be a pair of
+  algorithms: $\simulator_\ro$ that takes random oracle queries and
+  answers them, $\simulator_\prover$ that takes as input an SRS $\srs$
+  and instance $\inp$ and outputs a proof $\zkproof_\simulator$.  We
+  call $\ps$ \emph{trapdoor-less simulatable} if for any adversary
+  $\adv$, $\eps_0 \approx \eps_1$, where
+  \begin{align}
+    \eps_b = \Pr\left[
+    \begin{aligned}
+      \adv^{\oracleo_b}(\srs) = 0
+    \end{aligned}
+    \, \left| \,
+    \begin{aligned}
+      \srs \sample \kgen(\secpar)
+    \end{aligned}
+    \right.\right]
+  \end{align}
+  where $\oracleo_b$ takes two types of adversary's queries:
+  \begin{description}
+  \item[random oracle calls:] on $\adv$'s query $x$, $\oracleo_b$
+    responds with $\ro(x)$ if $b = 0$, and with $y \gets
+    \simulator_\ro(\srs, x)$, if $b = 1$.
+  \item[proof calls:] on $\adv$'s query $\inp, \wit$ responds
+  with a real proof $\zkproof_\prover \gets
+  \prover(\srs, \inp, \wit)$ if $b = 0$ or a simulated proof $\zkproof_\simulator \gets \simulator (\srs,
+  \inp)$ if $b = 1$. 
+  \end{description} 
+\end{definition}
+
+\begin{remark}[TLS vs HVZK]
+  We note that TLS notion is closely related to honest-verifier zero knowledge in the standard model. That is, if we consider an interactive proof system $\proofsystem$ that is HVZK in the standard model then its Fiat--Shamir compiled version $\proofsystem_\fs$ is TLS. This comes as the simulator $\simulator$ in $\proofsystem$ produces a valid simulated proof by picking verifier's challenges according to a predefined distribution and $\proofsystem_\fs$'s simulator $\simulator_\fs$ produces its proofs similarly by picking the challenges and additionally programming the random oracle to return the picked challenges. Importantly, in both $\proofsystem$ and $\proofsystem_\fs$ success of the simulator does not depend on access to an SRS trapdoor \markulf{29/09/2021}{Removing this: (which may not even exists if the proof systems are transparent)}.
+\end{remark}
+
+\begin{definition}[$k$-programmable ZK]
+  \label{def:kzk}
+  Let $\ps$ be a $(2\mu + 1)$-message ZK proof system and let $\ps_\fs$ be its
+  Fiat--Shamir variant. We say that $\ps_\fs$ is $k$-programmable ZK if there
+  exists a simulator $\simulator_\fs$ that
+  \begin{compactenum}
+  \item produces proofs indistinguishable from proofs output by an honest
+    prover;
+  \item $\simulator_\fs$ programs the random oracle \emph{only} for
+    challenges from round $k$ to $\mu + 1$.
+  \end{compactenum}
+\end{definition}
+We note that $\plonk$ is $2$-programmable ZK, $\sonic$ is $1$-programmable ZK,
+and $\marlin$ is $1$-programmable ZK. This follows directly from the proofs of
+their standard model zero-knowledge property in
+\cref{lem:plonk_hvzk,lem:sonic_hvzk,lem:marlin_hvzk}. 
+
+\oursubsub{Idealised Verifier and Verification Equations} Let
+$(\kgen, \prover, \verifier)$ be a proof system.
+% or a polynomial commitment
+% scheme\hamid{might be unclear as we are defining polynomial commitments as
+%   $(\kgen, \com, \open, \verify)$.}.
+Observe that the $\kgen$ algorithm provides an SRS which can be interpreted as a
+set of group representation of polynomials evaluated at trapdoor
+elements. E.g.~for a trapdoor $\chi$ the SRS contains
+$\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for some polynomials
+$\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. On the other hand, the verifier
+$\verifier$ accepts if a (possibly set of) verification equation
+$\vereq_{\inp, \zkproof}$ (note that the verification equation changes relate to
+the instance $\inp$ and proof $\zkproof$), which can also be interpreted as a
+polynomial in $\FF_p[X]$ whose coefficients depend on messages sent by the
+prover, zeroes at $\chi$. Following \cite{EPRINT:GabWilCio19} we call verifiers
+who checks that $\vereq_{\inp, \zkproof}(\chi) = 0$ \emph{real verifiers} as
+opposed to \emph{ideal verifiers} who accepts only when
+$\vereq_{\inp, \zkproof}(X) = 0$. That is, while a real verifier accepts when a
+polynomial \emph{evaluates} to zero, an ideal verifier accepts only when the
+polynomial \emph{is} zero.
+
+Although ideal verifiers are impractical, they are very useful in our
+proofs. More precisely, we show that
+\begin{compactenum}
+\item the idealised verifier accepts an incorrect proof (what ``incorrect''
+  means depends on the situation) with at most negligible probability (and many
+  cases---never);
+\item when the real verifier accepts, but not the idealised one, then we show
+  how to use a malicious $\prover$ to break the underlying security assumption
+  (in our case---a variant of $\dlog$.)
+\end{compactenum}
+
+Analogously, idealised verifier can also be defined for polynomial commitment scheme.
+
+
 %\subsection{Forking simulation extractability}
 \begin{definition}[Forking simulation-extractable NIZK]
 	\label{def:updsimext}
