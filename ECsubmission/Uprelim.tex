@@ -149,7 +149,7 @@ witness for the signature. More formally,  for any PPT adversary $\adv$ there ex
  \end{matrix}
 } \leq \negl
 \]
-where the adversary has access to simulated signatures via the oracle $\simsign_\td(\inp_i, \mesage_i) \coloneq \simsign(\td, \inp_i, \mesage_i)$.
+where the adversary has access to simulated signatures via the oracle $\simsign_\td(\inp_i, \mesage_i) \coloneq \simsign(\td, \inp_i, \mesage_i)$ and the extractor $\ext_\adv$ takes as input the transcript ${\sf trans}_\adv$ of all queries made by $\adv$.
 
 %
 \item[Perfect Simulatability:] The verifier should not learn anything  about the witness from the signature.  The secrecy of the witness is modelled by the ability to
