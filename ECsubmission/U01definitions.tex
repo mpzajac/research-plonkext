@@ -2,7 +2,7 @@
 % !TEX spellcheck = en-US
 \section{Definitions and lemmas for multi-round SRS-based protocols}
 \label{sec:se_definitions}
-The result of Faust et al.\cite{INDOCRYPT:FKMV12} is for $3$-round protocols that require two tramscripts for standard model extraction. Here, not only do we consider multi-round protocols, they require more than
+The result of Faust et al.\cite{INDOCRYPT:FKMV12} is for $3$-round protocols that require two transcripts for standard model extraction. Here, not only do we consider multi-round protocols, they require more than
 just two transcripts for extraction and are not special
 sound. Moreover, they rely on an SRS, and in the updatable setting, the adversary gets to contribute to the SRS in the updatable setting which makes the analysis more complicated.
 We first give a definition of simulation-extractability which is the one in~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then, we adapt special soundness to forking soundness, and generalize the forking lemma and the unique response property for
@@ -17,28 +17,29 @@ multi-round SRS-based protocols.
 	adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a simulation oracle $\simO$, cf.~\cref{fig:upd}, and a random oracle $\ro$, and produces an accepting transcript of $\ps$ with
 	probability $\accProb$, where
 	\[
-	\accProb = \Pr \left[
-	\begin{aligned}
-	& \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \wedge
+	\accProb = \condprob{
+	\begin{matrix}
+	  \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1  \\
+	  \wedge
 	(\inp_{\advse}, \zkproof_{\advse}) \not\in Q
-	\end{aligned}
-	\left| \,
-	\begin{aligned}
-	& r \sample \RND{\advse},
+	\end{matrix}
+}{
+	\begin{matrix}
+	  r \sample \RND{\advse}\\
 	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
 		\ro} (1^\secpar; r)
-	\end{aligned}
-	\right.\right],
+	\end{matrix}
+}
 	\]
 	there exists an extractor $\extse$ such that
 	\[
-	\extProb = \Pr \left[
-	\begin{aligned}
-	& \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \ \wedge \\
-	& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q \wedge
-	\REL(\inp_{\advse}, \wit_{\advse}) = 1
-	\end{aligned}
-	\, \left| \,
+	\extProb = \condprob{
+	\begin{matrix}
+  \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \\
+ \wedge  ~(\inp_{\advse}, \zkproof_{\advse}) \not\in Q   \\
+	 \wedge  ~\REL(\inp_{\advse}, \wit_{\advse}) = 1
+	\end{matrix}
+}{
 	\begin{aligned}
 	& r \sample \RND{\advse},
 	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
@@ -46,7 +47,7 @@ multi-round SRS-based protocols.
 	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
 	Q, Q_\ro, Q_\srs) 
 	\end{aligned}
-	\right.\right]
+}
 	\]
 	is at at least 
 	\[

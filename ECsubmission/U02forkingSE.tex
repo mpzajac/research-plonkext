@@ -57,8 +57,41 @@ random oracle and wins with the same probability.
   reuses at least $k$ messages from a simulated proof, and the proof is accepting.
   Denote this event by $\event{\errur}$.
 
-  \ncase{Game 0 to Game 1} $\prob{\event{\errur}} \leq \epsur(\secpar)$. The
-  proof goes exactly as in \cref{thm:simsnd}.\hamid{since Sim-sound is not in the main body, we should write this explicitly?}
+   \ncase{Game 0 to Game 1} We have, \( \prob{\game{0} \land
+  	\nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}} \) and, from the
+  difference lemma, cf.~\cref{lem:difference_lemma},
+  $ \abs{\prob{\game{0}} - \prob{\game{1}}} \leq \prob{\event{\errur}}\,$.
+  Thus, to show that the transition from one game to another introduces only
+  minor change in probability of $\adv$ winning it should be shown that
+  $\prob{\event{\errur}}$ is small.
+  
+  We can assume that $\adv$ queried the simulator on the instance it wishes to
+  output, i.e.~$\inp_{\adv}$. We show a reduction $\rdvur$ that utilises $\adv$
+  to break the $\ur{k}$ property of $\ps$. Let $\rdvur$ run $\advse$ internally
+  as a black-box:
+  \begin{compactitem}
+  	\item \hamid{The reduction answers $\adv$ update queries by asking the same query from the update oracle in the unique response experiment. The reduction finalises the same SRS $\srs$ as the one $\adv$ does.}
+  	\item The reduction answers both queries to the simulator $\psfs.\simulator$
+  	and to the random oracle.  It also keeps lists $Q$, for the simulated
+  	proofs, and $Q_\ro$ for the random oracle queries.
+  	\item When $\adv$ makes a fake proof $\zkproof_{\adv}$ for $\inp_{\adv}$,
+  	$\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds
+  	$\zkproof_{\simulator}[0..k]$ such that
+  	$\zkproof_{\adv}[0..k] = \zkproof_{\simulator}[0..k]$ and a random oracle
+  	query $\zkproof_{\simulator}[k].\ch$ on $\zkproof_{\simulator}[0..k]$.
+  	\item $\rdvur$ returns two proofs for $\inp_{\adv}$:
+  	\begin{align*}
+  	\zkproof_1 = (\zkproof_{\simulator}[1..k],
+  	\zkproof_{\simulator}[k].\ch, \zkproof_{\simulator}[k + 1..\mu + 1])\\
+  	\zkproof_2 = (\zkproof_{\simulator}[1..k],
+  	\zkproof_{\simulator}[k].\ch, \zkproof_{\adv}[k + 1..\mu + 1])
+  	\end{align*}
+  \end{compactitem}  
+  If $\zkproof_1 = \zkproof_2$, then $\adv$ fails to break simulation soundness,
+  as $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then
+  $\rdvur$ breaks $\ur{k}$-ness of $\ps$. This happens only with negligible
+  probability $\epsur(\secpar)$, hence
+  \( \prob{\event{\errur}} \leq \epsur(\secpar)\,. \)
 
   \COMMENT{We have,
     \( \prob{\game{0} \land \nevent{\errur}} = \prob{\game{1} \land
