@@ -277,6 +277,63 @@ polynomials. That is, the simulation is perfect unless for some $i, j, j'$ holds
   as required.
 \end{proof}
 
+
+
+
+\subsection{Sigma protocols}\label{sec:sigma}
+A sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ for a relation
+$\REL \in \RELGEN(\secparam)$ is a special case of an interactive proof where a
+transcript consists of three messages $(a, b, z)$, where $b$ is a challenge
+provided by the verifier. Sigma protocols are honest verifier zero-knowledge in
+the standard model and specially-sound. That is, there exists an extractor
+$\ext$ which given two accepting transcripts $(a, b, z)$, $(a, b', z')$ for a
+statement $\inp$ can recreate the corresponding witness if $b \neq b'$.
+More formally:
+% \begin{description}
+
+\ourpar{Special soundness.}
+% \hamid{The last (short) sentence looks a little unclear.}
+A sigma protocol $\sigmaprot$ is \emph{specially-sound}
+  if for any adversary $\adv$ the probability is upper-bounded by some negligible function $\negl$:
+\[
+   \condprob{
+\begin{aligned}
+& \verifier(\REL, \inp, (a, b, z)) = %\\
+\verifier(\REL, \inp, (a, b', z')) = 1 \\
+& \land b \neq b' \land \REL(\inp, \wit) = 0 \\
+\end{aligned}
+}{
+\begin{aligned}
+& (\inp, (a, b, z), (a, b', z')) \gets \adv(\REL), \\ %\\
+& \wit \gets \ext(\REL, \inp, (a, b, z), (a, b', z'))\\
+\end{aligned}
+}
+\]
+
+%\end{description}
+
+Another property that sigma protocols may have is a unique response
+property \cite{C:Fischlin05} which states that no $\ppt$ adversary can
+produce two accepting transcripts that differ only on the last
+element. More precisely:
+
+%\begin{description} 
+\ourpar{Unique response property.} Let
+$\sigmaprot = (\prover, \verifier, \simulator)$ be a sigma-protocol for
+$\REL \in \RELGEN(\secparam)$ with proofs of the form
+$(a, b, z)$. We say that $\sigmaprot$ has the unique response property if for
+all $\ppt$ algorithms $\adv$, it holds that the following probability is negligible ($\leq \negl$):
+\[ \condprob{\verifier (\REL, \inp, (a, b, z)) = \verifier (\REL, \inp, (a, b,
+	z')) = 1 \land z \neq z'}{(\inp, a, b, z, z') \gets \adv(\REL)} \]
+%\end{description} 
+If this property holds even against unbounded adversaries, it is called
+\emph{strict}, cf.~\cite{INDOCRYPT:FKMV12}. Later on we call protocols that
+follows this notion \emph{ur-protocols}. For the sake of completeness we note
+that many sigma protocols, like e.g.~Schnorr's protocol \cite{C:Schnorr89},
+fulfil this property.
+
+
+
 \subsection{Special simulation-extractability of sigma protocols and forking lemma}
 \label{sec:forking_lemma}
 \begin{theorem}[Special simulation extractability of the Fiat--Shamir transform
