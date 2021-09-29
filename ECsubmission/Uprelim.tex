@@ -143,7 +143,7 @@ witness for the signature. More formally,  for any PPT adversary $\adv$ there ex
 	 \end{matrix}
 }{
 	  \begin{matrix}
-~\param \gets \SoK.\signsetup(1^\secpar, \REL)\\
+~\param \gets \signsetup(1^\secpar, \REL)\\
 ~ (\mesage, \inp, \signature) \gets \adv^{\simsign_\td} (\param)\\
 \wit \gets \ext_\adv({\sf trans}_\adv)
  \end{matrix}
@@ -164,7 +164,7 @@ $
 		\end{matrix}
 		}{
 		\begin{matrix}
-	\param \gets  \setup(1^\secpar, \REL)\\
+	\param \gets  \signsetup(1^\secpar, \REL)\\
 	~\signature_i \gets  \sign(\mesage_i, \inp_i, \wit_i)
 		\end{matrix}
 		\right. }
