@@ -4,95 +4,29 @@
 
 \section{Non-Malleability of $\plonkprotfs$} 
 \label{sec:plonk}
-In this section, we show that $\plonkprotfs$ is forking simulation-extractable. To that
-end, we proceed as follows. First, we show that the version of the KZG polynomial
-commitment scheme that is proposed in the \plonk{} paper has the unique opening
-property, cf.~\cref{sec:poly_com} and \cref{lem:pcomp_op}. This is then
-used to show that $\plonkprot$ has the $\ur{2}$ property,
+In this section, we show that $\plonkprotfs$ is forking simulation-extractable. Towards this end, we first use the unique opening property to show that
+$\plonkprot$ has the $\ur{2}$ property,
 cf.~\cref{lem:plonkprot_ur}.
-
 Next, we show that $\plonkprot$ is forking-sound. That is, given a
-number of accepting transcripts which match on the first 3 rounds of the
-protocol we can either recover a correct witness for the proven statement or use
+number of accepting transcripts whose messages match on the first $3$ rounds of the
+protocolm we can either extract a witness for the proven statement or use
 one of the transcripts to break the $\dlog$ assumption. This result is shown in
 the AGM, cf.~\cref{lem:plonkprot_ss}.
 
-Given forking-soundness of $\plonkprot$, we use the fact that it is also
-$\ur{2}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is
-simulation-extractable. That is, we build reductions that given a simulation
-extractability adversary $\advse$ either break the protocol's unique response
-property or based on forking soundness break the $\dlog$ assumption, if extracting a valid witness from a
-tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
+%Given forking-soundness of $\plonkprot$, we use the fact that it is also
+%$\ur{2}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is
+%simulation-extractable. That is, we build reductions that given a simulation
+%extractability adversary $\advse$ either break the protocol's unique response
+%property or based on forking soundness break the $\dlog$ assumption, if extracting a valid witness from a
+%tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 
-\hamid{Maybe last paragraph can be shortened as follows: Given forking-soundness of $\plonkprot$, and the fact that it is also
-	$\ur{2}$, we make use of \cref{thm:se} and show that
-	$\plonkprot_\fs$ is forking simulation-extractable.}
-
-\hamid{Should we uncomment this: Due to page limit, we omit description of \plonk{} here and refer to
-	 \cref{sec:plonk_explained}}. 
-
-%Due to page limit, we omit description of \plonk{} here and refer to
-% \cref{sec:plonk_explained}. Unfortunately, we also have to move some of the
+Given forking-soundness and $\ur{2}$ of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is forking simulation-extractable.
+Due to page limit, we omit description of \plonk{} here and refer to
+\cref{sec:plonk_explained}. 
+%Unfortunately, we also have to move some of the
 % proofs to the Supplementary Materials as well, cf.~\cref{sec:plonk_supp_mat}
 
-  
-\subsection{Unique opening property of $\PCOMp$}
-\begin{lemma}
-\label{lem:pcomp_op}
-Let $\PCOMp$ be a batched version of a KZG polynomial commitment,
-cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property in the AGM
-with security
-$\epsop(\secpar) \leq 2 \epsdlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where
-$\epsdlog(\secpar)$ is security of the $(\noofc + 2, 1)$-dlog assumption and
-$\FF_p$ is the field used in $\PCOMp$.\end{lemma}
-\begin{proof}
-  Let $\vec{z} = (z, z') \in \FF_p^2$ be the two points the polynomials are
-  evaluated at, $k \in \NN$ be the number of the committed polynomials to be
-  evaluated at $z$, and $k' \in \NN$ be the number of the committed polynomials
-  to be evaluated at $z'$, $\vec{c} \in \GRP^k, \vec{c'} \in \GRP^{k'}$ be the
-  commitments, $\vec{s} \in \FF_p^k, \vec{s'} \in \FF_p^{k'}$ the evaluations,
-  and $\vec{o} = (o, o') \in \FF_p^2$ be the commitment openings.  We need to
-  show that the probability a $\ppt$ $\adv$ opens the same commitment in two
-  different ways is at most $\epsop(\secpar)$, even when the commitment openings
-  are verified in batches.
-
-  The idealised verifier checks whether the following equality, for $\gamma, r'$
-  picked at random, holds:
-  \begin{multline}
-    \label{eq:ver_eq_poly}
-    \left(\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}
-      \gamma^{i - 1} \cdot s_i\right) + r' \left(\sum_{i = 1}^{k'} \gamma'^{i -
-        1} \cdot \p{f'}_i(X) -
-      \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \right)\\
-    \equiv \p{o}(X)(X - z) + r' \p{o}'(X)(X- z').
-  \end{multline}
-  Since $r'$ has been picked at random from $\FF$, probability that
-  \cref{eq:ver_eq_poly} holds while either
-  \[
-    \sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}
-    \gamma^{i - 1} \cdot s_i \not\equiv \p{o}(X)(X - z) \text{, or}
-  \]
-  \[
-    \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'}
-    \gamma'^{i - 1} \cdot s'_i \not\equiv \p{o'}(X)(X - z')
-  \]
-  is $\infrac{1}{\abs{\FF_p}}$~cf.~\cite{EPRINT:GabWilCio19}. 
-  When \(
-    \sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}
-    \gamma^{i - 1} \cdot s_i = \p{o}(X)(X - z) 
-  \)
-  holds, polynomial $\p{o}(X)$ is uniquely determined from the uniqueness of
-  polynomial composition. Similarly, $\p{o'}(X)$ is uniquely determined as well.
-
-  Since any discrepancy
-  between the idealised verifier rejection and real verifier acceptance allows
-  one to break the discrete logarithm problem, the probability that the real
-  verifier accepts in one of the cases above is upper-bounded by
-  $2 \epsdlog + \infrac{1}{\FF_p}$.
-  \qed
-\end{proof}
-
-
+ 
 \subsection{Unique response property}
 \begin{lemma}
 	\label{lem:plonkprot_ur}
@@ -106,7 +40,7 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
 \end{lemma}
 \begin{proof}
   Let
-  $\adv(\REL,\srs = (\gone{1, \chi, \ldots, \chi^{\noofc + 2}}, \gtwo{\chi}))$ \hamid{what are $\adv$'s inputs in the updatable case?}
+  $\adv$
   be an algebraic adversary tasked to break the $\ur{2}$-ness of
   $\plonkprotfs$. We show that the first 2 rounds of the protocol determines,
   along with the verifiers challenges, the rest of it.  This is done by game
@@ -118,7 +52,7 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
   quotient polynomial provided by the adversary we write $\p{t}^0$ and $\p{t}^1$
   instead of $\p{t}$ as in the description of the protocol.
 
-  \ngame{0} In this game, the adversary is \hamid{given the SRS} and wins if provides two
+  \ngame{0} In this game, the adversary wins if provides two
   transcripts that match on all $5$ messages sent by the prover or finds a
   collision in the random oracle. Since such two transcripts cannot break the
   unique response property, the adversary wins this game with probability
@@ -215,301 +149,467 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
 
 \subsection{Forking soundness}
 \begin{lemma}
-\label{lem:plonkprot_ss}
-Let KZG be hiding with security $\epsh (\secpar)$, $\plonkprot$'s idealized
-verifier fail with probability $\epsid (\secpar)$, and $(\noofc + 2, 1)$-$\dlog$
-problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
-$(\epsid (\secpar) + \epsdlog (\secpar) + 8 \cdot S \cdot \epsh(\secpar) +
-, 3, 3 \noofc + 1)$-forking sound against algebraic adversary
-$\adv$ who makes up to $S = \poly$ simulation oracle queries.
+	\label{lem:plonkprot_ss}
+	Let $\plonkprot$'s idealized verifier fails with probability $\epsid (\secpar)$, and
+	$(\noofc + 2, 1)$-$\dlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
+	$(\epsid (\secpar) + \epsdlog (\secpar) , 3, 3 \noofc + 1)$-forking sound against algebraic
+	adversary $\adv$.
 \end{lemma}
 
 \begin{proof}
-  The main idea of the proof is to show that an adversary who breaks forking
-  soundness can be used to break hiding properties of the polynomial commitment
-  scheme or a $\dlog$ problem instance. The proof goes by game hops. Let $\tree$
-  be the tree produced by $\tdv$ by rewinding $\adv$. Note that since the tree
-  branches after Round 3, the instance $\inp$, commitments
-  $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
-    (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges
-  $\alpha, \beta, \gamma$ are the same. The tree branches after the third round
-  of the protocol where the challenge $\chz$ is presented, thus tree $\tree$ is
-  build using different values of $\chz$. 
-%
-  We consider the following games.
-
-  \ncase{Game 0} In this game the adversary wins if
- % \begin{inparaenum}[(1)]
- % \item
-  all the transcripts it produced are acceptable by the ideal verifier,
-    i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}, and
-    % \item
-    none of commitments
-    $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
-      (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$ use elements from a
-    simulated proof, and
-    % \item
-    the extractor fails to extract a valid witness out of the proof.
-  %\end{inparaenum}
-
-  \ncase{Probability that $\adv$ wins Game 0 is negligible} Probability of
-  $\adv$ winning this game is $\epsid(\secpar)$ as the protocol $\plonkprot$,
-  instantiated with the idealised verification equation, is perfectly knowledge
-  sound except with negligible probability of the idealised verifier failure
-  $\epsid(\secpar)$. Hence for a valid proof $\zkproof$ for a statement $\inp$
-  there exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note that
-  since the $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for
-  different challenges $\chz$, it obtains the same number of different
-  evaluations of polynomials
-  $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts
-  are acceptable by an idealised verifier, the equality between polynomial
-  $\p{t} (X)$ and combination of polynomials
-  $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ described in Round 3 of the
-  protocol holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid
-  witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are
-  of degree at most $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their
-  evaluations known, $\extt$ can recreate polynomials' coefficients by interpolation
-  and reveal the witness with probability $1$. Hence, the probability that
-  extraction fails in that case is upper-bounded by probability of an idealised
-  verifier failing $\epsid(\secpar)$, which is negligible.
-
-  \ncase{Game 1} In this game the adversary additionally wins if
-  %\begin{inparaenum}
-  % \item
-  it produces a transcript in $\tree$ such that
-  $\vereq_{\inp, \zkproof}(\chi) = 0$, but $\vereq_{\inp, \zkproof}(X) \neq 0$,
-  and
-  % \item
-  none of commitments
-  $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
-    (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$ use elements from a
-  simulated proof.
-  % \end{inparaenum}
-  The first condition means that the ideal verifier does not accept the proof,
-  but the real verifier does.
-
-  \ncase{Game 0 to Game 1} Assume the adversary wins in Game 1, but
-  does not win in Game 0. We show that such adversary may be used to break the
-  $\dlog$ assumption. More precisely, let $\tdv$ be an algorithm that for
-  relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
-  of acceptable transcripts such that the winning condition of the game
-  holds. Let $\rdvdlog$ be a reduction that gets as input an
-  $(\noofc + 2, 1)$-dlog instance $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$
-  and is tasked to output $\chi$.
-
-  The reduction $\rdvdlog$ proceeds as follows.
-  \begin{enumerate}
-  \item Build $\plonkprot$'s SRS $\srs$ using the input $\dlog$ instance and
-    start $\tdv(\adv, \srs)$;
-  \item Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a
-    relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such
-    that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
-    $\vereq_{\inp, \zkproof}(\chi) = 0$. Since $\adv$ is algebraic, all group
-    elements included in $\tree$ are extended by their representation as a
-    combination of the input $\GRP_1$-elements. Hence, all coefficients of the
-    verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known.
-  \item Find $\vereq_{\inp, \zkproof}(X)$ zero points and find $\chi$ among
-    them.
-  \item Return $\chi$.
-  \end{enumerate}
-  Hence, the probability that the adversary wins Game 1 is upper-bounded by
-  $\epsdlog(\secpar)$.
-
-  \iffalse
-  \ncase{Game 0} In this game the adversary $\adv$ wins if $\tdv$ fails to
-  output tree $\tree$ such that $\extt$ is able to extract a witness out of it
-  and none of commitments
-  $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
-    (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$ use elements from a
-  simulated proof.
-
-  \ncase{Probability that $\adv$ wins Game 0 is negligible}
-  \michals{10.09}{Reduction to knowledge soundness}
-  Let $\adv$ be considered forking soundness adversary. 
-  Let $\adv$ be an adversary that breaks forking soundness.
-  Note that if
-  $\p{a}(X), \p{b} (X), \p{c} (X)$ contain witness at their coefficients, then 
-  We use $\adv$ to
-  build a reduction $\rdv$ that breaks soundness of $\plonkprotfs$. Let $\inp$
-  be the instance the adversary output and $\zkproof$ its proof. The
-  reduction proceeds as follows:
-  \begin{enumerate}
-  \item 
-  \end{enumerate}
-  \fi
-
-  \ncase{Game 2} In this game the adversary additionally wins if at least one of
-  the commitments $\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi)$
-  utilizes a commitment that comes from a simulated proof; for example, $\adv$
-  could compute its commitment to $\p{c} (X)$ as follows: it picks a polynomial
-  $\p{p} (X)$, computes $\gone{\p{p} (\chi)}$, and outputs commitment
-  $\gone{\p{c} (\chi)} = \gone{\p{p} (\chi)} + c$, where $c$ is a commitment
-  output by a simulator. In the following, w.l.o.g, we assume that $\adv$ uses
-  some simulated element to compute commitment $\gone{\p{c} (\chi)}$.
-
-  \ncase{Game 1 to Game 2} Given adversary $\adv$ that wins in Game 2, but not
-  in Game 1, we show a reduction $\rdv$ that uses $\adv$ and $\tdv$ to break
-  hiding property
-  % \michals{9.9}{Define hiding property --
-  % w.r.t.~masking, adversary can get evaluation at number of points (here --
-  % 1)}
-  of the commitment scheme. $\rdv$ proceeds as follows:
-  \begin{enumerate}
-  \item Given polynomial commitment SRS $\srs_{\PCOM}$, produce $\plonk$'s SRS
-    $\srs$.
-  \item Pick random polynomials $\p{p} (X), \p{p'} (X) \in \FF^{< |\HHH|} [X]$,
-    hiding parameter $k = 2$ and send them to the polynomial commitment
-    challenger $\cdv$.
-  \item From the challenger get the challenge commitment $c$.
-  \item Let $S$ be the upper bound on the number of simulator oracles queries
-    the adversary can make. %\michals{9.9}{Note -- new bound!}
-  \item Guess which simulator's response is going to be used by $\adv$ in its
-    proof. Let $s$ be the index of this response.
-  \item Guess which of the simulated polynomials in response $s$ will be
-    used. Let $i$ be the index of this polynomial.
-  \item Let $\tdv'$ be an algorithm that behaves exactly as $\tdv$, except when
-    $\adv$ asks for $s$-th simulated proof, $\tdv'$'s internal procedure $\bdv'$
-    provides $\adv$ with a simulated proof such that instead of randomly picked
-    commitment $\p{c} (\chi)$ it gives $c$.
-    \michals{9.9}{Alternatively, we can parametrize $\tdv$ by $\bdv$.}
-  \item Start $\tdv'(\adv, \srs)$ and get the tree $\tree$.
-  % \item If indices $s$ or $i$ have not been guessed correctly, rewind $\adv$ to
-  %   the beginning and pick new $s$ and $i$. Since $S = \poly$ probability that
-  %   the correct $s$ will be guessed in polynomial time is overwhelming. That is,
-  %   the reduction works in expected polynomial time. Similarly, $i$ takes values
-  %   from $\range{1}{4}$, hence probability that $\rdv$ guesses $i$ in polynomial
-  %   time is overwhelming. 
-  \item Since $\tree$ contains $\noofc + 1$ evaluations of $\p{c} (X)$, the
-    polynomial can be reconstructed. 
-  \item Since $\adv$ is algebraic, $\rdv$ learns composition of $\p{c} (X)$ in
-    the $\srs$ and simulated elements. 
-  \item Hence $\rdv$ learns whether $c$ is a commitment to $\p{p} (X)$ or
-    $\p{p'} (X)$.
-  \item $\rdv$ returns its guessing bit to $\cdv$.
-  \end{enumerate}
-
-  \ncase{Game 3} In this game the adversary additionally wins if at least one of
-  the commitments $\p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)$
-  comes from a simulated proof.
-
-  \ncase{Game 2 to Game 3} Given adversary $\adv$ that wins in Game
-  3, but not in Game 2, we show a reduction $\rdv$ that uses $\adv$ and $\tdv$
-  to break hiding property
-  % \michals{9.9}{Define hiding property --
-  %   w.r.t.~masking, adversary can get evaluation at number of points (here --
-  %   1)}
-  of the commitment scheme. $\rdv$ proceeds as follows:
-  \begin{enumerate}
-  \item Guess the simulation query index $s$ the polynomial(s) come from and
-    whether the polynomial is $\p{t_{lo}} (X), \p{t_{mid}} (X)$, or
-    $\p{t_{hi}} (X)$. Denote by $i \in \range{1}{3}$ the index of the guessed
-    polynomial. W.l.o.g.~assume $i = 1$, i.e.~it is $\p{t_{lo}} (X)$.
-  \item Produce two random polynomials $\p{p_0} (X)$ and $\p{p_1} (X)$ and
-    send them to the challenger $\cdv$. Get commitment $c$.
-  \item Let $\tdv'$ be an algorithm that behaves exactly as $\tdv$, except when
-    $\adv$ asks for $s$-th simulated proof, $\tdv'$'s internal procedure $\bdv'$
-    provides $\adv$ with a simulated proof such that:
-    \begin{enumerate}
-    \item Start making the simulated proof as a trapdoor-less simulator would.
-    \item Before polynomials $\p{t_{lo}} (X), \p{t_{mid}}, \p{t_{hi}}$ are
-      computed, pick random $\chz$ and get evaluation $p_\chz = \p{p_b} (\chz)$,
-      i.e.~evaluate the polynomial in $c$ at $\chz$.
-      % \michals{9.9}{If we give
-      %   hiding adversary possibility to evaluate polynomials, we need to use
-      %   masking}
-    \item Let $\ev{t_{lo}}$ be the evaluation of the simulated $\p{t_{lo}} (\chz)$.
-    \item Pick $r$ such that $p_\chz + r = \p{t_{lo}} (\chz)$.
-    \item For the commitment of $\p{t_{lo}}$ output $c' = c + \gone{r}$.
-    \item Compute the rest of the simulated proof as a simulator would.
-    \end{enumerate}
-  \item Let $\tdv'$ be an algorithm that behaves exactly as $\tdv$, except when
-    $\adv$ asks for $s$-th simulated proof, $\tdv'$'s internal procedure $\bdv'$
-    provides $\adv$ with a simulated proof such that instead of a simulated
-    $\p{t_{lo}} (\chi)$  it gives $c'$.
-  \item Start $\tdv'(\adv, \srs)$ and get the tree $\tree$.
-  % \item If indices $s$ or $i$ have not been guessed correctly, rewind $\adv$ to
-  %   the beginning and pick new $s$ and $i$. Since $S = \poly$ probability that
-  %   the correct $s$ will be guessed in polynomial time is overwhelming. That is,
-  %   the reduction works in expected polynomial time. Similarly, $i$ takes values
-  %   from $\range{1}{3}$, hence probability that $\rdv$ guesses $i$ in polynomial
-  %   time is overwhelming. 
-  \item Since $\tree$ contains $\noofc + 1$ evaluations of $\p{t_{lo}} (X)$, the
-    polynomial can be reconstructed. 
-  \item Since $\adv$ is algebraic, $\rdv$ learns composition of $\p{t_{lo}} (X)$ in
-    the $\srs$ and simulated elements. 
-  \item Hence $\rdv$ learns whether $c$ is a commitment to $\p{p}$ or $\p{p'}$.
-  \item $\rdv$ returns its guessing bit to $\cdv$.
-  \end{enumerate}
-  % \ncase{Conclusion}
-  % Since probability 
+	The main idea of the proof is to show that an adversary who breaks forking
+	soundness can be used to break hiding properties of the polynomial commitment
+	scheme or a $\dlog$ problem instance. The proof goes by game hops. Let $\tree$
+	be the tree produced by $\tdv$ by rewinding $\adv$. Note that since the tree
+	branches after Round 3, the instance $\inp$, commitments
+	$\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
+		(\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges
+	$\alpha, \beta, \gamma$ are the same. The tree branches after the third round
+	of the protocol where the challenge $\chz$ is presented, thus tree $\tree$ is
+	build using different values of $\chz$. 
+	%
+	We consider the following games.
+	
+	\ncase{Game 0} In this game the adversary wins if
+	% \begin{inparaenum}[(1)]
+	% \item
+	all the transcripts it produced are acceptable by the ideal verifier,
+	i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}, and
+	% \item
+	none of commitments
+	$\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
+		(\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$ use elements from a
+	simulated proof, and
+	% \item
+	the extractor fails to extract a valid witness out of the proof.
+	%\end{inparaenum}
+	
+	\ncase{Probability that $\adv$ wins Game 0 is negligible} Probability of
+	$\adv$ winning this game is $\epsid(\secpar)$ as the protocol $\plonkprot$,
+	instantiated with the idealised verification equation, is perfectly knowledge
+	sound except with negligible probability of the idealised verifier failure
+	$\epsid(\secpar)$. Hence for a valid proof $\zkproof$ for a statement $\inp$
+	there exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note that
+	since the $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for
+	different challenges $\chz$, it obtains the same number of different
+	evaluations of polynomials
+	$\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts
+	are acceptable by an idealised verifier, the equality between polynomial
+	$\p{t} (X)$ and combination of polynomials
+	$\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ described in Round 3 of the
+	protocol holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid
+	witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are
+	of degree at most $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their
+	evaluations known, $\extt$ can recreate polynomials' coefficients by interpolation
+	and reveal the witness with probability $1$. Hence, the probability that
+	extraction fails in that case is upper-bounded by probability of an idealised
+	verifier failing $\epsid(\secpar)$, which is negligible.
+	
+	\ncase{Game 1} In this game the adversary additionally wins if
+	%\begin{inparaenum}
+	% \item
+	it produces a transcript in $\tree$ such that
+	$\vereq_{\inp, \zkproof}(\chi) = 0$, but $\vereq_{\inp, \zkproof}(X) \neq 0$,
+	and
+	% \item
+	none of commitments
+	$\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
+		(\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$ use elements from a
+	simulated proof.
+	% \end{inparaenum}
+	The first condition means that the ideal verifier does not accept the proof,
+	but the real verifier does.
+	
+	\ncase{Game 0 to Game 1} Assume the adversary wins in Game 1, but
+	does not win in Game 0. We show that such adversary may be used to break the
+	$\dlog$ assumption. More precisely, let $\tdv$ be an algorithm that for
+	relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
+	of acceptable transcripts such that the winning condition of the game
+	holds. Let $\rdvdlog$ be a reduction that gets as input an
+	$(\noofc + 2, 1)$-dlog instance $\gone{1, \ldots, \chi^{\noofc+2}}, \gtwo{\chi}$ and is tasked to output $\chi$.
+	
+	The reduction $\rdvdlog$ proceeds as follows.
+	\hamid{\begin{enumerate}
+			\item Build a SRS $\srs$ using the input $\dlog$ instance. Answer $\adv$'s queries for SRS updates and set the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS. Start $\tdv(\adv, \srs')$;
+			\item Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a
+			relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such
+			that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
+			$\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all group
+			elements included in $\tree$ are extended by their representation as a
+			combination of the input $\GRP_1$-elements. Hence, all coefficients of the
+			verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known.
+			\item Find $\vereq_{\inp, \zkproof}(X)$ zero points and find $\chi'$ among
+			them.
+			\item Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates. These trapdoors can be extracted by the reduction from the update proofs given by $\adv$.
+			\item Return  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.
+	\end{enumerate}}
+	Hence, the probability that the adversary wins Game 1 is upper-bounded by
+	$\epsdlog(\secpar)$.
 \end{proof}
 
 \iffalse
 \begin{proof}
-  Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
-  $\GRP_1$-elements; that is,
-  $\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc + 2}}$. Let $\tdv$ be an
-  algebraic adversary that produces a statement $\inp$ and a
-  $(1, 1, 3\noofc + 1, 1)$-tree of acceptable transcripts $\tree$.  Note that in
-  all transcripts the instance $\inp$, proof elements
-  $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and
-  challenges $\alpha, \beta, \gamma$ are common as the transcripts share the
-  first three rounds. The tree branches after the third round of the protocol
-  where the challenge $\chz$ is presented, thus tree $\tree$ is build using
-  different values of $\chz$.
-
-  We consider two games.
-
-  \ncase{Game 0} In this game the adversary wins if all the transcripts it
-  produced are acceptable by the ideal verifier,
-  i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}, yet the extractor
-  fails to extract a valid witness out of them.
-
-  Probability of $\tdv$ winning this game is $\epsid(\secpar)$ as the protocol
-  $\plonkprot$, instantiated with the idealised verification equation, is
-  perfectly sound except with negligible probability of the idealised verifier
-  failure $\epsid(\secpar)$. Hence for a valid proof $\zkproof$ for a statement
-  $\inp$ there exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note
-  that since the $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for
-  different challenges $\chz$, it obtains the same number of different
-  evaluations of polynomials $\p{a}, \p{b}, \p{c}, \p{z}, \p{t}$. Since the
-  transcripts are acceptable by an idealised verifier, the equality between
-  polynomial $\p{t}$ and combination of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$
-  described in Round 3 of the protocol holds. Hence, $\p{a}, \p{b}, \p{c}$
-  encodes the valid witness for the proven statement. Since
-  $\p{a}, \p{b}, \p{c}$ are of degree at most $(\noofc + 2)$ and there is more
-  than $(\noofc + 2)$ their evaluations known, $\extt$ can recreate their
-  coefficients by interpolation and reveal the witness with probability
-  $1$. Hence, the probability that extraction fails in that case is
-  upper-bounded by probability of an idealised verifier failing
-  $\epsid(\secpar)$, which is negligible.
-
-  \ncase{Game 1} In this game the adversary additionally wins if it produces a
-  transcript in $\tree$ such that $\vereq_{\inp, \zkproof}(\chi) = 0$, but
-  $\vereq_{\inp, \zkproof}(X) \neq 0$. That is, the ideal verifier does not
-  accept the proof, but the real verifier does.
-
-  \ncase{Game 0 to Game 1} Assume the adversary wins in Game 1, but
-  does not win in Game 0. We show that such adversary may be used to break the
-  $\dlog$ assumption. More precisely, let $\tdv$ be an adversary that for
-  relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
-  of acceptable transcripts such that the winning condition of the game
-  holds. Let $\rdvdlog$ be a reduction that gets as input an
-  $(\noofc + 2, 1)$-dlog instance $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$
-  and is tasked to output $\chi$. The reduction proceeds as follows---it gives
-  the input instance to the adversary as the SRS. Let $(1, \tree)$ be the output
-  returned by $\adv$. Let $\inp$ be a relation proven in $\tree$.  Consider a
-  transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$,
-  but $\vereq_{\inp, \zkproof}(\chi) = 0$. Since the adversary is algebraic, all
-  group elements included in $\tree$ are extended by their representation as a
-  combination of the input $\GRP_1$-elements. Hence all coefficients of the
-  verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known and
-  $\rdvdlog$ can find its zero points. Since
-  $\vereq_{\inp, \zkproof}(\chi) = 0$, the targeted discrete log value $\chi$ is
-  among them.  Hence, the probability that this event happens is upper-bounded
-  by $\epsdlog(\secpar)$. \qed
+	Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
+	$\GRP_1$-elements; that is,
+	$\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc + 2}}$. Let $\tdv$ be an
+	algebraic adversary that produces a statement $\inp$ and a
+	$(1, 1, 3\noofc + 1, 1)$-tree of acceptable transcripts $\tree$.  Note that in
+	all transcripts the instance $\inp$, proof elements
+	$\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and
+	challenges $\alpha, \beta, \gamma$ are common as the transcripts share the
+	first three rounds. The tree branches after the third round of the protocol
+	where the challenge $\chz$ is presented, thus tree $\tree$ is build using
+	different values of $\chz$.
+	
+	We consider two games.
+	
+	\ncase{Game 0} In this game the adversary wins if all the transcripts it
+	produced are acceptable by the ideal verifier,
+	i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}, yet the extractor
+	fails to extract a valid witness out of them.
+	
+	Probability of $\tdv$ winning this game is $\epsid(\secpar)$ as the protocol
+	$\plonkprot$, instantiated with the idealised verification equation, is
+	perfectly sound except with negligible probability of the idealised verifier
+	failure $\epsid(\secpar)$. Hence for a valid proof $\zkproof$ for a statement
+	$\inp$ there exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note
+	that since the $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for
+	different challenges $\chz$, it obtains the same number of different
+	evaluations of polynomials $\p{a}, \p{b}, \p{c}, \p{z}, \p{t}$. Since the
+	transcripts are acceptable by an idealised verifier, the equality between
+	polynomial $\p{t}$ and combination of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$
+	described in Round 3 of the protocol holds. Hence, $\p{a}, \p{b}, \p{c}$
+	encodes the valid witness for the proven statement. Since
+	$\p{a}, \p{b}, \p{c}$ are of degree at most $(\noofc + 2)$ and there is more
+	than $(\noofc + 2)$ their evaluations known, $\extt$ can recreate their
+	coefficients by interpolation and reveal the witness with probability
+	$1$. Hence, the probability that extraction fails in that case is
+	upper-bounded by probability of an idealised verifier failing
+	$\epsid(\secpar)$, which is negligible.
+	
+	\ncase{Game 1} In this game the adversary additionally wins if it produces a
+	transcript in $\tree$ such that $\vereq_{\inp, \zkproof}(\chi) = 0$, but
+	$\vereq_{\inp, \zkproof}(X) \neq 0$. That is, the ideal verifier does not
+	accept the proof, but the real verifier does.
+	
+	\ncase{Game 0 to Game 1} Assume the adversary wins in Game 1, but
+	does not win in Game 0. We show that such adversary may be used to break the
+	$\dlog$ assumption. More precisely, let $\tdv$ be an adversary that for
+	relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
+	of acceptable transcripts such that the winning condition of the game
+	holds. Let $\rdvdlog$ be a reduction that gets as input an
+	$(\noofc + 2, 1)$-dlog instance $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$
+	and is tasked to output $\chi$. The reduction proceeds as follows---it gives
+	the input instance to the adversary as the SRS. Let $(1, \tree)$ be the output
+	returned by $\adv$. Let $\inp$ be a relation proven in $\tree$.  Consider a
+	transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$,
+	but $\vereq_{\inp, \zkproof}(\chi) = 0$. Since the adversary is algebraic, all
+	group elements included in $\tree$ are extended by their representation as a
+	combination of the input $\GRP_1$-elements. Hence all coefficients of the
+	verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known and
+	$\rdvdlog$ can find its zero points. Since
+	$\vereq_{\inp, \zkproof}(\chi) = 0$, the targeted discrete log value $\chi$ is
+	among them.  Hence, the probability that this event happens is upper-bounded
+	by $\epsdlog(\secpar)$. \qed
 \end{proof}
 \fi
+
+%\subsection{Forking soundness}
+%\begin{lemma}
+%\label{lem:plonkprot_ss}
+%Let KZG be hiding with security $\epsh (\secpar)$, $\plonkprot$'s idealized
+%verifier fail with probability $\epsid (\secpar)$, and $(\noofc + 2, 1)$-$\dlog$
+%problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
+%$(\epsid (\secpar) + \epsdlog (\secpar) + 8 \cdot S \cdot \epsh(\secpar) +
+%, 3, 3 \noofc + 1)$-forking sound against algebraic adversary
+%$\adv$ who makes up to $S = \poly$ simulation oracle queries.\hamid{In the new definition, $\adv$ does not have access to the simulation oracle; so this should be changed!}
+%\end{lemma}
+%
+%\begin{proof}
+%  The main idea of the proof is to show that an adversary who breaks forking
+%  soundness can be used to break hiding properties of the polynomial commitment
+%  scheme or a $\dlog$ problem instance. The proof goes by game hops. Let $\tree$
+%  be the tree produced by $\tdv$ by rewinding $\adv$. Note that since the tree
+%  branches after Round 3, the instance $\inp$, commitments
+%  $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
+%    (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges
+%  $\alpha, \beta, \gamma$ are the same. The tree branches after the third round
+%  of the protocol where the challenge $\chz$ is presented, thus tree $\tree$ is
+%  built using different values of $\chz$. 
+%%
+%  We consider the following games.
+%
+%  \ncase{Game 0} In this game the adversary wins if
+% % \begin{inparaenum}[(1)]
+% % \item
+%  all the transcripts it produced are acceptable by the ideal verifier,
+%    i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}, and
+%    % \item
+%    none of commitments
+%    $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
+%      (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$ use elements from a
+%    simulated proof, and
+%    % \item
+%    the extractor fails to extract a valid witness out of the proof.
+%  %\end{inparaenum}
+%
+%  \ncase{Probability that $\adv$ wins Game 0 is negligible} Probability of
+%  $\adv$ winning this game is $\epsid(\secpar)$ as the protocol $\plonkprot$,
+%  instantiated with the idealised verification equation, is perfectly knowledge
+%  sound except with negligible probability of the idealised verifier failure
+%  $\epsid(\secpar)$. Hence for a valid proof $\zkproof$ for a statement $\inp$
+%  there exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note that
+%  since the $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for
+%  different challenges $\chz$, it obtains the same number of different
+%  evaluations of polynomials
+%  $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts
+%  are acceptable by an idealised verifier, the equality between polynomial
+%  $\p{t} (X)$ and combination of polynomials
+%  $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ described in Round 3 of the
+%  protocol holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid
+%  witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are
+%  of degree at most $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their
+%  evaluations known, $\extt$ can recreate polynomials' coefficients by interpolation
+%  and reveal the witness with probability $1$. Hence, the probability that
+%  extraction fails in that case is upper-bounded by probability of an idealised
+%  verifier failing $\epsid(\secpar)$, which is negligible.
+%
+%  \ncase{Game 1} In this game the adversary additionally wins if
+%  %\begin{inparaenum}
+%  % \item
+%  it produces a transcript in $\tree$ such that
+%  $\vereq_{\inp, \zkproof}(\chi) = 0$, but $\vereq_{\inp, \zkproof}(X) \neq 0$,
+%  and
+%  % \item
+%  none of commitments
+%  $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
+%    (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$ use elements from a
+%  simulated proof.
+%  % \end{inparaenum}
+%  The first condition means that the ideal verifier does not accept the proof,
+%  but the real verifier does.
+%
+%  \ncase{Game 0 to Game 1} Assume the adversary wins in Game 1, but
+%  does not win in Game 0. We show that such adversary may be used to break the
+%  $\dlog$ assumption. More precisely, let $\tdv$ be an algorithm that for
+%  relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
+%  of acceptable transcripts such that the winning condition of the game
+%  holds. Let $\rdvdlog$ be a reduction that gets as input an
+%  $(\noofc + 2, 1)$-dlog instance $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$ \hamid{shouldn't be $\gone{1, \ldots, \chi^{\noofc+2}}, \gtwo{\chi}$}
+%  and is tasked to output $\chi$.
+%
+%  The reduction $\rdvdlog$ proceeds as follows.
+%  \hamid{\begin{enumerate}
+%  \item Build a SRS $\srs$ using the input $\dlog$ instance. Answer $\adv$'s queries for SRS updates and set the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS. Start $\tdv(\adv, \srs')$;
+%  \item Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a
+%    relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such
+%    that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
+%    $\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all group
+%    elements included in $\tree$ are extended by their representation as a
+%    combination of the input $\GRP_1$-elements. Hence, all coefficients of the
+%    verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known.
+%  \item Find $\vereq_{\inp, \zkproof}(X)$ zero points and find $\chi'$ among
+%    them.
+%  \item Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates. These trapdoors can be extracted by the reduction from the update proofs given by $\adv$.
+%  \item Return  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.
+%  \end{enumerate}}
+%  Hence, the probability that the adversary wins Game 1 is upper-bounded by
+%  $\epsdlog(\secpar)$.
+%
+%  \iffalse
+%  \ncase{Game 0} In this game the adversary $\adv$ wins if $\tdv$ fails to
+%  output tree $\tree$ such that $\extt$ is able to extract a witness out of it
+%  and none of commitments
+%  $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
+%    (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$ use elements from a
+%  simulated proof.
+%
+%  \ncase{Probability that $\adv$ wins Game 0 is negligible}
+%  \michals{10.09}{Reduction to knowledge soundness}
+%  Let $\adv$ be considered forking soundness adversary. 
+%  Let $\adv$ be an adversary that breaks forking soundness.
+%  Note that if
+%  $\p{a}(X), \p{b} (X), \p{c} (X)$ contain witness at their coefficients, then 
+%  We use $\adv$ to
+%  build a reduction $\rdv$ that breaks soundness of $\plonkprotfs$. Let $\inp$
+%  be the instance the adversary output and $\zkproof$ its proof. The
+%  reduction proceeds as follows:
+%  \begin{enumerate}
+%  \item 
+%  \end{enumerate}
+%  \fi
+%
+%  \ncase{Game 2} In this game the adversary additionally wins if at least one of
+%  the commitments $\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi)$
+%  utilizes a commitment that comes from a simulated proof; for example, $\adv$
+%  could compute its commitment to $\p{c} (X)$ as follows: it picks a polynomial
+%  $\p{p} (X)$, computes $\gone{\p{p} (\chi)}$, and outputs commitment
+%  $\gone{\p{c} (\chi)} = \gone{\p{p} (\chi)} + c$, where $c$ is a commitment
+%  output by a simulator. In the following, w.l.o.g, we assume that $\adv$ uses
+%  some simulated element to compute commitment $\gone{\p{c} (\chi)}$.
+%
+%  \ncase{Game 1 to Game 2} Given adversary $\adv$ that wins in Game 2, but not
+%  in Game 1, we show a reduction $\rdv$ that uses $\adv$ and $\tdv$ to break
+%  hiding property
+%  % \michals{9.9}{Define hiding property --
+%  % w.r.t.~masking, adversary can get evaluation at number of points (here --
+%  % 1)}
+%  of the commitment scheme. $\rdv$ proceeds as follows:
+%  \begin{enumerate}
+%  \item \hamid{Given polynomial commitment SRS $\srs_{\PCOM}$, produce $\plonk$'s SRS
+%    $\srs$.}
+%  \item Pick random polynomials $\p{p} (X), \p{p'} (X) \in \FF^{< |\HHH|} [X]$,
+%    hiding parameter $k = 2$ and send them to the polynomial commitment
+%    challenger $\cdv$.
+%  \item From the challenger get the challenge commitment $c$.
+%  \item Let $S$ be the upper bound on the number of simulator oracles queries
+%    the adversary can make. %\michals{9.9}{Note -- new bound!}
+%  \item Guess which simulator's response is going to be used by $\adv$ in its proof. Let $s$ be the index of this response.\hamid{should be changed!}
+%  \item Guess which of the simulated polynomials in response $s$ will be
+%    used. Let $i$ be the index of this polynomial.\hamid{should be changed!}
+%  \item Let $\tdv'$ be an algorithm that behaves exactly as $\tdv$, except when
+%    $\adv$ asks for $s$-th simulated proof, $\tdv'$'s internal procedure $\bdv'$
+%    provides $\adv$ with a simulated proof such that instead of randomly picked
+%    commitment $\p{c} (\chi)$ it gives $c$.
+%    \michals{9.9}{Alternatively, we can parametrize $\tdv$ by $\bdv$.}
+%  \item Start $\tdv'(\adv, \srs)$ and get the tree $\tree$.
+%  % \item If indices $s$ or $i$ have not been guessed correctly, rewind $\adv$ to
+%  %   the beginning and pick new $s$ and $i$. Since $S = \poly$ probability that
+%  %   the correct $s$ will be guessed in polynomial time is overwhelming. That is,
+%  %   the reduction works in expected polynomial time. Similarly, $i$ takes values
+%  %   from $\range{1}{4}$, hence probability that $\rdv$ guesses $i$ in polynomial
+%  %   time is overwhelming. 
+%  \item Since $\tree$ contains $\noofc + 1$ evaluations of $\p{c} (X)$, the
+%    polynomial can be reconstructed. 
+%  \item Since $\adv$ is algebraic, $\rdv$ learns composition of $\p{c} (X)$ in
+%    the $\srs$ and simulated elements. 
+%  \item Hence $\rdv$ learns whether $c$ is a commitment to $\p{p} (X)$ or
+%    $\p{p'} (X)$.
+%  \item $\rdv$ returns its guessing bit to $\cdv$.
+%  \end{enumerate}
+%
+%  \ncase{Game 3} In this game the adversary additionally wins if at least one of
+%  the commitments $\p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)$
+%  comes from a simulated proof.
+%
+%  \ncase{Game 2 to Game 3} Given adversary $\adv$ that wins in Game
+%  3, but not in Game 2, we show a reduction $\rdv$ that uses $\adv$ and $\tdv$
+%  to break hiding property
+%  % \michals{9.9}{Define hiding property --
+%  %   w.r.t.~masking, adversary can get evaluation at number of points (here --
+%  %   1)}
+%  of the commitment scheme. $\rdv$ proceeds as follows:
+%  \begin{enumerate}
+%  \item Guess the simulation query index $s$ the polynomial(s) come from and
+%    whether the polynomial is $\p{t_{lo}} (X), \p{t_{mid}} (X)$, or
+%    $\p{t_{hi}} (X)$. Denote by $i \in \range{1}{3}$ the index of the guessed
+%    polynomial. W.l.o.g.~assume $i = 1$, i.e.~it is $\p{t_{lo}} (X)$.
+%  \item Produce two random polynomials $\p{p_0} (X)$ and $\p{p_1} (X)$ and
+%    send them to the challenger $\cdv$. Get commitment $c$.
+%  \item Let $\tdv'$ be an algorithm that behaves exactly as $\tdv$, except when
+%    $\adv$ asks for $s$-th simulated proof, $\tdv'$'s internal procedure $\bdv'$
+%    provides $\adv$ with a simulated proof such that:
+%    \begin{enumerate}
+%    \item Start making the simulated proof as a trapdoor-less simulator would.
+%    \item Before polynomials $\p{t_{lo}} (X), \p{t_{mid}}, \p{t_{hi}}$ are
+%      computed, pick random $\chz$ and get evaluation $p_\chz = \p{p_b} (\chz)$,
+%      i.e.~evaluate the polynomial in $c$ at $\chz$.
+%      % \michals{9.9}{If we give
+%      %   hiding adversary possibility to evaluate polynomials, we need to use
+%      %   masking}
+%    \item Let $\ev{t_{lo}}$ be the evaluation of the simulated $\p{t_{lo}} (\chz)$.
+%    \item Pick $r$ such that $p_\chz + r = \p{t_{lo}} (\chz)$.
+%    \item For the commitment of $\p{t_{lo}}$ output $c' = c + \gone{r}$.
+%    \item Compute the rest of the simulated proof as a simulator would.
+%    \end{enumerate}
+%  \item Let $\tdv'$ be an algorithm that behaves exactly as $\tdv$, except when
+%    $\adv$ asks for $s$-th simulated proof, $\tdv'$'s internal procedure $\bdv'$
+%    provides $\adv$ with a simulated proof such that instead of a simulated
+%    $\p{t_{lo}} (\chi)$  it gives $c'$.
+%  \item Start $\tdv'(\adv, \srs)$ and get the tree $\tree$.
+%  % \item If indices $s$ or $i$ have not been guessed correctly, rewind $\adv$ to
+%  %   the beginning and pick new $s$ and $i$. Since $S = \poly$ probability that
+%  %   the correct $s$ will be guessed in polynomial time is overwhelming. That is,
+%  %   the reduction works in expected polynomial time. Similarly, $i$ takes values
+%  %   from $\range{1}{3}$, hence probability that $\rdv$ guesses $i$ in polynomial
+%  %   time is overwhelming. 
+%  \item Since $\tree$ contains $\noofc + 1$ evaluations of $\p{t_{lo}} (X)$, the
+%    polynomial can be reconstructed. 
+%  \item Since $\adv$ is algebraic, $\rdv$ learns composition of $\p{t_{lo}} (X)$ in
+%    the $\srs$ and simulated elements. 
+%  \item Hence $\rdv$ learns whether $c$ is a commitment to $\p{p}$ or $\p{p'}$.
+%  \item $\rdv$ returns its guessing bit to $\cdv$.
+%  \end{enumerate}
+%  % \ncase{Conclusion}
+%  % Since probability 
+%\end{proof}
+%
+%\iffalse
+%\begin{proof}
+%  Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
+%  $\GRP_1$-elements; that is,
+%  $\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc + 2}}$. Let $\tdv$ be an
+%  algebraic adversary that produces a statement $\inp$ and a
+%  $(1, 1, 3\noofc + 1, 1)$-tree of acceptable transcripts $\tree$.  Note that in
+%  all transcripts the instance $\inp$, proof elements
+%  $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and
+%  challenges $\alpha, \beta, \gamma$ are common as the transcripts share the
+%  first three rounds. The tree branches after the third round of the protocol
+%  where the challenge $\chz$ is presented, thus tree $\tree$ is build using
+%  different values of $\chz$.
+%
+%  We consider two games.
+%
+%  \ncase{Game 0} In this game the adversary wins if all the transcripts it
+%  produced are acceptable by the ideal verifier,
+%  i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}, yet the extractor
+%  fails to extract a valid witness out of them.
+%
+%  Probability of $\tdv$ winning this game is $\epsid(\secpar)$ as the protocol
+%  $\plonkprot$, instantiated with the idealised verification equation, is
+%  perfectly sound except with negligible probability of the idealised verifier
+%  failure $\epsid(\secpar)$. Hence for a valid proof $\zkproof$ for a statement
+%  $\inp$ there exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note
+%  that since the $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for
+%  different challenges $\chz$, it obtains the same number of different
+%  evaluations of polynomials $\p{a}, \p{b}, \p{c}, \p{z}, \p{t}$. Since the
+%  transcripts are acceptable by an idealised verifier, the equality between
+%  polynomial $\p{t}$ and combination of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$
+%  described in Round 3 of the protocol holds. Hence, $\p{a}, \p{b}, \p{c}$
+%  encodes the valid witness for the proven statement. Since
+%  $\p{a}, \p{b}, \p{c}$ are of degree at most $(\noofc + 2)$ and there is more
+%  than $(\noofc + 2)$ their evaluations known, $\extt$ can recreate their
+%  coefficients by interpolation and reveal the witness with probability
+%  $1$. Hence, the probability that extraction fails in that case is
+%  upper-bounded by probability of an idealised verifier failing
+%  $\epsid(\secpar)$, which is negligible.
+%
+%  \ncase{Game 1} In this game the adversary additionally wins if it produces a
+%  transcript in $\tree$ such that $\vereq_{\inp, \zkproof}(\chi) = 0$, but
+%  $\vereq_{\inp, \zkproof}(X) \neq 0$. That is, the ideal verifier does not
+%  accept the proof, but the real verifier does.
+%
+%  \ncase{Game 0 to Game 1} Assume the adversary wins in Game 1, but
+%  does not win in Game 0. We show that such adversary may be used to break the
+%  $\dlog$ assumption. More precisely, let $\tdv$ be an adversary that for
+%  relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
+%  of acceptable transcripts such that the winning condition of the game
+%  holds. Let $\rdvdlog$ be a reduction that gets as input an
+%  $(\noofc + 2, 1)$-dlog instance $\gone{1, \ldots, \chi^{\noofc}}, \gtwo{\chi}$
+%  and is tasked to output $\chi$. The reduction proceeds as follows---it gives
+%  the input instance to the adversary as the SRS. Let $(1, \tree)$ be the output
+%  returned by $\adv$. Let $\inp$ be a relation proven in $\tree$.  Consider a
+%  transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$,
+%  but $\vereq_{\inp, \zkproof}(\chi) = 0$. Since the adversary is algebraic, all
+%  group elements included in $\tree$ are extended by their representation as a
+%  combination of the input $\GRP_1$-elements. Hence all coefficients of the
+%  verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known and
+%  $\rdvdlog$ can find its zero points. Since
+%  $\vereq_{\inp, \zkproof}(\chi) = 0$, the targeted discrete log value $\chi$ is
+%  among them.  Hence, the probability that this event happens is upper-bounded
+%  by $\epsdlog(\secpar)$. \qed
+%\end{proof}
+%\fi
 
 \subsection{Honest verifier zero-knowledge}
 \begin{lemma}
@@ -753,6 +853,6 @@ extraction probability $\extProb$ is at least
   \epsop(\secpar))^{3\noofc + 1} -\eps(\secpar)\,,
 \]
 for some negligible $\eps(\secpar)$ and $\noofc$ being the number of
-constrains in the proven circuit.
+constraints in the proven circuit.
 \end{corollary}
  

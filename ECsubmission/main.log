@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.7.21)  27 SEP 2021 16:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.7.21)  29 SEP 2021 07:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -10,8 +10,8 @@ Document Class: llncs 2018/03/10 v2.20
  LaTeX document class for Lecture Notes in Computer Science
 (/usr/local/texlive/2021/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
-(/usr/local/texlive/2021/texmf-dist/tex/latex/base/size11.clo
-File: size11.clo 2020/04/10 v1.4m Standard LaTeX file (size option)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2020/04/10 v1.4m Standard LaTeX file (size option)
 )
 \c@part=\count179
 \c@section=\count180
@@ -402,7 +402,7 @@ LaTeX Font Info:    Trying to load font information for T1+ntxtlf on input line
 File: t1ntxtlf.fd 2015/01/17 v1.0 font definition file for T1/ntx/tlf
 )
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 10.95pt on input line 112.
+(Font)              scaled to size 10.0pt on input line 112.
 )
 (/usr/local/texlive/2021/texmf-dist/tex/latex/base/textcomp.sty
 Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
@@ -1043,7 +1043,7 @@ LaTeX Info: Redefining \addtolength on input line 81.
 )
 \c@@todonotes@numberoftodonotes=\count354
 )
-Package hyperref Info: Option `final' set `true' on input line 34.
+Package hyperref Info: Option `final' set `true' on input line 36.
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/jknapltx/mathrsfs.sty
 Package: mathrsfs 1996/01/01 Math RSFS package v1.0 (jk)
@@ -1242,113 +1242,6 @@ Package: paralist 2017/01/22 v2.7 Extended list environments
 \plparsep=\skip89
 \pl@lab=\toks53
 )
-(/usr/local/texlive/2021/texmf-dist/tex/latex/mdframed/mdframed.sty
-Package: mdframed 2013/07/01 1.9b: mdframed
-
-(/usr/local/texlive/2021/texmf-dist/tex/latex/zref/zref-abspage.sty
-Package: zref-abspage 2020-07-03 v2.32 Module abspage for zref (HO)
-
-(/usr/local/texlive/2021/texmf-dist/tex/latex/zref/zref-base.sty
-Package: zref-base 2020-07-03 v2.32 Module base for zref (HO)
-Package zref Info: New property list: main on input line 764.
-Package zref Info: New property: default on input line 765.
-Package zref Info: New property: page on input line 766.
-)
-\c@abspage=\count403
-Package zref Info: New property: abspage on input line 66.
-)
-(/usr/local/texlive/2021/texmf-dist/tex/latex/needspace/needspace.sty
-Package: needspace 2010/09/12 v1.3d reserve vertical space
-)
-\mdf@templength=\skip90
-\c@mdf@globalstyle@cnt=\count404
-\mdf@skipabove@length=\skip91
-\mdf@skipbelow@length=\skip92
-\mdf@leftmargin@length=\skip93
-\mdf@rightmargin@length=\skip94
-\mdf@innerleftmargin@length=\skip95
-\mdf@innerrightmargin@length=\skip96
-\mdf@innertopmargin@length=\skip97
-\mdf@innerbottommargin@length=\skip98
-\mdf@splittopskip@length=\skip99
-\mdf@splitbottomskip@length=\skip100
-\mdf@outermargin@length=\skip101
-\mdf@innermargin@length=\skip102
-\mdf@linewidth@length=\skip103
-\mdf@innerlinewidth@length=\skip104
-\mdf@middlelinewidth@length=\skip105
-\mdf@outerlinewidth@length=\skip106
-\mdf@roundcorner@length=\skip107
-\mdf@footenotedistance@length=\skip108
-\mdf@userdefinedwidth@length=\skip109
-\mdf@needspace@length=\skip110
-\mdf@frametitleaboveskip@length=\skip111
-\mdf@frametitlebelowskip@length=\skip112
-\mdf@frametitlerulewidth@length=\skip113
-\mdf@frametitleleftmargin@length=\skip114
-\mdf@frametitlerightmargin@length=\skip115
-\mdf@shadowsize@length=\skip116
-\mdf@extratopheight@length=\skip117
-\mdf@subtitleabovelinewidth@length=\skip118
-\mdf@subtitlebelowlinewidth@length=\skip119
-\mdf@subtitleaboveskip@length=\skip120
-\mdf@subtitlebelowskip@length=\skip121
-\mdf@subtitleinneraboveskip@length=\skip122
-\mdf@subtitleinnerbelowskip@length=\skip123
-\mdf@subsubtitleabovelinewidth@length=\skip124
-\mdf@subsubtitlebelowlinewidth@length=\skip125
-\mdf@subsubtitleaboveskip@length=\skip126
-\mdf@subsubtitlebelowskip@length=\skip127
-\mdf@subsubtitleinneraboveskip@length=\skip128
-\mdf@subsubtitleinnerbelowskip@length=\skip129
-
-(/usr/local/texlive/2021/texmf-dist/tex/latex/mdframed/md-frame-0.mdf
-File: md-frame-0.mdf 2013/07/01\ 1.9b: md-frame-0
-)
-\mdf@frametitlebox=\box128
-\mdf@footnotebox=\box129
-\mdf@splitbox@one=\box130
-\mdf@splitbox@two=\box131
-\mdf@splitbox@save=\box132
-\mdfsplitboxwidth=\skip130
-\mdfsplitboxtotalwidth=\skip131
-\mdfsplitboxheight=\skip132
-\mdfsplitboxdepth=\skip133
-\mdfsplitboxtotalheight=\skip134
-\mdfframetitleboxwidth=\skip135
-\mdfframetitleboxtotalwidth=\skip136
-\mdfframetitleboxheight=\skip137
-\mdfframetitleboxdepth=\skip138
-\mdfframetitleboxtotalheight=\skip139
-\mdffootnoteboxwidth=\skip140
-\mdffootnoteboxtotalwidth=\skip141
-\mdffootnoteboxheight=\skip142
-\mdffootnoteboxdepth=\skip143
-\mdffootnoteboxtotalheight=\skip144
-\mdftotallinewidth=\skip145
-\mdfboundingboxwidth=\skip146
-\mdfboundingboxtotalwidth=\skip147
-\mdfboundingboxheight=\skip148
-\mdfboundingboxdepth=\skip149
-\mdfboundingboxtotalheight=\skip150
-\mdf@freevspace@length=\skip151
-\mdf@horizontalwidthofbox@length=\skip152
-\mdf@verticalmarginwhole@length=\skip153
-\mdf@horizontalspaceofbox=\skip154
-\mdfsubtitleheight=\skip155
-\mdfsubsubtitleheight=\skip156
-\c@mdfcountframes=\count405
-
-****** mdframed patching \endmdf@trivlist
-
-****** -- success******
-
-\mdf@envdepth=\count406
-\c@mdf@env@i=\count407
-\c@mdf@env@ii=\count408
-\c@mdf@zref@counter=\count409
-Package zref Info: New property: mdf@pagevalue on input line 895.
-)
 (/usr/local/texlive/2021/texmf-dist/tex/latex/caption/caption.sty
 Package: caption 2020/10/26 v3.5g Customizing captions (AR)
 
@@ -1373,60 +1266,41 @@ Package caption Warning: Unknown document class (or package),
 (caption)                standard defaults will be used.
 See the caption package documentation for explanation.
 
-\c@caption@flags=\count410
-\c@continuedfloat=\count411
+\c@caption@flags=\count403
+\c@continuedfloat=\count404
 Package caption Info: hyperref package is loaded.
 Package caption Info: listings package is loaded.
 ) (/usr/local/texlive/2021/texmf-dist/tex/latex/tools/bm.sty
 Package: bm 2019/07/24 v1.2d Bold Symbol Support (DPC/FMi)
 LaTeX Info: Redefining \bm on input line 209.
 )
-(/usr/local/texlive/2021/texmf-dist/tex/latex/geometry/geometry.sty
-Package: geometry 2020/01/02 v5.9 Page Geometry
-
-(/usr/local/texlive/2021/texmf-dist/tex/generic/iftex/ifvtex.sty
-Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
-)
-\Gm@cnth=\count412
-\Gm@cntv=\count413
-\c@Gm@tempcnt=\count414
-\Gm@bindingoffset=\dimen327
-\Gm@wd@mp=\dimen328
-\Gm@odd@mp=\dimen329
-\Gm@even@mp=\dimen330
-\Gm@layoutwidth=\dimen331
-\Gm@layoutheight=\dimen332
-\Gm@layouthoffset=\dimen333
-\Gm@layoutvoffset=\dimen334
-\Gm@dimlist=\toks54
-)
 (/usr/local/texlive/2021/texmf-dist/tex/generic/ulem/ulem.sty
-\UL@box=\box133
-\UL@hyphenbox=\box134
-\UL@skip=\skip157
-\UL@hook=\toks55
-\UL@height=\dimen335
-\UL@pe=\count415
-\UL@pixel=\dimen336
-\ULC@box=\box135
+\UL@box=\box128
+\UL@hyphenbox=\box129
+\UL@skip=\skip90
+\UL@hook=\toks54
+\UL@height=\dimen327
+\UL@pe=\count405
+\UL@pixel=\dimen328
+\ULC@box=\box130
 Package: ulem 2019/11/18
-\ULdepth=\dimen337
+\ULdepth=\dimen329
 )
 (/usr/local/texlive/2021/texmf-dist/tex/latex/dashbox/dashbox.sty
 Package: dashbox 2001/12/11 v1.14 Dashed and layered boxes
-\dashlength=\skip158
-\dashdash=\skip159
-\layersize=\skip160
-\d@shedsavebox=\box136
-\d@shedboxwidth=\skip161
-\d@shedboxtotalheight=\skip162
-\l@yersavebox=\box137
-\l@yerwidth=\skip163
-\l@yerboxwidth=\skip164
-\l@yertotalheight=\skip165
-\l@yerlineheight=\skip166
-\l@yervoffset=\skip167
-\c@l@yercount=\count416
+\dashlength=\skip91
+\dashdash=\skip92
+\layersize=\skip93
+\d@shedsavebox=\box131
+\d@shedboxwidth=\skip94
+\d@shedboxtotalheight=\skip95
+\l@yersavebox=\box132
+\l@yerwidth=\skip96
+\l@yerboxwidth=\skip97
+\l@yertotalheight=\skip98
+\l@yerlineheight=\skip99
+\l@yervoffset=\skip100
+\c@l@yercount=\count406
 )
 (/usr/local/texlive/2021/texmf-dist/tex/latex/setspace/setspace.sty
 Package: setspace 2011/12/19 v6.7a set line spacing
@@ -1437,80 +1311,80 @@ Package: setspace 2011/12/19 v6.7a set line spacing
 (./macros.tex)
 (/usr/local/texlive/2021/texmf-dist/tex/latex/titlesec/titlesec.sty
 Package: titlesec 2019/10/16 v2.13 Sectioning titles
-\ttl@box=\box138
-\beforetitleunit=\skip168
-\aftertitleunit=\skip169
-\ttl@plus=\dimen338
-\ttl@minus=\dimen339
-\ttl@toksa=\toks56
-\titlewidth=\dimen340
-\titlewidthlast=\dimen341
-\titlewidthfirst=\dimen342
+\ttl@box=\box133
+\beforetitleunit=\skip101
+\aftertitleunit=\skip102
+\ttl@plus=\dimen330
+\ttl@minus=\dimen331
+\ttl@toksa=\toks55
+\titlewidth=\dimen332
+\titlewidthlast=\dimen333
+\titlewidthfirst=\dimen334
 )
 (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/ntxmi/m/it on input line 80.
+LaTeX Font Info:    Checking defaults for OML/ntxmi/m/it on input line 82.
 LaTeX Font Info:    Trying to load font information for OML+ntxmi on input line
- 80.
+ 82.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/newtx/omlntxmi.fd
 File: omlntxmi.fd 2015/08/25 Fontinst v1.933 font definitions for OML/ntxmi.
 )
-LaTeX Font Info:    ... okay on input line 80.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 80.
-LaTeX Font Info:    ... okay on input line 80.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 80.
-LaTeX Font Info:    ... okay on input line 80.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 80.
-LaTeX Font Info:    ... okay on input line 80.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 80.
-LaTeX Font Info:    ... okay on input line 80.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 80.
-LaTeX Font Info:    ... okay on input line 80.
-LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 80.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 82.
 LaTeX Font Info:    Trying to load font information for U+ntxexa on input line 
-80.
+82.
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/newtx/untxexa.fd
 File: untxexa.fd 2012/04/16 Fontinst v1.933 font definitions for U/ntxexa.
 )
-LaTeX Font Info:    ... okay on input line 80.
-LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 80.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 82.
 LaTeX Font Info:    Trying to load font information for LMS+ntxsy on input line
- 80.
+ 82.
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/newtx/lmsntxsy.fd
 File: lmsntxsy.fd 2016/07/02 Fontinst v1.933 font definitions for LMS/ntxsy.
 )
-LaTeX Font Info:    ... okay on input line 80.
-LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 80.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 82.
 LaTeX Font Info:    Trying to load font information for LMX+ntxexx on input lin
-e 80.
+e 82.
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/newtx/lmxntxexx.fd
 File: lmxntxexx.fd 2016/07/03 Fontinst v1.933 font definitions for LMX/ntxexx.
 )
-LaTeX Font Info:    ... okay on input line 80.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 80.
-LaTeX Font Info:    ... okay on input line 80.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 80.
-LaTeX Font Info:    ... okay on input line 80.
-\c@mv@tabular=\count417
-\c@mv@boldtabular=\count418
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+\c@mv@tabular=\count407
+\c@mv@boldtabular=\count408
 
 (/usr/local/texlive/2021/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count419
-\scratchdimen=\dimen343
-\scratchbox=\box139
-\nofMPsegments=\count420
-\nofMParguments=\count421
-\everyMPshowfont=\toks57
-\MPscratchCnt=\count422
-\MPscratchDim=\dimen344
-\MPnumerator=\count423
-\makeMPintoPDFobject=\count424
-\everyMPtoPDFconversion=\toks58
+\scratchcounter=\count409
+\scratchdimen=\dimen335
+\scratchbox=\box134
+\nofMPsegments=\count410
+\nofMParguments=\count411
+\everyMPshowfont=\toks56
+\MPscratchCnt=\count412
+\MPscratchDim=\dimen336
+\MPnumerator=\count413
+\makeMPintoPDFobject=\count414
+\everyMPtoPDFconversion=\toks57
 ) (/usr/local/texlive/2021/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 
@@ -1528,14 +1402,14 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\c@lstlisting=\count425
+\c@lstlisting=\count415
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/base/inputenc.sty
 Package: inputenc 2020/08/01 v1.3d Input encoding file
-\inpenc@prehook=\toks59
-\inpenc@posthook=\toks60
+\inpenc@prehook=\toks58
+\inpenc@posthook=\toks59
 )
-Package hyperref Info: Link coloring OFF on input line 80.
+Package hyperref Info: Link coloring OFF on input line 82.
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
@@ -1547,127 +1421,82 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count426
+\c@section@level=\count416
 )
-LaTeX Info: Redefining \ref on input line 80.
-LaTeX Info: Redefining \pageref on input line 80.
-LaTeX Info: Redefining \nameref on input line 80.
+LaTeX Info: Redefining \ref on input line 82.
+LaTeX Info: Redefining \pageref on input line 82.
+LaTeX Info: Redefining \nameref on input line 82.
  (./main.out) (./main.out)
 \@outlinefile=\write6
 \openout6 = `main.out'.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-
-*geometry* driver: auto-detecting
-*geometry* detected driver: pdftex
-*geometry* verbose mode - [ preamble ] result:
-* driver: pdftex
-* paper: a4paper
-* layout: <same size as paper>
-* layoutoffset:(h,v)=(0.0pt,0.0pt)
-* modes: twoside 
-* h-part:(L,W,R)=(72.26999pt, 452.9679pt, 72.26999pt)
-* v-part:(T,H,B)=(72.26999pt, 700.50687pt, 72.26999pt)
-* \paperwidth=597.50787pt
-* \paperheight=845.04684pt
-* \textwidth=452.9679pt
-* \textheight=700.50687pt
-* \oddsidemargin=0.0pt
-* \evensidemargin=0.0pt
-* \topmargin=-28.0pt
-* \headheight=12.0pt
-* \headsep=16.0pt
-* \topskip=11.0pt
-* \footskip=30.0pt
-* \marginparwidth=90.0pt
-* \marginparsep=10.0pt
-* \columnsep=10.0pt
-* \skip\footins=10.0pt plus 4.0pt minus 2.0pt
-* \hoffset=0.0pt
-* \voffset=0.0pt
-* \mag=1000
-* \@twocolumnfalse
-* \@twosidetrue
-* \@mparswitchtrue
-* \@reversemarginfalse
-* (1in=72.27pt=25.4mm, 1cm=28.453pt)
-
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 14.4pt on input line 83.
+(Font)              scaled to size 14.4pt on input line 85.
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
-(Font)              scaled to size 14.4pt on input line 83.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 83.
+(Font)              scaled to size 14.4pt on input line 85.
+
+
+LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <5.5> not available
+(Font)              size <5> substituted on input line 85.
+
+LaTeX Font Info:    Trying to load font information for U+msa on input line 85.
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 83.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 85.
 
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Trying to load font information for U+ntxmia on input line 
-83.
+85.
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/newtx/untxmia.fd
 File: untxmia.fd 2018/04/14 Fontinst v1.933 font definitions for U/ntxmia.
 )
 LaTeX Font Info:    Trying to load font information for U+ntxsym on input line 
-83.
+85.
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/newtx/untxsym.fd
 File: untxsym.fd 2015/03/20 Fontinst v1.933 font definitions for U/ntxsym.
 )
 LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 
-83.
+85.
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/newtx/untxsyc.fd
 File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
 )
-LaTeX Font Info:    Trying to load font information for U+rsfs on input line 83
+LaTeX Font Info:    Trying to load font information for U+rsfs on input line 85
 .
 
 (/usr/local/texlive/2021/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
-LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 9.0pt on input line 83.
-
-
-LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <5.5> not available
-(Font)              size <5> substituted on input line 83.
-
 
 LaTeX Font Warning: Font shape `U/rsfs/m/n' in size <5.5> not available
-(Font)              size <5> substituted on input line 83.
+(Font)              size <5> substituted on input line 85.
 
-LaTeX Font Info:    Trying to load font information for T1+ntxtt on input line 
-83.
-(/usr/local/texlive/2021/texmf-dist/tex/latex/newtx/t1ntxtt.fd
-File: t1ntxtt.fd 2012/04/20 v3.1
-)
-LaTeX Font Info:    Font shape `T1/ntxtt/m/n' will be
-(Font)              scaled to size 9.0pt on input line 83.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 9.0pt on input line 85.
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
-(Font)              scaled to size 9.0pt on input line 84.
- (./Uintro.tex
+(Font)              scaled to size 9.0pt on input line 86.
+(./Uintro.tex
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
 (Font)              scaled to size 12.0pt on input line 3.
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
 (Font)              scaled to size 12.0pt on input line 3.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
-(Font)              scaled to size 10.95pt on input line 5.
+(Font)              scaled to size 10.0pt on input line 5.
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
-(Font)              scaled to size 10.95pt on input line 5.
+(Font)              scaled to size 10.0pt on input line 5.
 
 
 LaTeX Warning: Citation `brassard1988minimum' on page 1 undefined on input line
  5.
-
-
-LaTeX Warning: Citation `micali1994cs' on page 1 undefined on input line 7.
 
 LaTeX Font Info:    Trying to load font information for T1+ntxsups on input lin
 e 7.
@@ -1675,8 +1504,16 @@ e 7.
 File: t1ntxsups.fd 2015/01/17 v1.0
 )
 LaTeX Font Info:    Font shape `T1/ntxsups/m/n' will be
-(Font)              scaled to size 10.95pt on input line 7.
+(Font)              scaled to size 10.0pt on input line 7.
 LaTeX Font Info:    Font shape `T1/ntxsups/m/n' will be
+(Font)              scaled to size 9.0pt on input line 7.
+LaTeX Font Info:    Trying to load font information for T1+ntxtt on input line 
+7.
+
+(/usr/local/texlive/2021/texmf-dist/tex/latex/newtx/t1ntxtt.fd
+File: t1ntxtt.fd 2012/04/20 v3.1
+)
+LaTeX Font Info:    Font shape `T1/ntxtt/m/n' will be
 (Font)              scaled to size 9.0pt on input line 7.
 
 
@@ -1688,231 +1525,231 @@ LaTeX Font Info:    Trying to load font information for T1+qhv on input line 13
 File: t1qhv.fd 2009/09/25 v1.2 font definition file for T1/qhv
 )
 LaTeX Font Info:    Font shape `T1/qhv/m/n' will be
-(Font)              scaled to size 9.85492pt on input line 13.
+(Font)              scaled to size 8.99994pt on input line 13.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 8.0pt on input line 13.
+(Font)              scaled to size 7.3pt on input line 13.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 6.1pt on input line 13.
+(Font)              scaled to size 5.5pt on input line 13.
  [1
 
 
 
 
-{/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
+{/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+
+LaTeX Font Warning: Font shape `OT1/cmss/m/n' in size <5.5> not available
+(Font)              size <5> substituted on input line 44.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [2]
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 7.0pt on input line 73.
+LaTeX Font Info:    Font shape `T1/qhv/m/n' will be
+(Font)              scaled to size 6.29996pt on input line 73.
+
+[3]
+
+LaTeX Font Warning: Font shape `OT1/cmr/b/n' in size <5.5> not available
+(Font)              size <5> substituted on input line 104.
+
 
 LaTeX Font Warning: Font shape `OT1/cmss/b/n' undefined
 (Font)              using `OT1/cmss/m/n' instead on input line 104.
 
-[3] [4]
 
-LaTeX Warning: Citation `C:GhoTes21' on page 5 undefined on input line 245.
+LaTeX Font Warning: Font shape `OT1/cmss/b/n' in size <5.5> not available
+(Font)              size <5> substituted on input line 104.
 
+[4] [5] [6]
 
-LaTeX Warning: Citation `C:GhoTes21' on page 5 undefined on input line 246.
-
-
-LaTeX Warning: Citation `C:GhoTes21' on page 5 undefined on input line 248.
+LaTeX Warning: Citation `C:GhoTes21' on page 7 undefined on input line 246.
 
 
-LaTeX Warning: Citation `C:GhoTes21' on page 5 undefined on input line 251.
-
-) (./Uprelim.tex
-
-LaTeX Font Warning: Font shape `OT1/cmss/m/n' in size <5.5> not available
-(Font)              size <5> substituted on input line 9.
-
-[5]
-Underfull \hbox (badness 3977) in paragraph at lines 33--51
-\T1/ntxtlf/m/it/10.95 Bilinear groups. \T1/ntxtlf/m/n/10.95 A bi-lin-ear group 
-gen-er-a-tor $[]\LMS/ntxsy/m/n/10.95 ¹\OT1/cmr/m/n/10.95 1[]\LMS/ntxsy/m/n/10.9
-5 º$ \T1/ntxtlf/m/n/10.95 re-turns pub-lic pa-ram-e-ters $\OT1/cmss/b/n/10.95 p
- \U/ntxmia/m/it/10.95 =
- []
+LaTeX Warning: Citation `C:GhoTes21' on page 7 undefined on input line 247.
 
 
-LaTeX Warning: Reference `fig:pcomp' on page 1 undefined on input line 99.
+LaTeX Warning: Citation `C:GhoTes21' on page 7 undefined on input line 249.
 
 
-LaTeX Warning: Reference `fig:pcoms' on page 1 undefined on input line 99.
+LaTeX Warning: Citation `C:GhoTes21' on page 7 undefined on input line 252.
 
-
-LaTeX Warning: Reference `sec:pcom' on page 1 undefined on input line 99.
-
-
-LaTeX Warning: Reference `sec:pcom' on page 1 undefined on input line 102.
-
+) (./Uprelim.tex [7]
 
 LaTeX Warning: Reference `lem:pcoms_unique_op' on page 1 undefined on input lin
-e 118.
-
-[6]
-Underfull \hbox (badness 10000) detected at line 186
- []$[]   [] \LMS/ntxsy/m/n/10.95 ^^Y[] []  \OML/ntxmi/m/it/10.95 :  $ 
- []
-
-LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
-(Font)              scaled to size 8.0pt on input line 230.
-
-LaTeX Font Warning: Font shape `OT1/cmr/b/n' in size <5.5> not available
-(Font)              size <5> substituted on input line 230.
-
-[7]
-
-LaTeX Warning: Reference ` lem:marlin_hvzk' on page 1 undefined on input line 2
-62.
-
-
-LaTeX Warning: Reference `lem:sonic_hvzk' on page 1 undefined on input line 262
-.
+e 119.
 
 [8]
+Overfull \hbox (12.26251pt too wide) detected at line 187
+ []$[]    [] \LMS/ntxsy/m/n/10 ^^Y[] [] \OML/ntxmi/m/it/10 :  $ 
+ []
+
+[9]
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
+(Font)              scaled to size 7.0pt on input line 231.
+
+
+LaTeX Warning: Reference `lem:marlin_hvzk' on page 1 undefined on input line 26
+3.
+
+
+LaTeX Warning: Reference `lem:sonic_hvzk' on page 1 undefined on input line 263
+.
+
+[10] [11]
 
 LaTeX Font Warning: Font shape `OT1/cmtt/m/n' in size <5.5> not available
-(Font)              size <5> substituted on input line 493.
+(Font)              size <5> substituted on input line 498.
 
-LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 7.3pt on input line 493.
-LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 5.5pt on input line 493.
 
-Overfull \hbox (81.37863pt too wide) detected at line 493
+LaTeX Font Warning: Command \small invalid in math mode on input line 498.
+
+
+LaTeX Font Warning: Command \small invalid in math mode on input line 498.
+
+
+Overfull \hbox (7.65776pt too wide) detected at line 498
 []
  []
 
 
-Overfull \hbox (83.37863pt too wide) in paragraph at lines 493--493
-[][]
+LaTeX Font Warning: Command \small invalid in math mode on input line 498.
+
+
+LaTeX Font Warning: Command \small invalid in math mode on input line 498.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 498--498
+[]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 493--493
-
+Overfull \hbox (9.65776pt too wide) in paragraph at lines 498--498
+[]
  []
 
 
-LaTeX Font Warning: Command \small invalid in math mode on input line 493.
+Underfull \hbox (badness 10000) in paragraph at lines 498--498
 
-
-LaTeX Font Warning: Command \small invalid in math mode on input line 493.
-
-
-LaTeX Font Warning: Command \small invalid in math mode on input line 493.
-
-
-LaTeX Font Warning: Command \small invalid in math mode on input line 493.
-
-
-Overfull \hbox (12.27495pt too wide) in paragraph at lines 493--494
- [][] 
  []
 
 ) (./U01definitions.tex
+Overfull \hbox (63.93329pt too wide) detected at line 32
+[] \U/ntxmia/m/it/10 = [] [] \OML/ntxmi/m/it/10 ;
+ []
 
-LaTeX Warning: Reference `lem:forking_lemma' on page 1 undefined on input line 
-15.
-
-[9]
-Underfull \hbox (badness 6792) in paragraph at lines 47--52
-\T1/ntxtlf/m/it/10.95 Let $[][]$ de-note the al-go-rithm de-scribed in Fig. []2
-[] then the prob-a-bil-ity $[] \OT1/cmr/m/n/10.95 :\U/ntxmia/m/it/10.95 =
+[12]
+Overfull \hbox (27.49065pt too wide) detected at line 50
+[] \U/ntxmia/m/it/10 = [] []
  []
 
 
-LaTeX Font Warning: Font shape `OT1/cmss/b/n' in size <5.5> not available
-(Font)              size <5> substituted on input line 76.
+LaTeX Warning: Reference `lem:forking_lemma' on page 1 undefined on input line 
+66.
 
+[13]
 
 LaTeX Warning: Reference `sec:forking_proof' on page 1 undefined on input line 
-84.
+135.
 
-[10]
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 7.3pt on input line 161.
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 5.5pt on input line 161.
+[14] [15] [16]
 
 LaTeX Warning: Reference `fig:forking_lemma' on page 1 undefined on input line 
-129.
+448.
 
-LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
-(Font)              scaled to size 8.0pt on input line 196.
-LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
-(Font)              scaled to size 6.1pt on input line 196.
-[11]
+) (./U02forkingSE.tex
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
-(Font)              scaled to size 9.0pt on input line 220.
- [12]) (./U02forkingSE.tex
+(Font)              scaled to size 7.3pt on input line 35.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
-(Font)              scaled to size 6.1pt on input line 159.
+(Font)              scaled to size 5.5pt on input line 35.
+ [17]
+
+LaTeX Warning: Reference `thm:simsnd' on page 1 undefined on input line 61.
 
 
-LaTeX Warning: Reference `thm:simsnd' on page 1 undefined on input line 186.
+Underfull \hbox (badness 3058) in paragraph at lines 110--113
+[]\T1/ntxtlf/m/n/10 In this game, the en-vi-ron-ment aborts also when it fails 
+to build a
+ []
 
-[13] [14]
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
+(Font)              scaled to size 9.0pt on input line 118.
+[18] [19]
 
-LaTeX Warning: Reference `def:simext' on page 1 undefined on input line 329.
+LaTeX Warning: Citation `C:GhoTes21' on page 20 undefined on input line 226.
 
 ) (./U03plonkSE.tex
 
-LaTeX Warning: Reference `fig:pcomp' on page 1 undefined on input line 39.
+LaTeX Warning: Reference `sec:plonk_explained' on page 1 undefined on input lin
+e 29.
 
-[15] [16]
-Underfull \hbox (badness 7540) in paragraph at lines 188--193
-[]\T1/ntxtlf/m/n/10.95 If the ad-ver-sary picks two dif-fer-ent poly-no-mi-als:
- $[]\LMS/ntxsy/m/n/10.95 ¹\OML/ntxmi/m/it/10.95 X\LMS/ntxsy/m/n/10.95 º$\T1/ntx
-tlf/m/n/10.95 , that is com-mit-ted as
- []
+[20] [21] [22]
 
+LaTeX Warning: Reference `eq:ver_eq' on page 1 undefined on input line 257.
 
-LaTeX Warning: Reference `eq:ver_eq' on page 1 undefined on input line 241.
-
-[17] [18]
-LaTeX Font Info:    Font shape `T1/ntxsups/m/it' will be
-(Font)              scaled to size 10.95pt on input line 518.
+[23]
 LaTeX Font Info:    Font shape `T1/qhv/m/n' will be
-(Font)              scaled to size 8.09995pt on input line 521.
+(Font)              scaled to size 8.09995pt on input line 371.
+ [24]
+LaTeX Font Info:    Font shape `T1/ntxsups/m/it' will be
+(Font)              scaled to size 10.0pt on input line 533.
+ [25]
+
+LaTeX Warning: Reference `sec:plonk_explained' on page 1 undefined on input lin
+e 552.
 
 
 LaTeX Warning: Reference `sec:plonk_explained' on page 1 undefined on input lin
-e 537.
-
-[19]
-
-LaTeX Warning: Reference `sec:plonk_explained' on page 1 undefined on input lin
-e 597.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 599--608
-[]\T1/ntxtlf/m/n/10.95 The rest of the eval-u-a-tions are al-ready com-puted, t
-hus $[]$ sim-ply out-puts
- []
-
-
-Underfull \hbox (badness 1082) in paragraph at lines 599--608
-\OT1/cmss/b/n/10.95 a\LMS/ntxsy/m/n/10.95 ¹\U/ntxmia/m/it/10.95 z\LMS/ntxsy/m/n
-/10.95 º\OML/ntxmi/m/it/10.95 ; \OT1/cmss/b/n/10.95 b\LMS/ntxsy/m/n/10.95 ¹\U/n
-txmia/m/it/10.95 z\LMS/ntxsy/m/n/10.95 º\OML/ntxmi/m/it/10.95 ; \OT1/cmss/b/n/1
-0.95 c\LMS/ntxsy/m/n/10.95 ¹\U/ntxmia/m/it/10.95 z\LMS/ntxsy/m/n/10.95 º\OML/nt
-xmi/m/it/10.95 ; []\LMS/ntxsy/m/n/10.95 ¹\U/ntxmia/m/it/10.95 z\LMS/ntxsy/m/n/1
-0.95 º\OML/ntxmi/m/it/10.95 ; []\LMS/ntxsy/m/n/10.95 ¹\U/ntxmia/m/it/10.95 z\LM
-S/ntxsy/m/n/10.95 º\OML/ntxmi/m/it/10.95 ; \OT1/cmss/b/n/10.95 t\LMS/ntxsy/m/n/
-10.95 ¹\U/ntxmia/m/it/10.95 z\LMS/ntxsy/m/n/10.95 º\OML/ntxmi/m/it/10.95 ; \OT1
-/cmss/b/n/10.95 z\LMS/ntxsy/m/n/10.95 ¹\U/ntxmia/m/it/10.95 z\OML/ntxmi/m/it/10
-.95 !\LMS/ntxsy/m/n/10.95 º \OML/ntxmi/m/it/10.95 :$ \T1/ntxtlf/m/n/10.95 Af-te
-r that it picks ran-domly the chal-lenge $\OML/ntxmi/m/it/10.95 v$\T1/ntxtlf/m/
-n/10.95 , pro-
- []
+e 612.
 
 
 LaTeX Warning: Reference `sec:uber_assumption' on page 1 undefined on input lin
-e 610.
+e 625.
 
 
-Underfull \hbox (badness 1112) in paragraph at lines 659--666
-\T1/ntxtlf/m/n/10.95 such that $[][] \LMS/ntxsy/m/n/10.95 2 \OT1/cmss/b/n/10.95
- R$\T1/ntxtlf/m/n/10.95 . This is pos-si-ble since $\LMS/ntxsy/m/n/10.95 R$ \T1
-/ntxtlf/m/n/10.95 knows all sin-gle-tons
+Overfull \hbox (4.75029pt too wide) detected at line 646
+[]
  []
 
-[20]) [21] (./main.bbl [22
+[26]
+Underfull \hbox (badness 4378) in paragraph at lines 674--681
+[]\T1/ntxtlf/m/n/10 Denote by $[]$ eval-u-a-tions of $[]$ at $\OML/ntxmi/m/it/1
+0 ^^_$\T1/ntxtlf/m/n/10 . The re-duc-tion com-putes all
+ []
 
-]) [23] (./main.aux)
+
+Overfull \hbox (48.67206pt too wide) detected at line 694
+[]
+ []
+
+[27]) (./A02protocols.tex [28]
+
+LaTeX Warning: Reference `lem:pcoms_unique_op' on page 1 undefined on input lin
+e 77.
+
+
+Overfull \hbox (25.51532pt too wide) detected at line 97
+[]
+ []
+
+
+Overfull \hbox (30.5085pt too wide) in paragraph at lines 204--204
+ [] 
+ []
+
+[29]
+Overfull \hbox (30.5085pt too wide) in paragraph at lines 256--256
+ [] 
+ []
+
+) [30] (./main.bbl [31
+
+] [32]) [33] (./main.aux)
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 0.5pt have occurred.
@@ -1924,16 +1761,16 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 LaTeX Warning: There were undefined references.
 
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: EA93F6FC7EDDC1DE7906616D1D523534;528.
+(rerunfilecheck)             Checksum: 3577E8DFF9C65AC599302D018601B2A0;359.
  ) 
 Here is how much of TeX's memory you used:
- 37547 strings out of 478994
- 702417 string characters out of 5858184
- 1077083 words of memory out of 5000000
- 54079 multiletter control sequences out of 15000+600000
- 552767 words of font info for 269 fonts, out of 8000000 for 9000
+ 36304 strings out of 478994
+ 680031 string characters out of 5858184
+ 1031220 words of memory out of 5000000
+ 52815 multiletter control sequences out of 15000+600000
+ 528274 words of font info for 209 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 112i,20n,117p,818b,798s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 112i,30n,117p,884b,1097s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{Hfootnote.3} has been referenced but does not exi
 st, replaced by a fixed one
 
@@ -1947,38 +1784,38 @@ pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist
 local/texlive/2021/texmf-dist/fonts/enc/dvips/tex-gyre/q-ec.enc}{/usr/local/tex
 live/2021/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}</usr/local/texlive/2
 021/texmf-dist/fonts/type1/public/newtx/NewTXBMI.pfb></usr/local/texlive/2021/t
-exmf-dist/fonts/type1/public/newtx/NewTXMI.pfb></usr/local/texlive/2021/texmf-d
-ist/fonts/type1/public/newtx/NewTXMI5.pfb></usr/local/texlive/2021/texmf-dist/f
-onts/type1/public/newtx/NewTXMI7.pfb></usr/local/texlive/2021/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmb10.pfb></usr/local/texlive/2021/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmr7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmr8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmr9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmss10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmss12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmss8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfont
-s/cm/cmss9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmtt10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmtt9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/newtx/ntxsup
-s-Italic.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/newtx/ntxsu
-ps-Regular.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/tex-gyre/
-qhvr.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/txfonts/t1xtt.p
-fb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/newtx/txbsys.pfb></us
-r/local/texlive/2021/texmf-dist/fonts/type1/public/newtx/txexas.pfb></usr/local
-/texlive/2021/texmf-dist/fonts/type1/public/newtx/txexs.pfb></usr/local/texlive
-/2021/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb></usr/local/texlive/2021/t
-exmf-dist/fonts/type1/public/txfonts/txsyb.pfb></usr/local/texlive/2021/texmf-d
-ist/fonts/type1/public/txfonts/txsyc.pfb></usr/local/texlive/2021/texmf-dist/fo
-nts/type1/public/newtx/txsys.pfb></usr/local/texlive/2021/texmf-dist/fonts/type
-1/public/newtx/ztmb.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/
-newtx/ztmr.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/newtx/ztm
-ri.pfb>
-Output written on main.pdf (23 pages, 515697 bytes).
+exmf-dist/fonts/type1/public/newtx/NewTXBMI7.pfb></usr/local/texlive/2021/texmf
+-dist/fonts/type1/public/newtx/NewTXMI.pfb></usr/local/texlive/2021/texmf-dist/
+fonts/type1/public/newtx/NewTXMI5.pfb></usr/local/texlive/2021/texmf-dist/fonts
+/type1/public/newtx/NewTXMI7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmb10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr5.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmr7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmr9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmss10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmss12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmss8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmss9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmtt10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmtt9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/newtx/ntxsups
+-Italic.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/newtx/ntxsup
+s-Regular.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/tex-gyre/q
+hvr.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/txfonts/t1xtt.pf
+b></usr/local/texlive/2021/texmf-dist/fonts/type1/public/newtx/txbsys.pfb></usr
+/local/texlive/2021/texmf-dist/fonts/type1/public/newtx/txexas.pfb></usr/local/
+texlive/2021/texmf-dist/fonts/type1/public/newtx/txexs.pfb></usr/local/texlive/
+2021/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb></usr/local/texlive/2021/te
+xmf-dist/fonts/type1/public/txfonts/txsyb.pfb></usr/local/texlive/2021/texmf-di
+st/fonts/type1/public/txfonts/txsyc.pfb></usr/local/texlive/2021/texmf-dist/fon
+ts/type1/public/newtx/txsys.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1
+/public/newtx/ztmb.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/n
+ewtx/ztmr.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/newtx/ztmr
+i.pfb>
+Output written on main.pdf (33 pages, 533076 bytes).
 PDF statistics:
- 641 PDF objects out of 1000 (max. 8388607)
- 526 compressed objects within 6 object streams
- 193 named destinations out of 1000 (max. 500000)
+ 743 PDF objects out of 1000 (max. 8388607)
+ 617 compressed objects within 7 object streams
+ 241 named destinations out of 1000 (max. 500000)
  165 words of extra memory for PDF output out of 10000 (max. 10000000)
 

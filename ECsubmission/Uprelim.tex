@@ -2,7 +2,7 @@
 % !TEX spellcheck = en-US
 \section{Preliminaries}
 \label{sec:preliminaries}
-\subsection{Notations} Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
+\paragraph{Notation.} Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
 security parameter. All adversaries are stateful. For an algorithm $\adv$, let
 $\image (\adv)$ be the image of $\adv$ (the set of valid outputs of $\adv$), let
 $\RND{\adv}$ denote the set of random tapes of correct length for $\adv$
@@ -24,8 +24,9 @@ $\event{E} \in \eventspace$ we denote by $\nevent{E}$ an event that is
 complementary to $\event{E}$,
 i.e.~$\nevent{E} = \samplespace \setminus \event{E}$.
 
+\chaya{revisit after agreeing on how we deal with relations.}
 Denote by $\RELGEN = \smallset{\REL}$ a family of relations. We assume that if
-$\REL$ comes with any auxiliary input, the later is benign. Directly from the
+$\REL$ comes with any auxiliary input, the latter is benign. Directly from the
 description of $\REL$ one learns security parameter $\secpar$ and description of the
 group $\GRP$, if the relation is a relation of group elements (as it usually is
 in case of zkSNARKs).
@@ -86,7 +87,7 @@ point $z$ chosen by $\receiver$. $\PCOM$'s subroutines are defined as follows
   in $\srs$ and a polynomial $\p{f}$ with maximum degree $\maxdeg$, and outputs
   a commitment $c$.
 \item[$\open(\srs, z, s, \p{f})$:] The opening algorithm
-  $\open(\srs, z, s \p{f})$ takes as input $\srs$, an evaluation point $z$, a
+  $\open(\srs, z, s, \p{f})$ takes as input $\srs$, an evaluation point $z$, a
   value $s$ and the polynomial $\p{f}$. It outputs an opening $o$.
 \item[$\verify(\srs, c, z, s, o)$:] The verification algorithm takes in $\srs$,
   a commitment $c$, an evaluation point $z$, a value $s$ and an opening $o$. It
@@ -163,7 +164,7 @@ knowledge, which are defined as follows:
 	\[
     \condprob{\ip{\adv(\srs, \inp)}{\verifier(\srs, \inp)} = 1 \land \inp
       \not\in \LANG_\REL}{\srs \gets \kgen(\REL), \inp \gets \adv(\srs)} \leq
-    \negl\,;
+    \negl.
 	\]
 %\end{description}
 Sometimes a stronger notion of soundness is required---except requiring that the
@@ -176,13 +177,13 @@ called \emph{knowledge soundness}.%\markulf{Commented out the formal definition 
 $\adv$ there exists a $\ppt$ simulator $\simulator$ such that for any
 $(\inp, \wit) \in \REL$
 \begin{multline*}
-	  \left\{\ip{\prover(\srs, \inp, \wit)}{\adv(\srs, \inp, \wit)}
+\hspace{-10pt}	  \left\{\ip{\prover(\srs, \inp, \wit)}{\adv(\srs, \inp, \wit)}
       \,\left|\, \srs \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
           \srs)}\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
 		%\\
 		\left\{\simulator^{\adv}(\srs, \inp)\,\left|\, \srs \gets
         \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
-          \srs)}\vphantom{\simulator^\adv}\right.\right\}\,.
+          \srs)}\vphantom{\simulator^\adv}\right.\right\}.
 \end{multline*}
 	%
 We call zero knowledge \emph{perfect} if the distributions are equal and
@@ -209,9 +210,9 @@ simulated NIZK proofs without knowning the trapdoor, just by
 programming the random oracle. We call protocols which allow for such kind of
 simulation \emph{trapdoor-less simulatable} (TLS). More precisely,
 
-\begin{definition}[Trapdoor-less simulatable proof system]
+\begin{definition}[Trapdoor-Less Simulatable Proof System]
   Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof
-  system and $\ro$ a random oracle. Let $\simulator$ be ana pair of
+  system and $\ro$ a random oracle. Let $\simulator$ be a pair of
   algorithms: $\simulator_\ro$ that takes random oracle queries and
   answers them, $\simulator_\prover$ that takes as input an SRS $\srs$
   and instance $\inp$ and outputs a proof $\zkproof_\simulator$.  We
@@ -235,15 +236,15 @@ simulation \emph{trapdoor-less simulatable} (TLS). More precisely,
     \simulator_\ro(\srs, x)$, if $b = 1$.
   \item[proof calls:] on $\adv$'s query $\inp, \wit$ responds
   with a real proof $\zkproof_\prover \gets
-  \prover(\srs, \inp, \wit)$ if $b = 0q$ or a simulated proof $\zkproof_\simulator \gets \simulator (\srs,
+  \prover(\srs, \inp, \wit)$ if $b = 0$ or a simulated proof $\zkproof_\simulator \gets \simulator (\srs,
   \inp)$ if $b = 1$. 
   \end{description} 
 \end{definition}
 
-% In our simulation soundness proof (but not simulation extractability
-% \hamid{you mean forking simulation extractability?}) we need an
-% additional property of the zero-knowledge proof system which we call
-% $k$-programmable ZK.
+\begin{remark}[TLS vs HVZK]
+  We note that TLS notion is closely related to honest-verifier zero knowledge in the standard model. That is, if we consider an interactive proof system $\proofsystem$ that is HVZK in the standard model then its Fiat--Shamir compiled version $\proofsystem_\fs$ is TLS. This comes as the simulator $\simulator$ in $\proofsystem$ produces a valid simulated proof by picking verifier's challenges according to a predefined distribution and $\proofsystem_\fs$'s simulator $\simulator_\fs$ produces its proofs similarly by picking the challenges and additionally programming the random oracle to return the picked challenges. Importantly, in both $\proofsystem$ and $\proofsystem_\fs$ success of the simulator does not depend on access to an SRS trapdoor (which may not even exists if the proof systems are transparent).
+\end{remark}
+
 \begin{definition}[$k$-programmable ZK]
   \label{def:kzk}
   Let $\ps$ be a $(2\mu + 1)$-message ZK proof system and let $\ps_\fs$ be its
@@ -259,9 +260,9 @@ simulation \emph{trapdoor-less simulatable} (TLS). More precisely,
 We note that $\plonk$ is $2$-programmable ZK, $\sonic$ is $1$-programmable ZK,
 and $\marlin$ is $1$-programmable ZK. This follows directly from the proofs of
 their standard model zero-knowledge property in
-\cref{lem:plonk_hvzk,lem:sonic_hvzk, lem:marlin_hvzk}. 
+\cref{lem:plonk_hvzk,lem:sonic_hvzk,lem:marlin_hvzk}. 
 
-\oursubsub{Idealised verifier and verification equations} Let
+\oursubsub{Idealised Verifier and Verification Equations} Let
 $(\kgen, \prover, \verifier)$ be a proof system.
 % or a polynomial commitment
 % scheme\hamid{might be unclear as we are defining polynomial commitments as
@@ -309,7 +310,7 @@ More formally:
 \ourpar{Special soundness.}
 % \hamid{The last (short) sentence looks a little unclear.}
 A sigma protocol $\sigmaprot$ is \emph{specially-sound}
-  if for any adversary $\adv$ the probability
+  if for any adversary $\adv$ the probability is upper-bounded by some negligible function $\negl$:
 \[
 \Pr\left[
 \begin{aligned}
@@ -324,21 +325,22 @@ A sigma protocol $\sigmaprot$ is \emph{specially-sound}
 \end{aligned}
 \right.\right]
 \]
-is upper-bounded by some negligible function $\negl$.
+
 %\end{description}
 
 Another property that sigma protocols may have is a unique response
 property \cite{C:Fischlin05} which states that no $\ppt$ adversary can
 produce two accepting transcripts that differ only on the last
-element. More precisely, 
+element. More precisely:
+
 %\begin{description} 
 \ourpar{Unique response property.} Let
 $\sigmaprot = (\prover, \verifier, \simulator)$ be a sigma-protocol for
 $\REL \in \RELGEN(\secparam)$ with proofs of the form
 $(a, b, z)$. We say that $\sigmaprot$ has the unique response property if for
-all $\ppt$ algorithms $\adv$, it holds that,:
+all $\ppt$ algorithms $\adv$, it holds that the following probability is negligible ($\leq \negl$):
 \[ \condprob{\verifier (\REL, \inp, (a, b, z)) = \verifier (\REL, \inp, (a, b,
-	z')) = 1 \land z \neq z'}{(\inp, a, b, z, z') \gets \adv(\REL)} \leq \negl\,.  \]
+	z')) = 1 \land z \neq z'}{(\inp, a, b, z, z') \gets \adv(\REL)} \]
 %\end{description} 
 If this property holds even against unbounded adversaries, it is called
 \emph{strict}, cf.~\cite{INDOCRYPT:FKMV12}. Later on we call protocols that
@@ -440,7 +442,7 @@ non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
 %\end{definition}
 
 
-\subsection{Updatable SRS schemes}
+\subsection{Updatable SRS schemes}\label{def:upd-scheme}
 We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which consists of the following algorithms.
 
 \begin{itemize}
@@ -452,12 +454,14 @@ We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which 
 	$b \leftarrow \verifyCRS(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
 \end{itemize}
 
-In the next section, we define security notions in the updatable setting. To this end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary updates the SRS. We also define the simulation oracle $\simO$ in~\cref{fig:upd} that is the simulator w.r.t. the SRS finalised by the adversary using $\initU$. This simulation oracle will be used in the SE definition.
+In the next section, we define security notions in the updatable setting. To this end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary updates the SRS. We also define the simulation oracle $\simO$ in~\cref{fig:upd} that is the simulator w.r.t. the SRS finalised by the adversary using $\initU$. This simulation oracle will be used in the definition of forking simulation extractability.
+
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}% 
 
 \begin{figure}[t]
 	\centering
 	\fbox{
-		\begin{minipage}[t]{0.7\linewidth}
+		\begin{minipage}[t]{0.58\linewidth}
 			\procedure{$\initU(\intent, \srs_n,\{\rho_i \}_{i=1}^n)$}{
 				\pcif \srs \neq \bot: \pcreturn \bot \\
 				\pcif (\intent = \setup): \\
@@ -470,11 +474,12 @@ In the next section, we define security notions in the updatable setting. To thi
 				\t \pcif (b=0): \pcreturn \bot \\
 				\t (\srs',\rho') \leftarrow \upd(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^n)\\
 				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+		 	\Scale[0.75]{ // Q_\srs = (Q^{(1)}_\srs, Q^{(2)}_\srs) \text{ s.t. }   Q^{(2)}_\srs \text{ contains the update proofs in } Q_\srs }\\
 				\t \pcreturn (\srs',\rho')\\
 				%
 				\pcif (\intent = \final): \\
 				\t b \gets \verifyCRS(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^{n})\\
-				\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_i \}_i = \emptyset: \pcreturn \bot \  // Q_\srs = (Q^{(1)}_\srs, Q^{(2)}_\srs) \text{ s.t. } Q^{(2)}_\srs \text{ contains the update proofs in } Q_\srs \\
+				\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_i \}_i = \emptyset: \pcreturn \bot \\
 				\t 
 				\td \gets \ext_\srs(\srs_n,, Q_\srs, \{\rho_i \}_{i=1}^{n}) \\
 				\t \srs \gets \srs_n, \pcreturn \srs \\
@@ -482,13 +487,13 @@ In the next section, we define security notions in the updatable setting. To thi
 				\pcelse \pcreturn \bot
 			}
 		\end{minipage}
-		\begin{minipage}[t]{0.3\linewidth}
+		\begin{minipage}[t]{0.34\linewidth}
 			\procedure{$\simO(\inp')$}{
 				\pcif (\srs = \bot): \pcreturn \bot \\
 				% \hamid{should we formalize this extractor?}\\
 				\zkproof'  \gets \hamid{\simulator_\FS}(\srs, \td, \inp')\\
 				Q = Q \cup \{(\inp', \zkproof')\}\\
-				\pcreturn  \zkproof' \\
+				\pcreturn  \zkproof' \\	
 			}
 	\end{minipage}}
 	\caption{The left oracle defines the notion of updatable SRS setup. The right oracle is the simulation oracle.} 
@@ -586,3 +591,8 @@ $ \ssndProb = \accProb - \extProb$.
 % (probability of extraction failure in \cref{def:simext}).
 
 \fi
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
