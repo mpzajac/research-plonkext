@@ -135,96 +135,6 @@ transcripts required is larger. We defer the proof to
 \cref{sec:forking_proof}.
 
 
-\subsection{Unique-response protocols}
-Another technical hurdle is the assumption of unique response property 
-of the transformed sigma protocol required by Faust et al. The original
-Fischlin's formulation, although suitable for applications presented in
-\cite{C:Fischlin05,INDOCRYPT:FKMV12}, does not suffice in our case. First,
-the property assumes that the protocol has three messages, with the second being
-the challenge from the verifier. That is not the case we consider here. Second,
-it is not entirely clear how to generalize the property. Should one require that
-after the first challenge from the verifier, the prover's responses are fixed?
-That does not work since the prover needs to answer differently on different
-verifier's challenges, as otherwise the protocol could have fewer
-rounds. Another problem is that the protocol could consist of
-a round other than the first one where the prover message is randomized.
-Unique response cannot hold in this case. Finally, the protocols we
-consider here are not in the standard model, but use an SRS
-what also complicates things considerably.
-
-We walk around these obstacles by providing a generalised notion of the unique
-response property. More precisely, we say that a $(2\mu + 1)$-message protocol
-has \emph{unique responses from $i$}, and call it an $\ur{i}$-protocol, if it
-follows the definition below:
-
-
-\begin{definition}[$\ur{i}$-protocol in the updatable setting]
-	\label{def:wiuru}
-	Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
-	$\ps = (\kgen, \prover, \verifier, \simulator)$. Let $\proofsystem_\fs$ be
-	$\proofsystem$ after the Fiat--Shamir transform and $\ro$ the random
-	oracle. Denote by $a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output
-	by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$
-		on} if for any $\ppt$ adversary $\adv$:
-	\[
-	\Pr\left[
-	\begin{aligned}
-	& \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
-	\ldots, a'_{i}, \\
-	& \verifier^\ro_\fs (\srs, \inp, \vec{a}) =
-	\verifier^\ro_\fs(\srs, \inp, \vec{a'}) = 1  \\
-	\end{aligned}
-	\,\left|\,
-	\begin{aligned}
-	& \inp, \vec{a},  \vec{a'}  \gets \adv^{\ro, \initU}(1^\secpar) \\
-& \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
-	a'_{\mu + 1})	
-	\end{aligned}
-	\right.\right]
-	\]
-	is upper-bounded by some negligible function $\negl$. 
-\end{definition}
-Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$, defined in~\cref{fig:upd}.
-
-% Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
-% $\ps = (\kgen, \prover, \verifier, \simulator)$ and let $r$ be verifier's
-% randomness which determines its challenges $r_1, \ldots, r_\mu$. Denote by
-% $\vec{a} = a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output by the prover and by $r_1, \ldots, r_\mu$ the challenges of the verifier, We
-% say that $\proofsystem$ has \emph{unique responses from $i$ on} if for any
-% $\ppt$ adversary $\adv$:
-% \[
-% 	\prob{
-% 		\begin{aligned}
-%     & \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
-%     \ldots, a'_{i}, \\
-% 		& \verifier (\srs, \inp, \vec{a}; r) =
-% 		\verifier(\srs, \inp, \vec{a'}; r) = 1
-% 		\end{aligned}
-% 		\ \left|\  
-% 	\vphantom{\begin{aligned}
-% 	&	\vec{a} = (a_0, b_0, \ldots, a_j, b_j, a_\mu), \vec{a'} = (a'_0, b'_0, \ldots, a'_j,
-% 	b'_j a'_\mu) \gets \adv(\srs), \vec{a} \neq \vec{a'}, \\
-% 	& b_k = b'_k, k \in \range{1, \mu - 1},\\ a_l = a'_l, l \in
-% \range{1}{j}, j > i 
-% 	\end{aligned}}
-%   \begin{aligned}
-% &\srs \gets \kgen(\REL) \\
-% &\inp, \vec{a}, \vec{a'} \gets \adv(\srs) \\
-% & r_1, \ldots, r_i \gets H^i\\
-% &    r_{i+1}, \ldots r_\mu \gets H^{\mu-i}, r'_{i+1}, \ldots r'_\mu \gets H^{\mu-i} 
-% \end{aligned}
-%      \right.
-% } \leq \negl.
-% \]
-
-Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary
-to produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$
-that are the same on  first $i$ messages. 
-% after $i$-th prover's message, all
-% $\prover$'s further messages are determined by the witness it knows, the
-% messages it already send and received and the future challenges from the
-% verifier.
-We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
 
 \iffalse
 \subsection{Forking soundness}
@@ -401,6 +311,7 @@ algorithm from the generalized forking lemma.
 	%List $Q_\srs$ contains the proofs of all honest SRS updates.
 \end{definition}
 \chaya{why does $\genforking$ get $Q_H$ twice?}
+\markulf{20/09/2021}{This is a tricky one. If I remember correctly, we wanted $\zdv$ to be able to determin when $\adv$ starts to diverge from the first branch that results in $\pi_{\adv}$. $\adv$ needs to be fed recorded simulated proofs until that divergence. After that $\zdv$ can create fresh simulated proofs. I think its ok to use the same simulated proofs in multiple sub-branches as long as they are for the right instance. In any case simulation is now hidden within $\adv$.}
 
 
 \paragraph{Importance of the general forking lemma.}
@@ -415,7 +326,7 @@ probability of $\zdv$ outputing a non-zero $i$ and the probability of $\advse$
 outputing an accepting proof, we claim that these probabilities are exactly the
 same by the way we define $\zdv$.) Let $\advse$ output an accepting instance-proof pair
 $(\inp_{\advse},\zkproof_{\advse})$ ; $r$ be $\advse$'s
-randomness; $Q$ the list of simulator queries made by $\advse$ along with 
+randomness; $Q$ the list of simulator queries made by $\advse$ \markulf{20/09/2021}{Q is now hidden within the forking soundness adversary.} along with
 $\simulator$'s answers; %\hamid{$Q_\srs$ be the list of proofs for SRS honest updates;} 
 and $Q_\ro$ be the list of all random oracle
 queries made by $\advse$.  All of these are given to the extractor $\ext$ that
@@ -520,6 +431,98 @@ paper, i.e.~showing that both $\plonk$ and $\sonic$ are forking simulation extra
 %      \right.\right] \leq \eps(\secpar).
 %      \]
 %\end{definition}
+
+\subsection{Unique-response protocols}
+Another technical hurdle is the assumption of unique response property
+of the transformed sigma protocol required by Faust et al. The original
+Fischlin's formulation, although suitable for applications presented in
+\cite{C:Fischlin05,INDOCRYPT:FKMV12}, does not suffice in our case. First,
+the property assumes that the protocol has three messages, with the second being
+the challenge from the verifier. That is not the case we consider here. Second,
+it is not entirely clear how to generalize the property. Should one require that
+after the first challenge from the verifier, the prover's responses are fixed?
+That does not work since the prover needs to answer differently on different
+verifier's challenges, as otherwise the protocol could have fewer
+rounds. Another problem is that the protocol could consist of
+a round other than the first one where the prover message is randomized.
+Unique response cannot hold in this case. Finally, the protocols we
+consider here are not in the standard model, but use an SRS
+what also complicates things considerably.
+
+We walk around these obstacles by providing a generalised notion of the unique
+response property. More precisely, we say that a $(2\mu + 1)$-message protocol
+has \emph{unique responses from $i$}, and call it an $\ur{i}$-protocol, if it
+follows the definition below:
+
+
+\begin{definition}[$\ur{i}$-protocol in the updatable setting]
+	\label{def:wiuru}
+	Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
+	$\ps = (\kgen, \prover, \verifier, \simulator)$. Let $\proofsystem_\fs$ be
+	$\proofsystem$ after the Fiat--Shamir transform and $\ro$ the random
+	oracle. Denote by $a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output
+	by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$
+		on} if for any $\ppt$ adversary $\adv$:
+	\[
+	\Pr\left[
+	\begin{aligned}
+	& \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
+	\ldots, a'_{i}, \\
+	& \verifier^\ro_\fs (\srs, \inp, \vec{a}) =
+	\verifier^\ro_\fs(\srs, \inp, \vec{a'}) = 1  \\
+	\end{aligned}
+	\,\left|\,
+	\begin{aligned}
+	& \inp, \vec{a},  \vec{a'}  \gets \adv^{\ro, \initU}(1^\secpar) \\
+& \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
+	a'_{\mu + 1})
+	\end{aligned}
+	\right.\right]
+	\]
+	is upper-bounded by some negligible function $\negl$.
+\end{definition}
+Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$, defined in~\cref{fig:upd}.
+
+% Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
+% $\ps = (\kgen, \prover, \verifier, \simulator)$ and let $r$ be verifier's
+% randomness which determines its challenges $r_1, \ldots, r_\mu$. Denote by
+% $\vec{a} = a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output by the prover and by $r_1, \ldots, r_\mu$ the challenges of the verifier, We
+% say that $\proofsystem$ has \emph{unique responses from $i$ on} if for any
+% $\ppt$ adversary $\adv$:
+% \[
+% 	\prob{
+% 		\begin{aligned}
+%     & \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
+%     \ldots, a'_{i}, \\
+% 		& \verifier (\srs, \inp, \vec{a}; r) =
+% 		\verifier(\srs, \inp, \vec{a'}; r) = 1
+% 		\end{aligned}
+% 		\ \left|\
+% 	\vphantom{\begin{aligned}
+% 	&	\vec{a} = (a_0, b_0, \ldots, a_j, b_j, a_\mu), \vec{a'} = (a'_0, b'_0, \ldots, a'_j,
+% 	b'_j a'_\mu) \gets \adv(\srs), \vec{a} \neq \vec{a'}, \\
+% 	& b_k = b'_k, k \in \range{1, \mu - 1},\\ a_l = a'_l, l \in
+% \range{1}{j}, j > i
+% 	\end{aligned}}
+%   \begin{aligned}
+% &\srs \gets \kgen(\REL) \\
+% &\inp, \vec{a}, \vec{a'} \gets \adv(\srs) \\
+% & r_1, \ldots, r_i \gets H^i\\
+% &    r_{i+1}, \ldots r_\mu \gets H^{\mu-i}, r'_{i+1}, \ldots r'_\mu \gets H^{\mu-i}
+% \end{aligned}
+%      \right.
+% } \leq \negl.
+% \]
+
+Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary
+to produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$
+that are the same on  first $i$ messages.
+% after $i$-th prover's message, all
+% $\prover$'s further messages are determined by the witness it knows, the
+% messages it already send and received and the future challenges from the
+% verifier.
+We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
+
 
 %%% Local Variables:
 %%% mode: latex
