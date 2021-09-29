@@ -68,8 +68,7 @@
 \newcommand{\oursubsub}[1] {\smallskip\noindent\textbf{#1}}
 \newcommand{\ourpar}[1] {\smallskip\noindent\emph{#1}}
 
-%\title{On Non-Malleability of Fiat--Shamir Based Universal zkSNARKs}
-\title{SNARKY Signatures with Universal and Updateable~Setup}
+\title{On Non-Malleability of Fiat--Shamir Based Universal zkSNARKs}
 %\title{Non-Malleability of the Fiat--Shamir Transform Revisited for Multi-round SRS-Based Protocols}
 \author{(Submission to EUROCRYPT 2022)}
 \institute{}
@@ -87,7 +86,7 @@
 \begin{abstract}
 The Fiat--Shamir transformation turns public-coin (three round) sigma protocol into signature schemes, non-interactive proof systems, and signatures of knowledge (SoK).  The security of the transformation relies on a powerful forking lemma that extracts the secret key or the witness, even in the presence of signing queries for signatures and simulation queries for proof systems and SoK, respectively.
 We extend this line of work and formally define simulation extractability for protocols in the random oracle model (ROM) which use a structured reference string (SRS). We then show sufficient conditions for compiling via the Fiat--Shamir transformation public-coin multi-round interactive protocols with SRS into simulation-extractable NIZK proof systems. We also consider the case that the SRS is updatable and define a strong simulation extractability notion that allows for simulated proofs with respect to an SRS to which the adversary can contribute updates.
-In the ROM, we obtain simulation-extractable and updatable NIZKs. Importantly, we show that three popular universal zero knowledge SNARKs --- Plonk, Sonic, and Marlin --- are simulation extractable out-of-the-box. This also results in the first construction of updatable simulation-extractable SNARKs and succinct updatable SoK.
+In the ROM, we obtain simulation-extractable and updatable NIZKs. Importantly, we show that thee popular zero knowledge SNARKs --- Plonk, Sonic, and Marlin --- are simulation extractable out-of-the-box. This also results in the first construction of updatable simulation-extractable SNARKs and succinct updatable SoK.
 
 \end{abstract}
 
@@ -98,13 +97,11 @@ In the ROM, we obtain simulation-extractable and updatable NIZKs. Importantly, w
 \input{U01definitions}
 %\input{U01updatable}
 \input{U02forkingSE}
-\input{A02protocols}
 \input{U03plonkSE}
-
+\input{U04sonicSE}
 %\input{U05marlinSE}
 %\input{A01more-prelim}
-\appendix
-\input{U04sonicSE}
+\input{A02protocols}
 %\input{UA03plonk-proofs}
 %
 \else

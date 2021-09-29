@@ -70,57 +70,117 @@ whenever $\adv(\gnone{\vec{x}})$ outputs a group element $\gnone{y}$ then it
 also outputs $\vec{c}$ such that $\gnone{y} = \vec{c}^\top \cdot
 \gnone{\vec{x}}$. Both $\plonk$ and $\sonic$ have been shown secure using the
 AGM. An adversary that works in the AGM is called \emph{algebraic}.
+ 
+\subsection{Signatures of Knowledge}
+\label{sec:sok}
+  
+Signatures of Knowledge (SoKs) \cite{C:ChaLys06} are closely related to simulation-extractable SNARKs: A signer can generate a valid signature for a message only if she has a valid witness for the statement. 
 
-\subsection{Polynomial commitment}
-\label{sec:poly_com}
-In the polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$ the
-committer $\committer$ can convince the receiver $\receiver$ that some
-polynomial $\p{f}$ which $\committer$ committed to evaluates to $s$ at some
-point $z$ chosen by $\receiver$. $\PCOM$'s subroutines are defined as follows 
+ The notion of SoKs mimics digital signatures with strong existential unforgeability: 
+even if the adversary has seen many
+signatures on arbitrary messages under arbitrary statement,  it cannot create a new signature (not seen before) without knowing the witness for the statement in question.
+
+To define Signatures of Knowledge we use a recent version \cite{C:GroMal17} that implicitly considers only compact (succinct) signatures. 
+     
+A $\SoK$ for an efficiently decidable binary relation $\REL$ is defined as a tuple of PPT algorithms $\SoK = (\signsetup,  \sign, \allowbreak \verify,  \simsetup, \simsign)$:
+
 \begin{description}
-\item[$\kgen(1^\secpar, \maxdeg)$:] The key generation algorithm
-  $\kgen(1^\secpar, \maxdeg)$ takes in a security parameter $1^\secpar$ and a
-  parameter $\maxdeg$ which determines the maximal degree of the committed
-  polynomial. It outputs a structured reference string $\srs$ (including a
-  commitment key).
-\item[$\com(\srs, \p{f})$:] The commitment algorithm $\com(\srs, \p{f})$ takes
-  in $\srs$ and a polynomial $\p{f}$ with maximum degree $\maxdeg$, and outputs
-  a commitment $c$.
-\item[$\open(\srs, z, s, \p{f})$:] The opening algorithm
-  $\open(\srs, z, s, \p{f})$ takes as input $\srs$, an evaluation point $z$, a
-  value $s$ and the polynomial $\p{f}$. It outputs an opening $o$.
-\item[$\verify(\srs, c, z, s, o)$:] The verification algorithm takes in $\srs$,
-  a commitment $c$, an evaluation point $z$, a value $s$ and an opening $o$. It
-  outputs 1 if $o$ is a valid opening for $(c, z, s)$ and 0 otherwise.
+    \item[$\signsetup(1^\secpar, \REL) \rightarrow  \param$:]
+	The setup algorithm takes a security parameter $\secpar$ and a binary relation $\REL$
+	and returns public parameters $ \param$.  The input $ \param$ is implicit to all subsequent algorithms. 
+
+    \item[$\sign(\mesage, \inp, \wit)  \rightarrow \signature$:]
+The signing algorithm takes as input a message $ \msg \in \{0,1\}^{*}$, 
+a statement $\inp$, and a witness $\wit$.
+	Outputs a signature $\signature$.
+
+    \item[$\verify(\mesage, \inp, \signature) \rightarrow 1/ 0$:]
+The verification algorithm takes as input 
+ a message $\mesage$,  a statement $\inp$ 
+ together with a signature $\signature$,
+	outputs $1$ if the the signature is valid, $0$ otherwise.
+	
+    \item[$\simsetup(\REL) \rightarrow (\param, \td)$:]
+    	A simulated setup algorithm which takes as input a relation $\REL$ and returns public parameters $\param$ and a trapdoor $\td$. 
+    	
+   \item[$\simsign(\td, \mesage, \inp) \rightarrow \signature'$:]
+   	A simulated signing  that takes as input  a trapdoor $\td$, a message $\mesage$ and a statement $\inp$ and returns a simulated signature $\signature'$.
 \end{description}
+ 
+A SoK scheme should satisfy correctness, extractability and simulatability:
+   
+\begin{description}
+\item[Perfect Correctness.] This guarantees that a signer with a valid witness can always produce a signature that
+will convince the verifier: 
+For all $\secpar\in \NN$, for
+all efficiently decidable binary relation $\REL$,  
+for all  $(\inp, \wit) \in \REL$, and for all $ \mesage \in \{0,1\}^{*}$:
+   \[
+  \condprob{
+	  \begin{matrix}
+~\verify(\mesage, \inp, \signature) = 1   
+	 \end{matrix}
+}{
+	  \begin{matrix}
+~\param \gets \signsetup(1^\secpar, \REL)\\
+~ \signature \gets  \sign(\mesage, \inp, \wit)
+ \end{matrix} }  =1. 
+\]
+%
+\item[Simulation Extractability:] This guarantees that an adversary is not able to issue a new signature
+unless it knows a witness. This should hold even if the adversary gets to see signatures on
+arbitrary messages under arbitrary statements. We model this notion in a strong sense, by
+letting the adversary see simulated signatures for arbitrary messages and statements, which
+potentially includes false statements. Even under this strong attack model, we require that
+whenever the adversary outputs a valid signature not queried before, it is possible to extract a
+witness for the signature. More formally,  for any PPT adversary $\adv$ there exists a PPT extractor $\ext_\adv$ such that:
+   \[
+  \condprob{
+	  \begin{matrix}
+~ \verify(\mesage, \inp, \signature) = 1   \\
+\land (\inp, \wit) \notin \REL \\
+\land (\mesage, \inp, \signature) \notin \text{Queries}^{\simsign_\td}
+	 \end{matrix}
+}{
+	  \begin{matrix}
+~\param \gets \SoK.\signsetup(1^\secpar, \REL)\\
+~ (\mesage, \inp, \signature) \gets \adv^{\simsign_\td} (\param)\\
+\wit \gets \ext_\adv({\sf trans}_\adv)
+ \end{matrix}
+} \leq \negl
+\]
+where the adversary has access to simulated signatures via the oracle $\simsign_\td(\inp_i, \mesage_i) \coloneq \simsign(\td, \inp_i, \mesage_i)$.
 
-$\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme
-\cite{AC:KatZavGol10}. We denote the first by $\PCOMp$ and the latter by
-$\PCOMs$. Due to page limit, we omit their presentation here and refer to
-\cref{fig:pcomp} and \cref{fig:pcoms} in the \cref{sec:pcom}.  In this paper we
-use evaluation binding, commitment of knowledge, and, newly introduced, unique
-opening and hiding properties. Formal definitions of these could be find in
-\cref{sec:pcom}, here we briefly introduce them.
-\begin{compactdesc}
-  \item[Evaluation binding] intuitively, this property assures that no adversary
-    could provide two valid openings for two different evaluations of the same
-    commitment in the same point. 
-  \item[Commitment of knowledge] when a commitment scheme is ``of
-    knowledge'' then if an adversary produces a (valid) commitment $c$, which it
-    can open, then it also knows the underlying polynomial $\p{f}$ which commits
-    to that value.  \cite{CCS:MBKM19} shows, using AGM, that $\PCOMs$ is a
-    commitment of knowledge.  The same reasoning could be used to show that
-    property for $\PCOMp$.
-  \item[Unique opening] this property assures that there is
-    only one valid opening for the committed polynomial and given evaluation
-    point. This property is crucial in showing forking simulation-extractability
-    of $\plonk$ and $\sonic$. We show that the $\plonk$'s and $\sonic$'s
-    polynomial commitment schemes satisfy this requirement in
-    \cref{lem:pcomp_op} and \cref{lem:pcoms_unique_op} respectively.
-  \item[Hiding] assures that no adversary is able to tell anything about the
-    polynomial given only its commitment and bounded number of evaluations.
-\end{compactdesc}
-
+%
+\item[Perfect Simulatability:] The verifier should not learn anything  about the witness from the signature.  The secrecy of the witness is modelled by the ability to
+simulate signatures without the witness. More precisely,  we say the signatures of knowledge
+are simulatable if there is a simulator that can create public parameters together with an associated trapdoor that enables producing signatures without a witness that are indistinguishable from real ones.  More formally, for any number of queried $\mesage_i\in \{0,1\}^{*}$ and $(\inp_i, \wit_i) \in \REL$:
+	\begin{multline*}
+		\left
+		\vert   \condprob{
+		\begin{matrix}
+		\adv(\param) = 1 
+		\end{matrix}
+		}{
+		\begin{matrix}
+	\param \gets \SoK.\setup(1^\secpar, \REL)\\
+	~\signature_i \gets  \SoK.\sign(\mesage_i, \inp_i, \wit_i)
+		\end{matrix}
+		\right. }
+		- \\
+	  \condprob{
+		\begin{matrix}
+		\adv (\param) = 1 
+		\end{matrix}
+}{
+\left.		\begin{matrix}
+	~(\param,\td) \gets  \simsetup(1^\secpar, \REL) \\
+	~\signature_i \gets   \simsign(\td,\mesage_i, \inp_i)
+		\end{matrix}}
+	\right 	\vert \leq \negl.
+		\end{multline*}
+\end{description}
+  
 
 \subsection{Zero-Knowledge Proof Systems}
 Let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of
@@ -312,18 +372,18 @@ More formally:
 A sigma protocol $\sigmaprot$ is \emph{specially-sound}
   if for any adversary $\adv$ the probability is upper-bounded by some negligible function $\negl$:
 \[
-\Pr\left[
+   \condprob{
 \begin{aligned}
 & \verifier(\REL, \inp, (a, b, z)) = %\\
 \verifier(\REL, \inp, (a, b', z')) = 1 \\
 & \land b \neq b' \land \REL(\inp, \wit) = 0 \\
 \end{aligned}
-\,\left|\,
+}{
 \begin{aligned}
 & (\inp, (a, b, z), (a, b', z')) \gets \adv(\REL), \\ %\\
 & \wit \gets \ext(\REL, \inp, (a, b, z), (a, b', z'))\\
 \end{aligned}
-\right.\right]
+}
 \]
 
 %\end{description}
@@ -487,11 +547,11 @@ In the next section, we define security notions in the updatable setting. To thi
 				\pcelse \pcreturn \bot
 			}
 		\end{minipage}
-		\begin{minipage}[t]{0.34\linewidth}
+		\begin{minipage}[t]{0.3\linewidth}
 			\procedure{$\simO(\inp')$}{
 				\pcif (\srs = \bot): \pcreturn \bot \\
 				% \hamid{should we formalize this extractor?}\\
-				\zkproof'  \gets \hamid{\simulator_\FS}(\srs, \td, \inp')\\
+				\zkproof'  \gets  \simulator_\FS(\srs, \td, \inp')\\
 				Q = Q \cup \{(\inp', \zkproof')\}\\
 				\pcreturn  \zkproof' \\	
 			}
