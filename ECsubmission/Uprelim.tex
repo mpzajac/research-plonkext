@@ -155,7 +155,8 @@ where the adversary has access to simulated signatures via the oracle $\simsign_
 \item[Perfect Simulatability:] The verifier should not learn anything  about the witness from the signature.  The secrecy of the witness is modelled by the ability to
 simulate signatures without the witness. More precisely,  we say the signatures of knowledge
 are simulatable if there is a simulator that can create public parameters together with an associated trapdoor that enables producing signatures without a witness that are indistinguishable from real ones.  More formally, for any number of queried $\mesage_i\in \{0,1\}^{*}$ and $(\inp_i, \wit_i) \in \REL$:
-	\begin{multline*}
+
+$
 		\left
 		\vert   \condprob{
 		\begin{matrix}
@@ -163,12 +164,12 @@ are simulatable if there is a simulator that can create public parameters togeth
 		\end{matrix}
 		}{
 		\begin{matrix}
-	\param \gets \SoK.\setup(1^\secpar, \REL)\\
-	~\signature_i \gets  \SoK.\sign(\mesage_i, \inp_i, \wit_i)
+	\param \gets  \setup(1^\secpar, \REL)\\
+	~\signature_i \gets  \sign(\mesage_i, \inp_i, \wit_i)
 		\end{matrix}
 		\right. }
-		- \\
-	  \condprob{
+		- $
+\[	  \condprob{
 		\begin{matrix}
 		\adv (\param) = 1 
 		\end{matrix}
@@ -178,7 +179,7 @@ are simulatable if there is a simulator that can create public parameters togeth
 	~\signature_i \gets   \simsign(\td,\mesage_i, \inp_i)
 		\end{matrix}}
 	\right 	\vert \leq \negl.
-		\end{multline*}
+		\]
 \end{description}
   
 
