@@ -151,12 +151,12 @@ We need to show that for every $\ppt$ adversary $\adv$ probability
     \end{aligned}
     \,\left|\, \vphantom{\begin{aligned}
           & \verify(\srs, \gone{c}, z, s, \gone{o}),\\
-          & \verify(\srs, \gone{c}, z, \tilde{s}, \gone{\tilde{o}}) \\
+          & \verify(\srs, \gone{c}, z, s, \gone{\tilde{o}}) \\
           &o \neq \tilde{o})
 		\end{aligned}}
       \begin{aligned}
-        & \srs \gets \kgen(\secparam, \maxdeg), \\
-        & (\gone{c}, z, s, \tilde{s}, \gone{o}, \gone{\tilde{o}}) \gets \adv(\srs)
+        %& \srs \gets \kgen(\secparam, \maxdeg), \\
+        & (\gone{c}, z, s, \gone{o}, \gone{\tilde{o}}) \gets \adv^{\initU}(1^\secpar, \maxdeg)
       \end{aligned}
     \right.\right]
   % \leq \negl.
@@ -285,7 +285,7 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
 	$\gone{\chi^{-\dconst}, \ldots, \chi^{\dconst}}, \gtwo{\chi^{-\dconst},
 		\ldots, \chi^{\dconst}}$ and is tasked to output $\chi$.
 	
-	The reduction $\rdvdlog$ proceeds as follows.
+	The reduction $\rdvdlog$ proceeds as follows.\hamid{Discuss with Chaya!}
 	\begin{enumerate}
 		\item Build $\sonicprot$'s SRS $\srs$: pick a random $\alpha$ and compute
 		$\gone{\alpha \chi^{- \dconst}, \ldots, \alpha \chi^{-1}, \alpha \chi,
