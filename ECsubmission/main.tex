@@ -99,6 +99,13 @@ In the ROM, we obtain simulation-extractable and updatable NIZKs. Importantly, w
 \input{U02forkingSE}
 \input{A02protocols}
 \input{U03plonkSE}
+
+\section{Conclusion and Future Work}
+
+Since the SRS is being continually updated, one could argue that there might be simulated proofs with respect to \textit{different} SRSs available for the adversary to see before attempting to forge a proof with respect to a current SRS.
+That is, each SRS in the update chain spawns a simulation oracle. Intuitively, the updatability of the SRS allows an adversarial prover to contribute to updating, and see proofs with respect to different updated SRSs before attempting to provide a proof for a false statement (potentially output a proof wrt a SRS that is different from the SRSs corresponding to all the simulated proofs seen).
+
+
 \appendix
 \input{U04sonicSE}
 
