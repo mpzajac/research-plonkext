@@ -2,12 +2,12 @@
 % !TEX spellcheck = en-US
 \section{Definitions and lemmas for multi-round SRS-based protocols}
 \label{sec:se_definitions}
-The result of Faust et al.\cite{INDOCRYPT:FKMV12} is for $3$-round protocols that require two transcripts for standard model extraction. Here, not only do we consider multi-round protocols, they require more than
-just two transcripts for extraction and are not special
-sound. Moreover, they rely on an SRS, and in the updatable setting, the adversary gets to contribute to the SRS in the updatable setting which makes the analysis more complicated.
+Previous related definitions and results were formulated for $3$-round protocols that require two transcripts for standard model extraction,e.g. the work of Faust et al.\cite{INDOCRYPT:FKMV12}. 
+In this section we prepare our analysis for multi-round protocols with an universal or updatable SRS. 
+In order to prove simulation-extractability for those,  we will require more than
+just two transcripts for extraction.  Moreover, we will consider protocols that rely on an SRS,  in the updatable setting, where the adversary gets to contribute to the SRS in the updatable setting which makes the analysis more complicated.
 We first give a definition of simulation-extractability which is the one in~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then, we adapt special soundness to forking soundness, and generalize the forking lemma and the unique response property for
 multi-round SRS-based protocols.
-
 
  \subsection{Trapdoor-Less Simulation}
 In security reductions in this paper it is sometimes needed to produce

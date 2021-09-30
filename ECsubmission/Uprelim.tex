@@ -158,7 +158,7 @@ simulate signatures without the witness. More precisely,  we say the signatures 
 are simulatable if there is a simulator that can create public parameters together with an associated trapdoor that enables producing signatures without a witness that are indistinguishable from real ones.  More formally, for any number of queried $\mesage_i\in \{0,1\}^{*}$ and $(\inp_i, \wit_i) \in \REL$:
 
 $
-		   \condprob{
+\Big	\vert	   \condprob{  
 		\begin{matrix}
 		\adv(\param) = 1 
 		\end{matrix}
@@ -177,7 +177,7 @@ $
 		\begin{matrix}
 	~(\param,\td) \gets  \simsetup(1^\secpar, \REL) \\
 	~\signature_i \gets   \simsign(\td,\mesage_i, \inp_i)
-		\end{matrix}}
+		\end{matrix}} \Big	\vert	
 		 \leq \negl.
 		\]
 \end{description}
