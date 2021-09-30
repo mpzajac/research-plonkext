@@ -314,7 +314,7 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
   between the idealised verifier rejection and real verifier acceptance allows
   one to break the discrete logarithm problem.
 
-  The reduction $\rdvdlog$ proceeds as follows: $\rdvdlog$ initializes the SRS $\srs$ using the input $\dlog$ instance, and then answers $\adv$'s queries for SRS updates.\hamid{We can also say: $\rdvdlog$ builds a SRS $\srs$ using the input $\dlog$ instance. I.e., it answers $\adv$'s queries for SRS updates and sets the honest update of the SRS to be $\srs$.} Let $\srs'$ be the finalised SRS. 
+  The reduction $\rdvdlog$ proceeds as follows: $\rdvdlog$ builds a SRS $\srs$ using the input $\dlog$ instance. I.e., it answers $\adv$'s queries for SRS updates and sets the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS. 
   Consider a proof $\zkproof$ such
       that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
       $\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all proof
