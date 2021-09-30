@@ -137,18 +137,17 @@ witness for the signature. More formally,  for any PPT adversary $\adv$ there ex
 	  \begin{matrix}
 ~ \verify(\mesage, \inp, \signature) = 1   \\
 \land (\inp, \wit) \notin \REL \\
-\land (\mesage, \inp, \signature) \notin \text{Queries}^{\simsign_\td}
+\land (\mesage, \inp, \signature) \notin Q^{\simsign_\td}
 	 \end{matrix}
 }{
 	  \begin{matrix}
-~\param \gets \signsetup(1^\secpar, \REL)\\
+~(\param, \td) \gets \simsetup(1^\secpar, \REL)\\
 ~ (\mesage, \inp, \signature) \gets \adv^{\simsign_\td} (\param)\\
 \wit \gets \ext_\adv({\sf trans}_\adv)
  \end{matrix}
 } \leq \negl
 \]
-where the adversary has access to simulated signatures via the oracle $\simsign_\td(\inp_i, \mesage_i) \coloneq \simsign(\td, \inp_i, \mesage_i)$ and the extractor $\ext_\adv$ takes as input the transcript ${\sf trans}_\adv$ of all queries made by $\adv$ including its randomness. \markulf{30/9}{Added the part about randomness. I don't dislike the Queries SimSign td notation. Lets use it consistently throughout paper? Or also use Q here?
-	Where is td generated? changed signsetup to simsetup}
+where the adversary has access to simulated signatures via the oracle $\simsign_\td(\inp_i, \mesage_i) \coloneq \simsign(\td, \inp_i, \mesage_i)$ and the extractor $\ext_\adv$ takes as input the transcript ${\sf trans}_\adv$ of all queries made by $\adv$ including its randomness.  
 
 \vspace{4pt}
 %
@@ -352,23 +351,9 @@ non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
 %\end{definition}
 
 
-\subsection{Updatable SRS schemes}\label{def:upd-scheme}
-We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which consists of the following algorithms.
-
-\begin{itemize}
-	\item
-	$(\srs,\rho) \leftarrow \kgen(\secparam)$ is a PPT algorithm that takes a security parameter $\secpar$ and outputs a SRS $\srs$, and correctness proof $\rho$.
-	\item
-	$ (\srs',\rho') \leftarrow \upd(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a PPT algorithm that takes as input the security parameter $\secpar$, a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
-	\item
-	$b \leftarrow \verifyCRS(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
-\end{itemize}
-
-In the next section, we define security notions in the updatable setting. To this end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary updates the SRS. We also define the simulation oracle $\simO$ in~\cref{fig:upd} that is the simulator w.r.t. the SRS finalised by the adversary using $\initU$. This simulation oracle will be used in the definition of forking simulation extractability.
-
 \newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}% 
 
-\begin{figure}[t]
+\begin{figure}[t!]
 	\centering
 	\fbox{
 		\begin{minipage}[t]{0.58\linewidth}
@@ -411,8 +396,27 @@ In the next section, we define security notions in the updatable setting. To thi
 \end{figure}
 
 
-\hamid{TODO: add a paragraph here about the universality!}
-\markulf{30/09, how about this}{The proof systems we consider are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determine the constraints. We ellide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.}
+\subsection{Updatable SRS schemes}\label{def:upd-scheme}
+
+We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which consists of the following algorithms.
+\vspace{-8pt}
+\begin{itemize} 
+	\item
+	$(\srs,\rho) \leftarrow \kgen(\secparam)$ is a PPT algorithm that takes a security parameter $\secpar$ and outputs a SRS $\srs$, and correctness proof $\rho$.
+	\item
+	$ (\srs',\rho') \leftarrow \upd(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a PPT algorithm that takes as input the security parameter $\secpar$, a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
+	\item
+	$b \leftarrow \verifyCRS(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
+\end{itemize}
+
+In the next section, we define security notions in the updatable setting. To this end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary updates the SRS. We also define the simulation oracle $\simO$ in~\cref{fig:upd} that is the simulator w.r.t. the SRS finalised by the adversary using $\initU$. This simulation oracle will be used in the definition of forking simulation extractability.
+
+\ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determine the constraints. We ellide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
+
+
+
+%\hamid{TODO: add a paragraph here about the universality!}
+%\markulf{30/09, how about this}{The proof systems we consider are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determine the constraints. We ellide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.}
 % Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
 % is special-sound and has a unique response property. Let $\sigmaprot_\fs =
 % (\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the
