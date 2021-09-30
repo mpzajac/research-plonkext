@@ -182,27 +182,27 @@ $
   
 
 \subsection{Zero-Knowledge Proof Systems}
-Let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of
-$\npol$ relations. Denote by $\LANG_\REL$ the language determined by $\REL$.
-Let $\prover$ be a \emph{prover} and $\verifier$ be the \emph{verifier}, both $\ppt$ algorithms. We allow our proof system to have
-a setup, i.e.~there is a $\kgen$ algorithm that takes as input the relation
-description $\REL$ and outputs a common reference string $\srs$. We assume that
-the $\srs$ defines the relation, and for universal proof systems, such as Plonk
-and Sonic, we treat both the reference string and the relation as universal.
+In a zero-knowledge proof system, a prover convinces the verifier of veracity of a statement
+without leaking any other information. The zero-knowledge property is proven by constructing a
+simulator that can simulate the view of a cheating verifier without knowing the secret
+information -- witness -- of the prover. A proof system has to be sound as well, i.e.~for a
+malicious prover it should be infeasible to convince a verifier on a false statement. Here, we
+focus on proof systems, so-called arguments, that guarantee soundness against $\ppt$ malicious provers.
 
-We denote by $\ip{\prover(\srs, \inp, \wit)}{\verifier(\srs,\inp)}$ a
-\emph{transcript} (also called \emph{proof}) $\zkproof$ of a conversation
-between $\prover$ with input $(\srs, \inp, \wit)$ and $\verifier$ with input
-$(\srs, \inp)$. We write
-$\ip{\prover (\srs, \inp, \wit)}{\verifier(\srs, \inp)} = 1$ if in the end of
-the transcript the verifier $\verifier$ returns $1$ and say that $\verifier$
-accepts it.  For non-interactive proof systems we abuse notation and write
-$\verifier(\srs, \inp, \zkproof) = 1$ to denote a fact that $\zkproof$ is
-accepted by the verifier.  
+More precisely, let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of \changedm{universal}
+relations. Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
+and the latter \emph{verifier}. We allow our proof system to have a setup, i.e.~there is a
+$\kgen$ algorithm that takes as input the relation description $\REL$ and outputs a common
+reference string $\srs$. We assume that the $\srs$ defines the relation and for universal prove
+systems, such as Plonk and Sonic, we treat both the reference string and the relation as
+universal.
 
-A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for
-$\RELGEN$ is required to have three properties: completeness, soundness and zero
-knowledge, which are defined as follows:
+We denote by $\zkproof$ a proof created by $\prover$ with input
+$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier \srs, \inp, \zkproof)$ accepts it. 
+
+A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is
+required to have three properties: completeness, soundness and zero knowledge, which are
+defined as follows:
 % \begin{description}
 
 \ourpar{Completeness.}
