@@ -31,53 +31,77 @@ simulated NIZK proofs without knowing the trapdoor, just by
 programming the random oracle. We call protocols which allow for such kind of
 simulation \emph{trapdoor-less simulatable} (TLS). 
 
-\begin{definition}[Trapdoor-Less Simulatable Proof System]
-  Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof
-  system and $\ro$ a random oracle. Let $\simulator$ be a pair of
-  algorithms: $\simulator_\ro$ that takes random oracle queries and
-  answers them, $\simulator_\prover$ that takes as input an SRS $\srs$
-  and instance $\inp$ and outputs a proof $\zkproof_\simulator$.  We
+
+% \begin{definition}[Trapdoor-Less Simulatable Proof System]
+%   Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof
+%   system and $\ro$ a random oracle. Let $\simulator$ be a pair of
+%   algorithms: $\simulator_\ro$ that takes random oracle queries and
+%   answers them, $\simulator_\prover$ that takes as input an SRS $\srs$
+%   and instance $\inp$ and outputs a proof $\zkproof_\simulator$.  We
+%   call $\ps$ \emph{trapdoor-less simulatable} if for any adversary
+%   $\adv$, $\eps_0 \approx \eps_1$, where
+%   \begin{align}
+%     \eps_b = \Pr\left[
+%     \begin{aligned}
+%       \adv^{\oracleo_b}(\srs) = 0
+%     \end{aligned}
+%     \, \left| \,
+%     \begin{aligned}
+%       \srs \sample \kgen(\secpar)
+%     \end{aligned}
+%     \right.\right]
+%   \end{align}
+%   where $\oracleo_b$ takes two types of adversary's queries:
+%   \begin{description}
+%   \item[random oracle calls:] on $\adv$'s query $x$, $\oracleo_b$
+%     responds with $\ro(x)$ if $b = 0$, and with $y \gets
+%     \simulator_\ro(\srs, x)$, if $b = 1$.
+%   \item[proof calls:] on $\adv$'s query $\inp, \wit$ responds
+%   with a real proof $\zkproof_\prover \gets
+%   \prover(\srs, \inp, \wit)$ if $b = 0$ or a simulated proof $\zkproof_\simulator \gets \simulator (\srs,
+%   \inp)$ if $b = 1$.
+%   \end{description}
+% \end{definition}
+
+\begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
+  Let $\ps$ be a $(2\mu + 1)$-message ZK proof system. Let $\ps_\fs= (\kgen_{\fs}, \prover_{\fs}, \verifier_{\fs}, \simulator_{\fs})$ be its
+  Fiat--Shamir variant and $\ro$ the random oracle. $\simulator_{\fs}$ takes as input an SRS $\srs$
+  and instance $\inp$, programs $\ro$, and outputs a proof $\zkproof_\simulator$.  We
   call $\ps$ \emph{trapdoor-less simulatable} if for any adversary
   $\adv$, $\eps_0 \approx \eps_1$, where
-  \begin{align}
+  \begin{align*}
     \eps_b = \Pr\left[
     \begin{aligned}
-      \adv^{\oracleo_b}(\srs) = 0
+      \adv^{\initU,\ro,\oracleo_b} = 0
     \end{aligned}
-    \, \left| \,
-    \begin{aligned}
-      \srs \sample \kgen(\secpar)
-    \end{aligned}
-    \right.\right]
-  \end{align}
-  where $\oracleo_b$ takes two types of adversary's queries:
-  \begin{description}
-  \item[random oracle calls:] on $\adv$'s query $x$, $\oracleo_b$
-    responds with $\ro(x)$ if $b = 0$, and with $y \gets
-    \simulator_\ro(\srs, x)$, if $b = 1$.
-  \item[proof calls:] on $\adv$'s query $\inp, \wit$ responds
+    \right]
+  \end{align*}
+  On $\adv$'s query $\inp, \wit$, oracle $\oracleo_{b}$ responds
   with a real proof $\zkproof_\prover \gets
-  \prover(\srs, \inp, \wit)$ if $b = 0$ or a simulated proof $\zkproof_\simulator \gets \simulator (\srs,
+  \prover_{\fs}(\srs, \inp, \wit)$ if $b = 0$ or a simulated proof $\zkproof_\simulator \gets \simulator_{\fs} (\srs,
   \inp)$ if $b = 1$. 
-  \end{description} 
+
+  Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if $\simulator_\fs$ programs the random oracle \emph{only} for
+    challenges from round $k$ to $\mu + 1$.
 \end{definition}
 
 \begin{remark}[TLS vs HVZK]
   We note that TLS notion is closely related to honest-verifier zero knowledge in the standard model. That is, if we consider an interactive proof system $\proofsystem$ that is HVZK in the standard model then its Fiat--Shamir compiled version $\proofsystem_\fs$ is TLS. This comes as the simulator $\simulator$ in $\proofsystem$ produces a valid simulated proof by picking verifier's challenges according to a predefined distribution and $\proofsystem_\fs$'s simulator $\simulator_\fs$ produces its proofs similarly by picking the challenges and additionally programming the random oracle to return the picked challenges. Importantly, in both $\proofsystem$ and $\proofsystem_\fs$ success of the simulator does not depend on access to an SRS trapdoor \markulf{29/09/2021}{Removing this: (which may not even exists if the proof systems are transparent)}.
 \end{remark}
 
-\begin{definition}[$k$-programmable ZK]
-  \label{def:kzk}
-  Let $\ps$ be a $(2\mu + 1)$-message ZK proof system and let $\ps_\fs$ be its
-  Fiat--Shamir variant. We say that $\ps_\fs$ is $k$-programmable ZK if there
-  exists a simulator $\simulator_\fs$ that
-  \begin{compactenum}
-  \item produces proofs indistinguishable from proofs output by an honest
-    prover;
-  \item $\simulator_\fs$ programs the random oracle \emph{only} for
-    challenges from round $k$ to $\mu + 1$.
-  \end{compactenum}
-\end{definition}
+% \begin{definition}[$k$-programmable ZK]
+%   \label{def:kzk}
+%   Let $\ps$ be a $(2\mu + 1)$-message ZK proof system and let $\ps_\fs$ be its
+%   Fiat--Shamir variant. We say that $\ps_\fs$ is $k$-programmable ZK if there
+%   exists a simulator $\simulator_\fs$ that
+%   \begin{compactenum}
+%   \item produces proofs indistinguishable from proofs output by an honest
+%     prover;
+%   \item $\simulator_\fs$ programs the random oracle \emph{only} for
+%     challenges from round $k$ to $\mu + 1$.
+%   \end{compactenum}
+% \end{definition
+}
 We note that $\plonk$ is $2$-programmable ZK, $\sonic$ is $1$-programmable ZK,
 and $\marlin$ is $1$-programmable ZK. This follows directly from the proofs of
 their standard model zero-knowledge property in
