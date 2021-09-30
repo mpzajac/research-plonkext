@@ -26,8 +26,7 @@ i.e.~$\nevent{E} = \samplespace \setminus \event{E}$.
 Denote by $\RELGEN = \smallset{\REL}$ a family of relations. We assume that if
 $\REL$ comes with any auxiliary input, the latter is benign. Directly from the
 description of $\REL$ one learns security parameter $\secpar$ and description of the
-group $\GRP$, if the relation is a relation of group elements (as it usually is
-in case of zkSNARKs).
+group $\GRP$, if the relation is a relation of group elements (as is usually the case for zkSNARKs).
 
 \ourpar{Bilinear groups.}
 A bilinear group generator $\pgen (\secparam)$ returns public parameters $ \pp =
@@ -418,6 +417,7 @@ In the next section, we define security notions in the updatable setting. To thi
 
 
 \hamid{TODO: add a paragraph here about the universality!}
+\markulf{30/09, how about this}{The proof systems we consider are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determin the constraints. We ellide public preprocessing of constraint specific proving and verification keys. While important for performance, this modelling is not critical for security.}
 % Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
 % is special-sound and has a unique response property. Let $\sigmaprot_\fs =
 % (\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the

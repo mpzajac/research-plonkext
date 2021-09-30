@@ -165,7 +165,7 @@ they are $\ur{1}$.
 that simulators in these protocols produces proofs without relying on the knowledge of
 trapdoor. More precisely for our reduction, we need simulators that rely only on reordering the
 messages and picking suitable verifier challenges, without knowing the SRS trapdoor.  That is,
-any PPT party should be able to produce a simulated proof by its own in a trapdoor-less
+any PPT party should be able to produce a simulated proof on its own in a trapdoor-less
 way. Note that this property does not necessary break soundness of the protocol as the
 simulator is required only to produce a transcript and is not involved in a real conversation
 with a real verifier. We show simulators for $\plonkprotfs$, $\sonicprotfs$, and
@@ -173,32 +173,35 @@ $\marlinprotfs$ that rely only on the programmability of the RO, where programma
 needed from some round $i$ onwards.  \chaya{revisit this. is HVZK for the interactive protocol?
   then why programming? it might be a good idea to elaborate on why a trapdoor-based simulator
   does not work in the reduction. I am not sure I have clarity on this.}  \michals{16.09}{maybe
-  we should just define Trapdoor-less simulatable (TLS) protocols?}\michals{28.09}{some re-writing to incorporate TLS. check}
+  we should just define Trapdoor-less simulatable (TLS) protocols?}\michals{28.09}{some re-writing to incorporate TLS. check}\markulf{30.09}{This is much improved but still not very well motivated.}
 
-\oursubsub{Generalisation of the general forking lemma.}  Consider an interactive $3$-message
+\oursubsub{Generalising the general forking lemma.}  Consider an interactive $3$-message
 special-sound protocol $\ps$ and its non-interactive version $\ps_\fs$ obtained by the
 Fiat--Shamir transform. The general forking lemma provides an instrumental lower bound for the
 probability of extracting a witness from an adversary who provides two proofs for the same
 statement that share the first message. Since $\plonkprot$ and $\sonicprot$ have more than $3$
 messages and are not special-sound, the forking lemma of Bellare and Neven~\cite{CCS:BelNev06},
 cannot be used directly. We propose a generalization that covers multi-message protocols where
-witness extraction requires more transcripts than merely two.  Unfortunately, we also observe
+witness extraction requires more than two transcripts.  Unfortunately, we also observe
 that the security gap grows with the number of transcripts and the probability that the
 extractor succeeds diminishes significantly; the security loss, albeit big, is polynomial.
 
 Most modern zkSNARKs~\cite{SP:BBBPWM18,CCS:MBKM19} heavily
 rely on the Fiat--Shamir transform and thus potentially the forking lemma. First, an interactive
-protocol is proposed and its security and forking soundness analysed. Second,
+protocol is proposed and its security and forking soundness analysed.\markulf{30.09}{Unclear here whether forking soundness is for the interactive of the non-interactive protocol.} Second,
 one uses an argument that the Fiat--Shamir transform can be used to get a
 protocol that is non-interactive and shares the same security properties.
 
 We see our generalized forking lemma as contributing to a critical assessment of
 this approach. The analysis of the interactive protocol is not enough and one
-has to consider the security loss implied by the Fiat-Shamir transform for the target security notion. Thus one has to either rely on our generalisation of the forking
-lemma or disclose a transformation that does not suffer this loss. We note that
-the security loss may also apply when knowledge soundness is proven. That is the
-case for the original $\sonic$ paper, whose security proof relies on so-called witness-extended
-emulation. The authors of $\plonk$ and recent work on $\sonic$~\cite{cryptoeprint:2020:1351} work around this problem by proving
+has to consider the security loss implied by the Fiat-Shamir transform for the target security notion.
+%Thus one has to either rely on our generalisation of the forking
+%lemma or disclose a transformation that does not suffer this loss.
+We note that the security loss of our generalized forking lemma may also apply
+when knowledge soundness is proven. This is, e.g., the case for the original
+$\sonic$ paper, whose security proof relies on so-called witness-extended
+emulation. The authors of $\plonk$ and recent work on
+$\sonic$~\cite{cryptoeprint:2020:1351} work around this problem by proving
 knowledge soundness directly in the AGM.
 
 
