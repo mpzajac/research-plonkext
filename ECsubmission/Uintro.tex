@@ -14,7 +14,7 @@ SoK from SNARK schemes that have simulation-extractability.
 Therefore, our focus can be moved from SoK to the main building block,  SNARK schemes,  for which we have many new efficient constructions in the recent literature. 
  
 
-\paragraph{Relevance of Simulation extractability.}
+\paragraph{Relevance of simulation extractability.}
 
 Most zkSNARKs are shown to only satisfy a standard knowledge soundness property. Intuitively, this guarantees that
 a prover that creates a valid proof knew a valid witness. However, deployments of zkSNARKs in real-world applications unless they are carefully designed to have application specific malleability protection, e.g.~\cite{SP:BCGGMT14}, require a stronger property -- \textit{simulation-extractability} (SE) that as discussed above corresponds more closely to existential unforgeability of signatures.
@@ -93,6 +93,10 @@ assumptions.
 \emph{USE for concrete zkSNARKs.}
 We then prove that the most efficient updatable SRS SNARKS -- Plonk/Sonic/Marlin -- satisfy the notions necessary to invoke our general theorem, thus showing that these zkSNARKs are updatable simulation extractable.
 Proving that these protocols satisfy the required properties is done in the algebraic group model (AGM).
+
+\item
+  \emph{SNARKY signatures in the updatable setting.}\michals{30.09}{Check and extend}
+  Since SNARKY signatures can be built from any simulation-extractable zkSNARK, our result provides first SoK in the updatable setting. Furthremore, we show that a much larger class of zkSNARKs can be used to construct SoK, than just the zkSNARK proposed by \cite{C:GroMal17}.
 	
 %\item
 %We make several technical contributions along the way. Our generalized forking lemma is of independent interest.
