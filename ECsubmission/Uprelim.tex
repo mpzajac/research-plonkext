@@ -12,21 +12,24 @@ the random choice of the randomiser $r$ from $\RND{\adv}$. We denote by $\negl$
 
 Probability ensembles $X = \smallset{X_\secpar}_\secpar$ and $Y =
 \smallset{Y_\secpar}_\secpar$, for distributions $X_\secpar, Y_\secpar$, have
-\emph{statistical distance} $\SD(X_\secpar, Y_\secpar)=\epsilon(\secpar)$ if $\sum_{a \in
+\emph{statistical distance} $\SD$ equal $\epsilon(\secpar)$ if $\sum_{a \in
   \supp{X_\secpar \cup Y_\secpar}} \abs{\prob{X_\secpar = a} - \prob{Y_\secpar =
     a}} = \epsilon(\secpar)$. We write $X \approx_\secpar Y$ if $\SD(X_\secpar,
 Y_\secpar) \leq \negl$. For values $a(\secpar)$ and $b(\secpar)$ we write
 $a(\secpar) \approx_\secpar b(\secpar)$ if $\abs{a(\secpar) - b(\secpar)} \leq
 \negl$.
+
 For a probability space $(\samplespace, \eventspace, \probfunction)$ and event
 $\event{E} \in \eventspace$ we denote by $\nevent{E}$ an event that is
 complementary to $\event{E}$,
 i.e.~$\nevent{E} = \samplespace \setminus \event{E}$.
 
+\chaya{revisit after agreeing on how we deal with relations.}
 Denote by $\RELGEN = \smallset{\REL}$ a family of relations. We assume that if
 $\REL$ comes with any auxiliary input, the latter is benign. Directly from the
 description of $\REL$ one learns security parameter $\secpar$ and description of the
-group $\GRP$, if the relation is a relation of group elements (as is usually the case for zkSNARKs).
+group $\GRP$, if the relation is a relation of group elements (as it usually is
+in case of zkSNARKs).
 
 \ourpar{Bilinear groups.}
 A bilinear group generator $\pgen (\secparam)$ returns public parameters $ \pp =
@@ -140,14 +143,13 @@ witness for the signature. More formally,  for any PPT adversary $\adv$ there ex
 	 \end{matrix}
 }{
 	  \begin{matrix}
-~(\param,\td) \gets \simsetup(1^\secpar, \REL)\\
+~\param \gets \signsetup(1^\secpar, \REL)\\
 ~ (\mesage, \inp, \signature) \gets \adv^{\simsign_\td} (\param)\\
 \wit \gets \ext_\adv({\sf trans}_\adv)
  \end{matrix}
 } \leq \negl
 \]
-where the adversary has access to simulated signatures via the oracle $\simsign_\td(\inp_i, \mesage_i) \coloneq \simsign(\td, \inp_i, \mesage_i)$ and the extractor $\ext_\adv$ takes as input the transcript ${\sf trans}_\adv$ of all queries made by $\adv$ including its randomness. \markulf{30/9}{Added the part about randomness. I don't dislike the Queries SimSign td notation. Lets use it consistently throughout paper? Or also use Q here?
-Where is td generated? changed signsetup to simsetup}
+where the adversary has access to simulated signatures via the oracle $\simsign_\td(\inp_i, \mesage_i) \coloneq \simsign(\td, \inp_i, \mesage_i)$ and the extractor $\ext_\adv$ takes as input the transcript ${\sf trans}_\adv$ of all queries made by $\adv$.
 
 \vspace{4pt}
 %
@@ -179,6 +181,7 @@ $
 		 \leq \negl.
 		\]
 \end{description}
+  
   
 
 \subsection{Zero-Knowledge Proof Systems}
@@ -418,7 +421,6 @@ In the next section, we define security notions in the updatable setting. To thi
 
 
 \hamid{TODO: add a paragraph here about the universality!}
-\markulf{30/09, how about this}{The proof systems we consider are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determin the constraints. We ellide public preprocessing of constraint specific proving and verification keys. While important for performance, this modelling is not critical for security.}
 % Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
 % is special-sound and has a unique response property. Let $\sigmaprot_\fs =
 % (\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the
