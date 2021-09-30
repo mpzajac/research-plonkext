@@ -8,6 +8,62 @@
 In this section we present $\sonic$'s constraint system and algorithms. Reader
 familiar with them may jump directly to the next section.
 
+\hamid{we should put the following figure \ref{fig:pcoms} somewhere in this section.}
+ \begin{figure}[h!]
+ \centering
+ 	\begin{pcvstack}[center,boxed]
+ 		\begin{pchstack}
+ 			\procedure{$\kgen(\secparam, \maxdeg)$} {
+ 				\alpha, \chi \sample \FF^2_p \\ [\myskip]
+ 				\pcreturn \gone{\smallset{\chi^i}_{i = -\multconstr}^{\multconstr},
+           \smallset{\alpha \chi^i}_{i = -\multconstr, i \neq
+             0}^{\multconstr}},\\
+         \pcind \gtwo{\smallset{\chi^i, \alpha \chi^i}_{i =
+             -\multconstr}^{\multconstr}}, \gtar{\alpha}\\
+ 				%\markulf{03.11.2020}{} \\
+ 			%	\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
+ 				\hphantom{\hspace*{5.5cm}}
+ 		}
+
+ 			\pchspace
+
+ 			\procedure{$\com(\srs, \maxconst, \p{f}(X))$} {
+ 				\p{c}(X) \gets \alpha \cdot X^{\dconst - \maxconst} \p{f}(X) \\ [\myskip]
+ 				\pcreturn \gone{c} = \gone{\p{c}(\chi)}\\ [\myskip]
+ 				\hphantom{\pcind \pcif \sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot
+           \gone{\sum_{j = 1}^{t_j} \gamma_i^{j - 1} c_{i, j} - \sum_{j = 1}^{t_j}
+             s_{i, j}} \bullet \gtwo{1} + } }
+ 		\end{pchstack}
+ 		% \pcvspace
+
+ 		\begin{pchstack}
+ 			\procedure{$\open(\srs, z, s, f(X))$}
+ 			{
+ 				\p{o}(X) \gets \frac{\p{f}(X) - \p{f}(z)}{X - z}\\ [\myskip]
+ 				\pcreturn \gone{\p{o}(\chi)}\\ [\myskip]
+ 				\hphantom{\hspace*{5.5cm}}
+ 			}
+
+ 			\pchspace
+
+ 			\procedure{$\verify(\srs, \maxconst, \gone{c}, z, s, \gone{\p{o}(\chi)})$}
+       {
+         \pcif \gone{\p{o}(\chi)} \bullet \gtwo{\alpha \chi} + \gone{s - z
+         \p{o}(\chi)} \bullet \gtwo{\alpha} = \\ [\myskip] \pcind \gone{c}
+         \bullet \gtwo{\chi^{- \dconst + \maxconst}} \pcthen  \pcreturn 1\\
+         [\myskip]
+         \rlap{\pcelse \pcreturn 0.} \hphantom{\pcind \pcif \sum_{i =
+             1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j} \gamma_i^{j -
+               1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet \gtwo{1} + } }
+ 		\end{pchstack}
+ 	\end{pcvstack}
+
+ 	\caption{$\PCOMs$ polynomial commitment scheme.}
+ 	\label{fig:pcoms}
+ \end{figure}
+
+
+
 \oursubsub{The constraint system}
 \label{sec:sonic_constraint_system}
 \sonic's system of constraints composes of three $\multconstr$-long vectors
