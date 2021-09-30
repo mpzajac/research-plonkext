@@ -13,7 +13,7 @@ multi-round SRS-based protocols.
 In security reductions in this paper it is sometimes needed to produce
 simulated NIZK proofs without knowing the trapdoor, just by
 programming the random oracle. We call protocols which allow for such kind of
-simulation \emph{trapdoor-less simulatable} (TLS). More precisely,
+simulation \emph{trapdoor-less simulatable} (TLS). 
 
 \begin{definition}[Trapdoor-Less Simulatable Proof System]
   Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof
@@ -67,23 +67,23 @@ and $\marlin$ is $1$-programmable ZK. This follows directly from the proofs of
 their standard model zero-knowledge property in
 \cref{lem:plonk_hvzk,lem:sonic_hvzk,lem:marlin_hvzk}. 
 
-\oursubsub{Idealised Verifier and Verification Equations} Let
+\oursubsub{Idealised Verifier and Verification Equations.} Let
 $(\kgen, \prover, \verifier)$ be a proof system.
 % or a polynomial commitment
 % scheme\hamid{might be unclear as we are defining polynomial commitments as
 %   $(\kgen, \com, \open, \verify)$.}.
 Observe that the $\kgen$ algorithm provides an SRS which can be interpreted as a
 set of group representation of polynomials evaluated at trapdoor
-elements. E.g.~for a trapdoor $\chi$ the SRS contains
+elements. That is, for a trapdoor $\chi$ the SRS contains
 $\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for some polynomials
-$\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. On the other hand, the verifier
-$\verifier$ accepts if a (possibly set of) verification equation
-$\vereq_{\inp, \zkproof}$ (note that the verification equation changes relate to
-the instance $\inp$ and proof $\zkproof$), which can also be interpreted as a
+$\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. The verifier
+$\verifier$ accepts if (a set of) verification equation
+$\vereq_{\inp, \zkproof}$ %(note that the verification equation changes relate to the instance $\inp$ and proof $\zkproof$) 
+(which can also be interpreted as a
 polynomial in $\FF_p[X]$ whose coefficients depend on messages sent by the
-prover, zeroes at $\chi$. Following \cite{EPRINT:GabWilCio19} we call verifiers
+prover), zeroes at $\chi$. Following \cite{EPRINT:GabWilCio19} we call verifiers
 who checks that $\vereq_{\inp, \zkproof}(\chi) = 0$ \emph{real verifiers} as
-opposed to \emph{ideal verifiers} who accepts only when
+opposed to \emph{ideal verifiers} who accept only when
 $\vereq_{\inp, \zkproof}(X) = 0$. That is, while a real verifier accepts when a
 polynomial \emph{evaluates} to zero, an ideal verifier accepts only when the
 polynomial \emph{is} zero.
@@ -99,7 +99,7 @@ proofs. More precisely, we show that
   (in our case---a variant of $\dlog$.)
 \end{compactenum}
 
-Analogously, idealised verifier can also be defined for polynomial commitment scheme.
+Analogously, idealised verifier can also be defined for a polynomial commitment scheme.
 
 
 %\subsection{Forking simulation extractability}

@@ -18,13 +18,11 @@ Probability ensembles $X = \smallset{X_\secpar}_\secpar$ and $Y =
 Y_\secpar) \leq \negl$. For values $a(\secpar)$ and $b(\secpar)$ we write
 $a(\secpar) \approx_\secpar b(\secpar)$ if $\abs{a(\secpar) - b(\secpar)} \leq
 \negl$.
-
 For a probability space $(\samplespace, \eventspace, \probfunction)$ and event
 $\event{E} \in \eventspace$ we denote by $\nevent{E}$ an event that is
 complementary to $\event{E}$,
 i.e.~$\nevent{E} = \samplespace \setminus \event{E}$.
 
-\chaya{revisit after agreeing on how we deal with relations.}
 Denote by $\RELGEN = \smallset{\REL}$ a family of relations. We assume that if
 $\REL$ comes with any auxiliary input, the latter is benign. Directly from the
 description of $\REL$ one learns security parameter $\secpar$ and description of the
@@ -189,7 +187,7 @@ $\npol$ relations. Denote by $\LANG_\REL$ the language determined by $\REL$.
 Let $\prover$ be a \emph{prover} and $\verifier$ be the \emph{verifier}, both $\ppt$ algorithms. We allow our proof system to have
 a setup, i.e.~there is a $\kgen$ algorithm that takes as input the relation
 description $\REL$ and outputs a common reference string $\srs$. We assume that
-the $\srs$ defines the relation and for universal prove systems, such as Plonk
+the $\srs$ defines the relation, and for universal proof systems, such as Plonk
 and Sonic, we treat both the reference string and the relation as universal.
 
 We denote by $\ip{\prover(\srs, \inp, \wit)}{\verifier(\srs,\inp)}$ a
