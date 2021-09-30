@@ -341,13 +341,13 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
 	$\gone{\chi^{-\dconst}, \ldots, \chi^{\dconst}}, \gtwo{\chi^{-\dconst},
 		\ldots, \chi^{\dconst}}$ and is tasked to output $\chi$.
 	
-	The reduction $\rdvdlog$ proceeds as follows.\hamid{Chaya please check!}
+	The reduction $\rdvdlog$ proceeds as follows.
 	\begin{enumerate}
 		\item Pick a random $\alpha$ and compute
 		$\gone{\alpha \chi^{- \dconst}, \ldots, \alpha \chi^{-1}, \alpha \chi,
 			\ldots, \alpha \chi^{\dconst}}$,
 		$\gtwo{\alpha \chi^{- \dconst}, \ldots, \alpha \chi^{-1}, \alpha \chi,
-			\ldots, \alpha \chi^{\dconst}}$. Put this together with the $(\dconst, \dconst)$-ldlog instance to derive a SRS $\srs$.
+			\ldots, \alpha \chi^{\dconst}}$. Set a SRS $\srs$ to be the $(\dconst, \dconst)$-ldlog instance and its multiplication with $\alpha$ as computed above.\hamid{Is this clear?}
 		\item Build $\sonicprot$'s SRS in the updatable setting by answering $\adv$'s queries for SRS updates and setting the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS.
 		\item Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a
 		relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such
