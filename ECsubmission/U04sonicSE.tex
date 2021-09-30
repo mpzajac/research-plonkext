@@ -341,23 +341,25 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
 	$\gone{\chi^{-\dconst}, \ldots, \chi^{\dconst}}, \gtwo{\chi^{-\dconst},
 		\ldots, \chi^{\dconst}}$ and is tasked to output $\chi$.
 	
-	The reduction $\rdvdlog$ proceeds as follows.\hamid{Discuss with Chaya!}
+	The reduction $\rdvdlog$ proceeds as follows.\hamid{Chaya please check!}
 	\begin{enumerate}
-		\item Build $\sonicprot$'s SRS $\srs$: pick a random $\alpha$ and compute
+		\item Pick a random $\alpha$ and compute
 		$\gone{\alpha \chi^{- \dconst}, \ldots, \alpha \chi^{-1}, \alpha \chi,
 			\ldots, \alpha \chi^{\dconst}}$,
 		$\gtwo{\alpha \chi^{- \dconst}, \ldots, \alpha \chi^{-1}, \alpha \chi,
-			\ldots, \alpha \chi^{\dconst}}$. Compose the SRS.
+			\ldots, \alpha \chi^{\dconst}}$. Put this together with the $(\dconst, \dconst)$-ldlog instance to derive a SRS $\srs$.
+		\item Build $\sonicprot$'s SRS in the updatable setting by answering $\adv$'s queries for SRS updates and setting the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS.
 		\item Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a
 		relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such
 		that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
-		$\vereq_{\inp, \zkproof}(\chi) = 0$. Since $\adv$ is algebraic, all group
+		$\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all group
 		elements included in $\tree$ are extended by their representation as a
 		combination of the input $\GRP_1$-elements. Hence, all coefficients of the
 		verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known.
-		\item Find $\vereq_{\inp, \zkproof}(X)$ zero points and find $\chi$ among
+		\item Find $\vereq_{\inp, \zkproof}(X)$ zero points and find $\chi'$ among
 		them.
-		\item Return $\chi$.
+		\item Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates, extracted by the reduction from the update proofs given by $\adv$.
+		\item Return  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.
 	\end{enumerate}
 	Hence, the probability that the adversary wins Game 1 is upper-bounded by
 	$\epsldlog(\secpar)$.

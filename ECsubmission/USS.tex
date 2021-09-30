@@ -1,46 +1,40 @@
 % !TEX root = main.tex
 % !TEX spellcheck = en-US
 
-\section{Simulation Soundness }
-\noindent \textbf{Simulation sound NIZKs.}
+\section{Simulation Soundness---definitions and the general result}
+\noindent \textbf{Simulation sound NIZKs in the updatable setting.}
 Another notion for non-malleable NIZKs is \emph{simulation soundness}. It allows the adversary to see simulated proof, however, in contrast to simulation
 extractability it does not require an extractor to provide a witness for the
 proven statement. Instead, it is only necessary, that an adversary who sees
 simulated proofs cannot make the verifier accept a proof of an incorrect
 statement. More precisely,
-\chaya{this definition will go}
-\begin{definition}[Simulation soundness]
+
+
+\begin{definition}[Simulation soundness in the updatable setting]
 	\label{def:simsnd}
-	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof and
-	$\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$
-	transformed by the Fiat--Shamir transform. We say that $\ps_\fs$ is
-	\emph{simulation-sound}
-	for any $\ppt$ adversary $\adv$ that is given oracle access to a random
-	oracle $\ro$ and simulator $\simulator_\fs$, probability
+	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a
+	NIZK proof system. We say that $\ps$ is \emph{updatable simulation-sound} if for any $\ppt$
+	adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a simulation oracle $\simO$, cf.~\cref{fig:upd}, and a random oracle $\ro$, probability
 	\[
-	\ssndProb =
-	\Pr\left[
-	\begin{aligned}
-	& \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
-	& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
-	& \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
-	\end{aligned}
-	\, \left| \,
-	\vphantom{\begin{aligned}
-		& \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
-		& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
-		& \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
-		\end{aligned}}
-	\begin{aligned}
-	& \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
-	& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
-		\ro} (\srs; r)
-	\end{aligned}
-	\right.  \right]
+	\ssndProb = \condprob{
+		\begin{matrix}
+		\verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \\
+		\wedge  ~(\inp_{\advse}, \zkproof_{\advse}) \not\in Q   \\
+		\wedge \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
+		\end{matrix}
+	}{
+		\begin{aligned}
+		& r \sample \RND{\advse},
+		(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
+			\ro} (1^\secpar; r) \\
+		\end{aligned}
+	}
 	\]
-	is at most negligible.  List $Q$ contains all $(\inp, \zkproof)$ pairs where
+	is at most negligible.  
+	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
 	$\inp$ is an instance provided to the simulator by the adversary and
-	$\zkproof$ is the simulator's answer. 
+	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+	queries to $\ro$ and $\ro$'s answers.  
 \end{definition}
 
 \label{rem:simext_to_simsnd}
@@ -51,22 +45,21 @@ $\REL(\inp_\adv, \wit_\adv) = 0$, where $\wit_\adv$, returned by a possibly unbo
 extractor, is either a witness to $\inp_\adv$ (if there exists any) or $\bot$ (if
 there is none). More precisely,
 \[
-\ssndProb =
-\Pr\left[
-\begin{aligned}
-& \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
-& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
-& \REL(\inp_{\adv}, \wit_{\adv}) = 0
-\end{aligned}
-\, \left| \,
-\begin{aligned}
-& \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
-& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
-	\ro} (\srs; r)\\
-& \wit_{\adv} \gets \ext(\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
-Q, Q_\ro,) 
-\end{aligned}
-\right.  \right].
+\ssndProb = \condprob{
+	\begin{matrix}
+	\verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \\
+	\wedge  ~(\inp_{\advse}, \zkproof_{\advse}) \not\in Q   \\
+	\wedge  ~\REL(\inp_{\advse}, \wit_{\advse}) = 1
+	\end{matrix}
+}{
+	\begin{aligned}
+	& r \sample \RND{\advse},
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
+		\ro} (1^\secpar; r) \\
+	& \wit_{\advse} \gets \ext(\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+	Q, Q_\ro, Q_\srs) 
+	\end{aligned}
+}
 \]
 The only necessary input to the unbounded extractor $\ext$ is the instance
 $\inp_\adv$ (the rest is given for the consistency with the simulation extractability
@@ -76,52 +69,41 @@ With the probabilities in \cref{def:simext} holding regardless of whether the ex
 is unbounded or not, we obtain the following equality
 $ \ssndProb = \accProb - \extProb$.
 
-
-\section{Simulation soundness---the general result}
+\subsection{Simulation soundness---the general result}
 \label{sec:general}
-Equipped with definitional framework of \cref{sec:se_definitions} we are ready
-to present the main result of this paper---a proof of simulation soundness and
-forking simulation extractability of Fiat-Shamir NIZK based on multi-round protocols.
+Equipped with definitional framework of \cref{sec:se_definitions}, we can also show the proof of simulation soundness of Fiat-Shamir NIZK based on multi-round protocols.
 
-The proofs go by game hopping. The games are controlled by an environment $\env$
-that internally runs a simulation extractability adversary $\advse$, provides it
-with access to a random oracle and simulator, and when necessary, rewinds it. The
-games differ by various breaking points, i.e.~points where the environment
-decides to abort the game.
-
-Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs returned by the
-adversary and the simulator respectively. We use $\zkproof[i]$ to denote
-prover's message in the $i$-th round of the proof (counting from 1),
-i.e.~$(2i - 1)$-th message exchanged in the protocol. $\zkproof[i].\ch$ denotes
-the challenge that is given to the prover after $\zkproof[i]$, and
-$\zkproof[i..j]$ to denote all messages of the proof including challenges
-between rounds $i$ and $j$, but not challenge $\zkproof[j].\ch$. When it is not
-explicitly stated, we denote the proven instance $\inp$ by $\zkproof[0]$
-(however, there is no following challenge $\zkproof[0].\ch$).
-
-Without loss of generality, we assume that whenever the accepting proof contains
-a response to a challenge from a random oracle, then the adversary queried the
-oracle to get it. It is straightforward to transform any adversary that violates
-this condition into an adversary that makes these additional queries to the
-random oracle and wins with the same probability.
+%\begin{theorem}[Forking simulation-extractable multi-message protocols]
+%	\label{thm:se}
+%	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive $(2 \mu + 1)$-message
+%	zero-knowledge proof system for $\RELGEN(\secparam)$, which is trapdoor-less simulatable, has
+%	$\ur{k}$ property with security $\epsur(\secpar)$, and is $(\epss(\secpar), k, n)$-forking
+%	sound.  Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle.  Then $\psfs$ is
+%	forking simulation-extractable with extraction error $\epsur(\secpar)$ against $\ppt$
+%	algebraic adversaries that makes up to $q$ random oracle queries and returns an acceptable
+%	proof with probability at least $\accProb$.  The extraction probability $\extProb$ is at
+%	least
+%	\( \extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,, \)
+%	for some negligible $\eps(\secpar)$.
+%\end{theorem}
 
 \begin{theorem}[Simulation soundness]
 	\label{thm:simsnd}
-	Assume that $\ps$ is $k$-programmable HVZK in the standard model, that is
-	$\epss(\secpar)$-sound and $\ur{k}$ with security $\epsur(\secpar)$. Then, the
+	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive $(2 \mu + 1)$-message
+	zero-knowledge proof system for $\RELGEN(\secparam)$, which is trapdoor-less simulatable, has
+	$\ur{k}$ property with security $\epsur(\secpar)$. Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. Then, the
 	probability that a $\ppt$ adversary $\adv$ breaks simulation soundness of
-	$\ps_{\fs}$ is upper-bounded by
+	$\ps$ is upper-bounded by
 	\(
 	\epsur(\secpar) + q_\ro^\mu  \epss(\secpar)\,,
 	\)
-	where $q$ is the total number of queries made by the adversary $\adv$ to a
-	random oracle $\ro\colon \bin^{*} \to \bin^{\secpar}$.
+	where $q$ is the total number of queries made by the adversary $\adv$ to $\ro$.
 \end{theorem}
 
 \begin{proof}
 	\ngame{0} This is a simulation soundness game played between an adversary
-	$\adv$ who is given access to a random oracle $\ro$ and simulator
-	$\psfs.\simulator$. $\adv$ wins if it manages to produce an accepting proof
+	$\advse$ who is given access to an oracle $\initU$ that defines an updatable SRS setup, a random oracle $\ro$ and a simulation oracle
+	$\simO$. $\adv$ wins if it manages to produce an accepting proof
 	for a false statement. In the following game hops, we upper-bound the
 	probability that this happens.
 	
@@ -145,6 +127,7 @@ random oracle and wins with the same probability.
 	to break the $\ur{k}$ property of $\ps$. Let $\rdvur$ run $\advse$ internally
 	as a black-box:
 	\begin{compactitem}
+		\item The reduction answers $\adv$ update queries by asking the same query from the update oracle in the unique response experiment. The reduction finalises the same SRS $\srs$ as the one $\adv$ does.
 		\item The reduction answers both queries to the simulator $\psfs.\simulator$
 		and to the random oracle.  It also keeps lists $Q$, for the simulated
 		proofs, and $Q_\ro$ for the random oracle queries.
@@ -230,36 +213,14 @@ random oracle and wins with the same probability.
 We conjecture that based on the recent results on state restoration soundness~\cite{cryptoeprint:2020:1351}, which effectively allows to query the verifier multiple times on different overlapping transcripts, the $q^{\mu}$ loss could be avoided. However, this would reduce the class of protocols covered by our results. 
 
 
-\subsection{Simulation soundness and simulation
-	extractability of~$\plonkprotfs$}
+\subsection{Simulation soundness of~$\plonkprotfs$}
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$
-and forking sound. We now make use of \cref{thm:simsnd} and \cref{thm:se} and show that
-$\plonkprot_\fs$ is simulation sound and forking simulation-extractable as defined in
-\cref{sec:simext_def}.
-
-\begin{corollary}[Forking simulation extractability of $\plonkprot_\fs$]
-	\label{thm:plonkprotfs_se}
-	Assume an idealised $\plonkprot$ verifier fails at most with probability
-	$\epsid(\secpar)$, the discrete logarithm advantage is bounded by
-	$\epsdlog(\secpar)$ and the $\PCOMp$ is a commitment of knowledge with security
-	$\epsk(\secpar)$, binding security $\epsbind(\secpar)$ and has unique opening
-	property with security $\epsop(\secpar)$. Let
-	$\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be an
-	algebraic adversary that can make up to $q$ random oracle queries, up to $S$
-	simulation oracle queries, and outputs an acceptable proof for $\plonkprotfs$
-	with probability at least $\accProb$. Then $\plonkprotfs$ is forking
-	simulation-extractable with extraction error $\eta = \epsur(\secpar)$. The
-	extraction probability $\extProb$ is at least
-	\[
-	\extProb \geq \frac{1}{q^{3 (\epsid(\secpar)+\epsdlog(\secpar))}} (\accProb - \epsk(\secpar) - 2\cdot\epsbind(\secpar) -
-	\epsop(\secpar))^{3\noofc + 1} -\eps(\secpar)\,,
-	\]
-	for some negligible $\eps(\secpar)$ and $\noofc$ being the number of
-	constrains in the proven circuit.
-\end{corollary}
+and forking sound. We now make use of \cref{thm:simsnd} and show that
+$\plonkprot_\fs$ is simulation sound as defined in
+\cref{def:simsnd}.
 
  \begin{corollary}[Simulation soundness of $\plonkprot_\fs$]
-   \label{thm:simsnd}
+   \label{cor:simsnd}
    Assume that $\plonkprot$ is $2$-programmable HVZK in the standard model, that
    is $\epss(\secpar)$-sound and the $\PCOMp$ is a commitment of knowledge with
    security $\epsk(\secpar)$, binding security $\epsbind(\secpar)$ and has unique
