@@ -2,12 +2,12 @@
 % !TEX spellcheck = en-US
 \section{Definitions and lemmas for multi-round SRS-based protocols}
 \label{sec:se_definitions}
-Previous related definitions and results were formulated for $3$-round protocols that require two transcripts for standard model extraction,e.g. the work of Faust et al.\cite{INDOCRYPT:FKMV12}. 
-In this section we prepare our analysis for multi-round protocols with an universal or updatable SRS. 
-In order to prove simulation-extractability for those,  we will require more than
-just two transcripts for extraction.  Moreover, we will consider protocols that rely on an SRS,  in the updatable setting, where the adversary gets to contribute to the SRS in the updatable setting which makes the analysis more complicated.
-We first give a definition of simulation-extractability which is the one in~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then, we adapt special soundness to forking soundness, and generalize the forking lemma and the unique response property for
-multi-round SRS-based protocols.
+Existing results on the Fiat-Shamir transform regarding existential unforgeability (for signatures) and simulation extraction (for prove systems and signatures of knowledge) work for $3$-round protocols without reference string that require two transcripts for standard model extraction, e.g., \cite{JC:PoiSte00,INDOCRYPT:FKMV12,C:RotSeg21}.
+In this section we prepare our analysis for multi-round protocols with an universal or updatable SRS.
+In order to prove simulation-extractability for such protocols,  we require more than
+just two transcripts for extraction.  Moreover, in the updatable setting we consider protocols that rely on an SRS where the adversary gets to contribute to the SRS. This makes out analysis more challenging.
+We first give a definition of simulation-extractability which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then, we adapt special soundness to forking soundness, and generalize the forking lemma and the unique response property for
+multi-round SRS-based protocols compiled using the Fiat-Shamir transform.
 
  \subsection{Trapdoor-Less Simulation}
 In security reductions in this paper it is sometimes needed to produce

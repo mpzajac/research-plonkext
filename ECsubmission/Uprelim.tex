@@ -12,7 +12,7 @@ the random choice of the randomiser $r$ from $\RND{\adv}$. We denote by $\negl$
 
 Probability ensembles $X = \smallset{X_\secpar}_\secpar$ and $Y =
 \smallset{Y_\secpar}_\secpar$, for distributions $X_\secpar, Y_\secpar$, have
-\emph{statistical distance} $\SD$ equal $\epsilon(\secpar)$ if $\sum_{a \in
+\emph{statistical distance} $\SD(X_\secpar, Y_\secpar)=\epsilon(\secpar)$ if $\sum_{a \in
   \supp{X_\secpar \cup Y_\secpar}} \abs{\prob{X_\secpar = a} - \prob{Y_\secpar =
     a}} = \epsilon(\secpar)$. We write $X \approx_\secpar Y$ if $\SD(X_\secpar,
 Y_\secpar) \leq \negl$. For values $a(\secpar)$ and $b(\secpar)$ we write
@@ -140,13 +140,14 @@ witness for the signature. More formally,  for any PPT adversary $\adv$ there ex
 	 \end{matrix}
 }{
 	  \begin{matrix}
-~\param \gets \signsetup(1^\secpar, \REL)\\
+~(\param,\td) \gets \simsetup(1^\secpar, \REL)\\
 ~ (\mesage, \inp, \signature) \gets \adv^{\simsign_\td} (\param)\\
 \wit \gets \ext_\adv({\sf trans}_\adv)
  \end{matrix}
 } \leq \negl
 \]
-where the adversary has access to simulated signatures via the oracle $\simsign_\td(\inp_i, \mesage_i) \coloneq \simsign(\td, \inp_i, \mesage_i)$ and the extractor $\ext_\adv$ takes as input the transcript ${\sf trans}_\adv$ of all queries made by $\adv$.
+where the adversary has access to simulated signatures via the oracle $\simsign_\td(\inp_i, \mesage_i) \coloneq \simsign(\td, \inp_i, \mesage_i)$ and the extractor $\ext_\adv$ takes as input the transcript ${\sf trans}_\adv$ of all queries made by $\adv$ including its randomness. \markulf{30/9}{Added the part about randomness. I don't dislike the Queries SimSign td notation. Lets use it consistently throughout paper? Or also use Q here?
+Where is td generated? changed signsetup to simsetup}
 
 \vspace{4pt}
 %
