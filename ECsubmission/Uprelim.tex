@@ -201,7 +201,7 @@ systems, such as Plonk and Sonic, we treat both the reference string and the rel
 universal.
 
 We denote by $\zkproof$ a proof created by $\prover$ with input
-$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier \srs, \inp, \zkproof)$ accepts it. 
+$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier (\srs, \inp, \zkproof)$ accepts it. In this paper we focus on proof systems where $\prover$ and $\verifier$ are given oracle access to a random oracle $\ro$. In case of the simulator $\simulator$ it is also given access to $\ro$, but it can also \emph{program} it. That is, it can require that for a picked $(x, y)$, $\ro (x) = y$.
 
 A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is
 required to have three properties: completeness, soundness and zero knowledge, which are
@@ -214,8 +214,7 @@ defined as follows:
   \emph{complete} if an honest prover always convinces an honest verifier, that
   is for all $\REL \in \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
 	\[
-		\condprob{\ip{\prover (\srs, \inp, \wit)}{\verifier (\srs,
-        \inp)} = 1}{\srs \gets \kgen(\REL)} = 1\,.
+		\condprob{\verifier^\ro (\srs, \inp, \zkproof) = 1} {\srs \gets \kgen(\REL) = 1, \zkproof \gets \prover^\ro (\srs, \inp, \wit)}\,.
 	\]
     % \item[Soundness]
 \ourpar{Soundness.}
@@ -224,12 +223,11 @@ defined as follows:
   proof for a false statement $\inp \not\in\LANG$. More precisely, for
   all $\REL \in \RELGEN(\secparam)$
 	\[
-    \condprob{\ip{\adv(\srs, \inp)}{\verifier(\srs, \inp)} = 1 \land \inp
-      \not\in \LANG_\REL}{\srs \gets \kgen(\REL), \inp \gets \adv(\srs)} \leq
+    \condprob{ \verifier^\ro (\srs, \inp) = 1 \land \inp \not\in \LANG_\REL}{\srs \gets \kgen(\REL), (\inp, \zkproof) \gets \adv^\ro(\secparam, \srs)} \leq
     \negl.
 	\]
 %\end{description}
-Sometimes a stronger notion of soundness is required---except requiring that the
+Sometimes a stronger notion of soundness is required -- except requiring that the
 verifier rejects proofs of statements outside the language, we request from the
 prover to know a witness corresponding to the proven statement. This property is
 called \emph{knowledge soundness}.%\markulf{Commented out the formal definition as we don't use it.}
@@ -237,16 +235,11 @@ called \emph{knowledge soundness}.%\markulf{Commented out the formal definition 
 \ourpar{Zero knowledge.}  We call a proof system $\proofsystem$
 \emph{zero-knowledge} if for any $\REL \in \RELGEN(\secparam)$, and adversary
 $\adv$ there exists a $\ppt$ simulator $\simulator$ such that for any
-$(\inp, \wit) \in \REL$
-\begin{multline*}
-\hspace{-10pt}	  \left\{\ip{\prover(\srs, \inp, \wit)}{\adv(\srs, \inp, \wit)}
-      \,\left|\, \srs \gets \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
-          \srs)}\vphantom{\simulator^\adv}\right.\right\} \approx_\secpar
-		%\\
-		\left\{\simulator^{\adv}(\srs, \inp)\,\left|\, \srs \gets
-        \kgen(\REL)\COMMENT{, (\inp, \wit) \gets \adv(\REL,
-          \srs)}\vphantom{\simulator^\adv}\right.\right\}.
-\end{multline*}
+$(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$, where
+\[
+  \eps_b = \condprob{\adv^{\oracleo_b, \ro} (\secparam, \srs)}{\srs \gets \kgen (\REL)}\,,
+\]
+where $\oracleo_b$ on intput $(\inp, \wit)$ returns $\zkproof \gets \simulator (\srs, \inp)$ if $b = 0$, or $\zkproof \gets \prover^\ro (\inp, \wit)$, if $b = 1$. Importantly, the simulator is able to program the random oracle $\ro$ as it wishes.
 	%
 We call zero knowledge \emph{perfect} if the distributions are equal and
 \emph{computational} if they are indistinguishable for any $\ppt$ distinguisher.
@@ -255,8 +248,7 @@ We call zero knowledge \emph{perfect} if the distributions are equal and
 Alternatively, zero-knowledge can be defined by allowing the simulator to use
 the trapdoor $\td$ that is generated along the $\srs$. In this paper we distinguish
 simulators that requires a trapdoor to simulate and those that do not. We call
-the former \emph{SRS-simulators}. We say that a protocol is zero knowledge in
-the standard model or  \emph{trapdoor-less simulatable} (TLS) if its simulator does not require the trapdoor.
+the former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less simulatable} (TLS) if its simulator does not require the trapdoor.
 
 % Occasionally, a weaker version of zero knowledge is sufficient. So called
 % \emph{honest verifier zero knowledge} (HVZK) assumes that the verifier's
