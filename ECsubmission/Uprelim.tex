@@ -344,9 +344,12 @@ We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which 
 	$b \leftarrow \verifyCRS(\srs, \{\rho_i \}_{i=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
 \end{itemize}
 
-In the next section, we define security notions in the updatable setting. To this end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary updates the SRS. We also define the simulation oracle $\simO$ in~\cref{fig:upd} that is the simulator w.r.t. the SRS finalised by the adversary using $\initU$. This simulation oracle will be used in the definition of \COMMENT{forking }simulation extractability.
+In the next section, we define security notions in the updatable setting. To this end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary updates the SRS. We also define the simulation oracle $\simO$ in~\cref{fig:upd} that is the simulator w.r.t. the SRS finalised by the adversary using $\initU$. This simulation oracle will be used in the definition of \COMMENT{forking }simulation extractability. 
 
-We also note that a non-updatable, trusted, setup can be expressed by the updatable setup definition above simply by restricting the algorithm that is given access to $\initU$ to call the oracle only on $\intent = \setup$ and $\intent = \final$.
+\ourpar{On trusted setup.} We also note that a trusted setup can be expressed by the updatable setup definition above simply by restricting the algorithm that is given access to $\initU$ to call the oracle only on $\intent = \setup$ and $\intent = \final$.
+
+\ourpar{Updatability and zero knowledge.}
+Groth et al.~\cite{C:GKMMM18} shown that if a proof system is zero-knowledge against adversaries who picks the SRS, then it is updatable zero-knowledge. We call such systems \emph{subvertible zero knowledge}, cf.~\cite{AC:BelFucSca16,AC:ABLZ17}. It was shown that Plonk, Marlin, Sonic, and virtually any proof system which SRS contains monomials are subvertible zero-knowledge.
 
 \ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determine the constraints. We ellide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
 

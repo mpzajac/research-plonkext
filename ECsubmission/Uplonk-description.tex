@@ -281,48 +281,34 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 
   \subsection{Trapdoor-less simulatability of Plonk}
 \label{sec:plonk-tls-proof}
-  \begin{proof}
+\begin{proof}
+  As noted in \cref{def:upd-scheme}, subvertible zero knowledge implies updatable zero
+  knowledge. Hence, here we show that Plonk is TLS even against algebraic adversaries who picks
+  the SRS on its own.
+  
   The proof goes by game-hopping. The environment that controls the games
-  provides the adversary with a SRS $\srs$, then the adversary outputs an
+  provides starts the adversary who sets a SRS $\srs$, then the adversary outputs an
   instance--witness pair $(\inp, \wit)$ and, depending on the game, is provided
   with either real or simulated proof for it. In the end of the game the
   adversary outputs either $0$ if it believes that the proof it saw was provided
   by the simulator and $1$ in the other case.
 
-  \ngame{0} In this game $\adv(\srs)$ picks an instance--witness pair
+  \ngame{0} In this game $\adv(\secparam)$ picks an SRS $\srs$ and instance--witness pair
   $(\inp, \wit)$ and gets a real proof $\zkproof$ for it.
 
-  \ngame{1} In this game for $\adv(\srs)$ picks an instance--witness pair
+  \ngame{1} In this game for $\adv(\secparam)$ picks an SRS $\srs$ and an instance--witness pair
   $(\inp, \wit)$ and gets a proof $\zkproof$ that is simulated by a simulator
   $\simulator_\chi$ which utilises for the simulation the SRS trapdoor and
   proceeds as described in \cref{sec:plonk_explained}.
-  \COMMENT{follows. In the first round the simulator $\simulator_\chi$ picks
-  randomisers $b_1, \ldots b_9$, sets $\wit_i = 0$, for $i \in \range{1}{3
-    \noofc}$, computes polynomials $\pa(X), \pb(X), \pc(X)$ and
-  outputs $\gone{\pa(\chi), \pb(\chi), \pc(\chi)}$. Then it picks Round 1
-  challenges $\beta, \gamma$ honestly.
 
-  In Round 2 $\simulator_\chi$ computes the polynomial $\pz(X)$ and
-  outputs $\gone{\pz(\chi)}$. Then it picks randomly Round 2 challenge $\alpha$.
-
-  In Round 3 the simulator computes polynomial $\pt(X)$ and evaluates it
-  at $\chi$, then outputs $\gone{\ptlo(\chi), \ptmid(\chi), \pthi(\chi)}$. Note
-  that this evaluation is feasible (in the polynomial time with non-negligible
-  probability) only since $\simulator_\chi$ knows the trapdoor.
-
-  In the last two rounds the simulator proceeds as an honest prover would
-  proceed and picks corresponding challenges at random as an honest verifier
-  would.
-}
-
-  \ncase{Game 0 to Game 1} Since $\plonk$ is zero-knowledge,
+  \ncase{Game 0 to Game 1} Since $\plonk$ is (subvertible) zero-knowledge,
   probability that $\adv$ outputs a different bit in both games is negligible.
   Hence
   \(
 	\abs{\prob{\game{0}} - \prob{\game{1}}} \leq \epszk(\secpar).
 \)
 
-\ngame{2} In this game $\adv(\srs)$ picks an instance--witness pair
+\ngame{2} In this game $\adv(\secparam)$ picks an SRS $\srs$ and instance--witness pair
 $(\inp, \wit)$ and gets a proof $\zkproof$ simulated by the simulator
 $\simulator$ which proceeds as follows.
 
@@ -400,8 +386,9 @@ The reduction $\rdv$ learns $\gone{\pR}$ and challenge
 $\gone{\vec{w}} = \gone{w_1, \ldots, w_{12}}$ where $\vec{w}$ is either a vector
 of evaluations $\pF(\vb)$ or a sequence of random values $y_1, \ldots, y_{12}$,
 for the sake of concreteness we state $w_1 = b_1$ or $w_1 = y_1$ (depending on
-the chosen random bit). Then it picks $\chi$, $\chz$ and computes the SRS $\srs$
-from $\chi$. Elements $b_i$ are interpreted as polynomials in $X$ that are
+the chosen random bit).
+
+Then it starts $\adv$ and learns $\srs$, since $\adv$ is algebraic, the reduction also learns trapdoor $\chi$. Then $\rdv$ picks $\chz$. Elements $b_i$ are interpreted as polynomials in $X$ that are
 evaluated at $\chi$, i.e. $b_i = b_i(\chi)$. Next, $\rdv$ sets for
 $\xi_i, \zeta_i \sample \FF_p$
 \(
@@ -442,8 +429,8 @@ where $\psi$ compounds of $\xi_i, \xi_j, \zeta_i, \zeta_j, \chz, \ochz, \chi$ wh
 are all known by $\rdv$ and no $b_i$ nor $b_j$.
 Analogously for the triplets and quadruplets and elements dependent on~$\vec{w}$. 
 
-Next the reduction runs the adversary $\adv(\srs)$ and obtains from $\adv$ an
-instance--witness pair $(\inp, \wit)$.  $\rdv$ now prepares a simulated proof as follows:
+Next the reduction obtains from $\adv$ an instance--witness pair $(\inp, \wit)$.  $\rdv$ now
+prepares a simulated proof as follows:
 \begin{compactdesc} 
 \item[Round 1] $\rdv$ computes $\gone{\pa(\chi)}$ using as
 randomisers $\gone{\tb_1}, \gone{\tb_2}$ and setting $\wit_i = 0$, for $i
