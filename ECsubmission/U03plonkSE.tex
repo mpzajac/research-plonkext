@@ -140,7 +140,7 @@ Due to page limit, we omit description of \plonk{} here and refer to
   such event is upper bounded by $\epsbinding + \infrac{2}{\abs{\FF_p}}$.
 
   \ncase{Conclusion} Taking all the games together, probability that $\adv$ wins
-  in $\game{3}$ is upper-bounded by
+  in Game 3 is upper-bounded by
   \[
     2 \cdot \epsop + 9 \cdot (\epsbind + \infrac{2}{\FF_p}) + \epsro + \epss.
   \]
@@ -241,9 +241,12 @@ Due to page limit, we omit description of \plonk{} here and refer to
 			them.
 			\item Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates. These trapdoors can be extracted by the reduction from the update proofs given by $\adv$.
 			\item Return  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.
-	\end{enumerate}
-	Hence, the probability that the adversary wins Game 1 is upper-bounded by
-	$\epsdlog(\secpar)$.
+      \end{enumerate}
+
+      \ncase{Conclusion} Considering all the games together, probability that adversary wins in
+      Game 1 is upper-bounded by Hence, the probability that the adversary wins Game 1 is
+      upper-bounded by $\epsdlog(\secpar) = \epsid (\secpar)$.
+      \qed
 \end{proof}
 
 \iffalse
@@ -812,9 +815,9 @@ assuring that evaluations at $\chz$ it provided were computed honestly.
 If the adversary $\adv$'s output distribution differ in Game $\game{1}$ and
 $\game{2}$ then the reduction uses it to distinguish between
 $\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
-\( \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epsuber(\secpar).  \) Eventually,
-\(
-\abs{\prob{\game{0}} - \prob{\game{2}}} \leq \epszk(\secpar) + \epsuber(\secpar).  \) \qed
+\( \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epsuber(\secpar).  \)
+
+\ncase{Conclusion} Probability that the adversary's outputs differ in Game 0 and Game 2 is upper-bounded by $\leq \epszk(\secpar) + \epsuber(\secpar)$. \qed
 \end{proof}
 
 \subsection{Simulation extractability of~$\plonkprotfs$}
