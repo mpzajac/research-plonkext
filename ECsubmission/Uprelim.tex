@@ -365,15 +365,15 @@ non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
 				\t \pcreturn (\srs',\rho')\\
 				%
 				\pcif (\intent = \update): \\
-				\t b \gets \verifyCRS(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^{n})\\
+				\t b \gets \verifyCRS(\srs_n, \{\rho_i \}_{i=1}^{n})\\
 				\t \pcif (b=0): \pcreturn \bot \\
-				\t (\srs',\rho') \leftarrow \upd(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^n)\\
+				\t (\srs',\rho') \leftarrow \upd (\srs_n,\{\rho_i \}_{i=1}^n)\\
 				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
 		 	\Scale[0.75]{ // Q_\srs = (Q^{(1)}_\srs, Q^{(2)}_\srs) \text{ s.t. }   Q^{(2)}_\srs \text{ contains the update proofs in } Q_\srs }\\
 				\t \pcreturn (\srs',\rho')\\
 				%
 				\pcif (\intent = \final): \\
-				\t b \gets \verifyCRS(1^\secpar,\srs_n,\{\rho_i \}_{i=1}^{n})\\
+				\t b \gets \verifyCRS(\srs_n,\{\rho_i \}_{i=1}^{n})\\
 				\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_i \}_i = \emptyset: \pcreturn \bot \\
 				\t 
 				\td \gets \ext_\srs(\srs_n,, Q_\srs, \{\rho_i \}_{i=1}^{n}) \\
@@ -404,9 +404,9 @@ We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which 
 	\item
 	$(\srs,\rho) \leftarrow \kgen(\REL)$ is a PPT algorithm that takes a security parameter $\secpar$ and outputs a SRS $\srs$, and correctness proof $\rho$.
 	\item
-	$ (\srs',\rho') \leftarrow \upd(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a PPT algorithm that takes as input the security parameter $\secpar$, a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
+	$ (\srs',\rho') \leftarrow \upd(\srs, \{\rho_i \}_{i=1}^n)$ is a PPT algorithm that takes as input the security parameter $\secpar$, a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
 	\item
-	$b \leftarrow \verifyCRS(1^\secpar,\srs,\{\rho_i \}_{i=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
+	$b \leftarrow \verifyCRS(\srs, \{\rho_i \}_{i=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
 \end{itemize}
 
 In the next section, we define security notions in the updatable setting. To this end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary updates the SRS. We also define the simulation oracle $\simO$ in~\cref{fig:upd} that is the simulator w.r.t. the SRS finalised by the adversary using $\initU$. This simulation oracle will be used in the definition of forking simulation extractability.
