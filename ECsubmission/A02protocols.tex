@@ -10,7 +10,7 @@ polynomial $\p{f}$ and later open the evaluation in a point $z$ to some value $s
    takes in a security parameter $\secpar$ and a
   parameter $\maxdeg$ which determines the maximal degree of the committed
   polynomial. It outputs a structured reference string $\srs$ (the
-  commitment key). In the following we will consider $\maxdeg$ implicitily contains $\secpar$. 
+  commitment key). In the following we will consider $\maxdeg$ implicitly contains $\secpar$. 
 \item[$\com(\srs, \p{f})$:] The commitment algorithm $\com(\srs, \p{f})$ takes
   in $\srs$ and a polynomial $\p{f}$ with maximum degree $\maxdeg$, and outputs
   a commitment $c$.
@@ -22,7 +22,7 @@ polynomial $\p{f}$ and later open the evaluation in a point $z$ to some value $s
   outputs 1 if $o$ is a valid opening for $(c, z, s)$ and 0 otherwise.
 \end{description} 
 
-A secure polynomial commitment $\PCOM$ should satisfycorrectness, evaluation binding,  opening uniqueness, hiding and knowledge-binding. 
+A secure polynomial commitment $\PCOM$ should satisfy correctness, evaluation binding,  opening uniqueness, hiding and knowledge-binding. 
 Note that since we are in the updatable setting, $\srs$ in these security definitions is the SRS that $\advse$ finalises using the update oracle $\initU$ (See~\cref{fig:upd}).
 
 \begin{description}

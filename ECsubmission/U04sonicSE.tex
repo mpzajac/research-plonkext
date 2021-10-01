@@ -342,13 +342,17 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
 	
 	The reduction $\rdvdlog$ proceeds as follows.
 	\begin{enumerate}
-		\item Pick a random $\alpha$ and compute
-		$\gone{\alpha \chi^{- \dconst}, \ldots, \alpha \chi^{-1}, \alpha \chi,
-			\ldots, \alpha \chi^{\dconst}}$,
-		$\gtwo{\alpha \chi^{- \dconst}, \ldots, \alpha \chi^{-1}, \alpha \chi,
-			\ldots, \alpha \chi^{\dconst}}$. Set a SRS $\srs$ to be the $(\dconst, \dconst)$-ldlog instance and its multiplication with $\alpha$ as computed above.
-%		\hamid{Is this clear?}
-		\item Build $\sonicprot$'s SRS in the updatable setting by answering $\adv$'s queries for SRS updates and setting the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS.
+  \item Pick a random $\alpha$ and compute
+    $\gone{\alpha \chi^{- \dconst}, \ldots, \alpha \chi^{-1}, \alpha \chi,
+      \ldots, \alpha \chi^{\dconst}}$,
+    $\gtwo{\alpha \chi^{- \dconst}, \ldots, \alpha \chi^{-1}, \alpha \chi,
+      \ldots, \alpha \chi^{\dconst}}$. Set a SRS $\srs$ to be the
+    $(\dconst, \dconst)$-ldlog instance and its multiplication with $\alpha$ as
+    computed above.
+    % \hamid{Is this clear?}
+  \item Build $\sonicprot$'s SRS in the updatable setting by answering $\adv$'s
+    queries for SRS updates and setting the honest update of the SRS to be
+    $\srs$. Let $\srs'$ be the finalised SRS.
 		\item Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a
 		relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such
 		that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
@@ -358,7 +362,8 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
 		verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known.
 		\item Find $\vereq_{\inp, \zkproof}(X)$ zero points and find $\chi'$ among
 		them.
-		\item Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates, extracted by the reduction from the update proofs given by $\adv$.
+  \item Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS
+    updates, extracted by the reduction from the update proofs given by $\adv$.
 		\item Return  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.
 	\end{enumerate}
 	Hence, the probability that the adversary wins Game 1 is upper-bounded by
