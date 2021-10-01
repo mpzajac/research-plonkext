@@ -215,7 +215,7 @@ We conjecture that based on the recent results on state restoration soundness~\c
 
 \subsection{Simulation soundness of~$\plonkprotfs$}
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$
-and forking sound. We now make use of \cref{thm:simsnd} and show that
+and forking special sound. We now make use of \cref{thm:simsnd} and show that
 $\plonkprot_\fs$ is simulation sound as defined in
 \cref{def:simsnd}.
 
@@ -231,3 +231,7 @@ $\plonkprot_\fs$ is simulation sound as defined in
    \epss(\secpar)\,, \) where $q$ is the total number of queries made by the
    adversary $\adv$ to a random oracle $\ro\colon \bin^{*} \to \bin^{\secpar}$.
  \end{corollary}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

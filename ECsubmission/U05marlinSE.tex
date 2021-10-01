@@ -98,12 +98,12 @@ verify that \cref{eq:marlin_eq_2} holds.
   $\p{g_2} (X) - \p{g'_2} (X)$.
 \end{proof}
 
-\subsection{Forking soundness}
+\subsection{Forking special soundness}
 \begin{lemma}
 	Assume that an idealised $\marlinprot$ verifier fails with probability at most
 	$\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks dlog is
 	bounded by $\epsdlog(\secpar)$. Then $\marlinprot$ is
-	$(\epsid (\secpar) + \epsdlog (\secpar), 2, d + 1)$-forking
+	$(\epsid (\secpar) + \epsdlog (\secpar), 2, d + 1)$-forking special
 	sound.
 \end{lemma}
 \begin{proof}
@@ -198,11 +198,11 @@ random oracle that on partial transcripts it returns the challenges picked by
 $\simulator$.
 \end{proof}
 
-\subsection{From forking soundness and unique response property to\COMMENT{ forking}
+\subsection{From forking special soundness and unique response property to\COMMENT{ forking}
   simulation extractability of $\marlinprotfs$}
 \begin{corollary}
   Assume that $\marlinprot$ is $\ur{1}$ with security
-  $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and forking-sound
+  $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and forking special sound
   with security $\epsfor (\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
   random oracle. Let $\advse$ be an algebraic adversary that can make up to $q$
   random oracle queries, up to $S$ simulation oracle queries, and outputs an

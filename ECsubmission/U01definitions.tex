@@ -22,7 +22,7 @@ We remark that existing results on the Fiat-Shamir transform regarding existenti
 In this section we prepare our analysis for multi-round protocols with an universal or updatable SRS.
 In order to prove simulation-extractability for such protocols,  we require more than
 just two transcripts for extraction.  Moreover, in the updatable setting we consider protocols that rely on an SRS where the adversary gets to contribute to the SRS. This makes out analysis more challenging.
-We first give a definition of simulation-extractability which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then, we adapt special soundness to forking soundness, and generalize the forking lemma and the unique response property for
+We first give a definition of simulation-extractability which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then, we adapt special soundness to forking special soundness, and generalize the forking lemma and the unique response property for
 multi-round SRS-based protocols compiled using the Fiat-Shamir transform.
 
 \subsection{Simulation extractability}
@@ -261,14 +261,14 @@ by the fact that the protocol has more than $3$ rounds and the number of
 transcripts required is larger. We defer the proof to
 \cref{sec:forking_proof}.
 
-\oursubsub{Forking soundness}
+\oursubsub{Forking special soundness}
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
 simulation trapdoors for $\plonkprot$ and $\sonicprot$ exist, the protocols
 cannot be special sound in that regard. This is because an unbounded adversary
 can recover the trapdoor and build a number of simulated proofs for a fake
 statement. Hence, we provide a weaker, yet sufficient, definition of
-\emph{forking soundness}. More precisely, we state that an
+\emph{forking special soundness}. More precisely, we state that an
 adversary that is able to answer correctly multiple challenges either knows the
 witness or can be used to break some computational assumption.
 %\chaya{a notion of computational special soundness has been used to mean exactly the above in prior works, like BBF19. we should clarify if forking soundness different from computational special soundness? seems to me like the difference is just that here it is tailored for the NI version.}
@@ -371,7 +371,7 @@ algorithm from the generalized forking lemma.
 
 %\hamid{The definition in the updatable setting should look like this:}
 
-\begin{definition}[$(\eps(\secpar), k,n)$-forking soundness in the updatable setting]
+\begin{definition}[$(\eps(\secpar), k,n)$-forking special soundness in the updatable setting]
 	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
 	$(2 \mu + 1)$-message proof system for a relation $\REL$.
 	
@@ -414,7 +414,7 @@ algorithm from the generalized forking lemma.
 \paragraph{Importance of the general forking lemma.}
 To highlight the importance of the generalised forking lemma, we outline 
 how it is used in our \COMMENT{forking} simulation-extractability proof.  Let $\proofsystem$ be a
-forking sound proof system where for an instance $\inp$ the
+forking special sound proof system where for an instance $\inp$ the
 corresponding witness can be extracted from a
 $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\advse$
 be the simulation-extractability adversary that outputs an accepting proof with
@@ -423,7 +423,7 @@ probability of $\zdv$ outputing a non-zero $i$ and the probability of $\advse$
 outputing an accepting proof, we claim that these probabilities are exactly the
 same by the way we define $\zdv$.) Let $\advse$ output an accepting instance-proof pair
 $(\inp_{\advse},\zkproof_{\advse})$ ; $r$ be $\advse$'s
-randomness; $Q$ the list of simulator queries made by $\advse$ \markulf{20/09/2021}{Q is now hidden within the forking soundness adversary.} along with
+randomness; $Q$ the list of simulator queries made by $\advse$ \markulf{20/09/2021}{Q is now hidden within the forking special soundness adversary.} along with
 $\simulator$'s answers; %\hamid{$Q_\srs$ be the list of proofs for SRS honest updates;} 
 and $Q_\ro$ be the list of all random oracle
 queries made by $\advse$.  All of these are given to the extractor $\ext$ that

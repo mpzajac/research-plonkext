@@ -147,17 +147,17 @@ Due to page limit, we omit description of \plonk{} here and refer to
   \qed
 \end{proof}
 
-\subsection{Forking soundness}
+\subsection{Forking special soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
 	Let $\plonkprot$'s idealized verifier fails with probability $\epsid (\secpar)$, and
 	$(\noofc + 2, 1)$-$\dlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
-	$(\epsid (\secpar) + \epsdlog (\secpar) , 3, 3 \noofc + 1)$-forking sound against algebraic
+	$(\epsid (\secpar) + \epsdlog (\secpar) , 3, 3 \noofc + 1)$-forking special sound against algebraic
 	adversary $\adv$.
 \end{lemma}
 
 \begin{proof}
-	The main idea of the proof is to show that an adversary who breaks forking
+	The main idea of the proof is to show that an adversary who breaks forking special
 	soundness can be used to break a $\dlog$ problem instance. The proof goes by game hops. Let $\tree$
 	be the tree produced by $\tdv$ by rewinding $\adv$. Note that since the tree
 	branches after Round 3, the instance $\inp$, commitments
@@ -830,7 +830,7 @@ $\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
 
 \subsection{Simulation extractability of~$\plonkprotfs$}
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$
-and forking sound. We now make use of \cref{thm:se} and show that
+and forking special sound. We now make use of \cref{thm:se} and show that
 $\plonkprot_\fs$ is\COMMENT{ forking} simulation-extractable as defined in
 \cref{def:updsimext}.
 
