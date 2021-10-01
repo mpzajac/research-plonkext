@@ -3,7 +3,7 @@
 
 \section{Polynomial Commitment Schemes}
 \label{sec:pcom}
-A polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$ consists in four algorithms and allows to commit to a
+A polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$ consists in four algorithms and allow to commit to a
 polynomial $\p{f}$ and later open the evaluation in a point $z$ to some value $s=\p{f}(z)$. More formally: 
 \begin{description}
 \item[$\kgen(1^\secpar, \maxdeg)$:] The key generation algorithm
@@ -20,17 +20,10 @@ polynomial $\p{f}$ and later open the evaluation in a point $z$ to some value $s
 \item[$\verify(\srs, c, z, s, o)$:] The verification algorithm takes in $\srs$,
   a commitment $c$, an evaluation point $z$, a value $s$ and an opening $o$. It
   outputs 1 if $o$ is a valid opening for $(c, z, s)$ and 0 otherwise.
-\end{description}
+\end{description} 
 
-$\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme
-\cite{AC:KatZavGol10}. We denote the first by $\PCOMp$ and the latter by
-$\PCOMs$. Due to page limit, we omit their presentation here and refer to
-\cref{fig:pcomp} and \cref{fig:pcoms} in the \cref{sec:pcom}.  In this paper we
-use evaluation binding, commitment of knowledge, and, newly introduced, unique
-opening and hiding properties. Formal definitions of these could be find in
-\cref{sec:pcom}, here we briefly introduce them.
-
-The following properties are expected of a secure polynomial commitment $\PCOM$. Note that since we are in the updatable setting, $\srs$ in the following definitions is the SRS that $\advse$ finalises using the update oracle $\initU$ (See~\cref{fig:upd}).
+A secure polynomial commitment $\PCOM$ should satisfycorrectness, evaluation binding,  opening uniqueness, hiding and knowledge-binding. 
+Note that since we are in the updatable setting, $\srs$ in these security definitions is the SRS that $\advse$ finalises using the update oracle $\initU$ (See~\cref{fig:upd}).
 
 \begin{description}
 \item[Evaluation binding:] A $\ppt$ adversary $\adv$ which outputs a commitment
@@ -60,7 +53,9 @@ The following properties are expected of a secure polynomial commitment $\PCOM$.
 	
 We say that $\PCOM$ has the unique opening property if the following holds:
 \begin{description}
-\item[Opening uniqueness:] Let $k \in \NN$ be the number of committed
+\item[Opening uniqueness:] Intuitively, opening uniqueness assures that there is only one valid opening
+for the committed polynomial and given evaluation point. This property is
+crucial in showing \COMMENT{forking }simulation-extractability of $\plonk$ and $\sonic$.  Let $k \in \NN$ be the number of committed
   polynomials, $l \in \NN$ number of evaluation points, $\vec{c} \in \GRP^k$ be
   the commitments, $\vec{z} \in \FF_p^l$ be the arguments the polynomials are
   evaluated at, $\vec{s} \in \FF_p^k$ the evaluations, and $\vec{o} \in \FF_p^l$
@@ -80,16 +75,14 @@ We say that $\PCOM$ has the unique opening property if the following holds:
 		}\leq \negl\,.
 	\]
 \end{description}
-Intuitively, opening uniqueness assures that there is only one valid opening
-for the committed polynomial and given evaluation point. This property is
-crucial in showing \COMMENT{forking }simulation-extractability of $\plonk$ and $\sonic$. We show
+We show
 that $\plonk$'s, $\sonic$'s, and $\marlin$'s polynomial commitment schemes satisfy this
 requirement in \cref{lem:pcomp_op} and \cref{lem:pcoms_unique_op}
 respectively.
 
-We also formalize notion of $k$-hiding property of a polynomial commitment scheme
+
 \begin{description}
-\item[Hiding:] Let $\HHH$ be a set of size $\maxdeg + 1$ and $\ZERO_\HHH$ its
+\item[Hiding:] We also formalize notion of $k$-hiding property of a polynomial commitment scheme. Let $\HHH$ be a set of size $\maxdeg + 1$ and $\ZERO_\HHH$ its
   vanishing polynomial. We say that a polynomial scheme is \emph{hiding} with
   security $\epsh(\secpar)$ if for every $\ppt$ adversary $\adv$, $k \in \NN$,
   probability
@@ -115,7 +108,9 @@ We also formalize notion of $k$-hiding property of a polynomial commitment schem
   \end{description}
 
 \begin{description}
-\item[Commitment of knowledge]  For every $\ppt$ adversary $\adv$ who produces
+\item[Commitment of knowledge:] Intuitively, when a commitment scheme is ``of knowledge'' then if an
+adversary produces a (valid) commitment $c$, which it can open correctly in an evaluation point, then it must
+know the underlying polynomial $\p{f}$ which commits to that value.  For every $\ppt$ adversary $\adv$ who produces
   commitment $c$, evaluation $s$ and opening $o$ there
   exists a $\ppt$ extractor $\ext$ such that
 \[
@@ -139,10 +134,8 @@ We also formalize notion of $k$-hiding property of a polynomial commitment schem
 In that case we say that $\PCOM$ is $\epsk(\secpar)$-knowledge.
 \end{description}
 
-Intuitively, when a commitment scheme is ``of knowledge'' then if an
-adversary produces a (valid) commitment $c$, which it can open correctly in an evaluation point, then it must
-know the underlying polynomial $\p{f}$ which commits to that value.
-\cref{fig:pcomp,fig:pcoms} present variants of KZG polynomial commitment schemes
+
+\cref{fig:pcomp,fig:pcoms} present variants of KZG~\cite{AC:KatZavGol10} polynomial commitment schemes
 used in \plonk{} and \sonic{}. The key generation algorithm $\kgen$ takes as
 input a security parameter $\secparam$ and a parameter $\maxdeg$ which
 determines the maximal degree of the committed polynomial. We assume that
@@ -270,8 +263,8 @@ property.
 \begin{lemma}
 \label{lem:pcomp_op}
 Let $\PCOMp$ be a batched version of a KZG polynomial commitment,
-cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property (see~\cref{sec:pcom}) in the AGM
-with security
+cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property  
+ in the AGM with security
 $\epsop(\secpar) \leq 2 \epsdlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where
 $\epsdlog(\secpar)$ is security of the $(\noofc + 2, 1)$-dlog assumption and
 $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
