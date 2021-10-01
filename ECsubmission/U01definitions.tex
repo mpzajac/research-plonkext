@@ -19,12 +19,10 @@ Most recent SNARK schemes are following the same blueprint: First, an interactiv
 Second,  this initial proof system is compiled into an efficient, non-interactive and computationally sound scheme using cryptographic tools such as polynomial commitments and the Fiat-Shamir transformation.
 
 We remark that existing results on the Fiat-Shamir transform regarding existential unforgeability (for signatures) and simulation extraction (for proof systems and signatures of knowledge) work for $3$-round protocols without reference string that require two transcripts for standard model extraction, e.g., \cite{JC:PoiSte00,INDOCRYPT:FKMV12,C:RotSeg21}.
-In this section we prepare our analysis for multi-round protocols with an universal or updatable SRS.
+In this section we prepare our analysis for multi-round protocols with a universal or updatable SRS.
 In order to prove simulation-extractability for such protocols,  we require more than
 just two transcripts for extraction.  Moreover, in the updatable setting we consider protocols that rely on an SRS where the adversary gets to contribute to the SRS. This makes out analysis more challenging.
-We first give a definition of simulation-extractability which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then, we adapt special soundness to forking special soundness, and generalize the forking lemma and the unique response property for
-multi-round SRS-based protocols compiled using the Fiat-Shamir transform.
-
+We first give a definition of simulation-extractability which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then, to support multi-round SRS-based protocols compiled using the Fiat-Shamir transform we gneralize the unique response property, replace honest-verifier zero-knowledge property with trapdoor-less simulation and special soundness with a forking special soundness property that links up with our generalized forking lemma.
 \subsection{Simulation extractability}
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:updsimext}
@@ -371,7 +369,7 @@ algorithm from the generalized forking lemma.
 
 %\hamid{The definition in the updatable setting should look like this:}
 
-\begin{definition}[$(\eps(\secpar), k,n)$-forking special soundness in the updatable setting]
+\begin{definition}[$(k,n)$-forking special soundness in the updatable setting]
 	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
 	$(2 \mu + 1)$-message proof system for a relation $\REL$.
 	
@@ -386,7 +384,7 @@ algorithm from the generalized forking lemma.
 	that rewinds $\zdv$ to produce a $(1,\dots, n,\dots, 1)$-tree of
 	transcripts.
 	
-	We say that $\ps$ is $(\eps(\secpar), k,n)$-forking if
+	We say that $\ps$ is $(k,n)$-forking special sound with security loss $\eps(\secpar)$, if
 	for any PPT adversary the probability that
 	\begin{align*}
 	\Pr\left[
