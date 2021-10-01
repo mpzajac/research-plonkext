@@ -220,8 +220,8 @@ $\plonkprot_\fs$ is simulation sound as defined in
 \cref{def:simsnd}.
 
  \begin{corollary}[Simulation soundness of $\plonkprot_\fs$]
-   \label{cor:simsnd}
-   Assume that $\plonkprot$ is $2$-programmable HVZK in the standard model, that
+   \label{cor:simsnd-P}
+   Assume that $\sonicprot$ is $2$-programmable HVZK in the standard model, that
    is $\epss(\secpar)$-sound and the $\PCOMp$ is a commitment of knowledge with
    security $\epsk(\secpar)$, binding security $\epsbind(\secpar)$ and has unique
    opening property with security $\epsop(\secpar)$. Then the probability that a
@@ -231,6 +231,38 @@ $\plonkprot_\fs$ is simulation sound as defined in
    \epss(\secpar)\,, \) where $q$ is the total number of queries made by the
    adversary $\adv$ to a random oracle $\ro\colon \bin^{*} \to \bin^{\secpar}$.
  \end{corollary}
+
+\subsection{Simulation soundness of~$\sonicprotfs$}
+The following corollary shows the simulation soundness of $\sonicprotfs$ based on~\cref{lem:sonicprot_ur,lem:sonicprot_ss} and~\cref{thm:simsnd}.
+\begin{corollary}[Simulation soundness of $\sonicprot_\fs$]
+	\label{cor:simsnd-S}
+	Assume that $\sonicprot$ is $1$-programmable HVZK in the standard model, that
+	is $\epss(\secpar)$-sound and the $\PCOMs$ is a commitment of knowledge with
+	security $\epsk(\secpar)$, binding security $\epsbind(\secpar)$ and has unique
+	opening property with security $\epsop(\secpar)$. Then the probability that a
+	$\ppt$ adversary $\adv$ breaks simulation soundness of $\ps_{\fs}$ is
+	upper-bounded by
+	\( \epsk(\secpar) + 2\cdot\epsbind(\secpar) + \epsop(\secpar) + q_\ro^4
+	\epss(\secpar)\,, \) where $q$ is the total number of queries made by the
+	adversary $\adv$ to a random oracle $\ro\colon \bin^{*} \to \bin^{\secpar}$.
+\end{corollary}
+
+\subsection{Simulation soundness of~$\marlinprotfs$}
+	The simulation soundness of $\marlinprot_\fs$ follows from \cref{thm:simsnd}, \cref{lem:marlinprot_ur,lem:marlinprot_ss}.
+\begin{corollary}[Simulation soundness of $\marlinprot_\fs$]
+	\label{cor:simsnd-M}
+	Assume that $\marlinprot$ is $1$-programmable HVZK in the standard model, that
+	is $\epss(\secpar)$-sound and the $\PCOM$ is a commitment of knowledge with
+	security $\epsk(\secpar)$, binding security $\epsbind(\secpar)$ and has unique
+	opening property with security $\epsop(\secpar)$. Then the probability that a
+	$\ppt$ adversary $\adv$ breaks simulation soundness of $\ps_{\fs}$ is
+	upper-bounded by
+	\( \epsk(\secpar) + 2\cdot\epsbind(\secpar) + \epsop(\secpar) + q_\ro^4
+	\epss(\secpar)\,, \) where $q$ is the total number of queries made by the
+	adversary $\adv$ to a random oracle $\ro\colon \bin^{*} \to \bin^{\secpar}$.
+\end{corollary}
+
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "main"

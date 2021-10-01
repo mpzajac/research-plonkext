@@ -89,22 +89,16 @@ respectively.
   \begin{align*}
     \condprob
    { b' = b}{
-    (f_0, f_1, c, k, b') \gets \adv^{\initU, \oraclec}(\maxdeg), f_0, f_1 \in \FF^{\maxdeg}
+    (f_0, f_1, c, k, b') \gets \adv^{\initU, \oraclec}(\maxdeg, c), f_0, f_1 \in \FF^{\maxdeg}
     [X]}
 \leq \frac{1}{2} + \eps(\secpar).
   \end{align*}
-  Here, $\oraclec$ is a challenge oracle that
-  \begin{compactenum}
-    \item takes polynomials $f_0, f_1$ provided by the adversary and parameter $k$,
-    \item samples bit $b$,
-    \item samples vector $\vec{a} \in \FF^k$,
-    \item computes polynomial,
+  Where $c = f'_b (\chi)$, for a random bit $b$ and the polynomial
       $f'_b (X) = f_b + \ZERO_\HHH (X) (a_0 + a_1 X + \ldots a_{k - 1} X^{k -
         1})$,
-    \item outputs polynomial commitment $c = f'_b (\chi)$,
-    \item on adversary's evaluation query $x$ it adds $x$ to initially empty set
+and the oracle $\oraclec$ on adversary's evaluation query $x$ it adds $x$ to initially empty set
       $Q_x$ and if $|Q_x| \leq k$, it provides $f'_b (x)$.
-    \end{compactenum}
+ 
   \end{description}
 
 \begin{description}
