@@ -30,8 +30,8 @@ We first give a definition of simulation-extractability which we base on~\cite{I
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof system. We say that $\ps$
   is \emph{updatable \COMMENT{forking }simulation-extractable} with \emph{extraction error} $\nu$ if for
   any $\ppt$ adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a
-  simulation oracle $\simO$, cf.~\cref{fig:upd}, and a random oracle $\ro$, and produces an
-  accepting transcript of $\ps$ with probability $\accProb$, where
+  simulation oracle $\simO$, cf.~\cref{fig:upd}, and a random oracle $\ro$, and that produces an
+  accepting proof for $\ps$ with probability $\accProb$, where
 	\[
 	\accProb = \condprob{
 	\begin{matrix}
@@ -72,30 +72,30 @@ We first give a definition of simulation-extractability which we base on~\cite{I
 	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
 	$\accProb \geq \nu$. 
 	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
-	$\inp$ is an instance provided to the simulator by the adversary and
+	$\inp$ is an instance queried to $\simO$ by the adversary and
 	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-	queries to $\ro$ and $\ro$'s answers. 
+	queries to $\ro$ and the random oracle's answers.
 \end{definition}
 \subsection{Unique-response protocols}
-Another technical hurdle is the assumption of unique response property
-of the transformed sigma protocol required by Faust et al. The original
+A technical hurdle identified by Faust et al.~\cite{INDOCRYPT:FKMV12} for
+proving simulation extraction via the Fiat-Shamir transformation is that the
+transformed prove system satisfies a unique response property. The original
 Fischlin's formulation, although suitable for applications presented in
-\cite{C:Fischlin05,INDOCRYPT:FKMV12}, does not suffice in our case. First,
-the property assumes that the protocol has three messages, with the second being
-the challenge from the verifier. That is not the case we consider here. Second,
-it is not entirely clear how to generalize the property. Should one require that
+\cite{C:Fischlin05,INDOCRYPT:FKMV12}, does not suffice in our case. First, the
+property assumes that the protocol has three messages, with the second being the
+challenge from the verifier. That is not the case we consider here. Second, it
+is not entirely clear how to generalize the property. Should one require that
 after the first challenge from the verifier, the prover's responses are fixed?
 That does not work since the prover needs to answer differently on different
-verifier's challenges, as otherwise the protocol could have fewer
-rounds. Another problem is that the protocol could consist of
-a round other than the first one where the prover message is randomized.
-Unique response cannot hold in this case. Finally, the protocols we
-consider here are not in the standard model, but use an SRS
-what also complicates things considerably.
+verifier's challenges, as otherwise the protocol could have fewer rounds.
+Another problem is that the protocol could have a round beyond the
+first round where the message of the prover is randomized. Unique response cannot hold in
+this case. Finally, the protocols we consider here are not in the standard
+model, but use an SRS.
 
-We walk around these obstacles by providing a generalised notion of the unique
+We work around these obstacles by providing a generalised notion of the unique
 response property. More precisely, we say that a $(2\mu + 1)$-message protocol
-has \emph{unique responses from $i$}, and call it an $\ur{i}$-protocol, if it
+has \emph{unique responses from $i$}, and call it a $\ur{i}$-protocol, if it
 follows the definition below:
 
 
@@ -129,18 +129,18 @@ Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised usi
 
 Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary
 to produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$
-that are the same on  first $i$ messages.
+that are the same on the first $i$ prover messages.
 We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
 
  \subsection{Trapdoor-Less Simulation}
 In security reductions in this paper it is sometimes needed to produce
 simulated NIZK proofs without knowing the trapdoor, just by
-programming the random oracle. We call protocols which allow for such kind of
+programming the random oracle. We call protocols which allow for such a
 simulation \emph{trapdoor-less simulatable} (TLS). 
 
 \begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
   Let $\ps$ be a $(2\mu + 1)$-message ZK proof system. Let $\ps_\fs= (\kgen_{\fs}, \prover_{\fs}, \verifier_{\fs}, \simulator_{\fs})$ be its
-  Fiat--Shamir variant and $\ro$ the random oracle. $\simulator_{\fs}$ takes as input an SRS $\srs$
+  Fiat--Shamir variant and $\ro$ the random oracle. $\simulator_{\fs}$ takes as input $\srs$
   and instance $\inp$, programs $\ro$, and outputs a proof $\zkproof_\simulator$.  We
   call $\ps$ \emph{trapdoor-less simulatable} if for any adversary
   $\adv$, $\eps_0 \approx \eps_1$, where
@@ -177,8 +177,8 @@ simulation \emph{trapdoor-less simulatable} (TLS).
 %   \end{compactenum}
 % \end{definition
 %}
-We note that $\plonk$ is $2$-programmable ZK, $\sonic$ is $1$-programmable ZK,
-and $\marlin$ is $1$-programmable ZK. This follows directly from the proofs of
+We note that $\plonk$ is $2$-programmable TLS, $\sonic$ is $1$-programmable TLS,
+and $\marlin$ is $1$-programmable TLS. This follows directly from the proofs of
 their standard model zero-knowledge property in
 \cref{lem:plonk_hvzk,lem:sonic_hvzk,lem:marlin_hvzk}. 
 
@@ -193,14 +193,14 @@ general enough for our purpose as it is useful only for protocols where a witnes
 can be extracted from just two transcripts. To be able to extract a witness
 from, say, an execution of $\plonkprot$ we need at least
 $(3 \numberofconstrains + 1)$ valid proofs, and $(\multconstr + \linconstr + 1)$ for $\sonicprot$. We
-propose a generalisation of the general forking lemma that given probability of
+propose a generalisation of the general forking lemma that given a probability of
 producing an accepting transcript, $\accProb$, lower-bounds the probability of
 generating a \emph{tree of accepting transcripts} $\tree$, which allows to
 extract a witness.
 
 \begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
 	\label{def:tree_of_accepting_transcripts}
-	Consider a $(2\mu + 1)$-message interactive proof system $\ps$. A $(n_1,
+	Consider a $(2\mu + 1)$-message proof system. A $(n_1,
   \ldots, n_\mu)$-tree of accepting transcripts is a tree where each node on
   depth $i$, for $i \in \range{1}{\mu + 1}$, is an $i$-th prover's message in an
   accepting transcript; edges between the nodes are labeled with verifier's
@@ -264,7 +264,7 @@ Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
 simulation trapdoors for $\plonkprot$ and $\sonicprot$ exist, the protocols
 cannot be special sound in that regard. This is because an unbounded adversary
-can recover the trapdoor and build a number of simulated proofs for a fake
+can recover the trapdoor and build an arbitrary number of simulated proofs for a fake
 statement. Hence, we provide a weaker, yet sufficient, definition of
 \emph{forking special soundness}. More precisely, we state that an
 adversary that is able to answer correctly multiple challenges either knows the
@@ -371,10 +371,11 @@ algorithm from the generalized forking lemma.
 
 \begin{definition}[$(k,n)$-forking special soundness in the updatable setting]
 	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
-	$(2 \mu + 1)$-message proof system for a relation $\REL$.
+	$(2 \mu + 1)$-message proof system for a relation $\REL$.  Let $\proofsystem_\fs$ be
+	$\proofsystem$ after the Fiat--Shamir transform.
 	
 	For any $\ppt$ adversary $\advse^{\initU,
-		\ro} (1^\secpar; r)$ with access to oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r, Q_H)$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
+		\ro} (1^\secpar; r)$ with access to oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r)$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
 	and update oracle queries.
 	%
 	$\zdv$ returns the index $i$ of the
@@ -382,9 +383,9 @@ algorithm from the generalized forking lemma.
 	
 	Consider the algorithm $\genforking_{\zdv}^{n}$
 	that rewinds $\zdv$ to produce a $(1,\dots, n,\dots, 1)$-tree of
-	transcripts.
+	accepting transcripts.
 	
-	We say that $\ps$ is $(k,n)$-forking special sound with security loss $\eps(\secpar)$, if
+	We say that $\psfs$ is $(k,n)$-forking special sound with security loss $\eps(\secpar)$, if
 	for any PPT adversary the probability that
 	\begin{align*}
 	\Pr\left[
@@ -402,7 +403,7 @@ algorithm from the generalized forking lemma.
 	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
 	%List $Q$ contains all $(\inp, \zkproof)$ pairs where $\inp$ is an instance provided to the simulator by the adversary and $\zkproof$ is the simulator's answer. 
 	List $Q_\ro$ contains all $\advse$'s
-	queries to $\ro$ and $\ro$'s answers. 
+	queries to $\ro$ and the random oracle's answers.
 	%List $Q_\srs$ contains the proofs of all honest SRS updates.
 \end{definition}
 % \chaya{why does $\genforking$ get $Q_H$ twice?}
@@ -411,20 +412,22 @@ algorithm from the generalized forking lemma.
 
 \paragraph{Importance of the general forking lemma.}
 To highlight the importance of the generalised forking lemma, we outline 
-how it is used in our \COMMENT{forking} simulation-extractability proof.  Let $\proofsystem$ be a
+how it is used in our \COMMENT{forking} simulation-extractability proof.  Let $\psfs$ be a
 forking special sound proof system where for an instance $\inp$ the
 corresponding witness can be extracted from a
 $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\advse$
 be the simulation-extractability adversary that outputs an accepting proof with
-probability at least $\accProb$. (Although we use the same $\accProb$ to denote
-probability of $\zdv$ outputing a non-zero $i$ and the probability of $\advse$
+probability at least $\accProb$. From $\adv$ we build an adversary $\adv$ that runs $\simO$ inside. Although we use the same $\accProb$ to denote
+probability of $\zdv$ outputing a non-zero $i$ and the probability of $\advse$ (and $\adv$)
 outputing an accepting proof, we claim that these probabilities are exactly the
-same by the way we define $\zdv$.) Let $\advse$ output an accepting instance-proof pair
-$(\inp_{\advse},\zkproof_{\advse})$; $r$ be $\advse$'s
+same by the way we define $\zdv$ and $\bdv$. In the following we give the intuition of the proof without the additional indirection via $\bdv$ whose goal is primarily to simplify the forking special soundness definition.
+
+Let $\adv$ output an accepting instance-proof pair
+$(\inp_{\advse},\zkproof_{\advse})$; $r$ be $\adv$'s
 randomness; \COMMENT{$Q$ the list of simulator queries made by $\advse$ \markulf{20/09/2021}{Q is now hidden within the forking special soundness adversary.} along with
 $\simulator$'s answers; }%\hamid{$Q_\srs$ be the list of proofs for SRS honest updates;} 
 and $Q_\ro$ be the list of all random oracle
-queries made by $\advse$.  All of these are given to the extractor $\ext$ that
+queries made by $\adv$.  All of these are given to the extractor $\ext$ that
 internally runs the forking algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$
 takes $(\srs, \advse, \COMMENT{Q, }r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
 h_q^1$. 
@@ -432,12 +435,12 @@ h_q^1$.
 pick $h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$
 elements.)  
 
-Next, $\zdv$ internally runs $\advse(\srs; r)$ %\hamid{$\advse(1^\secpar; r)$} 
+Next, $\zdv$ internally runs $\adv(\srs; r)$ %\hamid{$\\advse(1^\secpar; r)$}
 and responds to its random
-oracle and simulator queries by using $Q_\ro$\COMMENT{ and $Q$}. Note that $\advse$ makes
+oracle queries using $Q_\ro$\COMMENT{ and $Q$}. Note that $\adv$ makes
 the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
 as it is run on the same random tape and with the same answers from the
-simulator and random oracle. Once $\advse$ outputs 
+simulator and random oracle. Once $\adv$ outputs
 $\zkproof_{\advse}$, algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where
 $i$ is the index of a random oracle query submitted by $\advse$ to receive the challenge after the
 $k$-th message from the prover---a message where the tree of transcripts

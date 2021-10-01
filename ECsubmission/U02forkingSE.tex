@@ -31,9 +31,9 @@ random oracle and wins with the same probability.
 \begin{theorem}[\COMMENT{Forking s}Simulation-extractable multi-message protocols]
   \label{thm:se}
   Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive $(2 \mu + 1)$-message
-  zero-knowledge proof system for $\RELGEN(\secparam)$, which is \emph{$k$-programmable trapdoor-less simulatable}, has
+  zero-knowledge proof system for $\RELGEN(\secparam)$. Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. If $\psfs$ is \emph{$k$-programmable trapdoor-less simulatable}, has
 the $k$-\emph{unique response property} with security loss $\epsur(\secpar)$, and is $(k, n)$-\emph{forking special
-  sound} with security loss $\epss(\secpar)$.  Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle.  Then $\psfs$ is \COMMENT{
+  sound} with security loss $\epss(\secpar)$, then $\psfs$ is \COMMENT{
   forking }\emph{simulation-extractable} with extraction error $\epsur(\secpar)$ against $\ppt$
   adversaries that makes up to $q$ random oracle queries and returns an acceptable
   proof with probability at least $\accProb$.  The extraction probability $\extProb$ is at
