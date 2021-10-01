@@ -20,7 +20,7 @@
 \let\spvec\vec
 \usepackage{amssymb,amsmath}
 \let\vec\spvec
-%\usepackage{newtxmath,newtxtext}
+\usepackage{newtxmath,newtxtext}
 \usepackage[T1]{fontenc}
 \usepackage[most]{tcolorbox}
   \def\vec#1{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
@@ -29,7 +29,7 @@
 
 % lncs size (as printed in books, with small margins):
  % \usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={13.2cm,20.3cm},centering]{geometry}
- %\usepackage{fullpage}
+\usepackage{fullpage}
 \usepackage{soulutf8} \soulregister\cite7 \soulregister\ref7
 \soulregister\pageref7
 \usepackage{hyperref}
@@ -38,8 +38,8 @@
 \usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
 
 \usepackage[capitalise]{cleveref}
-\crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
-\Crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
+% \crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
+% \Crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
 % \
 \usepackage{cite} 
 \usepackage{booktabs}
@@ -76,12 +76,22 @@
 %\title{On Non-Malleability of Fiat--Shamir Based Universal zkSNARKs}
 %\title{Non-Malleability of the Fiat--Shamir Transform Revisited for Multi-round SRS-Based Protocols}
 \title{SNARKY Signatures with Universal and Updatable~Setup}
-\author{(Submission to EUROCRYPT 2022)}
+%\author{(Submission to EUROCRYPT 2022)}
 \institute{}
-%\author{Chaya Ganesh \and Hamidreza Khoshakhlagh \and Markulf Kohlweiss\inst{1,2} \and Anca Nitulescu \and Michał Zając\inst{3}} 
-%\institute{University of Edinburgh, Edinburgh, UK \and IOHK \\
-%\email{mkohlwei@inf.ed.ac.uk} \and Clearmatics, London, UK \\
-%\email{m.p.zajac@gmail.com}}
+\author{Chaya Ganesh\inst{1} \and Hamidreza Khoshakhlagh\inst{2} \and Markulf Kohlweiss\inst{3,4} \and Anca Nitulescu\inst{5} \and Michał Zając\inst{6}} 
+\institute{Indian Institute of Science \\
+  \email{chaya@iisc.ac.in}\\
+  \and
+  Aarhus University \\
+  \email{hamidreza@cs.au.dk} \\
+  \and
+  University of Edinburgh, Edinburgh, UK \and IOHK \\
+  \email{mkohlwei@inf.ed.ac.uk}
+  \and
+  Protocol Labs \\ \email{anca@protocol.ai} \\
+  \and
+  Clearmatics, London, UK \\
+\email{m.p.zajac@gmail.com}}
 
 \allowdisplaybreaks
 
@@ -102,6 +112,12 @@ In the ROM, we obtain simulation-extractable and updatable NIZKs. Importantly, w
 \input{030-definitions-and-lemmas-for-multi-round-SRS-based-protocols}
 \input{040-simulation-extractability-the-general-result}
 \input{050-non-malleability-of-pfs}
+\input{060-polynomial-commitment-schemes}
+\input{070-non-malleability-of-plonk-omitted-protocol-description}
+\input{080-non-malleability-of-sfs}
+\input{090-non-malleability-of-mfs}
+\input{100-simulation-soundness—definitions-and-the-general-result
+}
 
 \section{Conclusion and Future Work}
 
@@ -112,17 +128,12 @@ This is a stronger definition of SE that we consider in this paper, and we leave
 \bibliographystyle{abbrv}
 \bibliography{../cryptobib/abbrev3,../cryptobib/crypto,../additional_bib}
 
-\clearpage
-{\Huge{Supplementary Materials}}
+% \clearpage
+%{\Huge{Supplementary Materials}}
 \appendix
 
-\input{060-polynomial-commitment-schemes}
-\input{070-non-malleability-of-plonk-omitted-protocol-description}
-\input{080-non-malleability-of-sfs}
-\input{090-non-malleability-of-mfs}
-\input{100-simulation-soundness—definitions-and-the-general-result
-}
-\input{110-additional-preliminaries-lemmas-and-proofs}
+
+%\input{110-additional-preliminaries-lemmas-and-proofs}
  
 \end{document}
 %%% Local Variables:
