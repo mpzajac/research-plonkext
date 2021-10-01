@@ -97,46 +97,17 @@ In the ROM, we obtain simulation-extractable and updatable NIZKs. Importantly, w
 
 \ifupdate
 %
-\input{Uintro}
-\input{Uprelim}
-\input{U01definitions}
-%\input{U01updatable}
-\input{U02forkingSE}
-%\input{A02protocols}
-\input{U03plonkSE}
+\input{010-introduction}
+\input{020-preliminaries}
+\input{030-definitions-and-lemmas-for-multi-round-SRS-based-protocols}
+\input{040-simulation-extractability-the-general-result}
+\input{050-non-malleability-of-pfs}
 
 \section{Conclusion and Future Work}
 
 Since the SRS is being continually updated, one could argue that there might be simulated proofs with respect to \textit{different} SRSs available for the adversary to see before attempting to forge a proof with respect to a current SRS.
 That is, each SRS in the update chain spawns a simulation oracle. Intuitively, the updatability of the SRS allows an adversarial prover to contribute to updating, and see proofs with respect to different updated SRSs before attempting to provide a proof for a false statement (potentially output a proof wrt a SRS that is different from the SRSs corresponding to all the simulated proofs seen).
 This is a stronger definition of SE that we consider in this paper, and we leave exploring this to future work.
-
-
-%\appendix
-%\input{U04sonicSE}
-
-
-%\input{A01more-prelim}
-
-%\input{UA03plonk-proofs}
-%
-\else
-%
-\input{intro}
-\input{prelim}
-\input{01definitions}
-\input{01updatable}
-\input{01fromLSEtoSE}
-\input{02forkingSE}
-\input{03plonkSE}
-\input{04sonicSE}
-\input{05marlinSE}
-\input{A01more-prelim}
-%\input{A02protocols}
-\input{A03plonk-proofs}
-%
-\fi
-
 
 \bibliographystyle{abbrv}
 \bibliography{../cryptobib/abbrev3,../cryptobib/crypto,../additional_bib}
@@ -145,15 +116,11 @@ This is a stronger definition of SE that we consider in this paper, and we leave
 {\Huge{Supplementary Materials}}
 \appendix
 
-%\input{A01more-prelim}
-
-\input{A02protocols}
-
-\input{Uplonk-description}
-
-\input{U04sonicSE}
-
-\input{U05marlinSE}
+\input{060-polynomial-commitment-schemes}
+\input{070-non-malleability-of-plonk-omitted-protocol-description}
+\input{080-non-malleability-of-sfs}
+%\input{U05marlinSE}
+\input{090-non-malleability-of-mfs}
 
 \input{USS}
 
