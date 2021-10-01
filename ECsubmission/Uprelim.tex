@@ -83,8 +83,8 @@ $\verifier$ accepts if (a set of) verification equation
 $\vereq_{\inp, \zkproof}$ %(note that the verification equation changes relate to the instance $\inp$ and proof $\zkproof$) 
 (which can also be interpreted as a
 polynomial in $\FF_p[X]$ whose coefficients depend on messages sent by the
-prover), zeroes at $\chi$. Following \cite{EPRINT:GabWilCio19} we call verifiers
-who checks that $\vereq_{\inp, \zkproof}(\chi) = 0$ \emph{real verifiers} as
+prover) zeroes at $\chi$. Following \cite{EPRINT:GabWilCio19} we call verifiers
+who check that $\vereq_{\inp, \zkproof}(\chi) = 0$ \emph{real verifiers} as
 opposed to \emph{ideal verifiers} who accept only when
 $\vereq_{\inp, \zkproof}(X) = 0$. That is, while a real verifier accepts when a
 polynomial \emph{evaluates} to zero, an ideal verifier accepts only when the
@@ -94,14 +94,13 @@ Although ideal verifiers are impractical, they are very useful in our
 proofs. More precisely, we show that
 \begin{compactenum}
 \item the idealised verifier accepts an incorrect proof (what ``incorrect''
-  means depends on the situation) with at most negligible probability (and many
+  means depends on the situation) with at most negligible probability (and in many
   cases---never);
-\item when the real verifier accepts, but not the idealised one, then we show
-  how to use a malicious $\prover$ to break the underlying security assumption
+\item when the real verifier accepts, but not the idealised one, then a malicious $\prover$ can be used to break the underlying security assumption
   (in our case---a variant of $\dlog$.)
 \end{compactenum}
 
-Analogously, idealised verifier can also be defined for a polynomial commitment scheme.
+Analogously, idealised verifier can be defined for polynomial commitment schemes.
 
  
 \subsection{Signatures of Knowledge}
@@ -111,18 +110,18 @@ Signatures of Knowledge (SoKs) \cite{C:ChaLys06} are closely related to simulati
 even if the adversary has seen many
 signatures on arbitrary messages under arbitrary statement,  it cannot create a new signature (not seen before) without knowing the witness for the statement in question.
 
-To define Signatures of Knowledge we use a recent version \cite{C:GroMal17} that implicitly considers only compact (succinct) signatures. Due to page limit we omit description of SoK's algorithms and security properties and move them to \cref{sec:sok}. 
+To define Signatures of Knowledge we use a recent version \cite{C:GroMal17} that implicitly considers only compact (succinct) signatures. We omit the description of SoK's algorithms and security properties and defer them to \cref{sec:sok}. intuitively, a SoK behaves like a non-interactive prove system that `binds' the message being signed to the proof.
      
 
   
   
 
 \subsection{Zero-Knowledge Proof Systems}
-In a zero-knowledge proof system, a prover convinces the verifier of veracity of a statement
+In a zero-knowledge proof system, a prover convinces the verifier of the veracity of a statement
 without leaking any other information. The zero-knowledge property is proven by constructing a
 simulator that can simulate the view of a cheating verifier without knowing the secret
 information -- witness -- of the prover. A proof system has to be sound as well, i.e.~for a
-malicious prover it should be infeasible to convince a verifier on a false statement. Here, we
+malicious prover it should be infeasible to convince a verifier of a false statement. Here, we
 focus on proof systems, so-called arguments, that guarantee soundness against $\ppt$ malicious provers.
 
 More precisely, let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of \changedm{universal}
@@ -134,7 +133,7 @@ systems, such as Plonk and Sonic, we treat both the reference string and the rel
 universal.
 
 We denote by $\zkproof$ a proof created by $\prover$ with input
-$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier (\srs, \inp, \zkproof)$ accepts it. In this paper we focus on proof systems where $\prover$ and $\verifier$ are given oracle access to a random oracle $\ro$. In case of the simulator $\simulator$ it is also given access to $\ro$, but it can also \emph{program} it. That is, it can require that for a picked $(x, y)$, $\ro (x) = y$.
+$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier (\srs, \inp, \zkproof)$ accepts it. In this paper we focus on proof systems where $\prover$ and $\verifier$ are given oracle access to a random oracle $\ro$. In case of the simulator $\simulator$ it is also given access to $\ro$, but it can also \emph{program} it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
 
 A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is
 required to have three properties: completeness, soundness and zero knowledge, which are
@@ -156,11 +155,11 @@ defined as follows:
   proof for a false statement $\inp \not\in\LANG$. More precisely, for
   all $\REL \in \RELGEN(\secparam)$
 	\[
-    \condprob{ \verifier^\ro (\srs, \inp) = 1 \land \inp \not\in \LANG_\REL}{\srs \gets \kgen(\REL), (\inp, \zkproof) \gets \adv^\ro(\srs)} \leq
+    \condprob{ \verifier^\ro (\srs, \inp, \zkproof) = 1 \land \inp \not\in \LANG_\REL}{\srs \gets \kgen(\REL), (\inp, \zkproof) \gets \adv^\ro(\srs)} \leq
     \negl.
 	\]
 %\end{description}
-Sometimes a stronger notion of soundness is required -- except requiring that the
+Sometimes a stronger notion of soundness is required -- besides requiring that the
 verifier rejects proofs of statements outside the language, we request from the
 prover to know a witness corresponding to the proven statement. This property is
 called \emph{knowledge soundness}.%\markulf{Commented out the formal definition as we don't use it.}
@@ -209,7 +208,7 @@ be a proof system such that
     the message from the verifier but computes it locally setting $b_i
     = \ro(\zkproof[0..i])$, where $\zkproof[0..j] = (\inp, a_1, b_1, \ldots,
     a_{j - 1}, b_{j - 1}, a_j)$. (Importantly, $\zkproof[0..\mu + 1] =
-    (\inp, \zkproof)$).
+    (\inp, \zkproof)$).\footnote{For Fiat--Shamir based SoK the message signed $m$ is added to $\inp$ before hashing.}
   \item $\verifier_\fs$ behaves as $\verifier$ but does not provide
     challenges to the prover's proof. Instead it computes the
     challenges locally as $\prover_\fs$ does. Then it verifies the
@@ -374,10 +373,10 @@ We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which 
 
 In the next section, we define security notions in the updatable setting. To this end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary updates the SRS. We also define the simulation oracle $\simO$ in~\cref{fig:upd} that is the simulator w.r.t. the SRS finalised by the adversary using $\initU$. This simulation oracle will be used in the definition of \COMMENT{forking }simulation extractability.
 
-\ourpar{On trusted setup.} We also note that a trusted setup can be expressed by the updatable setup definition above simply by restricting the algorithm that is given access to $\initU$ to call the oracle only on $\intent = \setup$ and $\intent = \final$.
+\ourpar{On trusted setup.} We note that a trusted setup can be expressed by the updatable setup definition above simply by restricting the algorithm that is given access to $\initU$ to call the oracle only on $\intent = \setup$ and $\intent = \final$.
 
 \ourpar{Updatability and zero knowledge.}
-Groth et al.~\cite{C:GKMMM18} shown that if a proof system is zero-knowledge against adversaries who picks the SRS, then it is updatable zero-knowledge. We call such systems \emph{subvertible zero knowledge}, cf.~\cite{AC:BelFucSca16,AC:ABLZ17}. It was shown that Plonk, Marlin, Sonic, and virtually any proof system which SRS contains monomials are subvertible zero-knowledge.
+Groth et al.~\cite{C:GKMMM18} shown that if a proof system is zero-knowledge against adversaries who picks the SRS, then it is updatable zero-knowledge. We call such systems \emph{subvertible zero knowledge}, cf.~\cite{AC:BelFucSca16,AC:ABLZ17}. It was shown that Plonk, Sonic, Marlin and virtually any proof system with a SRS consisting of monomials are subvertible zero-knowledge.
 
 \ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determine the constraints. We ellide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
 
