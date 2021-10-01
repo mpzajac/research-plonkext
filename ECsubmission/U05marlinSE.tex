@@ -57,7 +57,7 @@ verify that \cref{eq:marlin_eq_2} holds.
                          
 
 \subsection{Unique response property}
-\begin{lemma}
+\begin{lemma}\label{lem:marlinprot_ur}
   Let $\PCOM$ be a commitment of knowledge with security $\epsk(\secpar)$,
   $\epsbind(\secpar)$ and has unique response property with security
   $\epsop(\secpar)$. Then probability that a $\ppt$ adversary $\adv$ breaks
@@ -99,7 +99,7 @@ verify that \cref{eq:marlin_eq_2} holds.
 \end{proof}
 
 \subsection{Forking special soundness}
-\begin{lemma}
+\begin{lemma}\label{lem:marlinprot_ss}
 	Assume that an idealised $\marlinprot$ verifier fails with probability at most
 	$\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks dlog is
 	bounded by $\epsdlog(\secpar)$. Then $\marlinprot$ is
