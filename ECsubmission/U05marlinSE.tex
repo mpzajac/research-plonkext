@@ -1,8 +1,8 @@
 % !TEX root = main.tex
 % !TEX spellcheck = en-US
 
-\section{Non-malleability of $\marlinprotfs$}
-We show that $\marlin$ is forking simulation-extractable. To that end, we show
+\section{Simulation extractability of $\marlinprotfs$}
+We show that $\marlin$ is \COMMENT{forking }simulation-extractable. To that end, we show
 that $\marlin$ has all the required properties: has unique response property, is
 forking special sound, and its simulator can provide indistinguishable proofs
 without a trapdoor, just by programming the random oracle.
@@ -198,7 +198,7 @@ random oracle that on partial transcripts it returns the challenges picked by
 $\simulator$.
 \end{proof}
 
-\subsection{From forking soundness and unique response property to forking
+\subsection{From forking soundness and unique response property to\COMMENT{ forking}
   simulation extractability of $\marlinprotfs$}
 \begin{corollary}
   Assume that $\marlinprot$ is $\ur{1}$ with security
@@ -207,7 +207,7 @@ $\simulator$.
   random oracle. Let $\advse$ be an algebraic adversary that can make up to $q$
   random oracle queries, up to $S$ simulation oracle queries, and outputs an
   acceptable proof for $\marlinprotfs$ with probability at least
-  $\accProb$. Then $\marlinprotfs$ is forking simulation-extractable with
+  $\accProb$. Then $\marlinprotfs$ is \COMMENT{forking }simulation-extractable with
   extraction error $\eta = \epsur(\secpar)$. The extraction probability
   $\extProb$ is at least
 \[
@@ -249,3 +249,8 @@ $\simulator$.
 %of the generalised forking lemma was provided. However, we have to note here
 %that some of the inequalities used in the proof are already tight, i.e.~for
 %specific adversaries, some of the inequalities are already equalities.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

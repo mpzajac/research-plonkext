@@ -427,13 +427,13 @@ $\sonic$ is trapdoor-less simulatable.
   challenges that fits it.
 \end{remark}
 
-\subsection{From forking soundness and unique response property to forking
-  simulation extractability of $\sonicprotfs$}
+\subsection{From forking soundness and unique response property to \COMMENT{forking
+  }simulation extractability of $\sonicprotfs$}
 Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$
 and forking sound. We now make use
-of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable as defined in \cref{def:simext}.
+of \cref{thm:se} and show that $\sonicprotfs$ is \COMMENT{ forking }simulation-extractable as defined in \cref{def:simext}.
 
-\begin{corollary}[Forking simulation extractability of $\sonicprotfs$]
+\begin{corollary}[\COMMENT{Forking s}Simulation extractability of $\sonicprotfs$]
   \label{thm:sonicprotfs_se}
   Assume that $\sonicprot$ is $\ur{1}$ with security
   $\epsur(\secpar) = \epsbind(\secpar) + \epsop(\secpar)$ -- where
@@ -443,7 +443,7 @@ of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable 
   random oracle. Let $\advse$ be an algebraic adversary that can make up to $q$
   random oracle queries, up to $S$ simulation oracle queries, and outputs an
   acceptable proof for $\sonicprotfs$ with probability at least $\accProb$. Then
-  $\sonicprotfs$ is forking simulation-extractable with extraction error
+  $\sonicprotfs$ is \COMMENT{forking }simulation-extractable with extraction error
   $\eta = \epsur(\secpar)$. The extraction probability $\extProb$ is at least
 \[
 		\extProb  \geq \frac{1}{q^{\multconstr + \linconstr}} (\accProb - \epsur(\secpar))^{\multconstr +

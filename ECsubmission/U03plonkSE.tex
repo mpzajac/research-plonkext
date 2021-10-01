@@ -4,7 +4,7 @@
 
 \section{Non-Malleability of $\plonkprotfs$} 
 \label{sec:plonk}
-In this section, we show that $\plonkprotfs$ is forking simulation-extractable. Towards this end, we first use the unique opening property to show that
+In this section, we show that $\plonkprotfs$ is \COMMENT{forking }simulation-extractable. Towards this end, we first use the unique opening property to show that
 $\plonkprot$ has the $\ur{2}$ property,
 cf.~\cref{lem:plonkprot_ur}.
 Next, we show that $\plonkprot$ is forking-sound. That is, given a
@@ -20,7 +20,7 @@ the AGM, cf.~\cref{lem:plonkprot_ss}.
 %property or based on forking soundness break the $\dlog$ assumption, if extracting a valid witness from a
 %tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 
-Given forking-soundness and $\ur{2}$ of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is forking simulation-extractable.
+Given forking-soundness and $\ur{2}$ of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is \COMMENT{forking }simulation-extractable.
 Due to page limit, we omit description of \plonk{} here and refer to
 \cref{sec:plonk_explained}. 
 %Unfortunately, we also have to move some of the
@@ -831,10 +831,10 @@ $\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
 \subsection{Simulation extractability of~$\plonkprotfs$}
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$
 and forking sound. We now make use of \cref{thm:se} and show that
-$\plonkprot_\fs$ is forking simulation-extractable as defined in
+$\plonkprot_\fs$ is\COMMENT{ forking} simulation-extractable as defined in
 \cref{def:updsimext}.
 
-\begin{corollary}[Forking simulation extractability of $\plonkprot_\fs$]
+\begin{corollary}[\COMMENT{Forking }Simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
 Assume an idealised $\plonkprot$ verifier fails at most with probability
 $\epsid(\secpar)$, the discrete logarithm advantage is bounded by
@@ -844,8 +844,8 @@ property with security $\epsop(\secpar)$. Let
 $\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be an
 algebraic adversary that can make up to $q$ random oracle queries, up to $S$
 simulation oracle queries, and outputs an acceptable proof for $\plonkprotfs$
-with probability at least $\accProb$. Then $\plonkprotfs$ is forking
-simulation-extractable with extraction error $\eta = \epsur(\secpar)$. The
+with probability at least $\accProb$. Then $\plonkprotfs$ is \COMMENT{forking
+}simulation-extractable with extraction error $\eta = \epsur(\secpar)$. The
 extraction probability $\extProb$ is at least
 \[
 	\extProb \geq \frac{1}{q^{3 (\epsid(\secpar)+\epsdlog(\secpar))}} (\accProb - \epsk(\secpar) - 2\cdot\epsbind(\secpar) -
