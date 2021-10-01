@@ -171,7 +171,7 @@ $(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$, where
 \[
   \eps_b = \condprob{\adv^{\oracleo_b, \ro} (\srs)}{\srs \gets \kgen (\REL)}\,,
 \]
-where $\oracleo_b$ on intput $(\inp, \wit)$ returns $\zkproof \gets \simulator (\srs, \inp)$ if $b = 0$, or $\zkproof \gets \prover^\ro (\inp, \wit)$, if $b = 1$. Importantly, the simulator is able to program the random oracle $\ro$ as it wishes.
+where $\oracleo_b$ on input $(\inp, \wit)$ returns $\zkproof \gets \simulator (\srs, \inp)$ if $b = 0$, or $\zkproof \gets \prover^\ro (\inp, \wit)$, if $b = 1$. Importantly, the simulator is able to program the random oracle $\ro$ as it wishes.
 	%
 We call zero knowledge \emph{perfect} if the distributions are equal and
 \emph{computational} if they are indistinguishable for any $\ppt$ distinguisher.
