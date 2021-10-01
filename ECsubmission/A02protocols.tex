@@ -3,6 +3,32 @@
 
 \section{Polynomial Commitment Schemes}
 \label{sec:pcom}
+A polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$ consists in four algorithms and allows to commit to a
+polynomial $\p{f}$ and later open the evaluation in a point $z$ to some value $s=\p{f}(z)$. More formally: 
+\begin{description}
+\item[$\kgen(1^\secpar, \maxdeg)$:] The key generation algorithm
+   takes in a security parameter $\secpar$ and a
+  parameter $\maxdeg$ which determines the maximal degree of the committed
+  polynomial. It outputs a structured reference string $\srs$ (the
+  commitment key). In the following we will consider $\maxdeg$ implicitily contains $\secpar$. 
+\item[$\com(\srs, \p{f})$:] The commitment algorithm $\com(\srs, \p{f})$ takes
+  in $\srs$ and a polynomial $\p{f}$ with maximum degree $\maxdeg$, and outputs
+  a commitment $c$.
+\item[$\open(\srs, z, s, \p{f})$:] The opening algorithm
+  takes as input $\srs$, an evaluation point $z$, a
+  value $s$ and the polynomial $\p{f}$. It outputs an opening $o$.
+\item[$\verify(\srs, c, z, s, o)$:] The verification algorithm takes in $\srs$,
+  a commitment $c$, an evaluation point $z$, a value $s$ and an opening $o$. It
+  outputs 1 if $o$ is a valid opening for $(c, z, s)$ and 0 otherwise.
+\end{description}
+
+$\plonk$ and $\sonic$ use variants of the KZG polynomial commitment scheme
+\cite{AC:KatZavGol10}. We denote the first by $\PCOMp$ and the latter by
+$\PCOMs$. Due to page limit, we omit their presentation here and refer to
+\cref{fig:pcomp} and \cref{fig:pcoms} in the \cref{sec:pcom}.  In this paper we
+use evaluation binding, commitment of knowledge, and, newly introduced, unique
+opening and hiding properties. Formal definitions of these could be find in
+\cref{sec:pcom}, here we briefly introduce them.
 
 The following properties are expected of a secure polynomial commitment $\PCOM$. Note that since we are in the updatable setting, $\srs$ in the following definitions is the SRS that $\advse$ finalises using the update oracle $\initU$ (See~\cref{fig:upd}).
 
@@ -16,23 +42,18 @@ The following properties are expected of a secure polynomial commitment $\PCOM$.
   \in \FF_p^k$ the evaluations, and $\vec{o},\vec{o}' \in \FF_p^l$ be the
   commitment openings. Then for every $\ppt$ adversary $\adv$
 	\[
-		\Pr
-			\left[
-			\begin{aligned}
-				& \verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o}) = 1,  \\ 
-				& \verify(\srs, \vec{c}, \vec{z}, \vec{s}', \vec{o}') = 1, \\
-				& \vec{s} \neq \vec{s}'
-			\end{aligned}
-			\,\left|\,\vphantom{\begin{aligned}
-                  & \\
-                  & \\
-                  &
-                \end{aligned}}
-			\begin{aligned}
+		\condprob{
+			\begin{matrix}
+				  \verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o}) = 1,  \\ 
+				  \verify(\srs, \vec{c}, \vec{z}, \vec{s}', \vec{o}') = 1, \\
+				  \vec{s} \neq \vec{s}'
+			\end{matrix}}
+			{
+			\begin{matrix}
 %				& \srs \gets \kgen(\secparam, \maxdeg),\\
-				& (\vec{c}, \vec{z}, \vec{s}, \vec{s}', \vec{o}, \vec{o}') \gets \adv^{\initU}(\secparam, \maxdeg)
-			\end{aligned}
-			\right.\right] \leq \negl\,.
+				 (\vec{c}, \vec{z}, \vec{s}, \vec{s}', \vec{o}, \vec{o}') \gets \adv^{\initU}(\maxdeg)
+			\end{matrix}
+		} \leq \negl\,.
 	\]
 
 \end{description}
@@ -45,23 +66,18 @@ We say that $\PCOM$ has the unique opening property if the following holds:
   evaluated at, $\vec{s} \in \FF_p^k$ the evaluations, and $\vec{o} \in \FF_p^l$
   be the commitment openings. Then for every $\ppt$ adversary $\adv$
 	\[
-		\Pr
-			\left[
-			\begin{aligned}
-				& \verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o}) = 1,  \\ 
-				& \verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o'}) = 1, \\
-				& \vec{o} \neq \vec{o'}
-			\end{aligned}
-			\,\left|\, \vphantom{\begin{aligned}
-                  & \\
-                  & \\
-                  &
-                \end{aligned}}
-			\begin{aligned}
+		\condprob{
+			\begin{matrix}
+				  \verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o}) = 1,  \\ 
+				  \verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o'}) = 1, \\
+				 \vec{o} \neq \vec{o'}
+			\end{matrix}
+		}{
+			\begin{matrix}
 %				& \srs \gets \kgen(\secparam, \maxdeg),\\
-				& (\vec{c}, \vec{z}, \vec{s}, \vec{o}, \vec{o'}) \gets \adv^{\initU}(\secparam, \maxdeg)
-			\end{aligned}
-			\right.\right] \leq \negl\,.
+				  (\vec{c}, \vec{z}, \vec{s}, \vec{o}, \vec{o'}) \gets \adv^{\initU}(\maxdeg)
+			\end{matrix}
+		}\leq \negl\,.
 	\]
 \end{description}
 Intuitively, opening uniqueness assures that there is only one valid opening
@@ -78,16 +94,11 @@ We also formalize notion of $k$-hiding property of a polynomial commitment schem
   security $\epsh(\secpar)$ if for every $\ppt$ adversary $\adv$, $k \in \NN$,
   probability
   \begin{align*}
-    \Pr\left[
-    \begin{aligned}
-      & b' = b
-      \end{aligned}
-        \,\left|\,
-        \begin{aligned}
-    & (f_0, f_1, c, k, b') \gets \adv^{\initU, \oraclec}(\secparam, \maxdeg), f_0, f_1 \in \FF^{\maxdeg}
-    [X]
-    \end{aligned}
-    \right.\right] \leq \frac{1}{2} + \eps(\secpar)
+    \condprob
+   { b' = b}{
+    (f_0, f_1, c, k, b') \gets \adv^{\initU, \oraclec}(\maxdeg), f_0, f_1 \in \FF^{\maxdeg}
+    [X]}
+\leq \frac{1}{2} + \eps(\secpar).
   \end{align*}
   Here, $\oraclec$ is a challenge oracle that
   \begin{compactenum}
@@ -108,37 +119,29 @@ We also formalize notion of $k$-hiding property of a polynomial commitment schem
   commitment $c$, evaluation $s$ and opening $o$ there
   exists a $\ppt$ extractor $\ext$ such that
 \[
-  \Pr \left[
-    \begin{aligned}
-      & \deg \p{f} \leq \maxdeg\\
-      & c = \com(\srs, \p{f}),\\
-      & \verify(\srs, c, z, s, o) = 1
-    \end{aligned}
-    \,\left|\,
-      \vphantom{
-        \begin{aligned}
-          & \\
-          & \\
-          &
-        \end{aligned}
-        }
-    \begin{aligned}
+  \condprob{
+    \begin{matrix}
+       \deg \p{f} \leq \maxdeg,
+       c = \com(\srs, \p{f}),\\
+       \verify(\srs, c, z, s, o) = 1
+    \end{matrix}
+        }{
+    \begin{matrix}
       %
      % & \srs \gets \kgen(\secparam, \maxdeg),\\
-      & c \gets \adv^{\initU}(\secparam, \maxdeg),
+      c \gets \adv^{\initU}(\maxdeg),
       z \sample \FF_p \\
-      & (s, o) \gets \adv(c, z), \\
-      & \p{f} = \ext_\adv(\srs, c)\\
-    \end{aligned}
-  \right.\right]
+      (s, o) \gets \adv(c, z), \\
+   \p{f} = \ext_\adv(\srs, c)\\
+    \end{matrix}}
   \geq 1 - \epsk(\secpar).
 \]
 In that case we say that $\PCOM$ is $\epsk(\secpar)$-knowledge.
 \end{description}
 
-Intuitively when a commitment scheme is ``of knowledge'' then if an
-adversary produces a (valid) commitment $c$, which it can open, then it also
-knows the underlying polynomial $\p{f}$ which commits to that value.
+Intuitively, when a commitment scheme is ``of knowledge'' then if an
+adversary produces a (valid) commitment $c$, which it can open correctly in an evaluation point, then it must
+know the underlying polynomial $\p{f}$ which commits to that value.
 \cref{fig:pcomp,fig:pcoms} present variants of KZG polynomial commitment schemes
 used in \plonk{} and \sonic{}. The key generation algorithm $\kgen$ takes as
 input a security parameter $\secparam$ and a parameter $\maxdeg$ which
@@ -146,11 +149,11 @@ determines the maximal degree of the committed polynomial. We assume that
 $\maxdeg$ can be read from the output SRS. While the figures only describe trusted SRS setup, it is not hard to lift the SRS generation into the updatable setting by defining the extra algorithms $\upd$, $\verifyCRS$ as defined in~\cref{def:upd-scheme}.
 \cite{CCS:MBKM19} shows, using AGM, that $\PCOMs$ is a commitment of knowledge.
 The same reasoning could be used to show that property for $\PCOMp$.
-
+ 
 \begin{figure}[h!]
   \small
 \centering
-	\begin{pcvstack}[center,boxed]
+\begin{pcvstack}[center,boxed]
 		\begin{pchstack}
 			\procedure{$\kgen(\secparam, \maxdeg)$}
 			{
