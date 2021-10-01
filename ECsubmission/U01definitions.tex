@@ -107,39 +107,6 @@ and $\marlin$ is $1$-programmable ZK. This follows directly from the proofs of
 their standard model zero-knowledge property in
 \cref{lem:plonk_hvzk,lem:sonic_hvzk,lem:marlin_hvzk}. 
 
-\oursubsub{Idealised Verifier and Verification Equations.} Let
-$(\kgen, \prover, \verifier, \simulator)$ be a proof system.
-% or a polynomial commitment
-% scheme\hamid{might be unclear as we are defining polynomial commitments as
-%   $(\kgen, \com, \open, \verify)$.}.
-Observe that the $\kgen$ algorithm provides an SRS which can be interpreted as a
-set of group representation of polynomials evaluated at trapdoor
-elements. That is, for a trapdoor $\chi$ the SRS contains
-$\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for some polynomials
-$\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. The verifier
-$\verifier$ accepts if (a set of) verification equation
-$\vereq_{\inp, \zkproof}$ %(note that the verification equation changes relate to the instance $\inp$ and proof $\zkproof$) 
-(which can also be interpreted as a
-polynomial in $\FF_p[X]$ whose coefficients depend on messages sent by the
-prover), zeroes at $\chi$. Following \cite{EPRINT:GabWilCio19} we call verifiers
-who checks that $\vereq_{\inp, \zkproof}(\chi) = 0$ \emph{real verifiers} as
-opposed to \emph{ideal verifiers} who accept only when
-$\vereq_{\inp, \zkproof}(X) = 0$. That is, while a real verifier accepts when a
-polynomial \emph{evaluates} to zero, an ideal verifier accepts only when the
-polynomial \emph{is} zero.
-
-Although ideal verifiers are impractical, they are very useful in our
-proofs. More precisely, we show that
-\begin{compactenum}
-\item the idealised verifier accepts an incorrect proof (what ``incorrect''
-  means depends on the situation) with at most negligible probability (and many
-  cases---never);
-\item when the real verifier accepts, but not the idealised one, then we show
-  how to use a malicious $\prover$ to break the underlying security assumption
-  (in our case---a variant of $\dlog$.)
-\end{compactenum}
-
-Analogously, idealised verifier can also be defined for a polynomial commitment scheme.
 
 
 %\subsection{Forking simulation extractability}
@@ -222,6 +189,7 @@ extract a witness.
 \end{definition}
 
 
+\subsection{General forking lemma and forking special soundness}
 \begin{lemma}[General forking lemma II]
 	\label{lem:generalised_forking_lemma}
 	Fix $q \in \ZZ$ and set $H$ of size $h \geq m$. Let $\zdv$ be a $\ppt$
@@ -270,37 +238,7 @@ by the fact that the protocol has more than $3$ rounds and the number of
 transcripts required is larger. We defer the proof to
 \cref{sec:forking_proof}.
 
-
-
-\iffalse
-\subsection{Forking soundness}
-Note that the special soundness property (as usually defined) holds for
-all---even computationally unbounded---adversaries. Unfortunately, since a
-simulation trapdoors for $\plonkprot$ and $\sonicprot$ exist, the protocols
-cannot be special sound in that regard. This is because an unbounded adversary
-could recover the trapdoor and build a number of simulated proofs for a fake
-statement. Hence, we provide a weaker, yet sufficient, definition of
-\emph{forking soundness}. More precisely, we state that an
-adversary that is able to answer correctly multiple challenges either knows the
-witness or can be used to break some computational assumption.
-
-
-\begin{definition}[Forking soundness]
-  Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
-  $(2 \mu + 1)$-message proof system for a relation $\REL$. We say that
-  $\proofsystem$ is $(\epsss(\secpar), (n_1, \ldots, n_\mu))$-\emph{forking sound}
-  if there exists an extractor $\extt$ that given an $(n_1, \ldots, n_\mu)$-tree
-  of acceptable transcripts $\tree$ and instance $\inp$ output by some $\ppt$ adversary $\adv(\REL,
-  \srs)$, for $\srs \sample \kgen(\REL)$, outputs $\wit$ such that $\REL(\inp,
-  \wit) = 1$ with probability at least $1 - \epsss$.
-\end{definition}
-
-Since we do not utilise the classical special soundness (that holds for all,
-even unbounded, adversaries) all references to that property should be
-understood as references to its computational version.
-\fi
-
-\subsection{Forking soundness}
+\oursubsub{Forking soundness}
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
 simulation trapdoors for $\plonkprot$ and $\sonicprot$ exist, the protocols
@@ -435,7 +373,7 @@ algorithm from the generalized forking lemma.
 	%& \srs \sample \kgen(\REL),
 	& r \sample \RND{\advse},
 	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \ro} (1^\secpar; r), \\
-	&    (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r, Q_{H}),Q_{H}),
+	&    (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r),Q_{H}),
 	\wit \gets \extt(\tree)
 	\end{aligned}
 	\right] \leq \eps(\secpar).
@@ -446,8 +384,8 @@ algorithm from the generalized forking lemma.
 	queries to $\ro$ and $\ro$'s answers. 
 	%List $Q_\srs$ contains the proofs of all honest SRS updates.
 \end{definition}
-\chaya{why does $\genforking$ get $Q_H$ twice?}
-\markulf{20/09/2021}{This is a tricky one. If I remember correctly, we wanted $\zdv$ to be able to determin when $\adv$ starts to diverge from the first branch that results in $\pi_{\adv}$. $\adv$ needs to be fed recorded simulated proofs until that divergence. After that $\zdv$ can create fresh simulated proofs. I think its ok to use the same simulated proofs in multiple sub-branches as long as they are for the right instance. In any case simulation is now hidden within $\adv$.}
+% \chaya{why does $\genforking$ get $Q_H$ twice?}
+% \markulf{20/09/2021}{This is a tricky one. If I remember correctly, we wanted $\zdv$ to be able to determin when $\adv$ starts to diverge from the first branch that results in $\pi_{\adv}$. $\adv$ needs to be fed recorded simulated proofs until that divergence. After that $\zdv$ can create fresh simulated proofs. I think its ok to use the same simulated proofs in multiple sub-branches as long as they are for the right instance. In any case simulation is now hidden within $\adv$.}
 
 
 \paragraph{Importance of the general forking lemma.}
