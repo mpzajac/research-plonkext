@@ -1,9 +1,9 @@
 % !TEX root = main.tex
 % !TEX spellcheck = en-US
-\section{Forking simulation-extractability---the general result}
+\section{\COMMENT{Forking s}Simulation-extractability---the general result}
 \label{sec:general}
 Equipped with definitional framework of \cref{sec:se_definitions}, we now present the main result of this paper---a proof of
-forking simulation extractability of Fiat-Shamir compiled multi-round protocols.
+\COMMENT{forking }simulation extractability of Fiat-Shamir compiled multi-round protocols.
 
 The proof proceeds by game hopping. The games are controlled by an environment $\env$
 that internally runs a simulation extractability adversary $\advse$, provides it
@@ -28,14 +28,14 @@ this condition into an adversary that makes these additional queries to the
 random oracle and wins with the same probability.
 
 
-\begin{theorem}[Forking simulation-extractable multi-message protocols]
+\begin{theorem}[\COMMENT{Forking s}Simulation-extractable multi-message protocols]
   \label{thm:se}
   Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive $(2 \mu + 1)$-message
   zero-knowledge proof system for $\RELGEN(\secparam)$, which is trapdoor-less simulatable, has
-  $\ur{k}$ property with security $\epsur(\secpar)$, and is $(\epss(\secpar), k, n)$-forking
-  sound.  Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle.  Then $\psfs$ is
-  forking simulation-extractable with extraction error $\epsur(\secpar)$ against $\ppt$
-  algebraic adversaries that makes up to $q$ random oracle queries and returns an acceptable
+  $\ur{k}$ property with security $\epsur(\secpar)$, and is $(\epss(\secpar), k, n)$-forking special
+  sound.  Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle.  Then $\psfs$ is \COMMENT{
+  forking }simulation-extractable with extraction error $\epsur(\secpar)$ against $\ppt$
+  adversaries that makes up to $q$ random oracle queries and returns an acceptable
   proof with probability at least $\accProb$.  The extraction probability $\extProb$ is at
   least
   \( \extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,, \)
@@ -130,7 +130,7 @@ random oracle and wins with the same probability.
   \epsur(\secpar)\,. \)
 }
 %
-		\ngame{2} Define an adversary $\bdv$ against forking soundness such that, given access to oracles $\initU$ and $\ro$, and randomness $r_\bdv$, it internally runs $\advse^{\initU, \simO, \ro} (1^\secpar; r_\adv)$, where
+		\ngame{2} Define an adversary $\bdv$ against forking special soundness such that, given access to oracles $\initU$ and $\ro$, and randomness $r_\bdv$, it internally runs $\advse^{\initU, \simO, \ro} (1^\secpar; r_\adv)$, where
 		\begin{compactenum}
 			\item $r_\bdv$ is split into two substrings $r_\adv$ and $r_\simulator$;
 			\item $\bdv$ answers $\adv$ update queries by asking the same query from its own update oracle. When $\adv$ finalises an SRS $\srs$, $\bdv$ does the same.
@@ -251,7 +251,7 @@ random oracle and wins with the same probability.
 		\[
 		\extProb \geq q^{-(n - 1)} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,.
 		\] 
-		and $\psfs$ is forking simulation extractable with extraction error $\epsur(\secpar)$.
+		and $\psfs$ is \COMMENT{forking }simulation extractable with extraction error $\epsur(\secpar)$.
 	\qed
 \end{proof}
 

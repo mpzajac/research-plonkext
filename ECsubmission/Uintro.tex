@@ -83,8 +83,8 @@ We propose a definition of simulation extractability in the updatable SRS settin
 \item 
 \emph{General theorem for USE of FS-compiled interactive protocols.}
 We then show that a class of interactive proofs of knowledge that are \changedm{trapdoor-less simulatable},
-have a unique response property in the updatable setting, and satisfy a property we define called forking soundness \emph{are USE out-of-the box} in the random oracle model when the Fiat--Shamir transformation is applied to them. 
-Informally, our notion of forking soundness is a variant of special soundness where the transcripts provided to the extractor are
+have a unique response property in the updatable setting, and satisfy a property we define called forking special soundness \emph{are USE out-of-the box} in the random oracle model when the Fiat--Shamir transformation is applied to them. 
+Informally, our notion of forking special soundness is a variant of special soundness where the transcripts provided to the extractor are
 obtained through interaction with an honest verifier, and the extraction guarantee is computational instead of unconditional. 
 Our extractor only needs oracle access to the adversary, it does not depend on the adversary’s code, nor relies on knowledge
 assumptions.
@@ -105,7 +105,7 @@ Proving that these protocols satisfy the required properties is done in the alge
 
 
 \subsection{Technical Overview}
-%unique response, forking soundness. general theorem without additional assumptions. to apply the theorem to concrete schemes like plonk, we show it satisfies unique response, forking soundness, in AGM.
+%unique response, forking special soundness. general theorem without additional assumptions. to apply the theorem to concrete schemes like plonk, we show it satisfies unique response, forking soundness, in AGM.
 
 From a high level, the proof of our general theorem for updateable simulation
 extractability is along the lines of the simulation extractability proof for
@@ -121,7 +121,7 @@ In the following, we denote the underlying interactive protocols by $\plonkprot$
 the resulting non-interactive proof systems by $\plonkprotfs$, $\sonicprotfs$,
 $\marlinprotfs$ respectively.
 
-\oursubsub{Forking soundness in the updatable setting.}
+\oursubsub{Forking special soundness in the updatable setting.}
 Following~\cite{INDOCRYPT:FKMV12}, one would have to show that for the protocols
 we consider, a witness can be extracted from sufficiently many valid transcripts
 with a common prefix. The standard definition of special soundness for sigma
@@ -145,8 +145,8 @@ the updatable setting, where there exists a trapdoor for any updated SRS. Recall
 that the standard special soundness definition requires witness extraction from
 \emph{any} tree of acceptable transcripts that share a common root. This means
 that there are no such trees for false statements. We define a different,
-forking lemma-related, version of soundness that we call forking soundness.
-Forking soundness guarantees that it is possible to extract a witness from all
+forking lemma-related, version of soundness that we call forking special soundness.
+Forking special soundness guarantees that it is possible to extract a witness from all
 (but negligibly many) trees of accepting transcripts produced by probabilistic
 polynomial time (PPT) adversaries, given that the trees are generated as
 interactions between a (possibly malicious) prover and an honest verifier. That
@@ -196,7 +196,7 @@ extractor succeeds diminishes significantly; the security loss, albeit big, is p
 
 Most modern zkSNARKs~\cite{SP:BBBPWM18,CCS:MBKM19} heavily
 rely on the Fiat--Shamir transform and thus potentially the forking lemma. First, an interactive
-protocol is proposed and its security and forking soundness analysed.\markulf{30.09}{Unclear here whether forking soundness is for the interactive of the non-interactive protocol.} Second,
+protocol is proposed and its security and forking special soundness analysed.\markulf{30.09}{Unclear here whether forking special soundness is for the interactive of the non-interactive protocol.} Second,
 one uses an argument that the Fiat--Shamir transform can be used to get a
 protocol that is non-interactive and shares the same security properties.
 
@@ -268,7 +268,7 @@ This is reminiscent of \emph{state restoration} security~\cite{TCC:BenChiSpo16,E
 
 Here, we directly capture the state restoration capability of the prover in the forking lemma instead of defining an interactive game where the prover can rewind the verifier to an earlier state as is done in~\cite{C:GhoTes21}. 
 The work of~\cite{C:GhoTes21} further shows that state restoration security gives tight security guarantees for the
-non-interactive versions of Bulletproof~\cite{SP:BBBPWM18} and \sonic~. 
+non-interactive versions of Bulletproof~\cite{SP:BBBPWM18} and \sonic. 
 Our work differs from~\cite{C:GhoTes21} in the following ways. First, they
 focus on showing security of concrete proof systems, while we show
 a general theorem about the security of a wide class of protocols. 

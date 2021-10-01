@@ -1,5 +1,107 @@
 \section{Additional preliminaries, lemmas and proofs}
-\subsection{Dlog assumptions}
+\subsection{Signatures of Knowledge}
+\label{sec:sok}
+A $\SoK$ for an efficiently decidable binary relation $\REL$ is defined as a tuple of PPT algorithms $\SoK = (\signsetup,  \sign, \allowbreak \verify,  \simsetup, \simsign)$:
+
+\begin{description}
+    \item[$\signsetup(1^\secpar, \REL) \rightarrow  \param$:]
+	The setup algorithm takes a security parameter $\secpar$ and a binary relation $\REL$
+	and returns public parameters $ \param$.  The input $ \param$ is implicit to all subsequent algorithms. 
+
+    \item[$\sign(\mesage, \inp, \wit)  \rightarrow \signature$:]
+The signing algorithm takes as input a message $ \msg \in \{0,1\}^{*}$, 
+a statement $\inp$, and a witness $\wit$.
+	Outputs a signature $\signature$.
+
+    \item[$\verify(\mesage, \inp, \signature) \rightarrow 1/ 0$:]
+The verification algorithm takes as input 
+ a message $\mesage$,  a statement $\inp$ 
+ together with a signature $\signature$,
+	outputs $1$ if the the signature is valid, $0$ otherwise.
+	
+    \item[$\simsetup(\REL) \rightarrow (\param, \td)$:]
+    	A simulated setup algorithm which takes as input a relation $\REL$ and returns public parameters $\param$ and a trapdoor $\td$. 
+    	
+   \item[$\simsign(\td, \mesage, \inp) \rightarrow \signature'$:]
+   	A simulated signing  that takes as input  a trapdoor $\td$, a message $\mesage$ and a statement $\inp$ and returns a simulated signature $\signature'$.
+\end{description}
+ 
+A SoK scheme should satisfy correctness, extractability and simulatability:
+   
+\begin{description}
+\item[Perfect Correctness.] This guarantees that a signer with a valid witness can always produce a signature that
+will convince the verifier: 
+For all $\secpar\in \NN$, for
+all efficiently decidable binary relation $\REL$,  
+for all  $(\inp, \wit) \in \REL$, and for all $ \mesage \in \{0,1\}^{*}$:
+   \[
+  \condprob{
+	  \begin{matrix}
+~\verify(\mesage, \inp, \signature) = 1   
+	 \end{matrix}
+}{
+	  \begin{matrix}
+~(\param, \td) \gets \signsetup(1^\secpar, \REL)\\
+~ \signature \gets  \sign(\mesage, \inp, \wit)
+ \end{matrix} }  =1. 
+\]
+%
+\item[Simulation Extractability:] This guarantees that an adversary is not able to issue a new signature
+unless it knows a witness. This should hold even if the adversary gets to see signatures on
+arbitrary messages under arbitrary statements. We model this notion in a strong sense, by
+letting the adversary see simulated signatures for arbitrary messages and statements, which
+potentially includes false statements. Even under this strong attack model, we require that
+whenever the adversary outputs a valid signature not queried before, it is possible to extract a
+witness for the signature. More formally,  for any PPT adversary $\adv$ there exists a PPT extractor $\ext_\adv$ such that:
+   \[
+  \condprob{
+	  \begin{matrix}
+~ \verify(\mesage, \inp, \signature) = 1   \\
+\land (\inp, \wit) \notin \REL \\
+\land (\mesage, \inp, \signature) \notin Q^{\simsign_\td}
+	 \end{matrix}
+}{
+	  \begin{matrix}
+~(\param, \td) \gets \simsetup(1^\secpar, \REL)\\
+~ (\mesage, \inp, \signature) \gets \adv^{\simsign_\td} (\param)\\
+\wit \gets \ext_\adv({\sf trans}_\adv)
+ \end{matrix}
+} \leq \negl
+\]
+where the adversary has access to simulated signatures via the oracle $\simsign_\td(\inp_i, \mesage_i) \coloneq \simsign(\td, \inp_i, \mesage_i)$ and the extractor $\ext_\adv$ takes as input the transcript ${\sf trans}_\adv$ of all queries made by $\adv$ including its randomness.  
+
+\vspace{4pt}
+%
+\item[Perfect Simulatability:] The verifier should not learn anything  about the witness from the signature.  The secrecy of the witness is modelled by the ability to
+simulate signatures without the witness. More precisely,  we say the signatures of knowledge
+are simulatable if there is a simulator that can create public parameters together with an associated trapdoor that enables producing signatures without a witness that are indistinguishable from real ones.  More formally, for any number of queried $\mesage_i\in \{0,1\}^{*}$ and $(\inp_i, \wit_i) \in \REL$:
+
+$
+\Big	\vert	   \condprob{  
+		\begin{matrix}
+		\adv(\param) = 1 
+		\end{matrix}
+		}{
+		\begin{matrix}
+	\param \gets  \signsetup(1^\secpar, \REL)\\
+	~\signature_i \gets \sign(\mesage_i, \inp_i, \wit_i)
+		\end{matrix}
+		 }
+		- $
+\[	  \condprob{
+		\begin{matrix}
+		\adv (\param) = 1 
+		\end{matrix}
+}{
+		\begin{matrix}
+	~(\param,\td) \gets  \simsetup(1^\secpar, \REL) \\
+	~\signature_i \gets   \simsign(\td,\mesage_i, \inp_i)
+		\end{matrix}} \Big	\vert	
+		 \leq \negl.
+		\]
+  \end{description}
+
+  \subsection{Dlog assumptions}
 \label{sec:dlog_assumptions}
 \begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]
 	Let $\adv$ be a $\ppt$ adversary that gets as input
