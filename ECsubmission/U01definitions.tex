@@ -422,13 +422,13 @@ probability at least $\accProb$. (Although we use the same $\accProb$ to denote
 probability of $\zdv$ outputing a non-zero $i$ and the probability of $\advse$
 outputing an accepting proof, we claim that these probabilities are exactly the
 same by the way we define $\zdv$.) Let $\advse$ output an accepting instance-proof pair
-$(\inp_{\advse},\zkproof_{\advse})$ ; $r$ be $\advse$'s
-randomness; $Q$ the list of simulator queries made by $\advse$ \markulf{20/09/2021}{Q is now hidden within the forking special soundness adversary.} along with
-$\simulator$'s answers; %\hamid{$Q_\srs$ be the list of proofs for SRS honest updates;} 
+$(\inp_{\advse},\zkproof_{\advse})$; $r$ be $\advse$'s
+randomness; \COMMENT{$Q$ the list of simulator queries made by $\advse$ \markulf{20/09/2021}{Q is now hidden within the forking special soundness adversary.} along with
+$\simulator$'s answers; }%\hamid{$Q_\srs$ be the list of proofs for SRS honest updates;} 
 and $Q_\ro$ be the list of all random oracle
 queries made by $\advse$.  All of these are given to the extractor $\ext$ that
 internally runs the forking algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$
-takes $(\srs, \advse,Q, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
+takes $(\srs, \advse, \COMMENT{Q, }r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
 h_q^1$. 
 (For the sake of completeness, we allow $\genforking_\zdv^{n_k}$ to
 pick $h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$
@@ -436,7 +436,7 @@ elements.)
 
 Next, $\zdv$ internally runs $\advse(\srs; r)$ %\hamid{$\advse(1^\secpar; r)$} 
 and responds to its random
-oracle and simulator queries by using $Q_\ro$ and $Q$. Note that $\advse$ makes
+oracle and simulator queries by using $Q_\ro$\COMMENT{ and $Q$}. Note that $\advse$ makes
 the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
 as it is run on the same random tape and with the same answers from the
 simulator and random oracle. Once $\advse$ outputs 
