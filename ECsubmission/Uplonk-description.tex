@@ -1,0 +1,283 @@
+\section{Non-malleability of \plonk{}, omitted protocol descriptions}
+\label{sec:plonk_supp_mat}
+\label{sec:plonk_explained}
+\newcommand{\vql}{\vec{q_{L}}}
+\newcommand{\vqr}{\vec{q_{R}}}
+\newcommand{\vqm}{\vec{q_{M}}}
+\newcommand{\vqo}{\vec{q_{O}}}
+\newcommand{\vx}{\vec{x}}
+\newcommand{\vqc}{\vec{q_{C}}}
+\oursubsub{The constrain system}
+Assume $\CRKT$ is a fan-in two arithmetic circuit,
+which fan-out is unlimited and has $\numberofconstrains$ gates and $\noofw$ wires
+($\numberofconstrains \leq \noofw \leq 2\numberofconstrains$). \plonk's constraint
+system is defined as follows:
+\begin{itemize}
+\item Let $\vec{V} = (\va, \vb, \vc)$, where $\va, \vb, \vc
+  \in \range{1}{\noofw}^\numberofconstrains$. Entries $\va_i, \vb_i, \vc_i$ represent indices of left,
+  right and output wires of circuits $i$-th gate.
+\item Vectors $\vec{Q} = (\vql, \vqr, \vqo, \vqm, \vqc) \in
+  (\FF^\numberofconstrains)^5$ are called \emph{selector vectors}:
+  \begin{itemize}
+  \item If the $i$-th gate is a multiplicative gate then $\vql_i = \vqr_i = 0$,
+    $\vqm_i = 1$, and $\vqo_i = -1$. 
+  \item If the $i$-th gate is an addition gate then $\vql_i = \vqr_i  = 1$, $\vqm_i =
+    0$, and $\vqo_i = -1$. 
+  \item $\vqc_i = 0$ always. 
+  \end{itemize}
+\end{itemize}
+
+We say that vector $\vx \in \FF^\noofw$ satisfies constraint system if for all $i
+\in \range{1}{\numberofconstrains}$
+\[
+  \vql_i \cdot \vx_{\va_i} + \vqr_i \cdot \vx_{\vb_i} + \vqo \cdot \vx_{\vc_i} +
+  \vqm_i \cdot (\vx_{\va_i} \vx_{\vb_i}) + \vqc_i = 0. 
+\]
+
+\oursubsub{Algorithms rolled out}
+\label{sec:plonk_explained}
+\plonk{} argument system is universal. That is, it allows to verify computation
+of any arithmetic circuit which has no more than $\numberofconstrains$
+gates using a single SRS. However, to make computation efficient, for each
+circuit there is allowed a preprocessing phase which extend the SRS with
+circuit-related polynomial evaluations.
+
+For the sake of simplicity of the security reductions presented in this paper, we
+include in the SRS only these elements that cannot be computed without knowing
+the secret trapdoor $\chi$. The rest of the SRS---the preprocessed input---can
+be computed using these SRS elements thus we leave them to be computed by the
+prover, verifier, and simulator.
+
+\ourpar{$\plonk$ SRS generating algorithm $\kgen(\REL)$:}
+The SRS generating algorithm picks at random $\chi \sample \FF_p$, computes
+and outputs
+\[
+	\srs = \left(\gone{\smallset{\chi^i}_{i = 0}^{\numberofconstrains + 2}},
+	\gtwo{\chi} \right).
+\]
+
+\ourpar{Preprocessing:}
+Let $H = \smallset{\omega^i}_{i = 1}^{\numberofconstrains }$ be a
+(multiplicative) $\numberofconstrains$-element subgroup of a field $\FF$
+compound of $\numberofconstrains$-th roots of unity in $\FF$. Let $\lag_i(X)$ be
+the $i$-th element of an $\numberofconstrains$-elements Lagrange basis. During
+the preprocessing phase polynomials $\p{S_{id j}}, \p{S_{\sigma j}}$, for
+$\p{j} \in \range{1}{3}$, are computed:
+\begin{equation*}
+  \begin{aligned}
+    \p{S_{id 1}}(X) & = X,\vphantom{\sum_{i = 1}^{\noofc} \sigma(i) \lag_i(X),}\\
+    \p{S_{id 2}}(X) & = k_1 \cdot X,\vphantom{\sum_{i = 1}^{\noofc} \sigma(i) \lag_i(X),}\\
+    \p{S_{id 3}}(X) & = k_2 \cdot X,\vphantom{\sum_{i = 1}^{\noofc} \sigma(i) \lag_i(X),}
+  \end{aligned}
+  \qquad
+\begin{aligned}
+  \p{S_{\sigma 1}}(X) & = \sum_{i = 1}^{\noofc} \sigma(i) \lag_i(X),\\
+  \p{S_{\sigma 2}}(X) & = \sum_{i = 1}^{\noofc}
+  \sigma(\noofc + i) \lag_i(X),\\
+  \p{S_{\sigma 3}}(X) & =\sum_{i = 1}^{\noofc} \sigma(2 \noofc + i) \lag_i(X).
+\end{aligned}
+\end{equation*}
+Coefficients $k_1$, $k_2$ are such that $H, k_1 \cdot H, k_2 \cdot H$ are
+different cosets of $\FF^*$, thus they define $3 \cdot \noofc$
+different elements. \cite{EPRINT:GabWilCio19} notes that it is enough to set
+$k_1$ to a quadratic residue and $k_2$ to a quadratic non-residue.
+
+Furthermore, we define polynomials $\p{q_L}, \p{q_R}, \p{q_O}, \p{q_M}, \p{q_C}$
+such that
+\begin{equation*}
+  \begin{aligned}
+  \p{q_L}(X) & = \sum_{i = 1}^{\noofc} \vql_i \lag_i(X), \\
+  \p{q_R}(X) & = \sum_{i = 1}^{\noofc} \vqr_i \lag_i(X), \\
+  \p{q_M}(X) & = \sum_{i = 1}^{\noofc} \vqm_i \lag_i(X),
+\end{aligned}
+\qquad
+\begin{aligned}
+  \p{q_O}(X) & = \sum_{i = 1}^{\noofc} \vqo_i \lag_i(X), \\
+  \p{q_C}(X) & = \sum_{i = 1}^{\noofc} \vqc_i \lag_i(X). \\
+  \vphantom{\p{q_M}(X)  = \sum_{i = 1}^{\noofc} \vqm_i \lag_i(X),}
+\end{aligned}
+\end{equation*}
+
+\ourpar{$\plonk$ prover
+  $\prover(\srs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot
+      \noofc}})$.}
+\begin{description}
+\item[Round 1] Sample $b_1, \ldots, b_9 \sample \FF_p$; compute
+  $\p{a}(X), \p{b}(X), \p{c}(X)$ as
+	\begin{align*}
+		\p{a}(X) &= (b_1 X + b_2)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_i \lag_i(X) \\
+		\p{b}(X) &= (b_3 X + b_4)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_{\noofc + i} \lag_i(X) \\
+		\p{c}(X) &= (b_5 X + b_6)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_{2 \cdot \noofc + i} \lag_i(X) 
+	\end{align*}
+	Output polynomial commitments $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
+	
+	\item[Round 2]
+	Get challenges $\beta, \gamma \in \FF_p$
+	\[
+		\beta = \ro(\zkproof[0..1], 0)\,, \qquad \gamma = \ro(\zkproof[0..1], 1)\,.
+	\]
+	Compute permutation polynomial $\p{z}(X)$
+	\begin{multline*}
+		\p{z}(X) = (b_7 X^2 + b_8 X + b_9)\p{Z_H}(X) + \lag_1(X) + \\
+			+ \sum_{i = 1}^{\noofc - 1} 
+			\left(\lag_{i + 1} (X) \prod_{j = 1}^{i} 
+			\frac{
+			(\wit_j +\beta \omega^{j - 1} + \gamma)(\wit_{\noofc + j} + \beta k_1 \omega^{j - 1} + \gamma)(\wit_{2 \noofc + j} +\beta k_2 \omega^{j- 1} + \gamma)}
+			{(\wit_j+\sigma(j) \beta + \gamma)(\wit_{\noofc + j} + \sigma(\noofc + j)\beta + \gamma)(\wit_{2 \noofc + j} + \sigma(2 \noofc + j)\beta + \gamma)}\right)
+	\end{multline*}
+	Output polynomial commitment $\gone{\p{z}(\chi)}$
+		
+	\item[Round 3]
+	Get the challenge $\alpha = \ro(\zkproof[0..2])$, compute the quotient polynomial 
+	\begin{align*}
+	& \p{t}(X)  = \\
+	& (\p{a}(X) \p{b}(X) \selmulti(X) + \p{a}(X) \selleft(X) + 
+	\p{b}(X)\selright(X) + \p{c}(X)\seloutput(X) + \pubinppoly(X) + \selconst(X)) 
+	\frac{1}{\p{Z_H}(X)} +\\
+	& + ((\p{a}(X) + \beta X + \gamma) (\p{b}(X) + \beta k_1 X + \gamma)(\p{c}(X) 
+	+ \beta k_2 X + \gamma)\p{z}(X)) \frac{\alpha}{\p{Z_H}(X)} \\
+	& - (\p{a}(X) + \beta \p{S_{\sigma 1}}(X) + \gamma)(\p{b}(X) + \beta 
+	\p{S_{\sigma 2}}(X) + \gamma)(\p{c}(X) + \beta \p{S_{\sigma 3}}(X) + 
+	\gamma)\p{z}(X \omega))  \frac{\alpha}{\p{Z_H}(X)} \\
+	& + (\p{z}(X) - 1) \lag_1(X) \frac{\alpha^2}{\p{Z_H}(X)}
+	\end{align*}
+	Split $\p{t}(X)$ into degree less then $\noofc$ polynomials $\p{t_{lo}}(X), \p{t_{mid}}(X), \p{t_{hi}}(X)$, such that
+	\[
+		\p{t}(X) = \p{t_{lo}}(X) + X^{\noofc} \p{t_{mid}}(X) + X^{2 \noofc} \p{t_{hi}}(X)\,.
+	\]
+	Output $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$.
+	
+	\item[Round 4]
+	Get the challenge $\chz \in \FF_p$, $\chz = \ro(\zkproof[0..3])$.
+	Compute opening evaluations
+	\begin{align*}
+      \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
+	\end{align*}
+	Compute the linearisation polynomial
+	\[
+		\p{r}(X) = 
+		\begin{aligned}
+      & \p{a}(\chz) \p{b}(\chz) \selmulti(X) + \p{a}(\chz) \selleft(X) + \p{b}(\chz) \selright(X) + \p{c}(\chz) \seloutput(X) + \selconst(X) \\
+      & + \alpha \cdot \left( (\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma)(\p{c}(\chz) + \beta k_2 \chz + \gamma) \cdot \p{z}(X)\right) \\
+      & - \alpha \cdot \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma)\beta \p{z}(\chz\omega) \cdot \p{S_{\sigma 3}}(X)\right) \\
+      & + \alpha^2 \cdot \lag_1(\chz) \cdot \p{z}(X)
+		\end{aligned}
+	\]
+	Output $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega), \p{r}(\chz).$
+	
+	\item[Round 5]
+	Compute the opening challenge $v \in \FF_p$, $v = \ro(\zkproof[0..4])$.
+	Compute the openings for the polynomial commitment scheme 
+	\begin{align*}
+	& \p{W_\chz}(X) = \frac{1}{X - \chz} \left(
+	\begin{aligned}
+		& \p{t_{lo}}(X) + \chz^\noofc \p{t_{mid}}(X) + \chz^{2 \noofc} \p{t_{hi}}(X) - \p{t}(\chz)\\
+		& + v(\p{r}(X) - \p{r}(\chz)) \\
+		& + v^2 (\p{a}(X) - \p{a}(\chz))\\
+		& + v^3 (\p{b}(X) - \p{b}(\chz))\\
+		& + v^4 (\p{c}(X) - \p{c}(\chz))\\
+		& + v^5 (\p{S_{\sigma 1}}(X) - \p{S_{\sigma 1}}(\chz))\\
+		& + v^6 (\p{S_{\sigma 2}}(X) - \p{S_{\sigma 2}}(\chz))
+	\end{aligned}
+	\right)\\
+	& \p{W_{\chz \omega}}(X) = \frac{\p{z}(X) - \p{z}(\chz \omega)}{X - \chz \omega}
+\end{align*}
+	Output $\gone{\p{W_{\chz}}(\chi), \p{W_{\chz \omega}}(\chi)}$.
+\end{description}
+
+\ncase{$\plonk$ verifier $\verifier(\srs, \inp, \zkproof)$}\ \newline
+The \plonk{} verifier works as follows
+\begin{description}
+	\item[Step 1] Validate all obtained group elements.
+	\item[Step 2] Validate all obtained field elements.
+	\item[Step 3] Validate the instance
+      $\inp = \smallset{\wit_i}_{i = 1}^\instsize$.
+	\item[Step 4] Compute challenges $\beta, \gamma, \alpha, \chz, v,
+      u$ from the transcript.
+	\item[Step 5] Compute zero polynomial evaluation
+      $\p{Z_H} (\chz) =\chz^\noofc - 1$.
+	\item[Step 6] Compute Lagrange polynomial evaluation
+      $\lag_1 (\chz) = \frac{\chz^\noofc -1}{\noofc (\chz - 1)}$.
+	\item[Step 7] Compute public input polynomial evaluation
+      $\pubinppoly (\chz) = \sum_{i \in \range{1}{\instsize}} \wit_i
+      \lag_i(\chz)$.
+	\item[Step 8] Compute quotient polynomials evaluations
+	\begin{multline*}
+    \p{t} (\chz) = \frac{1}{\p{Z_H}(\chz)} \Big(
+    \p{r} (\chz) + \pubinppoly(\chz) - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \\
+    (\p{c}(\chz) + \gamma)\p{z}(\chz \omega) \alpha - \lag_1 (\chz) \alpha^2
+    \Big) \,.
+	\end{multline*}
+	\item[Step 9] Compute batched polynomial commitment
+	$\gone{D} = v \gone{r} + u \gone {z}$ that is
+	\begin{align*}
+		\gone{D} & = v
+		\left(
+		\begin{aligned}
+          & \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
+          & + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
+			% &   \\
+          & - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz)
+          + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha \beta \p{z}(\chz
+          \omega) \gone{\p{S_{\sigma 3}}(\chi)})
+		\end{aligned}
+		\right) + \\
+		& + u \gone{\p{z}(\chi)}\,.
+	\end{align*}
+	\item[Step 10] Computes full batched polynomial commitment $\gone{F}$:
+	\begin{align*}
+      \gone{F} & = \left(\gone{\p{t_{lo}}(\chi)} + \chz^\noofc \gone{\p{t_{mid}}(\chi)} + \chz^{2 \noofc} \gone{\p{t_{hi}}(\chi)}\right) + u \gone{\p{z}(\chi)} + \\
+               & + v
+                 \left(
+		\begin{aligned}
+			& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}(\chz)   \gone{\selright} + \p{c}(\chz)  \gone{\seloutput} + \\
+			& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c}(\chz)  + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
+			% &   \\
+			& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
+		\end{aligned}
+		\right) \\
+		& + v^2 \gone{\p{a}(\chi)} + v^3 \gone{\p{b}(\chi)} + v^4 \gone{\p{c}(\chi)} + v^5 \gone{\p{S_{\sigma 1}(\chi)}} + v^6 \gone{\p{S_{\sigma 2}}(\chi)}\,.
+	\end{align*}
+	\item[Step 11] Compute group-encoded batch evaluation $\gone{E}$
+	\begin{align*}
+		\gone{E}  = \frac{1}{\p{Z_H}(\chz)} & \gone{
+		\begin{aligned}
+			& \p{r}(\chz) + \pubinppoly(\chz) +  \alpha^2  \lag_1 (\chz) + \\
+			& - \alpha \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}} (\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}} (\chz) + \gamma) (\p{c}(\chz) + \gamma) \p{z}(\chz \omega) \right)
+		\end{aligned}
+           }\\
+      + & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }\,.
+	\end{align*}
+\item[Step 12] Check whether the verification
+ % $\vereq_\zkproof(\chi)$
+  equation holds
+	\begin{multline}
+		\label{eq:ver_eq}
+		\left( \gone{\p{W_{\chz}}(\chi)} + u \cdot \gone{\p{W_{\chz
+                \omega}}(\chi)} \right) \bullet
+		\gtwo{\chi} - %\\
+		\left( \chz \cdot \gone{\p{W_{\chz}}(\chi)} + u \chz \omega \cdot
+          \gone{\p{W_{\chz \omega}}(\chi)} + \gone{F} - \gone{E} \right) \bullet
+        \gtwo{1} = 0\,.
+	\end{multline}
+  The verification equation is a batched version of the verification equation
+  from \cite{AC:KatZavGol10} which allows the verifier to check openings of
+  multiple polynomials in two points (instead of checking an opening of a single
+  polynomial at one point).
+\end{description}
+
+\ncase{$\plonk$ simulator $\simulator_\chi(\srs, \td= \chi, \inp)$}\ \newline
+The \plonk{} simulator proceeds as an honest prover would, except:
+\begin{enumerate}
+  \item In the first round, it sets $\wit = (\wit_i)_{i \in \range{1}{3 \noofc}}
+    = \vec{0}$, and at random picks $b_1, \ldots, b_9$. Then it proceeds with
+    that all-zero witness.
+  \item In Round 3, it computes polynomial $\pt(X)$ honestly, however uses
+    trapdoor $\chi$ to compute commitments
+    $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$.
+  \end{enumerate}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
