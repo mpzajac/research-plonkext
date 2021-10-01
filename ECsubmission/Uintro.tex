@@ -227,8 +227,8 @@ notion of (black-box) \emph{true simulation extractability} and showed that no
 NIZK can be UC-secure if it does not have this property. 
 
 In the context of zkSNARKs, the first
-SE zkSNARK was proposed by Groth and Maller~\cite{C:GroMal17} and SE
-zkSNARK for QAP by Lipmaa~\cite{EPRINT:Lipmaa19a}. 
+SE zkSNARK was proposed by Groth and Maller~\cite{C:GroMal17} and a SE
+zkSNARK for QAP was designed by Lipmaa~\cite{EPRINT:Lipmaa19a}.
 Kosba's et
 al.~\cite{EPRINT:KZMQCP15} give a general transformation from a NIZK to a
 black-box SE NIZK. Although their transformation works for zkSNARKs as well,
@@ -239,14 +239,14 @@ succinctness of the argument.
 The zkSNARK of~\cite{EC:Groth16} has been shown to be SE by introducing minor modifications to the construction and making
 stronger assumptions \cite{EPRINT:BowGab18,EPRINT:AtaBag19}. Recently,~\cite{EPRINT:BKSV20} showed that the
 original Groth's proof system from~\cite{EC:Groth16} is weakly SE and
-randomizable. None of these results are for zkSNARKs in the updatable SRS setting.
+randomizable. None of these results are for zkSNARKs in the updatable SRS setting or for zkSNARKs obtained via the Fiat--Shamir transformation.
 
 \ourpar{Forking lemma generalizations.}
 There are several task specific variants, e.g.,~\cite{INDOCRYPT:HerSae03,CCS:BagCheJar08,AC:BelDaiLi19}, of the general forking lemma~\cite{JC:PoiSte00,CCS:BelNev06} for analyzing the forking behavior of random-oracle based executions.
-In~\cite{EC:BCCGP16}, Bootle et al.~proposed a novel inner-product argument which
+In~\cite{EC:BCCGP16}, Bootle et al.~proposed a novel inner-product argument whose
 security relies on, so-called, witness-extended emulation. To show that
-property, the authors proposed a new version of forking lemma, which gives a
-lower bound on probability that a tree finding algorithm is able to produce a 
+property, the authors proposed a new version of the forking lemma that gives a
+lower bound on the probability that a tree finding algorithm is able to produce a
 tree of acceptable transcripts by rewinding a conversation between a
 (potentially malicious) prover and verifier.
 
@@ -261,11 +261,11 @@ Importantly, it is not obvious how the result of Bootle et al.~can be used to
 show security of non-interactive protocols as it relies on interactive provers
 whose proving strategies are more limited than proving strategies of
 non-interactive provers. For example, if a challenge given by the verifier does not
-suit an interactive prover, it can only try to finish a proof with it or
+suit an interactive prover, it can only try to finish a proof with that challenge or
 abort. On the other hand, a non-interactive prover has far wider scope of
 possible actions--when the protocol is non-interactive the prover may
 adapt its strategy based on the random oracle outputs. 
-This is reminiscent of \emph{state restoration} security~\cite{TCC:BenChiSpo16,EPRINT:Holmgren19} which is also about the security loss incurred by FS transformation for knowledge soundness from witness extended emulation.
+This is reminiscent of \emph{state restoration} security~\cite{TCC:BenChiSpo16,EPRINT:Holmgren19} which is also about the security loss incurred by the Fiat--Shamir transformation albeit when proving knowledge soundness from witness extended emulation.
 
 Here, we directly capture the state restoration capability of the prover in the forking lemma instead of defining an interactive game where the prover can rewind the verifier to an earlier state as is done in~\cite{C:GhoTes21}. 
 The work of~\cite{C:GhoTes21} further shows that state restoration security gives tight security guarantees for the
@@ -273,8 +273,8 @@ non-interactive versions of Bulletproof~\cite{SP:BBBPWM18} and \sonic.
 Our work differs from~\cite{C:GhoTes21} in the following ways. First, they
 focus on showing security of concrete proof systems, while we show
 a general theorem about the security of a wide class of protocols. 
-Second, they only consider knowledge soundness, while we focus on the stronger notion of simulation extractability. Third, the proof of~\cite{C:GhoTes21} is in the AGM which allows for online extraction, whereas we aim to minimize our reliance on the AGM. In particular, our main theorem does not rely on AGM and we tackle technical challenges arising from extraction by rewinding. 
-However, note that we show that concrete protocols satisfy the preconditions of our main theorem in the AGM.
+Second, they only consider knowledge soundness, while we focus on the stronger notion of simulation extractability. Third, the proof of~\cite{C:GhoTes21} is in the AGM which allows for online extraction, whereas we aim to reduce our reliance on the AGM. In particular, our extractor and main theorem do not rely on the AGM and we thus tackle technical challenges arising from extraction by rewinding.
+However, arguably due to the design of Plonk, Sonic, and Marlin, we show that these concrete protocols satisfy the preconditions of our main theorem in the AGM.
 
 %%% Local Variables:
 %%% mode: latex
