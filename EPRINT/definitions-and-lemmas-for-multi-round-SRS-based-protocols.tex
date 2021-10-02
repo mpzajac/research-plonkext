@@ -1,0 +1,711 @@
+% !TEX root = main.tex
+% !TEX spellcheck = en-US
+\section{Definitions and lemmas for multi-round SRS-based protocols}
+\label{sec:se_definitions}
+
+
+  \ourpar{Signatures of Knowledge from SE-SNARKs.}
+The work of Groth and Maller  \cite{C:GroMal17} shows
+how to construct a signature of knowledge for messages in $\{0, 1\}^*$
+from  target collision-resistant hash-function and simulation-extractable SNARKs. 
+These schemes inherit the same properties as the underlying SNARK schemes, 
+they rely on a structured reference string, which can be updatable or universal and they are succinct. 
+In the following, our goal will be to show that recent efficient SNARKs are simulation extractable,  and therefore, they are a perfect candidate to build better signatures of knowledge. 
+ 
+
+  \ourpar{Simulation-Extractability for multi-round protocols.} 
+Most recent SNARK schemes are following the same blueprint: First, an interactive (multi-round) information-theoretic proof system is considered. 
+%However, this initial system is idealized and also inefficient.  
+Second,  this initial proof system is compiled into an efficient, non-interactive and computationally sound scheme using cryptographic tools such as polynomial commitments and the Fiat-Shamir transformation.
+
+We remark that existing results on the Fiat-Shamir transform regarding existential unforgeability (for signatures) and simulation extraction (for proof systems and signatures of knowledge) work for $3$-round protocols without reference string that require two transcripts for standard model extraction, e.g., \cite{JC:PoiSte00,INDOCRYPT:FKMV12,C:RotSeg21}.
+In this section we prepare our analysis for multi-round protocols with a universal or updatable SRS.
+In order to prove simulation-extractability for such protocols,  we require more than
+just two transcripts for extraction.  Moreover, in the updatable setting we consider protocols that rely on an SRS where the adversary gets to contribute to the SRS. This makes out analysis more challenging.
+We first give a definition of simulation-extractability which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then, to support multi-round SRS-based protocols compiled using the Fiat-Shamir transform we gneralize the unique response property, replace honest-verifier zero-knowledge property with trapdoor-less simulation and special soundness with a forking special soundness property that links up with our generalized forking lemma.
+\subsection{Simulation extractability}
+\begin{definition}[Simulation-extractable NIZK]
+	\label{def:updsimext}
+  \label{def:simext}
+	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof system. We say that $\ps$
+  is \emph{updatable \COMMENT{forking }simulation-extractable} with \emph{extraction error} $\nu$ if for
+  any $\ppt$ adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a
+  simulation oracle $\simO$, cf.~\cref{fig:upd}, and a random oracle $\ro$, and that produces an
+  accepting proof for $\ps$ with probability $\accProb$, where
+	\[
+	\accProb = \condprob{
+	\begin{matrix}
+	  \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1  \\
+	  \wedge
+	(\inp_{\advse}, \zkproof_{\advse}) \not\in Q
+	\end{matrix}
+}{
+	\begin{matrix}
+	  r \sample \RND{\advse}\\
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
+		\ro} (1^\secpar; r)
+	\end{matrix}
+}
+	\]
+	there exists an extractor $\extse$ such that
+	\[
+	\extProb = \condprob{
+	\begin{matrix}
+  \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \\
+ \wedge  ~(\inp_{\advse}, \zkproof_{\advse}) \not\in Q   \\
+	 \wedge  ~\REL(\inp_{\advse}, \wit_{\advse}) = 1
+	\end{matrix}
+}{
+	\begin{aligned}
+	& r \sample \RND{\advse},
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
+		\ro} (1^\secpar; r) \\
+	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+	Q, Q_\ro, Q_\srs) 
+	\end{aligned}
+}
+	\]
+	is at at least 
+	\[
+	\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
+	\]
+	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
+	$\accProb \geq \nu$. 
+	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
+	$\inp$ is an instance queried to $\simO$ by the adversary and
+	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+	queries to $\ro$ and the random oracle's answers.
+\end{definition}
+\subsection{Unique-response protocols}
+A technical hurdle identified by Faust et al.~\cite{INDOCRYPT:FKMV12} for
+proving simulation extraction via the Fiat-Shamir transformation is that the
+transformed prove system satisfies a unique response property. The original
+Fischlin's formulation, although suitable for applications presented in
+\cite{C:Fischlin05,INDOCRYPT:FKMV12}, does not suffice in our case. First, the
+property assumes that the protocol has three messages, with the second being the
+challenge from the verifier. That is not the case we consider here. Second, it
+is not entirely clear how to generalize the property. Should one require that
+after the first challenge from the verifier, the prover's responses are fixed?
+That does not work since the prover needs to answer differently on different
+verifier's challenges, as otherwise the protocol could have fewer rounds.
+Another problem is that the protocol could have a round beyond the
+first round where the message of the prover is randomized. Unique response cannot hold in
+this case. Finally, the protocols we consider here are not in the standard
+model, but use an SRS.
+
+We work around these obstacles by providing a generalised notion of the unique
+response property. More precisely, we say that a $(2\mu + 1)$-message protocol
+has \emph{unique responses from $i$}, and call it a $\ur{i}$-protocol, if it
+follows the definition below:
+
+
+\begin{definition}[$\ur{i}$-protocol in the updatable setting]
+	\label{def:wiuru}
+	Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
+	$\ps = (\kgen, \prover, \verifier, \simulator)$. Let $\proofsystem_\fs$ be
+	$\proofsystem$ after the Fiat--Shamir transform and $\ro$ the random
+	oracle. Denote by $a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output
+	by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$
+		on} if for any $\ppt$ adversary $\adv$:
+	\[
+	\Pr\left[
+	\begin{aligned}
+	& \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
+	\ldots, a'_{i}, \\
+	& \verifier^\ro_\fs (\srs, \inp, \vec{a}) =
+	\verifier^\ro_\fs(\srs, \inp, \vec{a'}) = 1  \\
+	\end{aligned}
+	\,\left|\,
+	\begin{aligned}
+	& \inp, \vec{a},  \vec{a'}  \gets \adv^{\ro, \initU}(1^\secpar) \\
+& \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
+	a'_{\mu + 1})
+	\end{aligned}
+	\right.\right]
+	\]
+	is upper-bounded by some negligible function $\negl$.
+\end{definition}
+Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$, defined in~\cref{fig:upd}.
+
+Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary
+to produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$
+that are the same on the first $i$ prover messages.
+We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
+
+ \subsection{Trapdoor-Less Simulation}
+In security reductions in this paper it is sometimes needed to produce
+simulated NIZK proofs without knowing the trapdoor, just by
+programming the random oracle. We call protocols which allow for such a
+simulation \emph{trapdoor-less simulatable} (TLS). 
+
+\begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
+  Let $\ps$ be a $(2\mu + 1)$-message ZK proof system. Let $\ps_\fs= (\kgen_{\fs}, \prover_{\fs}, \verifier_{\fs}, \simulator_{\fs})$ be its
+  Fiat--Shamir variant and $\ro$ the random oracle. $\simulator_{\fs}$ takes as input $\srs$
+  and instance $\inp$, programs $\ro$, and outputs a proof $\zkproof_\simulator$.  We
+  call $\ps$ \emph{trapdoor-less simulatable} if for any adversary
+  $\adv$, $\eps_0 \approx \eps_1$, where
+  \begin{align*}
+    \eps_b = \Pr\left[
+    \begin{aligned}
+      \adv^{\initU,\ro,\oracleo_b} = 0
+    \end{aligned}
+    \right]
+  \end{align*}
+  On $\adv$'s query $\inp, \wit$, oracle $\oracleo_{b}$ responds
+  with a real proof $\zkproof_\prover \gets
+  \prover_{\fs}(\srs, \inp, \wit)$ if $b = 0$ or a simulated proof $\zkproof_\simulator \gets \simulator_{\fs} (\srs,
+  \inp)$ if $b = 1$. 
+
+  Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if $\simulator_\fs$ programs the random oracle \emph{only} for
+    challenges from round $k$ to $\mu + 1$.
+\end{definition}
+
+\begin{remark}[TLS vs HVZK]
+  We note that TLS notion is closely related to honest-verifier zero knowledge in the standard model. That is, if we consider an interactive proof system $\proofsystem$ that is HVZK in the standard model then its Fiat--Shamir compiled version $\proofsystem_\fs$ is TLS. This comes as the simulator $\simulator$ in $\proofsystem$ produces a valid simulated proof by picking verifier's challenges according to a predefined distribution and $\proofsystem_\fs$'s simulator $\simulator_\fs$ produces its proofs similarly by picking the challenges and additionally programming the random oracle to return the picked challenges. Importantly, in both $\proofsystem$ and $\proofsystem_\fs$ success of the simulator does not depend on access to an SRS trapdoor.
+\end{remark}
+
+% \begin{definition}[$k$-programmable ZK]
+%   \label{def:kzk}
+%   Let $\ps$ be a $(2\mu + 1)$-message ZK proof system and let $\ps_\fs$ be its
+%   Fiat--Shamir variant. We say that $\ps_\fs$ is $k$-programmable ZK if there
+%   exists a simulator $\simulator_\fs$ that
+%   \begin{compactenum}
+%   \item produces proofs indistinguishable from proofs output by an honest
+%     prover;
+%   \item $\simulator_\fs$ programs the random oracle \emph{only} for
+%     challenges from round $k$ to $\mu + 1$.
+%   \end{compactenum}
+% \end{definition
+%}
+We note that $\plonk$ is $2$-programmable TLS, $\sonic$ is $1$-programmable TLS,
+and $\marlin$ is $1$-programmable TLS. This follows directly from the proofs of
+their standard model zero-knowledge property in
+\cref{lem:plonk_hvzk,lem:sonic_hvzk,lem:marlin_hvzk}. 
+
+
+
+
+
+\subsection{Generalised forking lemma and forking special soundness}
+%\label{sec:forking_lemma}
+Although dubbed ``general'', the forking lemma of~\cref{lem:forking_lemma} is not
+general enough for our purpose as it is useful only for protocols where a witness
+can be extracted from just two transcripts. To be able to extract a witness
+from, say, an execution of $\plonkprot$ we need at least
+$(3 \numberofconstrains + 1)$ valid proofs, and $(\multconstr + \linconstr + 1)$ for $\sonicprot$. We
+propose a generalisation of the general forking lemma that given a probability of
+producing an accepting transcript, $\accProb$, lower-bounds the probability of
+generating a \emph{tree of accepting transcripts} $\tree$, which allows to
+extract a witness.
+
+\begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
+	\label{def:tree_of_accepting_transcripts}
+	Consider a $(2\mu + 1)$-message proof system. A $(n_1,
+  \ldots, n_\mu)$-tree of accepting transcripts is a tree where each node on
+  depth $i$, for $i \in \range{1}{\mu + 1}$, is an $i$-th prover's message in an
+  accepting transcript; edges between the nodes are labeled with verifier's
+  challenges, such that no two edges on the same depth have the same
+  label; and each node on depth $i$ has $n_{i} - 1$ siblings and $n_{i +
+    1}$ children. The tree consists of $N = \prod_{i = 1}^\mu n_i$
+  branches, where $N$ is the number of accepting transcripts. We require $N = \poly$.
+\end{definition}
+
+
+\begin{lemma}[General forking lemma II]
+	\label{lem:generalised_forking_lemma}
+	Fix $q \in \ZZ$ and set $H$ of size $h \geq m$. Let $\zdv$ be a $\ppt$
+  algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$ where $i \in
+  \range{0}{q}$ and $s$ is called a side output. Denote by $\ig$ a randomised
+  instance generator. We denote by $\accProb$ the probability
+	\[
+		\condprob{i \neq 0}{ y \gets \ig;\ h_1, \ldots, h_q \sample H;\ (i, s)
+		\gets \zdv(y, h_1, \ldots, h_q)}\,.
+	\]
+	Let $\genforking_{\zdv}^{m}$ denote the algorithm described in
+  \cref{fig:genforking_lemma} then the probability $\frkProb := \condprob{b =
+    1}{y \gets \ig;\ h_1, \ldots, h_{q} \sample H;\ (b, \vec{s}) \gets
+    \genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}$ is at least
+	\[
+		\frac{\accProb^m}{q^{m - 1}} - \accProb \cdot \left(1 -
+    \frac{h!}{(h - m)! \cdot h^{m}}\right).
+	\]
+		
+	\begin{figure}[t]
+		\centering
+		\fbox{
+		\procedure{$\genforking_{\zdv}^{m} (y,h_1^{1}, \ldots, h_{q}^{1})$}		
+		{
+		\rho \sample \RND{\zdv}\\
+		(i, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; \rho)\\
+    i_1 \gets i\\
+		\pcif i = 0\ \pcreturn (0, \bot)\\
+		\pcfor j \in \range{2}{m}\\
+		\pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
+		h_{i - 1}^{j - 1}\\
+		\pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
+		\pcind (i_j, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
+		\ldots, h_{q}^{j}; \rho)\\
+		\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
+    \pcif \exists (j, j') \in \range{1}{m}^2, j \neq j' : (h_{i}^{j} = h_{i}^{j'})\
+	\pcreturn (0, \bot)\\
+		\pcelse \pcreturn (1, \vec{s})
+	}}
+	\caption{Generalised forking algorithm $\genforking_{\zdv}^{m}$}
+	\label{fig:genforking_lemma}
+\end{figure}
+\end{lemma}
+The proof is along similar lines as~\cite[Lemma 1]{CCS:BelNev06} with modifications required
+by the fact that the protocol has more than $3$ rounds and the number of
+transcripts required is larger. \COMMENT{We defer the proof to
+  \cref{sec:forking_proof}.}
+
+% \subsection{Proof of the generalized forking lemma (\cref{lem:generalised_forking_lemma})}
+% \label{sec:forking_proof}
+\begin{proof}
+First denote by $\accProb(y)$ and $\frkProb(y)$ the following probabilities
+\begin{align*}
+\accProb(y) & =  \condprob{i \neq 0}{h_1, \ldots, h_q \sample H;\ (i, s)
+\gets \zdv(y, h_1, \ldots, h_q)}\,.\\
+	\frkProb(y) & = \condprob{b = 1}{(b, \vec{s}) \gets
+\genforking_{\zdv}^{m}(y, h_1, \ldots, h_q)}\,.
+\end{align*}
+
+We start by claiming that for all $y$ 
+\begin{equation}\label{eq:frkProb_y}
+	\frkProb(y) \geq 
+	\frac{\accProb(y)^m}{q^{m - 1}} - \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)
+	\end{equation}
+Then with the expectation taken over $y \sample \ig$, we have
+\begin{align}
+	\frkProb & = \expected{\frkProb(y)} \geq
+	\expected{\frac{\accProb(y)^m}{q^{m - 1}} -  \accProb(y) \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)} \label{eq:use_eq1}\\
+	& \geq \frac{\expected{\accProb(y)}^m}{q^{m - 1}} -
+	\expected{\accProb(y)} \cdot \left(1 - \frac{h!}{(h - m)! \cdot
+  h^{m}}\right) \label{eq:by_lemma_jensen}\\
+	& = \frac{\accProb^m}{q^{m - 1}} -  \accProb \cdot \left(1 -
+  \frac{h!}{(h - m)! \cdot h^{m}}\right)\label{eq:by_accProb}\,.
+\end{align}
+Where \cref{eq:use_eq1} comes from \cref{eq:frkProb_y};
+\cref{eq:by_lemma_jensen} comes from linearity of expected value and \cref{lem:jensen}; and
+\cref{eq:by_accProb} holds by the fact that $\expected{\accProb(y)} =
+\accProb$.
+
+We now show \cref{eq:frkProb_y}.
+Denote by $J = \range{1}{m}^2 \setminus \smallset{(j, j)}_{j \in \range{1}{m}}$. 
+For any input $y$, with probabilities taken over the coin tosses of
+$\genforking_{\zdv}^{m}$ we have
+\begin{align*}
+	\frkProb (y) & = \prob{i_j = i_{j'} \land i_j \geq 1 \land
+h_{i_j}^{j} \neq h_{i_{j'}}^{j'} \text{ for } (j, j') \in J}	\\
+	& \geq \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} %\\
+   - \prob{i_j \geq 1 \land h_{i_j}^{j} = h_{i_{j'}}^{j'} \text{ for some } (j, j') \in J}\\
+	& = \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} -
+	\prob{i_j \geq 1} \cdot 
+  \left(1 - \frac{h!}{(h - m)! \cdot h^{m}}\right) \\ 
+	& = \prob{i_j = i_{j'} \land
+	i_j \geq 1 \text{ for } (j, j') \in J} - \accProb(y) \cdot \left(1 -
+\frac{h!}{(h - m)! \cdot h^{m}}\right)\,.
+\end{align*}
+
+Probability that for some $(j, j') \in J$ and $i_j = i_{j'}$ holds
+$h_{i_j}^{j} \neq h_{i_{j'}}^{j'}$ equals 
+\[
+  \frac{h \cdot (h - 1)
+\cdot \ldots \cdot (h - m - 1)}{h^m} = \frac{h!}{(h - m)! \cdot h^m}.
+\]
+That is, it equals the number
+of all $m$-element strings where each element is different divided by
+the number of all $m$-element strings, where elements are taken from a
+set of size $h$. 
+
+It remains to show that $\prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j,
+  j') \in J} \geq \infrac{\accProb(y)^m}{q^{m - 1}}$. Let $\RND{\zdv}$ denote
+the set from which $\zdv$ picks its coins at random. For each $\iota \in
+\range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times H^{\iota - 1} \to [0, 1]$ be
+defined by setting $X_\iota(\rho, h_1, \ldots, h_{\iota - 1})$ to
+\[
+  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
+    \ldots, h_q; \rho)}
+\]
+for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
+$X_\iota$ be a random variable over the uniform distribution on its domain. Then
+\begin{align*}
+	& \prob{i_j = i_{j'} \land i_j \geq 1 \text{ for } (j, j') \in J} 
+	 = \sum_{\iota = 1}^{q} \prob{i_1 = \iota \land \ldots \land i_m = \iota} \\
+	& = \sum_{\iota = 1}^{q} \prob{i_1 = \iota} \cdot \condprob{i_2 = \iota}{i_1 = \iota} \cdot \ldots \cdot \condprob{i_m = \iota}{i_1 = \ldots = i_{m - 1} = \iota} \\
+	& = \sum_{\iota = 1}^{q} \sum_{\rho, h_1, \ldots, h_{\iota - 1}} X_{\iota}
+   (\rho, h_1, \ldots, h_{\iota - 1})^{m} \cdot \frac{1}{\abs{\RND{\zdv}} \cdot \abs{H}^{\iota - 1}}
+   = \sum_{\iota = 1}^{q} \expected{X_\iota^m} \,.
+\end{align*}
+Importantly, $\sum_{\iota = 1}^q \expected{X_{\iota}} = \accProb(y)$.
+
+By \cref{lem:jensen} we get
+\[
+	\sum_{\iota = 1}^{q} \expected{X_\iota^m} \geq \sum_{\iota = 1}^{q} \expected{X_\iota}^m\,.
+\]
+Note that for e.g.~$X_i = 1$, $i \in \range{1}{q}$ the inequality becomes equality, that is, it is tight.
+ 
+We now use the H\"older inequality, cf.~\cref{lem:holder}, for $x_i = \expected{X_i}$, $y_i = 1$, $p = m$, and $q = m/(m - 1)$ obtaining
+\begin{gather}
+	\left(\sum_{i = 1}^{q} \expected{X_i}\right)^{m}  \leq \left(\sum_{i = 1}^{q} \expected{X_i}^m\right) \cdot q^{m - 1}\\
+	\frac{1}{q^{m - 1}} \cdot \accProb(y)^{m} \leq \sum_{i = 1}^{q} \expected{X_i}^m\,.
+\end{gather}
+Finally, we get
+\[
+	\frkProb(y) \geq \frac{\accProb(y)^m}{q^{m - 1}} - 
+	 \accProb(y) \cdot \left(1 - \frac{h!}{(h - m)! \cdot h^m}\right)\,.
+\]
+\qed
+\end{proof}
+\begin{lemma}\label{lem:jensen}
+	Let $\RND{\zdv}$ denote the set from which $\zdv$ picks its coins at random.
+	For each $\iota \in \range{1}{q}$ let $X_\iota \colon \RND{\zdv} \times
+	H^{\iota - 1} \to [0, 1]$ be defined by setting $X_\iota(\rho, h_1, \ldots,
+h_{\iota - 1})$ to 
+\[
+  \condprob{i = \iota}{h_\iota, \ldots, h_q \sample H; (i, s) \gets \zdv(y, h_1,
+    \ldots, h_q; \rho)}
+	\] 
+	for all $\rho \in \RND{\zdv}$ and $h_1, \ldots, h_{\iota - 1} \in H$. Consider
+  $X_\iota$ as a random variable over the uniform distribution on its domain.
+  Then $\expected{X_\iota^m} \geq \expected{X_\iota}^m$.
+\end{lemma}
+\begin{proof}
+	First we recall the Jensen inequality \cite{W:Weissten20}, if for some random
+  variable $X$ holds $\abs{\expected{X}} \leq \infty$ and $f$ is a Borel convex
+  function then
+	\[
+		f(\expected{X}) \leq \expected{f(X)}\,.
+	\] 
+	Finally, we note that $\abs{\expected{X}} \leq \infty$ and taking to the
+  $m$-th power is a Borel convex function on $[0, 1]$ interval. \qed
+\end{proof}
+
+\begin{lemma}[H\"older's inequality. Simplified.]\label{lem:holder}
+	Let $x_i, y_i$, for $i \in \range{1}{q}$, and $p, q$ be real numbers such that
+  $1/p + 1/q = 1$. Then
+	\begin{equation}
+    \label{eq:tightness}
+		\sum_{i = 1}^{q} x_i y_i \leq \left(\sum_{i = 1}^{q}
+      x_i^p\right)^{\frac{1}{p}} \cdot \left(\sum_{i = 1}^{q}
+      y_i^p\right)^{\frac{1}{q}}\,.
+	\end{equation}
+\end{lemma}
+
+\begin{remark}[Tightness of the H\"older inequality]
+	In is important to note that Inequality (\ref{eq:tightness}) is tight. More
+  precisely, for $\expected{X_i} = x$, $i \in \range{1}{q}$ we have
+	\begin{gather*}
+		\sum_{i = 1}^q x = \left(\sum_{i = 1}^{q} x^m\right)^\frac{1}{m} \cdot \left(\sum_{i = 1}^{q} 1^{\frac{m}{m - 1}}\right)^{\frac{m - 1}{m}} \\
+		qx = \left(qx^m\right)^\frac{1}{m} \cdot q^{\frac{m - 1}{m}} \\
+		(qx)^m = qx^m \cdot q^{m - 1} \\
+		(qx)^m = (qx)^m\,.
+	\end{gather*}
+\end{remark}
+
+\begin{lemma}
+  \label{lem:root_prob}
+  Let $\p{f}(X)$ be a random degree-$d$ polynomial over $\FF_p[X]$. Then the
+  probability that $\p{f}(X)$ has roots in $\FF_p$ is at least $\infrac{1}{d!}$.
+\end{lemma}
+\begin{proof}
+  First observe that there is $p^{d}$ canonical polynomials in $\FF_p[X]$.  Each
+  of the polynomials may have up to $d$ roots. Consider polynomials which are
+  reducible to polynomials of degree $1$, i.e.~polynomials that have all $d$
+  roots. The roots can be picked in $\bar{C}^{p}_{d}$ ways, where
+  $\bar{C}^{n}_{k}$ is the number of $k$-elements combinations with repetitions
+  from $n$-element set. That is,
+  \[
+    \bar{C}^n_k = \binom{n + k - 1}{k}\,.
+  \]
+  Thus, the probability that a randomly picked polynomial has all $d$ roots is
+  \begin{multline*}
+    p^{-d} \cdot \bar{C}^p_d = p^{-d} \cdot \binom{p + d - 1}{d} =
+    p^{-d} \cdot \frac{(p + d - 1)!}{(p + d - 1 - d)! \cdot d!} = \\
+    p^{-d} \cdot \frac{(p + d - 1) \cdot \ldots \cdot p \cdot (p - 1)!}{(p - 1)!
+      \cdot d!} = p^{-d} \cdot \frac{(p + d - 1)\cdot
+      \ldots \cdot p}{d!} \\
+    \geq p^{-d} \cdot {\frac{p^d}{d!}} = \frac{1}{d!}
+  \end{multline*}
+  \qed
+\end{proof}
+
+
+\oursubsub{Forking special soundness}
+Note that the special soundness property (as usually defined) holds for
+all---even computationally unbounded---adversaries. Unfortunately, since a
+simulation trapdoors for $\plonkprot$ and $\sonicprot$ exist, the protocols
+cannot be special sound in that regard. This is because an unbounded adversary
+can recover the trapdoor and build an arbitrary number of simulated proofs for a fake
+statement. Hence, we provide a weaker, yet sufficient, definition of
+\emph{forking special soundness}. More precisely, we state that an
+adversary that is able to answer correctly multiple challenges either knows the
+witness or can be used to break some computational assumption.
+%\chaya{a notion of computational special soundness has been used to mean exactly the above in prior works, like BBF19. we should clarify if forking soundness different from computational special soundness? seems to me like the difference is just that here it is tailored for the NI version.}
+%\chaya{I now see that the diff is the access to the simulator that the adversary gets. might be helpful to clarify this, either here or in a tech overview section. I am not sure why this needs to be defined this way by giving access to the simulator.}
+However, differently from the standard definition of special soundness, we do
+not require from the extractor to be able to extract the witness from \emph{any}
+tree of acceptable transcripts. We require that the tree be produced honestly,
+that is, all challenges are picked randomly --- exactly as an honest verifier would pick.
+Intuitively, the tree is as it would be generated by a $\genforking$
+algorithm from the generalized forking lemma.
+
+% \begin{definition}[Forking soundness]
+%   % Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
+%   % $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\tree$ be an
+%   % $(n_1, \ldots, n_\mu)$-tree of acceptable transcripts output by a $\ppt$ tree
+%   % building algorithm $\tdv$ which plays the role of the verifier $\ps.\verifier$
+%   % against $\ppt$ adversary $\adv$ which it interacts with.
+% %
+%   % We say that $\proofsystem$ is
+%   % $(\epsss, (n_1, \ldots, n_\mu))$-\emph{computationally special sound} if there
+%   % exists an extractor $\extt$ that given an $ (n_1, \ldots, n_\mu)$-tree of
+%   % acceptable transcripts $\tree$ for an instance $\inp \in \LANG_\REL$ output by
+%   % a $\ppt$ tree building adversary $\tdv$ some $\ppt$ adversary
+%   % $\adv(\srs)$, for $\srs \sample \kgen(\REL)$, outputs $\wit$ such that
+%   % $\REL(\inp, \wit) = 1$ with probability at least $1 - \epsss$.
+%   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
+%   $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\tree$ be an
+%   $(n_1, \ldots, n_\mu)$-tree of transcripts for an in valid instance
+%   $\inp$. We say that $\ps$ is $(\epsss, (n_1, \ldots, n_\mu))$-forking sound if there is an extractor $\extt$ that given $\tree$ extracts $\wit$
+%   such that $\REL(\inp, \wit) = 1$ with probability at least $1 - \epsss.$
+% \end{definition}
+
+% \begin{definition}[$k$-round forking soundness]
+%   % Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
+%   % $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\tree$ be an
+%   % $(n_1, \ldots, n_\mu)$-tree of acceptable transcripts output by a $\ppt$ tree
+%   % building algorithm $\tdv$ which plays the role of the verifier $\ps.\verifier$
+%   % against $\ppt$ adversary $\adv$ which it interacts with.
+% %
+%   % We say that $\proofsystem$ is
+%   % $(\epsss, (n_1, \ldots, n_\mu))$-\emph{computationally special sound} if there
+%   % exists an extractor $\extt$ that given an $ (n_1, \ldots, n_\mu)$-tree of
+%   % acceptable transcripts $\tree$ for an instance $\inp \in \LANG_\REL$ output by
+%   % a $\ppt$ tree building adversary $\tdv$ some $\ppt$ adversary
+%   % $\adv(\srs)$, for $\srs \sample \kgen(\REL)$, outputs $\wit$ such that
+%   % $\REL(\inp, \wit) = 1$ with probability at least $1 - \epsss$.
+%   Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
+%   $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\tree$ be the
+%   algorithm below that rewinds $\advse^{\simulator_\fs,
+%           \ro} (\srs; r)$ to produce a $(1, n_k, 1)$-tree of
+%   transcripts such that none of the challenges in round $k$ were used in
+%   simulated proofs. We say that $\ps$ is $(\epsss, ((1, n_k, 1)))$-forking
+%   special sound if there is an extractor $\extt$ that given a tree produced by
+%   $\tree$ extracts $\wit$ such that $\REL(\inp, \wit) = 1$ with probability at
+%   least $1 - \epsss.$
+% \end{definition}
+
+% Since we do not utilise the classical special soundness (that holds for all,
+% even unbounded, adversaries) all references to that property should be
+% understood as references to its computational version.
+
+
+
+%\begin{definition}[$(\eps(\secpar), k,n)$-forking soundness]
+%  Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
+%  $(2 \mu + 1)$-message proof system for a relation $\REL$.
+%
+%For any $\ppt$ adversary $\advse^{\simulator_\fs,
+%  \ro} (\srs; r)$ we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r, Q, Q_{H})$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
+%and simulated proofs. While $Q_{H}$ is consistent with $h_1, \ldots, h_q$, it replays the proofs of $Q$.
+%%
+%$\zdv$ returns the index $i$ of the
+%  random oracle query made for challenge $k$ and the proof $\adv$ returns.
+%
+%  Consider the algorithm $\genforking_{\zdv}^{n}$
+%  that rewinds $\zdv$ to produce a $(1,\dots, n,\dots, 1)$-tree of
+%  transcripts such that none of the $n$ challenges in round $k$ were used in
+%  simulated proofs.
+%
+%  We say that $\ps$ is $(\eps(\secpar), k,n)$-forking sound if
+%  for any PPT adversary the probability that
+%  \begin{align*}
+%    \Pr\left[
+%    \REL(\inp, \wit) = 0
+%    \,\Biggl|\,
+%    \begin{aligned}
+%       & \srs \sample \kgen(\REL),
+%        r \sample \RND{\advse},
+%         (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,\ro} (\srs; r), \\
+%       &    (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r,Q, Q_{H}),Q_{H}),
+%           \wit \gets \extt(\tree)
+%    \end{aligned}
+%    \right] \leq \eps(\secpar).
+%  \end{align*}
+%   List $Q$ contains all $(\inp, \zkproof)$ pairs where
+%  $\inp$ is an instance provided to the simulator by the adversary and
+%  $\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+%  queries to $\ro$ and $\ro$'s answers.
+%\end{definition}
+
+%\hamid{The definition in the updatable setting should look like this:}
+
+\begin{definition}[$(k,n)$-forking special soundness in the updatable setting]
+	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
+	$(2 \mu + 1)$-message proof system for a relation $\REL$.  Let $\proofsystem_\fs$ be
+	$\proofsystem$ after the Fiat--Shamir transform.
+	
+	For any $\ppt$ adversary $\advse^{\initU,
+		\ro} (1^\secpar; r)$ with access to oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r)$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
+	and update oracle queries.
+	%
+	$\zdv$ returns the index $i$ of the
+	random oracle query made for challenge $k$ and the proof $\adv$ returns.
+	
+	Consider the algorithm $\genforking_{\zdv}^{n}$
+	that rewinds $\zdv$ to produce a $(1,\dots, n,\dots, 1)$-tree of
+	accepting transcripts.
+	
+	We say that $\psfs$ is $(k,n)$-forking special sound with security loss $\eps(\secpar)$, if
+	for any PPT adversary the probability that
+	\begin{align*}
+	\Pr\left[
+	\REL(\inp, \wit) = 0
+	\,\Biggl|\,
+	\begin{aligned}
+	%& \srs \sample \kgen(\REL),
+	& r \sample \RND{\advse},
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \ro} (1^\secpar; r), \\
+	&    (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r),Q_{H}),
+	\wit \gets \extt(\tree)
+	\end{aligned}
+	\right] \leq \eps(\secpar).
+	\end{align*}
+	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
+	%List $Q$ contains all $(\inp, \zkproof)$ pairs where $\inp$ is an instance provided to the simulator by the adversary and $\zkproof$ is the simulator's answer. 
+	List $Q_\ro$ contains all $\advse$'s
+	queries to $\ro$ and the random oracle's answers.
+	%List $Q_\srs$ contains the proofs of all honest SRS updates.
+\end{definition}
+% \chaya{why does $\genforking$ get $Q_H$ twice?}
+% \markulf{20/09/2021}{This is a tricky one. If I remember correctly, we wanted $\zdv$ to be able to determin when $\adv$ starts to diverge from the first branch that results in $\pi_{\adv}$. $\adv$ needs to be fed recorded simulated proofs until that divergence. After that $\zdv$ can create fresh simulated proofs. I think its ok to use the same simulated proofs in multiple sub-branches as long as they are for the right instance. In any case simulation is now hidden within $\adv$.}
+
+
+\paragraph{Importance of the general forking lemma.}
+To highlight the importance of the generalised forking lemma, we outline 
+how it is used in our \COMMENT{forking} simulation-extractability proof.  Let $\psfs$ be a
+forking special sound proof system where for an instance $\inp$ the
+corresponding witness can be extracted from a
+$(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\advse$
+be the simulation-extractability adversary that outputs an accepting proof with
+probability at least $\accProb$. From $\adv$ we build an adversary $\adv$ that runs $\simO$ inside. Although we use the same $\accProb$ to denote
+probability of $\zdv$ outputing a non-zero $i$ and the probability of $\advse$ (and $\adv$)
+outputing an accepting proof, we claim that these probabilities are exactly the
+same by the way we define $\zdv$ and $\bdv$. In the following we give the intuition of the proof without the additional indirection via $\bdv$ whose goal is primarily to simplify the forking special soundness definition.
+
+Let $\adv$ output an accepting instance-proof pair
+$(\inp_{\advse},\zkproof_{\advse})$; $r$ be $\adv$'s
+randomness; \COMMENT{$Q$ the list of simulator queries made by $\advse$ \markulf{20/09/2021}{Q is now hidden within the forking special soundness adversary.} along with
+$\simulator$'s answers; }%\hamid{$Q_\srs$ be the list of proofs for SRS honest updates;} 
+and $Q_\ro$ be the list of all random oracle
+queries made by $\adv$.  All of these are given to the extractor $\ext$ that
+internally runs the forking algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$
+takes $(\srs, \advse, \COMMENT{Q, }r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots,
+h_q^1$. 
+(For the sake of completeness, we allow $\genforking_\zdv^{n_k}$ to
+pick $h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$
+elements.)  
+
+Next, $\zdv$ internally runs $\adv(\srs; r)$ %\hamid{$\\advse(1^\secpar; r)$}
+and responds to its random
+oracle queries using $Q_\ro$\COMMENT{ and $Q$}. Note that $\adv$ makes
+the same queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$
+as it is run on the same random tape and with the same answers from the
+simulator and random oracle. Once $\adv$ outputs
+$\zkproof_{\advse}$, algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$, where
+$i$ is the index of a random oracle query submitted by $\advse$ to receive the challenge after the
+$k$-th message from the prover---a message where the tree of transcripts
+branches.
+Then, after the first run of $\advse$ is done, the extractor runs $\zdv$ again,
+but this time it provides fresh random oracle responses $h^2_i, \ldots,
+h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
+before $\advse$ is about to ask its $i$-th random oracle
+query. The probability that the adversary produces an accepting transcript with the
+fresh random oracle responses is at least $\accProb$. This continues until the
+required number of transcripts is obtained. 
+
+We note that in the original forking lemma, the forking algorithm $\forking$,
+cf.~\cref{fig:forking_lemma}, gets as input only $y$ and elements $h^1_1, \ldots,
+h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
+that $h^1_1, \ldots, h^1_q$ are random oracle responses, and thus random, makes
+the change only notational.
+
+We also note that the general forking lemma from
+\cref{lem:generalised_forking_lemma} works for protocols with an extractor that can obtain the
+witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting
+transcripts. This limitation however does not affect the main result of this
+paper, i.e.~showing that both $\plonk$, $\sonic$, and $\marlin$ are \COMMENT{forking }simulation extractable.
+
+%\hamid{next definition should be commented!}
+%\begin{definition}[$(\eps(\secpar), k,n)$-forking soundness]
+%  Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
+%  $(2 \mu + 1)$-message proof system for a relation $\REL$.
+%
+%  Let $\tdv$, called tree creator, be the
+%  algorithm below that rewinds the $\ppt$ adversary $\advse^{\simulator_\fs,
+%          \ro} (\srs; r)$ to produce a $(1,\dots, n,\dots, 1)$-tree of
+%  transcripts such that none of the $n$ challenges in round $k$ were used in
+%  simulated proofs.
+%
+%  $\tdv$ has oracle access to $\adv$ and provides it with (oracle) access to
+%  random oracle $\ro$ and simulator $\simulator_\fs$ -- more precisely $\tdv$
+%  has an internal procedure $\bdv$ that provided $\srs$ and random oracle
+%  queries' responses $h_1, \ldots, h_q$ gives $\adv$ access to the random oracle
+%  and simulates proof for it. In the end, $\bdv$ returns the index $i$ of the
+%  random oracle query made for challenge $k$, the set $Q$ of simulator random
+%  oracle indexes, the instance $\inp$, and the proof $\adv$ returns. Eventually,
+%  $\tdv$ returns a $(1, \ldots, n, \dots, 1)$ tree of acceptable
+%  transcripts~$\tree$.
+%
+%
+%  \begin{figure}
+%    \centering
+% 		\fbox{ \procedure{$\tdv(\adv, \srs \sample \kgen(\REL))$}
+%      {h_1^{1}, \ldots,
+%      h_{q}^1 \sample H \\
+%      (i, Q, \inp, \zkproof_1) \gets \bdv(\adv, \srs, h_1^{1}, \ldots, h_{q}^{1})\\
+%        % i_1 \gets i\\
+%        \pcif i\in Q \lor \verifier(\srs, \inp, \zkproof_1) = 0\ \pcreturn (0, \bot)\\
+%        \pcfor j \in \range{2}{m}\\
+%        \pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
+%        h_{i - 1}^{j - 1}\\
+%        \pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
+%        \pcind (i_j, Q_j, \inp_j, \zkproof_j) \gets \bdv(\adv, \srs, h_1^{j}, \ldots, h_{i -
+%          1}^{j}, h_{i}^{j},
+%        \ldots, h_{q}^{j})\\
+%        \pcind \pcif i \neq i_j \lor i_j \in Q_j \lor \inp \neq \inp_j \lor \verifier(\srs, \inp_j, \zkproof_i) = 0\ \pcreturn (0, \bot)\\
+%        %\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
+%        % \pcif \exists (j, j') \in \range{1}{m}^2, j \neq j' : (h_{i}^{j} =
+%        % h_{i}^{j'})\
+%        % 
+%        % pcreturn (0, \bot)\\
+%        \pcelse \pcreturn (1, \tree = (\inp, \pmb{\pi}))}
+%    }
+%  \end{figure}
+%%
+%  We say that $\ps$ is $(\eps(\secpar), k,n)$-forking sound if
+%  for any PPT adversary the probability that
+%  \[
+%    \Pr\left[
+%    %  \begin{aligned}
+%       % & \forall_{\zkproof \in \tree} \verifier(\srs, \inp, \zkproof) = 1, \\
+%         \wit \gets \extt(\tree), 
+%         \REL(\inp, \wit) = 0
+%    %  \end{aligned}
+%      \,\left|\,
+%        %\begin{aligned}
+%           \srs \sample \kgen(\REL), 
+%           (1, \tree) \gets \tdv(\adv, \srs)
+%     %   \end{aligned}
+%      \right.\right] \leq \eps(\secpar).
+%      \]
+%\end{definition}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

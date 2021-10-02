@@ -1,0 +1,721 @@
+% !TEX root = main.tex
+% !TEX spellcheck = en-US
+\section{Preliminaries}
+\label{sec:preliminaries}
+\paragraph{Notation.} Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
+security parameter. All adversaries are stateful. For an algorithm $\adv$, let
+$\image (\adv)$ be the image of $\adv$ (the set of valid outputs of $\adv$), let
+$\RND{\adv}$ denote the set of random tapes of correct length for $\adv$
+(assuming the given value of $\secpar$), and let $r \sample \RND{\adv}$ denote
+the random choice of the randomiser $r$ from $\RND{\adv}$. We denote by $\negl$
+($\poly$) an arbitrary negligible (resp.~polynomial) function.
+
+Probability ensembles $X = \smallset{X_\secpar}_\secpar$ and $Y =
+\smallset{Y_\secpar}_\secpar$, for distributions $X_\secpar, Y_\secpar$, have
+\emph{statistical distance} $\SD(X_\secpar, Y_\secpar)=\epsilon(\secpar)$ equal $\epsilon(\secpar)$ if $\sum_{a \in
+  \supp{X_\secpar \cup Y_\secpar}} \abs{\prob{X_\secpar = a} - \prob{Y_\secpar =
+    a}} = \epsilon(\secpar)$. We write $X \approx_\secpar Y$ if $\SD(X_\secpar,
+Y_\secpar) \leq \negl$. For values $a(\secpar)$ and $b(\secpar)$ we write
+$a(\secpar) \approx_\secpar b(\secpar)$ if $\abs{a(\secpar) - b(\secpar)} \leq
+\negl$.
+For a probability space $(\samplespace, \eventspace, \probfunction)$ and event
+$\event{E} \in \eventspace$ we denote by $\nevent{E}$ an event that is
+complementary to $\event{E}$,
+i.e.~$\nevent{E} = \samplespace \setminus \event{E}$.
+
+
+Denote by $\RELGEN = \smallset{\REL}$ a family of relations. We assume that if
+$\REL$ comes with any auxiliary input, the latter is benign. Directly from the
+description of $\REL$ one learns security parameter $\secpar$ and description of the
+group $\GRP$, if the relation is a relation of group elements (as it usually the case for zkSNARKs).
+
+\ourpar{Bilinear groups.}
+A bilinear group generator $\pgen (\secparam)$ returns public parameters $ \pp =
+(p, \GRP_1, \GRP_2, \GRP_T, \pair, \gone{1}, \gtwo{1})$, where $\GRP_1$,
+$\GRP_2$, and $\GRP_T$ are additive cyclic groups of prime order $p = 2^{\Omega
+  (\secpar)}$, $\gone{1}, \gtwo{1}$ are generators of $\GRP_1$, $\GRP_2$, resp.,
+and $\pair: \GRP_1 \times \GRP_2 \to \GRP_T$ is a non-degenerate
+$\ppt$-computable bilinear pairing. We assume the bilinear pairing to be Type-3,
+i.e., that there is no efficient isomorphism from $\GRP_1$ to $\GRP_2$ or from
+$\GRP_2$ to $\GRP_1$. We use the by now standard bracket notation, i.e., we
+write $\bmap{a}{\gi}$ to denote $a g_{\gi}$ where $g_{\gi}$ is a fixed generator
+of $\GRP_{\gi}$. We denote $\pair (\gone{a}, \gtwo{b})$ as $\gone{a} \bullet
+\gtwo{b}$. Thus, $\gone{a} \bullet \gtwo{b} = \gtar{a b}$. We freely use the
+bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \vec{C}$ then
+$\vec{A} \grpgi{\vec{B}} = \grpgi{\vec{C}}$ and $\gone{\vec{A}}\bullet
+\gtwo{\vec{B}} = \gtar{\vec{C}}$. Since every algorithm $\adv$ takes as input
+the public parameters we skip them when describing $\adv$'s input. Similarly, we
+do not explicitly state that each protocol starts with generating these
+parameters by $\pgen$.
+
+\begin{lemma}[Difference lemma,~{\cite[Lemma 1]{EPRINT:Shoup04}}]
+	\label{lem:difference_lemma}
+	Let $\event{A}, \event{B}, \event{F}$ be events defined in some probability
+	space, and suppose that $\event{A} \land \nevent{F} \iff \event{B}
+		\land \nevent{F}$.  Then 
+	$
+		\abs{\prob{\event{A}} - \prob{\event{B}}} \leq \prob{\event{F}}\,.
+	$
+\end{lemma}
+\subsection{Algebraic Group Model}
+The algebraic group model (AGM) introduced in \cite{C:FucKilLos18} lies between
+the standard model and generic bilinear group model. In the AGM it is assumed
+that an adversary $\adv$ can output a group element $\gnone{y} \in \GRP$ if
+$\gnone{y}$ has been computed by applying group operations to group elements
+given to $\adv$ as input. It is further assumed, that $\adv$ knows how to
+``build'' $\gnone{y}$ from that elements. More precisely, the AGM requires that
+whenever $\adv(\gnone{\vec{x}})$ outputs a group element $\gnone{y}$ then it
+also outputs $\vec{c}$ such that $\gnone{y} = \vec{c}^\top \cdot
+\gnone{\vec{x}}$. Both $\plonk$ and $\sonic$ have been shown secure using the
+AGM. An adversary that works in the AGM is called \emph{algebraic}.
+
+\oursubsub{Idealised Verifier and Verification Equations.} Let
+$(\kgen, \prover, \verifier, \simulator)$ be a proof system.
+% or a polynomial commitment
+% scheme\hamid{might be unclear as we are defining polynomial commitments as
+%   $(\kgen, \com, \open, \verify)$.}.
+Observe that the $\kgen$ algorithm provides an SRS which can be interpreted as a
+set of group representation of polynomials evaluated at trapdoor
+elements. That is, for a trapdoor $\chi$ the SRS contains
+$\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for some polynomials
+$\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. The verifier
+$\verifier$ accepts if (a set of) verification equation
+$\vereq_{\inp, \zkproof}$ %(note that the verification equation changes relate to the instance $\inp$ and proof $\zkproof$) 
+(which can also be interpreted as a
+polynomial in $\FF_p[X]$ whose coefficients depend on messages sent by the
+prover) zeroes at $\chi$. Following \cite{EPRINT:GabWilCio19} we call verifiers
+who check that $\vereq_{\inp, \zkproof}(\chi) = 0$ \emph{real verifiers} as
+opposed to \emph{ideal verifiers} who accept only when
+$\vereq_{\inp, \zkproof}(X) = 0$. That is, while a real verifier accepts when a
+polynomial \emph{evaluates} to zero, an ideal verifier accepts only when the
+polynomial \emph{is} zero.
+
+Although ideal verifiers are impractical, they are very useful in our
+proofs. More precisely, we show that
+\begin{compactenum}
+\item the idealised verifier accepts an incorrect proof (what ``incorrect''
+  means depends on the situation) with at most negligible probability (and in many
+  cases---never);
+\item when the real verifier accepts, but not the idealised one, then a malicious $\prover$ can be used to break the underlying security assumption
+  (in our case---a variant of $\dlog$.)
+\end{compactenum}
+
+Analogously, idealised verifier can be defined for polynomial commitment schemes.
+
+ 
+\subsection{Signatures of Knowledge}
+Signatures of Knowledge (SoKs) \cite{C:ChaLys06} are closely related to simulation-extractable SNARKs: A signer can generate a valid signature for a message only if she has a valid witness for the statement. 
+
+ The notion of SoKs mimics digital signatures with strong existential unforgeability: 
+even if the adversary has seen many
+signatures on arbitrary messages under arbitrary statement,  it cannot create a new signature (not seen before) without knowing the witness for the statement in question.
+
+To define Signatures of Knowledge we use a recent version \cite{C:GroMal17} that implicitly considers only compact (succinct) signatures. \COMMENT{We omit the description of SoK's algorithms and security properties and defer them to \cref{sec:sok}.} Intuitively, a SoK behaves like a non-interactive prove system that `binds' the message being signed to the proof.
+     
+%\subsection{Signatures of Knowledge}
+\label{sec:sok}
+A $\SoK$ for an efficiently decidable binary relation $\REL$ is defined as a tuple of PPT algorithms $\SoK = (\signsetup,  \sign, \allowbreak \verify,  \simsetup, \simsign)$:
+
+\begin{description}
+    \item[$\signsetup(1^\secpar, \REL) \rightarrow  \param$:]
+	The setup algorithm takes a security parameter $\secpar$ and a binary relation $\REL$
+	and returns public parameters $ \param$.  The input $ \param$ is implicit to all subsequent algorithms. 
+
+    \item[$\sign(\mesage, \inp, \wit)  \rightarrow \signature$:]
+The signing algorithm takes as input a message $ \msg \in \{0,1\}^{*}$, 
+a statement $\inp$, and a witness $\wit$.
+	Outputs a signature $\signature$.
+
+    \item[$\verify(\mesage, \inp, \signature) \rightarrow 1/ 0$:]
+The verification algorithm takes as input 
+ a message $\mesage$,  a statement $\inp$ 
+ together with a signature $\signature$,
+	outputs $1$ if the the signature is valid, $0$ otherwise.
+	
+    \item[$\simsetup(\REL) \rightarrow (\param, \td)$:]
+    	A simulated setup algorithm which takes as input a relation $\REL$ and returns public parameters $\param$ and a trapdoor $\td$. 
+    	
+   \item[$\simsign(\td, \mesage, \inp) \rightarrow \signature'$:]
+   	A simulated signing  that takes as input  a trapdoor $\td$, a message $\mesage$ and a statement $\inp$ and returns a simulated signature $\signature'$.
+\end{description}
+ 
+A SoK scheme should satisfy correctness, extractability and simulatability:
+   
+\begin{description}
+\item[Perfect Correctness.] This guarantees that a signer with a valid witness can always produce a signature that
+will convince the verifier: 
+For all $\secpar\in \NN$, for
+all efficiently decidable binary relation $\REL$,  
+for all  $(\inp, \wit) \in \REL$, and for all $ \mesage \in \{0,1\}^{*}$:
+   \[
+  \condprob{
+	  \begin{matrix}
+~\verify(\mesage, \inp, \signature) = 1   
+	 \end{matrix}
+}{
+	  \begin{matrix}
+~(\param, \td) \gets \signsetup(1^\secpar, \REL)\\
+~ \signature \gets  \sign(\mesage, \inp, \wit)
+ \end{matrix} }  =1. 
+\]
+%
+\item[Simulation Extractability:] This guarantees that an adversary is not able to issue a new signature
+unless it knows a witness. This should hold even if the adversary gets to see signatures on
+arbitrary messages under arbitrary statements. We model this notion in a strong sense, by
+letting the adversary see simulated signatures for arbitrary messages and statements, which
+potentially includes false statements. Even under this strong attack model, we require that
+whenever the adversary outputs a valid signature not queried before, it is possible to extract a
+witness for the signature. More formally,  for any PPT adversary $\adv$ there exists a PPT extractor $\ext_\adv$ such that:
+   \[
+  \condprob{
+	  \begin{matrix}
+~ \verify(\mesage, \inp, \signature) = 1   \\
+\land (\inp, \wit) \notin \REL \\
+\land (\mesage, \inp, \signature) \notin Q^{\simsign_\td}
+	 \end{matrix}
+}{
+	  \begin{matrix}
+~(\param, \td) \gets \simsetup(1^\secpar, \REL)\\
+~ (\mesage, \inp, \signature) \gets \adv^{\simsign_\td} (\param)\\
+\wit \gets \ext_\adv({\sf trans}_\adv)
+ \end{matrix}
+} \leq \negl
+\]
+where the adversary has access to simulated signatures via the oracle $\simsign_\td(\inp_i, \mesage_i) \coloneq \simsign(\td, \inp_i, \mesage_i)$ and the extractor $\ext_\adv$ takes as input the transcript ${\sf trans}_\adv$ of all queries made by $\adv$ including its randomness.  
+
+\vspace{4pt}
+%
+\item[Perfect Simulatability:] The verifier should not learn anything  about the witness from the signature.  The secrecy of the witness is modelled by the ability to
+simulate signatures without the witness. More precisely,  we say the signatures of knowledge
+are simulatable if there is a simulator that can create public parameters together with an associated trapdoor that enables producing signatures without a witness that are indistinguishable from real ones.  More formally, for any number of queried $\mesage_i\in \{0,1\}^{*}$ and $(\inp_i, \wit_i) \in \REL$:
+
+$
+\Big	\vert	   \condprob{  
+		\begin{matrix}
+		\adv(\param) = 1 
+		\end{matrix}
+		}{
+		\begin{matrix}
+	\param \gets  \signsetup(1^\secpar, \REL)\\
+	~\signature_i \gets \sign(\mesage_i, \inp_i, \wit_i)
+		\end{matrix}
+		 }
+		- $
+\[	  \condprob{
+		\begin{matrix}
+		\adv (\param) = 1 
+		\end{matrix}
+}{
+		\begin{matrix}
+	~(\param,\td) \gets  \simsetup(1^\secpar, \REL) \\
+	~\signature_i \gets   \simsign(\td,\mesage_i, \inp_i)
+		\end{matrix}} \Big	\vert	
+		 \leq \negl.
+		\]
+  \end{description}
+
+  \subsection{Dlog assumptions}
+\label{sec:dlog_assumptions}
+\begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]
+	Let $\adv$ be a $\ppt$ adversary that gets as input
+  $\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}}$, for
+  some randomly picked $\chi \in \FF_p$, then
+	\[
+		\condprob{\chi \gets \adv(\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi,
+        \ldots, \chi^{q_2} })}{\chi \sample \FF_p} \leq \negl.
+	\]
+\end{definition}
+
+\begin{definition}[$(q_1, q_2)\mhyph\ldlog$ assumption]
+  Let $\adv$ be a $\ppt$ adversary that gets as input
+  $\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots, \chi^{q_1}}, \gtwo{\chi^{-q_2},
+    \ldots, 1, \chi, \ldots, \chi^{q_2}}$, for some randomly picked
+  $\chi \in \FF_p$, then
+	\[
+    \condprob{\chi \gets \adv(\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots,
+        \chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \chi, \ldots, \chi^{q_2}
+      })}{\chi \sample \FF_p} \leq \negl.
+	\]
+\end{definition}
+
+\subsection{Uber assumption}
+\label{sec:uber_assumption}
+\ourpar{BBG uber assumption.}
+Also, to be able to show trapdoor-less simulatability of
+$\plonk$ in the standard model, what is required by our reduction, we rely on the
+\emph{uber assumption} introduced by Boneh et
+al.~\cite{EC:BonBoyGoh05} as presented by Boyen in \cite{PAIRING:Boyen08}.
+
+Let $r, s, t, c \in \NN \setminus \smallset{0}$, Consider vectors of polynomials
+$\pR \in \FF_p[X_1, \ldots, X_c]^r$, $\pS \in \FF_p[X_1, \ldots, X_c]^s$ and
+$\pT \in \FF_p[X_1, \ldots, X_c]^t$. Write $\pR = \left( \p{r}_1, \ldots,
+  \p{r}_r \right)$, $\pS = \left( \p{s}_1, \ldots, \p{s}_s \right)$ and $\pT =
+\left( \p{t}_1, \ldots, \p{t}_t \right)$ for polynomials $\p{r}_i, \p{s}_j,
+\p{t}_k$.
+
+For a function $f$ and vector $(x_1, \ldots, x_c)$ we write $f(\pR)$ to
+denote application of $f$ to each element of $\pR$, i.e.
+\(
+	f(\pR) = \left( f(\p{r}_1 (x_1, \ldots, x_c), \ldots, f(\p{r}_r
+	(x_1, \ldots, x_c) \right).
+\)
+Similarly for applying $f$ to $\pS$ and $\pT$.
+
+\begin{definition}[Independence of $\pR, \pS, \pT$]
+	\label{def:independence}
+	Let $\pR, \pS, \pT$ be defined as above. We say that polynomial $\p{f} \in
+  \FF_p[X_1, \ldots, X_c]$ is \emph{dependent} on $\pR, \pS, \pT$ if there
+  exists $rs + t$ constants $a_{i, j}, b_k$ such that $ \p{f} = \sum_{i = 1}^{r}
+  \sum_{j = 1}^{s} a_{i, j} \p{r}_i \p{s}_j + \sum_{k = 1}^{t} b_k \p{t}_k. $ We
+  say that $\p{f}$ is \emph{independent} if it is not dependent.
+\end{definition}
+
+To show (standard-model) zero knowledge of $\plonk$ we utilize a generalization
+of Boneh-Boyen-Goh's \emph{uber assumption} \cite{EC:BonBoyGoh05} stated as
+follows (the changed element has been put into a \dbox{dashbox})
+\begin{definition}[$(\pR, \pS, \pT, \p{F}, 1)$-uber assumption]
+	\label{def:uber_assumption}
+	Let $\pR, \pS, \pT$ be defined as above,
+    $(x_1, \ldots, x_c, y_1, \ldots, y_{d}) \sample \FF_p^{c + d}$ and let
+    $\p{F}$ be a cardinality-$d$ set of pair-wise independent polynomials which are also
+    independent of $(\pR, \pS, \pT)$, cf.~\cref{def:independence}.  Then, for
+    any $\ppt$ adversary $\adv$
+	\begin{multline*}
+      \Pr\left[\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
+		\gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{\p{F}(x_1, \ldots, x_c)}}) = 1\right] \approx_\secpar \\
+      \Pr\left[\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
+        \gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{y_1, \ldots, y_{d}}}) =
+        1\right].
+	\end{multline*}
+  \end{definition}
+
+  Compared to the original uber assumptions, there are two major changes. First,
+  we require not target group $\GRP_T$ elements to be indistinguishable, but
+  elements of $\GRP_1$. Second, Boneh et al.'s assumption works for
+  distinguishers who are given only one challenge polynomial $\p{f}$,
+  i.e.~$\abs{\p{F}} = 1$.
+  
+We show security of our version of the uber assumption using the generic group
+model as introduced by Shoup \cite{EC:Shoup97}, cf.~\cref{sec:uber-assumption-security-proof}.
+
+\subsection{Special simulation-extractability of sigma protocols and forking lemma}
+\label{sec:forking_lemma}
+\begin{theorem}[Special simulation extractability of the Fiat--Shamir transform
+  \cite{INDOCRYPT:FKMV12}]
+	Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a non-trivial sigma
+  protocol with unique responses for a language $\LANG \in \npol$. In the random
+  oracle model, the NIZK proof system $\sigmaprot_\fs = (\prover_\fs,
+  \verifier_\fs, \simulator_{\fs})$ resulting by applying the Fiat--Shamir
+  transform to $\sigmaprot$ is special simulation extractable with extraction error
+  $\eta = q/h$ for the simulator $\simulator$. Here, $q$ is the number of random
+  oracle queries and $h$ is the number of elements in the range of $\ro$.
+\end{theorem}
+
+The theorem relies on the following \emph{general forking lemma} \cite{JC:PoiSte00}.
+
+\begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12,CCS:BelNev06}]
+	\label{lem:forking_lemma}
+	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\zdv$ be a $\ppt$
+  algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $i
+  \in\range{0}{q}$ and $s$ is called a \emph{side output}. Denote by $\ig$ a
+  randomised instance generator. We denote by $\accProb$ the probability
+	\[
+		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_q \sample H; (i, s) \gets
+		\zdv(y, h_1, \ldots, h_q)}\,.
+	\]
+	Let $\forking_\zdv(y)$ denote the algorithm described in
+  \cref{fig:forking_lemma}, then the probability $\frkProb$ defined as $
+  \frkProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\zdv}(y)}
+  $ holds
+	\[
+		\frkProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
+	\]
+	%
+	\begin{figure}
+		\centering
+		\fbox{
+		\procedure{$\forking_\zdv (y)$}
+		{
+			\rho \sample \RND{\zdv}\\
+			h_1, \ldots, h_q \sample H\\
+			(i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)\\
+			\pcif i = 0\ \pcreturn (0, \bot, \bot)\\
+			h'_{i}, \ldots, h'_{q} \sample H\\
+			(i', s') \gets \zdv(y, h_1, \ldots, h_{i - 1}, h'_{i}, \ldots,  h'_{q};
+			\rho)\\
+			\pcif (i = i') \land (h_{i} \neq h'_{i})\ \pcreturn (1, s, s')\\
+			\pcind \pcelse \pcreturn (0, \bot, \bot)
+		}}
+		\caption{Forking algorithm $\forking_\zdv$}
+		\label{fig:forking_lemma}
+\end{figure}
+\end{lemma}
+
+  
+
+\subsection{Zero-Knowledge Proof Systems}
+In a zero-knowledge proof system, a prover convinces the verifier of the veracity of a statement
+without leaking any other information. The zero-knowledge property is proven by constructing a
+simulator that can simulate the view of a cheating verifier without knowing the secret
+information -- witness -- of the prover. A proof system has to be sound as well, i.e.~for a
+malicious prover it should be infeasible to convince a verifier of a false statement. Here, we
+focus on proof systems, so-called arguments, that guarantee soundness against $\ppt$ malicious provers.
+
+More precisely, let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of \changedm{universal}
+relations. Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
+and the latter \emph{verifier}. We allow our proof system to have a setup, i.e.~there is a
+$\kgen$ algorithm that takes as input the relation description $\REL$ and outputs a common
+reference string $\srs$. We assume that the $\srs$ defines the relation, and for universal proof
+systems, such as Plonk and Sonic, we treat both the reference string and the relation as
+universal.
+
+We denote by $\zkproof$ a proof created by $\prover$ with input
+$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier (\srs, \inp, \zkproof)$ accepts it. In this paper we focus on proof systems where $\prover$ and $\verifier$ are given oracle access to a random oracle $\ro$. In case of the simulator $\simulator$ it is also given access to $\ro$, but it can also \emph{program} it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
+
+A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is
+required to have three properties: completeness, soundness and zero knowledge, which are
+defined as follows:
+% \begin{description}
+
+\ourpar{Completeness.}
+%\item[Completeness]
+  An interactive proof system $\proofsystem$ is
+  \emph{complete} if an honest prover always convinces an honest verifier, that
+  is for all $\REL \in \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
+	\[
+		\condprob{\verifier^\ro (\srs, \inp, \zkproof) = 1} {\srs \gets \kgen(\REL) = 1, \zkproof \gets \prover^\ro (\srs, \inp, \wit)}\,.
+	\]
+    % \item[Soundness]
+\ourpar{Soundness.}
+    We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no
+  $\ppt$ prover $\adv$ can convince an honest verifier $\verifier$ to accept a
+  proof for a false statement $\inp \not\in\LANG$. More precisely, for
+  all $\REL \in \RELGEN(\secparam)$
+	\[
+    \condprob{ \verifier^\ro (\srs, \inp, \zkproof) = 1 \land \inp \not\in \LANG_\REL}{\srs \gets \kgen(\REL), (\inp, \zkproof) \gets \adv^\ro(\srs)} \leq
+    \negl.
+	\]
+%\end{description}
+Sometimes a stronger notion of soundness is required -- besides requiring that the
+verifier rejects proofs of statements outside the language, we request from the
+prover to know a witness corresponding to the proven statement. This property is
+called \emph{knowledge soundness}.%\markulf{Commented out the formal definition as we don't use it.}
+ 
+\ourpar{Zero knowledge.}  We call a proof system $\proofsystem$
+\emph{zero-knowledge} if for any $\REL \in \RELGEN(\secparam)$, and adversary
+$\adv$ there exists a $\ppt$ simulator $\simulator$ such that for any
+$(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$, where
+\[
+  \eps_b = \condprob{\adv^{\oracleo_b, \ro} (\srs)}{\srs \gets \kgen (\REL)}\,,
+\]
+where $\oracleo_b$ on input $(\inp, \wit)$ returns $\zkproof \gets \simulator (\srs, \inp)$ if $b = 0$, or $\zkproof \gets \prover^\ro (\inp, \wit)$, if $b = 1$. Importantly, the simulator is able to program the random oracle $\ro$ as it wishes.
+	%
+We call zero knowledge \emph{perfect} if the distributions are equal and
+\emph{computational} if they are indistinguishable for any $\ppt$ distinguisher.
+
+% \end{description}
+Alternatively, zero-knowledge can be defined by allowing the simulator to use
+the trapdoor $\td$ that is generated along the $\srs$. In this paper we distinguish
+simulators that requires a trapdoor to simulate and those that do not. We call
+the former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less simulatable} (TLS) if its simulator does not require the trapdoor.
+
+% Occasionally, a weaker version of zero knowledge is sufficient. So called
+% \emph{honest verifier zero knowledge} (HVZK) assumes that the verifier's
+% challenges are picked at random from some predefined set. Although weaker, this
+% definition suffices in many applications. Especially, an interactive
+% zero-knowledge proof that is HVZK and \emph{public-coin} (i.e.~the verifier
+% outputs as challenges its random coins) can be made non-interactive and
+% zero-knowledge in the random oracle model by using the Fiat--Shamir
+% transformation.
+
+\subsection{From interactive to non-interactive---the Fiat--Shamir transform}
+Consider a $(2\mu + 1)$-message, public-coin, honest verifier zero-knowledge
+interactive proof system
+$\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for
+$\REL \in \RELGEN(\secparam)$.  Let $\zkproof$ be a proof performed by the
+prover $\prover$ and verifier $\verifier$ compound of messages
+$(a_1, b_1, \ldots, a_{\mu}, b_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
+$\prover$ and $b_i$ comes from $\verifier$.  Denote by $\ro$ a random oracle.
+Let $\proofsystem_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$
+be a proof system such that
+\begin{compactitem}
+  \item $\kgen_\fs$ behaves as $\kgen$.
+  \item $\prover_\fs$ behaves as $\prover$ except after sending message
+    $a_i$, $i \in \range{1}{\mu}$, the prover does not wait for
+    the message from the verifier but computes it locally setting $b_i
+    = \ro(\zkproof[0..i])$, where $\zkproof[0..j] = (\inp, a_1, b_1, \ldots,
+    a_{j - 1}, b_{j - 1}, a_j)$. (Importantly, $\zkproof[0..\mu + 1] =
+    (\inp, \zkproof)$).\footnote{For Fiat--Shamir based SoK the message signed $m$ is added to $\inp$ before hashing.}
+  \item $\verifier_\fs$ behaves as $\verifier$ but does not provide
+    challenges to the prover's proof. Instead it computes the
+    challenges locally as $\prover_\fs$ does. Then it verifies the
+    resulting transcript $\zkproof$ as the verifier $\verifier$ would. 
+  \item $\simulator_\fs$ behaves as $\simulator$, except when
+    $\simulator$ picks challenge $b_i$ before computing message $\zkproof[0, i]$, $\simulator_\fs$ programs the
+    random oracle to output $b_i$ on $\zkproof[0, i]$.
+  \end{compactitem}
+
+\noindent
+The Fiat--Shamir heuristic states that $\proofsystem_\fs$ is a zero-knowledge
+non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
+
+%\subsection{Non-malleability definitions for NIZKs}
+%\label{sec:simext_def}
+%Real life applications often require a NIZK proof system to be
+%non-malleable. That is, no adversary seeing a proof $\zkproof$ for a statement
+%$\inp$ should be able to provide a new proof $\zkproof'$ related to $\zkproof$.
+%\emph{Simulation extractability} formalizes a strong version of non-malleability
+%by requiring that no adversary can produce a valid proof without knowing the
+%corresponding witness. This must hold even if the adversary is allowed to see
+%polynomially many simulated proofs for any statements it wishes.
+%
+%%\chaya{remove reference to forking soundness. quantify for $\ext_\se$}
+%\begin{definition}[Forking simulation-extractable NIZK, \cite{INDOCRYPT:FKMV12}]
+%	\label{def:simext}
+%  Let $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be a
+%  HVZK proof system\hamid{$\ps_\fs$ is the Fiat-Shamir variant of the underlying proof system. So maybe we mean the underlying proof system is HVZK?}. We say that $\ps_\fs$ is \emph{forking
+%    simulation-extractable} with \emph{extraction error} $\nu$ if for any $\ppt$
+%  adversary $\adv$ that is given oracle access to a random oracle $\ro$ and
+%  simulator $\simulator_\fs$, and produces an accepting transcript of $\ps$ with
+%  probability $\accProb$, where
+%	\[
+%		\accProb = \Pr \left[
+%		\begin{aligned}
+%			& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
+%			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q
+%		\end{aligned}
+%		\, \left| \,
+%		\begin{aligned}
+%			& \srs \gets \kgen_\fs(\REL), r \sample \RND{\advse}, \\
+%			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
+%			\ro} (\srs; r)
+%		\end{aligned}
+%		\right.\right]\,,
+%	\]
+%	there exists an extractor $\extse$ such that
+%	\[
+%		\extProb = \Pr \left[
+%		\begin{aligned}
+%			& \verifier_\fs(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1,\\
+%			& (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+%			& \REL(\inp_{\advse}, \wit_{\advse}) = 1
+%		\end{aligned}
+%		\, \left| \,
+%		\begin{aligned}
+%			& \srs \gets \kgen_\fs(\REL), r \sample \RND{\advse},\\
+%			& (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
+%			\ro} (\srs; r) \\
+%			& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+%			Q, Q_\ro) 
+%		\end{aligned}
+%		\right.\right]
+%	\]
+%	is at at least 
+%	\[
+%		\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
+%	\]
+%	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
+%  $\accProb \geq \nu$. List $Q$ contains all $(\inp, \zkproof)$ pairs where
+%  $\inp$ is an instance provided to the simulator by the adversary and
+%  $\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
+%  queries to $\ro$ and $\ro$'s answers.
+%\end{definition}
+
+
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}% 
+
+\begin{figure}[t!]
+	\centering
+	\fbox{
+		\begin{minipage}[t]{0.58\linewidth}
+			\procedure{$\initU(\intent, \srs_n,\{\rho_i \}_{i=1}^n)$}{
+				\pcif \srs \neq \bot: \pcreturn \bot \\
+				\pcif (\intent = \setup): \\
+				\t (\srs',\rho') \leftarrow \kgen(\REL)\\
+				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+				\t \pcreturn (\srs',\rho')\\
+				%
+				\pcif (\intent = \update): \\
+				\t b \gets \verifyCRS(\srs_n, \{\rho_i \}_{i=1}^{n})\\
+				\t \pcif (b=0): \pcreturn \bot \\
+				\t (\srs',\rho') \leftarrow \upd (\srs_n,\{\rho_i \}_{i=1}^n)\\
+				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+		 	\Scale[0.75]{ // Q_\srs = (Q^{(1)}_\srs, Q^{(2)}_\srs) \text{ s.t. }   Q^{(2)}_\srs \text{ contains the update proofs in } Q_\srs }\\
+				\t \pcreturn (\srs',\rho')\\
+				%
+				\pcif (\intent = \final): \\
+				\t b \gets \verifyCRS(\srs_n,\{\rho_i \}_{i=1}^{n})\\
+				\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_i \}_i = \emptyset: \pcreturn \bot \\
+				\t 
+				\td \gets \ext_\srs(\srs_n,, Q_\srs, \{\rho_i \}_{i=1}^{n}) \\
+				\t \srs \gets \srs_n, \pcreturn \srs \\
+				%
+				\pcelse \pcreturn \bot
+			}
+		\end{minipage}
+		\begin{minipage}[t]{0.3\linewidth}
+			\procedure{$\simO(\inp')$}{
+				\pcif (\srs = \bot): \pcreturn \bot \\
+				% \hamid{should we formalize this extractor?}\\
+				\zkproof'  \gets  \simulator_\FS(\srs, \COMMENT{ \td, }\inp')\\
+				Q = Q \cup \{(\inp', \zkproof')\}\\
+				\pcreturn  \zkproof' \\	
+			}
+	\end{minipage}}
+	\caption{The left oracle defines the notion of updatable SRS setup. The right oracle is the simulation oracle.} 
+	\label{fig:upd}
+\end{figure}
+
+
+\subsection{Updatable SRS schemes}\label{def:upd-scheme}
+
+We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which consists of the following algorithms.
+\vspace{-8pt}
+\begin{itemize} 
+	\item
+	$(\srs,\rho) \leftarrow \kgen(\REL)$ is a PPT algorithm that takes a security parameter $\secpar$ and outputs a SRS $\srs$, and correctness proof $\rho$.
+	\item
+	$ (\srs',\rho') \leftarrow \upd(\srs, \{\rho_i \}_{i=1}^n)$ is a PPT algorithm that takes as input the security parameter $\secpar$, a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
+	\item
+	$b \leftarrow \verifyCRS(\srs, \{\rho_i \}_{i=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
+\end{itemize}
+
+%\hamid{TODO: add this}\\
+%	We give the description of the SRS scheme used at the core of all our protocols in~\cref{fig:upd-scheme}.
+%	
+%	\begin{figure}[t!]
+%		\centering
+%		\fbox{
+%			\begin{minipage}[t]{0.3\linewidth}
+%				\procedure{$\kgen(\REL)$}{
+%				x \gets \ZZ^*_p; \\
+%				\srs := \left\{\gone{x^i}\right\}_{i\in[0,\ell]};
+%				}
+%			\end{minipage}
+%			\begin{minipage}[t]{0.3\linewidth}
+%				\procedure{$\verifyCRS(\srs, \{\rho_i \}_{i=1}^n)$}{
+%					%
+%				}
+%		\end{minipage}
+%	%
+%\begin{minipage}[t]{0.3\linewidth}
+%	\procedure{$\upd(\srs, \{\rho_i \}_{i=1}^n)$}{
+%		%
+%	}
+%\end{minipage}}
+%		\caption{Updateable SRS scheme} 
+%		\label{fig:upd-scheme}
+%	\end{figure}
+
+
+In the next section, we define security notions in the updatable setting. To this end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary updates the SRS. We also define the simulation oracle $\simO$ in~\cref{fig:upd} that is the simulator w.r.t. the SRS finalised by the adversary using $\initU$. This simulation oracle will be used in the definition of \COMMENT{forking }simulation extractability.
+
+\ourpar{On trusted setup.} We note that a trusted setup can be expressed by the updatable setup definition above simply by restricting the algorithm that is given access to $\initU$ to call the oracle only on $\intent = \setup$ and $\intent = \final$.
+
+\ourpar{Updatability and zero knowledge.}
+Groth et al.~\cite{C:GKMMM18} shown that if a proof system is zero-knowledge against adversaries who picks the SRS, then it is updatable zero-knowledge. We call such systems \emph{subvertible zero knowledge}, cf.~\cite{AC:BelFucSca16,AC:ABLZ17}. It was shown that Plonk, Sonic, Marlin and virtually any proof system with a SRS consisting of monomials are subvertible zero-knowledge.
+
+\ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determine the constraints. We ellide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
+
+
+
+%\hamid{TODO: add a paragraph here about the universality!}
+%\markulf{30/09, how about this}{The proof systems we consider are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determine the constraints. We ellide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.}
+% Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
+% is special-sound and has a unique response property. Let $\sigmaprot_\fs =
+% (\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the
+% Fiat--Shamir transform to $\sigmaprot$. Faust et al.~\cite{INDOCRYPT:FKMV12}
+% show that every such $\sigmaprot_\fs$ is forking simulation-extractable. This result is
+% presented in \cref{sec:forking_lemma} along with the instrumental forking lemma,
+% cf.~\cite{CCS:BelNev06}.
+
+\iffalse
+\noindent \textbf{Simulation sound NIZKs.}
+Another notion for non-malleable NIZKs is \emph{simulation soundness}. It allows the adversary to see simulated proof, however, in contrast to simulation
+extractability it does not require an extractor to provide a witness for the
+proven statement. Instead, it is only necessary, that an adversary who sees
+simulated proofs cannot make the verifier accept a proof of an incorrect
+statement. More precisely,
+\chaya{this definition will go}
+\begin{definition}[Simulation soundness]
+  	\label{def:simsnd}
+    Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof and
+    $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$
+    transformed by the Fiat--Shamir transform. We say that $\ps_\fs$ is
+    \emph{simulation-sound}
+    for any $\ppt$ adversary $\adv$ that is given oracle access to a random
+    oracle $\ro$ and simulator $\simulator_\fs$, probability
+    \[
+      \ssndProb =
+      \Pr\left[
+        \begin{aligned}
+          & \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
+          & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+          & \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
+        \end{aligned}
+        \, \left| \,
+          \vphantom{\begin{aligned}
+          & \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
+          & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+          & \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
+        \end{aligned}}
+      \begin{aligned}
+        & \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
+        & (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
+          \ro} (\srs; r)
+      \end{aligned}
+		\right.  \right]
+    \]
+    is at most negligible.  List $Q$ contains all $(\inp, \zkproof)$ pairs where
+  $\inp$ is an instance provided to the simulator by the adversary and
+  $\zkproof$ is the simulator's answer. 
+\end{definition}
+
+  \label{rem:simext_to_simsnd}
+  We note that the probability $\ssndProb$ \cref{def:simsnd} can be expressed in
+  terms of simulation-extractability. More precisely, the
+  condition $\neg \exists \wit: \REL(\inp_\adv, \wit_\adv) = 1$ can be substituted with
+  $\REL(\inp_\adv, \wit_\adv) = 0$, where $\wit_\adv$, returned by a possibly unbounded
+  extractor, is either a witness to $\inp_\adv$ (if there exists any) or $\bot$ (if
+  there is none). More precisely,
+\[
+      \ssndProb =
+      \Pr\left[
+        \begin{aligned}
+          & \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
+          & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+          & \REL(\inp_{\adv}, \wit_{\adv}) = 0
+        \end{aligned}
+        \, \left| \,
+      \begin{aligned}
+        & \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
+        & (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
+          \ro} (\srs; r)\\
+        & \wit_{\adv} \gets \ext(\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+			Q, Q_\ro,) 
+      \end{aligned}
+		\right.  \right].
+\]
+The only necessary input to the unbounded extractor $\ext$ is the instance
+$\inp_\adv$ (the rest is given for the consistency with the simulation extractability
+definition). 
+%
+With the probabilities in \cref{def:simext} holding regardless of whether the extractor
+is unbounded or not, we obtain the following equality
+$ \ssndProb = \accProb - \extProb$.
+
+% In \cref{cor:simext_to_ssnd} we show that (under some mild conditions) this is enough
+% to conjecture that probability $\ssndProb$ is not only at most negligible, but
+% also, in some parameters, exponentially smaller than $(1 - \extProb)$
+% (probability of extraction failure in \cref{def:simext}).
+
+\fi
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
