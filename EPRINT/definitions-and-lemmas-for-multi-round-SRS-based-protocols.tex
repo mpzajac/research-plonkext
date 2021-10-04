@@ -23,6 +23,9 @@ In this section we prepare our analysis for multi-round protocols with a univers
 In order to prove simulation-extractability for such protocols,  we require more than
 just two transcripts for extraction.  Moreover, in the updatable setting we consider protocols that rely on an SRS where the adversary gets to contribute to the SRS. This makes out analysis more challenging.
 We first give a definition of simulation-extractability which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then, to support multi-round SRS-based protocols compiled using the Fiat-Shamir transform we gneralize the unique response property, replace honest-verifier zero-knowledge property with trapdoor-less simulation and special soundness with a forking special soundness property that links up with our generalized forking lemma.
+\michals{4.10}{Restructure to introduce here the purpouse and structure of the section}
+\michals{4.10}{Unify ordering of oracles for the adversary -- ro first, $\initU$, then game specific ones}
+\michals{4.10}{Add $\ro$ to all algorithms that have access to the random oracle? Or remove it from all algs but adversary? Need consistency!}
 \subsection{Simulation extractability}
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:updsimext}
@@ -100,6 +103,7 @@ follows the definition below:
 
 
 \begin{definition}[$\ur{i}$-protocol in the updatable setting]
+  \michals{4.10}{Is that property of $\Psi$ of $\Psi_\fs$?}
 	\label{def:wiuru}
 	Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
 	$\ps = (\kgen, \prover, \verifier, \simulator)$. Let $\proofsystem_\fs$ be
@@ -107,6 +111,8 @@ follows the definition below:
 	oracle. Denote by $a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output
 	by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$
 		on} if for any $\ppt$ adversary $\adv$:
+  \michals{4.10}{use $\zkproof$ instead of $\vec{a}$}
+  \michals{4.10}{maybe that def could be written w.r.t.~$\Psi$? For example, we could fix verifier's randomness to assure same challenges.}
 	\[
 	\Pr\left[
 	\begin{aligned}

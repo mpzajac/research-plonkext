@@ -44,13 +44,17 @@ the $k$-\emph{unique response property} with security loss $\epsur(\secpar)$, an
 \begin{proof}		
 
   \ngame{0} This is the simulation-extractability game played between an adversary
-  $\advse$ who is given access to an oracle $\initU$ that defines an updatable SRS setup, a random oracle $\ro$ and a simulation oracle
-  $\simO$. There is an extractor $\ext$ that, from a proof
+  $\advse$ who is given access to an oracle $\initU$ that defines an updatable SRS
+  setup, a random oracle $\ro$ and a simulation oracle $\simO$. We denote by $r_\simulator$
+  randomness of $\simO$ which is randomly sampled. There is an extractor $\ext$ that, from a proof
   $\zkproof_{\advse}$ for instance $\inp_{\advse}$ output by the adversary and from
-   transcripts of $\advse$'s operations is tasked to extract a witness
-  $\wit_{\advse}$ such that $\REL(\inp_{\advse}, \wit_{\advse})$ holds. $\advse$ wins
-  if it manages to produce an acceptable proof and the extractor fails to output a witness. In the following game hops we upper-bound the
-  probability that this happens. Note that $\srs$ is with respect to the finalised SRS with respect to which $\adv$ is allowed to make simulation queries.
+  transcripts of $\advse$'s operations \michals{4.10}{Explicitly introduce lists
+    $Q, Q_\ro, Q_\srs$ here} is tasked to extract a witness $\wit_{\advse}$ such that
+  $\REL(\inp_{\advse}, \wit_{\advse})$ holds. $\advse$ wins if it manages to produce
+  an acceptable proof and the extractor fails to output a witness. In the following
+  game hops we upper-bound the probability that this happens. Note that $\srs$ is
+  with respect to the finalised SRS with respect to which $\adv$ is allowed to make
+  simulation queries.
 
   \ngame{1} This is identical to $\game{0}$ except that now the game is aborted
   if there is $(\inp_\advse, \zkproof_{\simulator}) \in Q$ such that $\zkproof_\simulator[1..k] = \zkproof_{\advse}[1..k]$. That is, the adversary in its final proof
@@ -66,7 +70,7 @@ the $k$-\emph{unique response property} with security loss $\epsur(\secpar)$, an
   $\prob{\event{\errur}}$ is small.
   
   We can assume that $\adv$ queried the simulator on the instance it wishes to
-  output, i.e.~$\inp_{\adv}$. We show a reduction $\rdvur$ that utilises $\adv$
+  output, i.e.~$\inp_{\adv}$. We show a reduction $\rdvur$ \michals{4.10}{The reduction also takes simulator's randomness} that utilises $\adv$
   to break the $\ur{k}$ property of $\ps$. Let $\rdvur$ run $\advse$ internally
   as a black-box:
   \begin{compactitem}
@@ -143,6 +147,7 @@ the $k$-\emph{unique response property} with security loss $\epsur(\secpar)$, an
 		In this game, the environment aborts also when it fails to build a
 		$(1, \ldots, 1, n, 1, \ldots, 1)$-tree of accepting transcripts $\tree$ by rewinding
 		$\bdv$. Denote that event by $\event{\errfrk}$.
+    \michals{4.10}{Define the actual game (not only $\bdv$'s description. Show how $\bdv$ gets $r_\sim$ and how it uses it.}
 	
 	\ncase{Game 1 to Game 2}
 		Note that for every accepting proof $\zkproof_{\advse}$, we may
