@@ -131,6 +131,64 @@ follows the definition below:
 	\]
 	is upper-bounded by some negligible function $\negl$.
 \end{definition}
+
+\begin{definition}[$\ur{i}$-protocol in the updatable setting]
+	\label{def:wiuru-int}
+	\changedm{ Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
+    $\ps = (\kgen, \prover, \verifier, \simulator)$. Denote by
+    $\zkproof_1, \ldots, \zkproof_{\mu}, \zkproof_{\mu + 1}$ protocol messages output
+    by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$ on}
+    if for any $\ppt$ adversary $\adv = (\adv_0, \adv_1)$:
+	\[
+	\Pr\left[
+	\begin{aligned}
+	& \zkproof \neq \zkproof', \zkproof_1, \ldots, \zkproof_{i} = \zkproof'_1,
+	\ldots, \zkproof'_{i}, \\
+	& \verifier (\srs, \inp, \vec{\zkproof}) =
+	\verifier(\srs, \inp, \vec{\zkproof'}) = 1  \\
+	\end{aligned}
+	\,\left|\,
+    \begin{aligned}
+      & (\srs, \inp) \gets \adv_0^{\initU}, \\
+      & (\zkproof, \zkproof') \gets \adv_1^{\verifier (\srs, \inp; \rho)} %\\ \ip{\adv_1 (\srs, \inp)}{\verifier (\srs, \inp; \rho)},\\
+      %& \zkproof' \gets \ip{\adv_1 (\srs, \inp)}{\verifier (\srs, \inp; \rho)}
+% 	& \inp, \vec{a},  \vec{a'}  \gets \adv^{\ro, \initU}(1^\secpar) \\
+% & \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
+% 	a'_{\mu + 1})
+	\end{aligned}
+	\right.\right]
+	\]
+	is upper-bounded by some negligible function $\negl$. Here adversary's access to $\verifier$ is \emph{single instance only}. That is, the verifier gets as in put instance $\inp$ and involves in a single proving interaction with $\adv$ (esp.~$\adv$ cannot use $\verifier$ to simultanously make two independent proofs for $\inp$). However, $\adv$ can rewind $\verifier$ to a chosen partial transcript.
+  \michals{7.10}{Any ideas how to write it more formally?} \michals{7.10}{I think it is fine to have two kinds of verifiers here -- one that interacts with a prover, another that checks given transcript}
+}
+
+\changedm{
+  Another take:
+	\[
+	\Pr\left[
+    \begin{aligned}
+      & (\zkproof, 1) \gets \ip{\adv (\srs, \inp)}{\verifier (\srs, \inp; \rho)},\\
+      & (\zkproof', 1) \gets \ip{\adv (\srs, \inp)}{\verifier(\srs, \inp; \rho)}, \\
+	& \zkproof \neq \zkproof', \zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{i} = \zkproof'_1, \zkproof'_1.\ch, 
+	\ldots, \zkproof'_{i}, 
+	\end{aligned}
+	\,\left|\,
+    \vphantom{
+      \begin{aligned}
+        & \\
+        & \\
+        & 
+      \end{aligned}
+    }
+    \begin{aligned}
+      & (\srs, \inp) \gets \adv_0^{\initU}
+	\end{aligned}
+	\right.\right]
+	\]
+
+  \michals{7.10}{In that take we need to state that  $\ip{}{}$ returns proof and verifier's bit}}
+
+\end{definition}
 Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$, defined in~\cref{fig:upd}.
 
 Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary
@@ -164,7 +222,40 @@ simulation \emph{trapdoor-less simulatable} (TLS).
 
   Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if $\simulator_\fs$ programs the random oracle \emph{only} for
     challenges from round $k$ to $\mu + 1$.
+  \end{definition}
+
+  \changedm{
+    \begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
+      Let $\ps$ be a $(2\mu + 1)$-message ZK proof system.  We call $\ps$
+      \emph{trapdoor-less simulatable} if for any adversary $\adv$,
+      $\eps_0 \approx \eps_1$, where
+  \begin{align*}
+    \left\{
+    \begin{aligned}
+      \ip{\prover (\inp, \wit)}{\verifier (\srs, \inp)}
+    \end{aligned}
+      \left|\,
+    \begin{aligned}
+      (\srs, \inp, \wit) \gets \adv^{\initU}(\secparam)
+    \end{aligned}
+    \right.\right\}
+    \approx
+    \left\{
+    \begin{aligned}
+      \simulator (\srs)
+    \end{aligned}
+      \left|\,
+    \begin{aligned}
+      (\srs, \inp, \wit) \gets \adv^{\initU}(\secparam)
+    \end{aligned}
+    \right.\right\}
+  \end{align*}
+ 
+  Additionally, we say that $\ps$ is $k$-programmable, if $\simulator$ produces a
+  simulated proof such that it picks $\zkproof_{i}.\ch$
+  \emph{after} $\zkproof_i$ has been computed, for $i \in \range{1}{k - 1}$.
 \end{definition}
+  }
 
 \begin{remark}[TLS vs HVZK]
   We note that TLS notion is closely related to honest-verifier zero knowledge in the standard model. That is, if we consider an interactive proof system $\proofsystem$ that is HVZK in the standard model then its Fiat--Shamir compiled version $\proofsystem_\fs$ is TLS. This comes as the simulator $\simulator$ in $\proofsystem$ produces a valid simulated proof by picking verifier's challenges according to a predefined distribution and $\proofsystem_\fs$'s simulator $\simulator_\fs$ produces its proofs similarly by picking the challenges and additionally programming the random oracle to return the picked challenges. Importantly, in both $\proofsystem$ and $\proofsystem_\fs$ success of the simulator does not depend on access to an SRS trapdoor.
@@ -588,6 +679,44 @@ algorithm from the generalized forking lemma.
 \end{definition}
 % \chaya{why does $\genforking$ get $Q_H$ twice?}
 % \markulf{20/09/2021}{This is a tricky one. If I remember correctly, we wanted $\zdv$ to be able to determin when $\adv$ starts to diverge from the first branch that results in $\pi_{\adv}$. $\adv$ needs to be fed recorded simulated proofs until that divergence. After that $\zdv$ can create fresh simulated proofs. I think its ok to use the same simulated proofs in multiple sub-branches as long as they are for the right instance. In any case simulation is now hidden within $\adv$.}
+
+\changedm{
+  \begin{definition}[$(k,n)$-forking special soundness in the updatable setting]
+	\michals{7.10}{I am not sure that this definition would make sense in the interactive setting. Maybe use just witness extended emulation?}
+Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$  be an
+	$(2 \mu + 1)$-message proof system for a relation $\REL$. 
+	
+	For any $\ppt$ adversary $\advse^{\initU, \ro} (1^\secpar; r)$ with access to
+  oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider
+  the procedure $\zdv$ that provided the transcript $(\srs, \adv, r)$ and
+  $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries and
+  update oracle queries.
+	%
+	$\zdv$ returns the index $i$ of the random oracle query made for challenge $k$ and
+  the proof $\adv$ returns.
+	
+	Consider the algorithm $\genforking_{\zdv}^{n}$ that rewinds $\zdv$ to produce a
+  $(1,\dots, n,\dots, 1)$-tree of accepting transcripts.
+	
+	We say that $\psfs$ is $(k, n)$-forking special sound with security loss
+  $\eps(\secpar)$, if for any PPT adversary the probability that
+	\begin{align*}
+	\Pr\left[
+	\REL(\inp, \wit) = 0
+	\,\Biggl|\,
+	\begin{aligned}
+    & r \sample \RND{\advse},
+    (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \ro} (1^\secpar; r), \\
+    & (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r),Q_{H}), \wit \gets
+    \extt(\tree)
+	\end{aligned}
+	\right] \leq \eps(\secpar).
+	\end{align*}
+	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
+  List $Q_\ro$ contains all $\advse$'s queries to $\ro$ and the random oracle's
+  answers.
+\end{definition}
+}
 
 
 \paragraph{Importance of the general forking lemma.}

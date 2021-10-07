@@ -11,6 +11,25 @@ with access to a random oracle and simulator, and when necessary, rewinds it. Th
 games differ by various breaking points, i.e.~points where the environment
 decides to abort the game.
 
+\changedm{
+The first game $\game{0}$ is a simulation-extractability game, where the extractor
+gets as input
+\begin{inparaenum}[(1)]
+\item simulated proofs $Q$,
+\item random oracle queries $Q_\ro$,
+\item SRS updates $Q_\srs$
+\end{inparaenum}
+which were made by $\advse$ (who asks questions) and the simulator $\simulator$ (who
+answers them).  We denote by $\radv$ randomness of $\advse$ and by $\rsim$ randomness
+that was used by the simulator to create responses in the lists, formally one can
+state that $\rsim$ could be parsed into $r_Q$ ($r_\ro$, $r_\srs$) used to answer
+queries in $Q$ (resp.~$Q_\ro$ and $Q_\srs$). Let $r = (\radv, \rsim)$. Randomness $r$
+is used in following games -- we pass it to a unique-response property eduction
+$\rdvur$ and forking special soundness adversary $\bdv$. Importantly, since we
+require that $\rdvur$ and $\bdv$ are successful (with non-negligible probability)
+given uniformly random randomness and $r$ is picked uniformly random we conclude that
+we do not change any success probability by running $\rdvur$ and $\bdv$ on $r$. }
+
 Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs returned by the
 adversary and the simulator respectively. We use $\zkproof[i]$ to denote
 prover's message in the $i$-th round of the proof (counting from 1),
@@ -28,28 +47,38 @@ this condition into an adversary that makes these additional queries to the
 random oracle and wins with the same probability.
 
 
-\begin{theorem}[\COMMENT{Forking s}Simulation-extractable multi-message protocols]
+\begin{theorem}[Simulation-extractable multi-message protocols]
   \label{thm:se}
-  Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive $(2 \mu + 1)$-message
-  zero-knowledge proof system for $\RELGEN(\secparam)$. Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. If $\psfs$ is \emph{$k$-programmable trapdoor-less simulatable}, has
-the $k$-\emph{unique response property} with security loss $\epsur(\secpar)$, and is $(k, n)$-\emph{forking special
-  sound} with security loss $\epss(\secpar)$, then $\psfs$ is \COMMENT{
-  forking }\emph{simulation-extractable} with extraction error $\epsur(\secpar)$ against $\ppt$
-  adversaries that makes up to $q$ random oracle queries and returns an acceptable
-  proof with probability at least $\accProb$.  The extraction probability $\extProb$ is at
-  least
-  \( \extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,, \)
-  for some negligible $\eps(\secpar)$.
+  Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
+  $(2 \mu + 1)$-message zero-knowledge proof system for $\RELGEN(\secparam)$. Let
+  $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. If $\psfs$ is
+  \emph{$k$-programmable trapdoor-less simulatable}, has the $k$-\emph{unique
+    response property} with security loss $\epsur(\secpar)$, and is
+  $(k, n)$-\emph{forking special sound} with security loss $\epss(\secpar)$, then
+  $\psfs$ is \COMMENT{ forking }\emph{simulation-extractable} with extraction error
+  $\epsur(\secpar)$ against $\ppt$ adversaries that makes up to $q$ random oracle
+  queries and returns an acceptable proof with probability at least $\accProb$.  The
+  extraction probability $\extProb$ is at least
+  \( \extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n}
+  -\eps(\secpar)\,, \) for some negligible $\eps(\secpar)$.
 \end{theorem}
 \begin{proof}		
 
   \ngame{0} This is the simulation-extractability game played between an adversary
   $\advse$ who is given access to an oracle $\initU$ that defines an updatable SRS
-  setup, a random oracle $\ro$ and a simulation oracle $\simO$. We denote by $r_\simulator$
-  randomness of $\simO$ which is randomly sampled. There is an extractor $\ext$ that, from a proof
-  $\zkproof_{\advse}$ for instance $\inp_{\advse}$ output by the adversary and from
-  transcripts of $\advse$'s operations \michals{4.10}{Explicitly introduce lists
-    $Q, Q_\ro, Q_\srs$ here} is tasked to extract a witness $\wit_{\advse}$ such that
+  setup, a random oracle $\ro$ and a simulation oracle $\simO$. \changedm{We denote by
+  $r_\simulator$ randomness of $\simO$ which is randomly sampled}. There is an
+  extractor $\ext$ that, from a proof $\zkproof_{\advse}$ for instance
+  $\inp_{\advse}$ output by the adversary and from transcripts of $\advse$'s
+  operations \changedm{ -- which compounds of lists of
+    \begin{inparaenum}[(1)]
+      \item simulated proofs $Q$, 
+      \item random oracle queries $Q_\ro$,
+      \item SRS updates $Q_\srs$.
+      \end{inparaenum}
+    }  \michals{4.10}{Explicitly introduce lists $Q, Q_\ro, Q_\srs$ here}
+    \michals{7.10}{Done, check} -- is
+  tasked to extract a witness $\wit_{\advse}$ such that
   $\REL(\inp_{\advse}, \wit_{\advse})$ holds. $\advse$ wins if it manages to produce
   an acceptable proof and the extractor fails to output a witness. In the following
   game hops we upper-bound the probability that this happens. Note that $\srs$ is
@@ -61,41 +90,45 @@ the $k$-\emph{unique response property} with security loss $\epsur(\secpar)$, an
   reuses at least $k$ messages from a simulated proof, and the proof is accepting.
   Denote this event by $\event{\errur}$.
 
-   \ncase{Game 0 to Game 1} We have, \( \prob{\game{0} \land
-  	\nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}} \) and, from the
-  difference lemma, cf.~\cref{lem:difference_lemma},
-  $ \abs{\prob{\game{0}} - \prob{\game{1}}} \leq \prob{\event{\errur}}\,$.
-  Thus, to show that the transition from one game to another introduces only
-  minor change in probability of $\adv$ winning it should be shown that
-  $\prob{\event{\errur}}$ is small.
+  \ncase{Game 0 to Game 1} \michals{7.10}{I think we can make this reduction work
+    even for a standard $k$-ur, not only the updatable one.}  We have,
+  \( \prob{\game{0} \land \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}} \)
+  and, from the difference lemma, cf.~\cref{lem:difference_lemma},
+  $ \abs{\prob{\game{0}} - \prob{\game{1}}} \leq \prob{\event{\errur}}\,$.  Thus, to
+  show that the transition from one game to another introduces only minor change in
+  probability of $\adv$ winning it should be shown that $\prob{\event{\errur}}$ is
+  small.
   
   We can assume that $\adv$ queried the simulator on the instance it wishes to
-  output, i.e.~$\inp_{\adv}$. We show a reduction $\rdvur$ \michals{4.10}{The reduction also takes simulator's randomness} that utilises $\adv$
-  to break the $\ur{k}$ property of $\ps$. Let $\rdvur$ run $\advse$ internally
-  as a black-box:
+  output, i.e.~$\inp_{\adv}$. We show a reduction $\rdvur$ \michals{4.10}{The
+    reduction also takes simulator's randomness} that utilises $\adv$ to break the
+  $\ur{k}$ property of $\ps$. \changedm{That is, for randomness
+    $r = (r_\adv, \rsim)$, $\rdvur (r)$ runs $\advse(r_\adv)$ internally as a
+    black-box:}
   \begin{compactitem}
-  	\item The reduction answers $\adv$ update queries by asking the same query from the update oracle in the unique response experiment. The reduction finalises the same SRS $\srs$ as the one $\adv$ does.
-  	\item The reduction answers both queries to the simulator $\psfs.\simulator$
-  	and to the random oracle.  It also keeps lists $Q$, for the simulated
-  	proofs, and $Q_\ro$ for the random oracle queries.
-  	\item When $\adv$ makes a fake proof $\zkproof_{\adv}$ for $\inp_{\adv}$,
-  	$\rdvur$ looks through lists $Q$ and $Q_\ro$ until it finds
-  	$\zkproof_{\simulator}[0..k]$ such that
-  	$\zkproof_{\adv}[0..k] = \zkproof_{\simulator}[0..k]$ and a random oracle
-  	query $\zkproof_{\simulator}[k].\ch$ on $\zkproof_{\simulator}[0..k]$.
-  	\item $\rdvur$ returns two proofs for $\inp_{\adv}$:
+  \item The reduction answers $\adv$ update, simulator and random oracle queries
+    \changedm{using randomness $\rsim$} \mxout{ by asking the same query from the
+      update oracle in the unique response experiment. The reduction finalises the
+      same SRS $\srs$ as the one $\adv$ does.}
+  \item \mxout{The reduction answers both queries to the simulator $\psfs.\simulator$
+      and to the random oracle.  It also keeps lists $Q$, for the simulated proofs,
+      and $Q_\ro$ for the random oracle queries.}
+  \item When $\adv$ makes a fake proof $\zkproof_{\adv}$ for $\inp_{\adv}$, $\rdvur$
+    looks through lists $Q$ and $Q_\ro$ until it finds $\zkproof_{\simulator}[0..k]$
+    such that $\zkproof_{\adv}[0..k] = \zkproof_{\simulator}[0..k]$ and a random
+    oracle query $\zkproof_{\simulator}[k].\ch$ on $\zkproof_{\simulator}[0..k]$.
+  \item $\rdvur$ returns two proofs for $\inp_{\adv}$:
   	\begin{align*}
-  	\zkproof_1 = (\zkproof_{\simulator}[1..k],
-  	\zkproof_{\simulator}[k].\ch, \zkproof_{\simulator}[k + 1..\mu + 1])\\
-  	\zkproof_2 = (\zkproof_{\simulator}[1..k],
-  	\zkproof_{\simulator}[k].\ch, \zkproof_{\adv}[k + 1..\mu + 1])
+      \zkproof_1 = (\zkproof_{\simulator}[1..k],
+      \zkproof_{\simulator}[k].\ch, \zkproof_{\simulator}[k + 1..\mu + 1])\\
+      \zkproof_2 = (\zkproof_{\simulator}[1..k],
+      \zkproof_{\simulator}[k].\ch, \zkproof_{\adv}[k + 1..\mu + 1])
   	\end{align*}
-  \end{compactitem}  
-  If $\zkproof_1 = \zkproof_2$, then $\adv$ fails to break simulation soundness,
-  as $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then
-  $\rdvur$ breaks $\ur{k}$-ness of $\ps$. This happens only with negligible
-  probability $\epsur(\secpar)$, hence
-  \( \prob{\event{\errur}} \leq \epsur(\secpar)\,. \)
+  \end{compactitem}
+  If $\zkproof_1 = \zkproof_2$, then $\adv$ fails to break simulation soundness, as
+  $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then $\rdvur$
+  breaks $\ur{k}$-ness of $\ps$. This happens only with negligible probability
+  $\epsur(\secpar)$, hence \( \prob{\event{\errur}} \leq \epsur(\secpar)\,. \)
 
   \COMMENT{We have,
     \( \prob{\game{0} \land \nevent{\errur}} = \prob{\game{1} \land
@@ -134,20 +167,80 @@ the $k$-\emph{unique response property} with security loss $\epsur(\secpar)$, an
   \epsur(\secpar)\,. \)
 }
 %
-		\ngame{2} Define an adversary $\bdv$ against forking special soundness such that, given access to oracles $\initU$ and $\ro$, and randomness $r_\bdv$, it internally runs $\advse^{\initU, \simO, \ro} (1^\secpar; r_\adv)$, where
-		\begin{compactenum}
-			\item $r_\bdv$ is split into two substrings $r_\adv$ and $r_\simulator$;
-			\item $\bdv$ answers $\adv$ update queries by asking the same query from its own update oracle. When $\adv$ finalises an SRS $\srs$, $\bdv$ does the same.
-			\item $\bdv$ answers $\adv$'s simulator queries by programming the random oracle locally by using coins from $r_\simulator$.
-			$\bdv$ maintains a list of instance-proof pairs $Q$ consisting of of all simulation queries made by $\adv$, and corresponding responses.
-			\item Eventually when $\adv$ outputs $(\inp_\advse, \zkproof_\advse)$, $\bdv$ outputs the same; $(\inp_\advse, \zkproof_\advse)$.
-
-		\end{compactenum}
+\ngame{2} Define an adversary $\bdv$ against forking special soundness such that,
+given access to \mxout{oracles $\initU$ and} $\ro$, and randomness $r = (r_\adv, \rsim)$, it
+internally runs $\advse^{\initU, \simO, \ro} (1^\secpar; r_\adv)$, where
+\begin{compactenum}
+\item $r_\bdv$ is split into two substrings $r_\adv$ and $r_\simulator$;
+\item $\bdv$ answers $\adv$ random oracle queries by passing the queried to the real
+  random oracle $\ro$.
+\item \mxout{$\bdv$ answers $\adv$ update queries by asking the same query from its own
+  update oracle. When $\adv$ finalises an SRS $\srs$, $\bdv$ does the same.}
+\item $\bdv$ answers $\adv$'s SRS update and simulator queries \mxout{by programming the random oracle
+  locally by using coins from $r_\simulator$} \changedm{by using coins $\rsim$}.  $\bdv$ maintains a list of
+  instance-proof pairs $Q$ consisting of of all simulation queries made by $\adv$,
+  and corresponding responses.
+\item Eventually when $\adv$ outputs $(\inp_\advse, \zkproof_\advse)$, $\bdv$ outputs
+  the same $(\inp_\advse, \zkproof_\advse)$.
+\end{compactenum}
 		
-		In this game, the environment aborts also when it fails to build a
-		$(1, \ldots, 1, n, 1, \ldots, 1)$-tree of accepting transcripts $\tree$ by rewinding
-		$\bdv$. Denote that event by $\event{\errfrk}$.
-    \michals{4.10}{Define the actual game (not only $\bdv$'s description. Show how $\bdv$ gets $r_\sim$ and how it uses it.}
+\mxout{In this game, the environment aborts also when it fails to build a
+  $(1, \ldots, 1, n, 1, \ldots, 1)$-tree of accepting transcripts $\tree$ by
+  rewinding $\bdv$. Denote that event by $\event{\errfrk}$.}  \michals{4.10}{Define
+  the actual game (not only $\bdv$'s description). Show how $\bdv$ gets $\rsim$ and
+  how it uses it.}
+
+\changedm{In this game the environment additionally aborts if extractor $\ext$ fails
+  to build a $(1, \ldots, 1, n, 1, \ldots, 1)$-tree of accepting transcripts $\tree$
+  by rewinding $\bdv$.
+
+  $\ext$ proceeds as follows. First, it takes as input relation $\REL$, SRS $\srs$,
+  $\bdv$'s code, its randomness $r$, the output instance $\inp_{\advse}$ and
+  proof $\zkproof_{\advse}$, and the list of random oracle queries and responses
+  $Q_\ro$. Then, $\ext$ starts a forking algorithm
+  $\genforking^{n}_\zdv(y,h_1, \ldots, h_q)$ for
+  $y = (\srs, \bdv, r, \inp_{\advse}, \zkproof_{\advse})$ where we set
+  $h_1, \ldots, h_q$ to be the consecutive queries from list $Q_\ro$. We run $\bdv$
+  internally in $\zdv$.
+		
+  To assure that in the first execution of $\zdv$ the adversary $\bdv$ produces the
+  same $(\inp_{\advse}, \zkproof_{\advse})$ as in the extraction game, $\zdv$
+  provides $\bdv$ with the same randomness $r$ and answers queries to the random
+  oracle with pre-recorded responses in $Q_\ro$.
+		%
+  Note, that since the view of the adversary when run inside $\zdv$ is the same as
+  its view with access to the real random oracle, it produces exactly the same
+  output. After the first run, $\zdv$ outputs the index $i$ of a random oracle query
+  that was used by $\bdv$ to compute the challenge
+  $\zkproof[k].\ch = \ro(\zkproof_{\advse}[0..k])$ it had to answer in the
+  $(k + 1)$-th round and adversary's transcript, denoted by $s_1$ in $\genforking$'s
+  description. If no such query took place $\zdv$ outputs $i = 0$.
+		
+  Then, new random oracle responses are picked for queries indexed by $i, \ldots, q$
+  and the adversary is rewound to the point just prior to when it gets the response
+  to RO query $\zkproof_{\advse}[0..k]$. The adversary gets a random oracle response
+  from a new set of responses $h^2_i, \ldots, h^2_q$. If the adversary requests a
+  simulated proof after seeing $h^2_i$, then $\zdv$ computes the simulated proof on
+  its own. Eventually, $\zdv$ outputs index $i'$ of a query that was used by the
+  adversary to compute $\ro(\zkproof_{\advse}[0..k])$, and a new transcript
+  $s_2$. $\zdv$ is run $n$ times with different random oracle responses.  Eventually,
+  if all runs of $\zdv$ were successful, then tree of acceptable transcripts $\tree$
+  is built.
+  % If a tree
+  % $\tree$ of $n$ transcripts is built, then $\ext$ internally runs the tree extractor
+  % $\extt(\tree)$ and outputs what it returns.
+		
+  We emphasize here the importance of the unique response property. If it does not
+  hold then in some $j$-th execution of $\zdv$ the adversary $\adv$ (run internally
+  in $\bdv$) could reuse a challenge that it learned from observing proofs in $Q$. In
+  that case, $\bdv$ would output a proof that would make $\zdv$ output $i = 0$,
+  making the extractor fail. Fortunately, the case that the adversary breaks the
+  unique response property has already been covered by the abort condition in
+  $\game{1}$.
+		
+  Denote by $\waccProb$ the probability that $\advse$ outputs a proof that is 
+  accepted and does not break $\ur{k}$-ness of $\ps$. With the same probability, an
+  accepting proof is returned by $\bdv$.}
 	
 	\ncase{Game 1 to Game 2}
 		Note that for every accepting proof $\zkproof_{\advse}$, we may
@@ -160,16 +253,16 @@ the $k$-\emph{unique response property} with security loss $\epsur(\secpar)$, an
 		event in Game $\game{1}$.  As previously,
 		\( \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}}\,.  \)
 		
-		We describe our extractor $\ext$ here. The extractor takes as input relation $\REL$, SRS
-		$\srs$, $\bdv$'s code, its randomness $r_\bdv$, the output instance $\inp_{\advse}$ and proof
+		\mxout{We describe our extractor $\ext$ here. The extractor takes as input relation $\REL$, SRS
+		$\srs$, $\bdv$'s code, its randomness $r$, the output instance $\inp_{\advse}$ and proof
 		$\zkproof_{\advse}$, and the list of random oracle queries and responses $Q_\ro$. Then, $\ext$
 		starts a forking algorithm $\genforking^{n}_\zdv(y,h_1, \ldots, h_q)$ for
-		$y = (\srs, \bdv, r_\bdv, \inp_{\advse}, \zkproof_{\advse})$ where we set $h_1, \ldots, h_q$ to
+		$y = (\srs, \bdv, r, \inp_{\advse}, \zkproof_{\advse})$ where we set $h_1, \ldots, h_q$ to
 		be the consecutive queries from list $Q_\ro$. We run $\bdv$ internally in $\zdv$.
 		
 		To assure that in the first execution of $\zdv$ the adversary $\bdv$ produces the same
 		$(\inp_{\advse}, \zkproof_{\advse})$ as in the extraction game, $\zdv$ provides $\bdv$ with
-		the same randomness $r_\bdv$ and answers queries to the random oracle with
+		the same randomness $r$ and answers queries to the random oracle with
 		pre-recorded responses in $Q_\ro$.
 		%
 		Note, that since the view of the adversary when run inside $\zdv$ is the same as its view with
@@ -199,7 +292,9 @@ the $k$-\emph{unique response property} with security loss $\epsur(\secpar)$, an
 		
 		Denote by $\waccProb$ the probability that $\advse$ outputs a proof that is accepted and does
 		not break $\ur{k}$-ness of $\ps$. With the same probability, an accepting proof is returned by
-		$\bdv$. Denote by $\waccProb'$ the probability that algorithm $\zdv$, defined in the general forking lemma,
+		$\bdv$.}
+
+    Denote by $\waccProb'$ the probability that algorithm $\zdv$, defined in the general forking lemma,
 		produces an accepting proof with a fresh challenge after round $k$. From the above argument,
 		we have that $\waccProb = \waccProb'$.
 		
@@ -213,8 +308,11 @@ the $k$-\emph{unique response property} with security loss $\epsur(\secpar)$, an
 		\end{equation}
 	
 	\ngame{3}
-		This game is identical to $\game{2}$ except that it aborts if
-		$\extt(\tree)$ run by $\ext$ fails to extract a witness. 
+  \changedm{
+    This game is identical to $\game{2}$ except that the extractor $\ext$, given tree
+    of acceptable transcripts $\tree$ runs additionally $\extt (\tree)$ to learn the
+    witness $\wit$. The environment additionally aborts this game if $\REL(\inp,
+    \wit)$ does not hold.} 
 	
 	\ncase{Game 2 to Game 3}	
 		Since $\ps$ is forking-sound the probability that $\extt(\tree)$
