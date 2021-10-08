@@ -91,7 +91,8 @@ random oracle and wins with the same probability.
   Denote this event by $\event{\errur}$.
 
   \ncase{Game 0 to Game 1} \michals{7.10}{I think we can make this reduction work
-    even for a standard $k$-ur, not only the updatable one.}  We have,
+    even for a standard $k$-ur, not only the updatable one.} \michals{8.10}{If we
+    know how to move proofs between SRSs} We have,
   \( \prob{\game{0} \land \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}} \)
   and, from the difference lemma, cf.~\cref{lem:difference_lemma},
   $ \abs{\prob{\game{0}} - \prob{\game{1}}} \leq \prob{\event{\errur}}\,$.  Thus, to
