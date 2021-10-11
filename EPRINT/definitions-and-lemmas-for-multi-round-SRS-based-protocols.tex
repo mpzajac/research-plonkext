@@ -699,43 +699,6 @@ algorithm from the generalized forking lemma.
 % \chaya{why does $\genforking$ get $Q_H$ twice?}
 % \markulf{20/09/2021}{This is a tricky one. If I remember correctly, we wanted $\zdv$ to be able to determin when $\adv$ starts to diverge from the first branch that results in $\pi_{\adv}$. $\adv$ needs to be fed recorded simulated proofs until that divergence. After that $\zdv$ can create fresh simulated proofs. I think its ok to use the same simulated proofs in multiple sub-branches as long as they are for the right instance. In any case simulation is now hidden within $\adv$.}
 
-\changedm{
-  \begin{definition}[$(k,n)$-forking special soundness in the updatable setting]
-	\michals{7.10}{I am not sure that this definition would make sense in the interactive setting. Maybe use just witness extended emulation?}
-Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$  be an
-	$(2 \mu + 1)$-message proof system for a relation $\REL$. 
-	
-	For any $\ppt$ adversary $\advse^{\initU, \ro} (1^\secpar; r)$ with access to
-  oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider
-  the procedure $\zdv$ that provided the transcript $(\srs, \adv, r)$ and
-  $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries and
-  update oracle queries.
-	%
-	$\zdv$ returns the index $i$ of the random oracle query made for challenge $k$ and
-  the proof $\adv$ returns.
-	
-	Consider the algorithm $\genforking_{\zdv}^{n}$ that rewinds $\zdv$ to produce a
-  $(1,\dots, n,\dots, 1)$-tree of accepting transcripts.
-	
-	We say that $\psfs$ is $(k, n)$-forking special sound with security loss
-  $\eps(\secpar)$, if for any PPT adversary the probability that
-	\begin{align*}
-	\Pr\left[
-	\REL(\inp, \wit) = 0
-	\,\Biggl|\,
-	\begin{aligned}
-    & r \sample \RND{\advse},
-    (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \ro} (1^\secpar; r), \\
-    & (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r),Q_{H}), \wit \gets
-    \extt(\tree)
-	\end{aligned}
-	\right] \leq \eps(\secpar).
-	\end{align*}
-	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
-  List $Q_\ro$ contains all $\advse$'s queries to $\ro$ and the random oracle's
-  answers.
-\end{definition}
-}
 
 
 \paragraph{Importance of the general forking lemma.}
