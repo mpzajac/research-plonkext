@@ -227,8 +227,7 @@ simulation \emph{trapdoor-less simulatable} (TLS).
   \changedm{
     \begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
       Let $\ps$ be a $(2\mu + 1)$-message ZK proof system.  We call $\ps$
-      \emph{trapdoor-less simulatable} if for any adversary $\adv$,
-      $\eps_0 \approx \eps_1$, where
+      \emph{trapdoor-less simulatable} if for any adversary $\adv$
   \begin{align*}
     \left\{
     \begin{aligned}
@@ -255,8 +254,28 @@ simulation \emph{trapdoor-less simulatable} (TLS).
   simulated proof such that it picks $\zkproof_{i}.\ch$
   \emph{after} $\zkproof_i$ has been computed, for $i \in \range{1}{k - 1}$.
 \end{definition}
+}
+
+\changedm{
+  \begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
+    Let $\ps$ be a NIZK which proof compounds of $(2\mu + 1)$ elements
+    $\zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{\mu}, \zkproof_{\mu}.\ch, \zkproof_{\mu + 1}$.  We
+    call $\ps$ \emph{trapdoor-less simulatable} if for any adversary $\adv$, $\eps_0
+    \approx \eps_1$, where
+    \begin{align*}
+      \eps_b = \Pr \left[
+      \adv^{\ro, \initU, \oracleo_b} (\secparam) = 1
+      \right]
+    \end{align*}
+    where $\oracleo_b$ on input $(\inp, \wit) \in \REL$ and $\srs$ being the SRS finalized by $\adv$ responds with $\zkproof \gets \prover (\srs, \inp, \wit)$ when $b = 1$ or $\zkproof \gets \simulator (\srs, \inp)$ when $b = 0$.
+ 
+    Additionally, we say that $\ps$ is $k$-programmable, if $\simulator$ produces a
+    simulated proof such that it picks $\zkproof_{i}.\ch$ \emph{after} $\zkproof_i$
+    has been computed, for $i \in \range{1}{k - 1}$.
+\end{definition}
   }
 
+  
 \begin{remark}[TLS vs HVZK]
   We note that TLS notion is closely related to honest-verifier zero knowledge in the standard model. That is, if we consider an interactive proof system $\proofsystem$ that is HVZK in the standard model then its Fiat--Shamir compiled version $\proofsystem_\fs$ is TLS. This comes as the simulator $\simulator$ in $\proofsystem$ produces a valid simulated proof by picking verifier's challenges according to a predefined distribution and $\proofsystem_\fs$'s simulator $\simulator_\fs$ produces its proofs similarly by picking the challenges and additionally programming the random oracle to return the picked challenges. Importantly, in both $\proofsystem$ and $\proofsystem_\fs$ success of the simulator does not depend on access to an SRS trapdoor.
 \end{remark}
