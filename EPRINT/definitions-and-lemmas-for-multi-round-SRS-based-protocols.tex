@@ -224,6 +224,7 @@ simulation \emph{trapdoor-less simulatable} (TLS).
     challenges from round $k$ to $\mu + 1$.
   \end{definition}
 
+  \michals{11.10}{tls definition for interactive protocols}
   \changedm{
     \begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
       Let $\ps$ be a $(2\mu + 1)$-message ZK proof system.  We call $\ps$
@@ -256,22 +257,24 @@ simulation \emph{trapdoor-less simulatable} (TLS).
 \end{definition}
 }
 
+\michals{11.10}{TLS definition for nizk}
 \changedm{
   \begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
-    Let $\ps$ be a NIZK which proof compounds of $(2\mu + 1)$ elements
-    $\zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{\mu}, \zkproof_{\mu}.\ch, \zkproof_{\mu + 1}$.  We
-    call $\ps$ \emph{trapdoor-less simulatable} if for any adversary $\adv$, $\eps_0
-    \approx \eps_1$, where
+    Let $\ps$ be a NIZK which proof compounds of $(2\mu + 1)$ parts
+    $\zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{\mu}, \zkproof_{\mu}.\ch,
+    \zkproof_{\mu + 1}$.  We call $\ps$ \emph{trapdoor-less simulatable} if for any
+    adversary $\adv$, $\eps_0 \approx \eps_1$, where
     \begin{align*}
       \eps_b = \Pr \left[
       \adv^{\ro, \initU, \oracleo_b} (\secparam) = 1
       \right]
     \end{align*}
-    where $\oracleo_b$ on input $(\inp, \wit) \in \REL$ and $\srs$ being the SRS finalized by $\adv$ responds with $\zkproof \gets \prover (\srs, \inp, \wit)$ when $b = 1$ or $\zkproof \gets \simulator (\srs, \inp)$ when $b = 0$.
+    where $\oracleo_b$ on input $(\inp, \wit) \in \REL$ and $\srs$ being the SRS
+    finalized by $\adv$ responds with $\zkproof \gets \prover (\srs, \inp, \wit)$
+    when $b = 1$ or $\zkproof \gets \simulator (\srs, \inp)$ when $b = 0$.
  
     Additionally, we say that $\ps$ is $k$-programmable, if $\simulator$ produces a
-    simulated proof such that it picks $\zkproof_{i}.\ch$ \emph{after} $\zkproof_i$
-    has been computed, for $i \in \range{1}{k - 1}$.
+    simulated proof such that for instance $\inp$ it picks a random witness $\wit$ and runs $\prover (\srs, \inp, \wit)$ to get partial proof $\zkproof_1, \ldots, \zkproof_{k - 1}.\ch$. Then it continues to produce the whole proof $\zkproof = \zkproof_1, \ldots, \zkproof_{\mu}$ and outputs it.
 \end{definition}
   }
 

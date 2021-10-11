@@ -11,7 +11,6 @@ with access to a random oracle and simulator, and when necessary, rewinds it. Th
 games differ by various breaking points, i.e.~points where the environment
 decides to abort the game.
 
-\changedm{
 The first game $\game{0}$ is a simulation-extractability game, where the extractor
 gets as input
 \begin{inparaenum}[(1)]
@@ -19,16 +18,15 @@ gets as input
 \item random oracle queries $Q_\ro$,
 \item SRS updates $Q_\srs$
 \end{inparaenum}
-which were made by $\advse$ (who asks questions) and the simulator $\simulator$ (who
-answers them).  We denote by $\radv$ randomness of $\advse$ and by $\rsim$ randomness
-that was used by the simulator to create responses in the lists, formally one can
-state that $\rsim$ could be parsed into $r_Q$ ($r_\ro$, $r_\srs$) used to answer
-queries in $Q$ (resp.~$Q_\ro$ and $Q_\srs$). Let $r = (\radv, \rsim)$. Randomness $r$
-is used in following games -- we pass it to a unique-response property eduction
-$\rdvur$ and forking special soundness adversary $\bdv$. Importantly, since we
-require that $\rdvur$ and $\bdv$ are successful (with non-negligible probability)
-given uniformly random randomness and $r$ is picked uniformly random we conclude that
-we do not change any success probability by running $\rdvur$ and $\bdv$ on $r$. }
+which were made by $\advse$.  We denote by $\radv$ randomness of $\advse$ and by
+$\rsim$ randomness that was used by the simulator to create responses in the list
+$Q$, formally one can state that $\rsim$ could be parsed into $r_Q$ and $r_\ro$ used
+to answer queries in $Q$ and $Q_\ro$. Let $r = (\radv, \rsim)$. Randomness $r$ is
+used in the following games -- we pass it to a unique-response property reduction $\rdvur$
+and forking special soundness adversary $\bdv$. Importantly, since we require that
+$\rdvur$ and $\bdv$ are successful (with non-negligible probability) given uniformly
+random randomness and $r$ is picked uniformly random we conclude that we do not
+change any success probability by running $\rdvur$ and $\bdv$ on $r$. 
 
 Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs returned by the
 adversary and the simulator respectively. We use $\zkproof[i]$ to denote
@@ -66,19 +64,17 @@ random oracle and wins with the same probability.
 
   \ngame{0} This is the simulation-extractability game played between an adversary
   $\advse$ who is given access to an oracle $\initU$ that defines an updatable SRS
-  setup, a random oracle $\ro$ and a simulation oracle $\simO$. \changedm{We denote by
-  $r_\simulator$ randomness of $\simO$ which is randomly sampled}. There is an
-  extractor $\ext$ that, from a proof $\zkproof_{\advse}$ for instance
-  $\inp_{\advse}$ output by the adversary and from transcripts of $\advse$'s
-  operations \changedm{ -- which compounds of lists of
-    \begin{inparaenum}[(1)]
-      \item simulated proofs $Q$, 
-      \item random oracle queries $Q_\ro$,
-      \item SRS updates $Q_\srs$.
-      \end{inparaenum}
-    }  \michals{4.10}{Explicitly introduce lists $Q, Q_\ro, Q_\srs$ here}
-    \michals{7.10}{Done, check} -- is
-  tasked to extract a witness $\wit_{\advse}$ such that
+  setup, a random oracle $\ro$ and a simulation oracle $\simO$. We denote by $\rsim$
+  randomness of $\simO$ which is randomly sampled. There is an extractor $\ext$ that,
+  from a proof $\zkproof_{\advse}$ for instance $\inp_{\advse}$ output by the
+  adversary and from transcripts of $\advse$'s operations -- which compounds of lists
+  of
+  \begin{inparaenum}[(1)]
+  \item simulated proofs $Q$,
+  \item random oracle queries $Q_\ro$,
+  \item SRS updates $Q_\srs$.
+  \end{inparaenum}
+  -- is tasked to extract a witness $\wit_{\advse}$ such that
   $\REL(\inp_{\advse}, \wit_{\advse})$ holds. $\advse$ wins if it manages to produce
   an acceptable proof and the extractor fails to output a witness. In the following
   game hops we upper-bound the probability that this happens. Note that $\srs$ is
@@ -102,9 +98,8 @@ random oracle and wins with the same probability.
   small.
   
   We can assume that $\adv$ queried the simulator on the instance it wishes to
-  output, i.e.~$\inp_{\adv}$. We show a reduction $\rdvur$ \michals{4.10}{The
-    reduction also takes simulator's randomness} that utilises $\adv$ to break the
-  $\ur{k}$ property of $\ps$.That is, for randomness $r = (r_\adv, \rsim)$,
+  output, i.e.~$\inp_{\adv}$. We show a reduction $\rdvur$ that utilises $\adv$ to
+  break the $\ur{k}$ property of $\ps$.That is, for randomness $r = (r_\adv, \rsim)$,
   $\rdvur (r)$ runs $\advse(r_\adv)$ internally as a black-box:
   \begin{compactitem}
   \item The reduction answers $\adv$ update queries by asking the same query from the
@@ -171,19 +166,16 @@ random oracle and wins with the same probability.
 given access to oracles $\initU$ and $\ro$, and randomness $r = (r_\adv, \rsim)$, it
 internally runs $\advse^{\initU, \simO, \ro} (1^\secpar; r_\adv)$, where
 \begin{compactenum}
-\item $r_\bdv$ is split into two substrings $r_\adv$ and $r_\simulator$;
 \item $\bdv$ answers $\adv$ random oracle and update queries by passing the queries to the real
   oracles $\ro$ and $\initU$. When $\adv$ finalises an SRS $\srs$, $\bdv$ does the same.
-\item $\bdv$ answers $\adv$'s SRS update and simulator queries \mxout{by programming
-    the random oracle locally by using coins from $r_\simulator$} \changedm{by using
-    coins $\rsim$}.  $\bdv$ maintains a list of instance-proof pairs $Q$ consisting
-  of of all simulation queries made by $\adv$, and corresponding responses.
+\item $\bdv$ answers simulator queries by using coins $\rsim$. $\bdv$ maintains a
+  list of instance-proof pairs $Q$ consisting of of all simulation queries made by
+  $\adv$, and corresponding responses.
 \item Eventually when $\adv$ outputs $(\inp_\advse, \zkproof_\advse)$, $\bdv$ outputs
   the same $(\inp_\advse, \zkproof_\advse)$.
 \end{compactenum}
 \michals{7.10}{Need forking soundness in the updatable setting. Alternatively we
   could show that we can move a proof from one SRS to another using partial trapdoor}
-
 
 In this game the environment additionally aborts if extractor $\ext$ fails to build a
 $(1, \ldots, 1, n, 1, \ldots, 1)$-tree of accepting transcripts $\tree$ by rewinding
