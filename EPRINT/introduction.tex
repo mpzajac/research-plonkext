@@ -162,7 +162,7 @@ that contribute in the SRS generation.
 show USE is the unique response property~\cite{C:Fischlin05} which says that for $3$-messages
 sigma protocols, all but the first message sent by the prover are deterministic (intuitively,
 the prover can only employ fresh randomness in the first message of the protocol). We cannot
-use this definition as is since the protocols we consider have other rounds with randomized prover
+use this definition as it is since the protocols we consider have more than one round where the prover sends andomized
 messages. In Plonk, both the first and the second prover's messages are
 randomized. Although Sonic prover is deterministic after it picks its first message, the
 protocol has more than $3$ rounds. The same holds for Marlin. We propose a generalisation of
