@@ -162,7 +162,7 @@ that contribute in the SRS generation.
 show USE is the unique response property~\cite{C:Fischlin05} which says that for $3$-messages
 sigma protocols, all but the first message sent by the prover are deterministic (intuitively,
 the prover can only employ fresh randomness in the first message of the protocol). We cannot
-use this definition as it is since the protocols we consider have more than one round where the prover sends andomized
+use this definition as it is since the protocols we consider have more than one round where the prover sends randomized
 messages. In Plonk, both the first and the second prover's messages are
 randomized. Although Sonic prover is deterministic after it picks its first message, the
 protocol has more than $3$ rounds. The same holds for Marlin. We propose a generalisation of
@@ -209,9 +209,8 @@ has to consider the security loss implied by the Fiat-Shamir transform for the t
 We note that the security loss of our generalized forking lemma may also apply
 when knowledge soundness is proven. This is, e.g., the case for the original
 $\sonic$ paper, whose security proof relies on so-called witness-extended
-emulation. The authors of $\plonk$ and recent work on
-$\sonic$~\cite{cryptoeprint:2020:1351} work around this problem by proving
-knowledge soundness directly in the AGM.
+emulation. $\plonk$ and the recent work of~\cite{cryptoeprint:2020:1351} that shows knowledge soundness of
+$\sonic$, work around this problem by proving directly in the AGM.
 
 
 
