@@ -111,7 +111,7 @@ We define \emph{simulation-extractability} with respect to oracle $\simulator_2'
 	\begin{matrix}
 	  r \sample \RND{\advse}\\
 	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
-		\ro} (1^\secpar; r)
+		} (1^\secpar; r)
 	\end{matrix}
 }
 	\]
@@ -127,7 +127,7 @@ We define \emph{simulation-extractability} with respect to oracle $\simulator_2'
 	\begin{aligned}
 	& r \sample \RND{\advse},
 	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
-		\ro} (1^\secpar; r) \\
+		} (1^\secpar; r) \\
 	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
 	Q, Q_\ro, Q_\srs) 
 	\end{aligned}
