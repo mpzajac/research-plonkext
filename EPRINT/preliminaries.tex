@@ -375,7 +375,7 @@ systems, such as Plonk and Sonic, we treat both the reference string and the rel
 universal.
 
 We denote by $\zkproof$ a proof created by $\prover$ with input
-$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier (\srs, \inp, \zkproof)$ accepts it. In this paper we focus on proof systems where $\prover$ and $\verifier$ are given oracle access to a random oracle $\ro$. In case of the simulator $\simulator$ it is also given access to $\ro$, but it can also \emph{program} it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
+$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier (\srs, \inp, \zkproof)$ accepts it. In this paper we focus on proof systems where $\prover$ and $\verifier$ are given oracle access to a random oracle $\ro$. The simulator $\simulator$ is not only given access to $\ro$, but it can also \emph{program} it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
 
 A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is
 required to have three properties: completeness, soundness and zero knowledge, which are
