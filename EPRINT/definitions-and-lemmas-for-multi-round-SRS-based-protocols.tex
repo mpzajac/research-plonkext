@@ -174,92 +174,36 @@ follows the definition below:
 
 
 \begin{definition}[$\ur{i}$-protocol in the updatable setting]
-  \michals{4.10}{Is that property of $\Psi$ of $\Psi_\fs$?}
 	\label{def:wiuru}
 	Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
-	$\ps = (\kgen, \prover, \verifier, \simulator)$. Let $\proofsystem_\fs$ be
-	$\proofsystem$ after the Fiat--Shamir transform and $\ro$ the random
-	oracle. Denote by $a_1, \ldots, a_{\mu}, a_{\mu + 1}$ protocol messages output
-	by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$
-		on} if for any $\ppt$ adversary $\adv$:
-  \michals{4.10}{use $\zkproof$ instead of $\vec{a}$}
-  \michals{4.10}{maybe that def could be written w.r.t.~$\Psi$? For example, we could fix verifier's randomness to assure same challenges.}
-	\[
+  $\ps = (\kgen, \prover, \verifier, \simulator)$. Let
+  $\proofsystem_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be
+  $\proofsystem$ after the Fiat--Shamir transform and $\ro$ the random oracle. Denote
+  by $\zkproof_1, \ldots, \zkproof_{\mu}, \zkproof_{\mu + 1}$ protocol messages
+  output by the prover and by $\zkproof_i.\ch$ random oracle responses on a partial
+  transcript
+  $(\inp, \zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_\mu.\ch, \zkproof_{\mu + 1})$,
+  where $\inp$ is the proven statement.We say that $\proofsystem$ has \emph{unique
+    responses from $i$ on} if for any $\ppt$ adversary $\adv$:
+  \[
 	\Pr\left[
 	\begin{aligned}
-	& \vec{a} \neq \vec{a'}, a_1, \ldots, a_{i} = a'_1,
-	\ldots, a'_{i}, \\
-	& \verifier^\ro_\fs (\srs, \inp, \vec{a}) =
-	\verifier^\ro_\fs(\srs, \inp, \vec{a'}) = 1  \\
+	& \vec{\zkproof} \neq \vec{\zkproof'}, (\zkproof_1, \ldots, \zkproof_{i}) = (\zkproof'_1,
+	\ldots, \zkproof'_{i}), \\
+	& \verifier_\fs (\srs, \inp, \zkproof) =
+	\verifier_\fs(\srs, \inp, \zkproof') = 1  \\
 	\end{aligned}
 	\,\left|\,
 	\begin{aligned}
-	& \inp, \vec{a},  \vec{a'}  \gets \adv^{\ro, \initU}(1^\secpar) \\
-& \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
-	a'_{\mu + 1})
+	& \inp, \zkproof, \zkproof  \gets \adv^{\ro, \initU}(1^\secpar) \\
+& \zkproof = (\zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{\mu}.\ch, \zkproof_{\mu + 1}), \zkproof' = (\zkproof'_1, \ldots,
+	\zkproof'_{\mu}.\ch, \zkproof'_{\mu + 1})
 	\end{aligned}
 	\right.\right]
 	\]
 	is upper-bounded by some negligible function $\negl$.
 \end{definition}
 
-\begin{definition}[$\ur{i}$-protocol in the updatable setting]
-	\label{def:wiuru-int}
-	\changedm{ Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
-    $\ps = (\kgen, \prover, \verifier, \simulator)$. Denote by $ \vec{\zkproof})$ the vector
-    $\zkproof_1, \ldots, \zkproof_{\mu}, \zkproof_{\mu + 1}$ of  messages output in each round 
-    by the prover, We say that $\proofsystem$ has \emph{unique responses from $i$ on}
-    if for any $\ppt$ adversary $\adv = (\adv_0, \adv_1)$:
-	\[
-	\Pr\left[
-	\begin{aligned}
-	& \zkproof \neq \zkproof', \zkproof_1, \ldots, \zkproof_{i} = \zkproof'_1,
-	\ldots, \zkproof'_{i}, \\
-	& \verifier (\srs, \inp, \vec{\zkproof}) =
-	\verifier(\srs, \inp, \vec{\zkproof'}) = 1  \\
-	\end{aligned}
-	\,\left|\,
-    \begin{aligned}
-      & (\srs, \inp) \gets \adv_0^{\initU}, \\
-      & (\zkproof, \zkproof') \gets \adv_1^{\verifier (\srs, \inp; \rho)} %\\ \ip{\adv_1 (\srs, \inp)}{\verifier (\srs, \inp; \rho)},\\
-      %& \zkproof' \gets \ip{\adv_1 (\srs, \inp)}{\verifier (\srs, \inp; \rho)}
-% 	& \inp, \vec{a},  \vec{a'}  \gets \adv^{\ro, \initU}(1^\secpar) \\
-% & \vec{a} = (a_1, \ldots, a_{\mu + 1}), \vec{a'} = (a'_1, \ldots,
-% 	a'_{\mu + 1})
-	\end{aligned}
-	\right.\right]
-	\]
-	is upper-bounded by some negligible function $\negl$. Here adversary's access to $\verifier$ is \emph{single instance only}. That is, the verifier gets as in put instance $\inp$ and involves in a single proving interaction with $\adv$ (esp.~$\adv$ cannot use $\verifier$ to simultanously make two independent proofs for $\inp$). However, $\adv$ can rewind $\verifier$ to a chosen partial transcript.
-  \michals{7.10}{Any ideas how to write it more formally?} \michals{7.10}{I think it is fine to have two kinds of verifiers here -- one that interacts with a prover, another that checks given transcript}
-}
-
-\changedm{
-  Another take:
-	\[
-	\Pr\left[
-    \begin{aligned}
-      & (\zkproof, 1) \gets \ip{\adv (\srs, \inp)}{\verifier (\srs, \inp; \rho)},\\
-      & (\zkproof', 1) \gets \ip{\adv (\srs, \inp)}{\verifier(\srs, \inp; \rho)}, \\
-	& \zkproof \neq \zkproof', \zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{i} = \zkproof'_1, \zkproof'_1.\ch, 
-	\ldots, \zkproof'_{i}, 
-	\end{aligned}
-	\,\left|\,
-    \vphantom{
-      \begin{aligned}
-        & \\
-        & \\
-        & 
-      \end{aligned}
-    }
-    \begin{aligned}
-      & (\srs, \inp) \gets \adv_0^{\initU}
-	\end{aligned}
-	\right.\right]
-	\]
-
-  \michals{7.10}{In that take we need to state that  $\ip{}{}$ returns proof and verifier's bit}}
-
-\end{definition}
 Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$, defined in~\cref{fig:upd}.
 
 Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary
@@ -294,60 +238,6 @@ simulation \emph{trapdoor-less simulatable} (TLS).
   Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if $\simulator_\fs$ programs the random oracle \emph{only} for
     challenges from round $k$ to $\mu + 1$.
   \end{definition}
-
-  \michals{11.10}{tls definition for interactive protocols}
-  \changedm{
-    \begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
-      Let $\ps$ be a $(2\mu + 1)$-message ZK proof system.  We call $\ps$
-      \emph{trapdoor-less simulatable} if for any adversary $\adv$
-  \begin{align*}
-    \left\{
-    \begin{aligned}
-      \ip{\prover (\inp, \wit)}{\verifier (\srs, \inp)}
-    \end{aligned}
-      \left|\,
-    \begin{aligned}
-      (\srs, \inp, \wit) \gets \adv^{\initU}(\secparam)
-    \end{aligned}
-    \right.\right\}
-    \approx
-    \left\{
-    \begin{aligned}
-      \simulator (\srs)
-    \end{aligned}
-      \left|\,
-    \begin{aligned}
-      (\srs, \inp, \wit) \gets \adv^{\initU}(\secparam)
-    \end{aligned}
-    \right.\right\}
-  \end{align*}
- 
-  Additionally, we say that $\ps$ is $k$-programmable, if $\simulator$ produces a
-  simulated proof such that it picks $\zkproof_{i}.\ch$
-  \emph{after} $\zkproof_i$ has been computed, for $i \in \range{1}{k - 1}$.
-\end{definition}
-}
-
-\michals{11.10}{TLS definition for nizk}
-\changedm{
-  \begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
-    Let $\ps$ be a NIZK which proof compounds of $(2\mu + 1)$ parts
-    $\zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{\mu}, \zkproof_{\mu}.\ch,
-    \zkproof_{\mu + 1}$.  We call $\ps$ \emph{trapdoor-less simulatable} if for any
-    adversary $\adv$, $\eps_0 \approx \eps_1$, where
-    \begin{align*}
-      \eps_b = \Pr \left[
-      \adv^{\ro, \initU, \oracleo_b} (\secparam) = 1
-      \right]
-    \end{align*}
-    where $\oracleo_b$ on input $(\inp, \wit) \in \REL$ and $\srs$ being the SRS
-    finalized by $\adv$ responds with $\zkproof \gets \prover (\srs, \inp, \wit)$
-    when $b = 1$ or $\zkproof \gets \simulator (\srs, \inp)$ when $b = 0$.
- 
-    Additionally, we say that $\ps$ is $k$-programmable, if $\simulator$ produces a
-    simulated proof such that for instance $\inp$ it picks a random witness $\wit$ and runs $\prover (\srs, \inp, \wit)$ to get partial proof $\zkproof_1, \ldots, \zkproof_{k - 1}.\ch$. Then it continues to produce the whole proof $\zkproof = \zkproof_1, \ldots, \zkproof_{\mu}$ and outputs it.
-\end{definition}
-  }
 
   
 \begin{remark}[TLS vs HVZK]
