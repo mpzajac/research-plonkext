@@ -562,7 +562,7 @@ non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
 			\procedure{$\simO(\inp')$}{
 				\pcif (\srs = \bot): \pcreturn \bot \\
 				% \hamid{should we formalize this extractor?}\\
-				\zkproof'  \gets  \simulator_\FS(\srs, \COMMENT{ \td, }\inp')\\
+				\zkproof'  \gets  \simulator(\srs, \COMMENT{ \td, }\inp')\\
 				Q = Q \cup \{(\inp', \zkproof')\}\\
 				\pcreturn  \zkproof' \\	
 			}
