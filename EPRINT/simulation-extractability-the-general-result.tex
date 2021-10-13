@@ -49,14 +49,14 @@ random oracle and wins with the same probability.
   \label{thm:se}
   Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
   $(2 \mu + 1)$-message zero-knowledge proof system for $\RELGEN(\secparam)$. Let
-  $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. If $\psfs$ is
-  \emph{$k$-programmable trapdoor-less simulatable}, has the $k$-\emph{unique
-    response property} with security loss $\epsur(\secpar)$, and is
-  $(k, n)$-\emph{forking special sound} with security loss $\epss(\secpar)$, then
-  $\psfs$ is \COMMENT{ forking }\emph{simulation-extractable} with extraction error
-  $\epsur(\secpar)$ against $\ppt$ adversaries that makes up to $q$ random oracle
-  queries and returns an acceptable proof with probability at least $\accProb$.  The
-  extraction probability $\extProb$ is at least
+  $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. If $\psfs$ has the
+  $k$-\emph{unique response property} with security loss $\epsur(\secpar)$, is
+  \emph{$k'$-programmable trapdoor-less simulatable}, is $(k'', n)$-\emph{forking
+    special sound} with security loss $\epss(\secpar)$, and $k \geq k' \geq k''$ then
+  $\psfs$ is \emph{simulation-extractable} with extraction error $\epsur(\secpar)$
+  against $\ppt$ adversaries that makes up to $q$ random oracle queries and returns
+  an acceptable proof with probability at least $\accProb$.  The extraction
+  probability $\extProb$ is at least
   \( \extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n}
   -\eps(\secpar)\,, \) for some negligible $\eps(\secpar)$.
 \end{theorem}
@@ -164,7 +164,7 @@ random oracle and wins with the same probability.
 %
 \ngame{2} Define an adversary $\bdv$ against forking special soundness such that,
 given access to oracles $\initU$ and $\ro$, and randomness $r = (r_\adv, \rsim)$, it
-internally runs $\advse^{\initU, \simO, \ro} (1^\secpar; r_\adv)$, where
+internally runs $\advse^{\initU, \simO} (1^\secpar; r_\adv)$, where
 \begin{compactenum}
 \item $\bdv$ answers $\adv$ random oracle and update queries by passing the queries to the real
   oracles $\ro$ and $\initU$. When $\adv$ finalises an SRS $\srs$, $\bdv$ does the same.
@@ -199,17 +199,17 @@ Note, that since the view of the adversary when run inside $\zdv$ is the same as
 view with access to the real random oracle, it produces exactly the same
 output. After the first run, $\zdv$ outputs the index $i$ of a random oracle query
 that was used by $\bdv$ to compute the challenge
-$\zkproof[k].\ch = \ro(\zkproof_{\advse}[0..k])$ it had to answer in the $(k + 1)$-th
+$\zkproof[k''].\ch = \ro(\zkproof_{\advse}[0..k''])$ it had to answer in the $(k'' + 1)$-th
 round and adversary's transcript, denoted by $s_1$ in $\genforking$'s description. If
 no such query took place $\zdv$ outputs $i = 0$.
 		
 Then, new random oracle responses are picked for queries indexed by $i, \ldots, q$
 and the adversary is rewound to the point just prior to when it gets the response to
-RO query $\zkproof_{\advse}[0..k]$. The adversary gets a random oracle response from
+RO query $\zkproof_{\advse}[0..k'']$. The adversary gets a random oracle response from
 a new set of responses $h^2_i, \ldots, h^2_q$. If the adversary requests a simulated
 proof after seeing $h^2_i$, then $\zdv$ computes the simulated proof on its
 own. Eventually, $\zdv$ outputs index $i'$ of a query that was used by the adversary
-to compute $\ro(\zkproof_{\advse}[0..k])$, and a new transcript $s_2$. $\zdv$ is run
+to compute $\ro(\zkproof_{\advse}[0..k''])$, and a new transcript $s_2$. $\zdv$ is run
 $n$ times with different random oracle responses.  Eventually, if all runs of $\zdv$
 were successful, then tree of acceptable transcripts $\tree$ is built.
   % If a tree
@@ -226,28 +226,28 @@ property has already been covered by the abort condition in $\game{1}$.
 Denote by $\waccProb$ the probability that $\advse$ outputs a proof that is accepted
 and does not break $\ur{k}$-ness of $\ps$. With the same probability, an accepting
 proof is returned by $\bdv$. \changedm{This comes since the proof system is
-  $k$-programmable. That is, $\bdv$ when providing $\adv$ with simulated proofs
-  programs the random oracle only in rounds from $k$ on or, to put that differently,
-  it does not program the random oracle for rounds $1$ to $k - 1$.  Hence, $\adv$
+  $k'$-programmable. That is, $\bdv$ when providing $\adv$ with simulated proofs
+  programs the random oracle only in rounds from $k'$ on or, to put that differently,
+  it does not program the random oracle for rounds $1$ to $k' - 1$.  Hence, $\adv$
   outputs proof that does not contain any programmed random oracle output and $\bdv$
-  can output that proof as its own. This holds since (1) for rounds $1$ to $k - 1$,
+  can output that proof as its own. This holds since (1) for rounds $1$ to $k' - 1$,
   the simulator does not program the oracle, (2) $\adv$ cannot use a part of a
-  simulated proof in rounds $k$ to $\mu$ because of the unique response property.}
+  simulated proof in rounds $k'$ to $\mu$ because of the unique response property.}
 	
 	\ncase{Game 1 to Game 2}
 		Note that for every accepting proof $\zkproof_{\advse}$, we may
-		assume that whenever $\advse$ outputs a round $k$ message $\zkproof_{\advse}[k]$, then the
-		$(\inp_{\advse}, \zkproof_{\advse}[1..k])$ random oracle query was made by the adversary, not
+		assume that whenever $\advse$ outputs a round $k''$ message $\zkproof_{\advse}[k'']$, then the
+		$(\inp_{\advse}, \zkproof_{\advse}[1..k''])$ random oracle query was made by the adversary, not
 		the simulator\footnote{\cite{INDOCRYPT:FKMV12} calls these queries \emph{fresh}.}, i.e.~there
 		is no simulated proof $\zkproof_\simulator$ on $\inp_\simulator$ such that
-		$(\inp_{\advse}, \zkproof_{\advse} [1..k]) = (\inp_\simulator,
-		\zkproof_\simulator[1..k])$. Otherwise, the game would be already interrupted by the error
+		$(\inp_{\advse}, \zkproof_{\advse} [1..k'']) = (\inp_\simulator,
+		\zkproof_\simulator[1..k''])$. Otherwise, the game would be already interrupted by the error
 		event in Game $\game{1}$.  As previously,
 		\( \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}}\,.  \)
 		
 
     Denote by $\waccProb'$ the probability that algorithm $\zdv$, defined in the general forking lemma,
-		produces an accepting proof with a fresh challenge after round $k$. From the above argument,
+		produces an accepting proof with a fresh challenge after round $k''$. From the above argument,
 		we have that $\waccProb = \waccProb'$.
 		
 		Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma}, we get that
