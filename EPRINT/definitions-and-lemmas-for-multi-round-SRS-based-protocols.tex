@@ -207,7 +207,7 @@ follows the definition below:
 	\end{aligned}
 	\,\left|\,
 	\begin{aligned}
-	& \inp, \zkproof, \zkproof  \gets \adv^{\ro, \initU}(1^\secpar) \\
+	& \inp, \zkproof, \zkproof'  \gets \adv^{\ro, \initU}(1^\secpar) \\
 & \zkproof = (\zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{\mu}.\ch, \zkproof_{\mu + 1}), \zkproof' = (\zkproof'_1, \ldots,
 	\zkproof'_{\mu}.\ch, \zkproof'_{\mu + 1})
 	\end{aligned}
@@ -216,12 +216,14 @@ follows the definition below:
 	is upper-bounded by some negligible function $\negl$.
 \end{definition}
 
-Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$, defined in~\cref{fig:upd}.
+Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using
+the update oracle $\initU$, defined in~\cref{fig:upd}.
 
-Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary
-to produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$
-that are the same on the first $i$ prover messages.
-We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
+Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary to
+produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$ that are
+the same on the first $i$ prover messages.  We note that the definition above is also
+meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty
+string.
 
  \subsection{Trapdoor-Less Simulation}
 In security reductions in this paper it is sometimes needed to produce
@@ -230,45 +232,43 @@ programming the random oracle. We call protocols which allow for such a
 simulation \emph{trapdoor-less simulatable} (TLS). 
 
 \begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
-  Let $\ps$ be a $(2\mu + 1)$-message ZK proof system. Let $\ps_\fs= (\kgen_{\fs}, \prover_{\fs}, \verifier_{\fs}, \simulator_{\fs})$ be its
-  Fiat--Shamir variant and $\ro$ the random oracle. $\simulator_{\fs}$ takes as input $\srs$
-  and instance $\inp$, programs $\ro$, and outputs a proof $\zkproof_\simulator$.  We
-  call $\ps$ \emph{trapdoor-less simulatable} if for any adversary
-  $\adv$, $\eps_0 \approx \eps_1$, where
+  Let $\ps$ be a $(2\mu + 1)$-message ZK proof system. Let
+  $\ps_\fs= (\kgen_{\fs}, \prover_{\fs}, \verifier_{\fs}, \simulator_{\fs})$ be its
+  Fiat--Shamir variant and $\ro$ the random oracle. $\simulator_{\fs}$ takes as input
+  $\srs$ and instance $\inp$, programs $\ro$, and outputs a proof
+  $\zkproof_\simulator$.  We call $\ps$ \emph{trapdoor-less simulatable} if for any
+  adversary $\adv$, $\eps_0 \approx \eps_1$, where
   \begin{align*}
     \eps_b = \Pr\left[
     \begin{aligned}
-      \adv^{\initU,\ro,\oracleo_b} = 0
+      \adv^{\initU, \oracleo_b} = 0
     \end{aligned}
     \right]
   \end{align*}
-  On $\adv$'s query $\inp, \wit$, oracle $\oracleo_{b}$ responds
-  with a real proof $\zkproof_\prover \gets
-  \prover_{\fs}(\srs, \inp, \wit)$ if $b = 0$ or a simulated proof $\zkproof_\simulator \gets \simulator_{\fs} (\srs,
-  \inp)$ if $b = 1$. 
+  On $\adv$'s query $(1, q)$ $\oracleo_b$ responds with $\ro (q)$ if $b = 0$ and with
+  $\simulator_1 (1, st, q)$ if $b = 1$. On query $(2, \inp, \wit)$, oracle
+  $\oracleo_{b}$ responds with a real proof
+  $\zkproof_\prover \gets \prover_{\fs} (\srs, \inp, \wit)$ if $b = 0$ or a simulated
+  proof $\zkproof_\simulator \gets \simulator_{\fs} (\srs, \inp)$ if $b = 1$.
 
-  Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if $\simulator_\fs$ programs the random oracle \emph{only} for
-    challenges from round $k$ to $\mu + 1$.
+  Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if $\simulator_\fs$
+  programs the random oracle \emph{only} for challenges from round $k$ to $\mu + 1$.
   \end{definition}
 
   
 \begin{remark}[TLS vs HVZK]
-  We note that TLS notion is closely related to honest-verifier zero knowledge in the standard model. That is, if we consider an interactive proof system $\proofsystem$ that is HVZK in the standard model then its Fiat--Shamir compiled version $\proofsystem_\fs$ is TLS. This comes as the simulator $\simulator$ in $\proofsystem$ produces a valid simulated proof by picking verifier's challenges according to a predefined distribution and $\proofsystem_\fs$'s simulator $\simulator_\fs$ produces its proofs similarly by picking the challenges and additionally programming the random oracle to return the picked challenges. Importantly, in both $\proofsystem$ and $\proofsystem_\fs$ success of the simulator does not depend on access to an SRS trapdoor.
+  We note that TLS notion is closely related to honest-verifier zero knowledge in the
+  standard model. That is, if we consider an interactive proof system $\proofsystem$
+  that is HVZK in the standard model then its Fiat--Shamir compiled version
+  $\proofsystem_\fs$ is TLS. This comes as the simulator $\simulator$ in
+  $\proofsystem$ produces a valid simulated proof by picking verifier's challenges
+  according to a predefined distribution and $\proofsystem_\fs$'s simulator
+  $\simulator_\fs$ produces its proofs similarly by picking the challenges and
+  additionally programming the random oracle to return the picked
+  challenges. Importantly, in both $\proofsystem$ and $\proofsystem_\fs$ success of
+  the simulator does not depend on access to an SRS trapdoor.
 \end{remark}
 
-% \begin{definition}[$k$-programmable ZK]
-%   \label{def:kzk}
-%   Let $\ps$ be a $(2\mu + 1)$-message ZK proof system and let $\ps_\fs$ be its
-%   Fiat--Shamir variant. We say that $\ps_\fs$ is $k$-programmable ZK if there
-%   exists a simulator $\simulator_\fs$ that
-%   \begin{compactenum}
-%   \item produces proofs indistinguishable from proofs output by an honest
-%     prover;
-%   \item $\simulator_\fs$ programs the random oracle \emph{only} for
-%     challenges from round $k$ to $\mu + 1$.
-%   \end{compactenum}
-% \end{definition
-%}
 We note that $\plonk$ is $2$-programmable TLS, $\sonic$ is $1$-programmable TLS,
 and $\marlin$ is $1$-programmable TLS. This follows directly from the proofs of
 their standard model zero-knowledge property in
@@ -280,7 +280,7 @@ their standard model zero-knowledge property in
 
 \subsection{Generalised forking lemma and forking special soundness}
 %\label{sec:forking_lemma}
-Although dubbed ``general'', the forking lemma of~\cref{lem:forking_lemma} is not
+Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not
 general enough for our purpose as it is useful only for protocols where a witness
 can be extracted from just two transcripts. To be able to extract a witness
 from, say, an execution of $\plonkprot$ we need at least
@@ -640,15 +640,14 @@ algorithm from the generalized forking lemma.
 	$(2 \mu + 1)$-message proof system for a relation $\REL$.  Let $\proofsystem_\fs$ be
 	$\proofsystem$ after the Fiat--Shamir transform.
 	
-	For any $\ppt$ adversary $\advse^{\initU,
-		\ro} (1^\secpar; r)$ with access to oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r)$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
+	For any $\ppt$ adversary $\advse^{\ro, \initU} (1^\secpar; r)$ with access to oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r)$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
 	and update oracle queries.
 	%
 	$\zdv$ returns the index $i$ of the
 	random oracle query made for challenge $k$ and the proof $\adv$ returns.
 	
 	Consider the algorithm $\genforking_{\zdv}^{n}$
-	that rewinds $\zdv$ to produce a $(1,\dots, n,\dots, 1)$-tree of
+	that rewinds $\zdv$ to produce a $(1,\dots, n, \dots, 1)$-tree of
 	accepting transcripts.
 	
 	We say that $\psfs$ is $(k,n)$-forking special sound with security loss $\eps(\secpar)$, if
@@ -658,23 +657,17 @@ algorithm from the generalized forking lemma.
 	\REL(\inp, \wit) = 0
 	\,\Biggl|\,
 	\begin{aligned}
-	%& \srs \sample \kgen(\REL),
 	& r \sample \RND{\advse},
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \ro} (1^\secpar; r), \\
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r), \\
 	&    (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r),Q_{H}),
 	\wit \gets \extt(\tree)
 	\end{aligned}
 	\right] \leq \eps(\secpar).
 	\end{align*}
 	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
-	%List $Q$ contains all $(\inp, \zkproof)$ pairs where $\inp$ is an instance provided to the simulator by the adversary and $\zkproof$ is the simulator's answer. 
 	List $Q_\ro$ contains all $\advse$'s
 	queries to $\ro$ and the random oracle's answers.
-	%List $Q_\srs$ contains the proofs of all honest SRS updates.
 \end{definition}
-% \chaya{why does $\genforking$ get $Q_H$ twice?}
-% \markulf{20/09/2021}{This is a tricky one. If I remember correctly, we wanted $\zdv$ to be able to determin when $\adv$ starts to diverge from the first branch that results in $\pi_{\adv}$. $\adv$ needs to be fed recorded simulated proofs until that divergence. After that $\zdv$ can create fresh simulated proofs. I think its ok to use the same simulated proofs in multiple sub-branches as long as they are for the right instance. In any case simulation is now hidden within $\adv$.}
-
 
 
 \paragraph{Importance of the general forking lemma.}
@@ -721,7 +714,7 @@ fresh random oracle responses is at least $\accProb$. This continues until the
 required number of transcripts is obtained. 
 
 We note that in the original forking lemma, the forking algorithm $\forking$,
-cf.~\cref{fig:forking_lemma}, gets as input only $y$ and elements $h^1_1, \ldots,
+cf.~\cite{CCS:BelNev06}, gets as input only $y$ and elements $h^1_1, \ldots,
 h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
 that $h^1_1, \ldots, h^1_q$ are random oracle responses, and thus random, makes
 the change only notational.
