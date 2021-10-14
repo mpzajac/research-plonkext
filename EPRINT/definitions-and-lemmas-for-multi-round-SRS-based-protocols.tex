@@ -82,20 +82,20 @@ We first give a definition of simulation-extractability which we base on~\cite{I
 
 % new definition to be explicit that simulator answers false instances 
 \textcolor{blue}{
-Our definition of zero-knowledge for non-interactive arguments is in the explicitly programmable random oracle model where the simulator $\simulator_\fs$ can program the random oracle.
-We model $\simulator_\fs$ as a stateful algorithm that runs in two modes. The first mode, $(c,st') \leftarrow \simulator_\fs(1,st,q)$ answers random oracle calls to $\ro$ on input $q$. The second mode $(\pi,st') \leftarrow \simulator_\fs(2,st,x)$ simulates the actual argument for instance $x$.
+Our definition of zero-knowledge for non-interactive arguments is in the explicitly programmable random oracle model where the simulator $\simulator$ can program the random oracle.
+We model $\simulator$ as a stateful algorithm that runs in two modes. The first mode, $(c,st') \leftarrow \simulator(1,st,q)$ answers random oracle calls to $\ro$ on input $q$. The second mode $(\pi,st') \leftarrow \simulator(2,st,x)$ simulates the actual argument for instance $x$.
 In order to allow $\advse$ to ask for simulated proofs of false statements in our definition of simulator extractability, we define the following``wrappers'' that are oracles that share state.
 \begin{itemize}
-\item $\simulator_1(q)$ to denote the oracle that returns the first output of $\simulator_\fs(1,st,q)$;
-\item $\simulator_2(x,w)$ that returns the first output of $\simulator_\fs(2,st,x)$ if $(x,w) \in \REL$ and $\bot$ otherwise;
-\item $\simulator_2'(x)$ that returns the first output of $\simulator_\fs(2,st,x)$.
+\item $\simulator_1(q)$ to denote the oracle that returns the first output of $\simulator(1,st,q)$;
+\item $\simulator_2(x,w)$ that returns the first output of $\simulator(2,st,x)$ if $(x,w) \in \REL$ and $\bot$ otherwise;
+\item $\simulator_2'(x)$ that returns the first output of $\simulator(2,st,x)$.
 \end{itemize}
-Since the zero-knowledge property is only guaranteed for statements in the language, the definition of ZK is with respect to oracle $\simulator_2$. That is, $\simulator_\fs = (\simulator_1,\simulator_2)$.
+Since the zero-knowledge property is only guaranteed for statements in the language, the definition of ZK is with respect to oracle $\simulator_2$. That is, $\simulator = (\simulator_1,\simulator_2)$.
 We define \emph{simulation-extractability} with respect to oracle $\simulator_2'$; that is, simulation-extractability is with respect to $\simO = (\simulator_1,\simulator_2')$.
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:updsimext}
   \label{def:simext}
-	Let $\ps = (\kgen, \prover, \verifier, \simulator_\fs)$ be a NIZK proof system. We say that $\ps$
+	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof system. We say that $\ps$
   is \emph{updatable \COMMENT{forking }simulation-extractable} with respect to $\simO$ with \emph{extraction error} $\nu$ if for
   any $\ppt$ adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a
   simulation oracle $\simO$, cf.~\cref{fig:upd}, and a random oracle $\ro$, and that produces an
