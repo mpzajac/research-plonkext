@@ -289,10 +289,11 @@ follows (the changed element has been put into a \dbox{dashbox})
 	\end{multline*}
   \end{definition}
 
-  Compared to the original uber assumptions, there are two major changes. First,
-  we require not target group $\GRP_T$ elements to be indistinguishable, but
-  elements of $\GRP_1$. 
-  \anca{do not get thie previous sentence. What are not target group elements but $\GRP_1$, you mean $\GRP_2$? }
+  Compared to the original uber assumptions, there are two major changes. \changedm{First, in
+  the original formulation the indistinguishable (boxed) elements were in $\GRP_T$,
+  here they are in $\GRP_1$.}
+  \anca{do not get thie previous sentence. What are not target group elements but
+    $\GRP_1$, you mean $\GRP_2$? } \michals{14.10}{Check now}
   
   Second, Boneh et al.'s assumption works for
   distinguishers who are given only one challenge polynomial $\p{f}$,
@@ -310,7 +311,7 @@ information -- witness -- of the prover. A proof system has to be sound as well,
 malicious prover it should be infeasible to convince a verifier of a false statement. Here, we
 focus on proof systems, so-called arguments, that guarantee soundness against $\ppt$ malicious provers.
 
-More precisely, let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of \changedm{universal}
+More precisely, let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of universal 
 relations. Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
 and the latter \emph{verifier}. We allow our proof system to have a setup, i.e.~there is a
 $\kgen$ algorithm that takes as input the relation description $\REL$ and outputs a common
@@ -319,7 +320,15 @@ systems, such as Plonk and Sonic, we treat both the reference string and the rel
 universal.
 
 We denote by $\zkproof$ a proof created by $\prover$ with input
-$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier (\srs, \inp, \zkproof)$ accepts it. In this paper we focus on proof systems where $\prover$ and $\verifier$ are given oracle access to a random oracle $\ro$. The simulator $\simulator$ is not only given access to $\ro$, but it can also \emph{program} it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
+$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier (\srs, \inp,
+\zkproof)$ accepts it. In this paper we focus on proof systems where $\prover$ and
+$\verifier$ are given oracle access to a random oracle $\ro$. The simulator
+$\simulator$ is not only given access to $\ro$, but it can also \emph{program}
+it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
+% \changedm{This is
+% formalized by dividing the simulator into two subroutines $\simulator_1,
+% \simulator_2$ that share state. The first subroutine $\simulator_1$ answers random
+% oracle queries, while the second one provides simulated proofs.}
 
 A proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is
 required to have three properties: completeness, soundness and zero knowledge, which are
@@ -332,7 +341,8 @@ defined as follows:
   \emph{complete} if an honest prover always convinces an honest verifier, that
   is for all $\REL \in \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
 	\[
-		\condprob{\verifier^\ro (\srs, \inp, \zkproof) = 1} {\srs \gets \kgen(\REL) = 1, \zkproof \gets \prover^\ro (\srs, \inp, \wit)}\,.
+		\condprob{\verifier^\ro (\srs, \inp, \zkproof) = 1} {\srs \gets \kgen(\REL) = 1,
+      \zkproof \gets \prover^\ro (\srs, \inp, \wit)}\,.
 	\]
     % \item[Soundness]
 \ourpar{Soundness.}
@@ -341,7 +351,8 @@ defined as follows:
   proof for a false statement $\inp \not\in\LANG$. More precisely, for
   all $\REL \in \RELGEN(\secparam)$
 	\[
-    \condprob{ \verifier^\ro (\srs, \inp, \zkproof) = 1 \land \inp \not\in \LANG_\REL}{\srs \gets \kgen(\REL), (\inp, \zkproof) \gets \adv^\ro(\srs)} \leq
+    \condprob{ \verifier^\ro (\srs, \inp, \zkproof) = 1 \land \inp \not\in
+      \LANG_\REL}{\srs \gets \kgen(\REL), (\inp, \zkproof) \gets \adv^\ro(\srs)} \leq
     \negl.
 	\]
 %\end{description}
@@ -350,23 +361,44 @@ verifier rejects proofs of statements outside the language, we request from the
 prover to know a witness corresponding to the proven statement. This property is
 called \emph{knowledge soundness}.%\markulf{Commented out the formal definition as we don't use it.}
  
-\ourpar{Zero knowledge.}  We call a proof system $\proofsystem$
-\emph{zero-knowledge} if for any $\REL \in \RELGEN(\secparam)$, and adversary
-$\adv$ there exists a $\ppt$ simulator $\simulator$ such that for any
-$(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$, where
+\ourpar{Zero knowledge.}  Our definition of zero-knowledge for non-interactive
+arguments is in the explicitly programmable random oracle model where the simulator
+$\simulator$ can program the random oracle. We model $\simulator$ as a stateful
+algorithm that runs in two modes. The first mode,
+$(h, st') \gets \simulator (1, st, q)$ answers random oracle calls to $\ro$ on input
+$q$. The second mode $(\zkproof, st') \gets \simulator (2, st, \inp)$ simulates the
+actual argument for instance $\inp$.  Additionally, we define the
+following``wrappers'' that are oracles that share state.
+\begin{itemize}
+\item $\simulator_1 (q)$ to denote the oracle that returns the first output of
+  $\simulator (1, st, q)$;
+\item $\simulator_2 (\inp, \wit)$ that returns the first output of
+  $\simulator (2, st, \srs, \inp)$ if $(\inp, \wit) \in \REL$ and $\bot$ otherwise;
+\end{itemize}
+
+We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
+$\REL \in \RELGEN(\secparam)$, and adversary $\adv$ there exists a $\ppt$ simulator
+$\simulator$ such that for any $(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$,
+where
 \[
-  \eps_b = \condprob{\adv^{\oracleo_b, \ro} (\srs)}{\srs \gets \kgen (\REL)}\,,
+  \eps_b = \condprob{\adv^{\oracleo_b} (\srs)}{\srs \gets \kgen (\REL)}\,,
 \]
-where $\oracleo_b$ on input $(\inp, \wit)$ returns $\zkproof \gets \simulator (\srs, \inp)$ if $b = 0$, or $\zkproof \gets \prover^\ro (\inp, \wit)$, if $b = 1$. Importantly, the simulator is able to program the random oracle $\ro$ as it wishes.
+\changedm{where $\oracleo_0$ on input $(1, q)$ responds with $h$ such that
+  $(h, st') \gets \simulator_1 (1, st, q)$, where $st$ and $st'$ are old and new
+  states of the simulator $\simulator$ and on input $(2, \inp, \wit)$ returns
+  $\zkproof \gets \simulator_2 (2, st, \srs, \inp)$. Alternatively, $\oracleo_1$ on
+  input $(1, q)$ responds with $h \gets \ro (q)$ and on input $(2, \inp, \wit)$
+  returns $\zkproof \gets \prover (\srs, \inp, \wit)$.}
 	%
 We call zero knowledge \emph{perfect} if the distributions are equal and
 \emph{computational} if they are indistinguishable for any $\ppt$ distinguisher.
 
 % \end{description}
-Alternatively, zero-knowledge can be defined by allowing the simulator to use
-the trapdoor $\td$ that is generated along the $\srs$. In this paper we distinguish
-simulators that requires a trapdoor to simulate and those that do not. We call
-the former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less simulatable} (TLS) if its simulator does not require the trapdoor.
+Alternatively, zero-knowledge can be defined by allowing the simulator to use the
+trapdoor $\td$ that is generated along the $\srs$. In this paper we distinguish
+simulators that requires a trapdoor to simulate and those that do not. We call the
+former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less
+  simulatable} (TLS) if its simulator does not require the trapdoor.
 
 % Occasionally, a weaker version of zero knowledge is sufficient. So called
 % \emph{honest verifier zero knowledge} (HVZK) assumes that the verifier's

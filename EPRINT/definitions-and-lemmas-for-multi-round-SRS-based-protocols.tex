@@ -81,7 +81,7 @@ We first give a definition of simulation-extractability which we base on~\cite{I
 
 % new definition to be explicit that simulator answers false instances 
 
-\textcolor{blue}{ Our definition of zero-knowledge for non-interactive arguments is
+\textcolor{blue}{ \mxout{Our definition of zero-knowledge for non-interactive arguments is
   in the explicitly programmable random oracle model where the simulator
   \mxout{$\simulator_\fs$} \changedm{$\simulator$} can program the random oracle.  We
   model\mxout{$\simulator_\fs$} \changedm{$\simulator$} as a stateful algorithm that
@@ -90,19 +90,31 @@ We first give a definition of simulation-extractability which we base on~\cite{I
   $(\zkproof, st') \gets \simulator (2, st, \inp)$ simulates the actual argument for
   instance $\inp$.  In order to allow $\advse$ to ask for simulated proofs of false
   statements in our definition of simulator extractability, we define the
-  following``wrappers'' that are oracles that share state.
+  following``wrappers'' that are oracles that share state.}
 \begin{itemize}
-\item $\simulator_1 (q)$ to denote the oracle that returns the first output of
-  $\simulator (1, st, q)$;
-\item $\simulator_2 (\inp, \wit)$ that returns the first output of
-  $\simulator (2, st, \inp)$ if $(\inp, \wit) \in \REL$ and $\bot$ otherwise;
-\item $\simulator_2' (\inp)$ that returns the first output of $\simulator (2, st, \inp)$.
+\item \mxout{$\simulator_1 (q)$ to denote the oracle that returns the first output of
+  $\simulator (1, st, q)$;}
+\item \mxout{$\simulator_2 (\inp, \wit)$ that returns the first output of
+  $\simulator (2, st, \inp)$ if $(\inp, \wit) \in \REL$ and $\bot$ otherwise;}
+\item \mxout{$\simulator_2' (\inp)$ that returns the first output of $\simulator (2, st, \inp)$.}
 \end{itemize}
-Since the zero-knowledge property is only guaranteed for statements in the language,
-the definition of ZK is with respect to oracle $\simulator_2$. That is,
-$\simulator = (\simulator_1, \simulator_2)$.  We define
+
+\changedm{We note that the zero-knowledge property is only guaranteed for statements
+  in the language. That is $\simulator = (\simulator_1, \simulator_2)}$, where
+$\simulator_2$ on answers with simulated proofs for true statements.  Since the
+zero-knowledge property is only guaranteed for statements in the language, the
+definition of ZK is with respect to oracle $\simulator_2$. That is,
+$\simulator = (\simulator_1, \simulator_2)$. Unfortunately, that is not enough for
+\emph{simulation extractability} where the simulator the adversary has access to
+should be able to provide simulated proofs for false statements \footnote{Note, that
+  simulation extractability property where the simulator is required to give
+  simulated proofs for true statements only is called \emph{true simulation
+    extractability.}. Hence, we introduce here a simulator oracle $\simulator'_2$ that on
+  input $\inp$ returns the first output of $\simulator (2, st, \srs, \inp)$
+  regardless $\inp$ is a valid statement or not.} We define
 \emph{simulation-extractability} with respect to oracle $\simulator_2'$; that is,
-simulation-extractability is with respect to $\simO = (\simulator_1, \simulator_2')$.
+simulation-extractability is with respect to $\simO = (\simulator_1, \simulator_2')$.}
+%
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:updsimext}
   \label{def:simext}
@@ -138,7 +150,7 @@ simulation-extractability is with respect to $\simO = (\simulator_1, \simulator_
 }{
 	\begin{aligned}
 	& r \sample \RND{\advse},
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO
 		} (1^\secpar; r) \\
 	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
 	Q, Q_\ro, Q_\srs) 
