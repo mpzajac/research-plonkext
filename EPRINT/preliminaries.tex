@@ -301,62 +301,6 @@ follows (the changed element has been put into a \dbox{dashbox})
 We show security of our version of the uber assumption using the generic group
 model as introduced by Shoup \cite{EC:Shoup97}, cf.~\cref{sec:uber-assumption-security-proof}.
 
-\subsection{Special simulation-extractability of sigma protocols and forking lemma}
-\label{sec:forking_lemma}
-\begin{theorem}[Special simulation extractability of the Fiat--Shamir transform
-  \cite{INDOCRYPT:FKMV12}]
-	Let $\sigmaprot = (\prover, \verifier, \simulator)$ be a non-trivial sigma
-  protocol with unique responses for a language $\LANG \in \npol$. In the random
-  oracle model, the NIZK proof system $\sigmaprot_\fs = (\prover_\fs,
-  \verifier_\fs, \simulator_{\fs})$ resulting by applying the Fiat--Shamir
-  transform to $\sigmaprot$ is special simulation extractable with extraction error
-  $\eta = q/h$ for the simulator $\simulator$. Here, $q$ is the number of random
-  oracle queries and $h$ is the number of elements in the range of $\ro$.
-\end{theorem}
-
-\chaya{12.10}{this theorem is perhaps misplaced? There is no definition of simulation extractability yet}
-
-The theorem relies on the following \emph{general forking lemma} \cite{JC:PoiSte00}.
-
-\begin{lemma}[General forking lemma, cf.~\cite{INDOCRYPT:FKMV12,CCS:BelNev06}]
-	\label{lem:forking_lemma}
-	Fix $q \in \ZZ$ and a set $H$ of size $h > 2$. Let $\zdv$ be a $\ppt$
-  algorithm that on input $y, h_1, \ldots, h_q$ returns $(i, s)$, where $i
-  \in\range{0}{q}$ and $s$ is called a \emph{side output}. Denote by $\ig$ a
-  randomised instance generator. We denote by $\accProb$ the probability
-	\[
-		\condprob{i > 0}{y \gets \ig; h_1, \ldots, h_q \sample H; (i, s) \gets
-		\zdv(y, h_1, \ldots, h_q)}\,.
-	\]
-	Let $\forking_\zdv(y)$ denote the algorithm described in
-  \cref{fig:forking_lemma}, then the probability $\frkProb$ defined as $
-  \frkProb := \condprob{b = 1}{y \gets \ig; (b, s, s') \gets \forking_{\zdv}(y)}
-  $ holds
-	\[
-		\frkProb \geq \accProb \brak{\frac{\accProb}{q} - \frac{1}{h}}\,.
-	\]
-	%
-	\begin{figure}
-		\centering
-		\fbox{
-		\procedure{$\forking_\zdv (y)$}
-		{
-			\rho \sample \RND{\zdv}\\
-			h_1, \ldots, h_q \sample H\\
-			(i, s) \gets \zdv(y, h_1, \ldots, h_q; \rho)\\
-			\pcif i = 0\ \pcreturn (0, \bot, \bot)\\
-			h'_{i}, \ldots, h'_{q} \sample H\\
-			(i', s') \gets \zdv(y, h_1, \ldots, h_{i - 1}, h'_{i}, \ldots,  h'_{q};
-			\rho)\\
-			\pcif (i = i') \land (h_{i} \neq h'_{i})\ \pcreturn (1, s, s')\\
-			\pcind \pcelse \pcreturn (0, \bot, \bot)
-		}}
-		\caption{Forking algorithm $\forking_\zdv$}
-		\label{fig:forking_lemma}
-\end{figure}
-\end{lemma}
-
-  
 
 \subsection{Zero-Knowledge Proof Systems}
 In a zero-knowledge proof system, a prover convinces the verifier of the veracity of a statement
