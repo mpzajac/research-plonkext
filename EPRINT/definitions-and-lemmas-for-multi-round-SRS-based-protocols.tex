@@ -81,12 +81,12 @@ We first give a definition of simulation-extractability which we base on~\cite{I
 
 % new definition to be explicit that simulator answers false instances 
 
-\textcolor{blue}{ \mxout{Our definition of zero-knowledge for non-interactive arguments is
-  in the explicitly programmable random oracle model where the simulator
+\mxout{Our definition of zero-knowledge for non-interactive arguments is in the
+  explicitly programmable random oracle model where the simulator
   \mxout{$\simulator_\fs$} \changedm{$\simulator$} can program the random oracle.  We
   model\mxout{$\simulator_\fs$} \changedm{$\simulator$} as a stateful algorithm that
-  runs in two modes. The first mode, $(c, st') \gets \simulator (1, st, q)$
-  answers random oracle calls to $\ro$ on input $q$. The second mode
+  runs in two modes. The first mode, $(c, st') \gets \simulator (1, st, q)$ answers
+  random oracle calls to $\ro$ on input $q$. The second mode
   $(\zkproof, st') \gets \simulator (2, st, \inp)$ simulates the actual argument for
   instance $\inp$.  In order to allow $\advse$ to ask for simulated proofs of false
   statements in our definition of simulator extractability, we define the
@@ -99,9 +99,9 @@ We first give a definition of simulation-extractability which we base on~\cite{I
 \item \mxout{$\simulator_2' (\inp)$ that returns the first output of $\simulator (2, st, \inp)$.}
 \end{itemize}
 
-\changedm{We note that the zero-knowledge property is only guaranteed for statements
-  in the language. That is $\simulator = (\simulator_1, \simulator_2)}$, where
-$\simulator_2$ on answers with simulated proofs for true statements.  Since the
+We note that the zero-knowledge property is only guaranteed for statements
+  in the language. That is $\simulator = (\simulator_1, \simulator_2)$, where
+$\simulator_2$ answers with simulated proofs for true statements.  Since the
 zero-knowledge property is only guaranteed for statements in the language, the
 definition of ZK is with respect to oracle $\simulator_2$. That is,
 $\simulator = (\simulator_1, \simulator_2)$. Unfortunately, that is not enough for
@@ -113,7 +113,7 @@ should be able to provide simulated proofs for false statements \footnote{Note, 
   input $\inp$ returns the first output of $\simulator (2, st, \srs, \inp)$
   regardless $\inp$ is a valid statement or not.} We define
 \emph{simulation-extractability} with respect to oracle $\simulator_2'$; that is,
-simulation-extractability is with respect to $\simO = (\simulator_1, \simulator_2')$.}
+simulation-extractability is with respect to $\simO = (\simulator_1, \simulator_2')$.
 %
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:updsimext}
@@ -168,7 +168,6 @@ simulation-extractability is with respect to $\simO = (\simulator_1, \simulator_
 	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
 	queries to $\ro$ and the random oracle's answers.
 \end{definition}
-}
 
 \chaya{13.10}{later, we should show $\simulator_\fs$ for plonk/sonic/marlin. I think it will follow from TLS. But we should emphasize there how to define the above oracles so it is clear that $\simO$ can produce accepting proofs for false statements.}
 
