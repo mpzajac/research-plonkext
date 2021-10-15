@@ -7,7 +7,7 @@
 In this section we present $\sonic$'s constraint system and algorithms. Reader
 familiar with them may jump directly to the next section.
 
-\hamid{we should put the following figure \ref{fig:pcoms} somewhere in this section.}
+%\hamid{}{we should put the following figure \ref{fig:pcoms} somewhere in this section.}
  \begin{figure}[h!]
  \centering
  	\begin{pcvstack}[center,boxed]
@@ -65,7 +65,8 @@ familiar with them may jump directly to the next section.
 
 \oursubsub{The constraint system}
 \label{sec:sonic_constraint_system}
-\sonic's system of constraints composes of three $\multconstr$-long vectors
+\cref{fig:pcoms} presents a variant of KZG~\cite{AC:KatZavGol10} polynomial commitment schemes
+used in \sonic{}. \sonic's system of constraints composes of three $\multconstr$-long vectors
 $\va, \vb, \vc$ which corresponds to left and right inputs to multiplication
 gates and their outputs. It hence holds $\va \cdot \vb = \vc$.
 
