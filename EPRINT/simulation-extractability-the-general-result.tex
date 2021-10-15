@@ -225,14 +225,14 @@ property has already been covered by the abort condition in $\game{1}$.
 		
 Denote by $\waccProb$ the probability that $\advse$ outputs a proof that is accepted
 and does not break $\ur{k}$-ness of $\ps$. With the same probability, an accepting
-proof is returned by $\bdv$. \changedm{This comes since the proof system is
-  $k'$-programmable. That is, $\bdv$ when providing $\adv$ with simulated proofs
-  programs the random oracle only in rounds from $k'$ on or, to put that differently,
-  it does not program the random oracle for rounds $1$ to $k' - 1$.  Hence, $\adv$
-  outputs proof that does not contain any programmed random oracle output and $\bdv$
-  can output that proof as its own. This holds since (1) for rounds $1$ to $k' - 1$,
-  the simulator does not program the oracle, (2) $\adv$ cannot use a part of a
-  simulated proof in rounds $k'$ to $\mu$ because of the unique response property.}
+proof is returned by $\bdv$. This comes since the proof system is
+$k'$-programmable. That is, $\bdv$ when providing $\adv$ with simulated proofs
+programs the random oracle only in rounds from $k'$ on or, to put that differently,
+it does not program the random oracle for rounds $1$ to $k' - 1$.  Hence, $\adv$
+outputs proof that does not contain any programmed random oracle output and $\bdv$
+can output that proof as its own. This holds since (1) for rounds $1$ to $k' - 1$,
+the simulator does not program the oracle, (2) $\adv$ cannot use a part of a
+simulated proof in rounds $k'$ to $\mu$ because of the unique response property.
 	
 	\ncase{Game 1 to Game 2}
 		Note that for every accepting proof $\zkproof_{\advse}$, we may

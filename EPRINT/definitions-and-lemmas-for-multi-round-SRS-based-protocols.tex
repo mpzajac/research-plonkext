@@ -27,65 +27,6 @@ We first give a definition of simulation-extractability which we base on~\cite{I
 
 \subsection{Simulation extractability}
 
-%-- old SE definition begins--
-
-\begin{definition}[Simulation-extractable NIZK]
-	\label{def:updsimext}
-  \label{def:simext}
-	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof system. We say that $\ps$
-  is \emph{updatable \COMMENT{forking }simulation-extractable} with \emph{extraction error} $\nu$ if for
-  any $\ppt$ adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a
-  simulation oracle $\simO$, cf.~\cref{fig:upd}, and a random oracle $\ro$, and that produces an
-  accepting proof for $\ps$ with probability $\accProb$, where
-	\[
-	\accProb = \condprob{
-	\begin{matrix}
-	  \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1  \\
-	  \wedge
-	(\inp_{\advse}, \zkproof_{\advse}) \not\in Q
-	\end{matrix}
-}{
-	\begin{matrix}
-	  r \sample \RND{\advse}\\
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
-		\ro} (1^\secpar; r)
-	\end{matrix}
-}
-	\]
-	there exists an extractor $\extse$ such that
-	\[
-	\extProb = \condprob{
-	\begin{matrix}
-  \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \\
- \wedge  ~(\inp_{\advse}, \zkproof_{\advse}) \not\in Q   \\
-	 \wedge  ~\REL(\inp_{\advse}, \wit_{\advse}) = 1
-	\end{matrix}
-}{
-	\begin{aligned}
-	& r \sample \RND{\advse},
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
-		\ro} (1^\secpar; r) \\
-	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
-	Q, Q_\ro, Q_\srs) 
-	\end{aligned}
-}
-	\]
-	is at at least 
-	\[
-	\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
-	\]
-	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
-	$\accProb \geq \nu$. 
-	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
-	$\inp$ is an instance queried to $\simO$ by the adversary and
-	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-	queries to $\ro$ and the random oracle's answers.
-\end{definition}
-
-%% old SE definition ends --
-\chaya{15.10}{remove the above defn?}
-% --new definition to be explicit that simulator answers false instances 
-
 We note that the zero-knowledge property is only guaranteed for statements
 in the language. The simulator $\simulator = (\simulator_1, \simulator_2)$, where
 $\simulator_2$ answers with simulated proofs only for true statements.  This is, however, not sufficient for
