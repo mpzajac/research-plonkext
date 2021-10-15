@@ -1099,11 +1099,14 @@ $\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
 \end{proof}
 
 \begin{lemma}[Simulation for false statement]
-  Let $\simulator$ be a trapdoor-less simulator from Game 2 above, then for every
-  $\inp \not\in \LANG_\REL$ holds
+  Let $\simulator = (\simulator_1, \simulator_2)$ be a trapdoor-less simulator from
+  Game 2 above, define $\simulator' = (\simulator_1, \simulator'_2)$ such that
+  $\simulator'_2$ behaves as $\simulator_2$ except it produces simulated proofs for
+  statements outside the language as well. Then for every $\inp \not\in \LANG_\REL$
+  holds
   \[
     \Pr \left[ \verifier (\srs, \inp, \zkproof) = 1 \left|\, \srs \gets \adv
-        (\secparam), \zkproof \gets \simulator_2' (\srs, \inp) \right.  \right] \geq
+        (\secparam), \zkproof \gets \simulator (\srs, \inp) \right.  \right] \geq
     1 - \eps (\secpar),
   \]
   for some negligible $\eps (\secpar)$.\michals{15.10}{Could we have just ``$= 1$''
