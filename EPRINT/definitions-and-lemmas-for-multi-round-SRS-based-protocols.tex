@@ -22,10 +22,13 @@ We remark that existing results on the Fiat-Shamir transform regarding existenti
 In this section we prepare our analysis for multi-round protocols with a universal or updatable SRS.
 In order to prove simulation-extractability for such protocols,  we require more than
 just two transcripts for extraction.  Moreover, in the updatable setting we consider protocols that rely on an SRS where the adversary gets to contribute to the SRS. This makes out analysis more challenging.
-We first give a definition of simulation-extractability which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then, to support multi-round SRS-based protocols compiled using the Fiat-Shamir transform we gneralize the unique response property, replace honest-verifier zero-knowledge property with trapdoor-less simulation and special soundness with a forking special soundness property that links up with our generalized forking lemma.
+We first give a definition of simulation-extractability which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then, to support multi-round SRS-based protocols compiled using the Fiat-Shamir transform we generalize the unique response property, replace honest-verifier zero-knowledge property with trapdoor-less simulation and special soundness with a forking special soundness property that links up with our generalized forking lemma.
 \michals{4.10}{Restructure to introduce here the purpouse and structure of the section}
 
 \subsection{Simulation extractability}
+
+%-- old SE definition begins--
+
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:updsimext}
   \label{def:simext}
@@ -79,41 +82,20 @@ We first give a definition of simulation-extractability which we base on~\cite{I
 	queries to $\ro$ and the random oracle's answers.
 \end{definition}
 
-% new definition to be explicit that simulator answers false instances 
-
-\mxout{Our definition of zero-knowledge for non-interactive arguments is in the
-  explicitly programmable random oracle model where the simulator
-  \mxout{$\simulator_\fs$} \changedm{$\simulator$} can program the random oracle.  We
-  model\mxout{$\simulator_\fs$} \changedm{$\simulator$} as a stateful algorithm that
-  runs in two modes. The first mode, $(c, st') \gets \simulator (1, st, q)$ answers
-  random oracle calls to $\ro$ on input $q$. The second mode
-  $(\zkproof, st') \gets \simulator (2, st, \inp)$ simulates the actual argument for
-  instance $\inp$.  In order to allow $\advse$ to ask for simulated proofs of false
-  statements in our definition of simulator extractability, we define the
-  following``wrappers'' that are oracles that share state.}
-\begin{itemize}
-\item \mxout{$\simulator_1 (q)$ to denote the oracle that returns the first output of
-  $\simulator (1, st, q)$;}
-\item \mxout{$\simulator_2 (\inp, \wit)$ that returns the first output of
-  $\simulator (2, st, \inp)$ if $(\inp, \wit) \in \REL$ and $\bot$ otherwise;}
-\item \mxout{$\simulator_2' (\inp)$ that returns the first output of $\simulator (2, st, \inp)$.}
-\end{itemize}
+%% old SE definition ends --
+\chaya{15.10}{remove the above defn?}
+% --new definition to be explicit that simulator answers false instances 
 
 We note that the zero-knowledge property is only guaranteed for statements
-  in the language. That is $\simulator = (\simulator_1, \simulator_2)$, where
-$\simulator_2$ answers with simulated proofs for true statements.  Since the
-zero-knowledge property is only guaranteed for statements in the language, the
-definition of ZK is with respect to oracle $\simulator_2$. That is,
-$\simulator = (\simulator_1, \simulator_2)$. Unfortunately, that is not enough for
-\emph{simulation extractability} where the simulator the adversary has access to
-should be able to provide simulated proofs for false statements \footnote{Note, that
+in the language. The simulator $\simulator = (\simulator_1, \simulator_2)$, where
+$\simulator_2$ answers with simulated proofs only for true statements.  This is, however, not sufficient for
+\emph{simulation extractability} where the simulator that the adversary has access to
+should be able to provide simulated proofs for false statements as well\footnote{Note, that
   simulation extractability property where the simulator is required to give
   simulated proofs for true statements only is called \emph{true simulation
-    extractability.}. Hence, we introduce here a simulator oracle $\simulator'_2$ that on
-  input $\inp$ returns the first output of $\simulator (2, st, \srs, \inp)$
-  regardless $\inp$ is a valid statement or not.} We define
-\emph{simulation-extractability} with respect to oracle $\simulator_2'$; that is,
-simulation-extractability is with respect to $\simO = (\simulator_1, \simulator_2')$.
+    extractability.}}. Therefore, we introduce a wrapper oracle around the simulator called $\simulator'_2$ that on
+  input $(\srs,\inp)$ always returns the first output of $\simulator (2, st, \srs, \inp)$, regardless of whether $\inp$ is in the language. We define \emph{simulation-extractability} with respect to oracle $\simulator_2'$; that is,
+simulation-extractability is with respect to a simulator $\simO = (\simulator_1, \simulator_2')$.
 %
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:updsimext}
@@ -169,9 +151,7 @@ simulation-extractability is with respect to $\simO = (\simulator_1, \simulator_
 	queries to $\ro$ and the random oracle's answers.
 \end{definition}
 
-\chaya{13.10}{later, we should show $\simulator_\fs$ for plonk/sonic/marlin. I think it will follow from TLS. But we should emphasize there how to define the above oracles so it is clear that $\simO$ can produce accepting proofs for false statements.}
-
-\chaya{13.10}{there seems to be inconsistency wrt where we use the FS subscript.}
+\chaya{13.10}{later, we should show $\simulator_2'$ for plonk/sonic/marlin. I think it will follow from TLS. But we should emphasize there how to define the above oracles so it is clear that $\simO$ can produce accepting proofs for false statements.}
 
 \subsection{Unique-response protocols}
 A technical hurdle identified by Faust et al.~\cite{INDOCRYPT:FKMV12} for
