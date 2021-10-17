@@ -89,7 +89,7 @@ simulation-extractability is with respect to a simulator $\simO = (\simulator_1,
 	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
 	$\inp$ is an instance queried to $\simO$ by the adversary and
 	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-	queries to $\ro$ and the random oracle's answers.
+	queries to $\ro$ and the random oracle's answers.\hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simulator_1$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
 \end{definition}
 
 \chaya{13.10}{later, we should show $\simulator_2'$ for plonk/sonic/marlin. I think it will follow from TLS. But we should emphasize there how to define the above oracles so it is clear that $\simO$ can produce accepting proofs for false statements.}
