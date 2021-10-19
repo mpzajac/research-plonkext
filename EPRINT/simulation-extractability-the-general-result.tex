@@ -87,9 +87,11 @@ random oracle and wins with the same probability.
   its final proof reuses at least $k$ messages from a simulated proof, and the proof
   is accepting.  Denote this event by $\event{\errur}$.
 
-  \ncase{Game 0 to Game 1} \michals{7.10}{I think we can make this reduction work
-    even for a standard $k$-ur, not only the updatable one.} \michals{8.10}{If we
-    know how to move proofs between SRSs} We have,
+  \ncase{Game 0 to Game 1}
+  % \michals{7.10}{I think we can make this reduction work
+  %   even for a standard $k$-ur, not only the updatable one.} \michals{8.10}{If we
+  %   know how to move proofs between SRSs}
+  We have,
   \( \prob{\game{0} \land \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}} \)
   and, from the difference lemma, cf.~\cref{lem:difference_lemma},
   $ \abs{\prob{\game{0}} - \prob{\game{1}}} \leq \prob{\event{\errur}}\,$.  Thus, to
@@ -174,8 +176,8 @@ internally runs $\advse^{\initU, \simO} (1^\secpar; r_\adv)$, where
 \item Eventually when $\adv$ outputs $(\inp_\advse, \zkproof_\advse)$, $\bdv$ outputs
   the same $(\inp_\advse, \zkproof_\advse)$.
 \end{compactenum}
-\michals{7.10}{Need forking soundness in the updatable setting. Alternatively we
-  could show that we can move a proof from one SRS to another using partial trapdoor}
+% \michals{7.10}{Need forking soundness in the updatable setting. Alternatively we
+%   could show that we can move a proof from one SRS to another using partial trapdoor}
 
 In this game the environment additionally aborts if extractor $\ext$ fails to build a
 $(1, \ldots, 1, n, 1, \ldots, 1)$-tree of accepting transcripts $\tree$ by rewinding
