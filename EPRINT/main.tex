@@ -98,9 +98,23 @@
 \maketitle
 
 \begin{abstract}
-The Fiat--Shamir transformation turns public-coin (three round) sigma protocol into signature schemes, non-interactive proof systems, and signatures of knowledge (SoK).  The security of the transformation relies on a powerful forking lemma that extracts the secret key or the witness, even in the presence of signing queries for signatures and simulation queries for proof systems and SoK, respectively.
-We extend this line of work and formally define simulation extractability for protocols in the random oracle model (ROM) which use a structured reference string (SRS). We then show sufficient conditions for compiling via the Fiat--Shamir transformation public-coin multi-round interactive protocols with SRS into simulation-extractable NIZK proof systems. We also consider the case that the SRS is updatable and define a strong simulation extractability notion that allows for simulated proofs with respect to an SRS to which the adversary can contribute updates.
-In the ROM, we obtain simulation-extractable and updatable NIZKs. Importantly, we show that three popular universal zero knowledge SNARKs --- Plonk, Sonic, and Marlin --- are simulation extractable out-of-the-box. This also results in the first construction of updatable simulation-extractable SNARKs and succinct updatable SoK.
+  The Fiat--Shamir transformation turns public-coin (three round) sigma protocol into
+  signature schemes, non-interactive proof systems, and signatures of knowledge
+  (SoK).  The security of the transformation relies on a powerful forking lemma that
+  extracts the secret key or the witness, even in the presence of signing queries for
+  signatures and simulation queries for proof systems and SoK, respectively.  We
+  extend this line of work and formally define simulation extractability for
+  protocols in the random oracle model (ROM) which use a structured reference string
+  (SRS). We then show sufficient conditions for compiling via the Fiat--Shamir
+  transformation public-coin multi-round interactive protocols with SRS into
+  simulation-extractable NIZK proof systems. We also consider the case that the SRS
+  is updatable and define a strong simulation extractability notion that allows for
+  simulated proofs with respect to an SRS to which the adversary can contribute
+  updates.  In the ROM, we obtain simulation-extractable and updatable
+  NIZKs. Importantly, we show that three popular universal zero knowledge SNARKs ---
+  Plonk, Sonic, and Marlin --- are simulation extractable out-of-the-box. This also
+  results in the first construction of updatable simulation-extractable SNARKs and
+  succinct updatable SoK.
 \end{abstract}
 
 %\ifupdate
@@ -118,9 +132,16 @@ In the ROM, we obtain simulation-extractable and updatable NIZKs. Importantly, w
 
 \section{Conclusion and Future Work}
 
-Since the SRS is being continually updated, one could argue that there might be simulated proofs with respect to \textit{different} SRSs available for the adversary to see before attempting to forge a proof with respect to a current SRS.
-That is, each SRS in the update chain spawns a simulation oracle. Intuitively, the updatability of the SRS allows an adversarial prover to contribute to updating, and see proofs with respect to different updated SRSs before attempting to provide a proof for a false statement (potentially output a proof wrt a SRS that is different from the SRSs corresponding to all the simulated proofs seen).
-This is a stronger definition of SE than the one we consider in this paper, and we leave exploring this to future work.
+Since the SRS is being continually updated, one could argue that there might be
+simulated proofs with respect to \textit{different} SRSs available for the adversary
+to see before attempting to forge a proof with respect to a current SRS.  That is,
+each SRS in the update chain spawns a simulation oracle. Intuitively, the
+updatability of the SRS allows an adversarial prover to contribute to updating, and
+see proofs with respect to different updated SRSs before attempting to provide a
+proof for a false statement (potentially output a proof wrt a SRS that is different
+from the SRSs corresponding to all the simulated proofs seen).  This is a stronger
+definition of SE than the one we consider in this paper, and we leave exploring this
+to future work.
 
 \bibliographystyle{alpha}
 \bibliography{../cryptobib/abbrev3,../cryptobib/crypto,../additional_bib}

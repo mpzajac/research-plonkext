@@ -159,30 +159,33 @@ computational assumption. Moreover, this should hold even against adversaries
 that contribute in the SRS generation.
 
 \oursubsub{Unique response property in the updatable setting.}  Another property required to
-show USE is the unique response property~\cite{C:Fischlin05} which says that for $3$-messages
+show USE is the unique response property~\cite{C:Fischlin05} which says that for $3$-move
 sigma protocols, all but the first message sent by the prover are deterministic (intuitively,
 the prover can only employ fresh randomness in the first message of the protocol). We cannot
 use this definition as it is since the protocols we consider have more than one round where the prover sends randomized
 messages. In Plonk, both the first and the second prover's messages are
 randomized. Although Sonic prover is deterministic after it picks its first message, the
-protocol has more than $3$ rounds. The same holds for Marlin. We propose a generalisation of
+protocol has more than $3$ moves. The same holds for Marlin. We propose a generalisation of
 the definition which states that a protocol is $\ur{i}$ if the prover is deterministic starting
-from its $(i + 1)$-th message. For our proof it is sufficient that this property is met by
+from its $(i + 1)$-th move. For our proof it is sufficient that this property is met by
 Plonk for $i = 2$. Since Sonic and Marlin provers are deterministic from the second message on,
 they are $\ur{1}$.
 
 
-\oursubsub{Trapdoor-less simulatable protocols.}  In order to invoke our main theorem on
-(Fiat--Shamir transformed) Plonk, Sonic and Marlin to conclude USE, we also need to show
-that simulators in these protocols produces proofs without relying on the knowledge of
-trapdoor. More precisely for our reduction, we need simulators that rely only on reordering the
-messages and picking suitable verifier challenges, without knowing the SRS trapdoor.  That is,
-any PPT party should be able to produce a simulated proof on its own in a trapdoor-less
-way. Note that this property does not necessary break soundness of the protocol as the
-simulator is required only to produce a transcript and is not involved in a real conversation
-with a real verifier. We show simulators for $\plonkprotfs$, $\sonicprotfs$, and
-$\marlinprotfs$ that rely only on the programmability of the RO, where programmability is only
-needed from some round $i$ onwards. This property can be understood as a generalization of honest-verifier zero-knowledge for Fiat--Shamir transformed prove systems with an SRS.
+\oursubsub{Trapdoor-less simulatable protocols.}  In order to invoke our main theorem
+on (Fiat--Shamir transformed) Plonk, Sonic and Marlin to conclude USE, we also need
+to show that simulators in these protocols produces proofs without relying on the
+knowledge of trapdoor. More precisely for our reduction, we need simulators that rely
+only on reordering the messages and picking suitable verifier challenges, without
+knowing the SRS trapdoor.  That is, any PPT party should be able to produce a
+simulated proof on its own in a trapdoor-less way. Note that this property does not
+necessary break soundness of the protocol as the simulator is required only to
+produce a transcript and is not involved in a real conversation with a real
+verifier. We show simulators for $\plonkprotfs$, $\sonicprotfs$, and $\marlinprotfs$
+that rely only on the programmability of the RO, where programmability is only needed
+from some round $i$ onwards. This property can be understood as a generalization of
+honest-verifier zero-knowledge for Fiat--Shamir transformed prove systems with an
+SRS.
 
 \oursubsub{Generalising the general forking lemma.}  Consider an interactive $3$-message
 special-sound protocol $\ps$ and its non-interactive version $\ps_\fs$ obtained by the
