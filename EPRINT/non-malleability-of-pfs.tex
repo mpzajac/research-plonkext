@@ -8,17 +8,11 @@ In this section, we show that $\plonkprotfs$ is \COMMENT{forking }simulation-ext
 $\plonkprot$ has the $\ur{2}$ property,
 cf.~\cref{lem:plonkprot_ur}.
 Next, we show that $\plonkprot$ is forking-special-sound. That is, given a
-number of accepting transcripts whose messages match on the first $3$ rounds of the
+number of accepting transcripts whose messages match on the first $5$ messages of the
 protocol, we can either extract a witness for the proven statement or use
 one of the transcripts to break the $\dlog$ assumption. This result is shown in
 the AGM, cf.~\cref{lem:plonkprot_ss}.
 
-%Given forking-soundness of $\plonkprot$, we use the fact that it is also
-%$\ur{2}$ and show, in a similar fashion to \cite{INDOCRYPT:FKMV12}, that it is
-%simulation-extractable. That is, we build reductions that given a simulation
-%extractability adversary $\advse$ either break the protocol's unique response
-%property or based on forking soundness break the $\dlog$ assumption, if extracting a valid witness from a
-%tree of transcripts is impossible. See \cref{thm:plonkprotfs_se}.
 Given forking-soundness and $\ur{2}$ of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is \COMMENT{forking }simulation-extractable.
 %Due to page limit, we omit description of \plonk{} here and refer to
 %\cref{sec:plonk_explained}.
@@ -33,6 +27,7 @@ Given forking-soundness and $\ur{2}$ of $\plonkprot$, we invoke \cref{thm:se} an
 \newcommand{\vqc}{\vec{q_{C}}}
 
 \subsection{Plonk protocol description}
+\michals{25.10}{To do: rewrite as an FS protocol}
 \label{sec:plonk_explained}
 \oursubsub{The constrain system}
 Assume $\CRKT$ is a fan-in two arithmetic circuit,
@@ -125,64 +120,67 @@ such that
 \end{aligned}
 \end{equation*}
 
-\ourpar{$\plonk$ prover
-  $\prover(\srs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot
-      \noofc}})$.}
+\ourpar{Proving statements in $\plonkprotfs$} We show how prover's algorithm
+$\prover(\srs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \noofc}})$ operates for
+the Fiat--Shamir transformed version of Plonk.
 \begin{description}
-\item[Round 1] Sample $b_1, \ldots, b_9 \sample \FF_p$; compute
+\item[Move 1] Sample $b_1, \ldots, b_9 \sample \FF_p$; compute
   $\p{a}(X), \p{b}(X), \p{c}(X)$ as
 	\begin{align*}
 		\p{a}(X) &= (b_1 X + b_2)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_i \lag_i(X) \\
 		\p{b}(X) &= (b_3 X + b_4)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_{\noofc + i} \lag_i(X) \\
 		\p{c}(X) &= (b_5 X + b_6)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_{2 \cdot \noofc + i} \lag_i(X) 
 	\end{align*}
-	Output polynomial commitments $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.
+	Output polynomial commitments $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.  
 	
-	\item[Round 2]
-	Get challenges $\beta, \gamma \in \FF_p$
+\item[Move 2] Compute challenges $\beta, \gamma \in \FF_p$ by querying random oracle
+  on partial proof, that is,
 	\[
 		\beta = \ro(\zkproof[0..1], 0)\,, \qquad \gamma = \ro(\zkproof[0..1], 1)\,.
 	\]
+  
 	Compute permutation polynomial $\p{z}(X)$
 	\begin{multline*}
 		\p{z}(X) = (b_7 X^2 + b_8 X + b_9)\p{Z_H}(X) + \lag_1(X) + \\
-			+ \sum_{i = 1}^{\noofc - 1} 
-			\left(\lag_{i + 1} (X) \prod_{j = 1}^{i} 
-			\frac{
-			(\wit_j +\beta \omega^{j - 1} + \gamma)(\wit_{\noofc + j} + \beta k_1 \omega^{j - 1} + \gamma)(\wit_{2 \noofc + j} +\beta k_2 \omega^{j- 1} + \gamma)}
-			{(\wit_j+\sigma(j) \beta + \gamma)(\wit_{\noofc + j} + \sigma(\noofc + j)\beta + \gamma)(\wit_{2 \noofc + j} + \sigma(2 \noofc + j)\beta + \gamma)}\right)
+    + \sum_{i = 1}^{\noofc - 1} \left(\lag_{i + 1} (X) \prod_{j = 1}^{i} \frac{
+        (\wit_j +\beta \omega^{j - 1} + \gamma)(\wit_{\noofc + j} + \beta k_1
+        \omega^{j - 1} + \gamma)(\wit_{2 \noofc + j} +\beta k_2 \omega^{j- 1} +
+        \gamma)} {(\wit_j+\sigma(j) \beta + \gamma)(\wit_{\noofc + j} + \sigma(\noofc
+        + j)\beta + \gamma)(\wit_{2 \noofc + j} + \sigma(2 \noofc + j)\beta +
+        \gamma)}\right)
 	\end{multline*}
 	Output polynomial commitment $\gone{\p{z}(\chi)}$
 		
-	\item[Round 3]
-	Get the challenge $\alpha = \ro(\zkproof[0..2])$, compute the quotient polynomial 
+\item[Move 3] Compute the challenge $\alpha = \ro(\zkproof[0..2])$, compute the quotient
+  polynomial
 	\begin{align*}
-	& \p{t}(X)  = \\
-	& (\p{a}(X) \p{b}(X) \selmulti(X) + \p{a}(X) \selleft(X) + 
-	\p{b}(X)\selright(X) + \p{c}(X)\seloutput(X) + \pubinppoly(X) + \selconst(X)) 
-	\frac{1}{\p{Z_H}(X)} +\\
-	& + ((\p{a}(X) + \beta X + \gamma) (\p{b}(X) + \beta k_1 X + \gamma)(\p{c}(X) 
-	+ \beta k_2 X + \gamma)\p{z}(X)) \frac{\alpha}{\p{Z_H}(X)} \\
-	& - (\p{a}(X) + \beta \p{S_{\sigma 1}}(X) + \gamma)(\p{b}(X) + \beta 
-	\p{S_{\sigma 2}}(X) + \gamma)(\p{c}(X) + \beta \p{S_{\sigma 3}}(X) + 
-	\gamma)\p{z}(X \omega))  \frac{\alpha}{\p{Z_H}(X)} \\
-	& + (\p{z}(X) - 1) \lag_1(X) \frac{\alpha^2}{\p{Z_H}(X)}
+    & \p{t}(X)  = \\
+    & (\p{a}(X) \p{b}(X) \selmulti(X) + \p{a}(X) \selleft(X) + 
+      \p{b}(X)\selright(X) + \p{c}(X)\seloutput(X) + \pubinppoly(X) + \selconst(X)) 
+      \frac{1}{\p{Z_H}(X)} +\\
+    & + ((\p{a}(X) + \beta X + \gamma) (\p{b}(X) + \beta k_1 X + \gamma)(\p{c}(X) 
+      + \beta k_2 X + \gamma)\p{z}(X)) \frac{\alpha}{\p{Z_H}(X)} \\
+    & - (\p{a}(X) + \beta \p{S_{\sigma 1}}(X) + \gamma)(\p{b}(X) + \beta 
+      \p{S_{\sigma 2}}(X) + \gamma)(\p{c}(X) + \beta \p{S_{\sigma 3}}(X) + 
+      \gamma)\p{z}(X \omega))  \frac{\alpha}{\p{Z_H}(X)} \\
+    & + (\p{z}(X) - 1) \lag_1(X) \frac{\alpha^2}{\p{Z_H}(X)}
 	\end{align*}
-	Split $\p{t}(X)$ into degree less then $\noofc$ polynomials $\p{t_{lo}}(X), \p{t_{mid}}(X), \p{t_{hi}}(X)$, such that
+	Split $\p{t}(X)$ into degree less then $\noofc$ polynomials
+  $\p{t_{lo}}(X), \p{t_{mid}}(X), \p{t_{hi}}(X)$, such that
 	\[
-		\p{t}(X) = \p{t_{lo}}(X) + X^{\noofc} \p{t_{mid}}(X) + X^{2 \noofc} \p{t_{hi}}(X)\,.
+		\p{t}(X) = \p{t_{lo}}(X) + X^{\noofc} \p{t_{mid}}(X) + X^{2 \noofc}
+    \p{t_{hi}}(X)\,.
 	\]
 	Output $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$.
 	
-	\item[Round 4]
-	Get the challenge $\chz \in \FF_p$, $\chz = \ro(\zkproof[0..3])$.
-	Compute opening evaluations
+\item[Move 4] Get the challenge $\chz \in \FF_p$, $\chz = \ro(\zkproof[0..3])$.
+  Compute opening evaluations
 	\begin{align*}
-      \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
+    \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
 	\end{align*}
 	Compute the linearisation polynomial
 	\[
-		\p{r}(X) = 
+		\p{r}(X) =
 		\begin{aligned}
       & \p{a}(\chz) \p{b}(\chz) \selmulti(X) + \p{a}(\chz) \selleft(X) + \p{b}(\chz) \selright(X) + \p{c}(\chz) \seloutput(X) + \selconst(X) \\
       & + \alpha \cdot \left( (\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma)(\p{c}(\chz) + \beta k_2 \chz + \gamma) \cdot \p{z}(X)\right) \\
@@ -190,52 +188,54 @@ such that
       & + \alpha^2 \cdot \lag_1(\chz) \cdot \p{z}(X)
 		\end{aligned}
 	\]
-	Output $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega), \p{r}(\chz).$
+	Output
+  $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma
+      2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega), \p{r}(\chz).$
 	
-	\item[Round 5]
-	Compute the opening challenge $v \in \FF_p$, $v = \ro(\zkproof[0..4])$.
-	Compute the openings for the polynomial commitment scheme 
+\item[Move 5] Compute the opening challenge $v \in \FF_p$,
+  $v = \ro(\zkproof[0..4])$.  Compute the openings for the polynomial commitment
+  scheme
 	\begin{align*}
 	& \p{W_\chz}(X) = \frac{1}{X - \chz} \left(
-	\begin{aligned}
-		& \p{t_{lo}}(X) + \chz^\noofc \p{t_{mid}}(X) + \chz^{2 \noofc} \p{t_{hi}}(X) - \p{t}(\chz)\\
-		& + v(\p{r}(X) - \p{r}(\chz)) \\
-		& + v^2 (\p{a}(X) - \p{a}(\chz))\\
-		& + v^3 (\p{b}(X) - \p{b}(\chz))\\
-		& + v^4 (\p{c}(X) - \p{c}(\chz))\\
-		& + v^5 (\p{S_{\sigma 1}}(X) - \p{S_{\sigma 1}}(\chz))\\
-		& + v^6 (\p{S_{\sigma 2}}(X) - \p{S_{\sigma 2}}(\chz))
-	\end{aligned}
-	\right)\\
-	& \p{W_{\chz \omega}}(X) = \frac{\p{z}(X) - \p{z}(\chz \omega)}{X - \chz \omega}
-\end{align*}
+   \begin{aligned}
+     & \p{t_{lo}}(X) + \chz^\noofc \p{t_{mid}}(X) + \chz^{2 \noofc} \p{t_{hi}}(X) - \p{t}(\chz)\\
+     & + v(\p{r}(X) - \p{r}(\chz)) \\
+     & + v^2 (\p{a}(X) - \p{a}(\chz))\\
+     & + v^3 (\p{b}(X) - \p{b}(\chz))\\
+     & + v^4 (\p{c}(X) - \p{c}(\chz))\\
+     & + v^5 (\p{S_{\sigma 1}}(X) - \p{S_{\sigma 1}}(\chz))\\
+     & + v^6 (\p{S_{\sigma 2}}(X) - \p{S_{\sigma 2}}(\chz))
+   \end{aligned}
+       \right)\\
+    & \p{W_{\chz \omega}}(X) = \frac{\p{z}(X) - \p{z}(\chz \omega)}{X - \chz \omega}
+  \end{align*}
 	Output $\gone{\p{W_{\chz}}(\chi), \p{W_{\chz \omega}}(\chi)}$.
 \end{description}
 
 \ncase{$\plonk$ verifier $\verifier(\srs, \inp, \zkproof)$}\ \newline
 The \plonk{} verifier works as follows
-\begin{description}
-	\item[Step 1] Validate all obtained group elements.
-	\item[Step 2] Validate all obtained field elements.
-	\item[Step 3] Validate the instance
+\begin{enumerate}
+	\item Validate all obtained group elements.
+	\item Validate all obtained field elements.
+	\item Validate the instance
       $\inp = \smallset{\wit_i}_{i = 1}^\instsize$.
-	\item[Step 4] Compute challenges $\beta, \gamma, \alpha, \chz, v,
+	\item Compute challenges $\beta, \gamma, \alpha, \chz, v,
       u$ from the transcript.
-	\item[Step 5] Compute zero polynomial evaluation
+	\item Compute zero polynomial evaluation
       $\p{Z_H} (\chz) =\chz^\noofc - 1$.
-	\item[Step 6] Compute Lagrange polynomial evaluation
+	\item Compute Lagrange polynomial evaluation
       $\lag_1 (\chz) = \frac{\chz^\noofc -1}{\noofc (\chz - 1)}$.
-	\item[Step 7] Compute public input polynomial evaluation
+	\item Compute public input polynomial evaluation
       $\pubinppoly (\chz) = \sum_{i \in \range{1}{\instsize}} \wit_i
       \lag_i(\chz)$.
-	\item[Step 8] Compute quotient polynomials evaluations
+	\item Compute quotient polynomials evaluations
 	\begin{multline*}
     \p{t} (\chz) = \frac{1}{\p{Z_H}(\chz)} \Big(
     \p{r} (\chz) + \pubinppoly(\chz) - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \\
     (\p{c}(\chz) + \gamma)\p{z}(\chz \omega) \alpha - \lag_1 (\chz) \alpha^2
     \Big) \,.
 	\end{multline*}
-	\item[Step 9] Compute batched polynomial commitment
+	\item Compute batched polynomial commitment
 	$\gone{D} = v \gone{r} + u \gone {z}$ that is
 	\begin{align*}
 		\gone{D} & = v
@@ -251,7 +251,7 @@ The \plonk{} verifier works as follows
 		\right) + \\
 		& + u \gone{\p{z}(\chi)}\,.
 	\end{align*}
-	\item[Step 10] Computes full batched polynomial commitment $\gone{F}$:
+	\item Computes full batched polynomial commitment $\gone{F}$:
 	\begin{align*}
       \gone{F} & = \left(\gone{\p{t_{lo}}(\chi)} + \chz^\noofc \gone{\p{t_{mid}}(\chi)} + \chz^{2 \noofc} \gone{\p{t_{hi}}(\chi)}\right) + u \gone{\p{z}(\chi)} + \\
                & + v
@@ -265,7 +265,7 @@ The \plonk{} verifier works as follows
 		\right) \\
 		& + v^2 \gone{\p{a}(\chi)} + v^3 \gone{\p{b}(\chi)} + v^4 \gone{\p{c}(\chi)} + v^5 \gone{\p{S_{\sigma 1}(\chi)}} + v^6 \gone{\p{S_{\sigma 2}}(\chi)}\,.
 	\end{align*}
-	\item[Step 11] Compute group-encoded batch evaluation $\gone{E}$
+	\item Compute group-encoded batch evaluation $\gone{E}$
 	\begin{align*}
 		\gone{E}  = \frac{1}{\p{Z_H}(\chz)} & \gone{
 		\begin{aligned}
@@ -275,7 +275,7 @@ The \plonk{} verifier works as follows
            }\\
       + & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }\,.
 	\end{align*}
-\item[Step 12] Check whether the verification
+\item Check whether the verification
  % $\vereq_\zkproof(\chi)$
   equation holds
 	\begin{multline}
@@ -291,15 +291,15 @@ The \plonk{} verifier works as follows
   from \cite{AC:KatZavGol10} which allows the verifier to check openings of
   multiple polynomials in two points (instead of checking an opening of a single
   polynomial at one point).
-\end{description}
+\end{enumerate}
 
 \ncase{$\plonk$ simulator $\simulator_\chi(\srs, \td= \chi, \inp)$}\ \newline
 The \plonk{} simulator proceeds as an honest prover would, except:
 \begin{enumerate}
-  \item In the first round, it sets $\wit = (\wit_i)_{i \in \range{1}{3 \noofc}}
+  \item In the first message, it sets $\wit = (\wit_i)_{i \in \range{1}{3 \noofc}}
     = \vec{0}$, and at random picks $b_1, \ldots, b_9$. Then it proceeds with
     that all-zero witness.
-  \item In Round 3, it computes polynomial $\pt(X)$ honestly, however uses
+  \item In prover's Move 3, it computes polynomial $\pt(X)$ honestly, however uses
     trapdoor $\chi$ to compute commitments
     $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$.
   \end{enumerate}
@@ -319,7 +319,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   Let
   $\adv$
   be an algebraic adversary tasked to break the $\ur{2}$-ness of
-  $\plonkprotfs$. We show that the first 2 rounds of the protocol determines,
+  $\plonkprotfs$. We show that the first 2 prover's messages determines,
   along with the verifiers challenges, the rest of it.  This is done by game
   hops. In the games, the adversary outputs two proofs $\zkproof$ and
   $\zkproof'$ for the same statement.  To distinguish polynomials and
@@ -341,10 +341,10 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 
   \ncase{Game 0 to Game 1} We show that the probability that $\adv$
   wins in one game but does not in the other is negligible.  Observe that in
-  Round 5 of the proof, the adversary is given a challenge $v$ and has to open
-  the previously computed commitments. Since the transcripts match up to Round
-  4, the challenge is the same in both. Hence, to be able to give two different
-  openings in Round 5, $\adv$ has to break the unique opening property of the
+  after its $4$-th message, the adversary is given a challenge $v$ and has to open
+  the previously computed commitments. Since the transcripts match up to $\adv$'s 
+  $4$-th message, the challenge is the same in both. Hence, to be able to give two different
+  openings in its $5$-th message, $\adv$ has to break the unique opening property of the
   KZG commitment scheme which happens with probability $\epsop$ tops.
   % Since
   % there are two commitments that the adversary opens, by the union bound
@@ -356,7 +356,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   adversary additionally wins if it provides two transcripts that matches on the
   first three messages of the proof.
 
-  \ncase{Game 0 to Game 1} In Round 4 of the protocol the adversary
+  \ncase{Game 0 to Game 1} In its $4$-th message the adversary
   has to provide evaluations
   $a_\chz = \p{a}(\chz), b_\chz = \p{b}(\chz), c_\chz = \p{c}(\chz), t_\chz =
   \p{t}(\chz), S_{1, \chz} = \p{S_{\sigma 1}}(\chz), s_{2, \chz} = \p{S_{\sigma
@@ -377,7 +377,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   linearization polynomial is determined by values known to the verifier who
   also can compute a commitment to $\p{r}(X)$ equal $\gone{\p{r}(\chi)}$ by its
   own. The evaluation of $\p{r}$ provided by the adversary is later checked, as
-  $\adv$ opens the commitment in Round 5. Hence, the probability that the
+  $\adv$ opens the commitment in its $5$-th message. Hence, the probability that the
   adversary manages to build two convincing proofs that differ in evaluations
   $r_\chz$ and $r'_\chz$ is at most $\epsbind + \infrac{2}{\abs{\FF_p}}$.
 
@@ -388,7 +388,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   adversary additionally wins if it provides two transcripts that matches on the
   first two messages of the proof.
 
-  \ncase{Game 2 to Game 3} In Round 3 the adversary computes the
+  \ncase{Game 2 to Game 3} In its $3$-rd message the adversary computes the
   quotient polynomial $\pt(X)$ and provides its commitment that compounds of
   three separate commitments
   $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$. Let
@@ -437,11 +437,11 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 	The main idea of the proof is to show that an adversary who breaks forking special
 	soundness can be used to break a $\dlog$ problem instance. The proof goes by game hops. Let $\tree$
 	be the tree produced by $\tdv$ by rewinding $\adv$. Note that since the tree
-	branches after Round 3, the instance $\inp$, commitments
+	branches after $\adv$'s $3$-rd message, the instance $\inp$, commitments
 	$\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
 		(\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges
-	$\alpha, \beta, \gamma$ are the same. The tree branches after the third round
-	of the protocol where the challenge $\chz$ is presented, thus tree $\tree$ is
+	$\alpha, \beta, \gamma$ are the same. The tree branches after the third adversary's
+  message where the challenge $\chz$ is presented, thus tree $\tree$ is
 	build using different values of $\chz$. 
 	%
 	We consider the following games.
@@ -472,7 +472,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 	$\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts
 	are acceptable by an idealised verifier, the equality between polynomial
 	$\p{t} (X)$ and combination of polynomials
-	$\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ described in Round 3 of the
+	$\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ described in Move 3 of the
 	protocol holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid
 	witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are
 	of degree at most $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their
@@ -529,16 +529,15 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 \iffalse
 \begin{proof}
 	Let $\srs$ be $\plonkprot$'s SRS and denote by $\srs_1$ all SRS's
-	$\GRP_1$-elements; that is,
-	$\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc + 2}}$. Let $\tdv$ be an
-	algebraic adversary that produces a statement $\inp$ and a
-	$(1, 1, 3\noofc + 1, 1)$-tree of acceptable transcripts $\tree$.  Note that in
-	all transcripts the instance $\inp$, proof elements
-	$\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and
-	challenges $\alpha, \beta, \gamma$ are common as the transcripts share the
-	first three rounds. The tree branches after the third round of the protocol
-	where the challenge $\chz$ is presented, thus tree $\tree$ is build using
-	different values of $\chz$.
+  $\GRP_1$-elements; that is, $\srs_1 = \gone{1, \chi, \ldots, \chi^{\noofc +
+      2}}$. Let $\tdv$ be an algebraic adversary that produces a statement $\inp$ and
+  a $(1, 1, 3\noofc + 1, 1)$-tree of acceptable transcripts $\tree$.  Note that in
+  all transcripts the instance $\inp$, proof elements
+  $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi), \p{z}(\chi), \p{t}(\chi)}$ and
+  challenges $\alpha, \beta, \gamma$ are common as the transcripts share the first
+  three prover's messages. The tree branches after the third prover's message of the
+  protocol where the challenge $\chz$ is presented, thus tree $\tree$ is build using
+  different values of $\chz$.
 	
 	We consider two games.
 	
@@ -557,7 +556,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 	evaluations of polynomials $\p{a}, \p{b}, \p{c}, \p{z}, \p{t}$. Since the
 	transcripts are acceptable by an idealised verifier, the equality between
 	polynomial $\p{t}$ and combination of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$
-	described in Round 3 of the protocol holds. Hence, $\p{a}, \p{b}, \p{c}$
+	described in Move 3 of the prover holds. Hence, $\p{a}, \p{b}, \p{c}$
 	encodes the valid witness for the proven statement. Since
 	$\p{a}, \p{b}, \p{c}$ are of degree at most $(\noofc + 2)$ and there is more
 	than $(\noofc + 2)$ their evaluations known, $\extt$ can recreate their
@@ -935,21 +934,21 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 $(\inp, \wit)$ and gets a proof $\zkproof$ simulated by the simulator
 $\simulator$ which proceeds as follows.
 
-In Round 1 the simulator  picks randomly both the randomisers $b_1, \ldots, b_6$ and
+For its $1$-st message the simulator  picks randomly both the randomisers $b_1, \ldots, b_6$ and
 sets $\wit_i = 0$ for $i \in \range{1}{3\noofc}$. Then $\simulator$
-outputs $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$. For the first round
+outputs $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$. For the first
 challenge, the simulator picks permutation argument challenges $\beta, \gamma$
 randomly.
 
-In Round 2, the simulator computes $\p{z}(X)$ from
+For its $2$-nd message, the simulator computes $\p{z}(X)$ from
 the newly picked randomisers $b_7, b_8, b_9$ and coefficients of polynomials
 $\p{a}(X), \p{b}(X), \p{c}(X)$. Then it evaluates $\p{z}(X)$ honestly and outputs
 $\gone{\p{z}(\chi)}$. Challenge $\alpha$ that should be sent by the verifier
-after Round 2 is picked by the simulator at random.
+after the simulator's $2$ message is picked by the simulator at random.
 
-In Round 3 the simulator starts by picking at random a challenge $\chz$, which
-in the real proof comes as a challenge from the verifier sent \emph{after} Round
-3. Then $\simulator$ computes evaluations
+In its $3$-rd message the simulator starts by picking at random a challenge $\chz$, which
+in the real proof comes as a challenge from the verifier sent \emph{after} the prover
+sends its $3$-rd message. Then $\simulator$ computes evaluations
 \(\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma
     2}}(\chz), \pubinppoly(\chz), \lag_1(\chz), \p{Z_H}(\chz),\allowbreak
 \p{z}(\chz\omega)\) and computes $\p{t}(X)$ honestly. Since for a random
@@ -960,20 +959,17 @@ rather than a polynomial. Then, the simulator evaluates $\p{t}(X)$ at $\chz$ and
 picks randomly a degree-$(3 \noofc - 1)$ polynomial $\p{\tilde{t}}(X)$ such that
 $\p{t}(\chz) = \p{\tilde{t}}(\chz)$ and publishes a commitment
 $\gone{\p{\tilde{t}_{lo}}(\chi), \p{\tilde{t}_{mid}}(\chi),
-  \p{\tilde{t}_{hi}}(\chi)}$. After this round the simulator outputs $\chz$ as a
+  \p{\tilde{t}_{hi}}(\chi)}$. After that the simulator outputs $\chz$ as a
 challenge.
 
-In the next round, the simulator computes polynomial $\p{r}(X)$ as an honest
+For the next message, the simulator computes polynomial $\p{r}(X)$ as an honest
 prover would, cf.~\cref{sec:plonk_explained} and evaluates $\p{r}(X)$ at $\chz$.
 
-The rest of the evaluations are already computed, thus $\simulator$ simply
-outputs
-\(
-  \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma
-      2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega)\,.
-\)
-After that it picks randomly the challenge $v$, proceeds in the last round as an
-honest prover would proceed and outputs the final challenge, $u$, by picking it
+The rest of the evaluations are already computed, thus $\simulator$ simply outputs
+\( \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma
+    2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega)\,.  \) After that it picks randomly
+the challenge $v$, and prepares the the last message as an honest prover
+would. Eventually, $\simulator$ and outputs the final challenge, $u$, by picking it
 at random as well.
 
 \ncase{Game 1 to Game 2} We now describe the reduction $\rdv$ which
@@ -1055,18 +1051,18 @@ Analogously for the triplets and quadruplets and elements dependent on~$\vec{w}$
 Next the reduction obtains from $\adv$ an instance--witness pair $(\inp, \wit)$.  $\rdv$ now
 prepares a simulated proof as follows:
 \begin{compactdesc} 
-\item[Round 1] $\rdv$ computes $\gone{\pa(\chi)}$ using as
+\item[Move 1] $\rdv$ computes $\gone{\pa(\chi)}$ using as
 randomisers $\gone{\tb_1}, \gone{\tb_2}$ and setting $\wit_i = 0$, for $i
 \in \range{1}{3 \noofc}$. Similarly it computes
 $\gone{\pb(\chi)}, \gone{\pc(\chi)}$.  $\rdv$ publishes the obtained values
-and picks a Round 1 challenge $\beta, \gamma$ at random.  Note that regardless
+and picks the first challenge $\beta, \gamma$ at random.  Note that regardless
 $w_1 = b_1$ or a random element, $\gone{a(\chi)}$ is random. Thus $\rdv$'s
 output has the same distribution as output of a real prover.  
-\item[Round 2]
+\item[Move 2]
 $\rdv$ computes $\gone{\pz(\chi)}$ using $\tb_7, \tb_8, \tb_9$ and publishes
-it. Then it picks randomly the challenge $\alpha$. This round output is
+it. Then it picks randomly the challenge $\alpha$. This message is
 independent on $b_1$ thus $\rdv$'s output is indistinguishable from the prover's. 
-\item[Round 3] The reduction computes
+\item[Move 3] The reduction computes
   $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$, which all depend on
   $b_1$. To that end $\gone{\tb_1}$ is used. Note that if $\vec{w}$ is a vector
   of $\pF(b_1, \ldots, b_9)$ evaluations then
@@ -1077,14 +1073,14 @@ independent on $b_1$ thus $\rdv$'s output is indistinguishable from the prover's
   computed by the real prover. That is, in that case
   $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$ are as the simulator
   $\simulator$ would compute. Eventually, $\rdv$ outputs $\chz$.
-\item[Round 4] The reduction outputs
+\item[Move 4] The reduction outputs
   $\pa(\chz), \pb(\chz), \pc(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2} (\chz)},
   \pt(\chz), \pz(\ochz)$.  For the sake of concreteness, denote by
   $S = \smallset{\pa, \pb, \pc, \pt, \pz}$. Although for a polynomial $\p{p} \in S$,
   reduction $\rdv$ does not know $\p{p}(\chi)$ or even do not know all the
   coefficients of $\p{p}$, the polynomials in $S$ was computed such that the
   reduction always knows their evaluation at $\chz$ and $\ochz$.
-\item[Round 5] $\rdv$ computes the openings of the polynomial commitments assuring
+\item[Move 5] $\rdv$ computes the openings of the polynomial commitments assuring
   that evaluations at $\chz$ it provided were computed honestly.
 \end{compactdesc}
 

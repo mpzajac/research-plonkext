@@ -236,16 +236,16 @@ can output that proof as its own. This holds since (1) for messages $1$ to $k' -
 the simulator does not program the oracle, (2) $\adv$ cannot use a part of a
 simulated proof from move $k'$ because of the unique response property.
 	
-	\ncase{Game 1 to Game 2}
-		Note that for every accepting proof $\zkproof_{\advse}$, we may
-		assume that whenever $\advse$ outputs a move $k''$ message $\zkproof_{\advse}[k'']$, then the
-		$(\inp_{\advse}, \zkproof_{\advse}[1..k''])$ random oracle query was made by the adversary, not
-		the simulator\footnote{\cite{INDOCRYPT:FKMV12} calls these queries \emph{fresh}.}, i.e.~there
-		is no simulated proof $\zkproof_\simulator$ on $\inp_\simulator$ such that
-		$(\inp_{\advse}, \zkproof_{\advse} [1..k'']) = (\inp_\simulator,
-		\zkproof_\simulator[1..k''])$. Otherwise, the game would be already interrupted by the error
-		event in Game $\game{1}$.  As previously,
-		\( \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}}\,.  \)
+\ncase{Game 1 to Game 2} Note that for every accepting proof $\zkproof_{\advse}$, we
+may assume that whenever $\advse$ outputs a $k''$-th move message
+$\zkproof_{\advse}[k'']$, then the $(\inp_{\advse}, \zkproof_{\advse}[1..k''])$
+random oracle query was made by the adversary, not the
+simulator\footnote{\cite{INDOCRYPT:FKMV12} calls these queries \emph{fresh}.},
+i.e.~there is no simulated proof $\zkproof_\simulator$ on $\inp_\simulator$ such that
+$(\inp_{\advse}, \zkproof_{\advse} [1..k'']) = (\inp_\simulator,
+\zkproof_\simulator[1..k''])$. Otherwise, the game would be already interrupted by
+the error event in Game $\game{1}$.  As previously,
+\( \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}}\,.  \)
 		
 
     Denote by $\waccProb'$ the probability that algorithm $\zdv$, defined in the general forking lemma,
@@ -271,7 +271,7 @@ simulated proof from move $k'$ because of the unique response property.
 		Since $\ps$ is forking-sound the probability that $\extt(\tree)$
 		fails is upper-bounded by $\epsss(\secpar)$.
 		
-		Since Game $\game{3}$ is aborted when it is impossible to extract a witness from
+	\ncase{Conclusion}	Since Game $\game{3}$ is aborted when it is impossible to extract a witness from
 		$\tree$ and $\bdv$ only passes proofs produced by $\adv$, the adversary $\advse$ cannot
 		win. Thus, by the game-hopping argument,
 		\[
@@ -315,7 +315,9 @@ simulated proof from move $k'$ because of the unique response property.
 We conjecture that based on the recent results on state restoration
 soundness~\cite{C:GhoTes21}, which effectively allows to query the verifier multiple
 times on different overlapping transcripts, the $q^{\mu}$ loss could be
-avoided. However, this would reduce the class of protocols covered by our results.
+avoided. However, this would reduce the class of protocols covered by our
+results. More precisely, we would require that the input interactive protocols are
+state-restoration sound \cite{TCC:BenChiSpo16}.
 
 %%% Local Variables:
 %%% mode: latex
