@@ -63,7 +63,7 @@ simulator $\simO = (\simulator_1, \simulator_2')$.
   that $\ps$ is \emph{updatable simulation-extractable} with respect to $\simO$ with
   \emph{extraction error} $\nu$ if for any $\ppt$ adversary $\adv$ that is given
   oracle access to an updatable SRS setup $\initU$, a simulation oracle $\simO$,
-  cf.~\cref{fig:upd}, and a random oracle $\ro$, and that produces an accepting proof
+  cf.~\cref{fig:upd} and that produces an accepting proof
   for $\ps$ with probability $\accProb$, where
 	\[
 	\accProb = \condprob{
@@ -107,20 +107,21 @@ simulator $\simO = (\simulator_1, \simulator_2')$.
 	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
 	$\inp$ is an instance queried to $\simO$ by the adversary and
 	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-	queries to $\ro$ and the random oracle's answers.\hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simulator_1$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
+	queries to $\simulator_1$ and the (simulated) random oracle's answers.
+  % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simulator_1$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
 \end{definition}
 
-\chaya{13.10}{later, we should show $\simulator_2'$ for plonk/sonic/marlin. I think
-  it will follow from TLS. But we should emphasize there how to define the above
-  oracles so it is clear that $\simO$ can produce accepting proofs for false
-  statements.}
-\michals{19.10}{Re showing that Plonk's et al simulators can produce acceptable
-  proofs for false statements, I am not convinced that's what we need -- we define SE
-  wrt concrete simulators, hence if someone defines a proof system with a simulator
-  that outputs a trapdoor when queried on a false statement, then such a proof
-  systems is simply not SE. For our main theorem we use trapdoor-less simulators
-  which cannot do harm, however I think we should discuss how to show that
-  possibility of RO programming doesn't do harm as well. }
+% \chaya{13.10}{later, we should show $\simulator_2'$ for plonk/sonic/marlin. I think
+%   it will follow from TLS. But we should emphasize there how to define the above
+%   oracles so it is clear that $\simO$ can produce accepting proofs for false
+%   statements.}
+% \michals{19.10}{Re showing that Plonk's et al simulators can produce acceptable
+%   proofs for false statements, I am not convinced that's what we need -- we define SE
+%   wrt concrete simulators, hence if someone defines a proof system with a simulator
+%   that outputs a trapdoor when queried on a false statement, then such a proof
+%   systems is simply not SE. For our main theorem we use trapdoor-less simulators
+%   which cannot do harm, however I think we should discuss how to show that
+%   possibility of RO programming doesn't do harm as well. }
 
 \subsection{Unique-response protocols}
 A technical hurdle identified by Faust et al.~\cite{INDOCRYPT:FKMV12} for proving

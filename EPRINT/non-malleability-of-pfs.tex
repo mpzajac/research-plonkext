@@ -16,7 +16,7 @@ the AGM, cf.~\cref{lem:plonkprot_ss}.
 Given forking-soundness and $\ur{2}$ of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is \COMMENT{forking }simulation-extractable.
 %Due to page limit, we omit description of \plonk{} here and refer to
 %\cref{sec:plonk_explained}.
-%Unfortunately, we also have to move some of the
+%Unfortunately, we also have to Message some of the
 % proofs to the Supplementary Materials as well, cf.~\cref{sec:plonk_supp_mat}
 
 \newcommand{\vql}{\vec{q_{L}}}
@@ -124,7 +124,7 @@ such that
 $\prover(\srs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \noofc}})$ operates for
 the Fiat--Shamir transformed version of Plonk.
 \begin{description}
-\item[Move 1] Sample $b_1, \ldots, b_9 \sample \FF_p$; compute
+\item[Message 1] Sample $b_1, \ldots, b_9 \sample \FF_p$; compute
   $\p{a}(X), \p{b}(X), \p{c}(X)$ as
 	\begin{align*}
 		\p{a}(X) &= (b_1 X + b_2)\p{Z_H}(X) + \sum_{i = 1}^{\noofc} \wit_i \lag_i(X) \\
@@ -133,7 +133,7 @@ the Fiat--Shamir transformed version of Plonk.
 	\end{align*}
 	Output polynomial commitments $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.  
 	
-\item[Move 2] Compute challenges $\beta, \gamma \in \FF_p$ by querying random oracle
+\item[Message 2] Compute challenges $\beta, \gamma \in \FF_p$ by querying random oracle
   on partial proof, that is,
 	\[
 		\beta = \ro(\zkproof[0..1], 0)\,, \qquad \gamma = \ro(\zkproof[0..1], 1)\,.
@@ -151,7 +151,7 @@ the Fiat--Shamir transformed version of Plonk.
 	\end{multline*}
 	Output polynomial commitment $\gone{\p{z}(\chi)}$
 		
-\item[Move 3] Compute the challenge $\alpha = \ro(\zkproof[0..2])$, compute the quotient
+\item[Message 3] Compute the challenge $\alpha = \ro(\zkproof[0..2])$, compute the quotient
   polynomial
 	\begin{align*}
     & \p{t}(X)  = \\
@@ -173,7 +173,7 @@ the Fiat--Shamir transformed version of Plonk.
 	\]
 	Output $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$.
 	
-\item[Move 4] Get the challenge $\chz \in \FF_p$, $\chz = \ro(\zkproof[0..3])$.
+\item[Message 4] Get the challenge $\chz \in \FF_p$, $\chz = \ro(\zkproof[0..3])$.
   Compute opening evaluations
 	\begin{align*}
     \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
@@ -192,7 +192,7 @@ the Fiat--Shamir transformed version of Plonk.
   $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma
       2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega), \p{r}(\chz).$
 	
-\item[Move 5] Compute the opening challenge $v \in \FF_p$,
+\item[Message 5] Compute the opening challenge $v \in \FF_p$,
   $v = \ro(\zkproof[0..4])$.  Compute the openings for the polynomial commitment
   scheme
 	\begin{align*}
@@ -299,7 +299,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   \item In the first message, it sets $\wit = (\wit_i)_{i \in \range{1}{3 \noofc}}
     = \vec{0}$, and at random picks $b_1, \ldots, b_9$. Then it proceeds with
     that all-zero witness.
-  \item In prover's Move 3, it computes polynomial $\pt(X)$ honestly, however uses
+  \item In prover's $3$-rd message, it computes polynomial $\pt(X)$ honestly, however uses
     trapdoor $\chi$ to compute commitments
     $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$.
   \end{enumerate}
@@ -460,26 +460,25 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 	the extractor fails to extract a valid witness out of the proof.
 	%\end{inparaenum}
 	
-	\ncase{Probability that $\adv$ wins Game 0 is negligible} Probability of
-	$\adv$ winning this game is $\epsid(\secpar)$ as the protocol $\plonkprot$,
-	instantiated with the idealised verification equation, is perfectly knowledge
-	sound except with negligible probability of the idealised verifier failure
-	$\epsid(\secpar)$. Hence for a valid proof $\zkproof$ for a statement $\inp$
-	there exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note that
-	since the $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for
-	different challenges $\chz$, it obtains the same number of different
-	evaluations of polynomials
-	$\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts
-	are acceptable by an idealised verifier, the equality between polynomial
-	$\p{t} (X)$ and combination of polynomials
-	$\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ described in Move 3 of the
-	protocol holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid
-	witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are
-	of degree at most $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their
-	evaluations known, $\extt$ can recreate polynomials' coefficients by interpolation
-	and reveal the witness with probability $1$. Hence, the probability that
-	extraction fails in that case is upper-bounded by probability of an idealised
-	verifier failing $\epsid(\secpar)$, which is negligible.
+	\ncase{Probability that $\adv$ wins Game 0 is negligible} Probability of $\adv$
+  winning this game is $\epsid(\secpar)$ as the protocol $\plonkprot$, instantiated
+  with the idealised verification equation, is perfectly knowledge sound except with
+  negligible probability of the idealised verifier failure $\epsid(\secpar)$. Hence
+  for a valid proof $\zkproof$ for a statement $\inp$ there exists a witness $\wit$,
+  such that $\REL(\inp, \wit)$ holds. Note that since the $\tdv$ produces
+  $(3 \noofc + 1)$ acceptable transcripts for different challenges $\chz$, it obtains
+  the same number of different evaluations of polynomials
+  $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are
+  acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$
+  and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined
+  in prover's $3$-rd message description holds. Hence,
+  $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven
+  statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are of degree at most
+  $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their evaluations known,
+  $\extt$ can recreate polynomials' coefficients by interpolation and reveal the
+  witness with probability $1$. Hence, the probability that extraction fails in that
+  case is upper-bounded by probability of an idealised verifier failing
+  $\epsid(\secpar)$, which is negligible.
 	
 	\ncase{Game 1} In this game the adversary additionally wins if
 	%\begin{inparaenum}
@@ -556,7 +555,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 	evaluations of polynomials $\p{a}, \p{b}, \p{c}, \p{z}, \p{t}$. Since the
 	transcripts are acceptable by an idealised verifier, the equality between
 	polynomial $\p{t}$ and combination of polynomials $\p{a}, \p{b}, \p{c}, \p{z}$
-	described in Move 3 of the prover holds. Hence, $\p{a}, \p{b}, \p{c}$
+	defined as in $3$-rd prover's message holds. Hence, $\p{a}, \p{b}, \p{c}$
 	encodes the valid witness for the proven statement. Since
 	$\p{a}, \p{b}, \p{c}$ are of degree at most $(\noofc + 2)$ and there is more
 	than $(\noofc + 2)$ their evaluations known, $\extt$ can recreate their
@@ -893,12 +892,13 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 \begin{lemma}
   \label{lem:plonk_hvzk}
   Let $\plonkprot$ be zero knowledge with security $\epszk(\secpar)$. Let
-  $(\pR, \pS, \pT, \pf, 1)$-uber assumption for $\pR, \pS, \pT, \pf$ as defined
-  in \cref{eq:uber} hold with security $\epsuber(\secpar)$. Then $\plonkprot$ 2-programmable trapdoor-less simulatable zero knowledge with simulator $\simulator$
+  $(\pR, \pS, \pT, \pf, 1)$-uber assumption for $\pR, \pS, \pT, \pf$ as defined in
+  \cref{eq:uber} hold with security $\epsuber(\secpar)$. Then $\plonkprot$
+  2-programmable trapdoor-less simulatable zero knowledge with simulator $\simulator$
   that does not require a SRS trapdoor with security
-  $\epszk(\secpar) + \epsuber(\secpar)$.\footnote{The simulator works as a simulator for proofs
-    that are zero-knowledge in the standard model. However, we do not say that
-    $\plonk$ is HVZK in the standard model as proof of that \emph{requires} the
+  $\epszk(\secpar) + \epsuber(\secpar)$.\footnote{The simulator works as a simulator
+    for proofs that are zero-knowledge in the standard model. However, we do not say
+    that $\plonk$ is HVZK in the standard model as proof of that \emph{requires} the
     SRS simulator.}
 \end{lemma}
 
@@ -1051,18 +1051,18 @@ Analogously for the triplets and quadruplets and elements dependent on~$\vec{w}$
 Next the reduction obtains from $\adv$ an instance--witness pair $(\inp, \wit)$.  $\rdv$ now
 prepares a simulated proof as follows:
 \begin{compactdesc} 
-\item[Move 1] $\rdv$ computes $\gone{\pa(\chi)}$ using as
+\item[Message 1] $\rdv$ computes $\gone{\pa(\chi)}$ using as
 randomisers $\gone{\tb_1}, \gone{\tb_2}$ and setting $\wit_i = 0$, for $i
 \in \range{1}{3 \noofc}$. Similarly it computes
 $\gone{\pb(\chi)}, \gone{\pc(\chi)}$.  $\rdv$ publishes the obtained values
 and picks the first challenge $\beta, \gamma$ at random.  Note that regardless
 $w_1 = b_1$ or a random element, $\gone{a(\chi)}$ is random. Thus $\rdv$'s
 output has the same distribution as output of a real prover.  
-\item[Move 2]
+\item[Message 2]
 $\rdv$ computes $\gone{\pz(\chi)}$ using $\tb_7, \tb_8, \tb_9$ and publishes
 it. Then it picks randomly the challenge $\alpha$. This message is
 independent on $b_1$ thus $\rdv$'s output is indistinguishable from the prover's. 
-\item[Move 3] The reduction computes
+\item[Message 3] The reduction computes
   $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$, which all depend on
   $b_1$. To that end $\gone{\tb_1}$ is used. Note that if $\vec{w}$ is a vector
   of $\pF(b_1, \ldots, b_9)$ evaluations then
@@ -1073,14 +1073,14 @@ independent on $b_1$ thus $\rdv$'s output is indistinguishable from the prover's
   computed by the real prover. That is, in that case
   $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$ are as the simulator
   $\simulator$ would compute. Eventually, $\rdv$ outputs $\chz$.
-\item[Move 4] The reduction outputs
+\item[Message 4] The reduction outputs
   $\pa(\chz), \pb(\chz), \pc(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2} (\chz)},
   \pt(\chz), \pz(\ochz)$.  For the sake of concreteness, denote by
   $S = \smallset{\pa, \pb, \pc, \pt, \pz}$. Although for a polynomial $\p{p} \in S$,
   reduction $\rdv$ does not know $\p{p}(\chi)$ or even do not know all the
   coefficients of $\p{p}$, the polynomials in $S$ was computed such that the
   reduction always knows their evaluation at $\chz$ and $\ochz$.
-\item[Move 5] $\rdv$ computes the openings of the polynomial commitments assuring
+\item[Message 5] $\rdv$ computes the openings of the polynomial commitments assuring
   that evaluations at $\chz$ it provided were computed honestly.
 \end{compactdesc}
 
