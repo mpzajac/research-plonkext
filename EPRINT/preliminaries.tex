@@ -10,17 +10,16 @@ $\RND{\adv}$ denote the set of random tapes of correct length for $\adv$
 the random choice of the randomiser $r$ from $\RND{\adv}$. We denote by $\negl$
 ($\poly$) an arbitrary negligible (resp.~polynomial) function.
 
-Probability ensembles $X = \smallset{X_\secpar}_\secpar$ and $Y =
-\smallset{Y_\secpar}_\secpar$, for distributions $X_\secpar, Y_\secpar$, have
-\emph{statistical distance} $\SD(X_\secpar, Y_\secpar)=\epsilon(\secpar)$ equal $\epsilon(\secpar)$ if $\sum_{a \in
-  \supp{X_\secpar \cup Y_\secpar}} \abs{\prob{X_\secpar = a} - \prob{Y_\secpar =
-    a}} = \epsilon(\secpar)$. We write $X \approx_\secpar Y$ if $\SD(X_\secpar,
-Y_\secpar) \leq \negl$. For values $a(\secpar)$ and $b(\secpar)$ we write
-$a(\secpar) \approx_\secpar b(\secpar)$ if $\abs{a(\secpar) - b(\secpar)} \leq
-\negl$.
-For a probability space $(\samplespace, \eventspace, \probfunction)$ and event
-$\event{E} \in \eventspace$ we denote by $\nevent{E}$ an event that is
-complementary to $\event{E}$,
+Probability ensembles $X = \smallset{X_\secpar}_\secpar$ and
+$Y = \smallset{Y_\secpar}_\secpar$, for distributions $X_\secpar, Y_\secpar$, have
+\emph{statistical distance} $\SD(X_\secpar, Y_\secpar) = \epsilon(\secpar)$ if
+$\sum_{a \in \supp{X_\secpar \cup Y_\secpar}} \abs{\prob{X_\secpar = a} -
+  \prob{Y_\secpar = a}} = \epsilon(\secpar)$. We write $X \approx_\secpar Y$ if
+$\SD(X_\secpar, Y_\secpar) \leq \negl$. For values $a(\secpar)$ and $b(\secpar)$ we
+write $a(\secpar) \approx_\secpar b(\secpar)$ if
+$\abs{a(\secpar) - b(\secpar)} \leq \negl$.  For a probability space
+$(\samplespace, \eventspace, \probfunction)$ and event $\event{E} \in \eventspace$ we
+denote by $\nevent{E}$ an event that is complementary to $\event{E}$,
 i.e.~$\nevent{E} = \samplespace \setminus \event{E}$.
 
 
@@ -58,37 +57,34 @@ parameters by $\pgen$.
 	$
 \end{lemma}
 \subsection{Algebraic Group Model}
-The algebraic group model (AGM) introduced in \cite{C:FucKilLos18} lies between
-the standard model and generic bilinear group model. In the AGM it is assumed
-that an adversary $\adv$ can output a group element $\gnone{y} \in \GRP$ if
-$\gnone{y}$ has been computed by applying group operations to group elements
-given to $\adv$ as input. It is further assumed, that $\adv$ knows how to
-``build'' $\gnone{y}$ from that elements. More precisely, the AGM requires that
-whenever $\adv(\gnone{\vec{x}})$ outputs a group element $\gnone{y}$ then it
-also outputs $\vec{c}$ such that $\gnone{y} = \vec{c}^\top \cdot
-\gnone{\vec{x}}$. Both $\plonk$ and $\sonic$ have been shown secure using the
-AGM. An adversary that works in the AGM is called \emph{algebraic}.
+The algebraic group model (AGM) introduced in \cite{C:FucKilLos18} lies between the
+standard model and generic bilinear group model. In the AGM it is assumed that an
+adversary $\adv$ can output a group element $\gnone{y} \in \GRP$ if $\gnone{y}$ has
+been computed by applying group operations to group elements given to $\adv$ as
+input. It is further assumed, that $\adv$ knows how to ``build'' $\gnone{y}$ from
+that elements. More precisely, the AGM requires that whenever $\adv(\gnone{\vec{x}})$
+outputs a group element $\gnone{y}$ then it also outputs $\vec{c}$ such that
+$\gnone{y} = \vec{c}^\top \cdot \gnone{\vec{x}}$. $\plonk$, $\sonic$ and $\marlin$
+have been shown secure using the AGM. An adversary that works in the AGM is called
+\emph{algebraic}.
 
 \oursubsub{Idealised Verifier and Verification Equations.} Let
 $(\kgen, \prover, \verifier, \simulator)$ be a proof system.
 % or a polynomial commitment
 % scheme\hamid{might be unclear as we are defining polynomial commitments as
 %   $(\kgen, \com, \open, \verify)$.}.
-Observe that the $\kgen$ algorithm provides an SRS which can be interpreted as a
-set of group representation of polynomials evaluated at trapdoor
-elements. That is, for a trapdoor $\chi$ the SRS contains
-$\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for some polynomials
-$\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. The verifier
-$\verifier$ accepts if (a set of) verification equation
-$\vereq_{\inp, \zkproof}$ %(note that the verification equation changes relate to the instance $\inp$ and proof $\zkproof$) 
-(which can also be interpreted as a
-polynomial in $\FF_p[X]$ whose coefficients depend on messages sent by the
-prover) zeroes at $\chi$. Following \cite{EPRINT:GabWilCio19} we call verifiers
-who check that $\vereq_{\inp, \zkproof}(\chi) = 0$ \emph{real verifiers} as
-opposed to \emph{ideal verifiers} who accept only when
-$\vereq_{\inp, \zkproof}(X) = 0$. That is, while a real verifier accepts when a
-polynomial \emph{evaluates} to zero, an ideal verifier accepts only when the
-polynomial \emph{is} zero.
+Observe that the $\kgen$ algorithm provides an SRS which can be interpreted as a set
+of group representation of polynomials evaluated at trapdoor elements. That is, for a
+trapdoor $\chi$ the SRS contains $\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for
+some polynomials $\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. The verifier
+$\verifier$ accepts a proof $\zkproof$ for instance $\inp$ if (a set of) verification
+equation $\vereq_{\inp, \zkproof}$ (which can also be interpreted as a polynomial in
+$\FF_p[X]$ whose coefficients depend on messages sent by the prover) zeroes at
+$\chi$. Following \cite{EPRINT:GabWilCio19} we call verifiers who check that
+$\vereq_{\inp, \zkproof}(\chi) = 0$ \emph{real verifiers} as opposed to \emph{ideal
+  verifiers} who accept only when $\vereq_{\inp, \zkproof}(X) = 0$. That is, while a
+real verifier accepts when a polynomial \emph{evaluates} to zero, an ideal verifier
+accepts only when the polynomial \emph{is} zero.
 
 Although ideal verifiers are impractical, they are very useful in our
 proofs. More precisely, we show that
@@ -96,21 +92,29 @@ proofs. More precisely, we show that
 \item the idealised verifier accepts an incorrect proof (what ``incorrect''
   means depends on the situation) with at most negligible probability (and in many
   cases---never);
-\item when the real verifier accepts, but not the idealised one, then a malicious $\prover$ can be used to break the underlying security assumption
-  (in our case---a variant of $\dlog$.)
+\item when the real verifier accepts, but not the idealised one, then a malicious
+  prover can be used to break the underlying security assumption (in our case---a
+  variant of $\dlog$.)
 \end{compactenum}
 
 Analogously, idealised verifier can be defined for polynomial commitment schemes.
 
  
 \subsection{Signatures of Knowledge}
-Signatures of Knowledge (SoKs) \cite{C:ChaLys06} are closely related to simulation-extractable SNARKs: A signer can generate a valid signature for a message only if she has a valid witness for the statement. 
+Signatures of Knowledge (SoKs) \cite{C:ChaLys06} are closely related to
+simulation-extractable SNARKs: A signer can generate a valid signature for a message
+only if she has a valid witness for the statement.
 
- The notion of SoKs mimics digital signatures with strong existential unforgeability: 
-even if the adversary has seen many
-signatures on arbitrary messages under arbitrary statement,  it cannot create a new signature (not seen before) without knowing the witness for the statement in question.
+The notion of SoKs mimics digital signatures with strong existential unforgeability:
+even if the adversary has seen many signatures on arbitrary messages under arbitrary
+statement, it cannot create a new signature (not seen before) without knowing the
+witness for the statement in question.
 
-To define Signatures of Knowledge we use a recent version \cite{C:GroMal17} that implicitly considers only compact (succinct) signatures. \COMMENT{We omit the description of SoK's algorithms and security properties and defer them to \cref{sec:sok}.} Intuitively, a SoK behaves like a non-interactive prove system that `binds' the message being signed to the proof.
+To define Signatures of Knowledge we use a recent version \cite{C:GroMal17} that
+implicitly considers only compact (succinct) signatures. \COMMENT{We omit the
+  description of SoK's algorithms and security properties and defer them to
+  \cref{sec:sok}.} Intuitively, a SoK behaves like a non-interactive prove system
+that ``binds'' the message being signed to the proof.
      
 %\subsection{Signatures of Knowledge}
 \label{sec:sok}
