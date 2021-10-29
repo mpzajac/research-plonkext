@@ -7,13 +7,13 @@
 In this section, we show that $\plonkprotfs$ is \COMMENT{forking }simulation-extractable. Towards this end, we first use the unique opening property to show that
 $\plonkprot$ has the $\ur{2}$ property,
 cf.~\cref{lem:plonkprot_ur}.
-Next, we show that $\plonkprot$ is forking-special-sound. That is, given a
+Next, we show that $\plonkprot$ is forking special sound. That is, given a
 number of accepting transcripts whose messages match on the first $5$ messages of the
 protocol, we can either extract a witness for the proven statement or use
 one of the transcripts to break the $\dlog$ assumption. This result is shown in
 the AGM, cf.~\cref{lem:plonkprot_ss}.
 
-Given forking-soundness and $\ur{2}$ of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is \COMMENT{forking }simulation-extractable.
+Given forking special soundness and $\ur{2}$ of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is \COMMENT{forking }simulation-extractable.
 %Due to page limit, we omit description of \plonk{} here and refer to
 %\cref{sec:plonk_explained}.
 %Unfortunately, we also have to Message some of the
