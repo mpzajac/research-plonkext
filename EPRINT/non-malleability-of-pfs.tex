@@ -310,7 +310,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   $\epsbind(\secpar)$-binding and has unique opening property with security
   $\epsop(\secpar)$, then probability that a $\ppt$ adversary $\adv$ breaks
   $\plonkprotfs$'s $\ur{2}$ property is at most
-  $\epsop + 9 \cdot (\epsbind + \infrac{2}{\FF_p}) + \epss + \epsro$, where
+  $9 \cdot (\epsop + \epsbind + \infrac{2}{\FF_p}) + \epss + \epsro$, where
   $\epsro$ is probability that a $\ppt$ adversary finds collision in a random
   oracle.
 \end{lemma}
@@ -344,7 +344,8 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   the previously computed commitments. Since the transcripts match up to $\adv$'s 
   $4$-th message, the challenge is the same in both. Hence, to be able to give two different
   openings in its $5$-th message, $\adv$ has to break the unique opening property of the
-  KZG commitment scheme which happens with probability $\epsop$ tops.
+  KZG commitment scheme which happens with probability $9 \cdot \epsop$ tops (as $9$
+  polynomials are evaluated).
   % Since
   % there are two commitments that the adversary opens, by the union bound
   % probability that $\adv$ wins in one game but not the other is upper-bounded
@@ -403,7 +404,10 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   as $\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)}$, and
   $\p{t^1}(X)$ that is committed as
   $\gone{\p{t^1_{lo}}(\chi), \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$, then one of
-  them has to be computed incorrectly. 
+  them has to be computed incorrectly or the adversary can be used to break the dlog
+  assumption if $\p{t^0}(X) \neq \p{t^1}$, but $\gone{\p{t^0_{lo}}(\chi),
+    \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)} = \gone{\p{t^1_{lo}}(\chi),
+    \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$.
 
   Importantly, polynomial $\p{t}(X)$ assures that the constraints of the system
   hold. Hence, the probability that one of $\p{t^0}(X)$, $\p{t^1}(X)$ is computed
@@ -413,15 +417,44 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   $\p{t^0}(X)$ (or $\p{t^1}(X)$) and later open the commitment at $\chz$ to
   $\p{t}(\chz)$. That is, give an evaluation from the correct polynomial
   $\p{t}(X)$. Since the commitment scheme is evaluation binding, probability of
-  such event is upper bounded by $\epsbinding + \infrac{2}{\abs{\FF_p}}$.
+  such event is upper bounded by $\epsdlog + 3 \cdot (\epsbinding + \infrac{2}{\abs{\FF_p}})$.
 
   \ncase{Conclusion} Taking all the games together, probability that $\adv$ wins
   in Game 3 is upper-bounded by
   \[
-    2 \cdot \epsop + 9 \cdot (\epsbind + \infrac{2}{\FF_p}) + \epsro + \epss.
+    9 \cdot (\epsop + \epsbind + \infrac{2}{\FF_p}) + \epsro + \epss + \epsdlog.
   \]
   \qed
 \end{proof}
+
+\changedm{
+  \begin{proof}
+    Let $\adv$ be an algebraic adversary tasked to break $\ur{2}$-ness of Plonk. We
+    show that probability of $\adv$ being successful is negligible unless it is able
+    to break either evaluation binding or unique opening property of the polynomial
+    commitment scheme. The proof goes by game hops.
+
+    \ncase{Game 0} In this game the adversary wins if it breaks either evaluation
+    binding or unique opening property for one of the committed polynomials.
+
+    Since there is $9$ polynomials that are committed or evaluated then probability
+    of this event is upper-bounded by $9 \cdot (\epsbind + \epsop)$.
+
+    \ncase{Game 1} In this game the adversary additionally wins if it manages to
+    break $\ur{2}$ property of the proof system.
+
+    \ncase{Game 0 to Game 1} Note that since did not win in Game 0, it did not break
+    polynomial commitment binding nor unique opening property. Hence, since KZG
+    polynomial commitment scheme is deterministic, $\adv$ had to commit to different
+    polynomials in both proofs. Since these polynomials are uniquely determined by
+    the first messages of the protocol, one of the proofs is incorrect.
+    Probability that the verifier accepts an incorrect proof is at most $\epss$.
+
+    \ncase{Conclusion} Adversary succeeds in breaking $\ur{2}$ property of the scheme
+    with probability at most  $9 \cdot (\epsbind + \epsop) + \epss$.
+    
+  \end{proof}
+}
 
 \subsection{Forking special soundness}
 \begin{lemma}
