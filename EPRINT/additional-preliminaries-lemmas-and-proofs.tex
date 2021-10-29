@@ -1,4 +1,66 @@
-\section{Additional preliminaries, lemmas and proofs}
+\section{Additional preliminaries}
+
+\subsection{SNARKY Signatures Construction}\label{sec:SoKconstruction}
+
+We will recall the contrustion of 
+a signature of knowledge scheme for messages in $\{0, 1\}^*$
+from an SE-SNARK as shown in \cite{C:GroMal17}. 
+ 
+Consider a target collision-resistant hash function also known as universal oneway hash function $H:\{0, 1\}^{\ell_k} \times \{0, 1\}^* \to \{0, 1\}^{\ell_h}$ with $\ell_K, \ell_h$ polynomials in the security parameter $\secpar$. 
+
+The target collision-resistance of $H$ requires that for any $\ppt$ adversary $\adv$ : 
+ 
+	\[  \condprob{
+	m_0 \gets \adv(1^\secpar); K \gets \{0, 1\}^{\ell_K}; m_1 \gets \adv(K)
+}{
+	m_0 \neq m_1 ~\land  ~H_K(m_0)=H_K(m_1)
+} \leq \negl.
+	\]
+	
+For any given relation $\REL'$, we consider the  following relation $\REL$:
+ 	\[\REL= \{((K,h,\inp),\wit) : K\in  \{0, 1\}^{\ell_K} ~\land ~h \in  \{0, 1\}^{\ell_h} ~\land ~(\inp, \wit) \in \REL'\}.
+ 	\]
+ 	
+Let $\RELGEN(\secparam)$ be the relation generator that runs $\REL' \gets \RELGEN'(\secparam)$ and returns $\REL$ defined as above. 
+Let $H$ be a target collision-resistant hash function and let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a SE-NIZK argument for $\RELGEN$. 
+We build a signature of knowledge  $\SoK$ for $\RELGEN'$ that works as follows: 
+
+\begin{description}
+    \item[$\signsetup(1^\secpar, \REL') \rightarrow  \param$:]
+ Run $(\srs,\rho) \leftarrow \kgen(\REL)$. 
+ Return $ \param = \srs$.
+
+    \item[$\sign(\mesage, \inp, \wit)  \rightarrow \signature$:]
+Sample $K \gets \{0, 1\}^{\ell_K}$.  Compute
+$\zkproof \gets  \prover(\srs, (K, H_K(\mesage), \inp), \wit) $.
+Return $\signature = (K, \zkproof)$.
+
+    \item[$\verify(\mesage, \inp, \signature) \rightarrow b$:]
+Parse $\signature = (K, \zkproof)$.
+Return $b \gets \verifier(\srs, (K, H_K(\mesage), \inp), \zkproof)$.
+	
+    \item[$\simsetup(\REL') \rightarrow (\param, \td)$:]
+  Run   $(\srs,\rho) \leftarrow \kgen(\REL)$. 
+ Return $( \param = \srs,  \td = \rho)$.
+
+    	
+   \item[$\simsign(\td, \mesage, \inp) \rightarrow \signature'$:]
+   Sample $K \gets \{0, 1\}^{\ell_K}$.  Compute
+$\zkproof \gets \simulator(\srs, \rho, (K, H_K(\mesage), \inp)) $.
+Return $\signature' = (K, \zkproof)$.
+
+\end{description} 
+
+
+\begin{theorem}[Signature of Knowledge] 
+  \label{thm:SoK}
+If $H:\{0, 1\}^{\ell_k} \times \{0, 1\}^* \to \{0, 1\}^{\ell_h}$ is a target collision-resistant hash function 
+and $\ps = (\kgen, \prover, \verifier, \simulator)$ be is a SE-NIZK for $\RELGEN(\secparam)$, then the scheme
+ $\SoK = (\signsetup,  \sign, \allowbreak \verify,  \simsetup, \simsign)$ above is a signature of knowledge for $\RELGEN'(\secparam)$ for  the message space $\{0, 1\}^*$.
+\end{theorem}
+ The proof can be found in 
+ \cite{C:GroMal17}.
+	
 \subsection{Security of uber assumption}
 \label{sec:uber-assumption-security-proof}.
 We show security of our version of the uber assumption using the generic group model as

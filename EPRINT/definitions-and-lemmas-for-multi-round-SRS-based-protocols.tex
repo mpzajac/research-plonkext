@@ -7,12 +7,12 @@
 \ourpar{Signatures of Knowledge from SE-SNARKs.}  The work of Groth and Maller
 \cite{C:GroMal17} shows how to construct a signature of knowledge for messages in
 $\{0, 1\}^*$ from target collision-resistant hash-function and simulation-extractable
-SNARKs.  These schemes inherit the same properties as the underlying SNARK schemes and
-rely on a structured reference string, which can be updatable or universal, and they are
+SNARKs. This construction can be found in \Cref{sec:SoKconstruction}.
+These schemes inherit the same properties as the underlying SNARK schemes and
+may rely on a structured reference string, which can be updatable or universal, and they are
 succinct.  In the following, our goal will be to show that recent efficient SNARKs are
 simulation extractable, and therefore, they are a perfect candidate to build better
 signatures of knowledge.
- 
 
 \ourpar{Simulation-extractability for multi-message protocols.}  Most recent SNARK schemes
 are following the same blueprint: First, an interactive (multi-message)
