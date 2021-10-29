@@ -18,7 +18,7 @@ The target collision-resistance of $H$ requires that for any $\ppt$ adversary $\
 	\]
 	
 For any given relation $\REL'$, we consider the  following relation $\REL$:
- 	\[R= \{((K,h,\inp),\wit) : K\in  \{0, 1\}^{\ell_K} ~\land ~h \in  \{0, 1\}^{\ell_h} ~\land ~(\inp, \wit) \in R'\}.
+ 	\[\REL= \{((K,h,\inp),\wit) : K\in  \{0, 1\}^{\ell_K} ~\land ~h \in  \{0, 1\}^{\ell_h} ~\land ~(\inp, \wit) \in \REL'\}.
  	\]
  	
 Let $\RELGEN(\secparam)$ be the relation generator that runs $\REL' \gets \RELGEN'(\secparam)$ and returns $\REL$ defined as above. 
@@ -32,10 +32,10 @@ We build a signature of knowledge  $\SoK$ for $\RELGEN'$ that works as follows:
 
     \item[$\sign(\mesage, \inp, \wit)  \rightarrow \signature$:]
 Sample $K \gets \{0, 1\}^{\ell_K}$.  Compute
-$\zkproof \gets  \prover(\srs, (K, H_K(\mesage), \inp), \wit) $,.
+$\zkproof \gets  \prover(\srs, (K, H_K(\mesage), \inp), \wit) $.
 Return $\signature = (K, \zkproof)$.
 
-    \item[$\verify(\mesage, \inp, \signature) \rightarrow 1/ 0$:]
+    \item[$\verify(\mesage, \inp, \signature) \rightarrow b$:]
 Parse $\signature = (K, \zkproof)$.
 Return $b \gets \verifier(\srs, (K, H_K(\mesage), \inp), \zkproof)$.
 	
@@ -59,7 +59,7 @@ and $\ps = (\kgen, \prover, \verifier, \simulator)$ be is a SE-NIZK for $\RELGEN
  $\SoK = (\signsetup,  \sign, \allowbreak \verify,  \simsetup, \simsign)$ above is a signature of knowledge for $\RELGEN'(\secparam)$ for  the message space $\{0, 1\}^*$.
 \end{theorem}
  The proof can be found in 
- \cite{C:GroMal17},.
+ \cite{C:GroMal17}.
 	
 \subsection{Security of uber assumption}
 \label{sec:uber-assumption-security-proof}.
