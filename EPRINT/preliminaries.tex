@@ -104,12 +104,12 @@ Analogously, idealised verifier can be defined for polynomial commitment schemes
 Signatures of Knowledge (SoKs) \cite{C:ChaLys06} are closely related to
 simulation-extractable SNARKs: A signer can generate a valid signature for a message
 only if she has a valid witness for the statement.
-
+%
 The notion of SoKs mimics digital signatures with strong existential unforgeability:
 even if the adversary has seen many signatures on arbitrary messages under arbitrary
 statement, it cannot create a new signature (not seen before) without knowing the
 witness for the statement in question.
-
+%
 To define Signatures of Knowledge we use a recent version \cite{C:GroMal17} that
 implicitly considers only compact (succinct) signatures. \COMMENT{We omit the
   description of SoK's algorithms and security properties and defer them to
@@ -146,11 +146,10 @@ The verification algorithm takes as input
 A SoK scheme should satisfy correctness, extractability and simulatability:
    
 \begin{description}
-\item[Perfect Correctness.] This guarantees that a signer with a valid witness can always produce a signature that
-will convince the verifier: 
-For all $\secpar\in \NN$, for
-all efficiently decidable binary relation $\REL$,  
-for all  $(\inp, \wit) \in \REL$, and for all $ \mesage \in \{0,1\}^{*}$:
+\item[Perfect Correctness.] This guarantees that a signer with a valid witness can
+  always produce a signature that will convince the verifier. For all
+  $\secpar\in \NN$, for all efficiently decidable binary relation $\REL$, for all
+  $(\inp, \wit) \in \REL$, and for all $ \mesage \in \{0,1\}^{*}$:
    \[
   \condprob{
 	  \begin{matrix}
@@ -167,7 +166,7 @@ for all  $(\inp, \wit) \in \REL$, and for all $ \mesage \in \{0,1\}^{*}$:
 unless it knows a witness. This should hold even if the adversary gets to see signatures on
 arbitrary messages under arbitrary statements. We model this notion in a strong sense, by
 letting the adversary see simulated signatures for arbitrary messages and statements, which
-potentially includes false statements. Even under this strong attack model, we require that
+potentially include false statements. Even under this strong attack model, we require that
 whenever the adversary outputs a valid signature not queried before, it is possible to extract a
 witness for the signature. More formally,  for any PPT adversary $\adv$ there exists a PPT extractor $\ext_\adv$ such that:
    \[
@@ -175,48 +174,51 @@ witness for the signature. More formally,  for any PPT adversary $\adv$ there ex
 	  \begin{matrix}
 ~ \verify(\mesage, \inp, \signature) = 1   \\
 \land (\inp, \wit) \notin \REL \\
-\land (\mesage, \inp, \signature) \notin Q^{\simsign_\td}
+\land (\mesage, \inp, \signature) \notin Q_{\simsign_\td}
 	 \end{matrix}
 }{
 	  \begin{matrix}
-~(\param, \td) \gets \simsetup(1^\secpar, \REL)\\
-~ (\mesage, \inp, \signature) \gets \adv^{\simsign_\td} (\param)\\
-\wit \gets \ext_\adv({\sf trans}_\adv)
+~(\param, \td) \gets \simsetup(1^\secpar, \REL),\\
+~ (\mesage, \inp, \signature) \gets \adv^{\simsign_\td} (\param; r),\\
+\wit \gets \ext_\adv(\param, Q_{\simsign_\td}, r)
  \end{matrix}
 } \leq \negl
 \]
-where the adversary has access to simulated signatures via the oracle $\simsign_\td(\inp_i, \mesage_i) \coloneq \simsign(\td, \inp_i, \mesage_i)$ and the extractor $\ext_\adv$ takes as input the transcript ${\sf trans}_\adv$ of all queries made by $\adv$ including its randomness.  
+where the adversary has access to simulated signatures via the oracle
+$\simsign_\td(\inp_i, \mesage_i) \gets \simsign(\td, \inp_i, \mesage_i)$ and the
+extractor $\ext_\adv$ takes as input public parameters $\param$, list
+$Q_{\simsign_\td}$ of all queries made by $\adv$, and $\adv$'s randomness $r$.
 
-\vspace{4pt}
+%\vspace{4pt}
 %
-\item[Perfect Simulatability:] The verifier should not learn anything  about the witness from the signature.  The secrecy of the witness is modelled by the ability to
-simulate signatures without the witness. More precisely,  we say the signatures of knowledge
-are simulatable if there is a simulator that can create public parameters together with an associated trapdoor that enables producing signatures without a witness that are indistinguishable from real ones.  More formally, for any number of queried $\mesage_i\in \{0,1\}^{*}$ and $(\inp_i, \wit_i) \in \REL$:
-
-$
-\Big	\vert	   \condprob{  
-		\begin{matrix}
+\item[Perfect Simulatability:] The verifier should not learn anything about the
+  witness from the signature.  The secrecy of the witness is modelled by the ability
+  to simulate signatures without the witness. More precisely, we say the signatures
+  of knowledge are simulatable if there is a simulator that can create public
+  parameters together with an associated trapdoor that enables producing signatures
+  without a witness that are indistinguishable from real ones.  More formally, for
+  any number of queried $\mesage_i\in \{0,1\}^{*}$ and $(\inp_i, \wit_i) \in \REL$:
+\[
+\left|	\condprob{  
+  \begin{matrix}
 		\adv(\param) = 1 
-		\end{matrix}
+  \end{matrix}
 		}{
 		\begin{matrix}
-	\param \gets  \signsetup(1^\secpar, \REL)\\
-	~\signature_i \gets \sign(\mesage_i, \inp_i, \wit_i)
+      \param \gets  \signsetup(1^\secpar, \REL),\\
+      ~\signature_i \gets \sign(\mesage_i, \inp_i, \wit_i)
 		\end{matrix}
-		 }
-		- $
-\[	  \condprob{
+  } - \condprob{
 		\begin{matrix}
 		\adv (\param) = 1 
 		\end{matrix}
 }{
 		\begin{matrix}
-	~(\param,\td) \gets  \simsetup(1^\secpar, \REL) \\
-	~\signature_i \gets   \simsign(\td,\mesage_i, \inp_i)
-		\end{matrix}} \Big	\vert	
-		 \leq \negl.
-		\]
-  \end{description}
+      ~(\param,\td) \gets  \simsetup(1^\secpar, \REL), \\
+      ~\signature_i \gets \simsign(\td,\mesage_i, \inp_i)
+		\end{matrix}} \right| \leq \negl.
+\]
+\end{description}
 
   \subsection{Dlog assumptions}
 \label{sec:dlog_assumptions}
@@ -244,13 +246,11 @@ $
 
 \subsection{Uber assumption}
 \label{sec:uber_assumption}
-\ourpar{BBG uber assumption.}
-Also, to be able to show trapdoor-less simulatability of
-$\plonk$ in the standard model, what is required by our reduction, we rely on the
-\emph{uber assumption} introduced by Boneh et
-al.~\cite{EC:BonBoyGoh05} as presented by Boyen in \cite{PAIRING:Boyen08}.
+\ourpar{BBG uber assumption.}  To show trapdoor-less simulatability of $\plonk$, what
+is required by our reduction, we rely on the \emph{uber assumption} introduced by
+Boneh et al.~\cite{EC:BonBoyGoh05} as presented by Boyen in \cite{PAIRING:Boyen08}.
 
-Let $r, s, t, c \in \NN \setminus \smallset{0}$, Consider vectors of polynomials
+Let $r, s, t, c \in \NN \setminus \smallset{0}$. Consider vectors of polynomials
 $\pR \in \FF_p[X_1, \ldots, X_c]^r$, $\pS \in \FF_p[X_1, \ldots, X_c]^s$ and
 $\pT \in \FF_p[X_1, \ldots, X_c]^t$. Write $\pR = \left( \p{r}_1, \ldots,
   \p{r}_r \right)$, $\pS = \left( \p{s}_1, \ldots, \p{s}_s \right)$ and $\pT =
@@ -274,9 +274,9 @@ Similarly for applying $f$ to $\pS$ and $\pT$.
   say that $\p{f}$ is \emph{independent} if it is not dependent.
 \end{definition}
 
-To show (standard-model) zero knowledge of $\plonk$ we utilize a generalization
-of Boneh-Boyen-Goh's \emph{uber assumption} \cite{EC:BonBoyGoh05} stated as
-follows (the changed element has been put into a \dbox{dashbox})
+To show trapdoor-less simulatability of $\plonk$ we utilize a generalization of
+Boneh-Boyen-Goh's \emph{uber assumption} \cite{EC:BonBoyGoh05} stated as follows (the
+changed element has been put into a \dbox{dashbox})
 \begin{definition}[$(\pR, \pS, \pT, \p{F}, 1)$-uber assumption]
 	\label{def:uber_assumption}
 	Let $\pR, \pS, \pT$ be defined as above,
@@ -291,21 +291,20 @@ follows (the changed element has been put into a \dbox{dashbox})
         \gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{y_1, \ldots, y_{d}}}) =
         1\right].
 	\end{multline*}
-  \end{definition}
+\end{definition}
 
-  Compared to the original uber assumptions, there are two major changes. \changedm{First, in
-  the original formulation the indistinguishable (boxed) elements were in $\GRP_T$,
-  here they are in $\GRP_1$.}
-  \anca{}{do not get thie previous sentence. What are not target group elements but
-    $\GRP_1$, you mean $\GRP_2$? } \michals{14.10}{Check now}
+Compared to the original uber assumptions, there are two major changes. First, in the
+original formulation the indistinguishable (boxed) elements were in $\GRP_T$, here
+they are in $\GRP_1$.
+% \anca{}{do not get thie previous sentence. What are not target group elements but
+% $\GRP_1$, you mean $\GRP_2$? } \michals{14.10}{Check now}
+  %
+Second, Boneh et al.'s assumption works for distinguishers who are given only one
+challenge polynomial $\p{f}$, i.e.~$\abs{\p{F}} = 1$.
   
-  Second, Boneh et al.'s assumption works for
-  distinguishers who are given only one challenge polynomial $\p{f}$,
-  i.e.~$\abs{\p{F}} = 1$.
-  
-We show security of our version of the uber assumption using the generic group
-model as introduced by Shoup \cite{EC:Shoup97}, cf.~\cref{sec:uber-assumption-security-proof}.
-
+We show security of our version of the uber assumption using the generic group model
+as introduced by Shoup \cite{EC:Shoup97},
+cf.~\cref{sec:uber-assumption-security-proof}.
 
 \subsection{Zero-Knowledge Proof Systems}
 In a zero-knowledge proof system, a prover convinces the verifier of the veracity of a statement
@@ -414,16 +413,7 @@ Alternatively, zero-knowledge can be defined by allowing the simulator to use th
 trapdoor $\td$ that is generated along the $\srs$. In this paper we distinguish
 simulators that requires a trapdoor to simulate and those that do not. We call the
 former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less
-  simulatable} (TLS) if its simulator does not require the trapdoor.
-
-% Occasionally, a weaker version of zero knowledge is sufficient. So called
-% \emph{honest verifier zero knowledge} (HVZK) assumes that the verifier's
-% challenges are picked at random from some predefined set. Although weaker, this
-% definition suffices in many applications. Especially, an interactive
-% zero-knowledge proof that is HVZK and \emph{public-coin} (i.e.~the verifier
-% outputs as challenges its random coins) can be made non-interactive and
-% zero-knowledge in the random oracle model by using the Fiat--Shamir
-% transformation.
+  simulatable} (TLS) if its simulator does not require the trapdoor, cf.~\cref{def:tls}.
 
 \subsection{From interactive to non-interactive---the Fiat--Shamir transform}
 Consider a $(2\mu + 1)$-message, public-coin, honest verifier zero-knowledge
@@ -521,47 +511,6 @@ non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
 
 \newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}% 
 
-\begin{figure}[t!]
-	\centering
-	\fbox{
-		\begin{minipage}[t]{0.58\linewidth}
-			\procedure{$\initU(\intent, \srs_n,\{\rho_j \}_{j=1}^n)$}{
-				\pcif \srs \neq \bot: \pcreturn \bot \\
-				\pcif (\intent = \setup): \\
-				\t (\srs',\rho') \leftarrow \kgen(\REL)\\
-				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
-				\t \pcreturn (\srs',\rho')\\
-				%
-				\pcif (\intent = \update): \\
-				\t b \gets \verifyCRS(\srs_n, \{\rho_j \}_{j=1}^{n})\\
-				\t \pcif (b=0): \pcreturn \bot \\
-				\t (\srs',\rho') \leftarrow \upd (\srs_n,\{\rho_j \}_{j=1}^n)\\
-				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
-		 	\Scale[0.75]{ // Q_\srs = (Q^{(1)}_\srs, Q^{(2)}_\srs) \text{ s.t. }   Q^{(2)}_\srs \text{ contains the update proofs in } Q_\srs }\\
-				\t \pcreturn (\srs',\rho')\\
-				%
-				\pcif (\intent = \final): \\
-				\t b \gets \verifyCRS(\srs_n,\{\rho_j \}_{j=1}^{n})\\
-				\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_j \}_i = \emptyset: \pcreturn \bot \\
-				\t 
-				\td \gets \ext_\srs(\srs_n,, Q_\srs, \{\rho_j \}_{j=1}^{n}) \\
-				\t \srs \gets \srs_n, \pcreturn \srs \\
-				%
-				\pcelse \pcreturn \bot
-			}
-		\end{minipage}
-		\begin{minipage}[t]{0.3\linewidth}
-			\procedure{$\simO(\inp')$}{
-				\pcif (\srs = \bot): \pcreturn \bot \\
-				% \hamid{should we formalize this extractor?}\\
-				\zkproof'  \gets  \simulator(\srs, \COMMENT{ \td, }\inp')\\
-				Q = Q \cup \{(\inp', \zkproof')\}\\
-				\pcreturn  \zkproof' \\	
-			}
-	\end{minipage}}
-	\caption{The left oracle defines the notion of updatable SRS setup. The right oracle is the simulation oracle.} 
-	\label{fig:upd}
-\end{figure}
 
 
 \subsection{Updatable SRS schemes}\label{def:upd-scheme}
@@ -570,11 +519,11 @@ We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which 
 \vspace{-8pt}
 \begin{itemize} 
 	\item
-	$(\srs,\rho) \leftarrow \kgen(\REL)$ is a PPT algorithm that takes a security parameter $\secpar$ and outputs a SRS $\srs$, and correctness proof $\rho$.
+	$(\srs,\rho) \gets \kgen(\REL)$ is a PPT algorithm that takes a security parameter $\secpar$ and outputs a SRS $\srs$, and correctness proof $\rho$.
 	\item
-	$ (\srs',\rho') \leftarrow \upd(\srs, \{\rho_j \}_{j=1}^n)$ is a PPT algorithm that takes as input the security parameter $\secpar$, a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
+	$ (\srs',\rho') \gets \upd(\srs, \{\rho_j \}_{j=1}^n)$ is a PPT algorithm that takes as input the security parameter $\secpar$, a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
 	\item
-	$b \leftarrow \verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
+	$b \gets \verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
 \end{itemize}
 
 	In all our protocols, we deal with a structured reference string that is updatable. We give the $\kgen$, $\upd$ and $\verifyCRS$ algorithms in~\cref{fig:upd-scheme}.
@@ -672,9 +621,59 @@ We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which 
 	\label{fig:upd-scheme}
 \end{figure}
 
+In the next section, we define security notions in the updatable setting. To this
+end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary
+updates the SRS.
 
+\begin{figure}[t!]
+	\centering
+	\fbox{
+		\begin{minipage}[t]{0.58\linewidth}
+			\procedure{$\initU(\intent, \srs_n,\{\rho_j \}_{j=1}^n)$}{
+				\pcif \srs \neq \bot: \pcreturn \bot \\
+				\pcif (\intent = \setup): \\
+				\t (\srs',\rho') \leftarrow \kgen(\REL)\\
+				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+				\t \pcreturn (\srs',\rho')\\
+				%
+				\pcif (\intent = \update): \\
+				\t b \gets \verifyCRS(\srs_n, \{\rho_j \}_{j=1}^{n})\\
+				\t \pcif (b=0): \pcreturn \bot \\
+				\t (\srs',\rho') \leftarrow \upd (\srs_n,\{\rho_j \}_{j=1}^n)\\
+				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+		 	\Scale[0.75]{ // Q_\srs = (Q^{(1)}_\srs, Q^{(2)}_\srs) \text{ s.t. }   Q^{(2)}_\srs \text{ contains the update proofs in } Q_\srs }\\
+				\t \pcreturn (\srs',\rho')\\
+				%
+				\pcif (\intent = \final): \\
+				\t b \gets \verifyCRS(\srs_n,\{\rho_j \}_{j=1}^{n})\\
+				\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_j \}_i = \emptyset: \pcreturn \bot \\
+				\t 
+				\td \gets \ext_\srs(\srs_n,, Q_\srs, \{\rho_j \}_{j=1}^{n}) \\
+				\t \srs \gets \srs_n, \pcreturn \srs \\
+				%
+				\pcelse \pcreturn \bot
+			}
+		\end{minipage}
+		% \begin{minipage}[t]{0.3\linewidth}
+		% 	\procedure{$\simO(\inp')$}{
+		% 		\pcif (\srs = \bot): \pcreturn \bot \\
+		% 		% \hamid{should we formalize this extractor?}\\
+		% 		\zkproof'  \gets  \simulator(\srs, \COMMENT{ \td, }\inp')\\
+		% 		Q = Q \cup \{(\inp', \zkproof')\}\\
+		% 		\pcreturn  \zkproof' \\	
+%			}                         %
+%   \end{minipage}
+  }
+	\caption{The oracle defines the notion of updatable SRS setup.}% The right oracle is the simulation oracle.} 
+	\label{fig:upd}
+\end{figure}
 
-In the next section, we define security notions in the updatable setting. To this end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary updates the SRS. We also define the simulation oracle $\simO$ in~\cref{fig:upd} that is the simulator w.r.t. the SRS finalised by the adversary using $\initU$. This simulation oracle will be used in the definition of \COMMENT{forking }simulation extractability.
+% We also define a simulator
+% $\simulator = (\simualtor_1, \simulator_2')$ which provides the adversary with
+% simulated queries w.r.t. the SRS finalised by the adversary using $\initU$. This
+% simulation oracle will be used in the definition of \COMMENT{forking }simulation
+% extractability.
+% \michals{29.10}{Def for simulating oracle shouldn't be here}
 
 \ourpar{On trusted setup.} We note that a trusted setup can be expressed by the updatable setup definition above simply by restricting the algorithm that is given access to $\initU$ to call the oracle only on $\intent = \setup$ and $\intent = \final$.
 
