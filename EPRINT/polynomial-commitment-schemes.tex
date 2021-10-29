@@ -3,8 +3,9 @@
 
 \section{Polynomial Commitment Schemes}
 \label{sec:pcom}
-A polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$ consists in four algorithms and allow to commit to a
-polynomial $\p{f}$ and later open the evaluation in a point $z$ to some value $s=\p{f}(z)$. More formally: 
+A polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$ consists of four
+algorithms and allow to commit to a polynomial $\p{f}$ and later open the evaluation in a
+point $z$ to some value $s=\p{f}(z)$. More formally:
 \begin{description}
 \item[$\kgen(1^\secpar, \maxdeg)$:] The key generation algorithm
    takes in a security parameter $\secpar$ and a
@@ -22,8 +23,10 @@ polynomial $\p{f}$ and later open the evaluation in a point $z$ to some value $s
   outputs 1 if $o$ is a valid opening for $(c, z, s)$ and 0 otherwise.
 \end{description} 
 
-A secure polynomial commitment $\PCOM$ should satisfy correctness, evaluation binding,  opening uniqueness, hiding and knowledge-binding. 
-Note that since we are in the updatable setting, $\srs$ in these security definitions is the SRS that $\advse$ finalises using the update oracle $\initU$ (See~\cref{fig:upd}).
+A secure polynomial commitment $\PCOM$ should satisfy correctness, evaluation binding,
+opening uniqueness, hiding and knowledge-binding.  Note that since we are in the updatable
+setting, $\srs$ in these security definitions is the SRS that $\advse$ finalises using the
+update oracle $\initU$ (See~\cref{fig:upd}).
 
 \begin{description}
 \item[Evaluation binding:] A $\ppt$ adversary $\adv$ which outputs a commitment
@@ -137,7 +140,7 @@ $\maxdeg$ can be read from the output SRS. While the figures only describe trust
 \cite{CCS:MBKM19} shows, using AGM, that $\PCOMs$ is a commitment of knowledge.
 The same reasoning could be used to show that property for $\PCOMp$.
  
-\begin{figure}[h!]
+\begin{figure}
   \small
 \centering
 \begin{pcvstack}[center,boxed]
