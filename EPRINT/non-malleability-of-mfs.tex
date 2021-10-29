@@ -209,16 +209,12 @@ $\simulator$.
   $\accProb$. Then $\marlinprotfs$ is \COMMENT{forking }simulation-extractable with
   extraction error $\eta = \epsur(\secpar)$. The extraction probability
   $\extProb$ is at least
-\[
-  \extProb \geq \frac{1}{q^{\dconst}} (\accProb - \epsur(\secpar))^{\dconst + 1}
-  - \eps(\secpar).
-	\]
+  \[
+    \extProb \geq q^{-\dconst} (\accProb - 6 \cdot (\epsbind + \epsop +
+    \epsk))^{\dconst + 1} -\eps(\secpar)\,.
+\]
 	for some negligible $\eps(\secpar)$, $\dconst$ being, the upper bound of
   constrains of the system.
-  \[
-    \extProb \geq q^{-(\dconst - 1)} (\accProb - 6 \cdot (\epsbind + \epsop +
-    \epsk))^{\dconst} -\eps(\secpar)\,.
-\]
 \end{corollary}
 
 %\section{Further work}
