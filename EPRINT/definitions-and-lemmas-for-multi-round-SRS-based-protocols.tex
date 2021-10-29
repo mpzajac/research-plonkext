@@ -509,7 +509,7 @@ algorithm from the generalized forking lemma.
 	that rewinds $\zdv$ to produce a $(1,\dots, n, \dots, 1)$-tree of
 	accepting transcripts.
 	
-	We say that $\psfs$ is $(k,n)$-forking special sound with security loss $\eps(\secpar)$, if
+	We say that $\psfs$ is $(k,n)$-forking special sound with security loss $\epss(\secpar)$, if
 	for any PPT adversary the probability that
 	\begin{align*}
 	\Pr\left[
@@ -521,7 +521,7 @@ algorithm from the generalized forking lemma.
 	&    (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r),Q_{H}),
 	\wit \gets \extt(\tree)
 	\end{aligned}
-	\right] \leq \eps(\secpar).
+	\right] \leq \epss(\secpar).
 	\end{align*}
 	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
 	List $Q_\ro$ contains all $\advse$'s

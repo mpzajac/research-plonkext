@@ -102,8 +102,8 @@ verify that \cref{eq:marlin_eq_2} holds.
 	Assume that an idealised $\marlinprot$ verifier fails with probability at most
 	$\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks dlog is
 	bounded by $\epsdlog(\secpar)$. Then $\marlinprot$ is
-	$(\epsid (\secpar) + \epsdlog (\secpar), 2, d + 1)$-forking special
-	sound.
+	$(2, d + 1)$-forking special
+	sound with security loss $\epsid (\secpar) + \epsdlog (\secpar)$.
 \end{lemma}
 \begin{proof}
 	% \michals{8.9}{Need to check the degrees}
@@ -202,7 +202,7 @@ $\simulator$.
 \begin{corollary}
   Assume that $\marlinprot$ is $\ur{1}$ with security
   $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and forking special sound
-  with security $\epsfor (\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
+  with security $\epss(\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
   random oracle. Let $\advse$ be an adversary that can make up to $q$
   random oracle queries, up to $S$ simulation oracle queries, and outputs an
   acceptable proof for $\marlinprotfs$ with probability at least
