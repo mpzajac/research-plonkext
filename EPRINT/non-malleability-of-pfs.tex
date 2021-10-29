@@ -432,10 +432,16 @@ The \plonk{} simulator proceeds as an honest prover would, except:
     Let $\adv$ be an algebraic adversary tasked to break $\ur{2}$-ness of Plonk. We
     show that probability of $\adv$ being successful is negligible unless it is able
     to break either evaluation binding or unique opening property of the polynomial
-    commitment scheme. The proof goes by game hops.
+    commitment scheme. The proof goes by game hops. Let $\adv$ prepare two proofs
+    $\zkproof^0$ and $\zkproof^1$. Elements of the former are denoted by superscript
+    $^0$ and of the latter by $^1$.
 
     \ncase{Game 0} In this game the adversary wins if it breaks either evaluation
-    binding or unique opening property for one of the committed polynomials.
+    binding or unique opening property for one of the committed polynomials. That is,
+    $\adv$ wins if both proofs are acceptable and either $\zkproof^0$ or $\zkproof^1$
+    contains a commitment to polynomial $\p{f} (X)$ that evaluation $\p{f} (x)$  is computed
+    incorrectly or both proofs contain the same polynomial $\p{f}$ and its openings
+    $w_{\p{f}}^0, w_{\p{f}}^1$ for $\p{f} (x)$ such that $w_{\p{f}}^0 \neq w_{\p{f}}^1$.
 
     Since there is $9$ polynomials that are committed or evaluated then probability
     of this event is upper-bounded by $9 \cdot (\epsbind + \epsop)$.
@@ -443,12 +449,24 @@ The \plonk{} simulator proceeds as an honest prover would, except:
     \ncase{Game 1} In this game the adversary additionally wins if it manages to
     break $\ur{2}$ property of the proof system.
 
-    \ncase{Game 0 to Game 1} Note that since did not win in Game 0, it did not break
-    polynomial commitment binding nor unique opening property. Hence, since KZG
+    \ncase{Game 0 to Game 1} Note that since $\adv$ did not win in Game 0, it did not
+    break polynomial commitment binding nor unique opening property. Hence, since KZG
     polynomial commitment scheme is deterministic, $\adv$ had to commit to different
-    polynomials in both proofs. Since these polynomials are uniquely determined by
-    the first messages of the protocol, one of the proofs is incorrect.
-    Probability that the verifier accepts an incorrect proof is at most $\epss$.
+    polynomials in both proofs and open the commitments honestly.
+
+    Observe, that the polynomials the prover commit to after it sent its first two
+    messages are $\p{t_{lo}} (X), \p{t_{mid}} (X), \p{t_{hi}} (X)$, which uniquely
+    determine polynomial $\p{t} (X)$. Importantly, $\p{t} (X)$ is also uniquely
+    determined by the constraints of the circuit. Hence, two different polynomials
+    $\p{t^0} (X), \p{t^1} (X)$ describe two different constraint sets.
+
+    Assume that the adversary commits to
+    $\p{t^0_{lo}} (X), \p{t^0_{mid}} (X), \p{t^0_{hi}} (X)$ and
+    $\p{t^1_{lo}} (X), \p{t^1_{mid}} (X), \p{t^1_{hi}} (X)$ which determines
+    polynomials $\p{t^0} (X)$ and $\p{t^1} (X)$.  W.l.o.g.~assume $\p{t^0} (X)$
+    describes the correct set of constraints and $\p{t^1} (X)$ does not. Then
+    probability that a proof containing $\p{t^1_{lo}} (X), \p{t^1_{mid}} (X),
+    \p{t^1_{hi}} (X)$ is accepted is upper-bounded by $\epss$.
 
     \ncase{Conclusion} Adversary succeeds in breaking $\ur{2}$ property of the scheme
     with probability at most  $9 \cdot (\epsbind + \epsop) + \epss$.
