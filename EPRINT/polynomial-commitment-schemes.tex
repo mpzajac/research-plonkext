@@ -4,7 +4,7 @@
 \section{Polynomial Commitment Schemes}
 \label{sec:pcom}
 A polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$ consists of four
-algorithms and allow to commit to a polynomial $\p{f}$ and later open the evaluation in a
+algorithms and allows to commit to a polynomial $\p{f}$ and later open the evaluation in a
 point $z$ to some value $s=\p{f}(z)$. More formally:
 \begin{description}
 \item[$\kgen(1^\secpar, \maxdeg)$:] The key generation algorithm takes in a security
@@ -140,7 +140,7 @@ $\kgen$ takes as input a security parameter $\secparam$ and a parameter $\maxdeg
 determines the maximal degree of the committed polynomial. We assume that $\maxdeg$ can be
 read from the output SRS. While the figures only describe trusted SRS setup, it is not
 hard to lift the SRS generation into the updatable setting by defining the extra
-algorithms $\upd$, $\verifyCRS$ as defined in~\cref{def:upd-scheme}.  \cite{CCS:MBKM19}
+algorithms $\upd$, $\verifyCRS$ (see~\cref{def:upd-scheme}) as described in~\cref{fig:upd-scheme}.  \cite{CCS:MBKM19}
 shows, using AGM, that $\PCOMs$ is a commitment of knowledge.  The same reasoning could be
 used to show that property for $\PCOMp$.
  
