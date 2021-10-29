@@ -1,7 +1,7 @@
 % !TEX root = main.tex
 % !TEX spellcheck = en-US
 
-\section{Non-malleability of $\marlinprotfs$}
+\section{Non-malleability of Marlin}
 We show that $\marlin$ is \COMMENT{forking }simulation-extractable. To that end, we show
 that $\marlin$ has all the required properties: has unique response property, is
 forking special sound, and its simulator can provide indistinguishable proofs
@@ -62,12 +62,13 @@ verify that \cref{eq:marlin_eq_2} holds.
   $\epsbind(\secpar)$ and has unique response property with security
   $\epsop(\secpar)$. Then probability that a $\ppt$ adversary $\adv$ breaks
   $\marlinprotfs$ $\ur{1}$ property is at most
-  $6 \cdot (\epsbind + \epsop + \epsk)$ \michals{8.9}{Do we need to add
-    probability that the idealized verifier fails $\epsid$?}
+  $6 \cdot (\epsbind + \epsop + \epsk) + \epss$
+  % \michals{8.9}{Do we need to add
+  %   probability that the idealized verifier fails $\epsid$?}
 \end{lemma}
 \begin{proof}
   As in previous proofs, we show the property by game hops. Let
-  $N = \p{g_1}, \p{h_1}, \p{g_2}, \p{h_2}, \p{g_3}, \p{h_3}$. That is, $M$ is a
+  $N = \p{g_1}, \p{h_1}, \p{g_2}, \p{h_2}, \p{g_3}, \p{h_3}$. That is, $N$ is a
   set of all polynomials which commitments prover sends after it sends its first message.
 
   \ncase{Game 0} In this game the adversary wins if it breaks evaluation
@@ -78,13 +79,13 @@ verify that \cref{eq:marlin_eq_2} holds.
   \cdot (\epsbind + \epsop + \epsk)$.
 
   \ncase{Game 1} In this game the adversary additionally wins if it breaks the
-  $\ur{2}$ property of the protocol
+  $\ur{1}$ property of the protocol
 
-  \ncase{Game 0 to Game 1} Probability that the adversary wins in
-  Game 1 but not in Game 0 is $0$. This is since the polynomials in $N$ are
-  uniquely determined. W.l.o.g.~we analyse probability that adversary is able to
-  produce two (different) pairs of polynomials $(\p{h_2}, \p{g_2})$ and $(\p{h'_2},
-  \p{g'_2})$ such that
+  \ncase{Game 0 to Game 1} Probability that the adversary wins in Game 1 but not in Game 0
+  is $\epss$. This is since in the honest proof the polynomials in $N$ are uniquely
+  determined. W.l.o.g.~we analyse probability that adversary is able to produce two
+  (different) pairs of polynomials $(\p{h_2}, \p{g_2})$ and $(\p{h'_2}, \p{g'_2})$ such
+  that
   \begin{align*}
     \p{h_2} (X) \ZERO_{\HHH} (X) + X \p{g_2} (X) & = \p{h_2} (X) \ZERO_{\HHH} (X) +
                                                    X \p{g_2} (X)\\
@@ -95,6 +96,9 @@ verify that \cref{eq:marlin_eq_2} holds.
   $\ZERO \in \FF^{|\HHH|} [X]$, LHS has different degree than RHS unless both
   sides have degree $0$. This happens when $\p{h_2} (X) = \p{h'_2} (X)$ and
   $\p{g_2} (X) - \p{g'_2} (X)$.
+  Thus, for the adversary to be successful in this game it has to provide acceptable
+  proofs where $(\p{h_2}, \p{g_2})$ and $(\p{h'_2}, \p{g'_2})$ differ. One of such pair
+  has to be incorrect and will be accepted with probability at most $\epss$.
 \end{proof}
 
 \subsection{Forking special soundness}
