@@ -2,7 +2,7 @@
 % !TEX spellcheck = en-US
 
 
-\section{Non-Malleability of $\plonkprotfs$} 
+\section{Non-Malleability of Plonk} 
 \label{sec:plonk}
 In this section, we show that $\plonkprotfs$ is \COMMENT{forking }simulation-extractable. Towards this end, we first use the unique opening property to show that
 $\plonkprot$ has the $\ur{2}$ property,
@@ -464,7 +464,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   with the idealised verification equation, is perfectly knowledge sound except with
   negligible probability of the idealised verifier failure $\epsid(\secpar)$. Hence
   for a valid proof $\zkproof$ for a statement $\inp$ there exists a witness $\wit$,
-  such that $\REL(\inp, \wit)$ holds. Note that since the $\tdv$ produces
+  such that $\REL(\inp, \wit)$ holds. Note that since $\tdv$ produces
   $(3 \noofc + 1)$ acceptable transcripts for different challenges $\chz$, it obtains
   the same number of different evaluations of polynomials
   $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are
