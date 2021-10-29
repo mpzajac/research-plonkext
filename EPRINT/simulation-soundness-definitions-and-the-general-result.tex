@@ -12,9 +12,11 @@ statement. More precisely,
 
 \begin{definition}[Simulation soundness in the updatable setting]
 	\label{def:simsnd}
-	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a
-	NIZK proof system. We say that $\ps$ is \emph{updatable simulation-sound} if for any $\ppt$
-	adversary $\adv$ that is given oracle access to an updatable SRS setup $\initU$, a simulation oracle $\simO$, cf.~\cref{fig:upd}, and a random oracle $\ro$, probability
+	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof system. We say that
+  $\ps$ is \emph{updatable simulation-sound} if for any $\ppt$ adversary $\adv$ that is
+  given oracle access to an updatable SRS setup $\initU$, a simulation oracle $\simulator
+  = (\simulator_1, \simulator_2')$,
+  cf.~\cref{fig:upd}, and a random oracle $\ro$, probability
 	\[
 	\ssndProb = \condprob{
 		\begin{matrix}
@@ -25,8 +27,7 @@ statement. More precisely,
 	}{
 		\begin{aligned}
 		& r \sample \RND{\advse},
-		(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
-			\ro} (1^\secpar; r) \\
+		(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator_1, \simulator_2'} (1^\secpar; r) \\
 		\end{aligned}
 	}
 	\]
@@ -54,8 +55,7 @@ there is none). More precisely,
 }{
 	\begin{aligned}
 	& r \sample \RND{\advse},
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simO,
-		\ro} (1^\secpar; r) \\
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator_1, \simulator_2'} (1^\secpar; r) \\
 	& \wit_{\advse} \gets \ext(\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
 	Q, Q_\ro, Q_\srs) 
 	\end{aligned}
@@ -103,7 +103,7 @@ Equipped with definitional framework of \cref{sec:se_definitions}, we can also s
 \begin{proof}
 	\ngame{0} This is a simulation soundness game played between an adversary
 	$\advse$ who is given access to an oracle $\initU$ that defines an updatable SRS setup, a random oracle $\ro$ and a simulation oracle
-	$\simO$. $\adv$ wins if it manages to produce an accepting proof
+	$\simulator$. $\adv$ wins if it manages to produce an accepting proof
 	for a false statement. In the following game hops, we upper-bound the
 	probability that this happens.
 	
@@ -222,7 +222,7 @@ $\plonkprot_\fs$ is simulation sound as defined in
  \begin{corollary}[Simulation soundness of $\plonkprot_\fs$]
    \label{cor:simsnd-P}
    Assume that $\plonkprot$ is $2$-programmable HVZK in the standard model, that
-   is $\epss(\secpar)$-sound and the $\PCOMp$ is a commitment of knowledge with
+   is forking special sound with security $\epss(\secpar)$, and the $\PCOMp$ is a commitment of knowledge with
    security $\epsk(\secpar)$, binding security $\epsbind(\secpar)$ and has unique
    opening property with security $\epsop(\secpar)$. Then the probability that a
    $\ppt$ adversary $\adv$ breaks simulation soundness of $\plonkprot_{\fs}$ is
@@ -237,7 +237,7 @@ The following corollary shows the simulation soundness of $\sonicprotfs$ based o
 \begin{corollary}[Simulation soundness of $\sonicprot_\fs$]
 	\label{cor:simsnd-S}
 	Assume that $\sonicprot$ is $1$-programmable HVZK in the standard model, that
-	is $\epss(\secpar)$-sound and the $\PCOMs$ is a commitment of knowledge with
+	is forking special sound with security $\epss(\secpar)$, and the $\PCOMs$ is a commitment of knowledge with
 	security $\epsk(\secpar)$, binding security $\epsbind(\secpar)$ and has unique
 	opening property with security $\epsop(\secpar)$. Then the probability that a
 	$\ppt$ adversary $\adv$ breaks simulation soundness of $\sonicprot_{\fs}$ is
@@ -252,7 +252,7 @@ The following corollary shows the simulation soundness of $\sonicprotfs$ based o
 \begin{corollary}[Simulation soundness of $\marlinprot_\fs$]
 	\label{cor:simsnd-M}
 	Assume that $\marlinprot$ is $1$-programmable HVZK in the standard model, that
-	is $\epss(\secpar)$-sound and the $\PCOM$ is a commitment of knowledge with
+	is forking special sound with security $\epss(\secpar)$, and the $\PCOM$ is a commitment of knowledge with
 	security $\epsk(\secpar)$, binding security $\epsbind(\secpar)$ and has unique
 	opening property with security $\epsop(\secpar)$. Then the probability that a
 	$\ppt$ adversary $\adv$ breaks simulation soundness of $\marlinprot_{\fs}$ is

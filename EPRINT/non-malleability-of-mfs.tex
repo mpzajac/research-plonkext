@@ -102,8 +102,8 @@ verify that \cref{eq:marlin_eq_2} holds.
 	Assume that an idealised $\marlinprot$ verifier fails with probability at most
 	$\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks dlog is
 	bounded by $\epsdlog(\secpar)$. Then $\marlinprot$ is
-	$(\epsid (\secpar) + \epsdlog (\secpar), 2, d + 1)$-forking special
-	sound.
+	$(2, d + 1)$-forking special
+	sound with security loss $\epsid (\secpar) + \epsdlog (\secpar)$.
 \end{lemma}
 \begin{proof}
 	% \michals{8.9}{Need to check the degrees}
@@ -202,23 +202,19 @@ $\simulator$.
 \begin{corollary}
   Assume that $\marlinprot$ is $\ur{1}$ with security
   $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and forking special sound
-  with security $\epsfor (\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
+  with security $\epss(\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
   random oracle. Let $\advse$ be an adversary that can make up to $q$
-  random oracle queries, up to $S$ simulation oracle queries, and outputs an
+  random oracle queries, and outputs an
   acceptable proof for $\marlinprotfs$ with probability at least
   $\accProb$. Then $\marlinprotfs$ is \COMMENT{forking }simulation-extractable with
   extraction error $\eta = \epsur(\secpar)$. The extraction probability
   $\extProb$ is at least
-\[
-  \extProb \geq \frac{1}{q^{\dconst}} (\accProb - \epsur(\secpar))^{\dconst + 1}
-  - \eps(\secpar).
-	\]
+  \[
+    \extProb \geq q^{-\dconst} (\accProb - 6 \cdot (\epsbind + \epsop +
+    \epsk))^{\dconst + 1} -\eps(\secpar)\,.
+\]
 	for some negligible $\eps(\secpar)$, $\dconst$ being, the upper bound of
   constrains of the system.
-  \[
-    \extProb \geq q^{-(\dconst - 1)} (\accProb - 6 \cdot (\epsbind + \epsop +
-    \epsk))^{\dconst} -\eps(\secpar)\,.
-\]
 \end{corollary}
 
 %\section{Further work}

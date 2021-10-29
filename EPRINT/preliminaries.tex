@@ -401,7 +401,8 @@ $\REL \in \RELGEN(\secparam)$, and adversary $\adv$ there exists a $\ppt$ simula
 $\simulator$ with oracles $(\simulator_1,\simulator_2)$ such that for any $(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$,
 where
 \[
-  \eps_0 = \condprob{\adv^{\simulator_1,\simulator_2} (\srs)}{\srs \gets \kgen (\REL)},\,  \eps_1 = \condprob{\adv^{\ro,\prover} (\srs)}{\srs \gets \kgen (\REL)},
+  \eps_0(\secpar) = \condprob{\adv^{\simulator_1,\simulator_2} (\srs)}{\srs \gets \kgen
+    (\REL)},\,  \eps_1 (\secpar) = \condprob{\adv^{\ro,\prover} (\srs)}{\srs \gets \kgen (\REL)},
 \]
 
 We call zero knowledge \emph{perfect} if the distributions are equal and

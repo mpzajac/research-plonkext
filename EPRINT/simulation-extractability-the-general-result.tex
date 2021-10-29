@@ -1,16 +1,16 @@
 % !TEX root = main.tex
 % !TEX spellcheck = en-US
-\section{\COMMENT{Forking s}Simulation-extractability---the general result}
+\section{Simulation-extractability---the general result}
 \label{sec:general}
 Equipped with definitional framework of \cref{sec:se_definitions}, we now present the
 main result of this paper---a proof of \COMMENT{forking }simulation extractability of
 Fiat-Shamir compiled multi-message protocols.
 
-The proof proceeds by game hopping. The games are controlled by an environment $\env$
-that internally runs a simulation extractability adversary $\advse$, provides it
-with access to a random oracle and simulator, and when necessary, rewinds it. The
-games differ by various breaking points, i.e.~points where the environment
-decides to abort the game.
+The proof proceeds by game hopping. The games are controlled by an environment $\env$ that
+internally runs a simulation extractability adversary $\advse$, provides it with access to
+simulator $\simulator$ which also responds $\adv$'s random oracle queries. The environment
+also rewinds $\adv$ when necessary. The games differ by various breaking points,
+i.e.~points where the environment decides to abort the game.
 
 The first game $\game{0}$ is a simulation-extractability game, where the extractor
 gets as input
@@ -65,9 +65,9 @@ and wins with the same probability.
 
   \ngame{0} This is the simulation-extractability game played between an adversary
   $\advse$ who is given access to an oracle $\initU$ that defines an updatable SRS
-  setup, and a simulation oracle $\simO$ which provides the adversary with simulated
+  setup, and a simulation oracle $\simulator = (\simulator_1, \simulator_2')$ which provides the adversary with simulated
   proofs and random oracle functionality. We denote by $\rsim$
-  randomness of $\simO$ which is randomly sampled. Execution of $\advse$ results in
+  randomness of $\simulator$ which is randomly sampled. Execution of $\advse$ results in
   lists of
   \begin{inparaenum}[(1)]
   \item simulated proofs $Q$,
@@ -100,7 +100,7 @@ and wins with the same probability.
   We can assume that $\adv$ queried the simulator on the instance it wishes to
   output, i.e.~$\inp_{\adv}$. We show a reduction $\rdvur$ that utilises $\adv$ to
   break the $\ur{k}$ property of $\ps$. That is, for randomness $r = (r_\adv, \rsim)$,
-  $\rdvur (r)$ runs $\advse^{\initU, \simO}(\secparam; r_\adv)$ internally as a black-box:
+  $\rdvur (r)$ runs $\advse^{\initU, \simulator_1, \simulator_2'}(\secparam; r_\adv)$ internally as a black-box:
   \begin{compactitem}
   \item The reduction answers $\adv$'s update queries by asking the same query from the
     update oracle in the unique response experiment. The reduction finalises the same
@@ -164,7 +164,7 @@ and wins with the same probability.
 %
 \ngame{2} Define an adversary $\bdv$ against forking special soundness such that,
 given access to oracles $\initU$ and $\ro$, and randomness $r = (r_\adv, \rsim)$, it
-internally runs $\advse^{\initU, \simO} (1^\secpar; r_\adv)$, where
+internally runs $\advse^{\initU, \simulator_1, \simulator_2'} (1^\secpar; r_\adv)$, where
 \begin{compactenum}
 \item $\bdv$ answers $\adv$ random oracle and update queries by passing the queries to the real
   oracles $\ro$ and $\initU$. When $\adv$ finalises an SRS $\srs$, $\bdv$ does the same.
@@ -268,7 +268,7 @@ the error event in Game $\game{1}$.  As previously,
     \wit)$ does not hold.
 	
 	\ncase{Game 2 to Game 3}	
-		Since $\ps$ is forking-sound the probability that $\extt(\tree)$
+		Since $\ps$ is forking special sound the probability that $\extt(\tree)$
 		fails is upper-bounded by $\epsss(\secpar)$.
 		
 	\ncase{Conclusion}	Since Game $\game{3}$ is aborted when it is impossible to extract a witness from

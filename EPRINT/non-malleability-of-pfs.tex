@@ -7,13 +7,13 @@
 In this section, we show that $\plonkprotfs$ is \COMMENT{forking }simulation-extractable. Towards this end, we first use the unique opening property to show that
 $\plonkprot$ has the $\ur{2}$ property,
 cf.~\cref{lem:plonkprot_ur}.
-Next, we show that $\plonkprot$ is forking-special-sound. That is, given a
+Next, we show that $\plonkprot$ is forking special sound. That is, given a
 number of accepting transcripts whose messages match on the first $5$ messages of the
 protocol, we can either extract a witness for the proven statement or use
 one of the transcripts to break the $\dlog$ assumption. This result is shown in
 the AGM, cf.~\cref{lem:plonkprot_ss}.
 
-Given forking-soundness and $\ur{2}$ of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is \COMMENT{forking }simulation-extractable.
+Given forking special soundness and $\ur{2}$ of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is \COMMENT{forking }simulation-extractable.
 %Due to page limit, we omit description of \plonk{} here and refer to
 %\cref{sec:plonk_explained}.
 %Unfortunately, we also have to Message some of the
@@ -27,7 +27,6 @@ Given forking-soundness and $\ur{2}$ of $\plonkprot$, we invoke \cref{thm:se} an
 \newcommand{\vqc}{\vec{q_{C}}}
 
 \subsection{Plonk protocol description}
-\michals{25.10}{To do: rewrite as an FS protocol}
 \label{sec:plonk_explained}
 \oursubsub{The constrain system}
 Assume $\CRKT$ is a fan-in two arithmetic circuit,
@@ -429,7 +428,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 	\label{lem:plonkprot_ss}
 	Let $\plonkprot$'s idealized verifier fails with probability $\epsid (\secpar)$, and
 	$(\noofc + 2, 1)$-$\dlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
-	$(\epsid (\secpar) + \epsdlog (\secpar) , 3, 3 \noofc + 1)$-forking special sound against algebraic
+	$(3, 3 \noofc + 1)$-forking special sound with security loss $\epsid (\secpar) + \epsdlog (\secpar)$ against algebraic
 	adversary $\adv$.
 \end{lemma}
 
@@ -894,7 +893,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   Let $\plonkprot$ be zero knowledge with security $\epszk(\secpar)$. Let
   $(\pR, \pS, \pT, \pf, 1)$-uber assumption for $\pR, \pS, \pT, \pf$ as defined in
   \cref{eq:uber} hold with security $\epsuber(\secpar)$. Then $\plonkprot$
-  2-programmable trapdoor-less simulatable zero knowledge with simulator $\simulator$
+  is 2-programmable trapdoor-less simulatable zero knowledge with simulator $\simulator$
   that does not require a SRS trapdoor with security
   $\epszk(\secpar) + \epsuber(\secpar)$.\footnote{The simulator works as a simulator
     for proofs that are zero-knowledge in the standard model. However, we do not say
@@ -909,7 +908,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   the SRS on its own.
   
   The proof goes by game-hopping. The environment that controls the games
-  provides starts the adversary who sets a SRS $\srs$, then the adversary outputs an
+  starts the adversary who sets a SRS $\srs$, then the adversary outputs an
   instance--witness pair $(\inp, \wit)$ and, depending on the game, is provided
   with either real or simulated proof for it. In the end of the game the
   adversary outputs either $0$ if it believes that the proof it saw was provided
@@ -1116,17 +1115,16 @@ $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:updsimext}.
 \begin{corollary}[Simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
 Assume an idealised $\plonkprot$ verifier fails at most with probability
-$\epsid(\secpar)$, the discrete logarithm advantage is bounded by $\epsdlog(\secpar)$
-and the $\PCOMp$ is a commitment of knowledge with security $\epsk(\secpar)$, binding
-security $\epsbind(\secpar)$ and has unique opening property with security
-$\epsop(\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. Let
-$\advse$ be an adversary that can make up to $q$ random oracle queries, up to $S$
-simulation oracle queries, and outputs an acceptable proof for $\plonkprotfs$ with
-probability at least $\accProb$. Then $\plonkprotfs$ is \COMMENT{forking
-}simulation-extractable with extraction error $\eta = \epsur(\secpar)$. The
-extraction probability $\extProb$ is at least
+$\epsid(\secpar)$, the discrete logarithm advantage is bounded by $\epsdlog(\secpar)$ and
+the $\PCOMp$ is a commitment of knowledge with security $\epsk(\secpar)$, binding security
+$\epsbind(\secpar)$ and has unique opening property with security $\epsop(\secpar)$. Let
+$\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be an adversary that
+can make up to $q$ random oracle queries, and outputs an acceptable proof for
+$\plonkprotfs$ with probability at least $\accProb$. Then $\plonkprotfs$ is
+\COMMENT{forking }simulation-extractable with extraction error $\eta =
+\epsur(\secpar)$. The extraction probability $\extProb$ is at least
 \[
-	\extProb \geq \frac{1}{q^{3 (\epsid(\secpar)+\epsdlog(\secpar))}} (\accProb - \epsk(\secpar) - 2\cdot\epsbind(\secpar) -
+	\extProb \geq \frac{1}{q^{3 \noofc}} (\accProb - \epsk(\secpar) - 2\cdot\epsbind(\secpar) -
   \epsop(\secpar))^{3\noofc + 1} -\eps(\secpar)\,,
 \]
 for some negligible $\eps(\secpar)$ and $\noofc$ being the number of
