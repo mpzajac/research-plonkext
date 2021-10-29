@@ -428,7 +428,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 	\label{lem:plonkprot_ss}
 	Let $\plonkprot$'s idealized verifier fails with probability $\epsid (\secpar)$, and
 	$(\noofc + 2, 1)$-$\dlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
-	$(\epsid (\secpar) + \epsdlog (\secpar) , 3, 3 \noofc + 1)$-forking special sound against algebraic
+	$(3, 3 \noofc + 1)$-forking special sound with security loss $\epsid (\secpar) + \epsdlog (\secpar)$ against algebraic
 	adversary $\adv$.
 \end{lemma}
 
@@ -893,7 +893,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   Let $\plonkprot$ be zero knowledge with security $\epszk(\secpar)$. Let
   $(\pR, \pS, \pT, \pf, 1)$-uber assumption for $\pR, \pS, \pT, \pf$ as defined in
   \cref{eq:uber} hold with security $\epsuber(\secpar)$. Then $\plonkprot$
-  2-programmable trapdoor-less simulatable zero knowledge with simulator $\simulator$
+  is 2-programmable trapdoor-less simulatable zero knowledge with simulator $\simulator$
   that does not require a SRS trapdoor with security
   $\epszk(\secpar) + \epsuber(\secpar)$.\footnote{The simulator works as a simulator
     for proofs that are zero-knowledge in the standard model. However, we do not say
@@ -908,7 +908,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   the SRS on its own.
   
   The proof goes by game-hopping. The environment that controls the games
-  provides starts the adversary who sets a SRS $\srs$, then the adversary outputs an
+  starts the adversary who sets a SRS $\srs$, then the adversary outputs an
   instance--witness pair $(\inp, \wit)$ and, depending on the game, is provided
   with either real or simulated proof for it. In the end of the game the
   adversary outputs either $0$ if it believes that the proof it saw was provided
