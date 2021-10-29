@@ -562,59 +562,103 @@ We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which 
 %\newcommand{\hP}[1]{\hat{P_{#1}}} 
 %\newcommand{\hQ}[1]{\hat{Q_{#1}}}
 
+%
+%\begin{figure}[t!]
+%	\centering
+%	\fbox{
+%		\begin{minipage}[t]{0.6\linewidth}
+%			\procedure{$\kgen(\REL)$}{
+%				\alpha, \chi \sample \FF^2_p \\ [\myskip]
+%				\srs := 
+%				\left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
+%					\smallset{\alpha \chi^i}_{i = -\dconst, i \neq 0}^{\dconst}},
+%				\gtwo{\smallset{\chi^i, \alpha \chi^i}_{i = - \dconst}^{\dconst}},
+%				\gtar{\alpha} \right) \\ [\myskip]
+%				\rho = 	\left( \gone{\chi, \alpha, \chi, \alpha}, \gtwo{\chi, \alpha} \right) \\ [\myskip]
+%				\pcreturn (\srs, \rho) \\ [\myskip]
+%			}
+%			%
+%			\\
+%			%
+%			\procedure{$\verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$}{
+%				\text{Parse }  \{\rho_j \}_{j=1}^n \text{ as } \left( P_j, Q_j, \bP_j, \bQ_j, \hP_j, \hQ_j \right) \\ [\myskip]
+%				\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = -\dconst}^{\dconst},
+%					\smallset{B_i}_{i = -\dconst, i \neq 0}^{\dconst}},
+%				\gtwo{\smallset{C_i, D_i}_{i = - \dconst}^{\dconst}},
+%				\textcolor{red}{\gtar{E}} \right) \\ [\myskip]
+%				\text{Verify Update proofs: } \\ [\myskip]
+%				\t \bP_n = A_1 \neq 1, \bQ_n = \textcolor{red}{B_0} \neq 1 \\ [\myskip]
+%				\t \bP_1 = P_1, \bQ_1 = Q_1 \\ [\myskip]
+%				\t \bP_n \bullet \gtwo{1} = \gone{1} \bullet \hP_n \\ [\myskip]
+%				\t \bQ_n \bullet \gtwo{1} = \gone{1} \bullet \hQ_n \\ [\myskip]
+%				\t P_j \bullet \gtwo{1} = P_{j-1} \bullet \hP_j \quad \forall j \geq 2 \\ [\myskip]
+%				\t Q_j \bullet \gtwo{1} = Q_{j-1} \bullet \hQ_j \quad \forall j \geq 2 \\ [\myskip]
+%				\text{Verify SRS structure: } \\ [\myskip]
+%				\t \gone{A_i} \bullet \gtwo{1} = \gone{A_{i-1}} \bullet \gtwo{C_1} \text{ for all } -\dconst < i \leq \dconst \\ [\myskip]
+%				\t \gone{1} \bullet \gtwo{C_i} = \gone{A_{1}} \bullet \gtwo{C_{i-1}} \text{ for all } -\dconst < i \leq \dconst \\ [\myskip]
+%				\t \gone{A_i} \bullet \gtwo{1} = \gone{1} \bullet \gtwo{C_i} \text{ for all } -\dconst \leq i \leq \dconst \\ [\myskip]
+%				\t \gone{B_i} \bullet \gtwo{1} = \gone{B_{i-1}} \bullet \gtwo{C_1} \text{ for all } -\dconst < i \leq \dconst; \textcolor{red}{i \neq 0,1} \\ [\myskip]
+%				\t \gone{1} \bullet \gtwo{D_i} = \gone{A_1} \bullet \gtwo{D_{i-1}} \text{ for all } -\dconst < i \leq \dconst \\ [\myskip]
+%				\t \gone{B_i} \bullet \gtwo{1} = \gone{1} \bullet \gtwo{D_i} \text{ for all } -\dconst \leq i \leq \dconst; \textcolor{red}{i \neq 0} \\ [\myskip]
+%			}
+%			%
+%			\\
+%			%
+%			\procedure{$\upd(\srs, \{\rho_j \}_{j=1}^n)$}{
+%				\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = -\dconst}^{\dconst},
+%					\smallset{B_i}_{i = -\dconst, i \neq 0}^{\dconst}},
+%				\gtwo{\smallset{C_i, D_i}_{i = - \dconst}^{\dconst}},
+%				\gtar{E} \right) \\ [\myskip]
+%				\alpha, \chi \sample \FF^2_p \\ [\myskip]
+%				\srs' := 
+%				\left( \gone{\smallset{\chi^i A_i}_{i = -\dconst}^{\dconst},
+%					\smallset{\alpha \chi^i B_i}_{i = -\dconst, i \neq 0}^{\dconst}},
+%				\gtwo{\smallset{\chi^i C_i, \alpha \chi^i D_i}_{i = - \dconst}^{\dconst}},
+%				\gtar{\alpha E} \right) \\ [\myskip]
+%				\rho' = 	\left( \gone{\chi A_1, \alpha \textcolor{red}{B_0}, \chi, \alpha}, \gtwo{\chi, \alpha} \right) \\ [\myskip]
+%				\pcreturn (\srs', \rho')
+%			}
+%	\end{minipage}}
+%	\caption{Updatable SRS scheme} 
+%	\label{fig:upd-scheme}
+%\end{figure}
+
 \begin{figure}[t!]
 	\centering
 	\fbox{
 		\begin{minipage}[t]{0.6\linewidth}
 			\procedure{$\kgen(\REL)$}{
-				\alpha, \chi \sample \FF^2_p \\ [\myskip]
+				\chi \sample \FF_p \\ [\myskip]
 				\srs := 
-				\left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
-					\smallset{\alpha \chi^i}_{i = -\dconst, i \neq 0}^{\dconst}},
-				\gtwo{\smallset{\chi^i, \alpha \chi^i}_{i = - \dconst}^{\dconst}},
-				\gtar{\alpha} \right) \\ [\myskip]
-				\rho = 	\left( \gone{\chi, \alpha, \chi, \alpha}, \gtwo{\chi, \alpha} \right) \\ [\myskip]
+				\left( \gone{\smallset{\chi^i}_{i = 0}^{\dconst}},
+				\gtwo{\chi} \right); 
+				\rho =  \left(\gone{\chi, \chi}, \gtwo{\chi}\right) \\ [\myskip]
 				\pcreturn (\srs, \rho) \\ [\myskip]
 			}
 		%
 		\\
 		%
 		\procedure{$\verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$}{
-			\text{Parse }  \{\rho_j \}_{j=1}^n \text{ as } \left( P_j, Q_j, \bP_j, \bQ_j, \hP_j, \hQ_j \right) \\ [\myskip]
-			\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = -\dconst}^{\dconst},
-				\smallset{B_i}_{i = -\dconst, i \neq 0}^{\dconst}},
-			\gtwo{\smallset{C_i, D_i}_{i = - \dconst}^{\dconst}},
-			\textcolor{red}{\gtar{E}} \right) \\ [\myskip]
+			\text{Parse }  \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\dconst}},
+			\gtwo{B} \right) \text{and } \{\rho_j \}_{j=1}^n \text{ as } \left\{\left( P_j, \bP_j, \hP_j \right)\right\}_{j=1}^n \\ [\myskip]
 			\text{Verify Update proofs: } \\ [\myskip]
-			\t \bP_n = A_1 \neq 1, \bQ_n = \textcolor{red}{B_0} \neq 1 \\ [\myskip]
-			\t \bP_1 = P_1, \bQ_1 = Q_1 \\ [\myskip]
-			\t \bP_n \bullet \gtwo{1} = \gone{1} \bullet \hP_n \\ [\myskip]
-			\t \bQ_n \bullet \gtwo{1} = \gone{1} \bullet \hQ_n \\ [\myskip]
+			\t \bP_1 = P_1 \\ [\myskip]
 			\t P_j \bullet \gtwo{1} = P_{j-1} \bullet \hP_j \quad \forall j \geq 2 \\ [\myskip]
-			\t Q_j \bullet \gtwo{1} = Q_{j-1} \bullet \hQ_j \quad \forall j \geq 2 \\ [\myskip]
+			\t \bP_n \bullet \gtwo{1} = \gone{1} \bullet \hP_n \\ [\myskip]
 			\text{Verify SRS structure: } \\ [\myskip]
-			\t \gone{A_i} \bullet \gtwo{1} = \gone{A_{i-1}} \bullet \gtwo{C_1} \text{ for all } -\dconst < i \leq \dconst \\ [\myskip]
-			\t \gone{1} \bullet \gtwo{C_i} = \gone{A_{1}} \bullet \gtwo{C_{i-1}} \text{ for all } -\dconst < i \leq \dconst \\ [\myskip]
-			\t \gone{A_i} \bullet \gtwo{1} = \gone{1} \bullet \gtwo{C_i} \text{ for all } -\dconst \leq i \leq \dconst \\ [\myskip]
-			\t \gone{B_i} \bullet \gtwo{1} = \gone{B_{i-1}} \bullet \gtwo{C_1} \text{ for all } -\dconst < i \leq \dconst; \textcolor{red}{i \neq 0,1} \\ [\myskip]
-			\t \gone{1} \bullet \gtwo{D_i} = \gone{A_1} \bullet \gtwo{D_{i-1}} \text{ for all } -\dconst < i \leq \dconst \\ [\myskip]
-			\t \gone{B_i} \bullet \gtwo{1} = \gone{1} \bullet \gtwo{D_i} \text{ for all } -\dconst \leq i \leq \dconst; \textcolor{red}{i \neq 0} \\ [\myskip]
+			\t \gone{A_i} \bullet \gtwo{1} = \gone{A_{i-1}} \bullet \gtwo{B} \text{ for all } 0 < i \leq \dconst \\ [\myskip]
 		}
 		%
 		\\
 		%
 		\procedure{$\upd(\srs, \{\rho_j \}_{j=1}^n)$}{
-			\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = -\dconst}^{\dconst},
-				\smallset{B_i}_{i = -\dconst, i \neq 0}^{\dconst}},
-			\gtwo{\smallset{C_i, D_i}_{i = - \dconst}^{\dconst}},
-			\gtar{E} \right) \\ [\myskip]
-			\alpha, \chi \sample \FF^2_p \\ [\myskip]
+			\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\dconst}},
+			\gtwo{B} \right) \\ [\myskip]
+			\chi \sample \FF_p  \\ [\myskip]
 			\srs' := 
-			\left( \gone{\smallset{\chi^i A_i}_{i = -\dconst}^{\dconst},
-				\smallset{\alpha \chi^i B_i}_{i = -\dconst, i \neq 0}^{\dconst}},
-			\gtwo{\smallset{\chi^i C_i, \alpha \chi^i D_i}_{i = - \dconst}^{\dconst}},
-			\gtar{\alpha E} \right) \\ [\myskip]
-			\rho' = 	\left( \gone{\chi A_1, \alpha \textcolor{red}{B_0}, \chi, \alpha}, \gtwo{\chi, \alpha} \right) \\ [\myskip]
+			\left( \gone{\smallset{\chi^i A_i}_{i = 0}^{\dconst}},
+			\gtwo{\chi B} \right); 
+			\rho' =	\left( \gone{\chi A_1, \chi}, \gtwo{\chi}\right) \\ [\myskip]
 			\pcreturn (\srs', \rho')
 		}
 		\end{minipage}}
