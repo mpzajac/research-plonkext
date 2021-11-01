@@ -243,11 +243,94 @@ The unique response property of $\sonicprot$ follows from the unique opening
 property of the used polynomial commitment scheme $\PCOMs$.
 \begin{lemma}
 \label{lem:sonicprot_ur}
-If a polynomial commitment scheme $\PCOMs$ is evaluation binding with
-parameter $\epsbind(\secpar)$ and has unique openings property with parameter
-$\epsop(\secpar)$, then $\sonicprot$ is $\ur{1}$ with parameter $\epsur(\secpar) \leq
-\epsbind(\secpar) + \epsop(\secpar)$.  
+If a polynomial commitment scheme $\PCOMs$ is evaluation binding with parameter
+$\epsbind (\secpar)$ and has unique openings property with parameter $\epsop(\secpar)$,
+$\sonicprotfs$ is $\epss (\secpar)$-sound and $(\dconst, \dconst)$-ldlog problem is
+$\epsdlog (\secpar)$-hard, then $\sonicprot$ is $\ur{1}$ with security loss
+  \[
+    3 \cdot \epsop (\secpar) + 2 \cdot (\epsbind (\secpar) + \epss (\secpar) +
+    \epsdlog (\secpar)).
+  \]
 \end{lemma}
+
+\changedm{
+\begin{proof}
+  Let $\adv$ be an algebraic adversary tasked to break the $\ur{1}$-ness of
+  $\sonicprotfs$. We show that the first prover's message determines, along with
+  the verifiers challenges, the rest of it.  This is done by game hops. In the games,
+  the adversary outputs two proofs $\zkproof^0$ and $\zkproof^1$ for the same statement.
+  To distinguish polynomials and commitments which an honest prover sends in the
+  proof from the polynomials and commitments computed by the adversary we write the
+  latter using indices $0$ and $1$ (two indices as we have two transcripts), e.g.~to
+  describe the quotient polynomial provided by the adversary we write $\p{t}^0$ and
+  $\p{t}^1$ instead of $\p{t}$ as in the description of the protocol.
+
+  \ngame{0} In this game, the adversary additionally wins if it provides two transcripts that
+  match on all $5$ messages sent by the prover.
+  In this game the adversary cannot win.
+
+  \ngame{1} This game is identical to Game $\game{0}$ except that now the
+  adversary additionally wins if it provides two transcripts that matches on the first four
+  messages of the proof.
+
+  \ncase{Game 0 to Game 1} We show that the probability that $\adv$
+  wins in one game but does not in the other is negligible.  Observe that in
+  after its $4$-th message, the adversary is given a challenge $z'$ and has to open
+  commitment to $\p{s} (u, z')$. Hence, to be able to give two different
+  openings in its $5$-th message, $\adv$ has to break the unique opening property of the
+  KZG commitment scheme which happens with probability $\epsop (\secpar)$ tops.
+
+  \ngame{2} This game is identical to Game $\game{1}$ except that now the
+  adversary additionally wins if it provides two transcripts that matches on the
+  first three messages of the proof.
+
+  \ncase{Game 2 to Game 3} In its $4$-th message the adversary computes evaluation
+  $s = \p{s} (u, y)$ and the corresponding openings $\gone{w}, \gone{q_y}$. The adversary
+  cannot provide two different evaluations for the committed polynomials, since that would
+  require breaking the evaluation binding property, which happens (by the union bound)
+  with probability at most $2 \cdot \epsbind (\secpar)$. Also, the adversary cannot provide two
+  different yet valid opening except probability $2 \cdot \epsop (\secpar)$
+
+  Hence, the probability that adversary wins in one game but does not in the
+  other is upper-bounded by $2 \cdot (\epsbind (\secpar) + \epsop (\secpar))$
+
+  \ngame{4} This game is identical to Game $\game{3}$ except that now the
+  adversary additionally wins if it provides two transcripts that matches on the
+  first two messages of the proof.
+
+  \ncase{Game 3 to Game 4} In its $3$-rd message the adversary computes $4$ polynomial
+  evaluations and their openings. It also sends commitment to $\p{s} (X, y)$ which is a
+  signature of correct computation.
+
+  Probability that the adversary provides different evaluations or polynomial openings is
+  upper bounded by $4 \cdot (\epsop (\secpar) + \epsbind (\secpar))$. Since the polynomial
+  commitment scheme is deterministic, if commitment to $\p{s^0} (X, y)$ does not equal
+  commitment to $\p{s^1} (X, y)$, then at least one of these values has been computed
+  incorrectly. Probability that the adversary outputs an acceptable proof, where signature
+  of correct computation has been computed incorrectly is upper-bounded by $\epss
+  (\secpar) + \epsdlog (\secpar)$, cf.~\cref{lem:plonkprot_ur}.
+
+  \ncase{Game 5}  This game is identical to Game $\game{4}$ except that now the
+  adversary additionally wins if it provides two transcripts that matches on the
+  first messages of the proof.
+
+  \ncase{Game 4 to Game 5} In its second message the adversary commits to polynomial
+  $\p{t} (X, y)$. Since the commitment scheme is deterministic, probability that adversary
+  outputs acceptable proofs where commitment to $\p{t^0} (X, y)$ does not equal commitment
+  to $\p{t^1} (X)$ is upper-bounded by $\epss (\secpar) + \epsdlog (\secpar)$, cf.~\cref{lem:plonkprot_ur}.
+
+  \ncase{Conclusion} Taking all the games together, probability that $\adv$ wins
+  in Game 5 is upper-bounded by
+  \[
+    3 \cdot \epsop (\secpar) + 2 \cdot (\epsbind (\secpar) + \epss (\secpar) +
+    \epsdlog (\secpar)).
+  \]
+  \qed
+\end{proof}
+}
+
+\COMMENT{
+  \michals{1.11}{Old proof below}
 \begin{proof}
   Let $\adv$ be an adversary that breaks $\ur{1}$-ness of $\sonicprot$.  We
   consider two cases, depending on which message $\adv$ is able to provide at
@@ -273,6 +356,7 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
 \qed
 
 \end{proof}
+}
 
 \subsection{Forking special soundness}
 \begin{lemma}
