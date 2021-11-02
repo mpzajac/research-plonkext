@@ -62,10 +62,86 @@ verify that \cref{eq:marlin_eq_2} holds.
   $\epsbind(\secpar)$ and has unique response property with security
   $\epsop(\secpar)$. Then probability that a $\ppt$ adversary $\adv$ breaks
   $\marlinprotfs$ $\ur{1}$ property is at most
-  $6 \cdot (\epsbind + \epsop + \epsk) + \epss$
-  % \michals{8.9}{Do we need to add
-  %   probability that the idealized verifier fails $\epsid$?}
+  \changedm{$11 \cdot (\epsop (\secpar)) + 6 \cdot \epsbind (\secpar) +
+    \infrac{3}{\abs{\FF_p}}.$} \mxout{$6 \cdot (\epsbind + \epsop + \epsk) + \epss$}
 \end{lemma}
+\changedm{
+\begin{proof}
+  Let $\adv$ be an algebraic adversary tasked to break the $\ur{1}$-ness of
+  $\marlinprotfs$. We show that the first prover's message determines, along with
+  the verifiers challenges, the rest of it.  This is done by game hops. In the games,
+  the adversary outputs two proofs $\zkproof^0$ and $\zkproof^1$ for the same statement.
+  To distinguish polynomials and commitments which an honest prover sends in the
+  proof from the polynomials and commitments computed by the adversary we write the
+  latter using indices $0$ and $1$ (two indices as we have two transcripts), e.g.~to
+  describe a polynomial provided by the adversary we write $\p{f}^0$ and
+  $\p{f}^1$ instead of $\p{f}$ as in the description of the protocol.
+
+  \ngame{0} In this game, the adversary additionally wins if it provides two transcripts that
+  match on all $5$ messages sent by the prover.
+  Obviously, in this game the adversary cannot win.
+
+  \ngame{1} This game is identical to Game $\game{0}$ except that now the
+  adversary additionally wins if it provides two transcripts that matches on the first four
+  messages of the proof.
+
+  \ncase{Game 0 to Game 1} We show that the probability that $\adv$ wins in one game but
+  does not in the other is negligible.  Observe that in its $4$-th message, the
+  adversary is given a challenge $\beta_3$ and has to open the previously computed
+  commitments for polynomials $\p{g_3} (X), \p{h_3} (X)$. Since the transcripts match up
+  to $\adv$'s $4$-th message, the challenge is the same in both.  Also, the adversary
+  evaluates and opens evaluations of polynomials $\p{g_2} (X), \p{h_2} (X)$ evaluated at
+  $\beta_2$ and
+  $\p{s} (X), \p{z} (X), \p{z_A} (X), \p{z_B} (X), \p{z_C} (X), \p{h_1} (X), \p{g_1} (X)$
+  evaluated at $\beta_1$. Hence, to be able to give two different openings in its $5$-th
+  message, $\adv$ has to break the unique opening property of the KZG commitment scheme
+  which happens with probability $11 \cdot \epsop (\secpar)$ tops (as $11$ polynomials are
+  evaluated).
+  
+  \ngame{2} This game is identical to Game $\game{1}$ except that now the
+  adversary additionally wins if it provides two transcripts that matches on the
+  first three messages of the proof.
+
+  \ncase{Game 1 to Game 2} In its $4$-th message the adversary
+  provides $\sigma_3$ and commits to polynomials $\p{g_3} (X), \p{h_3} (X)$ which are
+  uniquely determined. Probability that the adversary commits to wrong polynomials that it
+  can later evaluate to correct values (i.e.~to values of evaluated correct polynomials)
+  is upper bounded by $2 \cdot \epsbind (\secpar) + 1 / \abs{\FF_p}$. This is since the
+  adversary either has to break binding property in at least one of two commitments or
+  guess the evaluation point.
+
+  \ngame{3} This game is identical to Game $\game{2}$ except that now the
+  adversary additionally wins if it provides two transcripts that matches on the
+  first two messages of the proof.
+
+  \ncase{Game 2 to Game 3} In its $3$-rd message the adversary
+  provides $\sigma_2$ and commits to polynomials $\p{g_2} (X), \p{h_2} (X)$ which are
+  uniquely determined. Probability that the adversary commits to wrong polynomials that it
+  can later evaluate to correct values (i.e.~to values of evaluated correct polynomials)
+  is upper bounded by $2 \cdot \epsbind (\secpar) + 1 / \abs{\FF_p}$ as explained in the
+  previous point.
+
+  \ngame{4}  This game is identical to Game $\game{3}$ except that now the
+  adversary additionally wins if it provides two transcripts that matches on the
+  first message of the proof.
+
+  \ncase{Game 3 to Game 4} In its $2$-nd message the adversary
+  provides $\sigma_1$ and commits to polynomials $\p{g_1} (X), \p{h_1} (X)$ which are
+  uniquely determined. Probability that the adversary commits to wrong polynomials that it
+  can later evaluate to correct values (i.e.~to values of evaluated correct polynomials)
+  is upper bounded by $2 \cdot \epsbind (\secpar) + 1 / \abs{\FF_p}$ as explained before.
+  
+  \ncase{Conclusion} Taking all the games together, probability that $\adv$ wins
+  in Game 4 is upper-bounded by
+  \[
+    11 \cdot (\epsop (\secpar)) + 6 \cdot \epsbind (\secpar) + \frac{3}{\abs{\FF_p}}.
+  \]
+  \qed
+\end{proof}
+}
+
+\COMMENT{
+  \michals{2.11}{Old proof}
 \begin{proof}
   As in previous proofs, we show the property by game hops. Let
   $N = \p{g_1}, \p{h_1}, \p{g_2}, \p{h_2}, \p{g_3}, \p{h_3}$. That is, $N$ is a
@@ -99,7 +175,7 @@ verify that \cref{eq:marlin_eq_2} holds.
   Thus, for the adversary to be successful in this game it has to provide acceptable
   proofs where $(\p{h_2}, \p{g_2})$ and $(\p{h'_2}, \p{g'_2})$ differ. One of such pair
   has to be incorrect and will be accepted with probability at most $\epss$.
-\end{proof}
+\end{proof}}
 
 \subsection{Forking special soundness}
 \begin{lemma}\label{lem:marlinprot_ss}
