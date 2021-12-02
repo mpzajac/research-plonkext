@@ -273,14 +273,19 @@ a \emph{tree of accepting transcripts} $\tree$, which allows to extract a witnes
     \pcind 
 		\pcelse \pcreturn (0, \bot)
 	}}
-	\caption{Generalised forking algorithm $\genforking_{\zdv}^{m, m'}$ \michals{5.11}{This
-      forking lemma version is not as general as in Attema et al to be exact -- they allow
-    tree of acceptable transcripts to branch at multiple places. however, that is not
-    necessary in our case. Later, we should allow ``full generality'' but that would also
-    require modification of the forking soundness definition (which now also relies on a
-    fact that the tree branches at a single point)}}
+\caption{Generalised forking algorithm $\genforking_{\zdv}^{m, m'}$
+  \michals{5.11}{This forking lemma version is not as general as in Attema et al to
+    be exact -- they allow tree of acceptable transcripts to branch at multiple
+    places. however, that is not necessary in our case. Later, we should allow ``full
+    generality'' but that would also require modification of the forking soundness
+    definition (which now also relies on a fact that the tree branches at a single
+    point)}}
 	\label{fig:genforking_lemma}
 \end{figure}
+
+\begin{lemma}{Generalized forking lemma}
+  
+\end{lemma}
 
 \oursubsub{Forking special soundness}
 Note that the special soundness property (as usually defined) holds for
@@ -292,8 +297,13 @@ statement. Hence, we provide a weaker, yet sufficient, definition of
 \emph{forking special soundness}. More precisely, we state that an
 adversary that is able to answer correctly multiple challenges either knows the
 witness or can be used to break some computational assumption.
-%\chaya{a notion of computational special soundness has been used to mean exactly the above in prior works, like BBF19. we should clarify if forking soundness different from computational special soundness? seems to me like the difference is just that here it is tailored for the NI version.}
-%\chaya{I now see that the diff is the access to the simulator that the adversary gets. might be helpful to clarify this, either here or in a tech overview section. I am not sure why this needs to be defined this way by giving access to the simulator.}
+% \chaya{a notion of computational special soundness has been used to mean exactly
+% the above in prior works, like BBF19. we should clarify if forking soundness
+% different from computational special soundness? seems to me like the difference is
+% just that here it is tailored for the NI version.}  \chaya{I now see that the diff
+% is the access to the simulator that the adversary gets. might be helpful to clarify
+% this, either here or in a tech overview section. I am not sure why this needs to be
+% defined this way by giving access to the simulator.}
 However, differently from the standard definition of special soundness, we do
 not require from the extractor to be able to extract the witness from \emph{any}
 tree of acceptable transcripts. We require that the tree be produced honestly,
@@ -304,11 +314,14 @@ algorithm from the generalized forking lemma.
 
 \begin{definition}[$(k,n)$-forking special soundness in the updatable setting]
 	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
-	$(2 \mu + 1)$-message proof system for a relation $\REL$.  Let $\proofsystem_\fs$ be
-	$\proofsystem$ after the Fiat--Shamir transform.
+  $(2 \mu + 1)$-message proof system for a relation $\REL$.  Let $\proofsystem_\fs$
+  be $\proofsystem$ after the Fiat--Shamir transform.
 	
-	For any $\ppt$ adversary $\advse^{\ro, \initU} (1^\secpar; r)$ with access to oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider the procedure $\zdv$ that provided the transcript $(\srs, \adv, r)$ and $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries
-	and update oracle queries.
+	For any $\ppt$ adversary $\advse^{\ro, \initU} (1^\secpar; r)$ with access to
+  oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider
+  the procedure $\zdv$ that provided the transcript $(\srs, \adv, r)$ and
+  $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries and
+  update oracle queries.
 	%
 	$\zdv$ returns the index $i$ of the
 	random oracle query made for challenge $k$ and the proof $\adv$ returns.
@@ -338,18 +351,18 @@ algorithm from the generalized forking lemma.
 
 
 \paragraph{Importance of the general forking lemma.}
-To highlight the importance of the generalised forking lemma, we outline how it is used in
-our simulation-extractability proof.  Let $\psfs$ be a forking special sound proof system
-where for an instance $\inp$ the corresponding witness can be extracted from a
-$(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\adv$ be the
-simulation-extractability adversary that outputs an accepting proof with probability at
-least $\accProb$. From $\adv$ we build an adversary $\bdv$ that runs $\simulator$
-internally. Although we use the same $\accProb$ to denote probability of $\zdv$ outputting a
-non-zero $i$ and the probability of $\adv$ (and $\bdv$) outputting an accepting proof, we
-claim that these probabilities are exactly the same by the way we define $\zdv$ and
-$\bdv$. In the following we give the intuition of the proof without the additional
-indirection via $\bdv$ whose goal is primarily to simplify the forking special soundness
-definition.
+To highlight the importance of the generalised forking lemma, we outline how it is
+used in our simulation-extractability proof.  Let $\psfs$ be a forking special sound
+proof system where for an instance $\inp$ the corresponding witness can be extracted
+from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\adv$
+be the simulation-extractability adversary that outputs an accepting proof with
+probability at least $\accProb$. From $\adv$ we build an adversary $\bdv$ that runs
+$\simulator$ internally. Although we use the same $\accProb$ to denote probability of
+$\zdv$ outputting a non-zero $i$ and the probability of $\adv$ (and $\bdv$)
+outputting an accepting proof, we claim that these probabilities are exactly the same
+by the way we define $\zdv$ and $\bdv$. In the following we give the intuition of the
+proof without the additional indirection via $\bdv$ whose goal is primarily to
+simplify the forking special soundness definition.
 
 Let $\adv$ output an accepting instance-proof pair $(\inp_{\advse},\zkproof_{\advse})$;
 $r$ be $\adv$'s randomness; and $Q_\ro$ be the list of all random oracle queries made by
