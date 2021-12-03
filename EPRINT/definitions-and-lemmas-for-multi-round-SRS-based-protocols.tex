@@ -287,6 +287,7 @@ a \emph{tree of accepting transcripts} $\tree$, which allows to extract a witnes
   
 \end{lemma}
 
+
 \oursubsub{Forking special soundness}
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
@@ -398,6 +399,19 @@ witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting
 transcripts. This limitation however does not affect the main result of this
 paper, i.e.~showing that $\plonk$, $\sonic$, and $\marlin$ are simulation extractable.
 
+\changedm{
+  \subsubsection{From knowledge soundness to tree of acceptable transcripts}
+  Let $\proofsystem$ be a proof system that is knowledge sound
+  with knowledge error $\epsk$. Assume adversary $\adv$ that makes up to $q$ random
+  oracle queries and outputs an acceptable proof with probability at least
+  $\accProb$. Attema et al.~\cite{EPRINT:AttFehKlo21} shown that for such a proof
+  system probability that a tree building algorithm $\tdv$ succeeds in building an
+  $(k, n)$-tree of accepted transcripts in expected
+  running time $n + q (n + 1)$ is at least
+  \[
+    \frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)}.
+  \]
+}
 
 
 %%% Local Variables:

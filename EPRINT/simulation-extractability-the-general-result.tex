@@ -48,7 +48,8 @@ and wins with the same probability.
 \begin{theorem}[Simulation-extractable multi-message protocols]
   \label{thm:se}
   Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
-  $(2 \mu + 1)$-message zero-knowledge proof system for $\RELGEN(\secparam)$. Let
+  $(2 \mu + 1)$-message zero-knowledge proof system for $\RELGEN(\secparam)$
+  \changedm{with knowledge soundness error $\epsk(\secpar)$}. Let
   $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. If $\psfs$ has the
   $k$-\emph{unique response property} with security loss $\epsur(\secpar)$, is
   \emph{$k'$-programmable trapdoor-less simulatable}, is $(k'', n)$-\emph{forking
@@ -163,8 +164,9 @@ and wins with the same probability.
 }
 %
 \ngame{2} Define an adversary $\bdv$ against forking special soundness such that,
-given access to oracles $\initU$ and $\ro$, and randomness $r = (r_\adv, \rsim)$, it
-internally runs $\advse^{\initU, \simulator_1, \simulator_2'} (1^\secpar; r_\adv)$, where
+given access to oracles $\initU$ and $\ro$, and randomness $r = (r_\adv, \rsim)$,
+internally runs $\advse^{\initU, \simulator_1, \simulator_2'} (1^\secpar; r_\adv)$,
+where
 \begin{compactenum}
 \item $\bdv$ answers $\adv$ random oracle and update queries by passing the queries to the real
   oracles $\ro$ and $\initU$. When $\adv$ finalises an SRS $\srs$, $\bdv$ does the same.
@@ -188,7 +190,11 @@ $Q_\ro$. Then, $\ext$ starts a forking algorithm
 $\genforking^{n}_\zdv(y,h_1, \ldots, h_q)$ for
 $y = (\srs, \bdv, r, \inp_{\advse}, \zkproof_{\advse})$ where we set
 $h_1, \ldots, h_q$ to be the consecutive queries from list $Q_\ro$. We run $\bdv$
-internally in $\zdv$.
+internally in $\zdv$. \michals{3.12}{Note we will have a bit different forking
+  algorithm here -- as described in Attema et al. Bottom line is -- the extractor in
+  Attema et al.~rewinds the adversary $k + q (k + 1)$ times (expected number of
+  rewinds). Since the number of rewinds is larger, probability of success is much
+  higher. That is, they don't have our exponential security loss.}
 		
 To assure that in the first execution of $\zdv$ the adversary $\bdv$ produces the
 same $(\inp_{\advse}, \zkproof_{\advse})$ as in the extraction game, $\zdv$ provides
@@ -247,44 +253,43 @@ $(\inp_{\advse}, \zkproof_{\advse} [1..k'']) = (\inp_\simulator,
 the error event in Game $\game{1}$.  As previously,
 \( \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}}\,.  \)
 		
-
-    Denote by $\waccProb'$ the probability that algorithm $\zdv$, defined in the general forking lemma,
-		produces an accepting proof with a fresh challenge after move $k''$. From the above argument,
-		we have that $\waccProb = \waccProb'$.
+Denote by $\waccProb'$ the probability that algorithm $\zdv$, defined in the general
+forking lemma, produces an accepting proof with a fresh challenge after move
+$k''$. From the above argument, we have that $\waccProb = \waccProb'$.
 		
-		Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma}, we get that
-		\begin{equation}
-		\begin{split}
-		\prob{\event{\errfrk}} \leq 1 - \waccProb \cdot \left(\infrac{\waccProb^{n -
-				1}}{q^{n - 1}} + \infrac{(2^\secpar) !}{((2^\secpar - n)! \cdot
-			(2^\secpar)^{n})} - 1\right).
-		\end{split}
-		\end{equation}
-	
-	\ngame{3}
-    This game is identical to $\game{2}$ except that the extractor $\ext$, given tree
-    of acceptable transcripts $\tree$ runs additionally $\extt (\tree)$ to learn the
-    witness $\wit$. The environment additionally aborts this game if $\REL(\inp,
-    \wit)$ does not hold.
+Next, from the generalised forking lemma, cf.~\cref{lem:generalised_forking_lemma},
+we get that
+\changedm{
+\begin{equation}
+  \begin{split}
+    \prob{\event{\errfrk}} \leq 1 - \frac{\waccProb - (q + 1) \epsk(\secpar)} {1 -
+      \epsk(\secpar)}.
+  \end{split}
+\end{equation}
+}
+
+\ngame{3} This game is identical to $\game{2}$ except that the extractor $\ext$,
+given tree of acceptable transcripts $\tree$ runs additionally $\extt (\tree)$ to
+learn the witness $\wit$. The environment additionally aborts this game if
+$\REL(\inp, \wit)$ does not hold.
 	
 	\ncase{Game 2 to Game 3}	
 		Since $\ps$ is forking special sound the probability that $\extt(\tree)$
 		fails is upper-bounded by $\epsss(\secpar)$.
 		
-	\ncase{Conclusion}	Since Game $\game{3}$ is aborted when it is impossible to extract a witness from
-		$\tree$ and $\bdv$ only passes proofs produced by $\adv$, the adversary $\advse$ cannot
-		win. Thus, by the game-hopping argument,
+    \ncase{Conclusion} Since Game $\game{3}$ is aborted when it is impossible to
+    extract a witness from $\tree$ and $\bdv$ only passes proofs produced by $\adv$,
+    the adversary $\advse$ cannot win. Thus, by the game-hopping argument,
 		\[
-		\abs{\prob{\game{0}} - \prob{\game{4}}} \leq 1 -
-		\left(\frac{\waccProb^{n}}{q^{n - 1}} + \waccProb \cdot \frac{(2^\secpar)
-			!}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb\right) + \epsur(\secpar) +
+      \abs{\prob{\game{0}} - \prob{\game{4}}} \leq 1 - \changedm{\frac{\waccProb - (q
+          + 1) \epsk(\secpar)}{1 - \epsk(\secpar)}} + \epsur(\secpar) +
 		%q_{\ro}^{\mu} \epss +
 		\epsss(\secpar)\,.
 		\]
 		Thus the probability that extractor $\extss$ succeeds is at least
 		\[
-		\frac{\waccProb^{n}}{q^{n - 1}} + \waccProb \cdot \frac{(2^\secpar)
-			!}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} - \waccProb - \epsur(\secpar) 
+      \changedm{\frac{\waccProb - (q + 1) \epsk(\secpar)}{1 - \epsk(\secpar)}} -
+      \epsur(\secpar)
 		%- q_{\ro}^{\mu} \epss
 		- \epsss(\secpar)\,.
 		\]
@@ -293,21 +298,11 @@ the error event in Game $\game{1}$.  As previously,
 		\epsur(\secpar)$, where $\accProb$ is the probability of $\advse$ outputting an accepting
 		proof as defined in \cref{def:updsimext}. Thus, 
 		\begin{equation}
-		\label{eq:frk}
-		\extProb \geq \frac{(\accProb - \epsur(\secpar))^{n}}{q^{n - 1}} -
-		\underbrace{(\accProb - \epsur(\secpar)) \cdot \left( 1 - \frac{(2^\secpar)
-				!}{(2^\secpar - n)! \cdot (2^\secpar)^{n}}\right) - \epsur(\secpar) -
-			% q_{\ro}^{\mu} \epss -
-			\epsss(\secpar)}_{\eps(\secpar)}\,.
+      \label{eq:frk}
+      \extProb \geq \changedm{\frac{\accProb - \epsur(\secpar) - (q + 1) \epsk(\secpar)}{1 - \epsk(\secpar)}} 
+      - \epsur(\secpar) - \epsss(\secpar)\,.
 		\end{equation}
-		Note that the part of \cref{eq:frk} denoted by $\eps(\secpar)$ is negligible as
-		$\epsur(\secpar), \epsss(\secpar)$ are negligible, and
-		$\frac{(2^\secpar) !}{(2^\secpar - n)! \cdot (2^\secpar)^{n}} \geq
-		\left(\infrac{(2^\secpar - n)}{2^\secpar}\right)^{n}$ is overwhelming.  Therefore,
-		\[
-		\extProb \geq q^{-(n - 1)} (\accProb - \epsur(\secpar))^{n} -\eps(\secpar)\,.
-		\] 
-		and $\psfs$ is \COMMENT{forking }simulation extractable with extraction error $\epsur(\secpar)$.
+		Hence $\psfs$ is \COMMENT{forking }simulation extractable with extraction error \hl{...}. 
 	\qed
 \end{proof}
 
