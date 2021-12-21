@@ -253,6 +253,7 @@ an accepting transcript, $\accProb$, lower-bounds the probability of generating 
   branches, where $N$ is the number of accepting transcripts. We require $N = \poly$.
 \end{definition}
 
+\iffalse
 		
 	\begin{figure}[t]
 		\centering
@@ -298,36 +299,40 @@ an accepting transcript, $\accProb$, lower-bounds the probability of generating 
 %   }
 % \end{figure}
 
+\fi
+
 \begin{figure}[t]
   \centering
   %\fbox{
     \begin{enumerate}
-    \item Run $\zdv_{m + 1}(x)$ as follows to obtain $(I, y1, v)$: relay the
+    \item Run $\zdv_{m + 1}(x)$ as follows to obtain $(I, y_1, v)$: relay the
       $Q + \mu$ queries to the random oracle and record all query-response pairs. Set
-      $i := Im$, and let ci be the response to query $i$.
+      $i \gets I_m$, and let $c_i$ be the response to query $i$.
     \item If $v = 0$, abort with output $v = 0$. 
     \item Else, repeat
       \begin{itemize}
       \item sample $c'_i \in C \setminus \smallset{c_i}$ (without replacement);
-      \item run Em+1(x) as follows to obtain (I',y',v'), aborting right after the
-        initial run of $P^*(x)$ if $Im' \neq  Im$: answer the query to i with c'i, while
-        answering all other queries consistently if the query was performed by
-        Em+1(x) already on a previous run and with a fresh random value in C
+      \item run $\zdv_{m + 1} (x)$ as follows to obtain $(I',y',v')$, aborting right after
+        the initial run of $\adv (x)$ if $I'_m \neq I_m$: answer the query to $i$ with
+        $c'_i$, while answering all other queries consistently if the query was performed
+        by $\zdv_{m + 1} (x)$ already on a previous run and with a fresh random value in $C$
         otherwise;
       \end{itemize}
-      until either $k_m - 1$ additional challenges c'i with v' = 1 and Im' = Im have
+      until either $k_m - 1$ additional challenges $c'_i$ with $v' = 1$ and $I'_m = I_m$ have
       been found or until all challenges $c'_i \in C$ have been tried. 
-    \item  In the former
-      case, output I, the km accepting (1,...,1,km+1,...,$k_\mu$)-trees y1,...,ykm, and v
-      := 1; in the latter case, output v := 0.
+    \item In the former case, output $I$, the $k_m$ accepting
+      $(1, \ldots, 1, k_{m + 1}, \ldots, k_\mu)$-trees $y_1, \ldots ,y_{k_m}$, and
+      $v \gets 1$; in the latter case, output $v \gets 0$.
     \end{enumerate}
    % }
-\caption{Extractor $\zdv$ from Attema et al.}
+\caption{Extractor $\zdv_m (x)$ from Attema et al.}
 \end{figure}
 
 
 \begin{lemma}{Generalized forking lemma}
-  
+  Consider algorithm $GF$ that internally runs $\zdv_1 (x = (\srs))$ . Probability that
+  $GF$ outputs $N = k_1 \cdot \ldots \cdot k_\mu$ tree of acceptable transcripts is at
+  least 
 \end{lemma}
 
 
