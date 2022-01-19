@@ -56,11 +56,11 @@ and wins with the same probability.
     special sound} with security loss $\epss(\secpar)$, and all of these properties
   hold in the updatable setting and $k \geq k' \geq k''$ then $\psfs$ is
   \emph{simulation-extractable in the updatable setting} with extraction error
-  $\epsur(\secpar)$ against $\ppt$ adversaries that makes up to $q$ random oracle
+  \textcolor{red}{$\epsur(\secpar)$} against $\ppt$ adversaries that makes up to $q$ random oracle
   queries and returns an acceptable proof with probability at least $\accProb$.  The
   extraction probability $\extProb$ is at least
-  \( \extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n}
-  -\eps(\secpar)\,, \) for some negligible $\eps(\secpar)$.
+  \textcolor{red}{\( \extProb \geq \frac{1}{q^{n - 1}} (\accProb - \epsur(\secpar))^{n}
+  -\eps(\secpar)\,, \)} for some negligible $\eps(\secpar)$.
 \end{theorem}
 \begin{proof}		
 
@@ -213,7 +213,7 @@ was not successful.
 		
 Then, new random oracle responses are picked for queries indexed by $i, \ldots, q$
 and the adversary is rewound to the point just prior to when it gets the response to
-RO query $\zkproof_{\advse}[0..k'']$. The adversary gets a random oracle response from
+random oracle query $\zkproof_{\advse}[0..k'']$. The adversary gets a random oracle response from
 a new set of responses $h^2_i, \ldots, h^2_q$. If the adversary requests a simulated
 proof after seeing $h^2_i$, then $\zdv$ computes the simulated proof on its
 own. Eventually, $\zdv$ outputs index $i'$ of a query that was used by the adversary

@@ -94,7 +94,7 @@ $\plonk$.
 
 The notion of simulation-extractability for zkSNARKs which is well motivated in practice has not been studied in the updatable setting.
 
-Consider the following scenario: We assume a rushing adversary that starts off with a sequence of malicious updates by colluding parties resulting in a subverted reference string $\srs$. By combining their trapdoor contributions and employing the simulation algorithm, these parties can easily compute a proof $(\srs,x,\pi)$ for a statement $x$ without knowing a witness. Now, assume that at a later stage a party produces a proof $(\srs',x,\pi')$ for the same statement with respect to an updated $\srs'$ that has an honest update contribution. We would like the guarantee that this party must known a witness corresponding to $x$. The ability to ``move" the proof $\pi$ from the old SRS to a proof $\pi'$ for the new SRS without knowing a witness would clearly violates security. A natural idea is to require that honestly \emph{updated} reference strings are indistinguishable from honestly \emph{generated} reference strings. However, this is not sufficient as the rushing adversary can also rush toward the end of the SRS generation ceremony to perform the last update.
+Consider the following scenario: We assume a rushing adversary that starts off with a sequence of malicious updates by colluding parties resulting in a subverted reference string $\srs$. By combining their trapdoor contributions and employing the simulation algorithm, these parties can easily compute a proof $(\srs,\inp,\pi)$ for a statement $\inp$ without knowing a witness. Now, assume that at a later stage a party produces a proof $(\srs',\inp,\pi')$ for the same statement with respect to an updated $\srs'$ that has an honest update contribution. We would like the guarantee that this party must known a witness corresponding to $\inp$. The ability to ``move" the proof $\pi$ from the old SRS to a proof $\pi'$ for the new SRS without knowing a witness would clearly violates security. A natural idea is to require that honestly \emph{updated} reference strings are indistinguishable from honestly \emph{generated} reference strings. However, this is not sufficient as the rushing adversary can also rush toward the end of the SRS generation ceremony to perform the last update.
 %That is, an adversary who does not knows the trapdoor for the update from $\srs$ to $\srs'$ should not be able to break SE. % as long as there was at least one honest update to $\srs$.\markulf{30/09/2021}{We currently don't achieve this strong USE notion.}
 
 
@@ -211,10 +211,10 @@ knowledge of trapdoor. More precisely for our reduction, we need simulators that
 only on reordering the messages and picking suitable verifier challenges, without
 knowing the SRS trapdoor.  That is, any PPT party should be able to produce a
 simulated proof on its own in a trapdoor-less way. Note that this property does not
-necessary break soundness of the protocol as the simulator is required only to
+necessarily break soundness of the protocol as the simulator is required only to
 produce a transcript and is not involved in a real conversation with a real
 verifier. We show simulators for $\plonkprotfs$, $\sonicprotfs$, and $\marlinprotfs$
-that rely only on the programmability of the RO, where programmability is only needed
+that rely only on the programmability of the random oracle, where programmability is only needed
 from some move $i$ onwards. This property can be understood as a generalization of
 honest-verifier zero-knowledge for Fiat--Shamir transformed proof systems with an
 SRS.
@@ -284,7 +284,7 @@ lower bound on the probability that a tree finding algorithm is able to produce 
 tree of acceptable transcripts by rewinding a conversation between a
 (potentially malicious) prover and verifier.
 
-Although the result in that paper is dubbed a ``forking lemma'' it
+Although the result in that paper is dubbed as ``forking lemma'' it
 differs from forking lemmas known from e.g.~\cite{JC:PoiSte00,CCS:BelNev06}.
 First of all, the forking lemmas in these papers analyse the probability of building
 a tree of acceptable transcripts for Fiat--Shamir based non-interactive proof

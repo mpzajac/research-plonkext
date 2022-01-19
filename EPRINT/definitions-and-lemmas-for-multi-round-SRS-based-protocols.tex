@@ -30,7 +30,7 @@ require two transcripts for standard model extraction, e.g.,
 analysis for multi-message protocols with a universal or updatable SRS.  In order to
 prove simulation-extractability for such protocols, we require more than just two
 transcripts for extraction.  Moreover, in the updatable setting we consider protocols
-that rely on an SRS where the adversary gets to contribute to the SRS. This makes out
+that rely on an SRS where the adversary gets to contribute to the SRS. This makes our
 analysis more challenging.  We first give a definition of simulation-extractability
 which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then,
 to support multi-message SRS-based protocols compiled using the Fiat--Shamir transform
@@ -123,7 +123,7 @@ $\simulator = (\simulator_1, \simulator_2')$.
 \subsection{Unique-response protocols}
 A technical hurdle identified by Faust et al.~\cite{INDOCRYPT:FKMV12} for proving
 simulation extraction via the Fiat--Shamir transformation is that the transformed
-prove system satisfies a unique response property. The original Fischlin's
+proof system satisfies a unique response property. The original Fischlin's
 formulation, although suitable for applications presented in
 \cite{C:Fischlin05,INDOCRYPT:FKMV12}, does not suffice in our case. First, the
 property assumes that the protocol has three messages, with the second being the
@@ -402,7 +402,7 @@ algorithm from the generalized forking lemma.
 	\begin{aligned}
 	& r \sample \RND{\advse},
 	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r), \\
-	&    (1, \tree) \gets \genforking_{\zdv}^{m}((\srs,\adv,r),Q_{H}),
+	&    (1, \tree) \gets \genforking_{\zdv}^{n}((\srs,\adv,r),Q_{H}),
 	\wit \gets \extt(\tree)
 	\end{aligned}
 	\right] \leq \epss(\secpar).

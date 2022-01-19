@@ -113,7 +113,7 @@ witness for the statement in question.
 To define Signatures of Knowledge we use a recent version \cite{C:GroMal17} that
 implicitly considers only compact (succinct) signatures. \COMMENT{We omit the
   description of SoK's algorithms and security properties and defer them to
-  \cref{sec:sok}.} Intuitively, a SoK behaves like a non-interactive prove system
+  \cref{sec:sok}.} Intuitively, a SoK behaves like a non-interactive proof system
 that ``binds'' the message being signed to the proof.
      
 %\subsection{Signatures of Knowledge}
@@ -340,11 +340,11 @@ defined as follows:
 
 \ourpar{Completeness.}
 %\item[Completeness]
-  An interactive proof system $\proofsystem$ is
+  A non-interactive proof system $\proofsystem$ is
   \emph{complete} if an honest prover always convinces an honest verifier, that
   is for all $\REL \in \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
 	\[
-		\condprob{\verifier^\ro (\srs, \inp, \zkproof) = 1} {\srs \gets \kgen(\REL) = 1,
+		\condprob{\verifier^\ro (\srs, \inp, \zkproof) = 1} {\srs \gets \kgen(\REL),
       \zkproof \gets \prover^\ro (\srs, \inp, \wit)}\,.
 	\]
     % \item[Soundness]
@@ -520,11 +520,11 @@ We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which 
 \vspace{-8pt}
 \begin{itemize} 
 	\item
-	$(\srs,\rho) \gets \kgen(\REL)$ is a PPT algorithm that takes a security parameter $\secpar$ and outputs a SRS $\srs$, and correctness proof $\rho$.
+	$(\srs,\rho) \gets \kgen(\REL)$ is a PPT algorithm that takes a relation $\REL$ and outputs a SRS $\srs$, and correctness proof $\rho$.
 	\item
-	$ (\srs',\rho') \gets \upd(\srs, \{\rho_j \}_{j=1}^n)$ is a PPT algorithm that takes as input the security parameter $\secpar$, a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
+	$ (\srs',\rho') \gets \upd(\srs, \{\rho_j \}_{j=1}^n)$ is a PPT algorithm that takes a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
 	\item
-	$b \gets \verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$ is a DPT algorithm that takes the security parameter $\secpar$, a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
+	$b \gets \verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$ is a DPT algorithm that takes a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
 \end{itemize}
 
 	In all our protocols, we deal with a structured reference string that is updatable. We give the $\kgen$, $\upd$ and $\verifyCRS$ algorithms in~\cref{fig:upd-scheme}.
