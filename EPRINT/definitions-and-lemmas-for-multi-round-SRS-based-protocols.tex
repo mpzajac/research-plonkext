@@ -305,7 +305,7 @@ an accepting transcript, $\accProb$, lower-bounds the probability of generating 
   \centering
   %\fbox{
     \begin{enumerate}
-    \item Run $\zdv_{m + 1}(x)$ as follows to obtain $(I, y_1, v)$: relay the
+    \item Run $\zdv_{m + 1}(x)$ as follows to obtain $(\vec{I}, y_1, v)$: relay the
       $Q + \mu$ queries to the random oracle and record all query-response pairs. Set
       $i \gets I_m$, and let $c_i$ be the response to query $i$.
     \item If $v = 0$, abort with output $v = 0$. 
@@ -325,14 +325,28 @@ an accepting transcript, $\accProb$, lower-bounds the probability of generating 
       $v \gets 1$; in the latter case, output $v \gets 0$.
     \end{enumerate}
    % }
-\caption{Extractor $\zdv_m (x)$ from Attema et al.}
+    \caption{Extractor $\zdv_m (x)$ from Attema et al. Here $\vec{I}$ is an index vector
+      that contains all random oracle queries made by the prover for the output proof;
+      that is, for prover's messages $\vec{a} = a_1, \ldots, a_{\mu + 1}$,
+      $I_1 = (\inp, a_1), \ldots, I_{\mu} = (\inp, a_1, \ldots, a_\mu)$.  $\vec{y}$ is a proof
+      transcript that contains both prover's messages and random oracle responses, that is
+      $\vec{y} = (a_1, (\inp, a_1), a_2, (\inp, a_1, a_2), \ldots)$. Finally, $v$ is the
+      verification bit, that is $v = \verifier (\srs, \inp, \zkproof) = \verifier(x, \vec{y})$. }
 \end{figure}
 
 
-\begin{lemma}{Generalized forking lemma}
-  Consider algorithm $GF$ that internally runs $\zdv_1 (x = (\srs))$ . Probability that
-  $GF$ outputs $N = k_1 \cdot \ldots \cdot k_\mu$ tree of acceptable transcripts is at
-  least 
+\begin{lemma}[Generalized forking lemma]
+  \michals{19.1}{Here I am focused on a case where the tree branches at single point, hope
+    we could generalize it} %
+  Consider algorithm $\genforking$ that internally runs $\zdv_1 (x = (\srs, \inp))$ and
+  makes at most $n + Q \cdot (n - 1)$ queries to an adversary $\adv$ that outputs an
+  acceptable proof with probability $\accProb$ and makes up to $Q$ random oracle
+  queries. Let proof system $\proofsystem$ be $(1, \ldots, n, \ldots, 1)$-forking special sound and
+  $\epsk (\secpar)$ knowledge sound. Then for every probability that $\genforking$ outputs
+  $(1, \ldots, n, \ldots, 1)$ tree of acceptable transcripts is at least
+  \[
+    \frac{\accProb - (Q + 1) \cdot \epsk (\secpar)}{1 - \epsk (\secpar)}.
+  \]
 \end{lemma}
 
 
