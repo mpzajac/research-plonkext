@@ -29,51 +29,56 @@ show how to build a knowledge extractor for $\proofsystem$ using extractor for $
 The $\proofsystem$ adversary $\adv$ is a PPT machine that gets as input an SRS $\srs$ --
 that encodes relation $\REL$ --, oracle access to a random oracle $\ro$, and outputs an
 instance--proof pair $(\inp, \zkproof)$. We denote by $\accProb$ probability that
-$\verifier (\srs, \inp, \zkproof)$ accepts the proof. We build an extractor $\ext_\adv$
-that given $\adv$'s code, and random oracle queries $Q_{ro}$
-outputs $\wit$ such that $\REL(\inp, \wit) = 1$ with \changedm{non-negligible}
-probability.  Adversary $\adv$ wins whenever $\ext_\adv$ fails to output the witness.
+$\verifier (\srs, \inp, \zkproof)$ accepts the proof. We build an extractor $\ext$ that
+rewinds $\adv$ expected number of $N$ times each time providing it with a modified set of
+random oracle responses $Q_i$ and builds a tree $\tree$ of acceptable transcripts.
+Eventually the extractor outputs $\wit$ such that $\REL(\inp, \wit) = 1$ with
+\changedm{non-negligible} probability.  Adversary $\adv$ wins whenever $\ext$ fails to
+output the witness.
 
-\ncase{Game 2} %
-This game is identical to Game 1, except now the environment aborts if the proof
+\ncase{Game $2.i$} %
+This game is identical to Game 1, except now the environment aborts if the $i$-th proof
 submitted by the adversary $\adv$ in not acceptable by the idealized verifier
 $\verifier'$.
 
-\ncase{Game 1 to Game 2} %
+\michals{26.1}{Add more explanation of what the above means.}
+
+\ncase{Game $1$ to Game $2.i$} %
 \michals{26.1}{Here we are using the reduction known from, e.g.~plonk -- if the adversary
 manages to provide a proof acceptable by $\verifier$, but not $\verifier'$ then we can
 break the dlog assumption. This happens with probability at most $\epsdlog$.
 }
 
-\ncase{Game 3}
-\michals{26.1} {(this game was previously a part of Game 2, maybe that was a good idea.)
+\ncase{Game $3.i$}
+\michals{26.1} {(this game was previously a part of Game 2, maybe that was a good idea.)}
   We now introduce $\proofsystem'$ adversary $\adv'$ that internally runs $\adv$ (provides
   it with the SRS, passes $\verifier'$ challenges as $\verifier$ challenges) and whenever
   $\adv$ outputs a polynomial commitment it extracts the underlying polynomial and sends
   it to $\prover'$.
-
-  Probability $\accProb'$ that $\adv'$ makes an acceptable proof is thus at least
-  $\accProb - \epsdlog - k \cdot \epsk$. The last term, $k \cdot \epsk$ comes as there is
-  $k$ polynomial commitments in $\proofsystem$ and probability that $\adv'$ fails to
-  extract a polynomial from a polynomial commitment is upper-bounded by $\epsk$.
 }
 
-\ncase{Game 2 to Game 3}
+\ncase{Game $2.i$ to Game $3.i$} %
+The environment aborts Game $3.i$ when $\adv'$ fails to extract a polynomial from
+a commitment submitted by $\adv$. This happens with probability at most $k \cdot \epsk$,
+where $k$ is the number of polynomial commitments output by $\adv$ and $\epsk$ is a
+knowledge error of polynomial commitment knowledge extractor.
 
-\ncase{Game 4} \michals{26.1} { Here we run the Attema et al extractor on $\proofsystem'$
-  adversary $\adv'$. Probability that this extractor fails is upper-bounded by
-  $\epsa + N \cdot (\epsdlog + k \cdot \epsk)$, where $N$ is the expected number of
-  $\ext'_{\adv}$ runs.
+Probability $\accProb'$ that $\adv'$ makes an acceptable proof is thus at least
+$\accProb - \epsdlog - k \cdot \epsk$.
 
-  Note that $\epsa$ already includes
-  probability that $\adv'$ breaks knowledge soundness of $\proofsystem'$, in our paper
-  denoted by $\epsid$.  }
+\ncase{Game $4$} %
+\michals{26.1} { Here we run the Attema et al extractor on $\proofsystem'$ adversary
+  $\adv'$. Probability that this extractor fails is upper-bounded by
+  $\epsa (\secpar, \accProb')$.
+
+  Note that $\epsa$ already includes probability that $\adv'$ breaks knowledge soundness
+  of $\proofsystem'$, in our paper denoted by $\epsid$.  }
 
 \ncase{Conclusion}
 \michals{26.1}{Probability that $\adv$ outputs a valid proof that is acceptable by
   $\verifier$ but $\ext_\adv$ fails is upper-bounded by
   \[
-    N \cdot (\epsdlog + k \cdot \epsk) + \epsa
+    \epsa + N \cdot (\epsdlog + k \cdot \epsk).
   \]
   }
 
