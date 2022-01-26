@@ -1,0 +1,84 @@
+% !TEX root = main.tex
+% !TEX spellcheck = en-US
+
+\section{From arguments to proofs}
+\newcommand{\epsa}{\eps_{\mathsf{attema}}}
+\michals{25.01}{Here I describe how to make Attema et al result ``for proofs'' usable in
+  our ``arguments''}
+%
+\michals{26.1}{Should we give adversary access to the simulator oracle? Probably not, as
+  that would force us to write the whole SE proof here. Let's focus on a simpler case and
+  introduce the simulator later on
+}
+%
+\michals{26.1}{Should we show this result for every proof system separately?}
+%
+Let $\proofsystem'$ be a statistically sound idealised proof system and $\proofsystem$ a
+computationally sound proof system (i.e.~an argument) obtained from $\proofsystem'$. We
+show how to build a knowledge extractor for $\proofsystem$ using extractor for $\proofsystem'$.
+
+\begin{lemma}
+  Let $\proofsystem'$ be a knowledge sound proof system with knowledge error
+  $\epsid$. Let $\proofsystem$ be a computationally sound proof system \changedm{compiled
+    from $\proofsystem'$ with security loss $\eps$}. Let $\adv'$ be a $\proofsystem'$
+  adversary that outputs an acceptable proof with probability $\accProb'$, then \hl{...}  
+\end{lemma}
+
+
+\ncase{Game 1} %
+The $\proofsystem$ adversary $\adv$ is a PPT machine that gets as input an SRS $\srs$ --
+that encodes relation $\REL$ --, oracle access to a random oracle $\ro$, and outputs an
+instance--proof pair $(\inp, \zkproof)$. We denote by $\accProb$ probability that
+$\verifier (\srs, \inp, \zkproof)$ accepts the proof. We build an extractor $\ext_\adv$
+that given $\adv$'s code, and random oracle queries $Q_{ro}$
+outputs $\wit$ such that $\REL(\inp, \wit) = 1$ with \changedm{non-negligible}
+probability.  Adversary $\adv$ wins whenever $\ext_\adv$ fails to output the witness.
+
+\ncase{Game 2} %
+This game is identical to Game 1, except now the environment aborts if the proof
+submitted by the adversary $\adv$ in not acceptable by the idealized verifier
+$\verifier'$.
+
+\ncase{Game 1 to Game 2} %
+\michals{26.1}{Here we are using the reduction known from, e.g.~plonk -- if the adversary
+manages to provide a proof acceptable by $\verifier$, but not $\verifier'$ then we can
+break the dlog assumption. This happens with probability at most $\epsdlog$.
+}
+
+\ncase{Game 3}
+\michals{26.1} {(this game was previously a part of Game 2, maybe that was a good idea.)
+  We now introduce $\proofsystem'$ adversary $\adv'$ that internally runs $\adv$ (provides
+  it with the SRS, passes $\verifier'$ challenges as $\verifier$ challenges) and whenever
+  $\adv$ outputs a polynomial commitment it extracts the underlying polynomial and sends
+  it to $\prover'$.
+
+  Probability $\accProb'$ that $\adv'$ makes an acceptable proof is thus at least
+  $\accProb - \epsdlog - k \cdot \epsk$. The last term, $k \cdot \epsk$ comes as there is
+  $k$ polynomial commitments in $\proofsystem$ and probability that $\adv'$ fails to
+  extract a polynomial from a polynomial commitment is upper-bounded by $\epsk$.
+}
+
+\ncase{Game 2 to Game 3}
+
+\ncase{Game 4} \michals{26.1} { Here we run the Attema et al extractor on $\proofsystem'$
+  adversary $\adv'$. Probability that this extractor fails is upper-bounded by
+  $\epsa + N \cdot (\epsdlog + k \cdot \epsk)$, where $N$ is the expected number of
+  $\ext'_{\adv}$ runs.
+
+  Note that $\epsa$ already includes
+  probability that $\adv'$ breaks knowledge soundness of $\proofsystem'$, in our paper
+  denoted by $\epsid$.  }
+
+\ncase{Conclusion}
+\michals{26.1}{Probability that $\adv$ outputs a valid proof that is acceptable by
+  $\verifier$ but $\ext_\adv$ fails is upper-bounded by
+  \[
+    N \cdot (\epsdlog + k \cdot \epsk) + \epsa
+  \]
+  }
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
