@@ -1,8 +1,41 @@
 % !TEX root = main.tex
 % !TEX spellcheck = en-US
 
-\section{From arguments to proofs}
+\section{Making Attema et al work in our setting}
 \newcommand{\epsa}{\eps_{\mathsf{attema}}}
+
+\subsection{Extractability of polynomial commitments}
+\michals{27.01}{In this section we want to show how one could extract polynomials from a
+  PCOM}
+
+\begin{lemma}
+  Let $\PCOM$ be a polynomial commitment scheme and $\proofsystem$ a $(2 \mu + 1)$-message
+  proof system where the adversary $\adv$ sends polynomial commitments using $\PCOM$ for
+  polynomials that are evaluated in the run of the protocol. Denote by $\accProb$
+  probability that the adversary outputs an acceptable proof. Then there exists an
+  extractor $\ext$ that for each commitment $c$ provided by $\adv$ outputs polynomial $f$
+  such that $c = \com (f)$ with probability at least \hl{...}
+\end{lemma}
+
+\begin{proof}
+  Denote by $k$ the number of polynomials that are committed during a run of
+  $\proofsystem$ and denote by $d$ the maximum degree of the polynomials. We assume that
+  each polynomial is evaluated at least at one point during the protocol.
+
+  The extractor proceeds as follows. It gets as input the polynomial commitment SRS
+  $\srs_{pcom}$ and build a proof system SRS $\srs$; then it runs internally $\adv (\srs)$
+  and plays the role of the verifier. Each time the adversary outputs a commitment $c$, it
+  continues the protocol, randomly picks the evaluation points $x$, adds $x$ to initially
+  empty list $X$, and learns evaluation of $c$ and the corresponding opening. Then it
+  rewinds the adversary to the point just before $x$ was presented to the adversary and
+  picks a new challenge $x' \not \in X$.
+
+  This procedure is repeated till the adversary learns $d + 1$ evaluations of $c$, what
+  allows it to re-create the underlying polynomial $f$. Expected number of runs the
+  adversary makes is 
+\end{proof}
+
+\subsection{From arguments to proofs}
 \michals{25.01}{Here I describe how to make Attema et al result ``for proofs'' usable in
   our ``arguments''}
 %
