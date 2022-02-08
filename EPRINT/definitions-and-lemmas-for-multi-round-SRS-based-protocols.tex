@@ -152,7 +152,7 @@ follows the definition below:
   output by the prover and by $\zkproof_i.\ch$ random oracle responses on a partial
   transcript
   $(\inp, \zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_i)$,
-  where $\inp$ is the proven statement. We say that $\proofsystem$ has \emph{unique
+  where $\inp$ is the proven statement. We say that $\proofsystem$ \hamid{8.2}{Should it not be $\psfs$?} has \emph{unique
     responses from $i$ on} if for any $\ppt$ adversary $\adv$:
   \[
 	\Pr\left[
@@ -187,7 +187,7 @@ string.
  \subsection{Trapdoor-Less Simulation}
  Security reductions in this paper sometimes need to produce simulated NIZK proofs without
  knowing the trapdoor, just by programming the random oracle. We call protocols which
- allow for such a simulation \emph{trapdoor-less simulatable} (TLS).\hamid{8.2}{I think it's better to combine this subsection with "zero-knowledge" part of subsection 2.5. They both define ZK in programmable ROM, but sometimes inconsistently. For example, we consider update oracle in one case and don't consider it in the other case. Also, what is $\simulator_{\fs}$ in the next definition? Is it $\simulator_{\fs} = (\simulator_1, \simulator_2)$? Also, $\adv$ has oracle access to $P_{\fs}$ and not $P$, right?}
+ allow for such a simulation \emph{trapdoor-less simulatable} (TLS).\hamid{8.2}{I think it's better to combine this subsection with "zero-knowledge" part of subsection 2.5. They both define ZK in programmable ROM, although inconsistently. For example, we consider update oracle in one case and don't consider it in the other case. Also, what is $\simulator_{\fs}$ in the next definition? Is it $\simulator_{\fs} = (\simulator_1, \simulator_2)$? Also, $\adv$ has oracle access to $P_{\fs}$ and not $P$, right?}\hamid{8.2}{wherever we define ZK, I think better to define it with some parameter e.g., $\epszk$-zk; otherwise, using this notation later is ambiguous!}
 
 \begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
   \label{def:tls}
@@ -195,7 +195,7 @@ string.
   $\ps_\fs= (\kgen_{\fs}, \prover_{\fs}, \verifier_{\fs}, \simulator_{\fs})$ be its
   Fiat--Shamir variant and $\ro$ the random oracle. $\simulator_{\fs}$ takes as input
   $\srs$ and instance $\inp$, programs $\ro$, and outputs a proof
-  $\zkproof_\simulator$.  We call $\ps$ \emph{trapdoor-less simulatable} if for any
+  $\zkproof_\simulator$.  We call $\ps$ \hamid{8.2}{Should it not be $\psfs$?} \emph{trapdoor-less simulatable} if for any
   adversary $\adv$, $\eps_0 \approx \eps_1$, where
   \begin{align*}
     \eps_0 (\secpar) = \Pr\left[ \adv^{\initU, \ro, \prover} (\secparam) \right],\,
@@ -402,7 +402,7 @@ algorithm from the generalized forking lemma.
 	
 	Consider the algorithm $\genforking_{\zdv}^{n}$
 	that rewinds $\zdv$ to produce a $(1,\dots, n, \dots, 1)$-tree of
-	accepting transcripts.
+	accepting transcripts $\tree$.
 	
 	We say that $\psfs$ is $(k,n)$-forking special sound with security loss $\epss(\secpar)$, if
 	for any PPT adversary $\advse$
