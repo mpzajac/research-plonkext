@@ -238,7 +238,7 @@ of the witness, i.e.~number of gates). Here we use Attema et
 al.~\cite{EPRINT:AttFehKlo21} generalization of the forking lemma\footnote{The
   earlier versions of this paper used another generalization of the forking lemma
   provided by the paper authors. Change to Attema's et al.~result was due to better
-  extraction success probability bound.}  which show security of the Fiat--Shamir
+  extraction success probability bound.}  which shows security of the Fiat--Shamir
 transformation for multi-message protocols. The lemma, given probability of producing
 an accepting transcript, $\accProb$, lower-bounds the probability of generating a
 \emph{tree of accepting transcripts} $\tree$, which allows to extract a witness.
@@ -305,39 +305,40 @@ an accepting transcript, $\accProb$, lower-bounds the probability of generating 
 
 \begin{figure}[t]
   \centering
-  %\fbox{
+  \fbox{\parbox{\textwidth}{
     \begin{enumerate}
-    \item Run $\zdv_{m + 1}(x)$ as follows to obtain $(\vec{I}, y_1, v)$: relay the
+    \item Run $\zdv_{m + 1}(\inp)$ as follows to obtain $(\vec{I}, y_1, v)$: relay the
       $Q + \mu$ queries to the random oracle and record all query-response pairs. Set
       $i \gets I_m$, and let $c_i$ be the response to query $i$.
     \item If $v = 0$, abort with output $v = 0$. 
     \item Else, repeat
       \begin{itemize}
       \item sample $c'_i \in C \setminus \smallset{c_i}$ (without replacement);
-      \item run $\zdv_{m + 1} (x)$ as follows to obtain $(I',y',v')$, aborting right after
-        the initial run of $\adv (x)$ if $I'_m \neq I_m$: answer the query to $i$ with
+      \item run $\zdv_{m + 1} (\inp)$ as follows to obtain $(\vec{I'},y',v')$, aborting right after
+        the initial run of $\adv (\inp)$ if $I'_m \neq I_m$: answer the query to $i$ with
         $c'_i$, while answering all other queries consistently if the query was performed
-        by $\zdv_{m + 1} (x)$ already on a previous run and with a fresh random value in $C$
+        by $\zdv_{m + 1} (\inp)$ already on a previous run and with a fresh random value in $C$
         otherwise;
       \end{itemize}
       until either $k_m - 1$ additional challenges $c'_i$ with $v' = 1$ and $I'_m = I_m$ have
       been found or until all challenges $c'_i \in C$ have been tried. 
-    \item In the former case, output $I$, the $k_m$ accepting
+    \item In the former case, output $\vec{I}$, the $k_m$ accepting
       $(1, \ldots, 1, k_{m + 1}, \ldots, k_\mu)$-trees $y_1, \ldots ,y_{k_m}$, and
       $v \gets 1$; in the latter case, output $v \gets 0$.
     \end{enumerate}
-   % }
-    \caption{Extractor $\zdv_m (x)$ from Attema et al. Here $\vec{I}$ is an index vector
+    }}
+    \caption{Extractor $\zdv_m (\inp)$ from Attema et al. Here $\vec{I}$ is an index vector
       that contains all random oracle queries made by the prover for the output proof;
       that is, for prover's messages $\vec{a} = a_1, \ldots, a_{\mu + 1}$,
       $I_1 = (\inp, a_1), \ldots, I_{\mu} = (\inp, a_1, \ldots, a_\mu)$.  $\vec{y}$ is a proof
       transcript that contains both prover's messages and random oracle responses, that is
       $\vec{y} = (a_1, (\inp, a_1), a_2, (\inp, a_1, a_2), \ldots)$. Finally, $v$ is the
-      verification bit, that is $v = \verifier (\srs, \inp, \zkproof) = \verifier(x, \vec{y})$. }
+      verification bit, that is $v = \verifier (\srs, \inp, \zkproof) = \verifier(\inp, \vec{y})$. }
+  \label{fig:Attema-ext}
 \end{figure}
 
 
-\begin{lemma}[Generalized forking lemma]
+\begin{lemma}[Generalized forking lemma]\hamid{8.2}{should we refer to the above fig.3 here?}
   \michals{19.1}{Here I am focused on a case where the tree branches at single point, hope
     we could generalize it} %
   Consider algorithm $\genforking$ that internally runs $\zdv_1 (x = (\srs, \inp))$ and
@@ -352,7 +353,7 @@ an accepting transcript, $\accProb$, lower-bounds the probability of generating 
 \end{lemma}
 
 
-\oursubsub{Forking special soundness}
+\oursubsub{Forking special soundness}\hamid{8.2}{I am a bit confused her! Do we still need the definition of forking special soundness? Can we not get the extraction bound by Attema result directly without discussing about forking special soundness (or what is called $k$-special soundness in Attema paper)?}
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
 simulation trapdoors for $\plonkprot$, $\sonicprot$ and $\marlinprot$ exist, the protocols

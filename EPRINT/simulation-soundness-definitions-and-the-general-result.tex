@@ -14,9 +14,8 @@ statement. More precisely,
 	\label{def:simsnd}
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof system. We say that
   $\ps$ is \emph{updatable simulation-sound} if for any $\ppt$ adversary $\adv$ that is
-  given oracle access to an updatable SRS setup $\initU$, a simulation oracle $\simulator
-  = (\simulator_1, \simulator_2')$,
-  cf.~\cref{fig:upd}, and a random oracle $\ro$, probability
+  given oracle access to an updatable SRS setup $\initU$, cf.~\cref{fig:upd}, a simulation oracle $\simulator
+  = (\simulator_1, \simulator_2')$, and a random oracle $\ro$, probability
 	\[
 	\ssndProb = \condprob{
 		\begin{matrix}
