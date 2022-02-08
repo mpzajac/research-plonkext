@@ -51,7 +51,7 @@ called $\simulator'_2$ that on input $(\srs, \inp)$ always returns the first out
 $\simulator (2, st, \srs, \inp)$, regardless of whether $\inp$ is in the language. We
 define \emph{simulation-extractability} with respect to oracle $\simulator_2'$; that is,
 simulation-extractability is with respect to a simulator
-$\simulator = (\simulator_1, \simulator_2')$.
+$\simulator = (\simulator_1, \simulator_2')$.\hamid{8.2}{Would this not be confusing with the original simulator $\simulator = (\simulator_1, \simulator_2)$ in the next definition? Maybe better to call it $\simulator'$?}
 %
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:updsimext}
@@ -77,7 +77,7 @@ $\simulator = (\simulator_1, \simulator_2')$.
 	\end{matrix}
 }
 	\]
-	there exists an extractor $\extse$ such that
+	there exists an extractor $\extse$ such that\hamid{8.2}{I think we can remove some inputs of $\ext_\se$ such as $\inp_{\advse}, \pi_{\advse}$!}
 	\[
 	\extProb = \condprob{
 	\begin{matrix}
@@ -104,7 +104,7 @@ $\simulator = (\simulator_1, \simulator_2')$.
 	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
 	$\inp$ is an instance queried to $\simulator_2'$ by the adversary and
 	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-	queries to $\simulator_1$ and the (simulated) random oracle's answers.
+	queries to $\simulator_1$ and the (simulated) random oracle's answers. \hamid{8.2}{And list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.}
   % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simulator_1$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
 \end{definition}
 
@@ -170,7 +170,9 @@ follows the definition below:
 	\end{aligned}
 	\right.\right]
 	\]
-	is upper-bounded by some negligible function $\negl$.
+	is upper-bounded by some negligible function $\negl$.\hamid{8.2}{Better to use a more explicit notation e.g., ``We say that $\proofsystem$ has \emph{unique
+			responses from $i$ on} with security $\epsur(\secpar)$ if .....is upper-bounded by some function $\epsur(\secpar)$. If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ has unique
+		responses from $i$.''}
 \end{definition}
 %
 Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using
@@ -185,7 +187,7 @@ string.
  \subsection{Trapdoor-Less Simulation}
  Security reductions in this paper sometimes need to produce simulated NIZK proofs without
  knowing the trapdoor, just by programming the random oracle. We call protocols which
- allow for such a simulation \emph{trapdoor-less simulatable} (TLS).
+ allow for such a simulation \emph{trapdoor-less simulatable} (TLS).\hamid{8.2}{I think it's better to combine this subsection with "zero-knowledge" part of subsection 2.5. They both define ZK in programmable ROM, but sometimes inconsistently. For example, we consider update oracle in one case and don't consider it in the other case. Also, what is $\simulator_{\fs}$ in the next definition? Is it $\simulator_{\fs} = (\simulator_1, \simulator_2)$?}
 
 \begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
   \label{def:tls}
