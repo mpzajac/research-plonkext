@@ -51,14 +51,14 @@ called $\simulator'_2$ that on input $(\srs, \inp)$ always returns the first out
 $\simulator (2, st, \srs, \inp)$, regardless of whether $\inp$ is in the language. We
 define \emph{simulation-extractability} with respect to oracle $\simulator_2'$; that is,
 simulation-extractability is with respect to a simulator
-$\simulator = (\simulator_1, \simulator_2')$.\hamid{8.2}{Would this not be confusing with the original simulator $\simulator = (\simulator_1, \simulator_2)$ in the next definition? Maybe better to call it $\simulator'$?}
+$\simulator' = (\simulator_1, \simulator_2')$.
 %
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:updsimext}
   \label{def:simext}
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof system. We say that
   $\ps$ is \emph{updatable simulation-extractable} with respect to
-  $\simulator = (\simulator_1, \simulator_2')$ with \emph{extraction error} $\nu$ if for
+  $\simulator' = (\simulator_1, \simulator_2')$ with \emph{extraction error} $\nu$ if for
   any $\ppt$ adversary $\adv$ that is given oracle access to an updatable SRS setup
   $\initU$ and simulator $\simulator$ and that produces an accepting
   proof for $\ps$ with probability $\accProb$, where
@@ -77,7 +77,7 @@ $\simulator = (\simulator_1, \simulator_2')$.\hamid{8.2}{Would this not be confu
 	\end{matrix}
 }
 	\]
-	there exists an extractor $\extse$ such that\hamid{8.2}{I think we can remove some inputs of $\ext_\se$ such as $\inp_{\advse}, \pi_{\advse}$!}
+	there exists an extractor $\extse$ such that
 	\[
 	\extProb = \condprob{
 	\begin{matrix}
@@ -90,7 +90,7 @@ $\simulator = (\simulator_1, \simulator_2')$.\hamid{8.2}{Would this not be confu
 	& r \sample \RND{\advse},
 	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator_1, \simulator_2'
 		} (1^\secpar; r) \\
-	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r,
 	Q, Q_\ro, Q_\srs) 
 	\end{aligned}
 }
@@ -152,8 +152,8 @@ follows the definition below:
   output by the prover and by $\zkproof_i.\ch$ random oracle responses on a partial
   transcript
   $(\inp, \zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_i)$,
-  where $\inp$ is the proven statement. We say that $\proofsystem$ \hamid{8.2}{Should it not be $\psfs$?} has \emph{unique
-    responses from $i$ on} if for any $\ppt$ adversary $\adv$:
+  where $\inp$ is the proven statement. We say that $\proofsystem$ has \emph{unique
+    responses from $i$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\adv$:
   \[
 	\Pr\left[
 	\begin{aligned}
@@ -170,9 +170,7 @@ follows the definition below:
 	\end{aligned}
 	\right.\right]
 	\]
-	is upper-bounded by some negligible function $\negl$.\hamid{8.2}{Better to use a more explicit notation e.g., ``We say that $\proofsystem$ has \emph{unique
-			responses from $i$ on} with security $\epsur(\secpar)$ if .....is upper-bounded by some function $\epsur(\secpar)$. If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ has unique
-		responses from $i$.''}
+	is upper-bounded by some function $\epsur(\secpar)$. If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{i}$.
 \end{definition}
 %
 Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using
@@ -187,22 +185,22 @@ string.
  \subsection{Trapdoor-Less Simulation}
  Security reductions in this paper sometimes need to produce simulated NIZK proofs without
  knowing the trapdoor, just by programming the random oracle. We call protocols which
- allow for such a simulation \emph{trapdoor-less simulatable} (TLS).\hamid{8.2}{I think it's better to combine this subsection with "zero-knowledge" part of subsection 2.5. They both define ZK in programmable ROM, although inconsistently. For example, we consider update oracle in one case and don't consider it in the other case. Also, what is $\simulator_{\fs}$ in the next definition? Is it $\simulator_{\fs} = (\simulator_1, \simulator_2)$? Also, $\adv$ has oracle access to $P_{\fs}$ and not $P$, right?}\hamid{8.2}{wherever we define ZK, I think better to define it with some parameter e.g., $\epszk$-zk; otherwise, using this notation later is ambiguous!}
+ allow for such a simulation \emph{trapdoor-less simulatable} (TLS).
 
 \begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
   \label{def:tls}
-  Let $\ps$ be a $(2\mu + 1)$-message ZK proof system. Let
+  Let $\ps$ be a $(2\mu + 1)$-message ZK proof system, and
   $\ps_\fs= (\kgen_{\fs}, \prover_{\fs}, \verifier_{\fs}, \simulator_{\fs})$ be its
-  Fiat--Shamir variant and $\ro$ the random oracle. $\simulator_{\fs}$ takes as input
-  $\srs$ and instance $\inp$, programs $\ro$, and outputs a proof
-  $\zkproof_\simulator$.  We call $\ps$ \hamid{8.2}{Should it not be $\psfs$?} \emph{trapdoor-less simulatable} if for any
-  adversary $\adv$, $\eps_0 \approx \eps_1$, where
+  Fiat--Shamir variant, where $\simulator_{\fs} = (\simulator_1, \simulator_2)$ as defined in~\cref{prelim:nizk}. Let $\ro$ be the random oracle. 
+  %$\simulator_{\fs}$ takes as input $\srs$ and instance $\inp$, programs $\ro$, and outputs a proof $\zkproof_\simulator$.  
+  We call $\psfs$ \emph{trapdoor-less simulatable} with security $\epszk$ if for any
+  adversary $\adv$, $\abs{\eps_0(\secpar) - \eps_1(\secpar)} \leq \epszk(\secpar)$, where
   \begin{align*}
-    \eps_0 (\secpar) = \Pr\left[ \adv^{\initU, \ro, \prover} (\secparam) \right],\,
+    \eps_0 (\secpar) = \Pr\left[ \adv^{\initU, \ro, \prover_{\fs}} (\secparam) \right],\,
     \eps_1 (\secpar)=  \Pr \left[\adv^{\initU, \simulator_1, \simulator_2} (\secparam) \right].
   \end{align*}
   
-  Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if $\simulator_\fs$
+  If $\epszk(\secpar)$ is negligible, we say $\ps_{\fs}$ is trapdoor-less simulatable. Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if $\simulator_\fs$
   programs the random oracle \emph{only} after $k$-th prover's message.
   \end{definition}
 
@@ -353,14 +351,15 @@ an accepting transcript, $\accProb$, lower-bounds the probability of generating 
 \end{lemma}
 
 
-\oursubsub{Forking special soundness}\hamid{8.2}{I am a bit confused here! Forking special soundness should be defined for interactive arguments, no? Why we define it in the ROM and talk about FS in the definition below? To me, this definition should be something like $k$-special soundness property in Attema paper, based on which one can argue extractability of the witness from the tree of accepting transcripts (generated by the forking lemma).}
-\hamid{8.2}{In fact, I am thinking about adaptation of Attema result to our theorem in this way:
-\begin{itemize}
-	\item We are given a protocol that is $(k,n)$-special sound; that is, given a $(1, \ldots, 1, n, 1, \ldots, 1)$-tree of accepting transcripts outputs a witness for the proven statement. We also know that $(k,n)$-special soundness tightly implies knowledge soundness.
-	\item We use the Attema et al. extractor in Fig. 3 to extract a $(k,n):=(1, \ldots, 1, n, 1, \ldots, 1)$-tree of accepting transcripts. To this end, we let $\adv$ be an adversarial prover that makes up to $Q$ random oracle queries and outputs an acceptable proof with probability at least
-	$\accProb$. We consider $\adv$ as the recursion base which outputs a $(1, \ldots, 1)$-tree and then run the subextractor $\zdv_k (\inp)$ which outputs a $(k,n)$-tree of accepting transcript. The run time and success probability of $\zdv_k (\inp)$ is given in proposition 2 of Attema paper: $\zdv_k (\inp)$ makes an expected number of at most $n+Q(n-1)$ queries to $\adv$ and outputs a (k,n)-tree with probability at least $\frac{\accProb - (Q+1) \epsk(\secpar)}{1-\epsk(\secpar)}$, where $\epsk(\secpar) = \frac{n-1}{N}$, and $N$ is the cardinality of the challenge set.
-\end{itemize}
-}
+\oursubsub{Forking special soundness}
+%\hamid{8.2}{I am a bit confused here! Forking special soundness should be defined for interactive arguments, no? Why we define it in the ROM and talk about FS in the definition below? To me, this definition should be something like $k$-special soundness property in Attema paper, based on which one can argue extractability of the witness from the tree of accepting transcripts (generated by the forking lemma).}
+%\hamid{8.2}{In fact, I am thinking about adaptation of Attema result to our theorem in this way:
+%\begin{itemize}
+%	\item We are given a protocol that is $(k,n)$-special sound; that is, given a $(1, \ldots, 1, n, 1, \ldots, 1)$-tree of accepting transcripts outputs a witness for the proven statement. We also know that $(k,n)$-special soundness tightly implies knowledge soundness.
+%	\item We use the Attema et al. extractor in Fig. 3 to extract a $(k,n):=(1, \ldots, 1, n, 1, \ldots, 1)$-tree of accepting transcripts. To this end, we let $\adv$ be an adversarial prover that makes up to $Q$ random oracle queries and outputs an acceptable proof with probability at least
+%	$\accProb$. We consider $\adv$ as the recursion base which outputs a $(1, \ldots, 1)$-tree and then run the subextractor $\zdv_k (\inp)$ which outputs a $(k,n)$-tree of accepting transcript. The run time and success probability of $\zdv_k (\inp)$ is given in proposition 2 of Attema paper: $\zdv_k (\inp)$ makes an expected number of at most $n+Q(n-1)$ queries to $\adv$ and outputs a (k,n)-tree with probability at least $\frac{\accProb - (Q+1) \epsk(\secpar)}{1-\epsk(\secpar)}$, where $\epsk(\secpar) = \frac{n-1}{N}$, and $N$ is the cardinality of the challenge set.
+%\end{itemize}
+%}
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
 simulation trapdoor for $\plonkprot$, $\sonicprot$ and $\marlinprot$ exists, the protocols

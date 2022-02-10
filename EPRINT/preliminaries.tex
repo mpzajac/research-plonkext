@@ -306,7 +306,7 @@ We show security of our version of the uber assumption using the generic group m
 as introduced by Shoup \cite{EC:Shoup97},
 cf.~\cref{sec:uber-assumption-security-proof}.
 
-\subsection{Zero-Knowledge Proof Systems}
+\subsection{Zero-Knowledge Proof Systems}\label{prelim:nizk}
 In a zero-knowledge proof system, a prover convinces the verifier of the veracity of a statement
 without leaking any other information. The zero-knowledge property is proven by constructing a
 simulator that can simulate the view of a cheating verifier without knowing the secret
@@ -335,7 +335,7 @@ it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
 
 A non-interactive  proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is
 required to have three properties: completeness, soundness and zero knowledge, which are
-defined as follows:
+defined as follows:\hamid{10.2}{Should we change the definitions to the updatable setting? In that case, we should move updatable section earlier before this!}
 % \begin{description}
 
 \ourpar{Completeness.}
