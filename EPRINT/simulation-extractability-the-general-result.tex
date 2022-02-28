@@ -171,7 +171,7 @@ where
 \item $\bdv$ answers $\adv$ random oracle and update queries by passing the queries to the real
   oracles $\ro$ and $\initU$. When $\adv$ finalises an SRS $\srs$, $\bdv$ does the same.
 \item $\bdv$ answers simulator queries by using coins $\rsim$. $\bdv$ maintains a
-  list of instance-proof pairs $Q$ consisting of of all simulation queries made by
+  list of instance-proof pairs $Q$ consisting of all simulation queries made by
   $\adv$, and corresponding responses.
 \item Eventually when $\adv$ outputs $(\inp_\advse, \zkproof_\advse)$, $\bdv$ outputs
   the same $(\inp_\advse, \zkproof_\advse)$.
@@ -268,6 +268,7 @@ we get that
 \end{equation}
 }
 
+
 \ngame{3} This game is identical to $\game{2}$ except that the extractor $\ext$,
 given tree of acceptable transcripts $\tree$ runs additionally $\extt (\tree)$ to
 learn the witness $\wit$. The environment additionally aborts this game if
@@ -281,7 +282,7 @@ $\REL(\inp, \wit)$ does not hold.
     extract a witness from $\tree$ and $\bdv$ only passes proofs produced by $\adv$,
     the adversary $\advse$ cannot win. Thus, by the game-hopping argument,
 		\[
-      \abs{\prob{\game{0}} - \prob{\game{4}}} \leq 1 - \changedm{\frac{\waccProb - (q
+      \abs{\prob{\game{0}} - \prob{\game{3}}} \leq 1 - \changedm{\frac{\waccProb - (q
           + 1) \epsk(\secpar)}{1 - \epsk(\secpar)}} + \epsur(\secpar) +
 		%q_{\ro}^{\mu} \epss +
 		\epsss(\secpar)\,.
