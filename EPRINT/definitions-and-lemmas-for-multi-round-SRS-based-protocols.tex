@@ -403,7 +403,7 @@ algorithm from the generalized forking lemma.
 	accepting transcripts $\tree$.
 	
 	We say that $\psfs$ is $(k,n)$-forking special sound with security loss $\epss(\secpar)$, if
-	for any PPT adversary $\advse$\hamid{28.2}{How should we quantify over $\extt(\tree)$? Is it $\forall \advse \exists \extt(\tree)$?}
+	for any PPT adversary $\advse$\hamid{28.2}{How should we quantify over $\extt(\tree)$? Is it $\exists \ \extt(\tree) \ s.t \ \forall \advse ...$?}
 	\begin{align*}
 	\Pr\left[
 	\REL(\inp, \wit) = 0
@@ -478,7 +478,7 @@ the change only notational.
   $\accProb$. Attema et al.~\cite{EPRINT:AttFehKlo21} shown that for such a proof
   system probability that a tree building algorithm $\tdv$ succeeds in building an
   $(k, n)$-tree of accepted transcripts in expected
-  running time $n + q (n + 1)$ is at least
+  running time $n + q (n - 1)$ is at least
   \[
     \frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)}.
   \]
