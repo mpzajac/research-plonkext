@@ -306,7 +306,7 @@ an accepting transcript, $\accProb$, lower-bounds the probability of generating 
   \fbox{\parbox{\textwidth}{
     \begin{enumerate}
     \item Run $\zdv_{m + 1}(\inp)$ as follows to obtain $(\vec{I}, y_1, v)$: relay the
-      $Q + \mu$ queries to the random oracle and record all query-response pairs. Set
+      $q + \mu$ queries to the random oracle and record all query-response pairs. Set
       $i \gets I_m$, and let $c_i$ be the response to query $i$.
     \item If $v = 0$, abort with output $v = 0$. 
     \item Else, repeat
@@ -336,17 +336,17 @@ an accepting transcript, $\accProb$, lower-bounds the probability of generating 
 \end{figure}
 
 
-\begin{lemma}[Generalized forking lemma]\hamid{8.2}{should we refer to the above fig.3 here?}
+\begin{lemma}[Generalized forking lemma]\label{lem:generalised_forking_lemma}\hamid{8.2}{should we refer to the above fig.3 and Attema paper here?}\hamid{1.3}{We should move this lemma after the Definition of forking special soundness!}
   \michals{19.1}{Here I am focused on a case where the tree branches at single point, hope
     we could generalize it} %
-  Consider algorithm $\genforking$ that internally runs $\zdv_1 (x = (\srs, \inp))$ and
-  makes at most $n + Q \cdot (n - 1)$ queries to an adversary $\adv$ that outputs an
-  acceptable proof with probability $\accProb$ and makes up to $Q$ random oracle
-  queries. Let proof system $\proofsystem$ be $(1, \ldots, n, \ldots, 1)$-forking special sound and
-  $\epsk (\secpar)$ knowledge sound. Then for every probability that $\genforking$ outputs
+  Consider algorithm $\genforking$ that internally runs $\zdv_1 (x = (\srs, \inp))$ \hamid{1.3}{We are in the adaptive and updatable setting; So maybe $\zdv_1$ should be run without input $x = (\srs, \inp)$?}and
+  makes at most $n + q \cdot (n - 1)$ queries to an adversary $\adv$ that outputs an
+  acceptable proof with probability $\accProb$ and makes up to $q$ random oracle
+  queries. Let proof system $\proofsystem$ be $(1, \ldots, n, \ldots, 1)$-forking special sound\hamid{1.3}{Why we need $(1, \ldots, n, \ldots, 1)$-forking special soundness here?} and
+  $\epsk (\secpar)$ knowledge sound. \hamid{1.3}{This sentence is not clear:}Then for every probability that $\genforking$ outputs
   $(1, \ldots, n, \ldots, 1)$ tree of acceptable transcripts is at least
   \[
-    \frac{\accProb - (Q + 1) \cdot \epsk (\secpar)}{1 - \epsk (\secpar)}.
+    \frac{\accProb - (q + 1) \cdot \epsk (\secpar)}{1 - \epsk (\secpar)}.
   \]
 \end{lemma}
 
@@ -400,7 +400,7 @@ algorithm from the generalized forking lemma.
 	
 	Consider the algorithm $\genforking_{\zdv}^{n}$
 	that rewinds $\zdv$ to produce a $(1,\dots, n, \dots, 1)$-tree of
-	accepting transcripts $\tree$.
+	accepting transcripts $\tree$.\hamid{1.3}{Not clear if this always happen with probability 1, or is such that over which the below probability is defined? Maybe we should say $\genforking_{\zdv}^{n}$ produce a tree or $\bot$?}
 	
 	We say that $\psfs$ is $(k,n)$-forking special sound with security loss $\epss(\secpar)$, if
 	for any PPT adversary $\advse$\hamid{28.2}{How should we quantify over $\extt(\tree)$? Is it $\exists \ \extt(\tree) \ s.t \ \forall \advse ...$?}
@@ -421,6 +421,20 @@ algorithm from the generalized forking lemma.
 	queries to $\ro$ and the random oracle's answers.
 \end{definition}
 
+\hamid{1.3}{If we want to keep the definition of forking special soundness, I suggest to remove Lemma 2 above and have something like the following:
+\begin{enumerate}
+	\item make the definition of forking special soundness clear!
+	\item add a lemma like this:
+	\begin{lemma}[Forking special soundness]\label{lem:forking_ss}
+		Let $\proofsystem$ be a proof system that is knowledge sound
+		with knowledge error $\epsk$. Assume adversary $\advse$ that makes up to $q$ random
+		oracle queries and outputs an acceptable proof with probability at least
+		$\accProb$. Consider algorithm $\genforking$ that internally runs $\zdv_1$ in~\cref{fig:Attema-ext} and
+		makes at most $n + q \cdot (n - 1)$ queries to $\advse$.
+		\chb{If $\proofsystem$ is $(k,n)$-special sound (I am probably missing something, but I think we need this property! How we can prove this lemma without SS property?)}, then $\proofsystem_\fs$ is $(k, n)$-forking special sound with security loss $\frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)} + \epsdlog$.
+	\end{lemma}  
+\end{enumerate}}
+\hamid{1.3}{Discuss this at Friday: I'm not yet convinced that the definition of forking special soundness in needed! Can we not just define $(k,n)$-special soundness and show that }
 
 \paragraph{Importance of the general forking lemma.}
 To highlight the importance of the generalised forking lemma, we outline how it is
@@ -477,7 +491,7 @@ the change only notational.
   oracle queries and outputs an acceptable proof with probability at least
   $\accProb$. Attema et al.~\cite{EPRINT:AttFehKlo21} shown that for such a proof
   system probability that a tree building algorithm $\tdv$ succeeds in building an
-  $(k, n)$-tree of accepted transcripts in expected
+  $(k, n)$-tree of accepting transcripts in expected
   running time $n + q (n - 1)$ is at least
   \[
     \frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)}.
