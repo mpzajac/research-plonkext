@@ -18,9 +18,9 @@
 		-\eps(\secpar)\, \)} for some negligible $\eps(\secpar)$.
 \end{theorem}
 \hamid{28.1}{We do not need to have both KS error $\epsk$ and forking special sound error $\epss$ in the statement, because one can be computed by another and they're not independent!}
-
+\michals{3.3}{Ok!}
 \hamid{28.1}{why do we need ZK/HVZK property for the interactive protocol? why TLS for NI system is not enough?}
-
+\michals{3.3}{We don't. You're right.}
 \hamid{28.2}{Why do we need $\epszk$ parameter? Without it, it means the simulation is computationally indistinguishable from real prover; why this is not enough?}
 
 \begin{proof}		
@@ -139,7 +139,7 @@
 	the error event in Game $\game{1}$. As previously, we have $\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}}$, where $\event{\errfrk}$ denotes the event of $\ext$ failing to build a
 	$(1, \ldots, 1, n, 1, \ldots, 1)$-tree of accepting transcripts.}
 	\fbox{\begin{minipage}{45em}
-	 \hamid{28.2}{Is this needed?:} We build an adversary $\bdv$ against forking special soundness such that,
+	 \hamid{28.2}{Is this needed?:}\michals{3.3.22}{I don't think so, we needed that to make a reduction to special soundness, but since we don't do that anymore (at least here) we don't need this part.} We build an adversary $\bdv$ against forking special soundness such that,
 	given access to oracles $\initU$ and $\ro$, and randomness $r = (r_\adv, \rsim)$,
 	internally runs $\advse^{\initU, \simulator_1, \simulator_2'} (1^\secpar; r_\adv)$ as follows:
 	\begin{compactenum}
@@ -216,3 +216,9 @@
 	\qed
 }
 \end{proof}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
+
