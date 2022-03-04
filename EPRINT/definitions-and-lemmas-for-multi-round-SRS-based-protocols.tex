@@ -400,7 +400,7 @@ algorithm from the generalized forking lemma.
 	
 	Consider the algorithm $\genforking_{\zdv}^{n}$
 	that rewinds $\zdv$ to produce a $(1,\dots, n, \dots, 1)$-tree of
-	accepting transcripts $\tree$.\hamid{1.3}{Not clear if this always happen with probability 1, or is such that over which the below probability is defined? Maybe we should say $\genforking_{\zdv}^{n}$ produce a tree or $\bot$?}
+	accepting transcripts $\tree$.\hamid{1.3}{Not clear if this always happens with probability 1, or is such that over which the below probability is defined? Maybe we should say $\genforking_{\zdv}^{n}$ produce a tree or $\bot$?}
 	
 	We say that $\psfs$ is $(k,n)$-forking special sound with security loss $\epss(\secpar)$, if
 	for any PPT adversary $\advse$\hamid{28.2}{How should we quantify over $\extt(\tree)$? Is it $\exists \ \extt(\tree) \ s.t \ \forall \advse ...$?}
@@ -421,20 +421,26 @@ algorithm from the generalized forking lemma.
 	queries to $\ro$ and the random oracle's answers.
 \end{definition}
 
-\hamid{1.3}{If we want to keep the definition of forking special soundness, I suggest to remove Lemma 2 above and have something like the following:
-\begin{enumerate}
-	\item make the definition of forking special soundness clear!
-	\item add a lemma like this:
+\hamid{1.3}{I think we can replace lemma 2 with the following lemma which includes the adaptation of Attema result to the updatable setting.}
 	\begin{lemma}[Forking special soundness]\label{lem:forking_ss}
 		Let $\proofsystem$ be a proof system that is knowledge sound
-		with knowledge error $\epsk$. Assume adversary $\advse$ that makes up to $q$ random
+		with knowledge error $\epsk$. Assume adversary $\advse$ with access to
+		oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, that makes up to $q$ random
 		oracle queries and outputs an acceptable proof with probability at least
 		$\accProb$. Consider algorithm $\genforking$ that internally runs $\zdv_1$ in~\cref{fig:Attema-ext} and
 		makes at most $n + q \cdot (n - 1)$ queries to $\advse$.
 		\chb{If $\proofsystem$ is $(k,n)$-special sound (I am probably missing something, but I think we need this property! How we can prove this lemma without SS property?)}, then $\proofsystem_\fs$ is $(k, n)$-forking special sound with security loss $\frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)} + \epsdlog$.
-	\end{lemma}  
-\end{enumerate}}
-\hamid{1.3}{Discuss this at Friday: I'm not yet convinced that the definition of forking special soundness in needed! Can we not just define $(k,n)$-special soundness and show that }
+	\end{lemma}
+\hamid{3.3}{discuss tomorrow: by having both probabilities of getting a good tree T from GF and extracting a valid witness from T in the definition of forking special soundness, how can we later argue that a failure here leads to breaking dlog (i.e., the case of arguments)? I think we need to define forking special soundness without having $\wit \gets \extt(\tree)$ in the probability equation, no?}
+
+\hamid{3.3}{Discuss this. Here is how I think we should proceed:
+\begin{itemize}
+	\item define $(k,n)$-special soundness.
+	\item restate Attema forking lemma in the updatable setting --- call this lemma X. 
+	\item in the statement of main theorem, we assume the protocol is $(k,n)$-special sound with knowledge error $\epsk$. Then from Game 1 to Game 2, we use lemma X to upper-bound the probability of building the tree $\tree$ as $\frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)}$.
+	\item If we cannot extract the witness (is possible because of dealing with arguments) from $\tree$, we make a reduction to dlog problem.
+\end{itemize}}
+
 
 \paragraph{Importance of the general forking lemma.}
 To highlight the importance of the generalised forking lemma, we outline how it is
