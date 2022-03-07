@@ -35,7 +35,7 @@ analysis more challenging.  We first give a definition of simulation-extractabil
 which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then,
 to support multi-message SRS-based protocols compiled using the Fiat--Shamir transform
 we generalize the unique response property, replace honest-verifier zero-knowledge
-property with trapdoor-less simulation and special soundness with a forking special
+property with trapdoor-less simulation and special soundness with a computational special
 soundness property that links up with our generalized forking lemma.
 
 \subsection{Simulation extractability}
@@ -463,7 +463,7 @@ algorithm from the generalized forking lemma.
 
 \paragraph{Importance of the generalized forking lemma.}
 To highlight the importance of the generalised forking lemma, we outline how it is
-used in our simulation-extractability proof.  Let $\psfs$ be a forking special sound
+used in our simulation-extractability proof.  Let $\psfs$ be a computational special sound
 proof system where for an instance $\inp$ the corresponding witness can be extracted
 from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\adv$
 be the simulation-extractability adversary that outputs an accepting proof with
@@ -473,7 +473,7 @@ $\zdv$ outputting a non-zero $i$ and the probability of $\adv$ (and $\bdv$)
 outputting an accepting proof, we claim that these probabilities are exactly the same
 by the way we define $\zdv$ and $\bdv$. In the following we give the intuition of the
 proof without the additional indirection via $\bdv$ whose goal is primarily to
-simplify the forking special soundness definition.
+simplify the computational special soundness definition.
 
 Let $\adv$ output an accepting instance-proof pair $(\inp_{\advse},\zkproof_{\advse})$;
 $r$ be $\adv$'s randomness; and $Q_\ro$ be the list of all random oracle queries made by
