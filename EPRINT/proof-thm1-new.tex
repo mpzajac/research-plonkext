@@ -10,14 +10,14 @@
 	\emph{$k'$-programmable trapdoor-less simulatable}, and $(k'', n)$-\emph{computational
 		special sound} with security loss $\epss(\secpar)$, where $k \geq k' \geq k''$, and all these properties
 	hold in the updatable setting, then $\psfs$ is
-	\emph{simulation-extractable in the updatable setting} \chb{with extraction error
-	$\epsur(\secpar)$} against $\ppt$ adversaries that make up to $q$ random oracle
+	\emph{simulation-extractable in the updatable setting} against $\ppt$ adversaries that make up to $q$ random oracle
 	queries and returns an acceptable proof with probability at least $\accProb$.  The
 	extraction probability $\extProb$ is at least
 	$\extProb \geq \frac{\accProb - \epsur(\secpar) - (q + 1) \epsk(\secpar)}{1 - \epsk(\secpar)} 
 	- \epsur(\secpar) - \epss(\secpar)\,$.
 \end{theorem}
 
+\hamid{7.3}{I think somewhere in the proof, we still need to justify and explain explicitly why it's important to have concrete parameters $k, k', k''$ with relation $k \geq k' \geq k''$!}
 \begin{proof}		
 	
 	\ngame{0} This is the simulation-extractability game played between an adversary
@@ -123,7 +123,7 @@
 	$(1, \ldots, 1, n, 1, \ldots, 1)$-tree of accepting transcripts $\tree$ by rewinding
 	$\adv$.
 	
-	\ncase{Game 1 to Game 2} Note that for every accepting proof $\zkproof_{\advse}$, we
+	\ncase{Game 1 to Game 2} \chb{Note that for every accepting proof $\zkproof_{\advse}$, we
 	may assume that whenever $\advse$ outputs a $k''$-th move message
 	$\zkproof_{\advse}[k'']$, then the $(\inp_{\advse}, \zkproof_{\advse}[1..k''])$
 	random oracle query was made by the adversary, not the
@@ -131,7 +131,7 @@
 	i.e.~there is no simulated proof $\zkproof_\simulator$ on $\inp_\simulator$ such that
 	$(\inp_{\advse}, \zkproof_{\advse} [1..k'']) = (\inp_\simulator,
 	\zkproof_\simulator[1..k''])$. Otherwise, the game would be already interrupted by
-	the error event in Game $\game{1}$. As previously, we have $\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}}$, where $\event{\errfrk}$ denotes the event of $\extse$ failing to build a
+	the error event in Game $\game{1}$.} As previously, we have $\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}}$, where $\event{\errfrk}$ denotes the event of $\extse$ failing to build a
 	$(1, \ldots, 1, n, 1, \ldots, 1)$-tree of accepting transcripts.
 %	\fbox{\begin{minipage}{45em}
 %	 \hamid{28.2}{Is this needed?:}\michals{3.3.22}{I don't think so, we needed that to make a reduction to special soundness, but since we don't do that anymore (at least here) we don't need this part.} We build an adversary $\bdv$ against forking special soundness such that,
@@ -161,8 +161,8 @@
 %	forking lemma, produces an accepting proof with a fresh challenge after move
 %	$k''$. From the above argument, we have that $\waccProb = \waccProb'$.
 %\end{minipage}}
-	\chb{Denote by $\waccProb$ the probability that $\advse$ outputs a proof that is accepted
-	and does not break $\ur{k}$-ness of $\ps$.} By~\cref{lemma:Attema}, we have 
+	Denote by $\waccProb$ the probability that $\advse$ outputs a proof that is accepted
+	and does not break $\ur{k}$-ness of $\ps$. By~\cref{lemma:Attema}, we have 
 		\begin{equation}
 		\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}} \leq 1 - \frac{\waccProb - (q + 1) \epsk(\secpar)} {1 -
 			\epsk(\secpar)}.
