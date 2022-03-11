@@ -549,7 +549,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 \subsection{Forking special soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
-	Let $\plonkprot$'s idealized verifier fails with probability $\epsid (\secpar)$, and
+	Let $\plonkprot$'s idealized verifier fails with \hamid{11.3}{negligible?} probability $\epsid (\secpar)$, and
 	$(\noofc + 2, 1)$-$\dlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
 	$(3, 3 \noofc + 1)$-forking special sound with security loss $\epsid (\secpar) + \epsdlog (\secpar)$ against algebraic
 	adversary $\adv$.
@@ -1212,7 +1212,7 @@ $\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
 \( \abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epsuber(\secpar).  \)
 
 \ncase{Conclusion} Probability that the adversary's outputs differ in Game 0 and Game
-2 is upper-bounded by $\leq \epszk(\secpar) + \epsuber(\secpar)$. \qed
+2 is upper-bounded by $ \epszk(\secpar) + \epsuber(\secpar)$. \qed
 \end{proof}
 
 % \begin{lemma}[Simulation for false statement]
