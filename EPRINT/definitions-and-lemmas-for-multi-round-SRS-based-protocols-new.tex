@@ -232,7 +232,7 @@ Before giving the definition of computational special soundness for $2\mu + 1$-m
   challenges, such that no two edges on the same depth have the same
   label; and each node on depth $i$ has $n_{i} - 1$ siblings and $n_{i +
     1}$ children. The tree consists of $N = \prod_{i = 1}^\mu n_i$
-  branches, where $N$ is the number of accepting transcripts. We require $N = \poly$.
+  branches, where $N$ is the number of accepting transcripts. We require $N = \poly$. \chb{We refer to a $(1, \ldots, n_k=n, 1, \ldots, 1)$-tree as a $(k,n)$-tree.}
 \end{definition}
 
 \iffalse
@@ -325,7 +325,7 @@ witness or can be used to break some computational assumption.
 % defined this way by giving access to the simulator.}
 \changedm{However, differently from the standard definition of special soundness, we do
 not require from the extractor to be able to extract the witness from \emph{any}
-tree of acceptable transcripts, but we require that the extractor is not able to reconstruct the witness with some small probability only.More precisely, we show later that either the extractor extracts a witness from a tree or the adversary who was used to produce the tree can be used to break some computationally-hard problem.
+tree of acceptable transcripts, but we require that the extractor is not able to reconstruct the witness with some small probability only. More precisely, we show later that either the extractor extracts a witness from a tree or the adversary who was used to produce the tree can be used to break some computationally-hard problem.
 }
 %\begin{definition}[$(k,n)$-forking special soundness in the updatable setting]
 %	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
@@ -367,10 +367,13 @@ tree of acceptable transcripts, but we require that the extractor is not able to
 %\hamid{1.3}{I think we can replace lemma 2 with the following lemma which includes the adaptation of Attema result to the updatable setting.}
 
 
-\begin{definition}[$(k,n)$-computational special soundness]
-	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu +
+\begin{definition}[$(n_1,
+	\ldots, n_\mu)$-computational special soundness]
+	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu +
 	1)$-message proof system for a relation $\REL$. 
-	We say that $\proofsystem$ is $(k, n)$-\emph{special sound} with security loss $\epss$ if there exists an expected polynomial time extractor $\extt$ such that for any PPT adversary $\adv$ that on input $1^\secpar$ outputs a $(1, \ldots, 1, n_k=n, 1, \ldots, 1)$-tree of accepting transcripts $\tree$, and a statement $\inp$, $\extt$ returns $\wit$ such that $\REL(\inp, \wit) = 1$ with probability at least $1-\epss(\secpar)$.
+	We say that $\proofsystem$ is $(n_1,
+	\ldots, n_\mu)$-\emph{computational special sound} with security loss $\epss$ if there exists an expected polynomial time extractor $\extt$ such that for any PPT adversary $\adv$ that on input $1^\secpar$ and with access to oracle $\initU$ outputs a $(n_1,
+	\ldots, n_\mu)$-tree of accepting transcripts $\tree$, and a statement $\inp$, $\extt$ returns $\wit$ such that $\REL(\inp, \wit) = 1$ with probability at least $1-\epss(\secpar)$. \chb{We call the protocol $(k, n)$-computational special sound when the tree returned by $\adv$ is a $(k,n)$-tree of accepting transcripts.}
 \end{definition}
 
 %	\chb{\begin{lemma}[Forking special soundness]\label{lem:forking_ss}
@@ -407,12 +410,12 @@ an accepting transcript, $\accProb$, lower-bounds the probability of generating 
 tree of accepting transcripts $\tree$, which allows to extract a witness.
 
 \begin{lemma}[Generalized forking lemma~\cite{EPRINT:AttFehKlo21}]\label{lemma:Attema}
-	Let $\proofsystem$ be a proof system that is knowledge sound
+	Let $N = n_1 \cdots n_\mu$. Let $\proofsystem$ be a proof system that is knowledge sound
 	with knowledge error $\epsk$. Assume adversary $\adv$ that makes up to $q$ random
 	oracle queries and outputs an acceptable proof with probability at least
 	$\accProb$. There exists a tree building algorithm $\tdv$ that utilizes the extractor $\zdv_1$ in~\cref{fig:Attema-ext} and succeeds in building a
-	$(k, n)$-tree of accepting transcripts in expected
-	running time $n + q (n - 1)$ with probability at least
+	$(n_1, \ldots, n_\mu)$-tree of accepting transcripts in expected
+	running time $N + q (N - 1)$ with probability at least
 	\[
 	\frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)}.
 	\]
@@ -452,48 +455,48 @@ tree of accepting transcripts $\tree$, which allows to extract a witness.
 	\label{fig:Attema-ext}
 \end{figure}
 
-\hamid{7.3}{Should we remove the following red-color text?}
-\chb{\paragraph{Importance of the generalized forking lemma.}
-To highlight the importance of the generalised forking lemma, we outline how it is
-used in our simulation-extractability proof.  Let $\psfs$ be a computational special sound
-proof system where for an instance $\inp$ the corresponding witness can be extracted
-from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\adv$
-be the simulation-extractability adversary that outputs an accepting proof with
-probability at least $\accProb$. From $\adv$ we build an adversary $\bdv$ that runs
-$\simulator$ internally. Although we use the same $\accProb$ to denote probability of
-$\zdv$ outputting a non-zero $i$ and the probability of $\adv$ (and $\bdv$)
-outputting an accepting proof, we claim that these probabilities are exactly the same
-by the way we define $\zdv$ and $\bdv$. In the following we give the intuition of the
-proof without the additional indirection via $\bdv$ whose goal is primarily to
-simplify the computational special soundness definition.
-
-Let $\adv$ output an accepting instance-proof pair $(\inp_{\advse},\zkproof_{\advse})$;
-$r$ be $\adv$'s randomness; and $Q_\ro$ be the list of all random oracle queries made by
-$\adv$.  All of these are given to the extractor $\extse$ that internally runs the forking
-algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$ takes
-$(\srs, \advse, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots, h_q^1$.
-(For the sake of completeness, we allow $\genforking_\zdv^{n_k}$ to pick
-$h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$ elements.)
-
-Next, $\zdv$ internally runs $\adv(\srs; r)$ %\hamid{$\\advse(1^\secpar; r)$}
-and responds to its random oracle queries using $Q_\ro$. Note that $\adv$ makes the same
-queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$ as it is run on
-the same random tape and with the same answers from the simulator and random oracle. Once
-$\adv$ outputs $\zkproof_{\advse}$, algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$,
-where $i$ is the index of a random oracle query submitted by $\advse$ to receive the
-challenge after the $k$-th message from the prover -- a message after which the tree of
-transcripts branches.  Then, after the first run of $\advse$ is done, the extractor runs
-$\zdv$ again, but this time it provides fresh random oracle responses
-$h^2_i, \ldots, h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
-before $\advse$ is about to ask its $i$-th random oracle query. The probability that the
-adversary produces an accepting transcript with the fresh random oracle responses is at
-least $\accProb$. This continues until the required number of transcripts is obtained.
-
-We note that in the original forking lemma, the forking algorithm $\forking$,
-cf.~\cite{CCS:BelNev06}, gets as input only $y$ while elements $h^1_1, \ldots,
-h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
-that $h^1_1, \ldots, h^1_q$ are random oracle responses, and thus random, makes
-the change only notational.}
+%\hamid{7.3}{Should we remove the following red-color text?}
+%\chb{\paragraph{Importance of the generalized forking lemma.}
+%To highlight the importance of the generalised forking lemma, we outline how it is
+%used in our simulation-extractability proof.  Let $\psfs$ be a computational special sound
+%proof system where for an instance $\inp$ the corresponding witness can be extracted
+%from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\adv$
+%be the simulation-extractability adversary that outputs an accepting proof with
+%probability at least $\accProb$. From $\adv$ we build an adversary $\bdv$ that runs
+%$\simulator$ internally. Although we use the same $\accProb$ to denote probability of
+%$\zdv$ outputting a non-zero $i$ and the probability of $\adv$ (and $\bdv$)
+%outputting an accepting proof, we claim that these probabilities are exactly the same
+%by the way we define $\zdv$ and $\bdv$. In the following we give the intuition of the
+%proof without the additional indirection via $\bdv$ whose goal is primarily to
+%simplify the computational special soundness definition.
+%
+%Let $\adv$ output an accepting instance-proof pair $(\inp_{\advse},\zkproof_{\advse})$;
+%$r$ be $\adv$'s randomness; and $Q_\ro$ be the list of all random oracle queries made by
+%$\adv$.  All of these are given to the extractor $\extse$ that internally runs the forking
+%algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$ takes
+%$(\srs, \advse, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots, h_q^1$.
+%(For the sake of completeness, we allow $\genforking_\zdv^{n_k}$ to pick
+%$h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$ elements.)
+%
+%Next, $\zdv$ internally runs $\adv(\srs; r)$ %\hamid{$\\advse(1^\secpar; r)$}
+%and responds to its random oracle queries using $Q_\ro$. Note that $\adv$ makes the same
+%queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$ as it is run on
+%the same random tape and with the same answers from the simulator and random oracle. Once
+%$\adv$ outputs $\zkproof_{\advse}$, algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$,
+%where $i$ is the index of a random oracle query submitted by $\advse$ to receive the
+%challenge after the $k$-th message from the prover -- a message after which the tree of
+%transcripts branches.  Then, after the first run of $\advse$ is done, the extractor runs
+%$\zdv$ again, but this time it provides fresh random oracle responses
+%$h^2_i, \ldots, h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
+%before $\advse$ is about to ask its $i$-th random oracle query. The probability that the
+%adversary produces an accepting transcript with the fresh random oracle responses is at
+%least $\accProb$. This continues until the required number of transcripts is obtained.
+%
+%We note that in the original forking lemma, the forking algorithm $\forking$,
+%cf.~\cite{CCS:BelNev06}, gets as input only $y$ while elements $h^1_1, \ldots,
+%h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
+%that $h^1_1, \ldots, h^1_q$ are random oracle responses, and thus random, makes
+%the change only notational.}
 
 % We also note that the general forking lemma from
 % \cref{lem:generalised_forking_lemma} works for protocols with an extractor that can obtain the
