@@ -13,7 +13,8 @@ protocol, we can either extract a witness for the proven statement or use
 one of the transcripts to break the $\dlog$ assumption. This result is shown in
 the AGM, cf.~\cref{lem:plonkprot_ss}.
 
-Given computational special soundness and $\ur{2}$ of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is \COMMENT{forking }simulation-extractable.\hamid{19.1}{To conclude USE of Plonk, I think we should rely on TLS property too!}
+Given computational special soundness, $\ur{2}$ and trapdoor-less simulatability of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is \COMMENT{forking }simulation-extractable.
+%\hamid{19.1}{To conclude USE of Plonk, I think we should rely on TLS property too!}
 %Due to page limit, we omit description of \plonk{} here and refer to
 %\cref{sec:plonk_explained}.
 %Unfortunately, we also have to Message some of the
@@ -1231,8 +1232,8 @@ $\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
 % \end{lemma}
 
 \subsection{Simulation extractability of~$\plonkprotfs$}
-Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$ and
-computational special sound.\hamid{19.1}{Again, TLS is not mentioned?} We now make use of \cref{thm:se} and show that
+Since \cref{lem:plonkprot_ur,lem:plonkprot_ss,lem:plonk_hvzk} hold, $\plonkprot$ is $\ur{2}$,
+computational special sound and trapdoor-less simulatable. We now make use of \cref{thm:se} and show that
 $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:updsimext}.
 
 \begin{corollary}[Simulation extractability of $\plonkprot_\fs$]

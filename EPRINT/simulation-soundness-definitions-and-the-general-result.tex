@@ -38,7 +38,7 @@ statement. More precisely,
 \end{definition}
 
 \label{rem:simext_to_simsnd}
-We note that the probability $\ssndProb$ \cref{def:simsnd} can be expressed in
+We note that the probability $\ssndProb$ in~\cref{def:simsnd} can be expressed in
 terms of simulation-extractability. More precisely, the
 condition $\neg \exists \wit: \REL(\inp_\adv, \wit_\adv) = 1$ can be substituted with
 $\REL(\inp_\adv, \wit_\adv) = 0$, where $\wit_\adv$, returned by a possibly unbounded
@@ -70,7 +70,7 @@ $ \ssndProb = \accProb - \extProb$.
 
 \subsection{Simulation soundness---the general result}
 \label{sec:general}
-Equipped with definitional framework of \cref{sec:se_definitions}, we can also show the proof of simulation soundness of Fiat-Shamir NIZK based on multi-round protocols.
+Equipped with definitional framework of \cref{sec:se_definitions}, we can also show the proof of simulation soundness of Fiat-Shamir NIZKs based on multi-round protocols.
 
 %\begin{theorem}[Forking simulation-extractable multi-message protocols]
 %	\label{thm:se}
@@ -213,8 +213,7 @@ We conjecture that based on the recent results on state restoration soundness~\c
 
 
 \subsection{Simulation soundness of~$\plonkprotfs$}
-Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$
-and computational special sound. We now make use of \cref{thm:simsnd} and show that
+Since \cref{lem:plonkprot_ur,lem:plonkprot_ss,lem:plonk_hvzk} hold, $\plonkprot$ is $\ur{2}$, computational special sound and trapdoor-less simulatable. We now make use of \cref{thm:simsnd} and show that
 $\plonkprot_\fs$ is simulation sound as defined in
 \cref{def:simsnd}.
 
@@ -232,7 +231,7 @@ $\plonkprot_\fs$ is simulation sound as defined in
  \end{corollary}
 
 \subsection{Simulation soundness of~$\sonicprotfs$}
-The following corollary shows the simulation soundness of $\sonicprotfs$ based on~\cref{lem:sonicprot_ur,lem:sonicprot_ss} and~\cref{thm:simsnd}.
+The following corollary shows the simulation soundness of $\sonicprotfs$ based on~\cref{lem:sonicprot_ur,lem:sonicprot_ss,lem:sonic_hvzk} and~\cref{thm:simsnd}.
 \begin{corollary}[Simulation soundness of $\sonicprot_\fs$]
 	\label{cor:simsnd-S}
 	Assume that $\sonicprot$ is $1$-programmable HVZK in the standard model, that
@@ -247,7 +246,7 @@ The following corollary shows the simulation soundness of $\sonicprotfs$ based o
 \end{corollary}
 
 \subsection{Simulation soundness of~$\marlinprotfs$}
-	The simulation soundness of $\marlinprot_\fs$ follows from \cref{thm:simsnd}, \cref{lem:marlinprot_ur,lem:marlinprot_ss}.
+	The simulation soundness of $\marlinprot_\fs$ follows from \cref{thm:simsnd}, and \cref{lem:marlinprot_ur,lem:marlinprot_ss,lem:marlin_hvzk}.
 \begin{corollary}[Simulation soundness of $\marlinprot_\fs$]
 	\label{cor:simsnd-M}
 	Assume that $\marlinprot$ is $1$-programmable HVZK in the standard model, that
