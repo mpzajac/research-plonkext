@@ -214,14 +214,14 @@ We conjecture that based on the recent results on state restoration soundness~\c
 
 \subsection{Simulation soundness of~$\plonkprotfs$}
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$
-and forking special sound. We now make use of \cref{thm:simsnd} and show that
+and computational special sound. We now make use of \cref{thm:simsnd} and show that
 $\plonkprot_\fs$ is simulation sound as defined in
 \cref{def:simsnd}.
 
  \begin{corollary}[Simulation soundness of $\plonkprot_\fs$]
    \label{cor:simsnd-P}
    Assume that $\plonkprot$ is $2$-programmable HVZK in the standard model, that
-   is forking special sound with security $\epss(\secpar)$, and the $\PCOMp$ is a commitment of knowledge with
+   is computational special sound with security $\epss(\secpar)$, and the $\PCOMp$ is a commitment of knowledge with
    security $\epsk(\secpar)$, binding security $\epsbind(\secpar)$ and has unique
    opening property with security $\epsop(\secpar)$. Then the probability that a
    $\ppt$ adversary $\adv$ breaks simulation soundness of $\plonkprot_{\fs}$ is
@@ -236,7 +236,7 @@ The following corollary shows the simulation soundness of $\sonicprotfs$ based o
 \begin{corollary}[Simulation soundness of $\sonicprot_\fs$]
 	\label{cor:simsnd-S}
 	Assume that $\sonicprot$ is $1$-programmable HVZK in the standard model, that
-	is forking special sound with security $\epss(\secpar)$, and the $\PCOMs$ is a commitment of knowledge with
+	is computational special sound with security $\epss(\secpar)$, and the $\PCOMs$ is a commitment of knowledge with
 	security $\epsk(\secpar)$, binding security $\epsbind(\secpar)$ and has unique
 	opening property with security $\epsop(\secpar)$. Then the probability that a
 	$\ppt$ adversary $\adv$ breaks simulation soundness of $\sonicprot_{\fs}$ is
@@ -251,7 +251,7 @@ The following corollary shows the simulation soundness of $\sonicprotfs$ based o
 \begin{corollary}[Simulation soundness of $\marlinprot_\fs$]
 	\label{cor:simsnd-M}
 	Assume that $\marlinprot$ is $1$-programmable HVZK in the standard model, that
-	is forking special sound with security $\epss(\secpar)$, and the $\PCOM$ is a commitment of knowledge with
+	is computational special sound with security $\epss(\secpar)$, and the $\PCOM$ is a commitment of knowledge with
 	security $\epsk(\secpar)$, binding security $\epsbind(\secpar)$ and has unique
 	opening property with security $\epsop(\secpar)$. Then the probability that a
 	$\ppt$ adversary $\adv$ breaks simulation soundness of $\marlinprot_{\fs}$ is

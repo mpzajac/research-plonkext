@@ -115,11 +115,11 @@ We propose a definition of simulation extractability in the updatable SRS settin
         then show that a class of interactive proofs of knowledge that when
         the Fiat--Shamir transform is applied to them are trapdoor-less simulatable, have a
         unique response property in the updatable setting, and satisfy a
-        property we define called forking special soundness \emph{are USE
-        out-of-the box} in the random oracle model. Informally, our notion of forking
-        special soundness is a variant of special soundness where the
-        transcripts provided to the extractor are obtained through interaction
-        with an honest verifier, and the extraction guarantee is computational
+        property we define called computational special soundness \emph{are USE
+        out-of-the box} in the random oracle model. Informally, our notion of computational
+        special soundness is a variant of special soundness where 
+        %the transcripts provided to the extractor are obtained through interaction with an honest verifier, and 
+        the extraction guarantee is computational
         instead of unconditional. Our extractor only needs oracle access to the
         adversary, it does not depend on the adversary’s code, nor does it rely on
         knowledge assumptions.
@@ -155,7 +155,7 @@ In the following, we denote the underlying interactive protocols by $\plonkprot$
 the resulting non-interactive proof systems by $\plonkprotfs$, $\sonicprotfs$,
 $\marlinprotfs$ respectively.
 
-\oursubsub{Forking special soundness in the updatable setting.}
+\oursubsub{Computational special soundness in the updatable setting.}
 Following~\cite{INDOCRYPT:FKMV12}, one would have to show that for the protocols
 we consider a witness can be extracted from sufficiently many valid transcripts
 with a common prefix. The standard definition of special soundness for sigma
@@ -178,12 +178,12 @@ knowing the witness and potentially for false statements. This is true even in
 the updatable setting, where there exists a trapdoor for any updated SRS. Recall
 that the standard special soundness definition requires witness extraction from
 \emph{any} tree of acceptable transcripts that share a common root. This means
-that there are no such trees for false statements. We define a different,
+that there are no such trees for false statements. \hamid{17.3}{This should be rephrased:} \chb{We define a different,
 forking lemma-related, version of soundness that we call \emph{forking special soundness}.
 Forking special soundness guarantees that it is possible to extract a witness from all
 (but negligibly many) trees of accepting transcripts produced by probabilistic
 polynomial time (PPT) adversaries, given that the trees are generated as
-interactions between a (possibly malicious) prover and an honest verifier. That
+interactions between a (possibly malicious) prover and an honest verifier.} That
 is, if extraction from such a tree fails, then we break an underlying
 computational assumption. Moreover, this should hold even against adversaries
 that contribute in the SRS generation.
@@ -219,7 +219,8 @@ from some move $i$ onwards. This property can be understood as a generalization 
 honest-verifier zero-knowledge for Fiat--Shamir transformed proof systems with an
 SRS.
 
-\oursubsub{Generalising the general forking lemma.}  Consider an interactive $3$-message
+\hamid{8.2}{Next two paragraphs should be rephrased:}
+\chb{\oursubsub{Generalising the general forking lemma.}  Consider an interactive $3$-message
 special-sound protocol $\ps$ and its non-interactive version $\ps_\fs$ obtained by the
 Fiat--Shamir transform. The general forking lemma provides an instrumental lower bound for the
 probability of extracting a witness from an adversary who provides two proofs for the same
@@ -228,7 +229,7 @@ messages and are not special-sound, the forking lemma of Bellare and Neven~\cite
 cannot be used directly. We propose a generalization that covers multi-message protocols where
 witness extraction requires more than two transcripts.  Unfortunately, we also observe
 that the security gap grows with the number of transcripts and the probability that the
-extractor succeeds diminishes; the security loss, albeit big, is polynomial.\hamid{8.2}{the last sentence should be rephrased I think as we changed the forking lemma!}
+extractor succeeds diminishes; the security loss, albeit big, is polynomial.
 
 Most modern zkSNARKs~\cite{SP:BBBPWM18,CCS:MBKM19} heavily
 rely on the Fiat--Shamir transform and thus potentially the forking lemma.
@@ -245,7 +246,7 @@ We note that the security loss of our generalized forking lemma may also apply
 when knowledge soundness is proven. This is, e.g., the case for the original
 $\sonic$ paper, whose security proof relies on so-called witness-extended
 emulation. $\plonk$ and the recent work of~\cite{cryptoeprint:2020:1351} that shows knowledge soundness of
-$\sonic$, work around this problem by proving directly in the AGM.
+$\sonic$, work around this problem by proving directly in the AGM.}
 
 
 
@@ -301,7 +302,7 @@ possible actions -- when the protocol is non-interactive the prover may
 adapt its strategy based on the random oracle outputs. 
 This is reminiscent of \emph{state restoration} security~\cite{TCC:BenChiSpo16,EPRINT:Holmgren19} which is also about the security loss incurred by the Fiat--Shamir transformation albeit when proving knowledge soundness from witness extended emulation.
 
-Here, we directly capture the state restoration capability of the prover in the forking lemma instead of defining an interactive game where the prover can rewind the verifier to an earlier state as is done in~\cite{C:GhoTes21}. 
+\hamid{17.3}{Should be rephrased:} \chb{Here, we directly capture the state restoration capability of the prover in the forking lemma instead of defining an interactive game where the prover can rewind the verifier to an earlier state as is done in~\cite{C:GhoTes21}.} 
 The work of~\cite{C:GhoTes21} further shows that state restoration security gives tight security guarantees for the
 non-interactive versions of Bulletproof~\cite{SP:BBBPWM18} and \sonic. 
 Our work differs from~\cite{C:GhoTes21} in the following ways. First, they

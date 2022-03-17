@@ -4,7 +4,7 @@
 \section{Non-malleability of Marlin}
 We show that $\marlin$ is \COMMENT{forking }simulation-extractable. To that end, we show
 that $\marlin$ has all the required properties: has unique response property, is
-forking special sound, and its simulator can provide indistinguishable proofs
+computational special sound, and its simulator can provide indistinguishable proofs
 without a trapdoor, just by programming the random oracle.
 
 \subsection{$\marlin$ protocol rolled-out}
@@ -177,12 +177,12 @@ verify that \cref{eq:marlin_eq_2} holds.
   has to be incorrect and will be accepted with probability at most $\epss$.
 \end{proof}}
 
-\subsection{Forking special soundness}
+\subsection{Computational special soundness}
 \begin{lemma}\label{lem:marlinprot_ss}
 	Assume that an idealised $\marlinprot$ verifier fails with probability at most
 	$\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks dlog is
 	bounded by $\epsdlog(\secpar)$. Then $\marlinprot$ is
-	$(2, d + 1)$-forking special
+	$(2, d + 1)$-computational special
 	sound with security loss $\epsid (\secpar) + \epsdlog (\secpar)$.
 \end{lemma}
 \begin{proof}
@@ -277,11 +277,11 @@ random oracle that on partial transcripts it returns the challenges picked by
 $\simulator$.
 \end{proof}
 
-\subsection{From forking special soundness and unique response property to\COMMENT{ forking}
+\subsection{From computational special soundness and unique response property to\COMMENT{ forking}
   simulation extractability of $\marlinprotfs$}
 \begin{corollary}
   Assume that $\marlinprot$ is $\ur{1}$ with security
-  $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and forking special sound
+  $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and computational special sound
   with security $\epss(\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
   random oracle. Let $\advse$ be an adversary that can make up to $q$
   random oracle queries, and outputs an

@@ -358,10 +358,10 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
 \end{proof}
 }
 
-\subsection{Forking special soundness}
+\subsection{Computational special soundness}
 \begin{lemma}
 	\label{lem:sonicprot_ss}
-	$\sonicprot$ is $(2, \multconstr + \linconstr + 1)$-forking special sound with security loss $\epss(\secpar)$ against
+	$\sonicprot$ is $(2, \multconstr + \linconstr + 1)$-computational special sound with security loss $\epss(\secpar)$ against
 	algebraic adversaries with
 	\[
 	\epss(\secpar) \leq \epsid(\secpar) + \epsldlog(\secpar) \,,
@@ -371,7 +371,7 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
 \end{lemma}
 \begin{proof}
 	Similarly as in the case of $\plonk$, the main idea of the proof is to show that an
-  adversary who breaks forking special soundness can be used to break a $\dlog$
+  adversary who breaks computational special soundness can be used to break a $\dlog$
   problem instance. The proof goes by game hops. Let $\tree$ be the tree produced by
   $\tdv$ by rewinding $\adv$. Note that since the tree branches after prover's $2$-nd
   message, the instance $\inp$, commitments
@@ -516,10 +516,10 @@ $\sonic$ is 2-programmable trapdoor-less simulatable.
   challenges that fits it.
 \end{remark}
 
-\subsection{From forking special soundness and unique response property to \COMMENT{forking
+\subsection{From computational special soundness and unique response property to \COMMENT{forking
   }simulation extractability of $\sonicprotfs$}
 Since \cref{lem:sonicprot_ur,lem:sonicprot_ss} hold, $\sonicprot$ is $\ur{1}$
-and forking special sound. We now make use
+and computational special sound. We now make use
 of \cref{thm:se} and show that $\sonicprotfs$ is \COMMENT{ forking }simulation-extractable as defined in \cref{def:simext}.
 
 \begin{corollary}[\COMMENT{Forking s}Simulation extractability of $\sonicprotfs$]
@@ -527,7 +527,7 @@ of \cref{thm:se} and show that $\sonicprotfs$ is \COMMENT{ forking }simulation-e
   Assume that $\sonicprot$ is $\ur{1}$ with security
   $\epsur(\secpar) = \epsbind(\secpar) + \epsop(\secpar)$ -- where
   $\epsbind (\secpar)$ is polynomial commitment's binding security, $\epsop$ is
-  polynomial commitment unique opening security -- and forking special sound with
+  polynomial commitment unique opening security -- and computational special sound with
   security $\epss(\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
   random oracle. Let $\advse$ be an adversary that can make up to $q$
   random oracle queries, and outputs an

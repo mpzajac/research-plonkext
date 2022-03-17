@@ -36,7 +36,7 @@ which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. T
 to support multi-message SRS-based protocols compiled using the Fiat--Shamir transform
 we generalize the unique response property, replace honest-verifier zero-knowledge
 property with trapdoor-less simulation and special soundness with a computational special
-soundness property that links up with our generalized forking lemma.
+soundness property that links up with the generalized forking lemma.
 
 \subsection{Simulation extractability}
 We note that the zero-knowledge property is only guaranteed for statements in the
@@ -410,12 +410,12 @@ an accepting transcript, $\accProb$, lower-bounds the probability of generating 
 tree of accepting transcripts $\tree$, which allows to extract a witness.
 
 \begin{lemma}[Generalized forking lemma~\cite{EPRINT:AttFehKlo21}]\label{lemma:Attema}
-	Let $N = n_1 \cdots n_\mu$. Let $\proofsystem$ be a proof system that is knowledge sound
+	\chb{Let $N = n_1 \cdots n_\mu$.} Let $\proofsystem$ be a proof system that is knowledge sound
 	with knowledge error $\epsk$. Assume adversary $\adv$ that makes up to $q$ random
 	oracle queries and outputs an acceptable proof with probability at least
 	$\accProb$. There exists a tree building algorithm $\tdv$ that utilizes the extractor $\zdv_1$ in~\cref{fig:Attema-ext} and succeeds in building a
-	$(n_1, \ldots, n_\mu)$-tree of accepting transcripts in expected
-	running time $N + q (N - 1)$ with probability at least
+	$(n_1, \ldots, n_\mu)$-tree of accepting transcripts \chb{in expected
+	running time $N + q (N - 1)$} with probability at least
 	\[
 	\frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)}.
 	\]

@@ -7,13 +7,13 @@
 In this section, we show that $\plonkprotfs$ is \COMMENT{forking }simulation-extractable. Towards this end, we first use the unique opening property to show that
 $\plonkprot$ has the $\ur{2}$ property,
 cf.~\cref{lem:plonkprot_ur}.
-Next, we show that $\plonkprot$ is forking special sound. That is, given a
+Next, we show that $\plonkprot$ is computational special sound. That is, given a
 number of accepting transcripts whose messages match on the first $5$ messages of the
 protocol, we can either extract a witness for the proven statement or use
 one of the transcripts to break the $\dlog$ assumption. This result is shown in
 the AGM, cf.~\cref{lem:plonkprot_ss}.
 
-Given forking special soundness and $\ur{2}$ of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is \COMMENT{forking }simulation-extractable.\hamid{19.1}{To conclude USE of Plonk, I think we should rely on TLS property too!}
+Given computational special soundness and $\ur{2}$ of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is \COMMENT{forking }simulation-extractable.\hamid{19.1}{To conclude USE of Plonk, I think we should rely on TLS property too!}
 %Due to page limit, we omit description of \plonk{} here and refer to
 %\cref{sec:plonk_explained}.
 %Unfortunately, we also have to Message some of the
@@ -546,17 +546,17 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 \end{proof}
 }
 
-\subsection{Forking special soundness}
+\subsection{Computational special soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
 	Let $\plonkprot$'s idealized verifier fails with \hamid{11.3}{negligible?} probability $\epsid (\secpar)$, and
 	$(\noofc + 2, 1)$-$\dlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
-	$(3, 3 \noofc + 1)$-forking special sound with security loss $\epsid (\secpar) + \epsdlog (\secpar)$ against algebraic
+	$(3, 3 \noofc + 1)$-computational special sound with security loss $\epsid (\secpar) + \epsdlog (\secpar)$ against algebraic
 	adversary $\adv$.
 \end{lemma}
 
 \begin{proof}
-	The main idea of the proof is to show that an adversary who breaks forking special
+	The main idea of the proof is to show that an adversary who breaks special
 	soundness can be used to break a $\dlog$ problem instance. The proof goes by game hops. Let $\tree$
 	be the tree produced by $\tdv$ by rewinding $\adv$. Note that since the tree
 	branches after $\adv$'s $3$-rd message, the instance $\inp$, commitments
@@ -1232,7 +1232,7 @@ $\vec{w} = \pF(b_1, \ldots, b_9)$ and $\vec{w}$ being random, thus
 
 \subsection{Simulation extractability of~$\plonkprotfs$}
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss} hold, $\plonkprot$ is $\ur{2}$ and
-forking special sound.\hamid{19.1}{Again, TLS is not mentioned?} We now make use of \cref{thm:se} and show that
+computational special sound.\hamid{19.1}{Again, TLS is not mentioned?} We now make use of \cref{thm:se} and show that
 $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:updsimext}.
 
 \begin{corollary}[Simulation extractability of $\plonkprot_\fs$]
