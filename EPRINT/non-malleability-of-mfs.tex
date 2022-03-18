@@ -180,7 +180,7 @@ verify that \cref{eq:marlin_eq_2} holds.
 \subsection{Computational special soundness}
 \begin{lemma}\label{lem:marlinprot_ss}
 	Assume that an idealised $\marlinprot$ verifier fails with probability at most
-	$\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks dlog is
+	$\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks $\dlog$ is
 	bounded by $\epsdlog(\secpar)$. Then $\marlinprot$ is
 	$(2, d + 1)$-computational special
 	sound with security loss $\epsid (\secpar) + \epsdlog (\secpar)$.
@@ -238,7 +238,7 @@ verify that \cref{eq:marlin_eq_2} holds.
 	relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
 	of acceptable transcripts such that the winning condition of the game
 	holds. Let $\rdvdlog$ be a reduction that gets as input an
-	$(\dconst, 1)$-dlog instance $\gone{1, \ldots, \chi^\dconst}, \gtwo{1, \chi}$ and
+	$(\dconst, 1)$-$\dlog$ instance $\gone{1, \ldots, \chi^\dconst}, \gtwo{1, \chi}$ and
 	is tasked to output $\chi$. The reduction proceeds as follows---it builds $\adv$'s SRS $\srs$ in the updatable setting using the input $\dlog$ instance. Namely it answers $\adv$'s queries for SRS updates and sets the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS and $(1, \tree)$ be the output
 	returned by $\adv$. Let $\inp$ be a relation proven in $\tree$.  Consider a
 	transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$,

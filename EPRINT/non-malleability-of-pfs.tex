@@ -310,7 +310,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
   Let $\PCOMp$ be \changedm{a polynomial commitment that is} \mxout{of knowledge with
     security $\epsk(\secpar)$,} $\epsbind(\secpar)$-binding and has unique opening
   property with loss $\epsop(\secpar)$, \changedm{let $\plonkprotfs$ be $\epss$-sound and
-    $(\noofc + 2, 1)$-dlog problem by $\epsdlog (\secpar)$ hard.} Then probability that a
+    $(\noofc + 2, 1)$-$\dlog$ problem by $\epsdlog (\secpar)$ hard.} Then probability that a
   $\ppt$ adversary $\adv$ breaks $\plonkprotfs$'s $\ur{2}$ property is at most
   \changedm{$9 \cdot (\epsop (\secpar) + \epsbind (\secpar)) + \epss (\secpar) + \epsdlog
     (\secpar)+ 2 / \abs{\FF_p}$}.\mxout{, where $\epsro$ is probability that a $\ppt$
@@ -624,7 +624,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 	relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
 	of acceptable transcripts such that the winning condition of the game
 	holds. Let $\rdvdlog$ be a reduction that gets as input an
-	$(\noofc + 2, 1)$-dlog instance $\gone{1, \ldots, \chi^{\noofc+2}}, \gtwo{\chi}$ and is tasked to output $\chi$.
+	$(\noofc + 2, 1)$-$\dlog$ instance $\gone{1, \ldots, \chi^{\noofc+2}}, \gtwo{\chi}$ and is tasked to output $\chi$.
 	
 	The reduction $\rdvdlog$ proceeds as follows.
 	\begin{enumerate}
