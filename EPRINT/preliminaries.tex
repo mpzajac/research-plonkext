@@ -694,7 +694,7 @@ updates the SRS.
 				\t b \gets \verifyCRS(\srs_n,\{\rho_j \}_{j=1}^{n})\\
 				\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_j \}_i = \emptyset: \pcreturn \bot \\
 				\t 
-				\td \gets \ext_\srs(\srs_n,, Q_\srs, \{\rho_j \}_{j=1}^{n}) \\
+				\textcolor{red}{\td \gets \ext_\srs(\srs_n,, Q_\srs, \{\rho_j \}_{j=1}^{n})} \\
 				\t \srs \gets \srs_n, \pcreturn \srs \\
 				%
 				\pcelse \pcreturn \bot
@@ -710,7 +710,7 @@ updates the SRS.
 %			}                         %
 %   \end{minipage}
   }
-	\caption{The oracle defines the notion of updatable SRS setup.}% The right oracle is the simulation oracle.} 
+	\caption{The oracle defines the notion of updatable SRS setup.}\hamid{24.3}{I think the red line above can be removed as we don't need trapdoor for simulation!}% The right oracle is the simulation oracle.} 
 	\label{fig:upd}
 \end{figure}
 

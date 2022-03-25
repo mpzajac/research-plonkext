@@ -366,6 +366,34 @@ tree of acceptable transcripts, but we require that the extractor is not able to
 %
 %\hamid{1.3}{I think we can replace lemma 2 with the following lemma which includes the adaptation of Attema result to the updatable setting.}
 
+\hamid{25.3}{This is the new definition. Please check!}
+\begin{definition}[$(n_1,
+	\ldots, n_\mu)$-computational special soundness]
+	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu +
+	1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$
+  be $\proofsystem$ after the Fiat--Shamir transform. For any $\ppt$ adversary $\advse^{\ro, \initU} (1^\secpar; r)$ with access to oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider the algorithm $\tdv$
+	that rewinds $\adv$ to produce a $(n_1,
+	\ldots, n_\mu)$-tree of
+	accepting transcripts $\tree$.
+	
+	We say that $\psfs$ is $(k,n)$-forking special sound with security loss $\epss(\secpar)$, if there exists an expected polynomial time extractor $\extt$ such that for any PPT adversary $\advse$,
+	\begin{align*}
+	\Pr\left[
+	\REL(\inp, \wit) = 0
+	\textcolor{red}{\wedge \verifier_\fs(\srs, \inp_{\advse}, \pi_\advse) = 1}
+	\,\Biggl|\,
+	\begin{aligned}
+	& r \sample \RND{\advse},
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r), \\
+	&    \tree \gets \tdv((\srs,\adv,r),Q_{H}),
+	\wit \gets \extt(\tree)
+	\end{aligned}
+	\right] \leq \epss(\secpar).
+	\end{align*}
+	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
+	List $Q_\ro$ contains all $\advse$'s
+	queries to $\ro$ and the random oracle's answers.
+\end{definition}
 
 \begin{definition}[$(n_1,
 	\ldots, n_\mu)$-computational special soundness]

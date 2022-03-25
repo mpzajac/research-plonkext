@@ -303,137 +303,238 @@ The \plonk{} simulator proceeds as an honest prover would, except:
     trapdoor $\chi$ to compute commitments
     $\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)$.
   \end{enumerate}
+
+\hamid{24.3}{The following proof is for the non-batched version of Plonk. Maybe we should say this explicitly somewhere!}
  
 \subsection{Unique response property}
+%\begin{lemma}
+%	\label{lem:plonkprot_ur}
+%  Let $\PCOMp$ be \changedm{a polynomial commitment that is} \mxout{of knowledge with
+%    security $\epsk(\secpar)$,} $\epsbind(\secpar)$-binding and has unique opening
+%  property with loss $\epsop(\secpar)$, \changedm{let $\plonkprotfs$ be $\epss$-sound and
+%    $(\noofc + 2, 1)$-$\dlog$ problem be $\epsdlog (\secpar)$ hard.} Then probability that a
+%  $\ppt$ adversary $\adv$ breaks $\plonkprotfs$'s $\ur{2}$ property is at most
+%  \changedm{$9 \cdot (\epsop (\secpar) + \epsbind (\secpar)) + \epss (\secpar) + \epsdlog
+%    (\secpar)+ 2 / \abs{\FF_p}$}.\mxout{, where $\epsro$ is probability that a $\ppt$
+%    adversary finds collision in a random oracle.}
+%\end{lemma}
+\chb{
 \begin{lemma}
 	\label{lem:plonkprot_ur}
-  Let $\PCOMp$ be \changedm{a polynomial commitment that is} \mxout{of knowledge with
-    security $\epsk(\secpar)$,} $\epsbind(\secpar)$-binding and has unique opening
-  property with loss $\epsop(\secpar)$, \changedm{let $\plonkprotfs$ be $\epss$-sound and
-    $(\noofc + 2, 1)$-$\dlog$ problem be $\epsdlog (\secpar)$ hard.} Then probability that a
-  $\ppt$ adversary $\adv$ breaks $\plonkprotfs$'s $\ur{2}$ property is at most
-  \changedm{$9 \cdot (\epsop (\secpar) + \epsbind (\secpar)) + \epss (\secpar) + \epsdlog
-    (\secpar)+ 2 / \abs{\FF_p}$}.\mxout{, where $\epsro$ is probability that a $\ppt$
-    adversary finds collision in a random oracle.}
+	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening
+	property with loss $\epsop(\secpar)$, let $\plonkprotfs$ be $\epss$-sound and
+		$(\noofc + 2, 1)$-$\dlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{2}$ \chb{against algebraic adversaries} with security loss $\epsdlog(\secpar) + \epss (\secpar) + 8 \cdot \epsbind (\secpar) + 9 \cdot \epsop(\secpar)$.
 \end{lemma}
 
-\changedm{
 \begin{proof}
-  Let $\adv$ be an algebraic adversary tasked to break the $\ur{2}$-ness of
-  $\plonkprotfs$. We show that the first 2 prover's messages determine, along with
-  the verifiers challenges, the rest of it.  This is done by game hops. In the games,
-  the adversary outputs two proofs $\zkproof^0$ and $\zkproof^1$ for the same statement.
-  To distinguish polynomials and commitments which an honest prover sends in the
-  proof from the polynomials and commitments computed by the adversary we write the
-  latter using indices $0$ and $1$ (two indices as we have two transcripts), e.g.~to
-  describe the quotient polynomial provided by the adversary we write $\p{t}^0$ and
-  $\p{t}^1$ instead of $\p{t}$ as in the description of the protocol.
+	Let $\adv$ be an algebraic adversary tasked to break the $\ur{2}$-ness of
+	$\plonkprotfs$. We show that the first 2 prover's messages determine, along with
+	the verifiers challenges, the rest of it.  This is done by game hops. In the games,
+	the adversary outputs two proofs $\zkproof^0$ and $\zkproof^1$ for the same statement.
+	To distinguish polynomials and commitments which an honest prover sends in the
+	proof from the polynomials and commitments computed by the adversary we write the
+	latter using indices $0$ and $1$ (two indices as we have two transcripts), e.g.~to
+	describe the quotient polynomial provided by the adversary we write $\p{t}^0$ and
+	$\p{t}^1$ instead of $\p{t}$ as in the description of the protocol.
 
-  \ngame{0} In this game the adversary wins if at least one of the presented proofs
-  w.l.o.g., $\zkproof^0$, is such that if
-  \begin{itemize}
-  \item $\adv$ provides separate openings for each of polynomial evaluations, and
-  \item $\verifier$ would check each of these openings separately,
-  \end{itemize}
-  then $\verifier$ would not accept that proof. That is, the adversary wins if it
-  outputs a proof for a false statement that is accepted only because both polynomial
-  commitment evaluation openings and polynomial commitment openings verifications are
-  batched. The adversary wins this game with probability at most $2/ \abs{\FF_p}$.
+\ngame{0} In this game, the adversary wins if it provides two transcripts that match on the
+first two messages of the proof.
 
-  \ngame{1} In this game, the adversary additionally wins if it provides two transcripts that
-  match on all $5$ messages sent by the prover. 
+\ngame{1} In this game, the adversary additionally wins if it provides two transcripts that
+match on the first three messages of the proof.
 
-  \ncase{Game 0 to Game 1} Since such two transcripts cannot break the unique
-  response property, the adversary wins Game 1, but does not win Game 0 with probability 0.
-
-  \ngame{2} This game is identical to Game $\game{1}$ except that now the
-  adversary additionally wins if it provides two transcripts that matches on the first four
-  messages of the proof.
-
-  \ncase{Game 1 to Game 2} We show that the probability that $\adv$
-  wins in one game but does not in the other is negligible.  Observe that in
-  after its $4$-th message, the adversary is given a challenge $v$ and has to open
-  the previously computed commitments. Since the transcripts match up to $\adv$'s 
-  $4$-th message, the challenge is the same in both. Hence, to be able to give two different
-  openings in its $5$-th message, $\adv$ has to break the unique opening property of the
-  KZG commitment scheme which happens with probability $9 \cdot \epsop$ tops (as $9$
-  polynomials are evaluated).
-  % Since
-  % there are two commitments that the adversary opens, by the union bound
-  % probability that $\adv$ wins in one game but not the other is upper-bounded
-  % by
-  % $2 \cdot \epsop$.
-
-  \ngame{3} This game is identical to Game $\game{2}$ except that now the
-  adversary additionally wins if it provides two transcripts that matches on the
-  first three messages of the proof.
-
-  \ncase{Game 2 to Game 3} In its $4$-th message the adversary
-  has to provide evaluations
-  $a_\chz = \p{a}(\chz), b_\chz = \p{b}(\chz), c_\chz = \p{c}(\chz), t_\chz =
-  \p{t}(\chz), S_{1, \chz} = \p{S_{\sigma 1}}(\chz), s_{2, \chz} = \p{S_{\sigma
-      2}}(\chz), z_\chz = \p{z}(\chz \omega)$ of previously committed
-  polynomials, and compute and evaluate a linearization polynomial $\p{r}$.
-
-  As before, the adversary cannot provide two different evaluations for the
-  committed polynomials, since that would require breaking the evaluation
-  binding property, which happens (by the union bound) with probability at most
-  $7 \cdot \epsbind (\secpar)$. 
-
-  The adversary cannot also provide two different linearization polynomials
-  $\p{r^0}$ and $\p{r^1}$ evaluations $r^0_\chz$ and $r^1_\chz$ as the
-  linearization polynomial is determined by values known to the verifier who
-  also can compute a commitment to $\p{r}(X)$ equal $\gone{\p{r}(\chi)}$ by its
-  own. The evaluation of $\p{r}$ provided by the adversary is later checked, as
-  $\adv$ opens the commitment in its $5$-th message. Hence, the probability that the
-  adversary manages to build two convincing proofs that differ in evaluations
-  $r^0_\chz$ and $r^1_\chz$ is at most $\epsbind (\secpar)$.
-
-  Hence, the probability that adversary wins in one game but does not in the
-  other is upper-bounded by $8 \cdot \epsbind (\secpar)$
-
-  \ngame{4} This game is identical to Game $\game{3}$ except that now the
-  adversary additionally wins if it provides two transcripts that matches on the
-  first two messages of the proof.
-
-  \ncase{Game 3 to Game 4} In its $3$-rd message the adversary computes the
-  quotient polynomial $\pt(X)$ and provides its commitment that compounds of
-  three separate commitments
-  $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$. Let
-  $\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)}$ be the
-  commitments output by the adversary in one transcript, and
-  $\gone{\p{t^1_{lo}}(\chi), \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$ the commitments
-  provided in the other.
+\ncase{Game 0 to Game 1} In its $3$-rd message the adversary computes the
+quotient polynomial $\pt(X)$ and provides its commitment that compounds of
+three separate commitments
+$\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$. Let
+$\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)}$ be the
+commitments output by the adversary in one transcript, and
+$\gone{\p{t^1_{lo}}(\chi), \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$ the commitments
+provided in the other.
 %
-  Since the commitment scheme is deterministic, the adversary cannot come up
-  with two different valid commitments for the same polynomial.
+Since the commitment scheme is deterministic, the adversary cannot come up
+with two different valid commitments for the same polynomial.
 
-  If the adversary picks two different polynomials: $\p{t^0}(X)$, that is committed
-  as $\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)}$, and
-  $\p{t^1}(X)$ that is committed as
-  $\gone{\p{t^1_{lo}}(\chi), \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$, then one of
-  them has to be computed incorrectly or the adversary can be used to break the dlog
-  assumption if $\p{t^0}(X) \neq \p{t^1} (X)$ and $\gone{\p{t^0_{lo}}(\chi),
-    \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)} = \gone{\p{t^1_{lo}}(\chi),
-    \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$.
+If the adversary picks two different polynomials: $\p{t^0}(X)$, that is committed
+as $\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)}$, and
+$\p{t^1}(X)$ that is committed as
+$\gone{\p{t^1_{lo}}(\chi), \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$, then one of
+them has to be computed incorrectly or the adversary can be used to break the dlog
+assumption if $\p{t^0}(X) \neq \p{t^1} (X)$ and $\gone{\p{t^0_{lo}}(\chi),
+	\p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)} = \gone{\p{t^1_{lo}}(\chi),
+	\p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$.
 
-  Importantly, polynomial $\p{t}(X)$ assures that the constraints of the system
-  hold. Hence, the probability that one of $\p{t^0}(X)$, $\p{t^1}(X)$ is computed
-  incorrectly, the adversary gives and opens acceptably a commitment to it, and
-  the proof is acceptable, is upper bounded by the soundness of the proof system
-  $\epss (\secpar)$. Probability of $\adv$ winning in this game is upper-bounded by 
-  such event is upper bounded by $\epsdlog (\secpar) + \epss (\secpar)$.
+Importantly, polynomial $\p{t}(X)$ assures that the constraints of the system
+hold. Hence, the probability that one of $\p{t^0}(X)$, $\p{t^1}(X)$ is computed
+incorrectly, the adversary gives and opens acceptably a commitment to it, and
+the proof is acceptable, is upper bounded by the soundness of the proof system
+$\epss (\secpar)$. Probability of $\adv$ winning in one game but not in the
+other is thus upper bounded by $\epsdlog (\secpar) + \epss (\secpar)$.
 
-  \ncase{Conclusion} Taking all the games together, probability that $\adv$ wins
-  in Game 4 is upper-bounded by
-  \[
-    9 \cdot (\epsop (\secpar) + \epsbind (\secpar)) + \epss (\secpar) + \epsdlog (\secpar)
-    + \frac{2}{\abs{\FF_p}}.
-  \]
-  \qed
-\end{proof}
+\ngame{2} In this game, the adversary additionally wins if it provides two transcripts that
+match on the first four messages of the proof.
+
+\ncase{Game 1 to Game 2} In its $4$-th message the adversary
+has to provide evaluations
+$a_\chz = \p{a}(\chz), b_\chz = \p{b}(\chz), c_\chz = \p{c}(\chz), t_\chz =
+\p{t}(\chz), S_{1, \chz} = \p{S_{\sigma 1}}(\chz), s_{2, \chz} = \p{S_{\sigma
+		2}}(\chz), z_\chz = \p{z}(\chz \omega)$ of previously committed
+polynomials, and compute and evaluate a linearization polynomial $\p{r}$.
+
+As before, the adversary cannot provide two different evaluations for the
+committed polynomials, since that would require breaking the evaluation
+binding property, which happens (by the union bound) with probability at most
+$7 \cdot \epsbind (\secpar)$. 
+
+The adversary cannot also provide two different linearization polynomials
+$\p{r^0}$ and $\p{r^1}$ evaluations $r^0_\chz$ and $r^1_\chz$ as the
+linearization polynomial is determined by values known to the verifier who
+also can compute a commitment to $\p{r}(X)$ equal $\gone{\p{r}(\chi)}$ by its
+own. The evaluation of $\p{r}$ provided by the adversary is later checked, as
+$\adv$ opens the commitment in its $5$-th message. Hence, the probability that the
+adversary manages to build two convincing proofs that differ in evaluations
+$r^0_\chz$ and $r^1_\chz$ is at most $\epsbind (\secpar)$.
+
+Hence, the probability that adversary wins in one game but does not in the
+other is upper-bounded by $\abs{\prob{\game{1}} - \prob{\game{2}}} \leq  8 \cdot \epsbind (\secpar)$
+
+\ngame{3} In this game, the adversary additionally wins if it provides two transcripts that
+match on all $5$ messages sent by the prover.
+
+\ncase{Game 2 to Game 3} We show that the probability that $\adv$
+wins in one game but does not in the other is negligible.  Observe that in
+after its $4$-th message, the adversary is given a challenge $v$ and has to open
+the previously computed commitments. Since the transcripts match up to $\adv$'s 
+$4$-th message, the challenge is the same in both. Hence, to be able to give two different
+openings in its $5$-th message, $\adv$ has to break the unique opening property of the
+KZG commitment scheme which happens with probability $9 \cdot \epsop$ tops (as $9$
+polynomials are evaluated).
+
+\ncase{Conclusion} Taking all the games together, probability that $\adv$ wins
+is upper-bounded by
+\[
+\epsdlog (\secpar) + \epss (\secpar) + 8 \cdot \epsbind (\secpar) + 9 \cdot \epsop (\secpar).
+\]
+\qed
+	\end{proof}
 }
-
+%\changedm{
+%\begin{proof}
+%  Let $\adv$ be an algebraic adversary tasked to break the $\ur{2}$-ness of
+%  $\plonkprotfs$. We show that the first 2 prover's messages determine, along with
+%  the verifiers challenges, the rest of it.  This is done by game hops. In the games,
+%  the adversary outputs two proofs $\zkproof^0$ and $\zkproof^1$ for the same statement.
+%  To distinguish polynomials and commitments which an honest prover sends in the
+%  proof from the polynomials and commitments computed by the adversary we write the
+%  latter using indices $0$ and $1$ (two indices as we have two transcripts), e.g.~to
+%  describe the quotient polynomial provided by the adversary we write $\p{t}^0$ and
+%  $\p{t}^1$ instead of $\p{t}$ as in the description of the protocol.
+%
+%  \ngame{0} In this game the adversary wins if at least one of the presented proofs
+%  w.l.o.g., $\zkproof^0$, is such that if
+%  \begin{itemize}
+%  \item $\adv$ provides separate openings for each of polynomial evaluations, and
+%  \item $\verifier$ would check each of these openings separately,
+%  \end{itemize}
+%  then $\verifier$ would not accept that proof. That is, the adversary wins if it
+%  outputs a proof for a false statement that is accepted only because both polynomial
+%  commitment evaluation openings and polynomial commitment openings verifications are
+%  batched. The adversary wins this game with probability at most $2/ \abs{\FF_p}$.
+%
+%  \ngame{1} In this game, the adversary additionally wins if it provides two transcripts that
+%  match on all $5$ messages sent by the prover. 
+%
+%  \ncase{Game 0 to Game 1} Since such two transcripts cannot break the unique
+%  response property, the adversary wins Game 1, but does not win Game 0 with probability 0.
+%
+%  \ngame{2} This game is identical to Game $\game{1}$ except that now the
+%  adversary additionally wins if it provides two transcripts that matches on the first four
+%  messages of the proof.
+%
+%  \ncase{Game 1 to Game 2} We show that the probability that $\adv$
+%  wins in one game but does not in the other is negligible.  Observe that in
+%  after its $4$-th message, the adversary is given a challenge $v$ and has to open
+%  the previously computed commitments. Since the transcripts match up to $\adv$'s 
+%  $4$-th message, the challenge is the same in both. Hence, to be able to give two different
+%  openings in its $5$-th message, $\adv$ has to break the unique opening property of the
+%  KZG commitment scheme which happens with probability $9 \cdot \epsop$ tops (as $9$
+%  polynomials are evaluated).
+%  % Since
+%  % there are two commitments that the adversary opens, by the union bound
+%  % probability that $\adv$ wins in one game but not the other is upper-bounded
+%  % by
+%  % $2 \cdot \epsop$.
+%
+%  \ngame{3} This game is identical to Game $\game{2}$ except that now the
+%  adversary additionally wins if it provides two transcripts that matches on the
+%  first three messages of the proof.
+%
+%  \ncase{Game 2 to Game 3} In its $4$-th message the adversary
+%  has to provide evaluations
+%  $a_\chz = \p{a}(\chz), b_\chz = \p{b}(\chz), c_\chz = \p{c}(\chz), t_\chz =
+%  \p{t}(\chz), S_{1, \chz} = \p{S_{\sigma 1}}(\chz), s_{2, \chz} = \p{S_{\sigma
+%      2}}(\chz), z_\chz = \p{z}(\chz \omega)$ of previously committed
+%  polynomials, and compute and evaluate a linearization polynomial $\p{r}$.
+%
+%  As before, the adversary cannot provide two different evaluations for the
+%  committed polynomials, since that would require breaking the evaluation
+%  binding property, which happens (by the union bound) with probability at most
+%  $7 \cdot \epsbind (\secpar)$. 
+%
+%  The adversary cannot also provide two different linearization polynomials
+%  $\p{r^0}$ and $\p{r^1}$ evaluations $r^0_\chz$ and $r^1_\chz$ as the
+%  linearization polynomial is determined by values known to the verifier who
+%  also can compute a commitment to $\p{r}(X)$ equal $\gone{\p{r}(\chi)}$ by its
+%  own. The evaluation of $\p{r}$ provided by the adversary is later checked, as
+%  $\adv$ opens the commitment in its $5$-th message. Hence, the probability that the
+%  adversary manages to build two convincing proofs that differ in evaluations
+%  $r^0_\chz$ and $r^1_\chz$ is at most $\epsbind (\secpar)$.
+%
+%  Hence, the probability that adversary wins in one game but does not in the
+%  other is upper-bounded by $8 \cdot \epsbind (\secpar)$
+%
+%  \ngame{4} This game is identical to Game $\game{3}$ except that now the
+%  adversary additionally wins if it provides two transcripts that matches on the
+%  first two messages of the proof.
+%
+%  \ncase{Game 3 to Game 4} In its $3$-rd message the adversary computes the
+%  quotient polynomial $\pt(X)$ and provides its commitment that compounds of
+%  three separate commitments
+%  $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$. Let
+%  $\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)}$ be the
+%  commitments output by the adversary in one transcript, and
+%  $\gone{\p{t^1_{lo}}(\chi), \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$ the commitments
+%  provided in the other.
+%%
+%  Since the commitment scheme is deterministic, the adversary cannot come up
+%  with two different valid commitments for the same polynomial.
+%
+%  If the adversary picks two different polynomials: $\p{t^0}(X)$, that is committed
+%  as $\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)}$, and
+%  $\p{t^1}(X)$ that is committed as
+%  $\gone{\p{t^1_{lo}}(\chi), \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$, then one of
+%  them has to be computed incorrectly or the adversary can be used to break the dlog
+%  assumption if $\p{t^0}(X) \neq \p{t^1} (X)$ and $\gone{\p{t^0_{lo}}(\chi),
+%    \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)} = \gone{\p{t^1_{lo}}(\chi),
+%    \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$.
+%
+%  Importantly, polynomial $\p{t}(X)$ assures that the constraints of the system
+%  hold. Hence, the probability that one of $\p{t^0}(X)$, $\p{t^1}(X)$ is computed
+%  incorrectly, the adversary gives and opens acceptably a commitment to it, and
+%  the proof is acceptable, is upper bounded by the soundness of the proof system
+%  $\epss (\secpar)$. Probability of $\adv$ winning in this game is upper-bounded by 
+%  such event is upper bounded by $\epsdlog (\secpar) + \epss (\secpar)$.
+%
+%  \ncase{Conclusion} Taking all the games together, probability that $\adv$ wins
+%  in Game 4 is upper-bounded by
+%  \[
+%    9 \cdot (\epsop (\secpar) + \epsbind (\secpar)) + \epss (\secpar) + \epsdlog (\secpar)
+%    + \frac{2}{\abs{\FF_p}}.
+%  \]
+%  \qed
+%\end{proof}
+%}
+%
 \COMMENT{
   \michals{1.11}{old proof below}
 \begin{proof}
@@ -550,7 +651,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 \subsection{Computational special soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
-	Let $\plonkprot$'s idealized verifier fails with \hamid{11.3}{negligible?} probability $\epsid (\secpar)$, and
+	Let $\plonkprot$'s idealized verifier fails with probability $\epsid (\secpar)$, and
 	$(\noofc + 2, 1)$-$\dlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
 	$(3, 3 \noofc + 1)$-computational special sound with security loss $\epsid (\secpar) + \epsdlog (\secpar)$ against algebraic
 	adversary $\adv$.
