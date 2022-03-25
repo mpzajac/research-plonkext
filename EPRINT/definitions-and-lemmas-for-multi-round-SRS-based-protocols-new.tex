@@ -369,14 +369,9 @@ tree of acceptable transcripts, but we require that the extractor is not able to
 \hamid{25.3}{This is the new definition. Please check!}
 \begin{definition}[$(n_1,
 	\ldots, n_\mu)$-computational special soundness]
-	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu +
-	1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$
-  be $\proofsystem$ after the Fiat--Shamir transform. For any $\ppt$ adversary $\advse^{\ro, \initU} (1^\secpar; r)$ with access to oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider the algorithm $\tdv$
-	that rewinds $\adv$ to produce a $(n_1,
-	\ldots, n_\mu)$-tree of
-	accepting transcripts $\tree$.
+	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$ be $\proofsystem$ after the Fiat--Shamir transform. For any $\ppt$ adversary $\advse^{\ro, \initU} (1^\secpar; r)$ with access to oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider the algorithm $\tdv$ that rewinds $\adv$ to produce a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts $\tree$. \changedm{To that end, $\tdv$ runs extractor $\zdv_1$ as described in \cref{fig:Attema-ext}}.
 	
-	We say that $\psfs$ is $(k,n)$-forking special sound with security loss $\epss(\secpar)$, if there exists an expected polynomial time extractor $\extt$ such that for any PPT adversary $\advse$,
+	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-forking special sound with security loss $\epss(\secpar)$, if there exists an expected polynomial time extractor $\extt$ such that for any PPT adversary $\advse$,
 	\begin{align*}
 	\Pr\left[
 	\REL(\inp, \wit) = 0
@@ -395,13 +390,13 @@ tree of acceptable transcripts, but we require that the extractor is not able to
 	queries to $\ro$ and the random oracle's answers.
 \end{definition}
 
-\begin{definition}[$(n_1,
-	\ldots, n_\mu)$-computational special soundness]
+\michals{25.03}{I thin kthis definition should come after the Attema et al's forking lemma. Especially since the tree building algorithm is the one from Attema et al}
+
+\begin{definition}[$(n_1, 	\ldots, n_\mu)$-computational special soundness]
 	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu +
 	1)$-message proof system for a relation $\REL$. 
-	We say that $\proofsystem$ is $(n_1,
-	\ldots, n_\mu)$-\emph{computational special sound} with security loss $\epss$ if there exists an expected polynomial time extractor $\extt$ such that for any PPT adversary $\adv$ that on input $1^\secpar$ and with access to oracle $\initU$ outputs a $(n_1,
-	\ldots, n_\mu)$-tree of accepting transcripts $\tree$, and a statement $\inp$, $\extt$ returns $\wit$ such that $\REL(\inp, \wit) = 1$ with probability at least $1-\epss(\secpar)$. \chb{We call the protocol $(k, n)$-computational special sound when the tree returned by $\adv$ is a $(k,n)$-tree of accepting transcripts.}
+
+	We say that $\proofsystem$ is $(n_1, 	\ldots, n_\mu)$-\emph{computational special sound} with security loss $\epss$ if there exists an expected polynomial time extractor $\extt$ such that for any PPT adversary $\adv$ that on input $1^\secpar$ and with access to oracle $\initU$ outputs a $(n_1,	\ldots, n_\mu)$-tree of accepting transcripts $\tree$, and a statement $\inp$, $\extt$ returns $\wit$ such that $\REL(\inp, \wit) = 1$ with probability at least $1-\epss(\secpar)$. \chb{We call the protocol $(k, n)$-computational special sound when the tree returned by $\adv$ is a $(k,n)$-tree of accepting transcripts.}
 \end{definition}
 
 %	\chb{\begin{lemma}[Forking special soundness]\label{lem:forking_ss}

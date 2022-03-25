@@ -694,7 +694,6 @@ updates the SRS.
 				\t b \gets \verifyCRS(\srs_n,\{\rho_j \}_{j=1}^{n})\\
 				\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_j \}_i = \emptyset: \pcreturn \bot \\
 				\t 
-				\textcolor{red}{\td \gets \ext_\srs(\srs_n,, Q_\srs, \{\rho_j \}_{j=1}^{n})} \\
 				\t \srs \gets \srs_n, \pcreturn \srs \\
 				%
 				\pcelse \pcreturn \bot
@@ -710,7 +709,7 @@ updates the SRS.
 %			}                         %
 %   \end{minipage}
   }
-	\caption{The oracle defines the notion of updatable SRS setup.}\hamid{24.3}{I think the red line above can be removed as we don't need trapdoor for simulation!}% The right oracle is the simulation oracle.} 
+	\caption{The oracle defines the notion of updatable SRS setup. \changedm{Here we deviate from the stadard definition which requires existence of an extractor that from the final SRS and adversary's updates reveals the trapdoor that could be used by a simulator. This comes since our simulator is trapdoor-less.}}\hamid{24.3}{I think the red line above can be removed as we don't need trapdoor for simulation!}\michals{25.03}{Sure, check the change. What I wrote is actually much longer than the single line with the extractor. However, I think it is important to remove the line as otherwise someone may point out that we dont show how trapdoor is extracted, which ka are used to taht end etc.}% The right oracle is the simulation oracle.} 
 	\label{fig:upd}
 \end{figure}
 
@@ -728,7 +727,8 @@ Groth et al.~\cite{C:GKMMM18} shown that if a proof system is zero-knowledge aga
 
 \chb{\begin{remark}[Dlog assumptions in the updatable setting]\label{dlog-upd} Since all our protocols and security notions are in the updatable setting, we may require to rely on Dlog assumptions that are defined in the updatable setting. That is, the adversary $\adv$ in the $(q_1, q_2)\mhyph\dlog$ assumption (\cref{def:dlog}) is not given as input a Dlog challenge $\Ch = (\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}})$, but access to an update oracle as defined in~\cref{fig:upd}, wherein an honestly generated SRS is defined as $\srs:=\Ch$ and update algorithm $\upd$ works by sampling $\chi' \sample \FF_p$ and defining the updated SRS as $(\gone{1, \chi'', \ldots, \chi''^{q_1}}, \gtwo{1, \chi'', \ldots, \chi''^{q_2}})$, where $\chi'' = \chi \chi'$. It is easy to see that $(q_1, q_2)\mhyph\dlog$ assumption reduces to the assumption in the updatable setting. The reduction $\reduction$ proceeds as follows: given the input dlog instance, $\reduction$ answers adversary's queries for the dlog updates and sets the honest update to be the input dlog instance. Once the dlog challenge in the updatable setting is finalized, it runs the adversary and obtains the answer $\chi'$. Let $\chi_1, \ldots, \chi_\ell$ be the partial discrete logarithms of dlog instances corresponding to the adversary's dlog updates. These values can be computed by $\reduction$ by extracting from the update proofs given by the adversary. $\reduction$ now returns  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$. The same argument holds for the $(q_1, q_2)\mhyph\ldlog$ assumption, ~\cref{def:ldlog}.
 	\end{remark}}
-
+  
+  \michals{24.03}{I think we should write a formal proof for the reduction}
 \ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determine the constraints. We ellide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
 
 

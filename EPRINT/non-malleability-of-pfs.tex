@@ -353,7 +353,8 @@ $\gone{\p{t^1_{lo}}(\chi), \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$ the commitm
 provided in the other.
 %
 Since the commitment scheme is deterministic, the adversary cannot come up
-with two different valid commitments for the same polynomial.
+with two different valid commitments for the same polynomial. 
+\michals{25.03}{But the adversary can provide invalid commitment and then try to break e.g. evaluation binding. More precisely, the adversary picks $c^0 = \gone{t^0 (\chi)}$ that is correct and $c^1 = \gone{t^1 (\chi)}$ that is incorrect. Then, in the later part of the protocol with $c^1$, it tries to break evaluation binding to open $t^1$ as if $t^1 = t^0$. Probability for that is negligible but we cannot rule it just by using polynomial commitment deterministicy.}
 
 If the adversary picks two different polynomials: $\p{t^0}(X)$, that is committed
 as $\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)}$, and
@@ -363,6 +364,7 @@ them has to be computed incorrectly or the adversary can be used to break the dl
 assumption in the updatable setting if $\p{t^0}(X) \neq \p{t^1} (X)$ and $\gone{\p{t^0_{lo}}(\chi),
 	\p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)} = \gone{\p{t^1_{lo}}(\chi),
 	\p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$.
+  \michals{25.03}{How?}
 
 Importantly, polynomial $\p{t}(X)$ assures that the constraints of the system
 hold. Hence, the probability that one of $\p{t^0}(X)$, $\p{t^1}(X)$ is computed
