@@ -376,7 +376,8 @@ tree of acceptable transcripts, but we require that the extractor is not able to
 	\ldots, n_\mu)$-tree of
 	accepting transcripts $\tree$.
 	
-	We say that $\psfs$ is $(k,n)$-forking special sound with security loss $\epss(\secpar)$, if there exists an expected polynomial time extractor $\extt$ such that for any PPT adversary $\advse$,
+	We say that $\psfs$ is $(n_1,
+	\ldots, n_\mu)$-\emph{computational special sound} with security loss $\epss(\secpar)$, if there exists an expected polynomial time extractor $\extt$ such that for any PPT adversary $\advse$,
 	\begin{align*}
 	\Pr\left[
 	\REL(\inp, \wit) = 0
@@ -392,7 +393,7 @@ tree of acceptable transcripts, but we require that the extractor is not able to
 	\end{align*}
 	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
 	List $Q_\ro$ contains all $\advse$'s
-	queries to $\ro$ and the random oracle's answers.
+	queries to $\ro$ and the random oracle's answers. We call the protocol $(k, n)$-computational special sound when $\tree$ is a $(k,n)$-tree of accepting transcripts.
 \end{definition}
 
 \begin{definition}[$(n_1,
