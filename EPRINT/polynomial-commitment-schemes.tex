@@ -267,7 +267,7 @@ Let $\PCOMp$ be a batched version of a KZG polynomial commitment,
 cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property  
  in the AGM with security
 $\epsop(\secpar) \leq 2 \epsdlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where
-$\epsdlog(\secpar)$ is security of the $(\noofc + 2, 1)$-dlog assumption and
+$\epsdlog(\secpar)$ is security of the $(\noofc + 2, 1)$-dlog assumption \chb{in the updatable setting} and
 $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
 \begin{proof}
   Let $\vec{z} = (z, z') \in \FF_p^2$ be the two points the polynomials are
@@ -312,7 +312,7 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
   between the idealised verifier rejection and real verifier acceptance allows
   one to break the discrete logarithm problem.
 
-  The reduction $\rdvdlog$ proceeds as follows: $\rdvdlog$ builds a SRS $\srs$ using the input $\dlog$ instance. I.e., it answers $\adv$'s queries for SRS updates and sets the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS. 
+  \textcolor{red}{Old: The reduction $\rdvdlog$ proceeds as follows: $\rdvdlog$ builds a SRS $\srs$ using the input $\dlog$ instance. I.e., it answers $\adv$'s queries for SRS updates and sets the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS. 
   Consider a proof $\zkproof$ such
       that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
       $\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all proof
@@ -322,7 +322,17 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
    Now, $\rdvdlog$ computes the roots of $\vereq_{\inp, \zkproof}(X)$ and finds $\chi'$ among
       them.
     Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates that are extracted by $\rdvdlog$ from the update proofs given by $\adv$.
-  $\rdvdlog$ returns $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.
+  $\rdvdlog$ returns $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.}
+
+  \textcolor{darkgreen}{New: The reduction $\rdvdlog$ proceeds as follows: $\rdvdlog$ answers $\adv$'s queries for SRS updates according to the answers it receives from its dlog update oracle. When $\adv$ finalizes a SRS, $\rdvdlog$ finalizes the corresponding dlog challenge. 
+  	Consider a proof $\zkproof$ such
+  	that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
+  	$\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all proof
+  	elements are extended by their representation as a
+  	combination of the input $\GRP_1$-elements. Therefore, all coefficients of the
+  	verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known.
+  	Now, $\rdvdlog$ computes the roots of $\vereq_{\inp, \zkproof}(X)$ and finds $\chi'$ among
+  	them. $\rdvdlog$ returns $\chi'$.}
   
   Since any discrepancy
   between the idealised verifier and real verifier rejection allows

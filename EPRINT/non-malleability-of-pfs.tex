@@ -323,7 +323,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 	\label{lem:plonkprot_ur}
 	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening
 	property with loss $\epsop(\secpar)$, let $\plonkprotfs$ be $\epss$-sound and
-		$(\noofc + 2, 1)$-$\dlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{2}$ \chb{against algebraic adversaries} with security loss $\epsdlog(\secpar) + \epss (\secpar) + 8 \cdot \epsbind (\secpar) + 9 \cdot \epsop(\secpar)$.
+		$(\noofc + 2, 1)$-$\dlog$ problem \textcolor{blue}{in the updatable setting (See~\cref{dlog-upd})} be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{2}$ \chb{against algebraic adversaries} with security loss $\epsdlog(\secpar) + \epss (\secpar) + 8 \cdot \epsbind (\secpar) + 9 \cdot \epsop(\secpar)$.
 \end{lemma}
 
 \begin{proof}
@@ -360,7 +360,7 @@ as $\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)}$, and
 $\p{t^1}(X)$ that is committed as
 $\gone{\p{t^1_{lo}}(\chi), \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$, then one of
 them has to be computed incorrectly or the adversary can be used to break the dlog
-assumption if $\p{t^0}(X) \neq \p{t^1} (X)$ and $\gone{\p{t^0_{lo}}(\chi),
+assumption in the updatable setting if $\p{t^0}(X) \neq \p{t^1} (X)$ and $\gone{\p{t^0_{lo}}(\chi),
 	\p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)} = \gone{\p{t^1_{lo}}(\chi),
 	\p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$.
 
