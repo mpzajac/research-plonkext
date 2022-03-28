@@ -105,8 +105,11 @@
   extracts the secret key or the witness, even in the presence of signing queries for
   signatures and simulation queries for proof systems and SoK, respectively.  We
   extend this line of work and formally define simulation extractability for
-  protocols in the random oracle model (ROM) which use a structured reference string
-  (SRS). We then show sufficient conditions for compiling via the Fiat--Shamir
+  protocols that use both a structured reference string
+  (SRS) and the random oracle model (ROM). While redundant in theory, this is the model 
+  of choice for the most efficient practical argument systems to date.
+  
+  We then show sufficient conditions for compiling via the Fiat--Shamir
   transformation public-coin multi-message interactive protocols with SRS into
   simulation-extractable NIZK proof systems. We also consider the case that the SRS
   is updatable and define a strong simulation extractability notion that allows for
@@ -114,8 +117,7 @@
   updates.  In the ROM, we obtain simulation-extractable and updatable
   NIZKs. Importantly, we show that three popular universal zero knowledge SNARKs ---
   Plonk, Sonic, and Marlin --- are simulation extractable out-of-the-box. This also
-  results in the first construction of updatable simulation-extractable SNARKs and
-  succinct updatable SoK.
+  results in the first security proof of direct constructions of updatable simulation-extractable SNARKs and succinct updatable SoK, avoiding unnecessary compilation overheads
 \end{abstract}
 
 %\ifupdate
