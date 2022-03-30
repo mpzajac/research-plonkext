@@ -323,7 +323,7 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 	\label{lem:plonkprot_ur}
 	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening
 	property with loss $\epsop(\secpar)$, let $\plonkprotfs$ be $\epss$-sound and
-		$(\noofc + 2, 1)$-$\dlog$ problem \textcolor{blue}{in the updatable setting (See~\cref{dlog-upd})} be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{2}$ \chb{against algebraic adversaries} with security loss $\epsdlog(\secpar) + \epss (\secpar) + 8 \cdot \epsbind (\secpar) + 9 \cdot \epsop(\secpar)$.
+		$(\noofc + 2, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{2}$ \chb{against algebraic adversaries} with security loss $\epsdlog(\secpar) + \epss (\secpar) + 8 \cdot \epsbind (\secpar) + 9 \cdot \epsop(\secpar)$.
 \end{lemma}
 
 \begin{proof}
@@ -654,14 +654,14 @@ is upper-bounded by
 \begin{lemma}
 	\label{lem:plonkprot_ss}
 	Let $\plonkprot$'s idealized verifier fails with probability $\epsid (\secpar)$, and
-	$(\noofc + 2, 1)$-$\dlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
+	$(\noofc + 2, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
 	$(3, 3 \noofc + 1)$-computational special sound with security loss $\epsid (\secpar) + \epsdlog (\secpar)$ against algebraic
 	adversary $\adv$.
 \end{lemma}
 
 \begin{proof}
 	The main idea of the proof is to show that an adversary who breaks special
-	soundness can be used to break a $\dlog$ problem instance. The proof goes by game hops. Let $\tree$
+	soundness can be used to break a $\udlog$ problem instance. The proof goes by game hops. Let $\tree$
 	be the tree produced by $\tdv$ by rewinding $\adv$. Note that since the tree
 	branches after $\adv$'s $3$-rd message, the instance $\inp$, commitments
 	$\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
@@ -723,12 +723,12 @@ is upper-bounded by
 	
 	\ncase{Game 0 to Game 1} Assume the adversary wins in Game 1, but
 	does not win in Game 0. We show that such adversary may be used to break the
-	$\dlog$ assumption. More precisely, let $\tdv$ be an algorithm that for
+	$\udlog$ assumption. \textcolor{red}{Old: More precisely, let $\tdv$ be an algorithm that for
 	relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
 	of acceptable transcripts such that the winning condition of the game
 	holds. Let $\rdvdlog$ be a reduction that gets as input an
 	$(\noofc + 2, 1)$-$\dlog$ instance $\gone{1, \ldots, \chi^{\noofc+2}}, \gtwo{\chi}$ and is tasked to output $\chi$.
-	
+	%
 	The reduction $\rdvdlog$ proceeds as follows.
 	\begin{enumerate}
 			\item Build $\adv$'s SRS $\srs$ in the updatable setting using the input $\dlog$ instance by answering $\adv$'s queries for SRS updates and setting the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS. Start $\tdv(\adv, \srs')$;
@@ -743,7 +743,7 @@ is upper-bounded by
 			them.
 			\item Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates. These trapdoors can be extracted by the reduction from the update proofs given by $\adv$.
 			\item Return  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.
-      \end{enumerate}
+      \end{enumerate}}
 
       \ncase{Conclusion} Considering all the games together, probability that adversary wins in
       Game 1 is upper-bounded by $\epsdlog(\secpar) + \epsid (\secpar)$.
