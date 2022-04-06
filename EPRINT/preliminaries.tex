@@ -655,11 +655,11 @@ We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which 
 		\procedure{$\upd(\srs, \{\rho_j \}_{j=1}^n)$}{
 			\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\dconst}},
 			\gtwo{B} \right) \\ [\myskip]
-			\chi \sample \FF_p  \\ [\myskip]
+			\chi' \sample \FF_p  \\ [\myskip]
 			\srs' := 
-			\left( \gone{\smallset{\chi^i A_i}_{i = 0}^{\dconst}},
-			\gtwo{\chi B} \right); 
-			\rho' =	\left( \gone{\chi A_1, \chi}, \gtwo{\chi}\right) \\ [\myskip]
+			\left( \gone{\smallset{{\chi'}^i A_i}_{i = 0}^{\dconst}},
+			\gtwo{\chi' B} \right); 
+			\rho' =	\left( \gone{\chi' A_1, \chi'}, \gtwo{\chi'}\right) \\ [\myskip]
 			\pcreturn (\srs', \rho')
 		}
 		\end{minipage}}
@@ -721,12 +721,17 @@ updates the SRS.
 % extractability.
 % \michals{29.10}{Def for simulating oracle shouldn't be here}
 
+\chb{\ourpar{Single adversarial updates after an honest setup.}
+	One can consider a slightly different model of setup, wherein the adversary is given an initial (honestly-generated) SRS and then is allowed to maliciously update that in a one-shot fashion.
+	As shown by Groth
+	et al. in~\cite{C:GKMMM18}, the two definitions are equivalent for the class of SNARKs in this work and thus we use this simpler definition to show our security proofs in the updatable setting.}
+
 \ourpar{On trusted setup.} We note that a trusted setup can be expressed by the updatable setup definition above simply by restricting the algorithm that is given access to $\initU$ to call the oracle only on $\intent = \setup$ and $\intent = \final$.
 
 \ourpar{Updatability and zero knowledge.}
 Groth et al.~\cite{C:GKMMM18} shown that if a proof system is zero-knowledge against adversaries who picks the SRS, then it is updatable zero-knowledge. We call such systems \emph{subvertible zero knowledge}, cf.~\cite{AC:BelFucSca16,AC:ABLZ17}. It was shown that Plonk, Sonic, Marlin and virtually any proof system with a SRS consisting of monomials are subvertible zero-knowledge.
 
-\chb{\paragraph{Dlog assumptions in the updatable setting.}\label{dlog-upd} Since all our protocols and security notions are in the updatable setting, we may require to rely on Dlog assumptions that are defined in the updatable setting. That is, the adversary $\adv$ is not given as input a Dlog challenge, but access to an update oracle as defined in~\cref{fig:upd}, wherein an honestly generated SRS is defined as a Dlog challenge and the update algorithm $\upd$ works similarly as in the updatable schemes by re-randomizing the challenge. Here we define these assumptions and then show a reduction between the assumptions and their variant in the updatable setting. \textcolor{blue}{Note that for ease of clarity, with a slight abuse of notation, we here denote the SRS by $\Ch$. Further, to avoid cluttering notation, we do not make the proofs of correctly generating or updating the Dlog challenges explicit as they can be assumed without loss of generality.}
+\chb{\paragraph{Dlog assumptions in the updatable setting.}\label{dlog-upd} Since all our protocols and security notions are in the updatable setting, we may require to rely on Dlog assumptions that are defined in the updatable setting. That is, the adversary $\adv$ is not given as input a Dlog challenge, but access to an update oracle as defined in~\cref{fig:upd}, wherein an honestly generated SRS is defined as a Dlog challenge and the update algorithm $\upd$ works similarly as in the updatable schemes by re-randomizing the challenge. Here we define these assumptions and then show a reduction between the assumptions and their variant in the updatable setting. \textcolor{blue}{Note that for ease of clarity, with a slight abuse of notation, we here denote the SRS by $\Ch$. Further, to avoid cluttering notation, we do not make the proofs of correctly generating or updating the Dlog challenges explicit as they can be generated in a similar manner to the proofs in~\cref{fig:upd-scheme}.}
 	
 %The reduction $\reduction$ proceeds as follows: given the input dlog instance, $\reduction$ answers adversary's queries for the dlog updates and sets the honest update to be the input dlog instance. Once the dlog challenge in the updatable setting is finalized, it runs the adversary and obtains the answer $\chi'$. Let $\chi_1, \ldots, \chi_\ell$ be the partial discrete logarithms of dlog instances corresponding to the adversary's dlog updates. These values can be computed by $\reduction$ by extracting from the update proofs given by the adversary. $\reduction$ now returns  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$. The same argument holds for the $(q_1, q_2)\mhyph\ldlog$ assumption, ~\cref{def:ldlog}.
 
@@ -742,10 +747,10 @@ Groth et al.~\cite{C:GKMMM18} shown that if a proof system is zero-knowledge aga
 	\item $\upd_\dlog(\Ch, \{\rho_j \}_{j=1}^n)$ 
 	parses $\Ch$ as $\left( \gone{\smallset{A_i}_{i = 0}^{q_1}},
 	\gtwo{\smallset{B_i}_{i = 0}^{q_2}} \right)$, samples
-	$\chi \sample \FF_p$, and defines
-	$\Ch' := 
-	\left( \gone{\smallset{\chi^i A_i}_{i = 0}^{q_1}},
-	\gtwo{\smallset{\chi^i B_i}_{i = 0}^{q_2}} \right)$.
+	$\widetilde{\chi} \sample \FF_p$, and defines
+	$\widetilde{\Ch} := 
+	\left( \gone{\smallset{\widetilde{\chi}^i A_i}_{i = 0}^{q_1}},
+	\gtwo{\smallset{\widetilde{\chi}^i B_i}_{i = 0}^{q_2}} \right)$.
 	\end{itemize}
 	Then
 	\[
@@ -765,10 +770,10 @@ Groth et al.~\cite{C:GKMMM18} shown that if a proof system is zero-knowledge aga
 		\item $\upd_\ldlog(\Ch, \{\rho_j \}_{j=1}^n)$ 
 		parses $\Ch$ as $\left( \gone{\smallset{A_i}_{i = -q_1}^{q_1}},
 		\gtwo{\smallset{B_i}_{i = -q_2}^{q_2}} \right)$, samples
-		$\chi \sample \FF_p$, and defines
-		$\Ch' := 
-		\left( \gone{\smallset{\chi^i A_i}_{i = -q_1}^{q_1}},
-		\gtwo{\smallset{\chi^i B_i}_{i = -q_2}^{q_2}} \right)$.
+		$\widetilde{\chi} \sample \FF_p$, and defines
+		$\widetilde{\Ch} := 
+		\left( \gone{\smallset{\widetilde{\chi}^i A_i}_{i = -q_1}^{q_1}},
+		\gtwo{\smallset{\widetilde{\chi}^i B_i}_{i = -q_2}^{q_2}} \right)$.
 	\end{itemize}
 	Then
 	\[
@@ -786,8 +791,8 @@ We show a reduction from $(q_1, q_2)\mhyph\dlog$ assumption to its variant in th
 	We construct a reduction algorithm $\reduction$ which uses an adversary $\adv$ on the $(q_1, q_2)\mhyph\udlog$ and construct an adversary on the $(q_1, q_2)\mhyph\dlog$. Specifically, $\reduction$ proceeds as follows: given a dlog instance $\Ch$ as input, $\reduction$ answers adversary's queries for the dlog updates and sets the honest update to be $\Ch$. Once the dlog challenge in the updatable setting is finalized, it runs $\adv$ and obtains the answer $\chi'$. Let $\chi_1, \ldots, \chi_\ell$ be the partial discrete logarithms of dlog instances corresponding to the adversary's dlog updates. These values can be computed by $\reduction$ by extracting from the update proofs given by $\adv$. $\reduction$ now returns  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.\qed %The same argument holds for the $(q_1, q_2)\mhyph\ldlog$ assumption, ~\cref{def:ldlog}.
 	\end{proof}
 }
-  \michals{24.03}{I think we should write a formal proof for the reduction}
-\ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determine the constraints. We ellide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
+  %\michals{24.03}{I think we should write a formal proof for the reduction}
+\ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determine the constraints. We elide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
 
 
 
