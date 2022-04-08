@@ -367,56 +367,29 @@ tree of acceptable transcripts, but we require that the extractor is not able to
 %\hamid{1.3}{I think we can replace lemma 2 with the following lemma which includes the adaptation of Attema result to the updatable setting.}
 
 \hamid{25.3}{This is the new definition. Please check!}
-\begin{definition}[$(n_1,
-	\ldots, n_\mu)$-computational special soundness]
-	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$ be $\proofsystem$ after the Fiat--Shamir transform. For any $\ppt$ adversary $\advse^{\ro, \initU} (1^\secpar; r)$ with access to oracle $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider the algorithm $\tdv$ that rewinds $\adv$ to produce a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts $\tree$. \changedm{To that end, $\tdv$ runs extractor $\zdv_1$ as described in \cref{fig:Attema-ext}}.
+\begin{definition}[$(n_1,	\ldots, n_\mu)$-computational special soundness]
+	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$ be $\proofsystem$ after the Fiat--Shamir transform. For any $\ppt$ adversary $\advse^{\ro, \initU} (1^\secpar; r)$ with access to oracle $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, \changedmx{we consider the algorithm $\tdv$}{there exists an expected $\ppt$ algorithm $\tdv$} that rewinds $\adv$ to produce a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts $\tree$.
 	
-	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-forking special sound with security loss $\epss(\secpar)$, if there exists an expected polynomial time extractor $\extt$ such that for any PPT adversary $\advse$,
+	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-forking special sound with security loss $\epss(\secpar)$, if there exists \changedmx{an expected}{a} polynomial time extractor $\extt$ such that for any PPT adversary $\advse$,
 	\begin{align*}
 	\Pr\left[
 	\REL(\inp, \wit) = 0
-	\textcolor{red}{\wedge \verifier_\fs(\srs, \inp_{\advse}, \pi_\advse) = 1}
+	\land \verifier_\fs(\srs, \inp_{\advse}, \pi_\advse) = 1
 	\,\Biggl|\,
 	\begin{aligned}
 	& r \sample \RND{\advse},
 	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r), \\
-	&    \tree \gets \tdv((\srs,\adv,r),Q_{H}),
+	&    \tree \gets \tdv((\srs,\adv,r), Q_{H}, \changedm{Q_{upd}}),
 	\wit \gets \extt(\tree)
 	\end{aligned}
 	\right] \leq \epss(\secpar).
 	\end{align*}
 	\hamid{6.4}{Todo: maybe we should add something like this before the definition: "while in this definition we only verify the proof provided by the adversary, all the proofs output by the tree generator $\tdv$ are implicitly verified with respect to the ''local programming'' of the random oracle.}
 	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
-	List $Q_\ro$ contains all $\advse$'s
-	queries to $\ro$ and the random oracle's answers. We call the protocol $(k, n)$-computational special sound when $\tree$ is a $(k,n)$-tree of accepting transcripts.
+	List $Q_\ro$ contains all $\advse$'s queries to $\ro$ and the random oracle's answers; \changedm{list $Q_{srs}$ contains $\advse$'s queries to $\initU$ and the oracle's responses}. We call the protocol $(k, n)$-computational special sound when $\tree$ is a $(k, n)$-tree of accepting transcripts.
 \end{definition}
 
 \michals{25.03}{I thin kthis definition should come after the Attema et al's forking lemma. Especially since the tree building algorithm is the one from Attema et al}
-
-\begin{definition}[$(n_1, 	\ldots, n_\mu)$-computational special soundness]
-	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu +
-	1)$-message proof system for a relation $\REL$. 
-
-	We say that $\proofsystem$ is $(n_1, 	\ldots, n_\mu)$-\emph{computational special sound} with security loss $\epss$ if there exists an expected polynomial time extractor $\extt$ such that for any PPT adversary $\adv$ that on input $1^\secpar$ and with access to oracle $\initU$ outputs a $(n_1,	\ldots, n_\mu)$-tree of accepting transcripts $\tree$, and a statement $\inp$, $\extt$ returns $\wit$ such that $\REL(\inp, \wit) = 1$ with probability at least $1-\epss(\secpar)$. \chb{We call the protocol $(k, n)$-computational special sound when the tree returned by $\adv$ is a $(k,n)$-tree of accepting transcripts.}
-\end{definition}
-
-%	\chb{\begin{lemma}[Forking special soundness]\label{lem:forking_ss}
-%		Let $\proofsystem$ be a proof system that is knowledge sound
-%		with knowledge error $\epsk$, and is $(k,n)$-computational special sound with security loss $\epss$. Assume adversary $\advse$, with access to
-%		the random oracle $\ro$, that makes up to $q$ random
-%		oracle queries and outputs an acceptable proof with probability at least
-%		$\accProb$. Consider algorithm $\genforking$ that internally runs $\zdv_1$ in~\cref{fig:Attema-ext} and
-%		makes at most $n + q \cdot (n - 1)$ queries to $\advse$. Then $\proofsystem_\fs$ is ??? with security loss $\frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)} + \epss$.
-%	\end{lemma}}
-%\hamid{3.3}{discuss tomorrow: by having both probabilities of getting a good tree T from GF and extracting a valid witness from T in the definition of forking special soundness, how can we later argue that a failure here leads to breaking dlog (i.e., the case of arguments)? I think we need to define forking special soundness without having $\wit \gets \extt(\tree)$ in the probability equation, no?}
-%
-%\hamid{3.3}{Discuss this. Here is how I think we should proceed:
-%\begin{itemize}
-%	\item define $(k,n)$-special soundness.
-%	\item restate Attema forking lemma in the updatable setting --- call this lemma X. 
-%	\item in the statement of main theorem, we assume the protocol is $(k,n)$-special sound with knowledge error $\epsk$. Then from Game 1 to Game 2, we use lemma X to upper-bound the probability of building the tree $\tree$ as $\frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)}$.
-%	\item If we cannot extract the witness (is possible because of dealing with arguments) from $\tree$, we make a reduction to dlog problem.
-%\end{itemize}}
 
 \oursubsub{Generalized forking lemma}
 Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general
