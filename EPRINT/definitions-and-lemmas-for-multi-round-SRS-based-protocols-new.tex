@@ -368,9 +368,10 @@ tree of acceptable transcripts, but we require that the extractor is not able to
 
 \hamid{25.3}{This is the new definition. Please check!}
 \begin{definition}[$(n_1,	\ldots, n_\mu)$-computational special soundness]
-	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$ be $\proofsystem$ after the Fiat--Shamir transform. For any $\ppt$ adversary $\advse^{\ro, \initU} (1^\secpar; r)$ with access to oracle $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, \changedmx{we consider the algorithm $\tdv$}{there exists an expected $\ppt$ algorithm $\tdv$} that rewinds $\adv$ to produce a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts $\tree$.
+	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$ be $\proofsystem$ after the Fiat--Shamir transform. 
+	% For any $\ppt$ adversary $\advse^{\ro, \initU} (1^\secpar; r)$ with access to oracle $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, \changedmx{we consider the algorithm $\tdv$}{there exists an expected $\ppt$ algorithm $\tdv$} that rewinds $\adv$ to produce a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts $\tree$.
 	
-	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-forking special sound with security loss $\epss(\secpar)$, if there exists \changedmx{an expected}{a} polynomial time extractor $\extt$ such that for any PPT adversary $\advse$,
+	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $\epss(\secpar)$, if there exists \changedmx{an expected}{a} polynomial time extractor $\extt$ and an expected polynomial time algorithm $\tdv$ such that for any PPT adversary $\advse$,
 	\begin{align*}
 	\Pr\left[
 	\REL(\inp, \wit) = 0
