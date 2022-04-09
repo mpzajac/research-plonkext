@@ -325,7 +325,7 @@ witness or can be used to break some computational assumption.
 % defined this way by giving access to the simulator.}
 \changedm{However, differently from the standard definition of special soundness, we do
 not require from the extractor to be able to extract the witness from \emph{any}
-tree of acceptable transcripts, but we require that the extractor is not able to reconstruct the witness with some small probability only. More precisely, we show later that either the extractor extracts a witness from a tree or the adversary who was used to produce the tree can be used to break some computationally-hard problem.
+tree of acceptable transcripts.  We require that the extractor fails to reconstruct the witness with some small probability only. More precisely, we show later that either the extractor extracts a witness from a tree of transcripts or the adversary who was used to produce the tree can be used to break some computationally hard problem. Note that in the definition below, it is implicit that each transcript in the tree is accepting with respect to a ``local programming'' of the random oracle. However, the verification of the proof output by the adversary is with respect to a non-programmed random oracle.
 }
 %\begin{definition}[$(k,n)$-forking special soundness in the updatable setting]
 %	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
@@ -367,11 +367,24 @@ tree of acceptable transcripts, but we require that the extractor is not able to
 %\hamid{1.3}{I think we can replace lemma 2 with the following lemma which includes the adaptation of Attema result to the updatable setting.}
 
 \hamid{25.3}{This is the new definition. Please check!}
+\chaya{9.4}{changes as per our discussion on 8.4}
 \begin{definition}[$(n_1,	\ldots, n_\mu)$-computational special soundness]
 	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$ be $\proofsystem$ after the Fiat--Shamir transform. 
 	% For any $\ppt$ adversary $\advse^{\ro, \initU} (1^\secpar; r)$ with access to oracle $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, \changedmx{we consider the algorithm $\tdv$}{there exists an expected $\ppt$ algorithm $\tdv$} that rewinds $\adv$ to produce a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts $\tree$.
 	
-	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $\epss(\secpar)$, if there exists \changedmx{an expected}{a} polynomial time extractor $\extt$ and an expected polynomial time algorithm $\tdv$ such that for any PPT adversary $\advse$,
+	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $\epss(\secpar)$, if there exists an expected polynomial time algorithm $\tdv$, and an expected polynomial time extractor $\extt$, such that for any PPT adversary $\advse$, the following two conditions hold:
+	\begin{align*}
+	\Pr\left[
+  	\tree \gets \tdv((\srs,\adv,r), Q_{H}, \changedm{Q_{upd}}),
+	\,\Biggl|\,
+	\begin{aligned}
+  	& r \sample \RND{\advse},
+  	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r), \\
+	&\verifier_\fs(\srs, \inp_{\advse}, \pi_\advse) = 1
+	\end{aligned}
+	\right] \geq 1-\varepsilon_t(\secpar).
+	\end{align*}
+where $\tree$ is a tree of accepting transcripts.  
 	\begin{align*}
 	\Pr\left[
 	\REL(\inp, \wit) = 0
@@ -385,12 +398,13 @@ tree of acceptable transcripts, but we require that the extractor is not able to
 	\end{aligned}
 	\right] \leq \epss(\secpar).
 	\end{align*}
-	\hamid{6.4}{Todo: maybe we should add something like this before the definition: "while in this definition we only verify the proof provided by the adversary, all the proofs output by the tree generator $\tdv$ are implicitly verified with respect to the ''local programming'' of the random oracle.}
 	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
 	List $Q_\ro$ contains all $\advse$'s queries to $\ro$ and the random oracle's answers; \changedm{list $Q_{srs}$ contains $\advse$'s queries to $\initU$ and the oracle's responses}. We call the protocol $(k, n)$-computational special sound when $\tree$ is a $(k, n)$-tree of accepting transcripts.
 \end{definition}
 
-\michals{25.03}{I thin kthis definition should come after the Attema et al's forking lemma. Especially since the tree building algorithm is the one from Attema et al}
+%\hamid{6.4}{Todo: maybe we should add something like this before the definition: "while in this definition we only verify the proof provided by the adversary, all the proofs output by the tree generator $\tdv$ are implicitly verified with respect to the ''local programming'' of the random oracle.}
+	
+\michals{25.03}{I think this definition should come after the Attema et al's forking lemma. Especially since the tree building algorithm is the one from Attema et al}
 
 \oursubsub{Generalized forking lemma}
 Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general
