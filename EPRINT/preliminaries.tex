@@ -627,7 +627,7 @@ We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which 
 \begin{figure}[t!]
 	\centering
 	\fbox{
-		\begin{minipage}[t]{0.6\linewidth}
+		\begin{minipage}[t]{0.76\linewidth}
 			\procedure{$\kgen(\REL)$}{
 				\chi \sample \FF_p \\ [\myskip]
 				\srs := 
@@ -788,7 +788,7 @@ We show a reduction from $(q_1, q_2)\mhyph\dlog$ assumption to its variant in th
 	$(q_1, q_2)\mhyph\dlog \Rightarrow (q_1, q_2)\mhyph\udlog$.
 	\end{lemma}
 \begin{proof}
-	We construct a reduction algorithm $\reduction$ which uses an adversary $\adv$ on the $(q_1, q_2)\mhyph\udlog$ and construct an adversary on the $(q_1, q_2)\mhyph\dlog$. Specifically, $\reduction$ proceeds as follows: given a dlog instance $\Ch$ as input, $\reduction$ answers adversary's queries for the dlog updates and sets the honest update to be $\Ch$. Once the dlog challenge in the updatable setting is finalized, it runs $\adv$ and obtains the answer $\chi'$. Let $\chi_1, \ldots, \chi_\ell$ be the partial discrete logarithms of dlog instances corresponding to the adversary's dlog updates. These values can be computed by $\reduction$ by extracting from the update proofs given by $\adv$. $\reduction$ now returns  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.\qed %The same argument holds for the $(q_1, q_2)\mhyph\ldlog$ assumption, ~\cref{def:ldlog}.
+	We construct a reduction algorithm $\reduction$ which uses an adversary $\adv$ on the $(q_1, q_2)\mhyph\udlog$ and construct an adversary on the $(q_1, q_2)\mhyph\dlog$. Specifically, $\reduction$ proceeds as follows: given a dlog instance $\Ch$ as input, it sets $\Ch$ as the initial challenge \sout{and answers adversary's queries for the dlog updates by internally running $\upd_{\dlog}$ in Definition 5.} Once the dlog challenge in the updatable setting is finalized, it runs $\adv$ and obtains the answer $\chi'$. Let $\chi_1, \ldots, \chi_\ell$ be the partial discrete logarithms of dlog instances corresponding to the adversary's dlog updates. These values can be computed by $\reduction$ by extracting from the update proofs given by $\adv$. $\reduction$ now returns  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.\qed %The same argument holds for the $(q_1, q_2)\mhyph\ldlog$ assumption, ~\cref{def:ldlog}.
 	\end{proof}
 }
   %\michals{24.03}{I think we should write a formal proof for the reduction}
