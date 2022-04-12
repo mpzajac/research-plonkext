@@ -270,16 +270,6 @@ Before giving the definition of computational special soundness for $2\mu + 1$-m
 	\label{fig:genforking_lemma}
 \end{figure}
 
-% \begin{figure}[t]
-%   \centering
-%   \fbox{
-%     \procedure{$\genforking_{\zdv}^{k_1, \ldots, k_\mu} (y, h_1^{1}, \ldots,
-%       h_{q}^{1})$}
-%     {
-%       \zdv_{m + 1} (x)
-%     }
-%   }
-% \end{figure}
 
 \fi
 
@@ -314,7 +304,8 @@ tree of acceptable transcripts.  We require that the extractor fails to reconstr
 	\end{aligned}
 	\right] \geq 1-\varepsilon_t(\secpar).
 	\end{align*}
-where $\tree$ is a tree of accepting transcripts.  
+where $\tree$ is a tree of accepting transcripts. 
+\michals{12.04}{To check: Does Attema et al condition probability for $\tree$ on the fact that the first transcript is acceptable?} 
 	\begin{align*}
 	\Pr\left[
 	\REL(\inp, \wit) = 0
@@ -351,7 +342,7 @@ transformation for multi-message protocols. The lemma, given probability of prod
 an accepting transcript, $\accProb$, lower-bounds the probability of generating a
 tree of accepting transcripts $\tree$, which allows to extract a witness.
 
-\begin{lemma}[Generalized forking lemma~\cite{EPRINT:AttFehKlo21}]\label{lemma:Attema}
+\begin{lemma}[Generalized forking lemma~\cite{EPRINT:AttFehKlo21}]\label{lem:attema}
 	\chb{Let $N = n_1 \cdots n_\mu$.} Let $\proofsystem$ be a proof system that is knowledge sound
 	with knowledge error $\epsk$. Assume adversary $\adv$ that makes up to $q$ random
 	oracle queries and outputs an acceptable proof with probability at least

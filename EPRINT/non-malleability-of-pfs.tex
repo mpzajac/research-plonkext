@@ -393,57 +393,35 @@ is upper-bounded by
 \qed
 	\end{proof}
 
-\subsection{Computational special soundness}
+\subsection{Updatable computational special soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
 	Let $\plonkprot$'s idealized verifier fails with probability $\epsid (\secpar)$, and
 	$(\noofc + 2, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
-	$(3, 3 \noofc + 1)$-computational special sound with security loss $\epsid (\secpar) + \epsdlog (\secpar)$ against algebraic
-	adversary $\adv$.
+	$(3, 3 \noofc + 1)$-updatable computational special sound with security loss $(\epst, \epsid (\secpar) + \epsdlog (\secpar))$ against algebraic adversary $\adv^{\ro, \initU} (\secparam)$ who makes at most $q$ queries to the random oracle $\ro$.
 \end{lemma}
 
 \begin{proof}
-	The main idea of the proof is to show that an adversary who breaks \changedm{computational} special soundness can be used to break a $\udlog$ problem instance. The proof goes by game hops. \chm{Let $\tree$ 	be the tree produced by $\tdv$ which internally runs $\zdv_1$ from \cref{fig:Attema-ext} on adversary that has already finalized the SRS.} Note that since the tree branches after $\adv$'s $3$-rd message, the instance $\inp$, commitments $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges $\alpha, \beta, \gamma$ are the same in all transcripts. The tree branches after the third adversary's message where the challenge $\chz$ is presented, thus tree $\tree$ is build using different values of $\chz$. 
+	Let $\adv^{\ro, \initU}(\secparam)$ be the adversary who outputs $(\inp, \zkproof)$ such that $\plonkprotfs.\verifier$ accepts the proof. Let $\tdv$ be a tree-building algorithm that runs $\zdv_1$ from \cref{fig:Attema-ext} and outputs a tree $\tree$, and let $\extt$ be an extractor that given the tree output by $\tdv$ reveals the witness for $\inp$. The main idea of the proof is to show that an adversary who breaks updatable computational special soundness can be used to break a $\udlog$ problem instance. The proof goes by game hops. Note that since the tree branches after $\adv$'s $3$-rd message, the instance $\inp$, commitments $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges $\alpha, \beta, \gamma$ are the same in all the transcripts. The tree branches after the third adversary's message where the challenge $\chz$ is presented, thus tree $\tree$ is built using different values of $\chz$. 
 	%
 	We consider the following games.
+
+  \ncase{Game 0} In this game the adversary $\adv^{\ro, \initU} (\secparam)$ outputs a valid instance--proof pair $(\inp, \zkproof)$ and $\tdv$ does not manage to produce a tree of acceptable transcripts $\tree$.
+
+  \ncase{Probability that $\adv$ wins Game 0 is negligible}. %
+  This follows directly from \cref{lem:attema}, which states that $\tdv$ fails with probabilty at most $(\accProb - (q + 1) \epsk)/(1 - \epsk)$.
 	
-	\ncase{Game 0} In this game the adversary wins if	all the transcripts it produced are acceptable by the ideal verifier, i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}, none of commitments $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$ use elements from a simulated proof, and the extractor fails to extract a valid witness out of the proof.
+	\ncase{Game 1} %
+  In this game the adversary wins if	all the transcripts it produced are acceptable by the ideal verifier, i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}.
+   % none of commitments $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$ use elements from a simulated proof, and the extractor fails to extract a valid witness out of the proof.
+
+   \ncase{Game 0 to Game 1} %
+   Assume that the adversary wins in Game 1, but does not win in Game 0. Probability of such an event is upper-bounded by $\epsid(\secpar)$ as the protocol $\plonkprot$, instantiated with the idealised verification equation, is perfectly knowledge sound except with a negligible probability of the idealised verifier failure $\epsid(\secpar)$. Hence for a valid proof $\zkproof$ for a statement $\inp$ there exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note that since $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for different challenges $\chz$, it obtains the same number of different evaluations of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$ and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined in prover's $3$-rd message description holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are of degree at most $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their evaluations known, $\extt$ can recreate polynomials' coefficients by interpolation and reveal the witness with probability $1$. Hence, the probability that extraction fails in that case is upper-bounded by probability of an idealised verifier failing $\epsid(\secpar)$, which is negligible. \michals{8.4}{Do we need to argue that the outputted witness is correct? Or the fact that the idealisesd verifier accepts the proof is enough?}
 	
-	\ncase{Probability that $\adv$ wins Game 0 is negligible} Probability of $\adv$
-  winning this game is $\epsid(\secpar)$ as the protocol $\plonkprot$, instantiated
-  with the idealised verification equation, is perfectly knowledge sound except with
-  negligible probability of the idealised verifier failure $\epsid(\secpar)$. Hence
-  for a valid proof $\zkproof$ for a statement $\inp$ there exists a witness $\wit$,
-  such that $\REL(\inp, \wit)$ holds. Note that since $\tdv$ produces
-  $(3 \noofc + 1)$ acceptable transcripts for different challenges $\chz$, it obtains
-  the same number of different evaluations of polynomials
-  $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are
-  acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$
-  and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined
-  in prover's $3$-rd message description holds. Hence,
-  $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven
-  statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are of degree at most
-  $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their evaluations known,
-  $\extt$ can recreate polynomials' coefficients by interpolation and reveal the
-  witness with probability $1$. Hence, the probability that extraction fails in that
-  case is upper-bounded by probability of an idealised verifier failing
-  $\epsid(\secpar)$, which is negligible.
-  \michals{8.4}{Do we need to argue that the outputted witness is correct? Or the fact that the idealisesd verifier accepts the proof is enough?}
+	\ncase{Game 2} %
+  In this game the adversary additionally wins if it produces a transcript in $\tree$ such that $\vereq_{\inp, \zkproof}(\chi) = 0$, but $\vereq_{\inp, \zkproof}(X) \neq 0$. The first condition means that the ideal verifier does not accept the proof, but the real verifier does.
 	
-	\ncase{Game 1} In this game the adversary additionally wins if it produces a transcript in $\tree$ such that
-	$\vereq_{\inp, \zkproof}(\chi) = 0$, but $\vereq_{\inp, \zkproof}(X) \neq 0$,
-	and
-	% \item
-	none of commitments
-	$\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}}
-		(\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$ use elements from a
-	simulated proof.
-	% \end{inparaenum}
-	The first condition means that the ideal verifier does not accept the proof,
-	but the real verifier does.
-	
-	\ncase{Game 0 to Game 1} Assume the adversary wins in Game 1, but
-	does not win in Game 0. We show that such adversary may be used to break the
+	\ncase{Game 1 to Game 2} Assume the adversary wins in Game 2, but does not win in Game 1. We show that such adversary may be used to break the
 	$\udlog$ assumption. \chb{Old: More precisely, let $\tdv$ be an algorithm that for
 	relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
 	of acceptable transcripts such that the winning condition of the game
