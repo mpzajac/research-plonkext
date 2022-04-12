@@ -315,61 +315,11 @@ can recover the trapdoor and build an arbitrary number of simulated proofs for a
 statement. Hence, we provide a weaker, yet sufficient, definition of
 \emph{computational special soundness}. More precisely, we state that an
 adversary that is able to answer correctly multiple challenges either knows the
-witness or can be used to break some computational assumption.
-% \chaya{a notion of computational special soundness has been used to mean exactly
-% the above in prior works, like BBF19. we should clarify if forking soundness
-% different from computational special soundness? seems to me like the difference is
-% just that here it is tailored for the NI version.}  \chaya{I now see that the diff
-% is the access to the simulator that the adversary gets. might be helpful to clarify
-% this, either here or in a tech overview section. I am not sure why this needs to be
-% defined this way by giving access to the simulator.}
-\changedm{However, differently from the standard definition of special soundness, we do
-not require from the extractor to be able to extract the witness from \emph{any}
-tree of acceptable transcripts, but we require that the extractor is not able to reconstruct the witness with some small probability only. More precisely, we show later that either the extractor extracts a witness from a tree or the adversary who was used to produce the tree can be used to break some computationally-hard problem.
+witness or can be used to break some computational assumption. \changedm{However, differently from the standard definition of special soundness, we do not require from the extractor to be able to extract the witness from \emph{any} tree of acceptable transcripts, but we require that the extractor is not able to reconstruct the witness with some small probability only. More precisely, we show later that either the extractor extracts a witness from a tree or the adversary who was used to produce the tree can be used to break some computationally-hard problem.
 }
-%\begin{definition}[$(k,n)$-forking special soundness in the updatable setting]
-%	Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an
-%  $(2 \mu + 1)$-message proof system for a relation $\REL$.  Let $\proofsystem_\fs$
-%  be $\proofsystem$ after the Fiat--Shamir transform.
-%	
-%	For any $\ppt$ adversary $\advse^{\ro, \initU} (1^\secpar; r)$ with access to
-%  oracles $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, we consider
-%  the procedure $\zdv$ that provided the transcript $(\srs, \adv, r)$ and
-%  $h_1, \ldots, h_q$ runs $\adv$ by providing it with random oracle queries and
-%  update oracle queries.
-%	%
-%	$\zdv$ returns the index $i$ of the
-%	random oracle query made for challenge $k$ and the proof $\adv$ returns.
-%	
-%	Consider the algorithm $\genforking_{\zdv}^{n}$
-%	that rewinds $\zdv$ to produce a $(1,\dots, n, \dots, 1)$-tree of
-%	accepting transcripts $\tree$.\hamid{1.3}{Not clear if this always happens with probability 1, or is such that over which the below probability is defined? Maybe we should say $\genforking_{\zdv}^{n}$ produce a tree or $\bot$?}
-%	
-%	We say that $\psfs$ is $(k,n)$-forking special sound with security loss $\epss(\secpar)$, if
-%	for any PPT adversary $\advse$\hamid{28.2}{How should we quantify over $\extt(\tree)$? Is it $\exists \ \extt(\tree) \ s.t \ \forall \advse ...$?}
-%	\begin{align*}
-%	\Pr\left[
-%	\REL(\inp, \wit) = 0
-%	\,\Biggl|\,
-%	\begin{aligned}
-%	& r \sample \RND{\advse},
-%	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r), \\
-%	&    (1, \tree) \gets \genforking_{\zdv}^{n}((\srs,\adv,r),Q_{H}),
-%	\wit \gets \extt(\tree)
-%	\end{aligned}
-%	\right] \leq \epss(\secpar).
-%	\end{align*}
-%	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
-%	List $Q_\ro$ contains all $\advse$'s
-%	queries to $\ro$ and the random oracle's answers.
-%\end{definition}
-%
-%\hamid{1.3}{I think we can replace lemma 2 with the following lemma which includes the adaptation of Attema result to the updatable setting.}
-
 \hamid{25.3}{This is the new definition. Please check!}
 \begin{definition}[$(n_1,	\ldots, n_\mu)$-computational special soundness]
 	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$ be $\proofsystem$ after the Fiat--Shamir transform. 
-	% For any $\ppt$ adversary $\advse^{\ro, \initU} (1^\secpar; r)$ with access to oracle $\initU$ defined in~\cref{fig:upd}, and random oracle $\ro$, \changedmx{we consider the algorithm $\tdv$}{there exists an expected $\ppt$ algorithm $\tdv$} that rewinds $\adv$ to produce a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts $\tree$.
 	
 	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $\epss(\secpar)$, if there exists \changedmx{an expected}{a} polynomial time extractor $\extt$ and an expected polynomial time algorithm $\tdv$ such that for any PPT adversary $\advse$,
 	\begin{align*}
