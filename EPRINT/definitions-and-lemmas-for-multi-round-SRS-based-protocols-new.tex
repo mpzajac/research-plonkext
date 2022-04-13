@@ -290,6 +290,8 @@ tree of acceptable transcripts.  We require that the extractor fails to reconstr
 \hamid{25.3}{This is the new definition. Please check!}
 \chaya{9.4}{changes as per our discussion on 8.4}
 \begin{definition}[$(n_1,	\ldots, n_\mu)$-computational special soundness]
+	\michals{12.04}{Include $\epst$ in the parameter}
+	\michals{12.04}{$\accProb$ to be added?}
 	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$ be $\proofsystem$ after the Fiat--Shamir transform. 
 	
 	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $\epss(\secpar)$, if there exists an expected polynomial time algorithm $\tdv$, and an expected polynomial time extractor $\extt$, such that for any PPT adversary $\advse$, the following two conditions hold:
