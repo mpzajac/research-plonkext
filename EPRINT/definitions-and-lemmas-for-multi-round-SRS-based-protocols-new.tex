@@ -294,35 +294,35 @@ tree of acceptable transcripts.  We require that the extractor fails to reconstr
 	\michals{12.04}{$\accProb$ to be added?}
 	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$ be $\proofsystem$ after the Fiat--Shamir transform. 
 	
-	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $\epss(\secpar)$, if there exists an expected polynomial time algorithm $\tdv$, and an expected polynomial time extractor $\extt$, such that for any PPT adversary $\advse$, the following two conditions hold:
+	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $(\epst (\secpar, \accProb), \epss(\secpar))$, if there exists an expected polynomial time algorithm $\tdv$, and an expected polynomial time extractor $\extt$, such that for any PPT adversary $\advse$, that outputs a valid proof with probability at least $\accProb$, the following two conditions hold:
 	\begin{align*}
 	\Pr\left[
-  	\tree \gets \tdv((\srs,\adv,r), Q_{H}, \changedm{Q_{upd}}),
+  	\tree \gets \tdv((\srs,\adv,r)),
 	\,\Biggl|\,
 	\begin{aligned}
-  	& r \sample \RND{\advse},
-  	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r), \\
-	&\verifier_\fs(\srs, \inp_{\advse}, \pi_\advse) = 1
+  %	&
+		 r \sample \RND{\advse}%,
 	\end{aligned}
-	\right] \geq 1-\varepsilon_t(\secpar).
+	\right] \geq 1 - \epst(\secpar, \accProb).
 	\end{align*}
-where $\tree$ is a tree of accepting transcripts. 
-\michals{12.04}{To check: Does Attema et al condition probability for $\tree$ on the fact that the first transcript is acceptable?} 
+where $\tdv$ simulates oracles $\ro$ and $\initU$ to the adversary, $\srs$ is the finalized SRS, and $\tree$ is a tree of accepting transcripts
+%\michals{12.04}{To check: Does Attema et al condition probability for $\tree$ on the fact that the first transcript is acceptable?} 
 	\begin{align*}
 	\Pr\left[
 	\REL(\inp, \wit) = 0
-	\land \verifier_\fs(\srs, \inp_{\advse}, \pi_\advse) = 1
+	%\land \verifier_\fs(\srs, \inp_{\advse}, \pi_\advse) = 1
 	\,\Biggl|\,
 	\begin{aligned}
 	& r \sample \RND{\advse},
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r), \\
-	&    \tree \gets \tdv((\srs,\adv,r), Q_{H}, \changedm{Q_{upd}}),
+	%(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r), \\
+	&    \tree \gets \tdv((\srs,\adv,r)),
 	\wit \gets \extt(\tree)
 	\end{aligned}
 	\right] \leq \epss(\secpar).
 	\end{align*}
-	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
-	List $Q_\ro$ contains all $\advse$'s queries to $\ro$ and the random oracle's answers; \changedm{list $Q_{srs}$ contains $\advse$'s queries to $\initU$ and the oracle's responses}. We call the protocol $(k, n)$-computational special sound when $\tree$ is a $(k, n)$-tree of accepting transcripts.
+%	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
+	% List $Q_\ro$ contains all $\advse$'s queries to $\ro$ and the random oracle's answers; \changedm{list $Q_{srs}$ contains $\advse$'s queries to $\initU$ and the oracle's responses}.
+	 We call the protocol $(k, n)$-computational special sound when $\tree$ is a $(k, n)$-tree of accepting transcripts.
 \end{definition}
 
 %\hamid{6.4}{Todo: maybe we should add something like this before the definition: "while in this definition we only verify the proof provided by the adversary, all the proofs output by the tree generator $\tdv$ are implicitly verified with respect to the ''local programming'' of the random oracle.}
