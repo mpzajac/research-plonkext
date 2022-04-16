@@ -294,7 +294,7 @@ tree of acceptable transcripts.  We require that the extractor fails to reconstr
 	\michals{12.04}{$\accProb$ to be added?}
 	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$ be $\proofsystem$ after the Fiat--Shamir transform. 
 	
-	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $(\epst (\secpar, \accProb), \epss(\secpar))$, if there exists an expected polynomial time algorithm $\tdv$, and an expected polynomial time extractor $\extt$, such that for any PPT adversary $\advse$, that outputs a valid proof with probability at least $\accProb$, the following two conditions hold:
+	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $(\epst (\secpar, \accProb), \epss(\secpar))$, if there exists an expected polynomial time algorithm $\tdv$, and an expected polynomial time extractor $\extt$, such that for any PPT adversary $\advse$, that outputs a valid proof with probability at least $\accProb$, the following two conditions hold:\hamid{16.4}{I think it would be more clear if we keep $(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r)$ in the right side of the prob. equation; otherwise, it's hard to follow what $\ro$ and $\initU$ are that $\tdv$ simulates to $\advse$!}
 	\begin{align*}
 	\Pr\left[
   	\tree \gets \tdv((\srs,\adv,r)),
@@ -305,7 +305,7 @@ tree of acceptable transcripts.  We require that the extractor fails to reconstr
 	\end{aligned}
 	\right] \geq 1 - \epst(\secpar, \accProb).
 	\end{align*}
-where $\tdv$ simulates oracles $\ro$ and $\initU$ to the adversary, $\srs$ is the finalized SRS, and $\tree$ is a tree of accepting transcripts
+where $\tdv$ simulates oracles $\ro$ and $\initU$ to the adversary, $\srs$ is the finalized SRS, and $\tree$ is a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts, and
 %\michals{12.04}{To check: Does Attema et al condition probability for $\tree$ on the fact that the first transcript is acceptable?} 
 	\begin{align*}
 	\Pr\left[

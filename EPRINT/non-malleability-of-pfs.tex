@@ -401,10 +401,20 @@ is upper-bounded by
 	$(3, 3 \noofc + 1)$-updatable computational special sound with security loss $(\epst, \epsid (\secpar) + \epsdlog (\secpar))$ against algebraic adversary $\adv^{\ro, \initU} (\secparam)$ who makes at most $q$ queries to the random oracle $\ro$.
 \end{lemma}
 
+\hamid{17.4}{Should we not make $\epst$ explicit here as $\epst = (\accProb - (q + 1) \epsk)/(1 - \epsk)$? If yes, then we should also change the statement of lemma as follows:
+\begin{lemma}
+	\label{lem:plonkprot_ss}
+	\chb{Let $\plonkprot$ be knowledge sound with knowledge error $\epsk$.} 
+	Let $\plonkprot$'s idealized verifier fails with probability $\epsid (\secpar)$, and
+	$(\noofc + 2, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
+	$(3, 3 \noofc + 1)$-computational special sound with security loss $(\epst, \epss)$ \chb{with $\epst = (\accProb - (q + 1) \epsk)/(1 - \epsk)$ and $\epss = \epsid (\secpar) + \epsdlog (\secpar)$} against algebraic adversary $\adv^{\ro, \initU} (\secparam)$ who makes at most $q$ queries to the random oracle $\ro$ \chb{and outputs an acceptable proof with probability
+	at least $\accProb$}.
+\end{lemma}
+}
 \begin{proof}
 	Let $\adv^{\ro, \initU}(\secparam)$ be the adversary who outputs $(\inp, \zkproof)$ such that $\plonkprotfs.\verifier$ accepts the proof. Let $\tdv$ be a tree-building algorithm that runs $\zdv_1$ from \cref{fig:Attema-ext} and outputs a tree $\tree$, and let $\extt$ be an extractor that given the tree output by $\tdv$ reveals the witness for $\inp$. The main idea of the proof is to show that an adversary who breaks updatable computational special soundness can be used to break a $\udlog$ problem instance. The proof goes by game hops. Note that since the tree branches after $\adv$'s $3$-rd message, the instance $\inp$, commitments $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges $\alpha, \beta, \gamma$ are the same in all the transcripts. The tree branches after the third adversary's message where the challenge $\chz$ is presented, thus tree $\tree$ is built using different values of $\chz$. 
 	%
-	We consider the following games.
+	We consider the following games.\hamid{17.4}{I am happy with the current version of the proof, but I think it might be more readable if we have the explanation in Game 0 not as a game, but as a separate argument that specify $\epst$. Then we define only two games (currently as Game 1 and Game 2) by which we upper-bound $\epss$.}
 
   \ncase{Game 0} In this game the adversary $\adv^{\ro, \initU} (\secparam)$ outputs a valid instance--proof pair $(\inp, \zkproof)$ and $\tdv$ does not manage to produce a tree of acceptable transcripts $\tree$.
 
