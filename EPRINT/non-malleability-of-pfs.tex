@@ -395,7 +395,7 @@ is upper-bounded by
 \subsection{Updatable computational special soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
-  $\plonkprot$ is $(3, 3 \noofc + 1)$-updatable computational special sound with security loss $(\epst(\accProb, \secpar), \epsid (\secpar) + \epsdlog (\secpar))$ against algebraic adversary $\adv^{\ro, \initU} (\secparam)$ where
+  $\plonkprot$ is $(3, 3 \noofc + 1)$-updatable computational special sound with security loss $(\epst(\accProb, \secpar), \epss(\secpar))$ against algebraic adversary $\adv^{\ro, \initU} (\secparam)$ where
   \[
     \epst(\secpar) \leq \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\,,
   \]
@@ -403,19 +403,19 @@ is upper-bounded by
 	\[
 	  \epss(\secpar) \leq \epsid(\secpar) + \epsldlog(\secpar) \,.
 	\]
-	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\dconst, \dconst)$-$\ldlog$ assumption.
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\dconst, \dconst)$-$\ldlog$ \hamid{18.4}{$(\dconst, \dconst)$-$\uldlog$?} assumption.
 \end{lemma}
 
-\hamid{17.4}{Should we not make $\epst$ explicit here as $\epst = (\accProb - (q + 1) \epsk)/(1 - \epsk)$? If yes, then we should also change the statement of lemma as follows:
-\begin{lemma}
-	\label{lem:plonkprot_ss}
-	\chb{Let $\plonkprot$ be knowledge sound with knowledge error $\epsk$.} 
-	Let $\plonkprot$'s idealized verifier fails with probability $\epsid (\secpar)$, and
-	$(\noofc + 2, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
-	$(3, 3 \noofc + 1)$-computational special sound with security loss $(\epst, \epss)$ \chb{with $\epst = (\accProb - (q + 1) \epsk)/(1 - \epsk)$ and $\epss = \epsid (\secpar) + \epsdlog (\secpar)$} against algebraic adversary $\adv^{\ro, \initU} (\secparam)$ who makes at most $q$ queries to the random oracle $\ro$ \chb{and outputs an acceptable proof with probability
-	at least $\accProb$}.
-\end{lemma}
-}
+%\hamid{17.4}{Should we not make $\epst$ explicit here as $\epst = (\accProb - (q + 1) \epsk)/(1 - \epsk)$? If yes, then we should also change the statement of lemma as follows:
+%\begin{lemma}
+%	\label{lem:plonkprot_ss}
+%	\chb{Let $\plonkprot$ be knowledge sound with knowledge error $\epsk$.} 
+%	Let $\plonkprot$'s idealized verifier fails with probability $\epsid (\secpar)$, and
+%	$(\noofc + 2, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
+%	$(3, 3 \noofc + 1)$-computational special sound with security loss $(\epst, \epss)$ \chb{with $\epst = (\accProb - (q + 1) \epsk)/(1 - \epsk)$ and $\epss = \epsid (\secpar) + \epsdlog (\secpar)$} against algebraic adversary $\adv^{\ro, \initU} (\secparam)$ who makes at most $q$ queries to the random oracle $\ro$ \chb{and outputs an acceptable proof with probability
+%	at least $\accProb$}.
+%\end{lemma}
+%}
 \begin{proof}
 	Let $\adv^{\ro, \initU}(\secparam)$ be the adversary who outputs $(\inp, \zkproof)$ such that $\plonkprotfs.\verifier$ accepts the proof. Let $\tdv$ be a tree-building algorithm that runs $\zdv_1$ from \cref{fig:Attema-ext} and outputs a tree $\tree$, and let $\extt$ be an extractor that given the tree output by $\tdv$ reveals the witness for $\inp$. The main idea of the proof is to show that an adversary who breaks updatable computational special soundness can be used to break a $\udlog$ problem instance. The proof goes by game hops. Note that since the tree branches after $\adv$'s $3$-rd message, the instance $\inp$, commitments $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges $\alpha, \beta, \gamma$ are the same in all the transcripts. The tree branches after the third adversary's message where the challenge $\chz$ is presented, thus tree $\tree$ is built using different values of $\chz$. 
 	%
