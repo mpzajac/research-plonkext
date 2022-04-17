@@ -396,9 +396,15 @@ is upper-bounded by
 \subsection{Updatable computational special soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
-	Let $\plonkprot$'s idealized verifier fails with probability $\epsid (\secpar)$, and
-	$(\noofc + 2, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
-	$(3, 3 \noofc + 1)$-updatable computational special sound with security loss $(\epst, \epsid (\secpar) + \epsdlog (\secpar))$ against algebraic adversary $\adv^{\ro, \initU} (\secparam)$ who makes at most $q$ queries to the random oracle $\ro$.
+  $\plonkprot$ is $(3, 3 \noofc + 1)$-updatable computational special sound with security loss $(\epst(\accProb, \secpar), \epsid (\secpar) + \epsdlog (\secpar))$ against algebraic adversary $\adv^{\ro, \initU} (\secparam)$ where
+  \[
+    \epst(\secpar) \leq \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\,,
+  \]
+  and
+	\[
+	  \epss(\secpar) \leq \epsid(\secpar) + \epsldlog(\secpar) \,.
+	\]
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\dconst, \dconst)$-$\ldlog$ assumption.
 \end{lemma}
 
 \begin{proof}
@@ -406,11 +412,32 @@ is upper-bounded by
 	%
 	We consider the following games.
 
+  \ncase{Game 0} %
+  In this game the adversary wins if it outputs a valid instance--proof pair $(\inp, \zkproof)$, and the extractor $\ext$ does not manage to output a witness $\wit$ such that $\REL (\inp, \wit)$ holds.
+
+  \ncase{Game 1} %
+  In this game the environment aborts the game if the tree building algorithm $\tdv$ fails in building a tree of acceptable transcripts $\tree$. 
+
+  \ncase{Game 0 to Game 1} %
+  By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most 
+  \[
+    \frac{\accProb - (q + 1) \epsid (\secpar)} {1 - \epsid (\secpar)} \,.
+  \]
+
+  \ncase{Game 2} %
+  In this game the environment additionally aborts if at least one of its proofs in $\tree$ is not acceptable by an idealised verifier.
+
+  \ncase{Game 1 to Game 2} % 
+  We show a reduction that breaks an instance of a $\udlog$ assumption when Game 2 is aborted, while Game 1 is not.
+
+  \ncase{Conclusion}
+  
+
+  \michals{17.04}{Ended here}
+  
+
   \ncase{Game 0} In this game the adversary $\adv^{\ro, \initU} (\secparam)$ outputs a valid instance--proof pair $(\inp, \zkproof)$ and $\tdv$ does not manage to produce a tree of acceptable transcripts $\tree$.
 
-  \ncase{Probability that $\adv$ wins Game 0 is negligible}. %
-  This follows directly from \cref{lem:attema}, which states that $\tdv$ fails with probabilty at most $(\accProb - (q + 1) \epsk)/(1 - \epsk)$.
-	
 	\ncase{Game 1} %
   In this game the adversary wins if	all the transcripts it produced are acceptable by the ideal verifier, i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}.
    % none of commitments $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$ use elements from a simulated proof, and the extractor fails to extract a valid witness out of the proof.

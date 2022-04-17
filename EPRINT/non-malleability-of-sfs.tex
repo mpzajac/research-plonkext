@@ -361,13 +361,16 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
 \subsection{Computational special soundness}
 \begin{lemma}
 	\label{lem:sonicprot_ss}
-	$\sonicprot$ is $(2, \multconstr + \linconstr + 1)$-computational special sound with security loss $\epss(\secpar)$ against
-	algebraic adversaries with
+	$\sonicprot$ is $(2, \multconstr + \linconstr + 1)$-computational special sound with security loss $(\epst (\accProb, \secpar), \epss(\secpar))$ against
+	algebraic adversaries, where
+  \[
+    \epst(\secpar) \leq \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\,,
+  \]
+  and
 	\[
-	\epss(\secpar) \leq \epsid(\secpar) + \epsldlog(\secpar) \,,
+	  \epss(\secpar) \leq \epsid(\secpar) + \epsldlog(\secpar) \,.
 	\]
-	where $\epsid(\secpar)$ is a soundness error of the idealized verifier, and
-	$\epsldlog(\secpar)$ is security of $(\dconst, \dconst)$-$\ldlog$ assumption.
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\dconst, \dconst)$-$\ldlog$ assumption.
 \end{lemma}
 \begin{proof}
 	Similarly as in the case of $\plonk$, the main idea of the proof is to show that an
