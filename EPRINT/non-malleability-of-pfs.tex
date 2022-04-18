@@ -403,7 +403,7 @@ is upper-bounded by
 	\[
 	  \epss(\secpar) \leq \epsid(\secpar) + \epsldlog(\secpar) \,.
 	\]
-	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\dconst, \dconst)$-$\ldlog$ \hamid{18.4}{$(\dconst, \dconst)$-$\uldlog$?} assumption.
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\numberofconstrains + 2, 1)$-$\uldlog$ \hamid{18.4}{$(\dconst, \dconst)$-$\uldlog$?}\michals{18.04}{Corrected} assumption.
 \end{lemma}
 
 %\hamid{17.4}{Should we not make $\epst$ explicit here as $\epst = (\accProb - (q + 1) \epsk)/(1 - \epsk)$? If yes, then we should also change the statement of lemma as follows:
@@ -419,10 +419,12 @@ is upper-bounded by
 \begin{proof}
 	Let $\adv^{\ro, \initU}(\secparam)$ be the adversary who outputs $(\inp, \zkproof)$ such that $\plonkprotfs.\verifier$ accepts the proof. Let $\tdv$ be a tree-building algorithm that runs $\zdv_1$ from \cref{fig:Attema-ext} and outputs a tree $\tree$, and let $\extt$ be an extractor that given the tree output by $\tdv$ reveals the witness for $\inp$. The main idea of the proof is to show that an adversary who breaks updatable computational special soundness can be used to break a $\udlog$ problem instance. The proof goes by game hops. Note that since the tree branches after $\adv$'s $3$-rd message, the instance $\inp$, commitments $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges $\alpha, \beta, \gamma$ are the same in all the transcripts. The tree branches after the third adversary's message where the challenge $\chz$ is presented, thus tree $\tree$ is built using different values of $\chz$. 
 	%
-	We consider the following games.\hamid{17.4}{I am happy with the current version of the proof, but I think it might be more readable if we have the explanation in Game 0 not as a game, but as a separate argument that specify $\epst$. Then we define only two games (currently as Game 1 and Game 2) by which we upper-bound $\epss$.}
+	We consider the following games.
+  \hamid{17.4}{I am happy with the current version of the proof, but I think it might be more readable if we have the explanation in Game 0 not as a game, but as a separate argument that specify $\epst$. Then we define only two games (currently as Game 1 and Game 2) by which we upper-bound $\epss$.}
+  \michals{18.04}{I think it makes more sense to have everything written as a game. I believe that this adds structure to the proof and makes it easier to underestand.}
 
   \ncase{Game 0} %
-  In this game the adversary wins if it outputs a valid instance--proof pair $(\inp, \zkproof)$, and the extractor $\ext$ does not manage to output a witness $\wit$ such that $\REL (\inp, \wit)$ holds.
+  In this game the adversary wins if it outputs a valid instance--proof pair $(\inp, \zkproof)$, and the extractor $\extt$ does not manage to output a witness $\wit$ such that $\REL (\inp, \wit)$ holds.
 
   \ncase{Game 1} %
   In this game the environment aborts the game if the tree building algorithm $\tdv$ fails in building a tree of acceptable transcripts $\tree$. 
@@ -439,7 +441,27 @@ is upper-bounded by
   \ncase{Game 1 to Game 2} % 
   We show a reduction that breaks an instance of a $\udlog$ assumption when Game 2 is aborted, while Game 1 is not.
 
+  Let $\rdvudlog$ be a reduction that gets as input an $(\noofc + 2, 1)$-$\udlog$ instance $\gone{1, \ldots, \chi^{\noofc+2}}, \gtwo{\chi}$. Then it can update the instance to another one $\gone{1, \ldots, {\chi'}^{\noofc+2}}, \gtwo{\chi'}$. Eventually, the reduction has to ouput $\chi'$.
+	%
+	The reduction $\rdvudlog$ proceeds as follows.
+	\begin{enumerate}
+			\item Builds $\adv$'s SRS $\srs$ using the input $\udlog$ instance. Then it processes the adversary's update query by passing it to its own update oracle getting instance $\gone{1, \ldots, {\chi'}^{\noofc+2}}, \gtwo{\chi'}$. The updated SRS $\srs'$ is then built and given to $\adv$. The reduction then starts $\tdv(\adv, \srs')$;
+			\item Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$, but $\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all group
+			elements included in $\tree$ are extended by their representation as a combination of the input $\GRP_1$-elements. Hence, all coefficients of the verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known. 
+			\item Find $\vereq_{\inp, \zkproof}(X)$ zero points and find $\chi'$ among
+			them.
+			\item Return  $\chi'$.
+      \end{enumerate}
+    
+    Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upperbounded by $\epsudlog (\secpar)$.
+
   \ncase{Conclusion}
+  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of acceptable transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an idealised verifier. Note that since $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for different challenges $\chz$, it obtains the same number of different evaluations of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$ and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined in prover's $3$-rd message description holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are of degree at most $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their evaluations known, $\extt$ can recreate polynomials' coefficients by interpolation and reveal the witness with probability $1$. Hence, the probability that extraction fails in that case is upper-bounded by probability of an idealised verifier failing $\epsid(\secpar)$ 
+
+  Probability that the adversary wins in Game 2 but not in Game 1 is 
+  \[
+  \frac{\accProb + (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)} + \epsudlog(\secpar)  + \epsid (\secpar). 
+  \]
   
 
   \michals{17.04}{Ended here}
