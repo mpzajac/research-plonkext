@@ -74,7 +74,7 @@ prover, verifier, and simulator.
 The SRS generating algorithm picks at random $\chi \sample \FF_p$, computes
 and outputs
 \[
-	\srs = \left(\gone{\smallset{\chi^i}_{i = 0}^{\numberofconstrains + 2}},
+	\srs = \left(\gone{\smallset{\chi^i}_{i = 0}^{\numberofconstrains + \changedm{5}}},
 	\gtwo{\chi} \right).
 \]
 
@@ -336,7 +336,7 @@ Since the commitment scheme is deterministic, the adversary cannot come up with 
 
 If the adversary picks two different polynomials: $\p{t^0}(X)$, which commitment is $\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)}$, and $\p{t^1}(X)$ which commitment is $\gone{\p{t^1_{lo}}(\chi), \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$, then one of them has to be computed incorrectly or the adversary can be used to break the udlog assumption if $\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)} = \gone{\p{t^1_{lo}}(\chi), \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$.
 
-More precisely, assume that the adversary is able to output a pair of commitments as above with probability $\eps$. We show that there exists a reduction $\rdv$ that takes as input $\udlog$ challenge $\Ch$ and breaks it with probability at least $\eps$ as well. To that end, the reduction runs $\adv$ internally simulating its access to random and update oracles. For any query $x$ that $\adv$ sends to the random oracle, $\rdv$ responds with $\ro(x)$. Similarly, update oracle responses are also computed honestly. Since the adversary is algebraic, the reduction learns coefficients $t^{b}_{i, \star}$, such that $\p{t}^{b}_{\star} (X) = \sum_{i = 0}^{\numberofconstrains} X^{i} t^{b}_{i, \star}$ for $\star \in \smallset{\p{lo}, \p{med}, \p{hi}}$. Hence, $\rdv$ can compute polynomials $\p{t}^{0} (X)$ and $\p{t}^{1} (X)$. Since these are not equal, yet their evaluations on $\chi$ are the same, $\rdv$ can compute $\chi$ by finding roots of $\p{t}^{0} (X) - \p{t}^{1} (X)$.
+More precisely, assume that the adversary is able to output a pair of commitments as above with probability $\eps$. We show that there exists a reduction $\rdv$ that takes as input $\udlog$ challenge $\Ch$ and breaks it with probability at least $\eps$ as well. To that end, the reduction runs $\adv$ internally simulating its access to random and update oracles. For any query $x$ that $\adv$ sends to the random oracle, $\rdv$ responds with $\ro(x)$. Similarly, update oracle responses are also computed honestly. Since the adversary is algebraic, the reduction learns coefficients $t^{b}_{i, \star}$, such that $\p{t}^{b}_{\star} (X) = \sum_{i = 0}^{\numberofconstrains + 5} X^{i} t^{b}_{i, \star}$ for $\star \in \smallset{\p{lo}, \p{med}, \p{hi}}$. Hence, $\rdv$ can compute polynomials $\p{t}^{0} (X)$ and $\p{t}^{1} (X)$. Since these are not equal, yet their evaluations on $\chi$ are the same, $\rdv$ can compute $\chi$ by finding roots of $\p{t}^{0} (X) - \p{t}^{1} (X)$.
 
 Importantly, polynomial $\p{t}(X)$ assures that the constraints of the system
 hold. Hence, the probability that one of $\p{t^0}(X)$, $\p{t^1}(X)$ is computed
@@ -403,7 +403,7 @@ is upper-bounded by
 	\[
 	  \epss(\secpar) \leq \epsid(\secpar) + \epsldlog(\secpar) \,.
 	\]
-	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\numberofconstrains + 2, 1)$-$\uldlog$ \hamid{18.4}{$(\dconst, \dconst)$-$\uldlog$?}\michals{18.04}{Corrected} assumption.
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\numberofconstrains + \changedm{5}, 1)$-$\uldlog$ \hamid{18.4}{$(\dconst, \dconst)$-$\uldlog$?}\michals{18.04}{Corrected} assumption.
 \end{lemma}
 
 %\hamid{17.4}{Should we not make $\epst$ explicit here as $\epst = (\accProb - (q + 1) \epsk)/(1 - \epsk)$? If yes, then we should also change the statement of lemma as follows:
@@ -462,8 +462,7 @@ is upper-bounded by
   \[
   \frac{\accProb + (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)} + \epsudlog(\secpar)  + \epsid (\secpar). 
   \]
-
-  \end{proof}
+ \end{proof}
   
 
 \subsection{Trapdoor-less simulatability of Plonk}
