@@ -215,37 +215,6 @@ from some move $i$ onwards. This property can be understood as a generalization 
 honest-verifier zero-knowledge for Fiat--Shamir transformed proof systems with an
 SRS.
 
-\hamid{8.2}{Next two paragraphs should be rephrased:}
-\chb{\oursubsub{Generalising the general forking lemma.}  Consider an interactive $3$-message
-special-sound protocol $\ps$ and its non-interactive version $\ps_\fs$ obtained by the
-Fiat--Shamir transform. The general forking lemma provides an instrumental lower bound for the
-probability of extracting a witness from an adversary who provides two proofs for the same
-statement that share the first message. Since $\plonkprot$, $\sonicprot$, and $\marlinprot$ have more than $3$
-messages and are not special-sound, the forking lemma of Bellare and Neven~\cite{CCS:BelNev06}
-cannot be used directly. A straightforward adaptation of the forking lemmas for $2n+1$ round interactive proofs~\cite{EC:BCCGP16} results in a blow-up of $q^n$ in the running time where $q$ is the number of RO queries.
-%We propose a generalization that covers multi-message protocols where
-%witness extraction requires more than two transcripts.  Unfortunately, we also observe
-%that the security gap grows with the number of transcripts and the probability that the
-%extractor succeeds diminishes; the security loss, albeit big, is polynomial.
-Most modern zkSNARKs~\cite{SP:BBBPWM18,CCS:MBKM19} heavily
-rely on the Fiat--Shamir transform and thus potentially the forking lemma. We use a generalization of the forking lemma that covers multi-message protocols from the recent work of~\cite{AFK21}.}
-%First, an interactive
-%protocol is proposed and its security and forking special soundness analysed.\markulf{30.09}{Unclear here whether forking special soundness is for the interactive of the non-interactive protocol.} Second,
-%one uses an argument that the Fiat--Shamir transform can be used to get a
-%protocol that is non-interactive and shares the same security properties.
-%We thus see our generalized forking lemma as contributing to a critical assessment of
-%this approach. The analysis of the interactive protocol is not enough and one
-%has to consider the security loss implied by the Fiat-Shamir transform for the target security notion.
-%Thus one has to either rely on our generalisation of the forking
-%lemma or disclose a transformation that does not suffer this loss.
-%We note that the security loss of our generalized forking lemma may also apply
-%when knowledge soundness is proven. This is, e.g., the case for the original
-%$\sonic$ paper, whose security proof relies on so-called witness-extended
-%emulation. $\plonk$ and the recent work of~\cite{cryptoeprint:2020:1351} that shows knowledge soundness of
-%$\sonic$, work around this problem by proving directly in the AGM.}
-
-
-
 \subsection{Related Work}
 \ourpar{Simulation extractability.}
 There are many results on simulation extractability for
@@ -269,42 +238,6 @@ The zkSNARK of~\cite{EC:Groth16} has been shown to be SE by introducing minor mo
 stronger assumptions \cite{EPRINT:BowGab18,EPRINT:AtaBag19}. Recently,~\cite{EPRINT:BKSV20} showed that the
 original Groth's proof system from~\cite{EC:Groth16} is weakly SE and
 randomizable. None of these results are for zkSNARKs in the updatable SRS setting or for zkSNARKs obtained via the Fiat--Shamir transformation. The recent work of~\cite{EC:GOPTT22} shows that Fiat-Shamir transformed Bulletproofs are simulation extractable. While they show a general theorem for multi-round protocols, they do not consider a setting with an SRS, and are therefore inapplicable to zkSNARKs in the updatable SRS setting.
-
-\ourpar{Forking lemma generalizations.}
-\chaya{I don't think this paragraph is relevant anymore.}
-There are several task specific variants, e.g.,~\cite{INDOCRYPT:HerSae03,CCS:BagCheJar08,AC:BelDaiLi19}, of the general forking lemma~\cite{JC:PoiSte00,CCS:BelNev06} for analyzing the forking behavior of random-oracle based executions.
-In~\cite{EC:BCCGP16}, Bootle et al.~proposed a novel inner-product argument whose
-security relies on, so-called, witness-extended emulation. To show that
-property, the authors proposed a new version of the forking lemma that gives a
-lower bound on the probability that a tree finding algorithm is able to produce a
-tree of acceptable transcripts by rewinding a conversation between a
-(potentially malicious) prover and verifier.
-
-Although the result in that paper is dubbed as ``forking lemma'' it
-differs from forking lemmas known from e.g.~\cite{JC:PoiSte00,CCS:BelNev06}.
-First of all, the forking lemmas in these papers analyse the probability of building
-a tree of accepting transcripts for Fiat--Shamir based non-interactive proof
-systems, while the protocol presented by Bootle et al~is intended to work for
-interactive proof systems.
-
-Importantly, it is not obvious how the result of Bootle et al~can be used to
-show security of non-interactive protocols as it relies on interactive provers
-whose proving strategies are more limited than proving strategies of
-non-interactive provers. For example, if a challenge given by the verifier does not
-suit an interactive prover, it can only try to finish a proof with that challenge or
-abort. On the other hand, a non-interactive prover has far wider scope of
-possible actions -- when the protocol is non-interactive the prover may
-adapt its strategy based on the random oracle outputs. 
-This is reminiscent of \emph{state restoration} security~\cite{TCC:BenChiSpo16,EPRINT:Holmgren19} which is also about the security loss incurred by the Fiat--Shamir transformation albeit when proving knowledge soundness from witness extended emulation.
-
-\hamid{17.3}{Should be rephrased:} \chb{Here, we directly capture the state restoration capability of the prover in the forking lemma instead of defining an interactive game where the prover can rewind the verifier to an earlier state as is done in~\cite{C:GhoTes21}.} 
-The work of~\cite{C:GhoTes21} further shows that state restoration security gives tight security guarantees for the
-non-interactive versions of Bulletproof~\cite{SP:BBBPWM18} and \sonic. 
-Our work differs from~\cite{C:GhoTes21} in the following ways. First, they
-focus on showing security of concrete proof systems, while we show
-a general theorem about the security of a wide class of protocols. 
-Second, they only consider knowledge soundness, while we focus on the stronger notion of simulation extractability. Third, the proof of~\cite{C:GhoTes21} is in the AGM which allows for online extraction, whereas we aim to reduce our reliance on the AGM. In particular, our extractor and main theorem do not rely on the AGM and we thus tackle technical challenges arising from extraction by rewinding.
-However, arguably due to the design of Plonk, Sonic, and Marlin, we show that these concrete protocols satisfy the preconditions of our main theorem in the AGM.
 
 %%% Local Variables:
 %%% mode: latex
