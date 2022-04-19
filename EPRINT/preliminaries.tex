@@ -244,67 +244,6 @@ $Q_{\simsign_\td}$ of all queries made by $\adv$, and $\adv$'s randomness $r$.
 	\]
 \end{definition}
 
-\subsection{Uber assumption}
-\label{sec:uber_assumption}
-\ourpar{BBG uber assumption.}  To show trapdoor-less simulatability of $\plonk$, what
-is required by our reduction, we rely on the \emph{uber assumption} introduced by
-Boneh et al.~\cite{EC:BonBoyGoh05} as presented by Boyen in \cite{PAIRING:Boyen08}.
-
-Let $r, s, t, c \in \NN \setminus \smallset{0}$. Consider vectors of polynomials
-$\pR \in \FF_p[X_1, \ldots, X_c]^r$, $\pS \in \FF_p[X_1, \ldots, X_c]^s$ and
-$\pT \in \FF_p[X_1, \ldots, X_c]^t$. Write $\pR = \left( \p{r}_1, \ldots,
-  \p{r}_r \right)$, $\pS = \left( \p{s}_1, \ldots, \p{s}_s \right)$ and $\pT =
-\left( \p{t}_1, \ldots, \p{t}_t \right)$ for polynomials $\p{r}_i, \p{s}_j,
-\p{t}_k$.
-
-For a function $f$ and vector $(x_1, \ldots, x_c)$ we write $f(\pR)$ to
-denote application of $f$ to each element of $\pR$, i.e.
-\(
-	f(\pR) = \left( f(\p{r}_1 (x_1, \ldots, x_c), \ldots, f(\p{r}_r
-	(x_1, \ldots, x_c) \right).
-\)
-Similarly for applying $f$ to $\pS$ and $\pT$.
-
-\begin{definition}[Independence of $\pR, \pS, \pT$]
-	\label{def:independence}
-	Let $\pR, \pS, \pT$ be defined as above. We say that polynomial $\p{f} \in
-  \FF_p[X_1, \ldots, X_c]$ is \emph{dependent} on $\pR, \pS, \pT$ if there
-  exists $rs + t$ constants $a_{i, j}, b_k$ such that $ \p{f} = \sum_{i = 1}^{r}
-  \sum_{j = 1}^{s} a_{i, j} \p{r}_i \p{s}_j + \sum_{k = 1}^{t} b_k \p{t}_k. $ We
-  say that $\p{f}$ is \emph{independent} if it is not dependent.
-\end{definition}
-
-To show trapdoor-less simulatability of $\plonk$ we utilize a generalization of
-Boneh-Boyen-Goh's \emph{uber assumption} \cite{EC:BonBoyGoh05} stated as follows (the
-changed element has been put into a \dbox{dashbox})
-\begin{definition}[$(\pR, \pS, \pT, \p{F}, 1)$-uber assumption]
-	\label{def:uber_assumption}
-	Let $\pR, \pS, \pT$ be defined as above,
-    $(x_1, \ldots, x_c, y_1, \ldots, y_{d}) \sample \FF_p^{c + d}$ and let
-    $\p{F}$ be a cardinality-$d$ set of pair-wise independent polynomials which are also
-    independent of $(\pR, \pS, \pT)$, cf.~\cref{def:independence}.  Then, for
-    any $\ppt$ adversary $\adv$
-	\begin{multline*}
-      \Pr\left[\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
-		\gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{\p{F}(x_1, \ldots, x_c)}}) = 1\right] \approx_\secpar \\
-      \Pr\left[\adv(\gone{\pR(x_1, \ldots x_c)}, \gtwo{\pS(x_1, \ldots, x_c)},
-        \gtar{\pT(x_1, \ldots, x_c)}, \dboxed{\gone{y_1, \ldots, y_{d}}}) =
-        1\right].
-	\end{multline*}
-\end{definition}
-
-Compared to the original uber assumptions, there are two major changes. First, in the
-original formulation the indistinguishable (boxed) elements were in $\GRP_T$, here
-they are in $\GRP_1$.
-% \anca{}{do not get thie previous sentence. What are not target group elements but
-% $\GRP_1$, you mean $\GRP_2$? } \michals{14.10}{Check now}
-  %
-Second, Boneh et al.'s assumption works for distinguishers who are given only one
-challenge polynomial $\p{f}$, i.e.~$\abs{\p{F}} = 1$.
-  
-We show security of our version of the uber assumption using the generic group model
-as introduced by Shoup \cite{EC:Shoup97},
-cf.~\cref{sec:uber-assumption-security-proof}.
 
 \subsection{Zero-Knowledge Proof Systems}\label{prelim:nizk}
 In a zero-knowledge proof system, a prover convinces the verifier of the veracity of a statement
