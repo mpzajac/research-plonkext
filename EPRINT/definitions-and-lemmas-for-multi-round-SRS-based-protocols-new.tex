@@ -175,7 +175,7 @@ follows the definition below:
 \end{definition}
 %
 Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using
-the update oracle $\initU$, defined in~\cref{fig:upd}.
+the update oracle $\initU$, defined in~\cref{fig:upd}. We also require (cf.~the second line in the probability equation) that the first change that differentiate $\zkproof$ and $\zkproof'$ is prover's message, not a challenge. 
 
 Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary to
 produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$ that are
@@ -199,8 +199,11 @@ string.
     \eps_1 (\secpar)=  \Pr \left[\adv^{\initU, \simulator_1, \simulator_2} (\secparam) \right].
   \end{align*}
   
-  If $\epszk(\secpar)$ is negligible, we say $\ps_{\fs}$ is trapdoor-less simulatable. Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if $\simulator_\fs$
-  programs the random oracle \emph{only} after $k$-th prover's message.
+  If $\epszk(\secpar)$ is negligible, we say $\ps_{\fs}$ is trapdoor-less simulatable. Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if 
+	\begin{inparaenum}[(a)]
+		\item $\simulator_{\fs}$ picks a random witness and computes the proof as an honest prover would, including computing challenges using random oracle, up to $k$-th prover's message;
+		\item $\simulator_{\fs}$  programs the random oracle \emph{only} after $k$-th prover's message;
+	\end{inparaenum}
   \end{definition}
 
   
