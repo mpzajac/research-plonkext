@@ -3,24 +3,19 @@
 \begin{theorem}[Simulation-extractable multi-message protocols]
 	\label{thm:se}
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
-	$(2 \mu + 1)$-message HVZK proof system for $\RELGEN(\secparam)$
-	\sout{with knowledge soundness error $\epsk(\secpar)$}. Let
-	$\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. If $\psfs$ has the
-	$k$-\emph{unique response property} with security loss $\epsur(\secpar)$, is
-	\emph{$k'$-programmable trapdoor-less simulatable}, and \chb{$(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-\emph{computational
-			special sound}} with security loss \sout{$\epss(\secpar)$}$(\epst (\secpar, \accProb), \epss(\secpar))$, where $k \leq k' \leq k''$, and all these properties
-	hold in the updatable setting, then $\psfs$ is
-	\emph{simulation-extractable in the updatable setting} against $\ppt$ adversaries that make up to $q$ random oracle
-	queries\hamid{19.4}{Do we still need $\sharp$queries parameter $q$?} and return an acceptable proof with probability at least $\accProb$.  The
+	$(2 \mu + 1)$-message HVZK proof system for $\RELGEN(\secparam)$. Let
+	$\ro \colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. If $\psfs$ has the
+	$k$-\emph{updatable unique response property} with security loss $\epsur(\secpar)$, is
+	\emph{updatable $k'$-programmable trapdoor-less simulatable}, and $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-\emph{updatable computational special sound} with security loss $(\epst (\secpar, \accProb), \epss(\secpar))$, where $k \leq k' \leq k''$. Then $\psfs$ is
+	\emph{updatable simulation-extractable} against $\ppt$ adversaries that make up to $q$ random oracle
+	queries\hamid{19.4}{Do we still need $\sharp$queries parameter $q$?}
+	\michals{20.04}{Yes} and return an acceptable proof with probability at least $\accProb$.  The
 	extraction probability $\extProb$ is at least
 	$\extProb \geq \epst(\secpar, \accProb)
 	- \epsur(\secpar) - \epss(\secpar)\,$.
 \end{theorem}
 
-%\hamid{7.3}{I think somewhere in the proof, we still need to justify and explain explicitly why it's important to have concrete parameters $k, k', k''$ with relation $k \geq k' \geq k''$!}
-
 \begin{proof}		
-	
 	\ngame{0} This is the simulation-extractability game played between an adversary
 	$\advse$ who is given access to an oracle $\initU$ that defines an updatable SRS
 	setup, and a simulation oracle $\simulator = (\simulator_1, \simulator_2')$ which provides the adversary with simulated
@@ -80,7 +75,7 @@
 		\end{align*}
 	%\end{compactitem}
 
-	Importantly, both proofs are acceptable w.r.t~the unique response property. The first, since the unique response property definition allows any challenges after $k$. The latter, since it is an acceptable proof produced by the advresary.
+	Importantly, both proofs are acceptable w.r.t~the unique response property verifier $\tilde{\verifier}$. The first, since the unique response property definition allows any challenges after $k$. The latter, since it is an acceptable proof produced by the advresary.
 	If $\zkproof_1 = \zkproof_2$, then $\adv$ fails to break simulation soundness, as
 	$\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then $\rdvur$
 	breaks $\ur{k}$-ness of $\ps$. This happens only with negligible probability

@@ -17,7 +17,6 @@ signatures of knowledge.
 \ourpar{Simulation-extractability for multi-message protocols.}  Most recent SNARK schemes
 are following the same blueprint: First, an interactive (multi-message)
 information-theoretic proof system is considered.
-%However, this initial system is idealized and also inefficient.  
 Second, this initial proof system is compiled into an efficient, non-interactive and
 computationally sound scheme using cryptographic tools such as polynomial commitments
 and the Fiat--Shamir transformation.
@@ -107,18 +106,6 @@ $\simulator' = (\simulator_1, \simulator_2')$.
 	queries to $\simulator_1$ and the (simulated) random oracle's answers, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
   % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simulator_1$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
 \end{definition}
-
-% \chaya{13.10}{later, we should show $\simulator_2'$ for plonk/sonic/marlin. I think
-%   it will follow from TLS. But we should emphasize there how to define the above
-%   oracles so it is clear that $\simO$ can produce accepting proofs for false
-%   statements.}
-% \michals{19.10}{Re showing that Plonk's et al simulators can produce acceptable
-%   proofs for false statements, I am not convinced that's what we need -- we define SE
-%   wrt concrete simulators, hence if someone defines a proof system with a simulator
-%   that outputs a trapdoor when queried on a false statement, then such a proof
-%   systems is simply not SE. For our main theorem we use trapdoor-less simulators
-%   which cannot do harm, however I think we should discuss how to show that
-%   possibility of RO programming doesn't do harm as well. }
 
 \subsection{Unique-response protocols}
 A technical hurdle identified by Faust et al.~\cite{INDOCRYPT:FKMV12} for proving
@@ -294,8 +281,6 @@ tree of acceptable transcripts.  We require that the extractor fails to reconstr
 \hamid{25.3}{This is the new definition. Please check!}
 \chaya{9.4}{changes as per our discussion on 8.4}
 \begin{definition}[$(n_1,	\ldots, n_\mu)$-computational special soundness]
-	\michals{12.04}{Include $\epst$ in the parameter}
-	\michals{12.04}{$\accProb$ to be added?}
 	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$ be $\proofsystem$ after the Fiat--Shamir transform. 
 	
 	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $(\epst (\secpar, \accProb), \epss(\secpar))$, if there exists an expected polynomial time algorithm $\tdv$, and an expected polynomial time extractor $\extt$, such that for any PPT adversary $\advse$, that outputs a valid proof with probability at least $\accProb$, the following two conditions hold:\hamid{16.4}{I think it would be more clear if we keep $(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r)$ in the right side of the prob. equation; otherwise, it's hard to follow what $\ro$ and $\initU$ are that $\tdv$ simulates to $\advse$!}
@@ -390,57 +375,6 @@ tree of accepting transcripts $\tree$, which allows to extract a witness.
 	\label{fig:Attema-ext}
 	\michals{15.04}{Update to a new extractor with adaptive soundness}
 \end{figure}
-
-%\hamid{7.3}{Should we remove the following red-color text?}
-%\chb{\paragraph{Importance of the generalized forking lemma.}
-%To highlight the importance of the generalised forking lemma, we outline how it is
-%used in our simulation-extractability proof.  Let $\psfs$ be a computational special sound
-%proof system where for an instance $\inp$ the corresponding witness can be extracted
-%from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting transcripts.  Let $\adv$
-%be the simulation-extractability adversary that outputs an accepting proof with
-%probability at least $\accProb$. From $\adv$ we build an adversary $\bdv$ that runs
-%$\simulator$ internally. Although we use the same $\accProb$ to denote probability of
-%$\zdv$ outputting a non-zero $i$ and the probability of $\adv$ (and $\bdv$)
-%outputting an accepting proof, we claim that these probabilities are exactly the same
-%by the way we define $\zdv$ and $\bdv$. In the following we give the intuition of the
-%proof without the additional indirection via $\bdv$ whose goal is primarily to
-%simplify the computational special soundness definition.
-%
-%Let $\adv$ output an accepting instance-proof pair $(\inp_{\advse},\zkproof_{\advse})$;
-%$r$ be $\adv$'s randomness; and $Q_\ro$ be the list of all random oracle queries made by
-%$\adv$.  All of these are given to the extractor $\extse$ that internally runs the forking
-%algorithm $\genforking_\zdv^{n_k}$.  Algorithm $\zdv$ takes
-%$(\srs, \advse, r)$ as input $y$ and $Q_\ro$ as input $h_1^1, \ldots, h_q^1$.
-%(For the sake of completeness, we allow $\genforking_\zdv^{n_k}$ to pick
-%$h^1_{l + 1}, \ldots, h^1_q$ responses if $Q_\ro$ has only $l < q$ elements.)
-%
-%Next, $\zdv$ internally runs $\adv(\srs; r)$ %\hamid{$\\advse(1^\secpar; r)$}
-%and responds to its random oracle queries using $Q_\ro$. Note that $\adv$ makes the same
-%queries as it did before it output $(\inp_{\advse}, \zkproof_{\advse})$ as it is run on
-%the same random tape and with the same answers from the simulator and random oracle. Once
-%$\adv$ outputs $\zkproof_{\advse}$, algorithm $\zdv$ outputs $(i, \zkproof_{\advse})$,
-%where $i$ is the index of a random oracle query submitted by $\advse$ to receive the
-%challenge after the $k$-th message from the prover -- a message after which the tree of
-%transcripts branches.  Then, after the first run of $\advse$ is done, the extractor runs
-%$\zdv$ again, but this time it provides fresh random oracle responses
-%$h^2_i, \ldots, h^2_q$. Note that this is equivalent to rewinding $\advse$ to a point just
-%before $\advse$ is about to ask its $i$-th random oracle query. The probability that the
-%adversary produces an accepting transcript with the fresh random oracle responses is at
-%least $\accProb$. This continues until the required number of transcripts is obtained.
-%
-%We note that in the original forking lemma, the forking algorithm $\forking$,
-%cf.~\cite{CCS:BelNev06}, gets as input only $y$ while elements $h^1_1, \ldots,
-%h^1_q$ are randomly picked from $H$ internally by $\forking$. However, assuming
-%that $h^1_1, \ldots, h^1_q$ are random oracle responses, and thus random, makes
-%the change only notational.}
-
-% We also note that the general forking lemma from
-% \cref{lem:generalised_forking_lemma} works for protocols with an extractor that can obtain the
-% witness from a $(1, \ldots, 1, n_k, 1, \ldots, 1)$-tree of accepting
-% transcripts. This limitation however does not affect the main result of this
-% paper, i.e.~showing that $\plonk$, $\sonic$, and $\marlin$ are simulation extractable.
-
-
 
 
 %%% Local Variables:

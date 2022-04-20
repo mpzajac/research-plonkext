@@ -45,7 +45,7 @@ to get it. It is straightforward to transform any adversary that violates this
 condition into an adversary that makes these additional queries to the random oracle
 and wins with the same probability.
 
-\chb{Finally, we note that for a proof system that is $k$-unique response, $k'$-programmable trapdoor-less simulatable, and $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-computational special sound, the theorem requires that $k \leq k''$ and $k'\leq k''$. The first condition ensures that a $k''$-th move message $\zkproof_{\advse}[k'']$ output by $\adv$ is fresh and not coming from the simulator. The second condition $k' \leq k''$ is to make the simulator able to program the random oracle for the challenges that $\advse$ needs to respond in the $k''$-th move.}
+Finally, we note that for a proof system that is $k$-unique response, $k'$-programmable trapdoor-less simulatable, and $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-computational special sound, the theorem requires that $k \leq k' \leq k''$. The first condition ensures that a $k'$-th move message $\zkproof_{\advse}[k']$ output by $\adv$ is fresh and not coming from the simulator. The second condition $k' \leq k''$ is to make the simulator able to program the random oracle for the challenges that $\advse$ needs to respond in the $k''$-th move.
 
 \input{proof-thm1-new}
 %\input{proof-thm1-old}
