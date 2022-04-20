@@ -397,13 +397,13 @@ is upper-bounded by
 	\label{lem:plonkprot_ss}
   $\plonkprot$ is $(3, 3 \noofc + 1)$-updatable computational special sound with security loss $(\epst(\accProb, \secpar), \epss(\secpar))$ against algebraic adversary $\adv^{\ro, \initU} (\secparam)$ where
   \[
-    \epst(\secpar) \leq \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\,,
+    \epst(\accProb, \secpar) \leq \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\,,
   \]
   and
 	\[
-	  \epss(\secpar) \leq \epsid(\secpar) + \epsldlog(\secpar) \,.
+	  \epss(\secpar) \leq \epsid(\secpar) + \epsudlog(\secpar) \,.
 	\]
-	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\numberofconstrains + \changedm{5}, 1)$-$\uldlog$ \hamid{18.4}{$(\dconst, \dconst)$-$\uldlog$?}\michals{18.04}{Corrected} assumption.
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + \changedm{5}, 1)$-$\udlog$ \hamid{18.4}{$(\dconst, \dconst)$-$\uldlog$?}\michals{18.04}{Corrected} assumption.
 \end{lemma}
 
 %\hamid{17.4}{Should we not make $\epst$ explicit here as $\epst = (\accProb - (q + 1) \epsk)/(1 - \epsk)$? If yes, then we should also change the statement of lemma as follows:
@@ -456,9 +456,9 @@ is upper-bounded by
     Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upperbounded by $\epsudlog (\secpar)$.
 
   \ncase{Conclusion}
-  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of acceptable transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an idealised verifier. Note that since $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for different challenges $\chz$, it obtains the same number of different evaluations of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$ and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined in prover's $3$-rd message description holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are of degree at most $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their evaluations known, $\extt$ can recreate polynomials' coefficients by interpolation and reveal the witness with probability $1$. Hence, the probability that extraction fails in that case is upper-bounded by probability of an idealised verifier failing $\epsid(\secpar)$ 
+  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of acceptable transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an idealised verifier. Note that since $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for different challenges $\chz$, it obtains the same number of different evaluations of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$ and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined in prover's $3$-rd message description holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are of degree at most $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their evaluations known, $\extt$ can recreate polynomials' coefficients by interpolation and reveal the witness with probability $1$. Hence, the probability that extraction fails in that case is upper-bounded by probability of an idealised verifier failing $\epsid(\secpar)$.
 
-  Probability that the adversary wins in Game 2 but not in Game 1 is 
+  \hamid{20.4}{Not clear what we have in the rest of the proof here.}Probability that the adversary wins in Game 2 but not in Game 1 is 
   \[
   \frac{\accProb + (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)} + \epsudlog(\secpar)  + \epsid (\secpar). 
   \]
