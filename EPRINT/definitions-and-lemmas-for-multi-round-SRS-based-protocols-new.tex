@@ -140,7 +140,7 @@ follows the definition below:
   transcript
   $(\inp, \zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_i)$,
   where $\inp$ is the proven statement. We say that $\proofsystem$ has \emph{unique
-    responses from $i$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\adv$:
+    responses from $i$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\adv$:\hamid{21.4}{There seems to be a typo in $\exists \zkproof_{j'} \neq \zkproof_{j'}: j' \leq j$ below!}
   \[
 	\Pr\left[
 	\begin{aligned}
@@ -158,7 +158,7 @@ follows the definition below:
 	\end{aligned}
 	\right.\right] \leq \epsur(\secpar) 
 	\]
-	Here, $\tilde{\verifier}$ behaves as $\verifier$ until round $k$ where it does not validate challenges $\zkproof_i.\ch$ sent in the proof against the random oracle $\ro$, but accepts them unconditionally. In other words, the verifier accepts proofs where challenges after $i$ are picked by the adversary. If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{i}$.
+	Here, $\tilde{\verifier}$ behaves as $\verifier$ until round $k$\hamid{21.4}{what is $k$?} where it does not validate challenges $\zkproof_i.\ch$ sent in the proof against the random oracle $\ro$, but accepts them unconditionally. In other words, the verifier accepts proofs where challenges after $i$ are picked by the adversary. If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{i}$.
 \end{definition}
 %
 Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using
