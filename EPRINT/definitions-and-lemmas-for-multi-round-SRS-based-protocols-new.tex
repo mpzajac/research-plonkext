@@ -140,13 +140,13 @@ follows the definition below:
   transcript
   $(\inp, \zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_i)$,
   where $\inp$ is the proven statement. We say that $\proofsystem$ has \emph{unique
-    responses from $i$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\adv$:\hamid{21.4}{There seems to be a typo in $\exists \zkproof_{j'} \neq \zkproof_{j'}: j' \leq j$ below!}
+    responses from $i$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\adv$:\hamid{21.4}{There seems to be a typo in $\exists \zkproof_{j'} \neq \zkproof_{j'}: j' \leq j$ below!}\michals{21.4}{Check now.}
   \[
 	\Pr\left[
 	\begin{aligned}
 	& \zkproof \neq \zkproof', (\zkproof_1, \ldots, \zkproof_{i}) = (\zkproof'_1,
 	\ldots, \zkproof'_{i}), \\
-	& \forall \zkproof_{j}.\ch \neq \zkproof'_{j}.\ch, \exists \zkproof_{j'} \neq \zkproof_{j'}: j' \leq j\\
+	& (\zkproof_{j} = \zkproof'_{j} \implies \zkproof_{j}.\ch = \zkproof_{j}.\ch)\\
 	& \tilde{\verifier}^{\ro}_\fs (\srs, \inp, \zkproof) =
 	\tilde{\verifier}^{\ro}_\fs(\srs, \inp, \zkproof') = 1  \\
 	\end{aligned}
@@ -158,7 +158,7 @@ follows the definition below:
 	\end{aligned}
 	\right.\right] \leq \epsur(\secpar) 
 	\]
-	Here, $\tilde{\verifier}$ behaves as $\verifier$ until round $k$\hamid{21.4}{what is $k$?} where it does not validate challenges $\zkproof_i.\ch$ sent in the proof against the random oracle $\ro$, but accepts them unconditionally. In other words, the verifier accepts proofs where challenges after $i$ are picked by the adversary. If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{i}$.
+	Here, $\tilde{\verifier}$ behaves as $\verifier$ until round $i$ where it does not validate challenges $\zkproof_i.\ch$ sent in the proof against the random oracle $\ro$, but accepts them unconditionally. In other words, the verifier accepts proofs where challenges after $i$ are picked by the adversary. If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{i}$.
 \end{definition}
 %
 Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using
@@ -223,7 +223,7 @@ Before giving the definition of computational special soundness for $2\mu + 1$-m
   challenges, such that no two edges on the same depth have the same
   label; and each node on depth $i$ has $n_{i} - 1$ siblings and $n_{i +
     1}$ children. The tree consists of $N = \prod_{i = 1}^\mu n_i$
-  branches, where $N$ is the number of accepting transcripts. We require $N = \poly$. \chb{We refer to a $(1, \ldots, n_k=n, 1, \ldots, 1)$-tree as a $(k,n)$-tree.}
+  branches, where $N$ is the number of accepting transcripts. We require $N = \poly$. We refer to a $(1, \ldots, n_k=n, 1, \ldots, 1)$-tree as a $(k,n)$-tree.
 \end{definition}
 
 \iffalse
@@ -283,7 +283,7 @@ tree of acceptable transcripts.  We require that the extractor fails to reconstr
 \begin{definition}[$(n_1,	\ldots, n_\mu)$-computational special soundness]
 	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$ be $\proofsystem$ after the Fiat--Shamir transform. 
 	
-	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $(\epst (\secpar, \accProb), \epss(\secpar))$, if there exists an expected polynomial time algorithm $\tdv$, and an expected polynomial time extractor $\extt$, such that for any PPT adversary $\advse$, that outputs a valid proof with probability at least $\accProb$, the following two conditions hold:\hamid{16.4}{I think it would be more clear if we keep $(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r)$ in the right side of the prob. equation; otherwise, it's hard to follow what $\ro$ and $\initU$ are that $\tdv$ simulates to $\advse$!}
+	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $\epst (\secpar, \accProb) + \epss(\secpar)$, if there exists an expected polynomial time algorithm $\tdv$, and an expected polynomial time extractor $\extt$, such that for any PPT adversary $\advse$, that outputs a valid proof with probability at least $\accProb$, the following two conditions hold:\hamid{16.4}{I think it would be more clear if we keep $(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r)$ in the right side of the prob. equation; otherwise, it's hard to follow what $\ro$ and $\initU$ are that $\tdv$ simulates to $\advse$!}
 	\michals{17.04}{I think it is bad idea to have on the right side just $(x, w) \gets \adv^{\ro, \initU}$ as we don't have $x, w$ on the left side, so it is confusing when we introduce them on the right side. To clarify how $\tdv$ simulates the oracles, we should add a text below the formula imho.}
 	\begin{align*}
 	\Pr\left[
@@ -296,7 +296,6 @@ tree of acceptable transcripts.  We require that the extractor fails to reconstr
 	\right] \geq 1 - \epst(\secpar, \accProb).
 	\end{align*}
 where $\tdv$ simulates oracles $\ro$ and $\initU$ to the adversary, $\srs$ is the finalized SRS, and $\tree$ is a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts, and
-%\michals{12.04}{To check: Does Attema et al condition probability for $\tree$ on the fact that the first transcript is acceptable?} 
 	\begin{align*}
 	\Pr\left[
 	\REL(\inp, \wit) = 0
@@ -304,21 +303,15 @@ where $\tdv$ simulates oracles $\ro$ and $\initU$ to the adversary, $\srs$ is th
 	\,\Biggl|\,
 	\begin{aligned}
 	& r \sample \RND{\advse},
-	%(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r), \\
 	&    \tree \gets \tdv((\srs,\adv,r)),
 	\wit \gets \extt(\tree)
 	\end{aligned}
 	\right] \leq \epss(\secpar).
 	\end{align*}
-%	Here, $\srs$ is the SRS that $\advse$ finalised using the update oracle $\initU$.
-	% List $Q_\ro$ contains all $\advse$'s queries to $\ro$ and the random oracle's answers; \changedm{list $Q_{srs}$ contains $\advse$'s queries to $\initU$ and the oracle's responses}.
 	 We call the protocol $(k, n)$-computational special sound when $\tree$ is a $(k, n)$-tree of accepting transcripts.
 \end{definition}
 
-%\hamid{6.4}{Todo: maybe we should add something like this before the definition: "while in this definition we only verify the proof provided by the adversary, all the proofs output by the tree generator $\tdv$ are implicitly verified with respect to the ''local programming'' of the random oracle.}
 	
-\michals{25.03}{I think this definition should come after the Attema et al's forking lemma. Especially since the tree building algorithm is the one from Attema et al}
-
 \oursubsub{Generalized forking lemma}
 Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general
 enough for our purpose as it is useful only for protocols where a witness can be
