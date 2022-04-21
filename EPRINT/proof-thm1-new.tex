@@ -10,7 +10,7 @@
 	\emph{updatable simulation-extractable} against any $\ppt$ adversary who return an acceptable proof with probability at least $\accProb$.  The
 	extraction probability $\extProb$ is at least
 	$\extProb \geq 1 - \epst(\secpar, \accProb)
-	- \epsur(\secpar) - \epss(\secpar)\,$.1
+	- \epsur(\secpar) - \epss(\secpar)\,$.
 \end{theorem}
 
 \begin{proof}		
@@ -77,7 +77,7 @@
 	If $\zkproof_1 = \zkproof_2$, then $\adv$ fails to break simulation soundness, as
 	$\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then $\rdvur$
 	breaks $\ur{k}$-ness of $\ps$. This happens only with negligible probability
-	$\epsur(\secpar)$, hence \( \prob{\event{\errur}} \leq \epsur(\secpar)\,. \)
+	$\epsur(\secpar)$, hence \( \prob{\event{\errur}} \leq \epsur(\secpar)\,. \). We denote by $\waccProb$ the probability that $\adv$ outputs an acceptable proof and does not break the unique response property. By the union bound $\waccProb \leq \accProb - \epsur (\secpar)$.
 
 	\iffalse
 	\ngame{2} In this game the environment additionally aborts if $\extse$ fails to build a
@@ -110,7 +110,7 @@
 		$\adv$, and corresponding responses.
 		
 		%\item 
-		Eventually when $\adv$ outputs $(\inp_\advse, \zkproof_\advse)$, $\bdv$ runs the tree building algorithm $\tdv$ and outputs the resulting $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-tree of accepting transcripts. We note that all the transcripts are acceptable w.r.t~a verifier $\verifier$ with access to a random oracle $\ro$. This is since, challenges from a programmed (by $\bdv$) random oracle only occur only after $k'$-th challenge. Since $k \leq k'$ non of the adversary $\adv$'s proof in $\tree$ utilize elements of simulated proofs after challenge $k$. Otherwise, the uniqe response property would be broken, what was excluded in Game 1.
+		Eventually when $\adv$ outputs $(\inp_\advse, \zkproof_\advse)$, $\bdv$ runs the tree building algorithm $\tdv$ and outputs the resulting $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-tree of accepting transcripts. We note that all the transcripts are acceptable w.r.t~a verifier $\verifier$ with access to a random oracle $\ro$. This is since, challenges from a programmed by $\bdv$ random oracle only occur only after $k'$-th challenge. Since $k \leq k'$ non of the adversary $\adv$'s proof in $\tree$ utilize elements of simulated proofs after challenge $k$. Otherwise, the uniqe response property would be broken, what was excluded in Game 1.
 	%\end{compactenum}	
 	
 	If $\extse$ outputs a valid witness, then $\adv$ fails to break simulation extractability. Otherwise, in the case that $\extse$ fails, $\bdv$ breaks special soundness of $\ps$. By assumption, this happens only with probability $\epss(\secpar) + \epst(\accProb, \secpar)$, hence $\abs{\prob{\game{2}} - \prob{\game{3}}} \leq \epss(\secpar) + \epst(\accProb, \secpar)$.
@@ -119,34 +119,29 @@
 	extract a witness from $\tree$,
 	the adversary $\advse$ cannot win. Thus, by the game-hopping argument,
 	\[
-	\abs{\prob{\game{0}} - \prob{\game{3}}} \leq 1 - \epst(\secpar, \waccProb)
-%	\frac{\waccProb - (q
-%			+ 1) \epsk(\secpar)}{1 - \epsk(\secpar)}
-		 + \epsur(\secpar) +
-	%q_{\ro}^{\mu} \epss +
-	\epss(\secpar)\,.
+	\abs{\prob{\game{0}} - \prob{\game{3}}} \leq \epst(\secpar, \waccProb)
+		 + \epsur(\secpar) + \epss(\secpar)\,.
 	\]
 	Thus the probability that extractor $\extse$ succeeds is at least
 	\[
 	%	\frac{\waccProb - (q + 1) \epsk(\secpar)}{1 - \epsk(\secpar)} -
-	\epst(\secpar, \waccProb) - 
+	1 - \epst(\secpar, \waccProb) - 
 	\epsur(\secpar)
 	%- q_{\ro}^{\mu} \epss
 	- \epss(\secpar)\,.
 	\]
-	Since $\waccProb$ is the probability of $\advse$ producing an accepting transcript
-	that does not break $\ur{k}$-ness of $\ps$, then $\waccProb \geq \accProb -
-	\epsur(\secpar)$, where $\accProb$ is the probability of $\advse$ outputting an accepting
-	proof as defined in \cref{def:updsimext}. Thus, \hamid{19.4}{The next equation should be changed. Todo: how should we compute $\epst(\secpar, \accProb)$ based on $\epst(\secpar, \waccProb)$?}\michals{21.04}{I think we have $\waccProb \leq \accProb + \epsur (\secpar)$}
-	\begin{equation}
-	\label{eq:frk}
-	\extProb \geq \frac{\accProb - \epsur(\secpar) - (q + 1) \epsk(\secpar)}{1 - \epsk(\secpar)} 
-	- \epsur(\secpar) - \epss(\secpar)\,.
-	\end{equation}
-
-	\michals{21.04}{The final equation utilises Atteama et al lemma. I think we can be more general here. Just express the probability using $\epsur, \epst$ etc. and then make a corollary that expresses the same probability but with Attema et al result plugged instead of $\epst$.}
+	
+	\end{proof}
+	
+	\begin{corollary}
+		Let $\tdv$ be a tree building algorithm that builds a tree according to \cref{fig:Attema-ext}. Then the extractor $\extse$ outputs a valid witness with probability \hamid{19.4}{The next equation should be changed. Todo: how should we compute $\epst(\secpar, \accProb)$ based on $\epst(\secpar, \waccProb)$?}
+		\begin{equation}
+			\label{eq:frk}
+			\extProb \geq \frac{\accProb - \epsur(\secpar) - (q + 1) \epsk(\secpar)}{1 - \epsk(\secpar)} 
+			- \epsur(\secpar) - \epss(\secpar)\,.
+			\end{equation} 
 	\qed
-\end{proof}
+\end{corollary}
 
 %%% Local Variables:
 %%% mode: latex
