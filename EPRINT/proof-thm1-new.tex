@@ -85,7 +85,7 @@
 	$(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-tree of accepting transcripts $\tree$ by rewinding
 	$\adv$.
 	
-	\ncase{Game 1 to Game 2} Note that for every accepting proof $\zkproof_{\advse}$, we 	may assume that whenever $\advse$ outputs a $k''$-th move message $\zkproof_{\advse}[k'']$, then the $(\inp_{\advse}, \zkproof_{\advse}[1..k'])$ 	random oracle query was made by the adversary, not the simulator\footnote{\cite{INDOCRYPT:FKMV12} calls these queries \emph{fresh}.}, i.e.~there is no simulated proof $\zkproof_\simulator$ on $\inp_\simulator$ such that $(\inp_{\advse}, \zkproof_{\advse} [1..k'']) = (\inp_\simulator, \zkproof_\simulator[1..k''])$. This follows directly from the assumption that $k \leq k'$. If that was the case, the game would be already interrupted by the error event in Game $\game{1}$. As previously, we have $\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}}$, where $\event{\errfrk}$ denotes the event of $\extse$ failing to build a $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-tree of accepting transcripts. Let $\waccProb$ be the probability of $\advse$ producing an accepting transcript that does not break $\ur{k}$-ness of $\ps$. By special soundness of $\proofsystem_\fs$, \hamid{19.4}{discuss if $\epst(\secpar, \waccProb)$ here makes sense!}, we have 
+	\ncase{Game 1 to Game 2} Note that for every accepting proof $\zkproof_{\advse}$, we 	may assume that whenever $\advse$ outputs a $k''$-th move message $\zkproof_{\advse}[k'']$, then the $(\inp_{\advse}, \zkproof_{\advse}[1..k'])$ 	random oracle query was made by the adversary, not the simulator\footnote{\cite{INDOCRYPT:FKMV12} calls these queries \emph{fresh}.}, i.e.~there is no simulated proof $\zkproof_\simulator$ on $\inp_\simulator$ such that $(\inp_{\advse}, \zkproof_{\advse} [1..k'']) = (\inp_\simulator, \zkproof_\simulator[1..k''])$. This follows directly from the assumption that $k \leq k'$. If that was the case, the game would be already interrupted by the error event in Game $\game{1}$. As previously, we have $\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}}$, where $\event{\errfrk}$ denotes the event of $\extse$ failing to build a $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-tree of accepting transcripts. Let $\waccProb$ be the probability of $\advse$ producing an accepting transcript that does not break $\ur{k}$-ness of $\ps$. By special soundness of $\proofsystem_\fs$, \hamid{19.4}{discuss if $\epst(\secpar, \waccProb)$ here makes sense!}\michals{21.04}{Seems it does, why?}, we have 
 		\begin{equation}
 		\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \prob{\event{\errfrk}} \leq 1 - 
 		\epst(\secpar, \waccProb).
@@ -134,12 +134,13 @@
 	Since $\waccProb$ is the probability of $\advse$ producing an accepting transcript
 	that does not break $\ur{k}$-ness of $\ps$, then $\waccProb \geq \accProb -
 	\epsur(\secpar)$, where $\accProb$ is the probability of $\advse$ outputting an accepting
-	proof as defined in \cref{def:updsimext}. Thus, \hamid{19.4}{The next equation should be changed. Todo: how should we compute $\epst(\secpar, \accProb)$ based on $\epst(\secpar, \waccProb)$?}
+	proof as defined in \cref{def:updsimext}. Thus, \hamid{19.4}{The next equation should be changed. Todo: how should we compute $\epst(\secpar, \accProb)$ based on $\epst(\secpar, \waccProb)$?}\michals{21.04}{I think we have $\waccProb \leq \accProb + \epsur (\secpar)$}
 	\begin{equation}
 	\label{eq:frk}
 	\extProb \geq \frac{\accProb - \epsur(\secpar) - (q + 1) \epsk(\secpar)}{1 - \epsk(\secpar)} 
 	- \epsur(\secpar) - \epss(\secpar)\,.
 	\end{equation}}
+	\michals{21.04}{The final equation utilises Atteama et al lemma. I think we can be more general here. Just express the probability using $\epsur, \epst$ etc. and then make a corollary that expresses the same probability but with Attema et al result plugged instead of $\epst$.}
 	\qed
 \end{proof}
 
