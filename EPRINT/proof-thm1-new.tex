@@ -134,7 +134,7 @@
 	\end{proof}
 	
 	\begin{corollary}
-		Let $\tdv$ be a tree building algorithm that builds a tree according to \cref{fig:Attema-ext}. Then the extractor $\extse$ outputs a valid witness with probability \hamid{19.4}{The next equation should be changed. Todo: how should we compute $\epst(\secpar, \accProb)$ based on $\epst(\secpar, \waccProb)$?}
+		Let $\tdv$ be a tree building algorithm that builds a tree according to \cref{fig:Attema-ext}. Then the extractor $\extse$ outputs a valid witness with probability \hamid{19.4}{The next equation should be changed. Todo: how should we compute $\epst(\secpar, \accProb)$ based on $\epst(\secpar, \waccProb)$?}\michals{21.04}{$\waccProb \geq \accProb - \epsur$}
 		\begin{equation}
 			\label{eq:frk}
 			\extProb \geq \frac{\accProb - \epsur(\secpar) - (q + 1) \epsk(\secpar)}{1 - \epsk(\secpar)} 
