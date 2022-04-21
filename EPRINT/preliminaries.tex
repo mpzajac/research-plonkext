@@ -641,27 +641,12 @@ updates the SRS.
 				\pcelse \pcreturn \bot
 			}
 		\end{minipage}
-		% \begin{minipage}[t]{0.3\linewidth}
-		% 	\procedure{$\simO(\inp')$}{
-		% 		\pcif (\srs = \bot): \pcreturn \bot \\
-		% 		% \hamid{should we formalize this extractor?}\\
-		% 		\zkproof'  \gets  \simulator(\srs, \COMMENT{ \td, }\inp')\\
-		% 		Q = Q \cup \{(\inp', \zkproof')\}\\
-		% 		\pcreturn  \zkproof' \\	
-%			}                         %
-%   \end{minipage}
+
   }
 	\caption{The oracle defines the notion of updatable SRS setup.} %\changedm{Here we deviate from the standard definition which requires existence of an extractor that from the final SRS and adversary's updates reveals the trapdoor that could be used by a simulator. This comes since our simulator is trapdoor-less.}}
 	%\hamid{24.3}{I think the red line above can be removed as we don't need trapdoor for simulation!}\michals{25.03}{Sure, check the change. What I wrote is actually much longer than the single line with the extractor. However, I think it is important to remove the line as otherwise someone may point out that we dont show how trapdoor is extracted, which ka are used to taht end etc.}% The right oracle is the simulation oracle.} 
 	\label{fig:upd}
 \end{figure}
-
-% We also define a simulator
-% $\simulator = (\simualtor_1, \simulator_2')$ which provides the adversary with
-% simulated queries w.r.t. the SRS finalised by the adversary using $\initU$. This
-% simulation oracle will be used in the definition of \COMMENT{forking }simulation
-% extractability.
-% \michals{29.10}{Def for simulating oracle shouldn't be here}
 
 \chb{\begin{remark}[Single adversarial updates after an honest setup.]\label{rem:upd}
 	One can consider a slightly different model of setup, wherein the adversary is given an initial (honestly-generated) SRS and then is allowed to maliciously update that in a one-shot fashion.

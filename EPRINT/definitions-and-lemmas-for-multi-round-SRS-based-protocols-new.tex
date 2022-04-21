@@ -273,11 +273,8 @@ can recover the trapdoor and build an arbitrary number of simulated proofs for a
 statement. Hence, we provide a weaker, yet sufficient, definition of
 \emph{computational special soundness}. More precisely, we state that an
 adversary that is able to answer correctly multiple challenges either knows the
-witness or can be used to break some computational assumption.
-\changedm{However, differently from the standard definition of special soundness, we do
-not require from the extractor to be able to extract the witness from \emph{any}
-tree of acceptable transcripts.  We require that the extractor fails to reconstruct the witness with some small probability only. More precisely, we show later that either the extractor extracts a witness from a tree of transcripts or the adversary who was used to produce the tree can be used to break some computationally hard problem. Note that in the definition below, it is implicit that each transcript in the tree is accepting with respect to a ``local programming'' of the random oracle. However, the verification of the proof output by the adversary is with respect to a non-programmed random oracle.
-}
+witness or can be used to break some computational assumption. However, differently from the standard definition of special soundness, we do not require from the extractor to be able to extract the witness from \emph{any} tree of acceptable transcripts.  We require that the extractor fails to reconstruct the witness with some small probability only. More precisely, we show later that either the extractor extracts a witness from a tree of transcripts or the adversary who was used to produce the tree can be used to break some computationally hard problem. Note that in the definition below, it is implicit that each transcript in the tree is accepting with respect to a ``local programming'' of the random oracle. However, the verification of the proof output by the adversary is with respect to a non-programmed random oracle.
+
 \hamid{25.3}{This is the new definition. Please check!}
 \chaya{9.4}{changes as per our discussion on 8.4}
 \begin{definition}[$(n_1,	\ldots, n_\mu)$-computational special soundness]
@@ -332,8 +329,8 @@ tree of accepting transcripts $\tree$, which allows to extract a witness.
 	with knowledge error $\epsk$. Assume adversary $\adv$ that makes up to $q$ random
 	oracle queries and outputs an acceptable proof with probability at least
 	$\accProb$. There exists a tree building algorithm $\tdv$ that utilizes the extractor $\zdv_1$ in~\cref{fig:Attema-ext} and succeeds in building a
-	$(n_1, \ldots, n_\mu)$-tree of accepting transcripts \chb{in expected
-	running time $N + q (N - 1)$} with probability at least
+	$(n_1, \ldots, n_\mu)$-tree of accepting transcripts in expected
+	running time $N + q (N - 1)$ with probability at least
 	\[
 	\frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)}.
 	\]
