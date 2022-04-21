@@ -280,27 +280,30 @@ witness or can be used to break some computational assumption. However, differen
 \begin{definition}[$(n_1,	\ldots, n_\mu)$-computational special soundness]
 	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu + 1)$-message proof system for a relation $\REL$. Let $\proofsystem_\fs$ be $\proofsystem$ after the Fiat--Shamir transform. 
 	
-	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $\epst (\secpar, \accProb) + \epss(\secpar)$, if there exists an expected polynomial time algorithm $\tdv$, and an expected polynomial time extractor $\extt$, such that for any PPT adversary $\advse$, that outputs a valid proof with probability at least $\accProb$, the following two conditions hold:\hamid{16.4}{I think it would be more clear if we keep $(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\ro, \initU} (1^\secpar; r)$ in the right side of the prob. equation; otherwise, it's hard to follow what $\ro$ and $\initU$ are that $\tdv$ simulates to $\advse$!}
+	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $\epst (\secpar, \accProb) + \epss(\secpar)$, if there exists an expected polynomial time algorithm $\tdv$, and an expected polynomial time extractor $\extt$, such that for any PPT adversary $\bdv$, that outputs a valid proof with probability at least $\accProb$, the following two conditions hold:
 	\michals{17.04}{I think it is bad idea to have on the right side just $(x, w) \gets \adv^{\ro, \initU}$ as we don't have $x, w$ on the left side, so it is confusing when we introduce them on the right side. To clarify how $\tdv$ simulates the oracles, we should add a text below the formula imho.}
+	\markulf{22.4}{I think its a good idea: we need that $w$ is for the $x$ that resulted from the right execution of $A$. But we need to set it up right.}
 	\begin{align*}
 	\Pr\left[
-  	\tree \gets \tdv((\srs,\adv,r)),
+  	\tree \gets \tdv((\srs,\bdv,r, Q_\ro,Q_{\initU})),
 	\,\Biggl|\,
 	\begin{aligned}
   %	&
-		 r \sample \RND{\advse}%,
+		 r \sample \RND{\bdv} \\
+		 x, \cdot \gets \bdv^{\ro, \initU} (1^\secpar; r)
 	\end{aligned}
 	\right] \geq 1 - \epst(\secpar, \accProb).
 	\end{align*}
-where $\tdv$ simulates oracles $\ro$ and $\initU$ to the adversary, $\srs$ is the finalized SRS, and $\tree$ is a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts, and
+where $\tdv$ simulates oracles $\ro$ and $\initU$ to the adversary, $\srs$ is the finalized SRS of $\initU$, and $\tree$ is a $(n_1, \ldots, n_\mu)$-tree of accepting transcripts for $x$, and
 	\begin{align*}
 	\Pr\left[
 	\REL(\inp, \wit) = 0
 	%\land \verifier_\fs(\srs, \inp_{\advse}, \pi_\advse) = 1
-	\,\Biggl|\,
+	\,\Bigg|\,
 	\begin{aligned}
-	& r \sample \RND{\advse},
-	&    \tree \gets \tdv((\srs,\adv,r)),
+	& 	r \sample \RND{\bdv}, \\
+	& 	x, \cdot \gets \bdv^{\ro, \initU} (1^\secpar; r)\\
+	&  	\tree \gets \tdv((\srs,\bdv,r)),
 	\wit \gets \extt(\tree)
 	\end{aligned}
 	\right] \leq \epss(\secpar).

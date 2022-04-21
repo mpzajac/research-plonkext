@@ -73,7 +73,7 @@
 		\end{align*}
 	%\end{compactitem}
 
-	Importantly, both proofs are acceptable w.r.t~the unique response property verifier $\tilde{\verifier}$. The first, since the unique response property definition allows any challenges after $k$. The latter, since it is an acceptable proof produced by the advresary.
+	Importantly, both proofs are acceptable w.r.t~the unique response property verifier $\tilde{\verifier}$. The first, since the unique response property definition allows any challenges after $k$. The latter, since it is an acceptable proof produced by the adversary.
 	If $\zkproof_1 = \zkproof_2$, then $\adv$ fails to break simulation soundness, as
 	$\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then $\rdvur$
 	breaks $\ur{k}$-ness of $\ps$. This happens only with negligible probability
@@ -104,6 +104,26 @@
 		%
 		First, $\bdv$ answers $\adv$ random oracle and update queries by passing the queries to the real
 		oracles $\ro$ and $\initU$. When $\adv$ finalises an SRS $\srs$, $\bdv$ does the same.
+
+		\begin{pcvstack}[center,boxed]
+			\begin{pchstack}
+				\procedure{$\simulator_1.\ro(x)$}
+				{
+				\pcif H[x] = \bot \pcthen \\
+				\quad H[x] \gets \ro(x) \\
+				\pcreturn H[x]
+		  		}
+				
+				\pchspace
+				
+				\procedure{$\simulator_1.\mathsf{Prog(x,h)}$}
+				{ 
+					\pcif H[x] = \bot \pcthen \\ 
+					\quad H[x] \gets h \\
+					\quad \mathsf{Prog} \gets \mathsf{Prog} \cup \{x\}
+				}
+			\end{pchstack}
+		\end{pcvstack}
 		
 		$\bdv$ answers simulator queries by using coins $\rsim$. More precisely, to build a simulated proof $\bdv$ queries $\ro$ for challenges up to $k'$-th challenge. After $k'$ challenge, it picks challenges on its own. $\bdv$ maintains a
 		list of instance-proof pairs $Q$ consisting of all simulation queries made by
