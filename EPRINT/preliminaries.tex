@@ -2,6 +2,9 @@
 % !TEX spellcheck = en-US
 \section{Preliminaries}
 \label{sec:preliminaries}
+
+\markulf{22.04}{Consider if we actually need these notions and notations, if we only need them in one place, move the definition there.}
+
 \paragraph{Notation.} Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
 security parameter. All adversaries are stateful. For an algorithm $\adv$, let
 $\image (\adv)$ be the image of $\adv$ (the set of valid outputs of $\adv$), let
@@ -28,6 +31,7 @@ $\REL$ comes with any auxiliary input, the latter is benign. Directly from the
 description of $\REL$ one learns security parameter $\secpar$ and description of the
 group $\GRP$, if the relation is a relation of group elements (as it usually the case for zkSNARKs).
 
+\markulf{22.04}{A lot of stuff we only need after Section 4, and likely not in that detail. If it is closer to where it is actually used, it also becomes more obvious whether it actually helps the reader.}
 \ourpar{Bilinear groups.}
 A bilinear group generator $\pgen (\secparam)$ returns public parameters $ \pp =
 (p, \GRP_1, \GRP_2, \GRP_T, \pair, \gone{1}, \gtwo{1})$, where $\GRP_1$,
@@ -99,8 +103,10 @@ proofs. More precisely, we show that
 
 Analogously, idealised verifier can be defined for polynomial commitment schemes.
 
- 
+
 \subsection{Signatures of Knowledge}
+\markulf{22.04}{Should be somewhere else. Intro and maybe a final short section on SoK, definition could go to appendix. Maybe comment somewhere that there is a well known conversion from SE-NIZK to SoK, add m to x but don't prove anything about it, for FS this means adding m into the hash of the transcript.}
+
 Signatures of Knowledge (SoKs) \cite{C:ChaLys06} are closely related to
 simulation-extractable SNARKs: A signer can generate a valid signature for a message
 only if she has a valid witness for the statement.
@@ -161,7 +167,10 @@ A SoK scheme should satisfy correctness, extractability and simulatability:
 ~ \signature \gets  \sign(\mesage, \inp, \wit)
  \end{matrix} }  =1. 
 \]
+
 %
+
+\markulf{22.04}{Because of the trapdoor these definitions are not very suitable for us.}
 \item[Simulation Extractability:] This guarantees that an adversary is not able to issue a new signature
 unless it knows a witness. This should hold even if the adversary gets to see signatures on
 arbitrary messages under arbitrary statements. We model this notion in a strong sense, by
@@ -224,25 +233,28 @@ $Q_{\simsign_\td}$ of all queries made by $\adv$, and $\adv$'s randomness $r$.
 \end{description}
 
   \subsection{Dlog assumptions}
+  \markulf{22.04}{Move it to Section 5.}
 \label{sec:dlog_assumptions}
 \begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]\label{def:dlog}
 	Let $\adv$ be a $\ppt$ adversary that gets as input
   $\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}}$, for
-  some randomly picked $\chi \in \FF_p$, then
+  some randomly picked $\chi \in \FF_p$, the assumption requires that $\adv$ cannot compute $\chi$. That is
 	\[
-		\condprob{\chi \gets \adv(\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi,
+		\condprob{\chi = \adv(\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi,
         \ldots, \chi^{q_2} })}{\chi \sample \FF_p} \leq \negl.
 	\]
 \end{definition}
 
+\markulf{22.04}{I prefer the notation $Pr[\chi \gets \FF_q; \chi' \gets \adv( ...): \chi=\chi']$ as one can start reading at the left. But I will let that one go and will admit that it's a question of taste and it might be an aquired taste. }
+
 \begin{definition}[$(q_1, q_2)\mhyph\ldlog$ assumption]\label{def:ldlog}
   Let $\adv$ be a $\ppt$ adversary that gets as input
-  $\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots, \chi^{q_1}}, \gtwo{\chi^{-q_2},
-    \ldots, 1, \chi, \ldots, \chi^{q_2}}$, for some randomly picked
-  $\chi \in \FF_p$, then
+  $\gone{\chi^{-q_1}, \ldots, 1, \ldots, \chi^{q_1}}, \gtwo{\chi^{-q_2},
+    \ldots, 1, \ldots, \chi^{q_2}}$, for some randomly picked
+  $\chi \in \FF_p$, the assumption requires that $\adv$ cannot compute $\chi$. That is
 	\[
-    \condprob{\chi \gets \adv(\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots,
-        \chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \chi, \ldots, \chi^{q_2}
+    \condprob{\chi = \adv(\gone{\chi^{-q_1}, \ldots, 1, \ldots,
+        \chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \ldots, \chi^{q_2}
       })}{\chi \sample \FF_p} \leq \negl.
 	\]
 \end{definition}
