@@ -147,12 +147,12 @@ follows the definition below:
 	& \zkproof \neq \zkproof', (\zkproof_1, \ldots, \zkproof_{i}) = (\zkproof'_1,
 	\ldots, \zkproof'_{i}), \\
 	& (\zkproof_{1}, \ldots, \zkproof_{j}) = (\zkproof'_{1}, \ldots, \zkproof'_{j}) \implies \zkproof_{j}.\ch = \zkproof'_{j}.\ch)\\
-	& \tilde{\verifier}^{\ro}_\fs (\srs, \inp, \zkproof) =
-	\tilde{\verifier}^{\ro}_\fs(\srs, \inp, \zkproof') = 1  \\
+	& \tilde{\verifier}_\fs (\srs, \inp, \zkproof) =
+	\tilde{\verifier}_\fs(\srs, \inp, \zkproof') = 1  \\
 	\end{aligned}
 	\,\left|\,
 	\begin{aligned}
-		& (\inp, \zkproof, \zkproof') \gets \adv^{\ro, \initU}(1^\secpar) \\
+		& (\inp, \zkproof, \zkproof') \gets \adv^{\initU}(1^\secpar) \\
 		& \zkproof = (\zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{\mu}.\ch, \zkproof_{\mu + 1}), \\
 		& \zkproof' =  (\zkproof'_1, \ldots, \zkproof'_{\mu}.\ch, \zkproof'_{\mu + 1})
 	\end{aligned}
@@ -160,7 +160,9 @@ follows the definition below:
 	\]
 	\michals{22.04}{Remove desc of $\zkproof$ and $\zkproof'$ from the right side of prob.}
 	\michals{22.04}{Remove the random oracle, let the adversary pick its own challenges conditioned on a fact the adversary changes the message first, then the challenge}
-	Here, $\tilde{\verifier}$ behaves as $\verifier$ until round $i$ where it does not validate challenges $\zkproof_i.\ch$ sent in the proof against the random oracle $\ro$, but accepts them unconditionally. In other words, the verifier accepts proofs where challenges after $i$ are picked by the adversary. If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{i}$.
+
+	\markulf{22.04}{introduce macro advur for $\adv_\mathsf{ur}$.}
+	Here, $\tilde{\verifier}_\fs$ behaves as $\verifier^\ro_\fs$ except that it does not validate challenges $\zkproof_i.\ch$ sent in the proof against the random oracle $\ro$, but accepts them unconditionally. In other words, the verifier accepts proofs where challenges are picked by the adversary. If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{i}$.
 \end{definition}
 %
 Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using
