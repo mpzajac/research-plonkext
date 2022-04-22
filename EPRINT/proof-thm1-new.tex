@@ -5,15 +5,22 @@
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
 	$(2 \mu + 1)$-message HVZK proof system for $\RELGEN(\secparam)$. Let
 	$\ro \colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. If $\psfs$ has the
-	$k$-\emph{updatable unique response property} with security loss $\epsur(\secpar)$, is
-	\emph{updatable $k'$-programmable trapdoor-less simulatable}, and $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-\emph{updatable computational special sound} with security loss $(\epst (\secpar, \accProb) +  \epss(\secpar))$, where $k \leq k' \leq k''$. Then $\psfs$ is
-	\emph{updatable simulation-extractable} against any $\ppt$ adversary who return an acceptable proof with probability at least $\accProb$.  The
-	extraction probability $\extProb$ is at least
-	$\extProb \geq 1 - \epst(\secpar, \accProb)
-	- \epsur(\secpar) - \epss(\secpar)\,$.
+	$k$-\emph{updatable unique response property} with security loss $\epsur(\secpar)$, 
+	\emph{updatable $k'$-programmable trapdoor-less zero knowledge}, and $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-\emph{updatable computational special soundness} with security loss $\epscss(\secpar)$, where $k \leq k' \leq k''$. Then $\psfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who return an acceptable proof with probability at least $\accProb$ with 	extraction probability $\extProb$ is at least
+	$\extProb \geq 1 - \epscss(\secpar, \accProb) - \epsur(\secpar)\,$.
 \end{theorem}
 
-\begin{proof}		
+\begin{proof}	
+	\michals{22.04}{Started writting draft of the proof. Feel free to write your own proof.}
+	Let $(\srs, \inp, \wit) \gets \advse^{\initU, \simulator_1, \simulator_2}$. We show that $\extse (\srs, \advse, r, \Qro, \Qsrs, \Qsim)$ outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with probability $\extProb$. To that end we define an algorithm $\advcss^{\ro, \initU}$ which will be used to break the computational special soundness of $\ps$ with probability greater than $\epscss(\secpar, \accProb)$ if $\advse$ makes $\extse$ fail with probability greater than $\extProb$. %Adversary $\advcss$ proceeds as follows. 
+
+	Adversary $\advcss^{\ro, \initU}$ runs internally $\advse^{\initU, \simulator_1, \simulator'_2}$, hence it needs to take care of $\advse$'s oracle queries.  
+	Queries to the update oracle $\advse.\initU$ are passed to $\advcss.\initU$. Also, answers from $\advcss.\initU$ are passed as $\advse.\initU$ answers.
+	Queries to the simulator $\advse.\simulator_2$ are processed by $\advcss$ who computes the simulated proof by programming $\advse.\simulator_1$ to return the required value.  
+	Queries to the random oracle $\advse.\simulator_1$ are passed to $\advcss.\ro$ oracle, except 
+
+	\michals{22.04}{The old proof begins here}
+
 	\ngame{0} This is the simulation-extractability game played between an adversary
 	$\advse$ who is given access to an oracle $\initU$ that defines an updatable SRS
 	setup, and a simulation oracle $\simulator = (\simulator_1, \simulator_2')$ which provides the adversary with simulated
@@ -40,7 +47,7 @@
 	its final proof reuses at least $k$ messages from a simulated proof, and the proof
 	is accepting.  Denote this event by $\event{\errur}$.
 	\michals{22.04}{This game should be merged into Game 2}
-	
+
 	\ncase{Game 0 to Game 1} We have,
 	\( \prob{\game{0} \land \nevent{\errur}} = \prob{\game{1} \land \nevent{\errur}} \)
 	and, from the difference lemma, cf.~\cref{lem:difference_lemma},

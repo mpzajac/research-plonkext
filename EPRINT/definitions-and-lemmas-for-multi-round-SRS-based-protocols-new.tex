@@ -147,7 +147,7 @@ follows the definition below:
 	\end{aligned}
 	\,\right|\,
 	\begin{aligned}
-		& (\inp, \zkproof, \zkproof') \gets \adv^{\initU}(1^\secpar) 
+		& (\srs, \inp, \zkproof, \zkproof') \gets \adv^{\initU}(1^\secpar) 
 	\end{aligned}
 	\right] \leq \epsur(\secpar) 
 	\]
@@ -280,8 +280,8 @@ witness or can be used to break some computational assumption. However, differen
 	\REL(\inp, \wit) = 0
 	\,\left|\,
 	\begin{aligned}
-	& 	r \sample \RND{\bdv}, \\
-	& 	(\srs, \inp, \cdot) \gets \bdv^{\ro, \initU} (1^\secpar; r)\\
+	& 	r \sample \RND{\advcss}, \\
+	& 	(\srs, \inp, \cdot) \gets \advcss^{\ro, \initU} (1^\secpar; r)\\
 	&  	\tree \gets \tdv((\srs, \advcss, r)),
 	\wit \gets \extcss(\tree)
 	\end{aligned}\right.
