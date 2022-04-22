@@ -146,7 +146,7 @@ follows the definition below:
 	\begin{aligned}
 	& \zkproof \neq \zkproof', (\zkproof_1, \ldots, \zkproof_{i}) = (\zkproof'_1,
 	\ldots, \zkproof'_{i}), \\
-	& (\zkproof_{j} = \zkproof'_{j} \implies \zkproof_{j}.\ch = \zkproof_{j}.\ch)\\
+	& (\zkproof_{1}, \ldots, \zkproof_{j}) = (\zkproof'_{1}, \ldots, \zkproof'_{j}) \implies \zkproof_{j}.\ch = \zkproof'_{j}.\ch)\\
 	& \tilde{\verifier}^{\ro}_\fs (\srs, \inp, \zkproof) =
 	\tilde{\verifier}^{\ro}_\fs(\srs, \inp, \zkproof') = 1  \\
 	\end{aligned}
@@ -158,6 +158,8 @@ follows the definition below:
 	\end{aligned}
 	\right.\right] \leq \epsur(\secpar) 
 	\]
+	\michals{22.04}{Remove desc of $\zkproof$ and $\zkproof'$ from the right side of prob.}
+	\michals{22.04}{Remove the random oracle, let the adversary pick its own challenges conditioned on a fact the adversary changes the message first, then the challenge}
 	Here, $\tilde{\verifier}$ behaves as $\verifier$ until round $i$ where it does not validate challenges $\zkproof_i.\ch$ sent in the proof against the random oracle $\ro$, but accepts them unconditionally. In other words, the verifier accepts proofs where challenges after $i$ are picked by the adversary. If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{i}$.
 \end{definition}
 %
@@ -171,6 +173,7 @@ meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the 
 string.
 
  \subsection{Trapdoor-Less Simulation}
+ \michals{22.04}{Rename to Trapdoor-Less ZK?}
  Security reductions in this paper sometimes need to produce simulated NIZK proofs without
  knowing the trapdoor, just by programming the random oracle. Moreover, it may be not allowed to program every random oracle challenge but only challenges that come after $k$-th prover's message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less simulatable} (TLS).
 
@@ -225,6 +228,7 @@ Before giving the definition of computational special soundness for $2\mu + 1$-m
     1}$ children. The tree consists of $N = \prod_{i = 1}^\mu n_i$
   branches, where $N$ is the number of accepting transcripts. We require $N = \poly$. We refer to a $(1, \ldots, n_k=n, 1, \ldots, 1)$-tree as a $(k,n)$-tree.
 \end{definition}
+\michals{22.04}{Tree should be defined w.r.t. particular $x$}
 
 \iffalse
 		
@@ -299,16 +303,18 @@ where $\tdv$ simulates oracles $\ro$ and $\initU$ to the adversary, $\srs$ is th
 	\Pr\left[
 	\REL(\inp, \wit) = 0
 	%\land \verifier_\fs(\srs, \inp_{\advse}, \pi_\advse) = 1
-	\,\Bigg|\,
+	\,\left|\,
 	\begin{aligned}
 	& 	r \sample \RND{\bdv}, \\
 	& 	x, \cdot \gets \bdv^{\ro, \initU} (1^\secpar; r)\\
 	&  	\tree \gets \tdv((\srs,\bdv,r)),
 	\wit \gets \extt(\tree)
-	\end{aligned}
+	\end{aligned}\right.
 	\right] \leq \epss(\secpar).
 	\end{align*}
 	 We call the protocol $(k, n)$-computational special sound when $\tree$ is a $(k, n)$-tree of accepting transcripts.
+	 \michals{22.04}{Make $\tdv$ output bot as well (if necessary)}
+	 \michals{22.04}{Use Attema et tree builder directly?}
 \end{definition}
 
 	
