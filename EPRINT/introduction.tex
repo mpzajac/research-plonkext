@@ -99,6 +99,7 @@ Consider the following scenario: We assume a rushing adversary that starts off w
 
 A definition of SE in the updatable setting should take these additional powers of the adversary, which are not captured by existing definitions of SE, into consideration.
 While generic lifting techniques/compilers~\cite{EPRINT:KZMQCP15,CCS:AbdRamSla20} can be applied to updatable SRS SNARKs to obtain SE, not only do they inevitably incur overheads and lead to efficiency loss, we contend that the standard definition of SE does not suffice in the updatable setting.
+\markulf{22.04}{Is there more recent work to cite here, ask Karim.}
 
 We investigate the non-malleability properties of a class of zkSNARK protocols obtained by FS-compiling multi-message protocols in the updatable SRS setting and give a modular approach to analyse the simulation-extractability of zkSNARKs.
 \subsection{Our Contributions}
@@ -151,8 +152,8 @@ In the following, we denote the underlying interactive protocols by $\plonkprot$
 the resulting non-interactive proof systems by $\plonkprotfs$, $\sonicprotfs$,
 $\marlinprotfs$ respectively.
 
-\oursubsub{Computational special soundness in the updatable setting.}
-Following~\cite{INDOCRYPT:FKMV12}, one would have to show that for the protocols
+\oursubsub{Rewinding-based knowledge soundness in the updatable setting.}
+Following \cite{INDOCRYPT:FKMV12}, one would have to show that for the protocols
 we consider a witness can be extracted from sufficiently many valid transcripts
 with a common prefix. The standard definition of special soundness for sigma
 protocols requires extraction of a witness from any two transcripts with the
@@ -168,13 +169,23 @@ linear constraints -- for Sonic, and $(\multconstr + 3)$ -- where $\multconstr$
 is the number of multiplicative constraints -- for Marlin. Hence, we do not have
 a pair of transcripts, but a \emph{tree of transcripts}.
 
-Furthermore, in protocols that rely on SRS that come with a trapdoor, an adversary in
+Furthermore, in protocols we consider are arguments and rely on a SRS that comes with a trapdoor. An adversary in
 possession of the trapdoor can produce multiple valid proof transcripts without
 knowing the witness and potentially for false statements. This is true even in
 the updatable setting, where there exists a trapdoor for any updated SRS. Recall
 that the standard special soundness definition requires witness extraction from
 \emph{any} tree of accepting transcripts that share a common root. This means
-that there are no such trees for false statements. \hamid{17.3}{This should be rephrased:} \chb{We define a different,
+that there are no such trees for false statements. 
+
+Instead, we give a rewinding-based knowledge soundness definition with an extractor that proceeds in two steps. It first uses a tree building algorithm $\tdv_{\mathsf{build}}$ to obtain a tree of transcripts. In the second it uses a tree extraction algorithm $\tdv{\mathsf{extract}}$ to compute a witness from this tree. Tree-based knowledge soundness guarantees that it is possible to extract a witness from all
+(but negligibly many) trees of accepting transcripts produced by probabilistic
+polynomial time (PPT) adversaries. That
+is, if extraction from such a tree fails, then we break an underlying
+computational assumption. Moreover, this should hold even against adversaries
+that contribute to the SRS generation.
+
+\markulf{22.4}{Reused the text below above for rewinding-based knowledge soundness discussion. Which aspects are unexplained or need restating?}
+\hamid{17.3}{This should be rephrased:} \chb{We define a different,
 forking lemma-related, version of soundness that we call \emph{computational special soundness}.
 Computational special soundness guarantees that it is possible to extract a witness from all
 (but negligibly many) trees of accepting transcripts produced by probabilistic
@@ -188,7 +199,7 @@ that contribute to the SRS generation.
 required to show USE is the unique response property~\cite{C:Fischlin05} which says
 that for $3$-message sigma protocols, all but the first messages sent by the prover are
 deterministic (intuitively, the prover can only employ fresh randomness in the first
-message of the protocol). We cannot use this definition as it is since the protocols
+message of the protocol). We cannot use this definition since the protocols
 we consider have more than one move where the prover sends randomized messages. In
 Plonk, both the first and the third messages (i.e.~first two prover's messages when
 we consider Plonk as an interactive protocol) are randomized. Although Sonic prover
