@@ -293,6 +293,8 @@ defined as follows:
 %\hamid{10.2}{Should we change the definitions to the updatable setting? In that case, we should move updatable section earlier before this!}
 % \begin{description}
 
+	\markulf{22.04}{I don't think we need formal definitions for completeness and soundness}
+
 \ourpar{Completeness.}
 %\item[Completeness]
   A non-interactive proof system $\proofsystem$ is
@@ -319,6 +321,8 @@ verifier rejects proofs of statements outside the language, we request from the
 prover to know a witness corresponding to the proven statement. This property is
 called \emph{knowledge soundness}.%\markulf{Commented out the formal definition as we don't use it.}
  
+\markulf{22.04}{Lets give the zero-knowledge definition only once.}
+
 \ourpar{Zero knowledge.}  Our definition of zero-knowledge for non-interactive
 arguments is in the explicitly programmable random oracle model where the simulator
 $\simulator$ can program the random oracle. We model $\simulator$ as a stateful
@@ -371,7 +375,7 @@ simulators that requires a trapdoor to simulate and those that do not. We call t
 former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less
   simulatable} (TLS) if its simulator does not require the trapdoor, cf.~\cref{def:tls}.
 
-  \markulf{22.04}{We don't consider SRS-simulators in this paper. But I would move it after the Updatable SRS scheme section, oul be the start of Section 3.}
+  \markulf{22.04}{We don't consider SRS-simulators in this paper. I would simplify and move the above after the Updatable SRS scheme section, or maybe the start of Section 3.}
 
 \subsection{From interactive to non-interactive---the Fiat--Shamir transform}
 Consider a $(2\mu + 1)$-message, public-coin, honest verifier zero-knowledge

@@ -4,7 +4,7 @@
 \label{sec:se_definitions}
 
 
-\ourpar{Signatures of Knowledge from SE-SNARKs.}  The work of Groth and Maller
+\ourpar{Signatures of Knowledge from SE-SNARKs.}  \markulf{22.04}{wrong place} The work of Groth and Maller
 \cite{C:GroMal17} shows how to construct a signature of knowledge for messages in
 $\{0, 1\}^*$ from target collision-resistant hash-function and simulation-extractable
 SNARKs. This construction can be found in \Cref{sec:SoKconstruction}.
@@ -14,7 +14,7 @@ succinct.  In the following, our goal will be to show that recent efficient SNAR
 simulation extractable, and therefore, they are a perfect candidate to build better
 signatures of knowledge.
 
-\ourpar{Simulation-extractability for multi-message protocols.}  Most recent SNARK schemes
+\ourpar{Simulation-extractability for multi-message protocols.} \markulf{22.04}{Way too long and repeats stuff from the intro. We only need a very short paragraph.} Most recent SNARK schemes
 are following the same blueprint: First, an interactive (multi-message)
 information-theoretic proof system is considered.
 Second, this initial proof system is compiled into an efficient, non-interactive and
@@ -36,6 +36,8 @@ to support multi-message SRS-based protocols compiled using the Fiat--Shamir tra
 we generalize the unique response property, replace honest-verifier zero-knowledge
 property with trapdoor-less simulation and special soundness with a computational special
 soundness property that links up with the generalized forking lemma.
+
+\markulf{22.04}{Could have ZK here. For updateable setting, it is also a new notion}
 
 \subsection{Simulation extractability}
 We note that the zero-knowledge property is only guaranteed for statements in the
@@ -259,6 +261,7 @@ Before giving the definition of computational special soundness for $2\mu + 1$-m
 
 \fi
 
+\markulf{22.04}{Don't repeat discussion from introduction. Improve it in one place.}
 \oursubsub{Computational special soundness}
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
@@ -285,11 +288,10 @@ witness or can be used to break some computational assumption. However, differen
 	&  	\tree \gets \tdv((\srs, \advcss, r)),
 	\wit \gets \extcss(\tree)
 	\end{aligned}\right.
-	\right] \leq \epscss(\secpar).
+	\right] \leq \epscss(\secpar,\accProb).
 	\end{align*}
-	 We call the protocol $(k, n)$-computational special sound when $\tree$ is a $(k, n)$-tree of accepting transcripts.
+	 We call the protocol $(k, n)$-computational special sound when $\tdv$ builds a $(k, n)$-tree of accepting transcripts.
 \end{definition}
-
 	
 \oursubsub{Generalized forking lemma}
 Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general
@@ -307,7 +309,7 @@ an accepting transcript, $\accProb$, lower-bounds the probability of generating 
 tree of accepting transcripts $\tree$, which allows to extract a witness.
 
 \begin{lemma}[Generalized forking lemma~\cite{EPRINT:AttFehKlo21}]\label{lem:attema}
-	\chb{Let $N = n_1 \cdots n_\mu$.} Let $\proofsystem$ be a proof system that is knowledge sound
+	\chb{Let $N = n_1 \cdots n_\mu$.} Let $\proofsystem$ be a proof system that is knowledge sound \markulf{22.04}{Requiring knowledge soundness here seems circular.}
 	with knowledge error $\epsk$. Assume adversary $\adv$ that makes up to $q$ random
 	oracle queries and outputs an acceptable proof with probability at least
 	$\accProb$. There exists a tree building algorithm $\tdv$ that utilizes the extractor $\zdv_1$ in~\cref{fig:Attema-ext} and succeeds in building a
