@@ -7,18 +7,16 @@
 	$\ro \colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. If $\psfs$ has the
 	$k$-\emph{updatable unique response property} with security loss $\epsur(\secpar)$, 
 	\emph{updatable $k'$-programmable trapdoor-less zero knowledge}, and $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-\emph{updatable computational special soundness} with security loss $\epscss(\secpar)$, where $k \leq k' \leq k''$. Then $\psfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who return an acceptable proof with probability at least $\accProb$ with 	extraction probability $\extProb$ is at least
-	$\extProb \geq 1 - \epscss(\secpar, \accProb) - \epsur(\secpar)\,$.
+	$\extProb \geq 1 - \epscss(\secpar, \accProb)\,$.
 \end{theorem}
 
 \begin{proof}	
 	\michals{22.04}{Started writting draft of the proof. Feel free to write your own proof.}
-	Let $(\srs, \inp, \wit) \gets \advse^{\initU, \simulator_1, \simulator_2}$. We show that $\extse (\srs, \advse, r, \Qro, \Qsrs, \Qsim)$ outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with probability $\extProb$. To that end we define an algorithm $\advcss^{\ro, \initU}$ against computational special soundness of $\ps$.
-	% with probability greater than $\epscss(\secpar, \accProb)$ if $\advse$ makes $\extse$ fail with probability greater than $\extProb$. %Adversary $\advcss$ proceeds as follows. 
-%
-	Adversary $\advcss^{\ro, \initU}$ runs internally $\advse^{\initU, \simulator_1, \simulator'_2}$, hence it needs to take care of $\advse$'s oracle queries. %Since both algorithms use similar set of oracles, we write $\adv.\oracleo$ to state that a query is make to $\oracleo$ given to algorithm $\adv$ to avoid confusion.
-
+	Let $(\srs, \inp, \wit) \gets \advse^{\initU, \simulator_1, \simulator_2}(r_{\advse})$. We show that $\extse (\srs, \advse, r_{\advse}, \Qro, \Qsrs, \Qsim)$ outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with probability $\extProb$. To that end we define an algorithm $\advcss^{\ro, \initU}(r)$ against the computational special soundness of $\ps$ that runs internally $\advse^{\initU, \simulator_1, \simulator'_2}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$. Eventually, we use the computational special soundness extractor $\extcss$ on $\advcss$ to extract the witness.
+	
+	Since $\advcss$ runs $\advse$ internally, it needs to take care of $\advse$'s oracle queries.
 	$\advse$'s queries to the update oracle $\initU$ are passed to $\advcss$ oracle $\initU$ directly. Also, the answers from $\advcss$'s oracle $\initU$ are returned to $\advse$.
-	Queries to the simulator $\simulator'_2$ are processed by $\advcss$ who computes the proof running simulators $\simulator_1$ and $\simulator'_2$ internally. The latter simulator, $\simulator'_{2}$, calls the former,  $\simulator_{1}$, when it needs to compute a random oracle challenge. Such calls may either request $\simulator_{1}$ to answer the query with an honest random oracle answer, or to program the oracle, cf.~\cref{fig:simulator_oracles}. Importantly, since $k \leq k'$ , all challenges in simulated proofs, up to round $k'$ are computed honestly, i.e. $\zkproof_{i}.\ch = \simulator_{1}.\ro((\inp, \zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{i}))$, for $i \leq k'$.
+	Queries to the simulator $\simulator'_2$ are processed by $\advcss$ who computes the proof running simulators $\simulator_1$ and $\simulator'_2$ internally using randomness $\rsim$. The latter simulator, $\simulator'_{2}$, calls the former, $\simulator_{1}$, when it needs to compute a random oracle challenge. Such calls may either request $\simulator_{1}$ to answer the query with an honest random oracle answer, or to program the oracle, cf.~\cref{fig:simulator_oracles}. Importantly, since $k \leq k'$ , all challenges in simulated proofs, up to round $k'$ are computed honestly, i.e. $\zkproof_{i}.\ch = \simulator_{1}.\ro((\inp, \zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{i}))$, for $i \leq k'$.
 	\begin{figure}
 		\centering
 			\begin{pcvstack}[center,boxed]
@@ -47,35 +45,38 @@
 
 	$\advse$'s queries to $\simulator_1$ are processed as queries to $\simulator_1.\ro$. (That is, $\advse$ does not program the oracle.)
 
-	Eventually, $\advse$ outputs a proof $(\inp, \zkproof)$ which $\advcss$ outputs as well. We note that the proof output by $\advcss$ cannot contain any programmed queries as then the proof is not acceptable w.r.t~$\ro$. If $\advse$ outputs a proof that does contain programmed challenges, denoted by $\event{E}$, then $\advcss$ aborts. We claim that probability that $\event{E}$ happens is upper-bounded by $\epsur(\secpar)$. What we show in the following lemma.
-
+	Eventually, $\advse$ outputs a proof $(\inp, \zkproof)$ which $\advcss$ outputs as well. We note that the proof output by $\advcss$ cannot contain any programmed queries as such proof is not acceptable w.r.t~$\ro$. If $\advse$ outputs a proof that does contain programmed challenges, then $\advcss$ aborts. We denote that event by $\event{E}$.
+	
 	\begin{lemma}
-		Let $\advse^{\initU, \simulator_1, \simulator'_2}$ be an
+		Probability that $\event{E}$ happens is upper-bounded by $\epsur(\secpar)$. 
 	\end{lemma}
+	\begin{proof}
+	We build an adversary $\advur^{\ro, \initU} (\secpar; r)$ that has access to the random oracle $\ro$ and update oracle $\initU$. $\advur$ uses $\advse$ to break the $\ur{k}$ property of $\ps$. Namely, for randomness $r = (r_{\advse}, \rsim)$, $\advur^{\ro, \initU} (\secpar; r)$ runs $\advse^{\initU, \simulator_1, \simulator_2'}(\secparam; r_{\advse})$ internally and answers its oracle queries as $\advcss$ did.
 
-	Namely, We build an adversary $\advur^{\ro, \initU} (\secpar; r)$ that has access to the random oracle $\ro$ and update oracle $\initU$, and utilises $\advse$ to break the $\ur{k}$ property of $\ps$. That is, for randomness $r = (r_{\advse}, \rsim)$, $\advur^{\ro, \initU} (\secpar; r)$ runs $\advse^{\initU, \simulator_1, \simulator_2'}(\secparam; r_{\advse})$ internally and answers its oracle queries as $\advcss$ did.
-
-	When $\advse$ makes a proof $\zkproof$ for $\inp_{\advse}$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $Q_\ro$ until it finds $\zkproofs[0..k]$ such that $\zkproof_{\advse}[0..k] = \zkproofs[0..k]$ and a random oracle query $\zkproofs[k].\ch$ on $\zkproofs[0..k]$.
-	%	\item 
-	$\rdvur$ returns two proofs for $\inp_{\advse}$:
+	When $\advse$ makes a proof $\zkproof$ for $\inp_{\advse}$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $Q_\ro$ until it finds $\zkproofs[0..k]$ such that $\zkproof_{\advse}[0..k] = \zkproofs[0..k]$ and a random oracle query $\zkproofs[k].\ch$ on $\zkproofs[0..k]$.	$\advur$ returns two proofs for $\inp_{\advse}$:
 		\begin{align*}
 		\zkproof_1 = (\zkproofs[1..k],
 		\zkproofs[k].\ch, \zkproofs[k + 1..\mu + 1])\\
 		\zkproof_2 = (\zkproofs[1..k],
 		\zkproofs[k].\ch, \zkproof_{\advse}[k + 1..\mu + 1])
 		\end{align*}
-	%\end{compactitem}
 
 	Importantly, both proofs are acceptable w.r.t~the unique response property verifier. The first, since the unique response property definition allows any challenges after $k$. The latter, since it is an acceptable proof produced by the adversary.
-	We assume that $\zkproof_1 \neq \zkproof_2$ as in the opposite case the $\advse$ would not be able to break the break simulation extractability game as $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then $\advur$ breaks $\ur{k}$-ness of $\ps$. This happens only with  probability $\epsur(\secpar)$. We denote by $\waccProb$ the probability that $\adv$ outputs an acceptable proof and does not break the unique response property. By the union bound $\accProb + \epsur (\secpar) \leq \waccProb \leq \accProb - \epsur (\secpar)$.
+	We assume that $\zkproof_1 \neq \zkproof_2$ as in the opposite case the $\advse$ would not be able to break the simulation extractability game as $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then $\advur$ breaks $\ur{k}$-ness of $\ps$. This happens only with  probability $\epsur(\secpar)$. 
+	\qed
+	\end{proof}
 
+	We denote by $\waccProb$ the probability that $\advcss$ outputs an acceptable proof. We note that $\waccProb$ is at most $\epsur (\secpar)$ from the probability that $\advse$ outputs an acceptable proof. By the union bound $\accProb + \epsur (\secpar) \leq \waccProb \leq \accProb - \epsur (\secpar)$. 
+	\michals{23.04}{I am not sure about that bound. Why we could have a case when $\waccProb \geq \accProb$? intuitively, $\advcss$ never outputs an acceptable proof if $\advse$ doesn't}
 
-	Since $\ps$ is $\epscss (\secpar, \accProb)$ computationally special sound, there is an extractor $\extcss$ that rewinds $\advcss$ to 
+	Since $\ps$ is $\epscss (\secpar, \waccProb)$ computationally special sound, there is an extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of acceptable transcripts $\tree$ and extracts witness with probability at least $1 - \epscss (\secpar, \waccProb)$. Hence, the extractor $\extse$ outputs the witness with the same probability.
+	\qed
+	\end{proof}
 
 		
 
 	\michals{22.04}{The old proof begins here}
-
+	\begin{proof}
 	\ngame{0} This is the simulation-extractability game played between an adversary
 	$\advse$ who is given access to an oracle $\initU$ that defines an updatable SRS
 	setup, and a simulation oracle $\simulator = (\simulator_1, \simulator_2')$ which provides the adversary with simulated
