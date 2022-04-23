@@ -13,11 +13,38 @@
 \begin{proof}	
 	\michals{22.04}{Started writting draft of the proof. Feel free to write your own proof.}
 	Let $(\srs, \inp, \wit) \gets \advse^{\initU, \simulator_1, \simulator_2}$. We show that $\extse (\srs, \advse, r, \Qro, \Qsrs, \Qsim)$ outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with probability $\extProb$. To that end we define an algorithm $\advcss^{\ro, \initU}$ which will be used to break the computational special soundness of $\ps$ with probability greater than $\epscss(\secpar, \accProb)$ if $\advse$ makes $\extse$ fail with probability greater than $\extProb$. %Adversary $\advcss$ proceeds as follows. 
+%
+	Adversary $\advcss^{\ro, \initU}$ runs internally $\advse^{\initU, \simulator_1, \simulator'_2}$, hence it needs to take care of $\advse$'s oracle queries. %Since both algorithms use similar set of oracles, we write $\adv.\oracleo$ to state that a query is make to $\oracleo$ given to algorithm $\adv$ to avoid confusion.
 
-	Adversary $\advcss^{\ro, \initU}$ runs internally $\advse^{\initU, \simulator_1, \simulator'_2}$, hence it needs to take care of $\advse$'s oracle queries.  
-	Queries to the update oracle $\advse.\initU$ are passed to $\advcss.\initU$. Also, answers from $\advcss.\initU$ are passed as $\advse.\initU$ answers.
-	Queries to the simulator $\advse.\simulator_2$ are processed by $\advcss$ who computes the simulated proof by programming $\advse.\simulator_1$ to return the required value.  
-	Queries to the random oracle $\advse.\simulator_1$ are passed to $\advcss.\ro$ oracle, except 
+	$\advse$'s queries to the update oracle $\initU$ are passed to $\advcss$ oracle $\initU$ directly. Also, the answers from $\advcss$'s oracle $\initU$ are returned to $\advse$.
+	Queries to the simulator $\simulator'_2$ are processed by $\advcss$ who computes the proof running simulators $\simulator_1$ and $\simulator'_2$ internally. The latter simulator, $\simulator'_{2}$, calls the former,  $\simulator_{1}$, when it needs to compute a random oracle challenge. Such calls may either request $\simulator_{1}$ to answer the query with an honest random oracle answer, or to program the oracle, cf.~\cref{fig:simulator_oracles}. Importantly, since $k \leq k'$ , all challenges in simulated proofs, up to round $k'$ are computed honestly, i.e. $\zkproof_{i}.\ch = \simulator_{1}.\ro((\inp, \zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{i}))$, for $i \leq k'$.
+	\begin{figure}
+		\centering
+			\begin{pcvstack}[center,boxed]
+			\begin{pchstack}
+				\procedure{$\simulator_1.\ro (x)$}
+				{
+				\pcif H[x] = \bot \pcthen \\
+				\pcind H[x] \gets \ro(x) \\
+				\pcreturn H[x]
+		  		}
+				%
+				\pchspace
+				%
+				\procedure{$\simulator_1.\prog(x, h)$}
+				{ 
+					\pcif H[x] = \bot \pcthen \\ 
+					\pcind H[x] \gets h \\
+					\pcind \Qprog \gets \Qprog \cup \{x\}\\
+					\pcreturn H[x]
+				}
+			\end{pchstack}
+		\end{pcvstack}
+		\caption{Simulating random oracle calls.}
+		\label{fig:simulator_oracles}
+	\end{figure}	
+
+	 $\advse$'s queries to $\simulator_1$ are processed as queries to $\simulator_1.\ro$. (That is, $\advse$ does not program the oracle.)
 
 	\michals{22.04}{The old proof begins here}
 
