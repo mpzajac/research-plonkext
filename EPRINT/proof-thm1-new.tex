@@ -12,7 +12,8 @@
 
 \begin{proof}	
 	\michals{22.04}{Started writting draft of the proof. Feel free to write your own proof.}
-	Let $(\srs, \inp, \wit) \gets \advse^{\initU, \simulator_1, \simulator_2}$. We show that $\extse (\srs, \advse, r, \Qro, \Qsrs, \Qsim)$ outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with probability $\extProb$. To that end we define an algorithm $\advcss^{\ro, \initU}$ which will be used to break the computational special soundness of $\ps$ with probability greater than $\epscss(\secpar, \accProb)$ if $\advse$ makes $\extse$ fail with probability greater than $\extProb$. %Adversary $\advcss$ proceeds as follows. 
+	Let $(\srs, \inp, \wit) \gets \advse^{\initU, \simulator_1, \simulator_2}$. We show that $\extse (\srs, \advse, r, \Qro, \Qsrs, \Qsim)$ outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with probability $\extProb$. To that end we define an algorithm $\advcss^{\ro, \initU}$ against computational special soundness of $\ps$.
+	% with probability greater than $\epscss(\secpar, \accProb)$ if $\advse$ makes $\extse$ fail with probability greater than $\extProb$. %Adversary $\advcss$ proceeds as follows. 
 %
 	Adversary $\advcss^{\ro, \initU}$ runs internally $\advse^{\initU, \simulator_1, \simulator'_2}$, hence it needs to take care of $\advse$'s oracle queries. %Since both algorithms use similar set of oracles, we write $\adv.\oracleo$ to state that a query is make to $\oracleo$ given to algorithm $\adv$ to avoid confusion.
 
@@ -44,7 +45,34 @@
 		\label{fig:simulator_oracles}
 	\end{figure}	
 
-	 $\advse$'s queries to $\simulator_1$ are processed as queries to $\simulator_1.\ro$. (That is, $\advse$ does not program the oracle.)
+	$\advse$'s queries to $\simulator_1$ are processed as queries to $\simulator_1.\ro$. (That is, $\advse$ does not program the oracle.)
+
+	Eventually, $\advse$ outputs a proof $(\inp, \zkproof)$ which $\advcss$ outputs as well. We note that the proof output by $\advcss$ cannot contain any programmed queries as then the proof is not acceptable w.r.t~$\ro$. If $\advse$ outputs a proof that does contain programmed challenges, denoted by $\event{E}$, then $\advcss$ aborts. We claim that probability that $\event{E}$ happens is upper-bounded by $\epsur(\secpar)$. What we show in the following lemma.
+
+	\begin{lemma}
+		Let $\advse^{\initU, \simulator_1, \simulator'_2}$ be an
+	\end{lemma}
+
+	Namely, We build an adversary $\advur^{\ro, \initU} (\secpar; r)$ that has access to the random oracle $\ro$ and update oracle $\initU$, and utilises $\advse$ to break the $\ur{k}$ property of $\ps$. That is, for randomness $r = (r_{\advse}, \rsim)$, $\advur^{\ro, \initU} (\secpar; r)$ runs $\advse^{\initU, \simulator_1, \simulator_2'}(\secparam; r_{\advse})$ internally and answers its oracle queries as $\advcss$ did.
+
+	When $\advse$ makes a proof $\zkproof$ for $\inp_{\advse}$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $Q_\ro$ until it finds $\zkproofs[0..k]$ such that $\zkproof_{\advse}[0..k] = \zkproofs[0..k]$ and a random oracle query $\zkproofs[k].\ch$ on $\zkproofs[0..k]$.
+	%	\item 
+	$\rdvur$ returns two proofs for $\inp_{\advse}$:
+		\begin{align*}
+		\zkproof_1 = (\zkproofs[1..k],
+		\zkproofs[k].\ch, \zkproofs[k + 1..\mu + 1])\\
+		\zkproof_2 = (\zkproofs[1..k],
+		\zkproofs[k].\ch, \zkproof_{\advse}[k + 1..\mu + 1])
+		\end{align*}
+	%\end{compactitem}
+
+	Importantly, both proofs are acceptable w.r.t~the unique response property verifier. The first, since the unique response property definition allows any challenges after $k$. The latter, since it is an acceptable proof produced by the adversary.
+	We assume that $\zkproof_1 \neq \zkproof_2$ as in the opposite case the $\advse$ would not be able to break the break simulation extractability game as $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then $\advur$ breaks $\ur{k}$-ness of $\ps$. This happens only with  probability $\epsur(\secpar)$. We denote by $\waccProb$ the probability that $\adv$ outputs an acceptable proof and does not break the unique response property. By the union bound $\accProb + \epsur (\secpar) \leq \waccProb \leq \accProb - \epsur (\secpar)$.
+
+
+	Since $\ps$ is $\epscss (\secpar, \accProb)$ computationally special sound, there is an extractor $\extcss$ that rewinds $\advcss$ to 
+
+		
 
 	\michals{22.04}{The old proof begins here}
 
@@ -189,8 +217,7 @@
 	\end{proof}
 	
 	\begin{corollary}
-		Let $\tdv$ be a tree building algorithm that builds a tree according to \cref{fig:Attema-ext}. Then the extractor $\extse$ outputs a valid witness with probability 
-		%\hamid{19.4}{The next equation should be changed. Todo: how should we compute $\epst(\secpar, \accProb)$ based on $\epst(\secpar, \waccProb)$?}\michals{21.04}{$\waccProb \geq \accProb - \epsur$}
+		Let $\tdv$ be a tree building algorithm that builds a tree according to \cref{fig:Attema-ext}. Then the extractor $\extse$ outputs a valid witness with probability \hamid{19.4}{The next equation should be changed. Todo: how should we compute $\epst(\secpar, \accProb)$ based on $\epst(\secpar, \waccProb)$?}\michals{21.04}{$\waccProb \geq \accProb - \epsur$}
 		\begin{equation}
 			\label{eq:frk}
 			\extProb \geq \frac{\accProb - \epsur(\secpar) - (q + 1) \epsk(\secpar)}{1 - \epsk(\secpar)} 
