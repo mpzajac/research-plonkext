@@ -167,6 +167,66 @@ string.
 
  \subsection{Trapdoor-Less Zero Knowledge}
  \michals{22.04}{Rename to Trapdoor-Less ZK?}
+
+
+
+\markulf{22.04}{Lets give the zero-knowledge definition only once.}
+
+\ourpar{Zero knowledge.}  Our definition of zero-knowledge for non-interactive
+arguments is in the explicitly programmable random oracle model where the simulator
+$\simulator$ can program the random oracle. We model $\simulator$ as a stateful
+algorithm that runs in two modes. The first mode,
+$(h, st') \gets \simulator (1, st, \srs, q)$ answers random oracle calls to $\ro$ on input
+$q$. The second mode $(\zkproof, st') \gets \simulator (2, st, \srs, \inp)$ simulates the
+actual argument for instance $\inp$.  Additionally, we define the
+following oracles that share state as wrapper oracles around $\simulator$.
+\begin{itemize}
+\item $\simulator_1 (\srs,q)$ denotes an oracle that returns the first output of
+  $\simulator (1, st, \srs, q)$;
+\item $\simulator_2 (\srs,\inp, \wit)$ denotes an oracle that returns the first output of
+  $\simulator (2, st, \srs, \inp)$ if $(\inp, \wit) \in \REL$, and returns $\bot$ otherwise;
+\end{itemize}
+
+% We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
+% $\REL \in \RELGEN(\secparam)$, and adversary $\adv$ there exists a $\ppt$ simulator
+% $\simulator$ such that for any $(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$,
+% where
+% \[
+%   \eps_b = \condprob{\adv^{\oracleo_b} (\srs)}{\srs \gets \kgen (\REL)}\,,
+% \]
+% \changedm{where $\oracleo_0$ on input $(1, q)$ responds with $h$ such that
+%   $(h, st') \gets \simulator_1 (1, st, q)$, where $st$ and $st'$ are old and new
+%   states of the simulator $\simulator$ and on input $(2, \inp, \wit)$ returns
+%   $\zkproof \gets \simulator_2 (2, st, \srs, \inp)$. Alternatively, $\oracleo_1$ on
+%   input $(1, q)$ responds with $h \gets \ro (q)$ and on input $(2, \inp, \wit)$
+%   returns $\zkproof \gets \prover (\srs, \inp, \wit)$.}
+% 	%
+% We call zero knowledge \emph{perfect} if the distributions are equal and
+% \emph{computational} if they are indistinguishable for any $\ppt$ distinguisher.
+
+We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
+$\REL \in \RELGEN(\secparam)$, and adversary $\adv$ there exists a $\ppt$ simulator
+$\simulator$ with oracles $(\simulator_1,\simulator_2)$ such that for any $(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$,
+where
+\[
+  \eps_0(\secpar) = \condprob{\adv^{\simulator_1,\simulator_2} (\srs)}{\srs \gets \kgen
+    (\REL)},\,  \eps_1 (\secpar) = \condprob{\adv^{\ro,\prover} (\srs)}{\srs \gets \kgen (\REL)},
+\]
+
+We call zero knowledge \emph{perfect} if the distributions are equal and
+\emph{computational} if they are indistinguishable for any $\ppt$ distinguisher.
+
+
+% \end{description}
+Alternatively, zero-knowledge can be defined by allowing the simulator to use the
+trapdoor $\td$ that is generated along the $\srs$. In this paper we distinguish
+simulators that requires a trapdoor to simulate and those that do not. We call the
+former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less
+  simulatable} (TLS) if its simulator does not require the trapdoor, cf.~\cref{def:tls}.
+
+  \markulf{22.04}{We don't consider SRS-simulators in this paper. I would simplify and move the above after the Updatable SRS scheme section, or maybe the start of Section 3.}
+
+
  Security reductions in this paper sometimes need to produce simulated NIZK proofs without
  knowing the trapdoor, just by programming the random oracle. Moreover, it may be not allowed to program every random oracle challenge but only challenges that come after $k$-th prover's message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less simulatable} (TLS).
 

@@ -63,23 +63,182 @@ without leaking any other information. The zero-knowledge property is proven by 
 simulator that can simulate the view of a cheating verifier without knowing the secret
 information -- witness -- of the prover. A proof system has to be sound as well, i.e.~for a
 malicious prover it should be infeasible to convince a verifier of a false statement. Here, we
-focus on proof systems, so-called arguments, that guarantee soundness against $\ppt$ malicious provers.
+focus on proof systems, so-called arguments, that guarantee soundness against $\ppt$ malicious provers. 
+\markulf{24.04}{Nice text, but maybe too basic? Also we don't really have views, but really reconstruct the non-interactive proof.}
+Typically, a stronger notion of soundness is required -- besides requiring that the
+verifier rejects proofs of statements outside the language, we request from the
+prover to know a witness corresponding to the proven statement. This property is
+called \emph{knowledge soundness}. In this work we investigate an even stronger notion of soundness, \emph{simulation extractability} for non-interactive protocols obtained from interactive arguments via the \emph{Fiat--Shamir heuristic} via random oracles in a setting with an \emph{updatable common reference string.} 
+
+We now introduce these concepts.
+
+\subsection{Updatable SRS schemes}\label{def:upd-scheme}
+
+Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
+and the latter \emph{verifier}. We allow our proof system to have a setup, i.e.~there is a
+$\kgen$ algorithm that takes as input the relation description $\REL$ and outputs a common
+reference string $\srs$.
+
+We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which consists of the following algorithms.
+\vspace{-8pt}
+\begin{itemize} 
+	\item
+	$(\srs,\rho) \gets \kgen(\REL)$ is a PPT algorithm that takes a relation $\REL$ and outputs a SRS $\srs$, and correctness proof $\rho$.
+	\item
+	$ (\srs',\rho') \gets \upd(\srs, \{\rho_j \}_{j=1}^n)$ is a PPT algorithm that takes a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
+	\item
+	$b \gets \verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$ is a DPT algorithm that takes a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
+\end{itemize}
+
+	In all our protocols, we deal with a structured reference string that is updatable. We give the $\kgen$, $\upd$ and $\verifyCRS$ algorithms in~\cref{fig:upd-scheme}.
+	
 
 
+\begin{figure}[t!]
+	\centering
+	\fbox{
+		\begin{minipage}[t]{0.76\linewidth}
+			\procedure{$\kgen(\REL)$}{
+				\chi \sample \FF_p \\ [\myskip]
+				\srs := 
+				\left( \gone{\smallset{\chi^i}_{i = 0}^{\dconst}},
+				\gtwo{\chi} \right); 
+				\rho =  \left(\gone{\chi, \chi}, \gtwo{\chi}\right) \\ [\myskip]
+				\pcreturn (\srs, \rho) \\ [\myskip]
+			}
+		%
+		\\
+		%
+		\procedure{$\verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$}{
+			\text{Parse }  \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\dconst}},
+			\gtwo{B} \right) \text{and } \{\rho_j \}_{j=1}^n \text{ as } \left\{\left( P_j, \bP_j, \hP_j \right)\right\}_{j=1}^n \\ [\myskip]
+			\text{Verify Update proofs: } \\ [\myskip]
+			\t \bP_1 = P_1 \\ [\myskip]
+			\t P_j \bullet \gtwo{1} = P_{j-1} \bullet \hP_j \quad \forall j \geq 2 \\ [\myskip]
+			\t \bP_n \bullet \gtwo{1} = \gone{1} \bullet \hP_n \\ [\myskip]
+			\text{Verify SRS structure: } \\ [\myskip]
+			\t \gone{A_i} \bullet \gtwo{1} = \gone{A_{i-1}} \bullet \gtwo{B} \text{ for all } 0 < i \leq \dconst \\ [\myskip]
+		}
+		%
+		\\
+		%
+		\procedure{$\upd(\srs, \{\rho_j \}_{j=1}^n)$}{
+			\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\dconst}},
+			\gtwo{B} \right) \\ [\myskip]
+			\chi' \sample \FF_p  \\ [\myskip]
+			\srs' := 
+			\left( \gone{\smallset{{\chi'}^i A_i}_{i = 0}^{\dconst}},
+			\gtwo{\chi' B} \right); 
+			\rho' =	\left( \gone{\chi' A_1, \chi'}, \gtwo{\chi'}\right) \\ [\myskip]
+			\pcreturn (\srs', \rho')
+		}
+		\end{minipage}}
+	\caption{Updatable SRS scheme} 
+	\label{fig:upd-scheme}
+\end{figure}
+
+In the next section, we define security notions in the updatable setting. To this
+end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary
+updates the SRS.
+
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}% 
+
+\begin{figure}[t!]
+	\centering
+	\fbox{
+		\begin{minipage}[t]{0.60\linewidth}
+			\procedure{$\initU(\intent, \srs_n,\{\rho_j \}_{j=1}^n)$}{
+				\pcif \srs \neq \bot: \pcreturn \bot \\
+				\pcif (\intent = \setup): \\
+				\t (\srs',\rho') \leftarrow \kgen(\REL)\\
+				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+				\t \pcreturn (\srs',\rho')\\
+				%
+				\pcif (\intent = \update): \\
+				\t b \gets \verifyCRS(\srs_n, \{\rho_j \}_{j=1}^{n})\\
+				\t \pcif (b=0): \pcreturn \bot \\
+				\t (\srs',\rho') \leftarrow \upd (\srs_n,\{\rho_j \}_{j=1}^n)\\
+				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+		 	\pccomment{$Q_\srs = (Q^{(1)}_\srs, Q^{(2)}_\srs) \text{ s.t. }   Q^{(2)}_\srs \text{ contains the update proofs in } Q_\srs$ } \\
+				\t \pcreturn (\srs',\rho')\\
+				%
+				\pcif (\intent = \final): \\
+				\t b \gets \verifyCRS(\srs_n,\{\rho_j \}_{j=1}^{n})\\
+				\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_j \}_i = \emptyset: \pcreturn \bot \\
+				\t 
+				\t \srs \gets \srs_n, \pcreturn \srs \\
+				%
+				\pcelse \pcreturn \bot
+			}
+		\end{minipage}
+	}
+	\caption{The oracle defines the notion of updatable SRS setup.} 
+		\label{fig:upd}
+\end{figure}
+
+\chb{\begin{remark}[Single adversarial updates after an honest setup.]\label{rem:upd}
+	One can consider a slightly different model of setup, wherein the adversary is given an initial (honestly-generated) SRS and then is allowed to maliciously update that in a one-shot fashion.
+	As shown by Groth
+	et al. in~\cite{C:GKMMM18}, the two definitions are equivalent for the class of SNARKs in this work and thus we use this simpler definition to show our security proofs in the updatable setting.
+\end{remark}}
+
+\ourpar{On trusted setup.} We note that a trusted setup can be expressed by the updatable setup definition above simply by restricting the algorithm that is given access to $\initU$ to call the oracle only on $\intent = \setup$ and $\intent = \final$.
+
+\ourpar{Updatability and zero knowledge.}
+Groth et al.~\cite{C:GKMMM18} shown that if a proof system is zero-knowledge against adversaries who picks the SRS, then it is updatable zero-knowledge. We call such systems \emph{subvertible zero knowledge}, cf.~\cite{AC:BelFucSca16,AC:ABLZ17}. It was shown that Plonk, Sonic, Marlin and virtually any proof system with a SRS consisting of monomials are subvertible zero-knowledge.
+
+\markulf{24.04}{Tighten the discussion of universality, one paragraph is enough!}
+\ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determine the constraints. We elide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
 
 More precisely, let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of universal 
 relations. 
 We assume that if
 $\REL$ comes with any auxiliary input, the latter is benign. Directly from the
-description of $\REL$ one learns security parameter $\secpar$ and description of the
-group $\GRP$, if the relation is a relation of group elements (as it usually the case for zkSNARKs).
-Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
-and the latter \emph{verifier}. We allow our proof system to have a setup, i.e.~there is a
-$\kgen$ algorithm that takes as input the relation description $\REL$ and outputs a common
-reference string $\srs$. We assume that the $\srs$ defines the relation, and for universal proof
+description of $\REL$ one learns security parameter $\secpar$ and the order of a
+group $\GRP$, if the relation is a relation on field elements (as usually the case for zkSNARKs). 
+We assume that the $\srs$ defines the relation, and for universal proof
 systems, such as Plonk and Sonic, we treat both the reference string and the relation as
 universal.
+ 
 
+\subsection{From interactive to non-interactive---the Fiat--Shamir transform}
+Consider a $(2\mu + 1)$-message, public-coin, honest verifier zero-knowledge
+interactive proof system
+$\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for
+$\REL \in \RELGEN(\secparam)$.  Let $\zkproof$ be a proof performed by the
+prover $\prover$ and verifier $\verifier$ compound of messages
+$(a_1, b_1, \ldots, a_{\mu}, b_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
+$\prover$ and $b_i$ comes from $\verifier$.  Denote by $\ro$ a random oracle.
+Let $\proofsystem_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$
+be a proof system such that
+\begin{compactitem}
+  \item $\kgen_\fs$ behaves as $\kgen$.
+  \item $\prover_\fs$ behaves as $\prover$ except after sending message
+    $a_i$, $i \in \range{1}{\mu}$, the prover does not wait for
+    the message from the verifier but computes it locally setting $b_i
+    = \ro(\zkproof[0..i])$, where $\zkproof[0..j] = (\inp, a_1, b_1, \ldots,
+    a_{j - 1}, b_{j - 1}, a_j)$. (Importantly, $\zkproof[0..\mu + 1] =
+    (\inp, \zkproof)$).\footnote{For Fiat--Shamir based SoK the message signed $m$ is added to $\inp$ before hashing.}
+  \item $\verifier_\fs$ behaves as $\verifier$ but does not provide
+    challenges to the prover's proof. Instead it computes the
+    challenges locally as $\prover_\fs$ does. Then it verifies the
+    resulting transcript $\zkproof$ as the verifier $\verifier$ would. 
+  \item $\simulator_\fs$ behaves as $\simulator$, except when
+    $\simulator$ picks challenge $b_i$ before computing message $\zkproof[0, i]$, $\simulator_\fs$ programs the
+    random oracle to output $b_i$ on $\zkproof[0, i]$.
+  \end{compactitem}
+
+\noindent
+The Fiat--Shamir heuristic states that $\proofsystem_\fs$ is a zero-knowledge
+non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
+
+
+\markulf{24.04}{What do we ned of the below?}
+
+Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
+and the latter \emph{verifier}. 
+%We allow our proof system to have a setup, i.e.~there is a
+%$\kgen$ algorithm that takes as input the relation description $\REL$ and outputs a common reference string $\srs$.
 We denote by $\zkproof$ a proof created by $\prover$ with input
 $(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier (\srs, \inp,
 \zkproof)$ accepts it. We focus on proof systems where $\prover$ and
@@ -120,97 +279,8 @@ defined as follows:
     \negl.
 	\]
 %\end{description}
-Sometimes a stronger notion of soundness is required -- besides requiring that the
-verifier rejects proofs of statements outside the language, we request from the
-prover to know a witness corresponding to the proven statement. This property is
-called \emph{knowledge soundness}.%\markulf{Commented out the formal definition as we don't use it.}
- 
-\markulf{22.04}{Lets give the zero-knowledge definition only once.}
-
-\ourpar{Zero knowledge.}  Our definition of zero-knowledge for non-interactive
-arguments is in the explicitly programmable random oracle model where the simulator
-$\simulator$ can program the random oracle. We model $\simulator$ as a stateful
-algorithm that runs in two modes. The first mode,
-$(h, st') \gets \simulator (1, st, \srs, q)$ answers random oracle calls to $\ro$ on input
-$q$. The second mode $(\zkproof, st') \gets \simulator (2, st, \srs, \inp)$ simulates the
-actual argument for instance $\inp$.  Additionally, we define the
-following oracles that share state as wrapper oracles around $\simulator$.
-\begin{itemize}
-\item $\simulator_1 (\srs,q)$ denotes an oracle that returns the first output of
-  $\simulator (1, st, \srs, q)$;
-\item $\simulator_2 (\srs,\inp, \wit)$ denotes an oracle that returns the first output of
-  $\simulator (2, st, \srs, \inp)$ if $(\inp, \wit) \in \REL$, and returns $\bot$ otherwise;
-\end{itemize}
-
-% We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
-% $\REL \in \RELGEN(\secparam)$, and adversary $\adv$ there exists a $\ppt$ simulator
-% $\simulator$ such that for any $(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$,
-% where
-% \[
-%   \eps_b = \condprob{\adv^{\oracleo_b} (\srs)}{\srs \gets \kgen (\REL)}\,,
-% \]
-% \changedm{where $\oracleo_0$ on input $(1, q)$ responds with $h$ such that
-%   $(h, st') \gets \simulator_1 (1, st, q)$, where $st$ and $st'$ are old and new
-%   states of the simulator $\simulator$ and on input $(2, \inp, \wit)$ returns
-%   $\zkproof \gets \simulator_2 (2, st, \srs, \inp)$. Alternatively, $\oracleo_1$ on
-%   input $(1, q)$ responds with $h \gets \ro (q)$ and on input $(2, \inp, \wit)$
-%   returns $\zkproof \gets \prover (\srs, \inp, \wit)$.}
-% 	%
-% We call zero knowledge \emph{perfect} if the distributions are equal and
-% \emph{computational} if they are indistinguishable for any $\ppt$ distinguisher.
-
-We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
-$\REL \in \RELGEN(\secparam)$, and adversary $\adv$ there exists a $\ppt$ simulator
-$\simulator$ with oracles $(\simulator_1,\simulator_2)$ such that for any $(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$,
-where
-\[
-  \eps_0(\secpar) = \condprob{\adv^{\simulator_1,\simulator_2} (\srs)}{\srs \gets \kgen
-    (\REL)},\,  \eps_1 (\secpar) = \condprob{\adv^{\ro,\prover} (\srs)}{\srs \gets \kgen (\REL)},
-\]
-
-We call zero knowledge \emph{perfect} if the distributions are equal and
-\emph{computational} if they are indistinguishable for any $\ppt$ distinguisher.
 
 
-% \end{description}
-Alternatively, zero-knowledge can be defined by allowing the simulator to use the
-trapdoor $\td$ that is generated along the $\srs$. In this paper we distinguish
-simulators that requires a trapdoor to simulate and those that do not. We call the
-former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less
-  simulatable} (TLS) if its simulator does not require the trapdoor, cf.~\cref{def:tls}.
-
-  \markulf{22.04}{We don't consider SRS-simulators in this paper. I would simplify and move the above after the Updatable SRS scheme section, or maybe the start of Section 3.}
-
-\subsection{From interactive to non-interactive---the Fiat--Shamir transform}
-Consider a $(2\mu + 1)$-message, public-coin, honest verifier zero-knowledge
-interactive proof system
-$\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for
-$\REL \in \RELGEN(\secparam)$.  Let $\zkproof$ be a proof performed by the
-prover $\prover$ and verifier $\verifier$ compound of messages
-$(a_1, b_1, \ldots, a_{\mu}, b_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
-$\prover$ and $b_i$ comes from $\verifier$.  Denote by $\ro$ a random oracle.
-Let $\proofsystem_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$
-be a proof system such that
-\begin{compactitem}
-  \item $\kgen_\fs$ behaves as $\kgen$.
-  \item $\prover_\fs$ behaves as $\prover$ except after sending message
-    $a_i$, $i \in \range{1}{\mu}$, the prover does not wait for
-    the message from the verifier but computes it locally setting $b_i
-    = \ro(\zkproof[0..i])$, where $\zkproof[0..j] = (\inp, a_1, b_1, \ldots,
-    a_{j - 1}, b_{j - 1}, a_j)$. (Importantly, $\zkproof[0..\mu + 1] =
-    (\inp, \zkproof)$).\footnote{For Fiat--Shamir based SoK the message signed $m$ is added to $\inp$ before hashing.}
-  \item $\verifier_\fs$ behaves as $\verifier$ but does not provide
-    challenges to the prover's proof. Instead it computes the
-    challenges locally as $\prover_\fs$ does. Then it verifies the
-    resulting transcript $\zkproof$ as the verifier $\verifier$ would. 
-  \item $\simulator_\fs$ behaves as $\simulator$, except when
-    $\simulator$ picks challenge $b_i$ before computing message $\zkproof[0, i]$, $\simulator_\fs$ programs the
-    random oracle to output $b_i$ on $\zkproof[0, i]$.
-  \end{compactitem}
-
-\noindent
-The Fiat--Shamir heuristic states that $\proofsystem_\fs$ is a zero-knowledge
-non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
 
 %\subsection{Non-malleability definitions for NIZKs}
 %\label{sec:simext_def}
@@ -275,306 +345,9 @@ non-interactive proof system for $\REL \in \RELGEN(\secparam)$.
 %\end{definition}
 
 
-\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}% 
 
 
 
-\subsection{Updatable SRS schemes}\label{def:upd-scheme}
-
-We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which consists of the following algorithms.
-\vspace{-8pt}
-\begin{itemize} 
-	\item
-	$(\srs,\rho) \gets \kgen(\REL)$ is a PPT algorithm that takes a relation $\REL$ and outputs a SRS $\srs$, and correctness proof $\rho$.
-	\item
-	$ (\srs',\rho') \gets \upd(\srs, \{\rho_j \}_{j=1}^n)$ is a PPT algorithm that takes a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
-	\item
-	$b \gets \verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$ is a DPT algorithm that takes a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
-\end{itemize}
-
-	In all our protocols, we deal with a structured reference string that is updatable. We give the $\kgen$, $\upd$ and $\verifyCRS$ algorithms in~\cref{fig:upd-scheme}.
-	
-%	\begin{figure}[t!]
-%		\centering
-%		\fbox{
-%			\begin{minipage}[t]{0.3\linewidth}
-%				\procedure{$\kgen(\secparam)$}{
-%				\alpha, \chi \sample \FF^2_p \\ [\myskip]
-%		\pcreturn 
-%\left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
-%	\smallset{\alpha \chi^i}_{i = -\dconst, i \neq 0}^{\dconst}},
-%\gtwo{\smallset{\chi^i, \alpha \chi^i}_{i = - \dconst}^{\dconst}},
-%\gtar{\alpha} \right)
-%				}
-%			\end{minipage}
-%			\begin{minipage}[t]{0.3\linewidth}
-%				\procedure{$\verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$}{
-%					%
-%				}
-%		\end{minipage}
-%	%
-%\begin{minipage}[t]{0.3\linewidth}
-%	\procedure{$\upd(\srs, \{\rho_j \}_{j=1}^n)$}{
-%		%
-%	}
-%\end{minipage}}
-%		\caption{Updatable SRS scheme} 
-%		\label{fig:upd-scheme}
-%	\end{figure}
-
-%\newcommand{\bP}[1]{\overline{P_{#1}}}
-%\newcommand{\bQ}[1]{\overline{Q_{#1}}} 
-%\newcommand{\hP}[1]{\hat{P_{#1}}} 
-%\newcommand{\hQ}[1]{\hat{Q_{#1}}}
-
-%
-%\begin{figure}[t!]
-%	\centering
-%	\fbox{
-%		\begin{minipage}[t]{0.6\linewidth}
-%			\procedure{$\kgen(\REL)$}{
-%				\alpha, \chi \sample \FF^2_p \\ [\myskip]
-%				\srs := 
-%				\left( \gone{\smallset{\chi^i}_{i = -\dconst}^{\dconst},
-%					\smallset{\alpha \chi^i}_{i = -\dconst, i \neq 0}^{\dconst}},
-%				\gtwo{\smallset{\chi^i, \alpha \chi^i}_{i = - \dconst}^{\dconst}},
-%				\gtar{\alpha} \right) \\ [\myskip]
-%				\rho = 	\left( \gone{\chi, \alpha, \chi, \alpha}, \gtwo{\chi, \alpha} \right) \\ [\myskip]
-%				\pcreturn (\srs, \rho) \\ [\myskip]
-%			}
-%			%
-%			\\
-%			%
-%			\procedure{$\verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$}{
-%				\text{Parse }  \{\rho_j \}_{j=1}^n \text{ as } \left( P_j, Q_j, \bP_j, \bQ_j, \hP_j, \hQ_j \right) \\ [\myskip]
-%				\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = -\dconst}^{\dconst},
-%					\smallset{B_i}_{i = -\dconst, i \neq 0}^{\dconst}},
-%				\gtwo{\smallset{C_i, D_i}_{i = - \dconst}^{\dconst}},
-%				\textcolor{red}{\gtar{E}} \right) \\ [\myskip]
-%				\text{Verify Update proofs: } \\ [\myskip]
-%				\t \bP_n = A_1 \neq 1, \bQ_n = \textcolor{red}{B_0} \neq 1 \\ [\myskip]
-%				\t \bP_1 = P_1, \bQ_1 = Q_1 \\ [\myskip]
-%				\t \bP_n \bullet \gtwo{1} = \gone{1} \bullet \hP_n \\ [\myskip]
-%				\t \bQ_n \bullet \gtwo{1} = \gone{1} \bullet \hQ_n \\ [\myskip]
-%				\t P_j \bullet \gtwo{1} = P_{j-1} \bullet \hP_j \quad \forall j \geq 2 \\ [\myskip]
-%				\t Q_j \bullet \gtwo{1} = Q_{j-1} \bullet \hQ_j \quad \forall j \geq 2 \\ [\myskip]
-%				\text{Verify SRS structure: } \\ [\myskip]
-%				\t \gone{A_i} \bullet \gtwo{1} = \gone{A_{i-1}} \bullet \gtwo{C_1} \text{ for all } -\dconst < i \leq \dconst \\ [\myskip]
-%				\t \gone{1} \bullet \gtwo{C_i} = \gone{A_{1}} \bullet \gtwo{C_{i-1}} \text{ for all } -\dconst < i \leq \dconst \\ [\myskip]
-%				\t \gone{A_i} \bullet \gtwo{1} = \gone{1} \bullet \gtwo{C_i} \text{ for all } -\dconst \leq i \leq \dconst \\ [\myskip]
-%				\t \gone{B_i} \bullet \gtwo{1} = \gone{B_{i-1}} \bullet \gtwo{C_1} \text{ for all } -\dconst < i \leq \dconst; \textcolor{red}{i \neq 0,1} \\ [\myskip]
-%				\t \gone{1} \bullet \gtwo{D_i} = \gone{A_1} \bullet \gtwo{D_{i-1}} \text{ for all } -\dconst < i \leq \dconst \\ [\myskip]
-%				\t \gone{B_i} \bullet \gtwo{1} = \gone{1} \bullet \gtwo{D_i} \text{ for all } -\dconst \leq i \leq \dconst; \textcolor{red}{i \neq 0} \\ [\myskip]
-%			}
-%			%
-%			\\
-%			%
-%			\procedure{$\upd(\srs, \{\rho_j \}_{j=1}^n)$}{
-%				\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = -\dconst}^{\dconst},
-%					\smallset{B_i}_{i = -\dconst, i \neq 0}^{\dconst}},
-%				\gtwo{\smallset{C_i, D_i}_{i = - \dconst}^{\dconst}},
-%				\gtar{E} \right) \\ [\myskip]
-%				\alpha, \chi \sample \FF^2_p \\ [\myskip]
-%				\srs' := 
-%				\left( \gone{\smallset{\chi^i A_i}_{i = -\dconst}^{\dconst},
-%					\smallset{\alpha \chi^i B_i}_{i = -\dconst, i \neq 0}^{\dconst}},
-%				\gtwo{\smallset{\chi^i C_i, \alpha \chi^i D_i}_{i = - \dconst}^{\dconst}},
-%				\gtar{\alpha E} \right) \\ [\myskip]
-%				\rho' = 	\left( \gone{\chi A_1, \alpha \textcolor{red}{B_0}, \chi, \alpha}, \gtwo{\chi, \alpha} \right) \\ [\myskip]
-%				\pcreturn (\srs', \rho')
-%			}
-%	\end{minipage}}
-%	\caption{Updatable SRS scheme} 
-%	\label{fig:upd-scheme}
-%\end{figure}
-
-\begin{figure}[t!]
-	\centering
-	\fbox{
-		\begin{minipage}[t]{0.76\linewidth}
-			\procedure{$\kgen(\REL)$}{
-				\chi \sample \FF_p \\ [\myskip]
-				\srs := 
-				\left( \gone{\smallset{\chi^i}_{i = 0}^{\dconst}},
-				\gtwo{\chi} \right); 
-				\rho =  \left(\gone{\chi, \chi}, \gtwo{\chi}\right) \\ [\myskip]
-				\pcreturn (\srs, \rho) \\ [\myskip]
-			}
-		%
-		\\
-		%
-		\procedure{$\verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$}{
-			\text{Parse }  \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\dconst}},
-			\gtwo{B} \right) \text{and } \{\rho_j \}_{j=1}^n \text{ as } \left\{\left( P_j, \bP_j, \hP_j \right)\right\}_{j=1}^n \\ [\myskip]
-			\text{Verify Update proofs: } \\ [\myskip]
-			\t \bP_1 = P_1 \\ [\myskip]
-			\t P_j \bullet \gtwo{1} = P_{j-1} \bullet \hP_j \quad \forall j \geq 2 \\ [\myskip]
-			\t \bP_n \bullet \gtwo{1} = \gone{1} \bullet \hP_n \\ [\myskip]
-			\text{Verify SRS structure: } \\ [\myskip]
-			\t \gone{A_i} \bullet \gtwo{1} = \gone{A_{i-1}} \bullet \gtwo{B} \text{ for all } 0 < i \leq \dconst \\ [\myskip]
-		}
-		%
-		\\
-		%
-		\procedure{$\upd(\srs, \{\rho_j \}_{j=1}^n)$}{
-			\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\dconst}},
-			\gtwo{B} \right) \\ [\myskip]
-			\chi' \sample \FF_p  \\ [\myskip]
-			\srs' := 
-			\left( \gone{\smallset{{\chi'}^i A_i}_{i = 0}^{\dconst}},
-			\gtwo{\chi' B} \right); 
-			\rho' =	\left( \gone{\chi' A_1, \chi'}, \gtwo{\chi'}\right) \\ [\myskip]
-			\pcreturn (\srs', \rho')
-		}
-		\end{minipage}}
-	\caption{Updatable SRS scheme} 
-	\label{fig:upd-scheme}
-\end{figure}
-
-In the next section, we define security notions in the updatable setting. To this
-end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary
-updates the SRS.
-
-\begin{figure}[t!]
-	\centering
-	\fbox{
-		\begin{minipage}[t]{0.58\linewidth}
-			\procedure{$\initU(\intent, \srs_n,\{\rho_j \}_{j=1}^n)$}{
-				\pcif \srs \neq \bot: \pcreturn \bot \\
-				\pcif (\intent = \setup): \\
-				\t (\srs',\rho') \leftarrow \kgen(\REL)\\
-				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
-				\t \pcreturn (\srs',\rho')\\
-				%
-				\pcif (\intent = \update): \\
-				\t b \gets \verifyCRS(\srs_n, \{\rho_j \}_{j=1}^{n})\\
-				\t \pcif (b=0): \pcreturn \bot \\
-				\t (\srs',\rho') \leftarrow \upd (\srs_n,\{\rho_j \}_{j=1}^n)\\
-				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
-		 	\Scale[0.75]{ // Q_\srs = (Q^{(1)}_\srs, Q^{(2)}_\srs) \text{ s.t. }   Q^{(2)}_\srs \text{ contains the update proofs in } Q_\srs }\\
-				\t \pcreturn (\srs',\rho')\\
-				%
-				\pcif (\intent = \final): \\
-				\t b \gets \verifyCRS(\srs_n,\{\rho_j \}_{j=1}^{n})\\
-				\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_j \}_i = \emptyset: \pcreturn \bot \\
-				\t 
-				\t \srs \gets \srs_n, \pcreturn \srs \\
-				%
-				\pcelse \pcreturn \bot
-			}
-		\end{minipage}
-
-  }
-	\caption{The oracle defines the notion of updatable SRS setup.} %\changedm{Here we deviate from the standard definition which requires existence of an extractor that from the final SRS and adversary's updates reveals the trapdoor that could be used by a simulator. This comes since our simulator is trapdoor-less.}}
-	%\hamid{24.3}{I think the red line above can be removed as we don't need trapdoor for simulation!}\michals{25.03}{Sure, check the change. What I wrote is actually much longer than the single line with the extractor. However, I think it is important to remove the line as otherwise someone may point out that we dont show how trapdoor is extracted, which ka are used to taht end etc.}% The right oracle is the simulation oracle.} 
-	\label{fig:upd}
-\end{figure}
-
-\chb{\begin{remark}[Single adversarial updates after an honest setup.]\label{rem:upd}
-	One can consider a slightly different model of setup, wherein the adversary is given an initial (honestly-generated) SRS and then is allowed to maliciously update that in a one-shot fashion.
-	As shown by Groth
-	et al. in~\cite{C:GKMMM18}, the two definitions are equivalent for the class of SNARKs in this work and thus we use this simpler definition to show our security proofs in the updatable setting.
-\end{remark}}
-
-\ourpar{On trusted setup.} We note that a trusted setup can be expressed by the updatable setup definition above simply by restricting the algorithm that is given access to $\initU$ to call the oracle only on $\intent = \setup$ and $\intent = \final$.
-
-\ourpar{Updatability and zero knowledge.}
-Groth et al.~\cite{C:GKMMM18} shown that if a proof system is zero-knowledge against adversaries who picks the SRS, then it is updatable zero-knowledge. We call such systems \emph{subvertible zero knowledge}, cf.~\cite{AC:BelFucSca16,AC:ABLZ17}. It was shown that Plonk, Sonic, Marlin and virtually any proof system with a SRS consisting of monomials are subvertible zero-knowledge.
-\ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determine the constraints. We elide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
-
-
-
-%\hamid{TODO: add a paragraph here about the universality!}
-%\markulf{30/09, how about this}{The proof systems we consider are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determine the constraints. We ellide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.}
-% Consider a sigma protocol $\sigmaprot = (\prover, \verifier, \simulator)$ that
-% is special-sound and has a unique response property. Let $\sigmaprot_\fs =
-% (\prover_\fs, \verifier_\fs, \simulator_\fs)$ be a NIZK obtained by applying the
-% Fiat--Shamir transform to $\sigmaprot$. Faust et al.~\cite{INDOCRYPT:FKMV12}
-% show that every such $\sigmaprot_\fs$ is forking simulation-extractable. This result is
-% presented in \cref{sec:forking_lemma} along with the instrumental forking lemma,
-% cf.~\cite{CCS:BelNev06}.
-
-\iffalse
-\noindent \textbf{Simulation sound NIZKs.}
-Another notion for non-malleable NIZKs is \emph{simulation soundness}. It allows the adversary to see simulated proof, however, in contrast to simulation
-extractability it does not require an extractor to provide a witness for the
-proven statement. Instead, it is only necessary, that an adversary who sees
-simulated proofs cannot make the verifier accept a proof of an incorrect
-statement. More precisely,
-\chaya{this definition will go}
-\begin{definition}[Simulation soundness]
-  	\label{def:simsnd}
-    Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof and
-    $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$
-    transformed by the Fiat--Shamir transform. We say that $\ps_\fs$ is
-    \emph{simulation-sound}
-    for any $\ppt$ adversary $\adv$ that is given oracle access to a random
-    oracle $\ro$ and simulator $\simulator_\fs$, probability
-    \[
-      \ssndProb =
-      \Pr\left[
-        \begin{aligned}
-          & \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
-          & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
-          & \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
-        \end{aligned}
-        \, \left| \,
-          \vphantom{\begin{aligned}
-          & \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
-          & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
-          & \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
-        \end{aligned}}
-      \begin{aligned}
-        & \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
-        & (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
-          \ro} (\srs; r)
-      \end{aligned}
-		\right.  \right]
-    \]
-    is at most negligible.  List $Q$ contains all $(\inp, \zkproof)$ pairs where
-  $\inp$ is an instance provided to the simulator by the adversary and
-  $\zkproof$ is the simulator's answer. 
-\end{definition}
-
-  \label{rem:simext_to_simsnd}
-  We note that the probability $\ssndProb$ \cref{def:simsnd} can be expressed in
-  terms of simulation-extractability. More precisely, the
-  condition $\neg \exists \wit: \REL(\inp_\adv, \wit_\adv) = 1$ can be substituted with
-  $\REL(\inp_\adv, \wit_\adv) = 0$, where $\wit_\adv$, returned by a possibly unbounded
-  extractor, is either a witness to $\inp_\adv$ (if there exists any) or $\bot$ (if
-  there is none). More precisely,
-\[
-      \ssndProb =
-      \Pr\left[
-        \begin{aligned}
-          & \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
-          & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
-          & \REL(\inp_{\adv}, \wit_{\adv}) = 0
-        \end{aligned}
-        \, \left| \,
-      \begin{aligned}
-        & \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
-        & (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
-          \ro} (\srs; r)\\
-        & \wit_{\adv} \gets \ext(\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
-			Q, Q_\ro,) 
-      \end{aligned}
-		\right.  \right].
-\]
-The only necessary input to the unbounded extractor $\ext$ is the instance
-$\inp_\adv$ (the rest is given for the consistency with the simulation extractability
-definition). 
-%
-With the probabilities in \cref{def:simext} holding regardless of whether the extractor
-is unbounded or not, we obtain the following equality
-$ \ssndProb = \accProb - \extProb$.
-
-% In \cref{cor:simext_to_ssnd} we show that (under some mild conditions) this is enough
-% to conjecture that probability $\ssndProb$ is not only at most negligible, but
-% also, in some parameters, exponentially smaller than $(1 - \extProb)$
-% (probability of extraction failure in \cref{def:simext}).
-
-\fi
 
 %%% Local Variables:
 %%% mode: latex

@@ -1,6 +1,89 @@
 % !TEX root = main.tex
 % !TEX spellcheck = en-US
 
+
+\iffalse
+\noindent \textbf{Simulation sound NIZKs.}
+Another notion for non-malleable NIZKs is \emph{simulation soundness}. It allows the adversary to see simulated proof, however, in contrast to simulation
+extractability it does not require an extractor to provide a witness for the
+proven statement. Instead, it is only necessary, that an adversary who sees
+simulated proofs cannot make the verifier accept a proof of an incorrect
+statement. More precisely,
+\chaya{this definition will go}
+\begin{definition}[Simulation soundness]
+  	\label{def:simsnd}
+    Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof and
+    $\ps_\fs = (\kgen_\fs, \prover_\fs, \verifier_\fs, \simulator_\fs)$ be $\ps$
+    transformed by the Fiat--Shamir transform. We say that $\ps_\fs$ is
+    \emph{simulation-sound}
+    for any $\ppt$ adversary $\adv$ that is given oracle access to a random
+    oracle $\ro$ and simulator $\simulator_\fs$, probability
+    \[
+      \ssndProb =
+      \Pr\left[
+        \begin{aligned}
+          & \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
+          & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+          & \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
+        \end{aligned}
+        \, \left| \,
+          \vphantom{\begin{aligned}
+          & \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
+          & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+          & \neg \exists \wit_{\adv}: \REL(\inp_{\adv}, \wit_{\adv}) = 1
+        \end{aligned}}
+      \begin{aligned}
+        & \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
+        & (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
+          \ro} (\srs; r)
+      \end{aligned}
+		\right.  \right]
+    \]
+    is at most negligible.  List $Q$ contains all $(\inp, \zkproof)$ pairs where
+  $\inp$ is an instance provided to the simulator by the adversary and
+  $\zkproof$ is the simulator's answer. 
+\end{definition}
+
+  \label{rem:simext_to_simsnd}
+  We note that the probability $\ssndProb$ \cref{def:simsnd} can be expressed in
+  terms of simulation-extractability. More precisely, the
+  condition $\neg \exists \wit: \REL(\inp_\adv, \wit_\adv) = 1$ can be substituted with
+  $\REL(\inp_\adv, \wit_\adv) = 0$, where $\wit_\adv$, returned by a possibly unbounded
+  extractor, is either a witness to $\inp_\adv$ (if there exists any) or $\bot$ (if
+  there is none). More precisely,
+\[
+      \ssndProb =
+      \Pr\left[
+        \begin{aligned}
+          & \verifier_\fs(\srs, \inp_{\adv}, \zkproof_{\adv}) = 1,\\
+          & (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,\\
+          & \REL(\inp_{\adv}, \wit_{\adv}) = 0
+        \end{aligned}
+        \, \left| \,
+      \begin{aligned}
+        & \srs \gets \kgen(\REL), r \sample \RND{\advse},\\
+        & (\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\simulator_\fs,
+          \ro} (\srs; r)\\
+        & \wit_{\adv} \gets \ext(\srs, \advse, r, \inp_{\advse}, \zkproof_{\advse},
+			Q, Q_\ro,) 
+      \end{aligned}
+		\right.  \right].
+\]
+The only necessary input to the unbounded extractor $\ext$ is the instance
+$\inp_\adv$ (the rest is given for the consistency with the simulation extractability
+definition). 
+%
+With the probabilities in \cref{def:simext} holding regardless of whether the extractor
+is unbounded or not, we obtain the following equality
+$ \ssndProb = \accProb - \extProb$.
+
+% In \cref{cor:simext_to_ssnd} we show that (under some mild conditions) this is enough
+% to conjecture that probability $\ssndProb$ is not only at most negligible, but
+% also, in some parameters, exponentially smaller than $(1 - \extProb)$
+% (probability of extraction failure in \cref{def:simext}).
+
+\fi
+
 \section{Simulation Soundness---definitions and the general result}
 \noindent \textbf{Simulation sound NIZKs in the updatable setting.}
 Another notion for non-malleable NIZKs is \emph{simulation soundness}. It allows the adversary to see simulated proof, however, in contrast to simulation
