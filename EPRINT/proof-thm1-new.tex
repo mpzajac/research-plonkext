@@ -66,8 +66,7 @@
 	\qed
 	\end{proof}
 
-	We denote by $\waccProb$ the probability that $\advcss$ outputs an acceptable proof. We note that $\waccProb$ is at most $\epsur (\secpar)$ from the probability that $\advse$ outputs an acceptable proof. By the union bound $\accProb + \epsur (\secpar) \leq \waccProb \leq \accProb - \epsur (\secpar)$. 
-	\michals{23.04}{I am not sure about that bound. Why we could have a case when $\waccProb \geq \accProb$? intuitively, $\advcss$ never outputs an acceptable proof if $\advse$ doesn't}
+	We denote by $\waccProb$ the probability that $\advcss$ outputs an acceptable proof. We note that $\waccProb$ is at most $\epsur (\secpar)$ far from the probability that $\advse$ outputs an acceptable proof. By the union bound probability that $\advcss$ outputs an unacceptable proof is at most $1 - \waccProb \leq 1 - \accProb + \epsur$. Hence, $\waccProb \geq \accProb - \epsur (\secpar)$. 
 
 	Since $\ps$ is $\epscss (\secpar, \waccProb)$ computationally special sound, there is an extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of acceptable transcripts $\tree$ and extracts witness with probability at least $1 - \epscss (\secpar, \waccProb)$. Hence, the extractor $\extse$ outputs the witness with the same probability.
 	\qed
