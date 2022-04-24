@@ -219,8 +219,7 @@ The \plonk{} verifier works as follows
 	\item Validate all obtained field elements.
 	\item Validate the instance
       $\inp = \smallset{\wit_i}_{i = 1}^\instsize$.
-	\item Compute challenges $\beta, \gamma, \alpha, \chz, v,
-      u$ from the transcript.
+	\item Compute challenges $\beta, \gamma, \alpha, \chz, v, u$ from the transcript.
 	\item Compute zero polynomial evaluation
       $\p{Z_H} (\chz) =\chz^\noofc - 1$.
 	\item Compute Lagrange polynomial evaluation
@@ -309,6 +308,26 @@ The \plonk{} simulator proceeds as an honest prover would, except:
 \subsection{Unique response property}
 \begin{lemma}
 	\label{lem:plonkprot_ur}
+	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening
+	property with loss $\epsop(\secpar)$, let $\plonkprotfs$ be $\epss$-sound and
+		$(\noofc + 5, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries with security loss $\epsdlog(\secpar) + \epss (\secpar) + 11 \cdot \epsbind (\secpar) + 9 \cdot \epsop(\secpar)$.
+\end{lemma}
+\begin{proof}
+  Let $\adv$ be an algebraic adversary tasked to break the $\ur{3}$-ness of
+	$\plonkprotfs$. We show that the first three prover's messages determine, along with 	the verifiers challenges, the rest of it. We denote by $\zkproof^0$ and $\zkproof^1$ the two proofs that the adversary outputs. To distinguish polynomials and commitments which an honest prover would send in the proof from the polynomials and commitments computed by the adversary we write the latter using indices $0$ and $1$ (two indices as we have two transcripts), e.g.~to describe the quotient polynomial provided by the adversary we write $\p{t}^0$ and $\p{t}^1$ instead of $\p{t}$ as in the description of the protocol.
+
+  We note that since the unique response property requires from $\zkproof^{0}$ and $\zkproof^{1}$ that the first place they differ is a prover's message, then the challenge $\chz$, that is picked after the third message is the same in both transcripts. This challenge determines the evaluation point of polynomials $\p{a}, \p{b}, \p{c}, \p{t}, \p{z}$ which commitments are already sent.
+
+  In its fourth message, the prover provides evaluations of the aforementioned polynomials. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $\epsbinding (\secpar)$. 
+
+  Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. \michals{24.04}{Reduce to the unique opening property. Change that property so it holds also if the aadversary picks the batching challenge.}
+
+  \end{proof}
+
+  \michals{24.04}{Old proof begins here}
+
+\begin{lemma}
+	\label{lem:plonkprot_ur_old}
 	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening
 	property with loss $\epsop(\secpar)$, let $\plonkprotfs$ be $\epss$-sound and
 		$(\noofc + 2, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{2}$ against algebraic adversaries with security loss $\epsdlog(\secpar) + \epss (\secpar) + 11 \cdot \epsbind (\secpar) + 9 \cdot \epsop(\secpar)$.
