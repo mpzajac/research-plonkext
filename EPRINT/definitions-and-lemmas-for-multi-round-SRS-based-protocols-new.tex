@@ -272,7 +272,7 @@ their standard model zero-knowledge property in
 Before giving the definition of computational special soundness for $2\mu + 1$-message protocols, we first recall the notion of a tree of transcripts.
 \begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
 	\label{def:tree_of_accepting_transcripts}
-	Consider a $(2\mu + 1)$-message proof system. A $(n_1,
+	Consider a $(2\mu + 1)$-message proof system. \markulf{24.04}{Is this meaningful for interactive or also non-interactive prove systems obtained via FS?} A $(n_1,
   \ldots, n_\mu)$-tree of accepting transcripts is a tree where each node on
   depth $i$, for $i \in \range{1}{\mu + 1}$, is an $i$-th prover's message in an
   accepting transcript; edges between the nodes are labeled with verifier's
@@ -281,7 +281,7 @@ Before giving the definition of computational special soundness for $2\mu + 1$-m
     1}$ children. The tree consists of $N = \prod_{i = 1}^\mu n_i$
   branches, where $N$ is the number of accepting transcripts. We require $N = \poly$. We refer to a $(1, \ldots, n_k=n, 1, \ldots, 1)$-tree as a $(k,n)$-tree.
 \end{definition}
-\michals{22.04}{Tree should be defined w.r.t. particular $x$}\hamid{22.4}{I checked other related papers e.g., Attema paper and they define it similarly without respect to a particular statement; so I think the definition is okay (unless we're in a different 'adaptive' setting?)}
+\michals{22.04}{Tree should be defined w.r.t. particular $x$}\hamid{22.4}{I checked other related papers e.g., Attema paper and they define it similarly without respect to a particular statement; so I think the definition is okay (unless we're in a different 'adaptive' setting?)} \markulf{24.04}{Accepting transcript is with respect to a statement? So $x$ should be defined.}
 
 \iffalse
 		
