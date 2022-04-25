@@ -3,7 +3,6 @@
 \section{Preliminaries}
 \label{sec:preliminaries}
 
-\markulf{22.04}{Consider if we actually need these notions and notations, if we only need them in one place, move the definition there.}
 
 \paragraph{Notation.} Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
 security parameter. %All adversaries are stateful. 
@@ -27,15 +26,7 @@ the random choice of the randomiser $r$ from $\RND{\adv}$. We denote by $\negl$
 For functions $a(\secpar)$, $b(\secpar)$ and probability ensembles $X = \smallset{X_\secpar}_\secpar$,
 $Y = \smallset{Y_\secpar}_\secpar$ we
 write $a(\secpar) \approx_\secpar b(\secpar)$ if
-$\abs{a(\secpar) - b(\secpar)} \leq \negl$ and $X \approx_\secpar Y$ if they have \emph{statistical distance} $\SD(X_\secpar, Y_\secpar) \leq \negl )$, respectively.  
-
-
-
-
-
-\markulf{22.04}{A lot of stuff we only need after Section 4, and likely not in that detail. If it is closer to where it is actually used, it also becomes more obvious whether it actually helps the reader.}
-
-
+$\abs{a(\secpar) - b(\secpar)} \leq \negl$ and $X \approx_\secpar Y$ if they have \emph{statistical distance} $\SD(X_\secpar, Y_\secpar) \leq \negl )$, respectively. \medskip
 
 % For a probability space
 % $(\samplespace, \eventspace, \probfunction)$ and event $\event{E} \in \eventspace$ we
@@ -52,11 +43,27 @@ $\abs{a(\secpar) - b(\secpar)} \leq \negl$ and $X \approx_\secpar Y$ if they hav
 % 	$
 % \end{lemma}
 
+%\subsection{Proof Systems With Updateable Setups and Random Oracles}
+\noindent Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called the \emph{prover}
+and the latter the \emph{verifier} of a proof system. Both algorithms take a pre-agreed structured reference string $\srs$ as input. The structured reference strings we consider are (potentially) updatable, a notion we recall shortly.
+
+We focus on proof systems made non-interactive via the multi-message Fiat--Shamir transform presented below where prover and
+verifier are provided with a random oracle $\ro$. 
+We denote by $\zkproof$ a proof created by $\prover^\ro$ on input
+$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier^\ro (\srs, \inp,
+\zkproof)$ accepts it.
+
+
+
+%The simulator
+%$\simulator$ is not only given access to $\ro$, but it can also \emph{program}
+%it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
+
 
 
 
   
-
+\iffalse
 \subsection{Zero-Knowledge Proof Systems}\label{prelim:nizk}
 In a zero-knowledge proof system, a prover convinces the verifier of the veracity of a statement
 without leaking any other information. The zero-knowledge property is proven by constructing a
@@ -71,75 +78,30 @@ prover to know a witness corresponding to the proven statement. This property is
 called \emph{knowledge soundness}. In this work we investigate an even stronger notion of soundness, \emph{simulation extractability} for non-interactive protocols obtained from interactive arguments via the \emph{Fiat--Shamir heuristic} via random oracles in a setting with an \emph{updatable common reference string.} 
 
 We now introduce these concepts.
+\fi
 
-\subsection{Updatable SRS schemes}\label{def:upd-scheme}
 
-Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
-and the latter \emph{verifier}. We allow our proof system to have a setup, i.e.~there is a
-$\kgen$ algorithm that takes as input the relation description $\REL$ and outputs a common
-reference string $\srs$.
+\subsection{Updatable SRS Setup Ceremonies}\label{def:upd-scheme}
 
-We recall the definition of an updatable SRS scheme from~\cite{C:GKMMM18} which consists of the following algorithms.
-\vspace{-8pt}
+%Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
+%and the latter \emph{verifier}. We allow our proof system to have a setup, i.e.~there is a
+%$\kgen$ algorithm that takes as input the relation description $\REL$ and outputs a common
+%reference string $\srs$.
+
+The definition of updatable SRS ceremonies of~\cite{C:GKMMM18} requires the following algorithms.
+
 \begin{itemize} 
 	\item
 	$(\srs,\rho) \gets \kgen(\REL)$ is a PPT algorithm that takes a relation $\REL$ and outputs a SRS $\srs$, and correctness proof $\rho$.
 	\item
 	$ (\srs',\rho') \gets \upd(\srs, \{\rho_j \}_{j=1}^n)$ is a PPT algorithm that takes a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
 	\item
-	$b \gets \verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$ is a DPT algorithm that takes a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.
+	$b \gets \verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$ is a DPT algorithm that takes a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.\footnote{For instance \plonk{} and \marlin{} will use the $\kgen$, $\upd$ and $\verifyCRS$ algorithms in~\cref{fig:upd-scheme}.}
 \end{itemize}
 
-	In all our protocols, we deal with a structured reference string that is updatable. We give the $\kgen$, $\upd$ and $\verifyCRS$ algorithms in~\cref{fig:upd-scheme}.
-	
 
 
-\begin{figure}[t!]
-	\centering
-	\fbox{
-		\begin{minipage}[t]{0.76\linewidth}
-			\procedure{$\kgen(\REL)$}{
-				\chi \sample \FF_p \\ [\myskip]
-				\srs := 
-				\left( \gone{\smallset{\chi^i}_{i = 0}^{\dconst}},
-				\gtwo{\chi} \right); 
-				\rho =  \left(\gone{\chi, \chi}, \gtwo{\chi}\right) \\ [\myskip]
-				\pcreturn (\srs, \rho) \\ [\myskip]
-			}
-		%
-		\\
-		%
-		\procedure{$\verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$}{
-			\text{Parse }  \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\dconst}},
-			\gtwo{B} \right) \text{and } \{\rho_j \}_{j=1}^n \text{ as } \left\{\left( P_j, \bP_j, \hP_j \right)\right\}_{j=1}^n \\ [\myskip]
-			\text{Verify Update proofs: } \\ [\myskip]
-			\t \bP_1 = P_1 \\ [\myskip]
-			\t P_j \bullet \gtwo{1} = P_{j-1} \bullet \hP_j \quad \forall j \geq 2 \\ [\myskip]
-			\t \bP_n \bullet \gtwo{1} = \gone{1} \bullet \hP_n \\ [\myskip]
-			\text{Verify SRS structure: } \\ [\myskip]
-			\t \gone{A_i} \bullet \gtwo{1} = \gone{A_{i-1}} \bullet \gtwo{B} \text{ for all } 0 < i \leq \dconst \\ [\myskip]
-		}
-		%
-		\\
-		%
-		\procedure{$\upd(\srs, \{\rho_j \}_{j=1}^n)$}{
-			\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\dconst}},
-			\gtwo{B} \right) \\ [\myskip]
-			\chi' \sample \FF_p  \\ [\myskip]
-			\srs' := 
-			\left( \gone{\smallset{{\chi'}^i A_i}_{i = 0}^{\dconst}},
-			\gtwo{\chi' B} \right); 
-			\rho' =	\left( \gone{\chi' A_1, \chi'}, \gtwo{\chi'}\right) \\ [\myskip]
-			\pcreturn (\srs', \rho')
-		}
-		\end{minipage}}
-	\caption{Updatable SRS scheme} 
-	\label{fig:upd-scheme}
-\end{figure}
-
-In the next section, we define security notions in the updatable setting. To this
-end, we define an SRS update oracle $\initU$ in~\cref{fig:upd} by which the adversary
-updates the SRS.
+In the next section, we define security notions in the updatable setting by giving the adversary access to an SRS update oracle $\initU$, defined in~\cref{fig:upd}. The oracle allows the adversary to control the SRS generation. A trusted setup can be expressed by the updatable setup definition simply by restricting the adversary to only call the oracle on $\intent = \setup$ and $\intent = \final$. Note that a soundness adversary now has access to both the random oracle $\ro$ and $\initU$:  $(\inp, \zkproof) \gets \adv^{\initU,\ro}(1^\secpar)$.
 
 \newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}% 
 
@@ -176,31 +138,43 @@ updates the SRS.
 		\label{fig:upd}
 \end{figure}
 
-\chb{\begin{remark}[Single adversarial updates after an honest setup.]\label{rem:upd}
-	One can consider a slightly different model of setup, wherein the adversary is given an initial (honestly-generated) SRS and then is allowed to maliciously update that in a one-shot fashion.
-	As shown by Groth
-	et al. in~\cite{C:GKMMM18}, the two definitions are equivalent for the class of SNARKs in this work and thus we use this simpler definition to show our security proofs in the updatable setting.
-\end{remark}}
 
-\ourpar{On trusted setup.} We note that a trusted setup can be expressed by the updatable setup definition above simply by restricting the algorithm that is given access to $\initU$ to call the oracle only on $\intent = \setup$ and $\intent = \final$.
 
-\ourpar{Updatability and zero knowledge.}
-Groth et al.~\cite{C:GKMMM18} shown that if a proof system is zero-knowledge against adversaries who picks the SRS, then it is updatable zero-knowledge. We call such systems \emph{subvertible zero knowledge}, cf.~\cite{AC:BelFucSca16,AC:ABLZ17}. It was shown that Plonk, Sonic, Marlin and virtually any proof system with a SRS consisting of monomials are subvertible zero-knowledge.
 
-\markulf{24.04}{Tighten the discussion of universality, one paragraph is enough!}
-\ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. Thus $\REL$ is universal and the public instance $\inp$ must determine the constraints. We elide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
 
-More precisely, let $\RELGEN(\secparam) = \smallset{\REL}$ be a family of universal 
-relations. 
-We assume that if
-$\REL$ comes with any auxiliary input, the latter is benign. Directly from the
-description of $\REL$ one learns security parameter $\secpar$ and the order of a
-group $\GRP$, if the relation is a relation on field elements (as usually the case for zkSNARKs). 
-We assume that the $\srs$ defines the relation, and for universal proof
-systems, such as Plonk and Sonic, we treat both the reference string and the relation as
-universal.
- 
+% \ourpar{Updatability and zero knowledge.}
+% Groth et al.~\cite{C:GKMMM18} shown that if a proof system is zero-knowledge against adversaries who picks the SRS, then it is updatable zero-knowledge. We call such systems \emph{subvertible zero knowledge}, cf.~\cite{AC:BelFucSca16,AC:ABLZ17}. It was shown that Plonk, Sonic, Marlin and virtually any proof system with a SRS consisting of monomials are subvertible zero-knowledge.
 
+\ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means that both the relation $\REL$ and the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. The public instance $\inp$ must determine the constraints. 
+If $\REL$ comes with any auxiliary input, the latter is benign. 
+%The
+%description of $\REL$ fixes the security parameter $\secpar$ and the order of a
+%group $\GRP$, if the relation is a relation on field elements (as usually the case for zkSNARKs). 
+%We assume that the $\srs$ defines the relation, and for universal proof
+%systems, such as Plonk and Sonic, we treat both the reference string and the relation as
+%universal. 
+We elide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
+%\markulf{24.04}{Tighten the discussion of universality, one paragraph is enough!}
+
+
+\subsection{Multi-Message Fiat-Shamir Compiled Provers and Verifiers}
+Given interactive prover and (public coin) verifier $\prover, \verifier$ that exchange messages $(a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
+$\prover$ and $c_i$ comes from $\verifier$, the $(2\mu + 1)$-message Fiat-Shamir heuristic defines non-interactive provers and verifiers $\prover^\ro, \verifier^\ro$ as follows:
+
+\begin{compactitem}
+	\item $\prover^\ro$ behaves as $\prover$ except after sending message
+	  $a_i$, $i \in \range{1}{\mu}$, the prover does not wait for
+	  the message from the verifier but computes it locally setting $c_i
+	  = \ro(\zkproof[0..i])$, where $\zkproof[0..j] = (\inp, a_1, c_1, \ldots,
+	  a_{j - 1}, c_{j - 1}, a_j)$. (Importantly, $\zkproof[0..\mu + 1] =
+	  (\inp, \zkproof)$).\footnote{For Fiat--Shamir based SoK the message signed $m$ is added to $\inp$ before hashing.}
+	\item $\verifier^\ro$ behaves as $\verifier$ but does not provide
+	  challenges to the prover's proof. Instead it computes the
+	  challenges locally as $\prover^\ro$ does. Then it verifies the
+	  resulting transcript $\zkproof$ as the verifier $\verifier$ would. 
+	\end{compactitem}
+
+\iffalse
 \subsection{From interactive to non-interactive---the Fiat--Shamir transform}
 Consider a $(2\mu + 1)$-message, public-coin, honest verifier zero-knowledge
 interactive proof system
@@ -279,8 +253,13 @@ defined as follows:
     \negl.
 	\]
 %\end{description}
+\fi
 
-
+\chb{\begin{remark}[Single adversarial updates after an honest setup.]\label{rem:upd}
+	One can consider a slightly different model of setup, wherein the adversary is given an initial (honestly-generated) SRS and then is allowed to maliciously update that in a one-shot fashion.
+	As shown by Groth
+	et al. in~\cite{C:GKMMM18}, the two definitions are equivalent for the class of SNARKs in this work and thus we use this simpler definition to show our security proofs in the updatable setting.
+\end{remark}} \markulf{25.04}{Move this to where we use it in the proof.}
 
 %\subsection{Non-malleability definitions for NIZKs}
 %\label{sec:simext_def}

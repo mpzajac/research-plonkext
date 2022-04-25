@@ -1,6 +1,7 @@
 % !TEX root = main.tex
 % !TEX spellcheck = en-US
 
+
 \section{Polynomial Commitment Schemes}
 \label{sec:pcom}
 A polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$ consists of four
@@ -144,6 +145,53 @@ algorithms $\upd$, $\verifyCRS$ (see~\cref{def:upd-scheme}) as described in~\cre
 shows, using AGM, that $\PCOMs$ is a commitment of knowledge.  The same reasoning could be
 used to show that property for $\PCOMp$.
  
+
+
+
+\begin{figure}[t!]
+	\centering
+	\fbox{
+		\begin{minipage}[t]{0.76\linewidth}
+			\procedure{$\kgen(\REL)$}{
+				\chi \sample \FF_p \\ [\myskip]
+				\srs := 
+				\left( \gone{\smallset{\chi^i}_{i = 0}^{\dconst}},
+				\gtwo{\chi} \right); 
+				\rho =  \left(\gone{\chi, \chi}, \gtwo{\chi}\right) \\ [\myskip]
+				\pcreturn (\srs, \rho) \\ [\myskip]
+			}
+		%
+		\\
+		%
+		\procedure{$\verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$}{
+			\text{Parse }  \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\dconst}},
+			\gtwo{B} \right) \text{and } \{\rho_j \}_{j=1}^n \text{ as } \left\{\left( P_j, \bP_j, \hP_j \right)\right\}_{j=1}^n \\ [\myskip]
+			\text{Verify Update proofs: } \\ [\myskip]
+			\t \bP_1 = P_1 \\ [\myskip]
+			\t P_j \bullet \gtwo{1} = P_{j-1} \bullet \hP_j \quad \forall j \geq 2 \\ [\myskip]
+			\t \bP_n \bullet \gtwo{1} = \gone{1} \bullet \hP_n \\ [\myskip]
+			\text{Verify SRS structure: } \\ [\myskip]
+			\t \gone{A_i} \bullet \gtwo{1} = \gone{A_{i-1}} \bullet \gtwo{B} \text{ for all } 0 < i \leq \dconst \\ [\myskip]
+		}
+		%
+		\\
+		%
+		\procedure{$\upd(\srs, \{\rho_j \}_{j=1}^n)$}{
+			\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\dconst}},
+			\gtwo{B} \right) \\ [\myskip]
+			\chi' \sample \FF_p  \\ [\myskip]
+			\srs' := 
+			\left( \gone{\smallset{{\chi'}^i A_i}_{i = 0}^{\dconst}},
+			\gtwo{\chi' B} \right); 
+			\rho' =	\left( \gone{\chi' A_1, \chi'}, \gtwo{\chi'}\right) \\ [\myskip]
+			\pcreturn (\srs', \rho')
+		}
+		\end{minipage}}
+	\caption{Updatable SRS scheme for $\PCOMp$} 
+	\label{fig:upd-scheme}
+\end{figure}
+
+
 \begin{figure}
   \small
 \centering
