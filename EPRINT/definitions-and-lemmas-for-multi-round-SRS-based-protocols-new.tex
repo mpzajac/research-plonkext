@@ -14,7 +14,29 @@ succinct.  In the following, our goal will be to show that recent efficient SNAR
 simulation extractable, and therefore, they are a perfect candidate to build better
 signatures of knowledge.
 
-\ourpar{Simulation-extractability for multi-message protocols.} \markulf{22.04}{Way too long and repeats stuff from the intro. We only need a very short paragraph.} Most recent SNARK schemes
+\ourpar{Simulation-extractability for multi-message protocols.} \markulf{22.04}{Way too long and repeats stuff from the intro. We only need a very short paragraph.} \chaya{25.04}{condensed. please see if it reads well.}
+Most recent SNARK schemes follow the same blueprint of construting an interactive information-theoretic proof system 
+that is then compiled into a public coin computationally sound scheme using cryptographic tools such as polynomial commitments,
+and finally made non-interactive via the Fiat--Shamir transformation.
+Existing results on simulation extractability (for proof systems and
+signatures of knowledge) for Fiat--Shamir transformed systems work for $3$-message protocols without reference string that
+require two transcripts for standard model extraction, e.g.,
+\cite{JC:PoiSte00,INDOCRYPT:FKMV12,C:RotSeg21}.
+
+In this section, we define properties that are necessary for our
+analysis of multi-message protocols with a universal updatable SRS.  In order to
+prove simulation-extractability for such protocols, we require more than just two
+transcripts for extraction. Moreover, in the updatable setting we consider protocols
+that rely on an SRS where the adversary gets to contribute to the SRS. 
+We first give a definition of simulation-extractability
+which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then,
+to support multi-message SRS-based protocols compiled using the Fiat--Shamir transform,
+we generalize the unique response property, define a zero-knowledge
+property that we call trapdoor-less simulation, and define a notion of computational special
+soundness called rewinding-based knowledge soundness.
+
+\iffalse 
+Most recent SNARK schemes
 are following the same blueprint: First, an interactive (multi-message)
 information-theoretic proof system is considered.
 Second, this initial proof system is compiled into an efficient, non-interactive and
@@ -36,6 +58,7 @@ to support multi-message SRS-based protocols compiled using the Fiat--Shamir tra
 we generalize the unique response property, replace honest-verifier zero-knowledge
 property with trapdoor-less simulation and special soundness with a computational special
 soundness property that links up with the generalized forking lemma.
+\fi
 
 \markulf{22.04}{Could have ZK here. For updateable setting, it is also a new notion}
 
@@ -130,7 +153,7 @@ response property. More precisely, we say that a $(2\mu + 1)$-message protocol
 has \emph{unique responses from $i$}, and call it a $\ur{i}$-protocol, if it
 follows the definition below:
 
-
+\chaya{25.4}{define UR for FS compiled protocols?}
 \begin{definition}[Updatable $\ur{i}$-protocol]
 	\label{def:wiuru}
 	Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
@@ -167,10 +190,8 @@ string.
 
  \subsection{Trapdoor-Less Zero Knowledge}
  \michals{22.04}{Rename to Trapdoor-Less ZK?}
-
-
-
 \markulf{22.04}{Lets give the zero-knowledge definition only once.}
+\chaya{25.04}{cleaned this up a bit, please check.}
 
 \ourpar{Zero knowledge.}  Our definition of zero-knowledge for non-interactive
 arguments is in the explicitly programmable random oracle model where the simulator
@@ -203,7 +224,7 @@ following oracles that share state as wrapper oracles around $\simulator$.
 % 	%
 % We call zero knowledge \emph{perfect} if the distributions are equal and
 % \emph{computational} if they are indistinguishable for any $\ppt$ distinguisher.
-
+\iffalse
 We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
 $\REL \in \RELGEN(\secparam)$, and adversary $\adv$ there exists a $\ppt$ simulator
 $\simulator$ with oracles $(\simulator_1,\simulator_2)$ such that for any $(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$,
@@ -225,10 +246,11 @@ former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less
   simulatable} (TLS) if its simulator does not require the trapdoor, cf.~\cref{def:tls}.
 
   \markulf{22.04}{We don't consider SRS-simulators in this paper. I would simplify and move the above after the Updatable SRS scheme section, or maybe the start of Section 3.}
+\fi
 
-
- Security reductions in this paper sometimes need to produce simulated NIZK proofs without
- knowing the trapdoor, just by programming the random oracle. Moreover, it may be not allowed to program every random oracle challenge but only challenges that come after $k$-th prover's message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less simulatable} (TLS).
+In this paper we distinguish between simulators that require a trapdoor to simulate and those that do not. We call a protocol \emph{trapdoor-less
+ simulatable} (TLS) if there exists a simulator does not require the trapdoor, and works by programming the random oracle.
+ Moreover, it may be not allowed to program every random oracle challenge but only challenges that come after the $k$-th prover's message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less simulatable} (TLS), and define this in~\cref{def:tls}.
 
 \begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
   \label{def:tls}
@@ -369,7 +391,7 @@ an accepting transcript, $\accProb$, lower-bounds the probability of generating 
 tree of accepting transcripts $\tree$, which allows to extract a witness.
 
 \begin{lemma}[Generalized forking lemma~\cite{EPRINT:AttFehKlo21}]\label{lem:attema}
-	Let $N = n_1 \cdots n_\mu$. Let $\proofsystem$ be a proof system that is knowledge sound \markulf{22.04}{Requiring knowledge soundness here seems circular.}
+	Let $N = n_1 \cdots n_\mu$. Let $\proofsystem$ be a proof system that is knowledge sound \markulf{22.04}{Requiring knowledge soundness here seems circular.} \chaya{25.04}{do we want to say that $\proofsystem$ is knowledge sound with knowledge error $\epsk$ if there exists a tree buildin algorithm $\tdv$ such that a tree of accepting transcripts is produced with the following probability?}
 	with knowledge error $\epsk$. Assume adversary $\adv$ that makes up to $q$ random
 	oracle queries and outputs an acceptable proof with probability at least
 	$\accProb$. There exists a tree building algorithm $\tdv$ that utilizes the extractor $\zdv_1$ in~\cref{fig:Attema-ext} and succeeds in building a
