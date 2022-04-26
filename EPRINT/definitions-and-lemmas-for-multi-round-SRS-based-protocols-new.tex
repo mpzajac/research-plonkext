@@ -78,13 +78,13 @@ soundness property that links up with the generalized forking lemma.
 			\procedure{$\boxed{\simulator\oracleo.\prover(\inp, \wit)} \ \simulator\oracleo.\prover'(\inp)$}
 			{ 
 				\boxed{\pcassert (\inp,\wit)\in \REL} \\ 
-				\pi \gets \simulator^{\simulator\oracleo.\ro,\simulator\oracleo.\prog}(x)\\
+				\pi \gets \simulator^{\simulator\oracleo.\ro,\simulator\oracleo.\prog}(\srs,\inp)\\
 				Q \gets Q \cup \{(\inp,\pi)\}\\
 				\pcreturn \pi
 			}
 		\end{pchstack}
 	\end{pcvstack}
-	\caption{Simulation oracles, only $\simulator\oracleo.\prover'$ allows for simulation of false statements}
+	\caption{Simulation oracles: $\srs$ is the finalized SRS, only $\simulator\oracleo.\prover'$ allows for simulation of false statements}
 	\label{fig:real_simulator_oracles}
 \end{figure}
 
@@ -299,11 +299,11 @@ We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\e
 	\end{aligned}
 	\,\right|\,
 	\begin{aligned}
-		& (\srs, \inp, \zkproof, \zkproof') \gets \advur^{\initU,\ro}(1^\secpar) 
+		& (\inp, \zkproof, \zkproof') \gets \advur^{\initU,\ro}(1^\secpar) 
 	\end{aligned}
 	\right] \leq \epsur(\secpar) 
 	\]
-	where $\verifier'(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\mu,c_\mu,a_{\mu+1}))$ checks that $c_i = \ro(\pi[0..i])$, for $i\in [0,\mu]\setminus k$. That is it allows the $k$th challenge to be programmed by $\adv$. 
+	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\mu,c_\mu,a_{\mu+1}))$ checks that $c_i = \ro(\pi[0..i])$, for $i\in [0,\mu]\setminus k$. That is it allows the $k$th challenge to be programmed by $\adv$. 
 	If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{k}$.
 \end{definition}
 
@@ -332,8 +332,9 @@ We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\e
 % 	Here $\zkproof$ and $\zkproof'$ are two proofs prepared by the adversary which contain both the prover's messages, and, picked by the adversary, verifier's challenges. If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{i}$.
 % \end{definition}
 %
-Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using
-the update oracle $\initU$, defined in~\cref{fig:upd}. We also require (cf.~the second line in the probability equation) that the first change that differentiate $\zkproof$ and $\zkproof'$ is prover's message, not a challenge. 
+
+%Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using
+%the update oracle $\initU$, defined in~\cref{fig:upd}. We also require (cf.~the second line in the probability equation) that the first change that differentiate $\zkproof$ and $\zkproof'$ is prover's message, not a challenge. 
 
 Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary to
 produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$ that are
@@ -345,7 +346,7 @@ string.
 
 \subsection{Computational special soundness and generalized forking lemma}
 
-Before giving the definition of computational special soundness for $2\mu + 1$-message protocols, we first recall the notion of a tree of transcripts.
+Before giving the definition of rewinding-based knowledge soundness for NIZK proof systems compiled the via $2\mu + 1$-message FS transformation, we first recall the notion of a tree of transcripts.
 \begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
 	\label{def:tree_of_accepting_transcripts}
 	Consider a $(2\mu + 1)$-message proof system. \markulf{24.04}{Is this meaningful for interactive or also non-interactive prove systems obtained via FS?} A $(n_1,
@@ -456,21 +457,6 @@ Note that in the definition below, it is implicit that each transcript in the tr
 %	 We call the protocol $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound when $\tdv$ builds a $(n_1, \ldots, n_\mu)$-tree of transcripts.
 \end{definition}
 	
-\oursubsub{Generalized forking lemma}
-Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general
-enough for our purpose as it is useful only for protocols where a witness can be
-extracted from just two transcripts. To be able to extract a witness from, say, an
-execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 1)$ valid proofs
-(where $\numberofconstrains$ is the number of constrains),
-$(\numberofconstrains+ 1)$ for $\sonicprot$, and $\numberofconstrains + 4$ for $\marlinprot$. Here we use Attema et
-al.~\cite{EPRINT:AttFehKlo21} generalization of the forking lemma\footnote{The
-	earlier versions of this paper used another generalization of the forking lemma
-	provided by the paper authors. Change to Attema's et al.~result was due to better
-	extraction success probability bound.}  which shows security of the Fiat--Shamir
-transformation for multi-message protocols. The lemma, given probability of producing
-an accepting transcript, $\accProb$, lower-bounds the probability of generating a
-tree of accepting transcripts $\tree$, which allows to extract a witness.
-
 
 
 

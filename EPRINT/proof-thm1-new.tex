@@ -12,7 +12,7 @@
 
 \begin{proof}	
 	\michals{22.04}{Started writting draft of the proof. Feel free to write your own proof.}
-	Let $(\srs, \inp, \wit) \gets \advse^{\initU, \simulator_1, \simulator_2}(r_{\advse})$. We show that $\extse (\srs, \advse, r_{\advse}, \Qro, \Qsrs, \Qsim)$ outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with probability $\extProb$. To that end we define an algorithm $\advcss^{\ro, \initU}(r)$ against the computational special soundness of $\ps$ that runs internally $\advse^{\initU, \simulator_1, \simulator'_2}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$. Eventually, we use the computational special soundness extractor $\extcss$ on $\advcss$ to extract the witness.
+	Let $(\srs, \inp, \wit) \gets \advse^{\initU, \simulator_1, \simulator_2}(r_{\advse})$. We show that $\extse (\srs, \advse, r_{\advse}, \Qro, \Qsrs, \Qsim)$ outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with probability $\extProb$. To that end we define an algorithm $\advcss^{\initU,\ro}(r)$ against the computational special soundness of $\ps$ that runs internally $\advse^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover'}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$. Eventually, we use the computational special soundness extractor $\extcss$ on $\advcss$ to extract the witness.
 	
 	Since $\advcss$ runs $\advse$ internally, it needs to take care of $\advse$'s oracle queries.
 	$\advse$'s queries to the update oracle $\initU$ are passed to $\advcss$ oracle $\initU$ directly. Also, the answers from $\advcss$'s oracle $\initU$ are returned to $\advse$.
@@ -21,7 +21,7 @@
 		\centering
 			\begin{pcvstack}[center,boxed]
 			\begin{pchstack}
-				\procedure{$\simulator_1.\ro (x)$}
+				\procedure{$\simulator\oracleo.\ro (x)$}
 				{
 				\pcif H[x] = \bot \pcthen \\
 				\pcind H[x] \gets \ro(x) \\
@@ -30,7 +30,7 @@
 				%
 				\pchspace
 				%
-				\procedure{$\simulator_1.\prog(x, h)$}
+				\procedure{$\simulator\oracleo.\prog(x, h)$}
 				{ 
 					\pcif H[x] = \bot \pcthen \\ 
 					\pcind H[x] \gets h \\
