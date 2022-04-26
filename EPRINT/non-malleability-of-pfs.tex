@@ -100,6 +100,7 @@ Analogously, idealised verifier can be defined for polynomial commitment schemes
 
 \subsection{Dlog assumptions in the updatable setting}
 \label{sec:udlog_assumptions}
+
 \begin{definition}[$(q_1, q_2)\mhyph\udlog$ assumption]\label{def:udlog}
 	Let $\adv$ be a $\ppt$ adversary that gets oracle access to $\initU$ with internal algorithms $(\kgen_{\dlog}, \upd_{\dlog}, \verifyCRS)$, where $\kgen_{\dlog}$ and $\upd_{\dlog}$ are defined as follows:
 	\begin{itemize}
@@ -145,6 +146,12 @@ Analogously, idealised verifier can be defined for polynomial commitment schemes
 	where $\left( \gone{\smallset{\bar{\chi}^i}_{i = -q_1}^{q_1}},
 	\gtwo{\smallset{\bar{\chi}^i}_{i = -q_2}^{q_2}} \right)$ is the finalized challenge.
 \end{definition}
+
+\chb{\begin{remark}[Single adversarial updates after an honest setup.]\label{rem:upd}
+	One can consider a slightly different model of setup, where the adversary is given an initial honestly-generated SRS and is then allowed to perform a malicious update in one-shot fashion.
+	As shown by Groth
+	et al. in~\cite{C:GKMMM18}, the two definitions are equivalent for the class of SNARKs in this work and thus we use this simpler definition to show our security proofs in the updatable setting.
+\end{remark}} \markulf{25.04}{Move this to where we use it in the proof.}
 
 We show a reduction from $(q_1, q_2)\mhyph\dlog$ assumption to its variant in the updatable setting according to the update model in~\cref{rem:upd}. We omit showing the reduction $(q_1, q_2)\mhyph\ldlog \Rightarrow (q_1, q_2)\mhyph\uldlog$ as it can be done similarly in a straightforward manner.
 \begin{lemma}

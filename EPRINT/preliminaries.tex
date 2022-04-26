@@ -253,11 +253,7 @@ defined as follows:
 %\end{description}
 \fi
 
-\chb{\begin{remark}[Single adversarial updates after an honest setup.]\label{rem:upd}
-	One can consider a slightly different model of setup, where the adversary is given an initial honestly-generated SRS and is then allowed to perform a malicious update in one-shot fashion.
-	As shown by Groth
-	et al. in~\cite{C:GKMMM18}, the two definitions are equivalent for the class of SNARKs in this work and thus we use this simpler definition to show our security proofs in the updatable setting.
-\end{remark}} \markulf{25.04}{Move this to where we use it in the proof.}
+
 
 Let $\SRScer= (\kgen,\upd, \verifyCRS)$ be the algorithm of an updatable SRS ceremony.
 All our definitions and theorems are about non-interactive proof systems $\ps = (\SRScer, \prover, \verifier, \simulator)$ compiled via the $(2\mu + 1)$-message FS transform. 
