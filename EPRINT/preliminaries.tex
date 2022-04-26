@@ -60,8 +60,6 @@ $(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier^\ro (\srs, \
 %it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
 
 
-
-
   
 \iffalse
 \subsection{Zero-Knowledge Proof Systems}\label{prelim:nizk}
@@ -145,7 +143,7 @@ In the next section, we define security notions in the updatable setting by givi
 % \ourpar{Updatability and zero knowledge.}
 % Groth et al.~\cite{C:GKMMM18} shown that if a proof system is zero-knowledge against adversaries who picks the SRS, then it is updatable zero-knowledge. We call such systems \emph{subvertible zero knowledge}, cf.~\cite{AC:BelFucSca16,AC:ABLZ17}. It was shown that Plonk, Sonic, Marlin and virtually any proof system with a SRS consisting of monomials are subvertible zero-knowledge.
 
-\ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means that both the relation $\REL$ and the reference string $\srs$ allows to prove arithmetic constraint defined over a particular field up to some size bound. The public instance $\inp$ must determine the constraints. 
+\ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means that both the relation $\REL$ and the reference string $\srs$ allows to prove arithmetic constraints defined over a particular field up to some size bound. The public instance $\inp$ must determine the constraints. 
 If $\REL$ comes with any auxiliary input, the latter is benign. 
 %The
 %description of $\REL$ fixes the security parameter $\secpar$ and the order of a
@@ -256,7 +254,7 @@ defined as follows:
 \fi
 
 \chb{\begin{remark}[Single adversarial updates after an honest setup.]\label{rem:upd}
-	One can consider a slightly different model of setup, wherein the adversary is given an initial (honestly-generated) SRS and then is allowed to maliciously update that in a one-shot fashion.
+	One can consider a slightly different model of setup, where the adversary is given an initial honestly-generated SRS and is then allowed to perform a malicious update in one-shot fashion.
 	As shown by Groth
 	et al. in~\cite{C:GKMMM18}, the two definitions are equivalent for the class of SNARKs in this work and thus we use this simpler definition to show our security proofs in the updatable setting.
 \end{remark}} \markulf{25.04}{Move this to where we use it in the proof.}
