@@ -49,8 +49,8 @@ and the latter the \emph{verifier} of a proof system. Both algorithms take a pre
 
 We focus on proof systems made non-interactive via the multi-message Fiat--Shamir transform presented below where prover and
 verifier are provided with a random oracle $\ro$. 
-We denote by $\zkproof$ a proof created by $\prover^\ro$ on input
-$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier^\ro (\srs, \inp,
+We denote by $\zkproof$ a proof created by $\prover$ on input
+$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier(\srs, \inp,
 \zkproof)$ accepts it.
 
 
@@ -156,20 +156,20 @@ We elide public preprocessing of constraint specific proving and verification ke
 
 
 \subsection{Multi-Message Fiat-Shamir Compiled Provers and Verifiers}
-Given interactive prover and (public coin) verifier $\prover, \verifier$ that exchange messages $(a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
-$\prover$ and $c_i$ comes from $\verifier$, the $(2\mu + 1)$-message Fiat-Shamir heuristic defines non-interactive provers and verifiers $\prover^\ro, \verifier^\ro$ as follows:
+Given interactive prover and (public coin) verifier $\prover', \verifier'$ that exchange messages $(a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
+$\prover'$ and $c_i$ comes from $\verifier'$, the $(2\mu + 1)$-message Fiat-Shamir heuristic defines non-interactive provers and verifiers $\prover, \verifier$ as follows:
 
 \begin{compactitem}
-	\item $\prover^\ro$ behaves as $\prover$ except after sending message
+	\item $\prover$ behaves as $\prover'$ except after sending message
 	  $a_i$, $i \in \range{1}{\mu}$, the prover does not wait for
 	  the message from the verifier but computes it locally setting $c_i
 	  = \ro(\zkproof[0..i])$, where $\zkproof[0..j] = (\inp, a_1, c_1, \ldots,
 	  a_{j - 1}, c_{j - 1}, a_j)$. (Importantly, $\zkproof[0..\mu + 1] =
 	  (\inp, \zkproof)$).\footnote{For Fiat--Shamir based SoK the message signed $m$ is added to $\inp$ before hashing.}
-	\item $\verifier^\ro$ behaves as $\verifier$ but does not provide
+	\item $\verifier$ behaves as $\verifier'$ but does not provide
 	  challenges to the prover's proof. Instead it computes the
-	  challenges locally as $\prover^\ro$ does. Then it verifies the
-	  resulting transcript $\zkproof$ as the verifier $\verifier$ would. 
+	  challenges locally as $\prover$ does. Then it verifies the
+	  resulting transcript $\zkproof$ as the verifier $\verifier'$ would. 
 	\end{compactitem}
 
 \iffalse
