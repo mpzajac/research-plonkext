@@ -67,7 +67,7 @@ soundness property that links up with the generalized forking lemma.
 			{
 			\pcif H[x] = \bot \pcthen \\
 			\pcind H[x] \sample \mathsf{Im}(\ro) \\
-			Q_\ro \gets \{(x,H[x])\}\\
+		%	Q_\ro \gets \{(x,H[x])\}\\
 			\pcreturn H[x]
 			  }
 			%
@@ -78,7 +78,7 @@ soundness property that links up with the generalized forking lemma.
 				\pcif H[x] = \bot \pcthen \\ 
 				\pcind H[x] \gets h \\
 				\pcind \Qprog \gets \Qprog \cup \{x\}\\
-				Q_\ro \gets \{(x,H[x])\}\\
+		%		Q_\ro \gets \{(x,H[x])\}\\
 				\pcreturn H[x]
 			}
 			\pchspace
@@ -86,7 +86,7 @@ soundness property that links up with the generalized forking lemma.
 			\procedure{$\boxed{\simulator\oracleo.\prover(\inp, \wit)} \ \simulator\oracleo.\prover'(\inp)$}
 			{ 
 				\boxed{\pcassert (\inp,\wit)\in \REL} \\ 
-				\pi \gets \simulator^{\ro,\prog}(x)\\
+				\pi \gets \simulator^{\simulator\oracleo.\ro,\simulator\oracleo.\prog}(x)\\
 				Q \gets Q \cup \{(\inp,\pi)\}\\
 				\pcreturn \pi
 			}
@@ -181,7 +181,7 @@ $\simulator\oracleo.\ro (x)$ simulates $\ro$ using lazy sampling, $\simulator\or
   \end{definition}
 
   
-\begin{remark}[TLS vs HVZK]
+\begin{remark}[TLZK vs HVZK]
   We note that TLZK notion is closely related to honest-verifier zero knowledge in the
   standard model. That is, if we consider an interactive proof system $\proofsystem$
   that is HVZK in the standard model then $\proofsystem_\fs$ is TLS. This comes as the simulator $\simulator$ in
@@ -222,7 +222,7 @@ should be able to provide simulated proofs for false statements as well, we thus
   \label{def:simext}
 	Let $\ps = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup. We say that
   $\ps$ is \emph{updatable simulation-extractable} with respect to
-  $\simulator$ with \emph{extraction error} $\nu$ if for
+  $\simulator$ if for
   any $\ppt$ adversary $\adv$ that is given oracle access to setup oracle
   $\initU$ and simulation oracle $\simulator\oracleo$ and that produces an accepting
   proof for $\ps$ with probability $\accProb$, where
@@ -243,11 +243,11 @@ should be able to provide simulated proofs for false statements as well, we thus
 	\]
 	there exists an expected polynomial time extractor $\extse$ such that
 	\[
-	\extProb = \condprob{
+	 \condprob{
 	\begin{matrix}
-  \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1 \\
- \wedge  ~(\inp_{\advse}, \zkproof_{\advse}) \not\in Q   \\
-	 \wedge  ~\REL(\inp_{\advse}, \wit_{\advse}) = 1
+  \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1, \\
+   (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,  \\
+	   \REL(\inp_{\advse}, \wit_{\advse}) = 0
 	\end{matrix}
 }{
 	\begin{aligned}
@@ -257,18 +257,18 @@ should be able to provide simulated proofs for false statements as well, we thus
 	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r,
 	Q, Q_\ro, Q_\srs) 
 	\end{aligned}
-}
+} \leq \epsilon_{se}(\lambda,\accProb, q)
 	\]
-	is at least 
-	\[
-	\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
-	\]
-	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
-	$\accProb \geq \nu$. 
+	%is at least 
+	%\[
+	%\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
+	%\]
+	%for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
+	%$\accProb \geq \nu$. 
 	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
 	$\inp$ is an instance queried to $\simulator_2'$ by the adversary and
 	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-	queries to $\simulator_1$ and the (simulated) random oracle's answers, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
+	queries to $\simulator_1$, $\abs{Q_\ro}\leq q$, and the (simulated) random oracle's answers, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
   % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simulator_1$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
 \end{definition}
 
@@ -295,14 +295,14 @@ follows the definition below:
 
 \chaya{25.4}{define UR for FS compiled protocols?}
 
-\begin{definition}[Updatable $\ur{k}$-protocol]
+\begin{definition}[Updatable $(\ur{k})$-protocol]
 Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. 
 We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\advur$:
   \[
 	\Pr\left[
 		\left.
 	\begin{aligned}
-	& \zkproof \neq \zkproof', \zkproof[0..k] = \zkproof'[0..k], c_k = c'_k \\
+	& \zkproof \neq \zkproof', \zkproof[0..k] = \zkproof'[0..k], c_k = c'_k,  \\
 %	& (\zkproof_{1}, \ldots, \zkproof_{j}) = (\zkproof'_{1}, \ldots, \zkproof'_{j}) \implies \zkproof_{j}.\ch = \zkproof'_{j}.\ch),\\
 	& \verifier' (\srs, \inp, \zkproof) =
 	\verifier' (\srs, \inp, \zkproof') = 1  \\
@@ -313,7 +313,7 @@ We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\e
 	\end{aligned}
 	\right] \leq \epsur(\secpar) 
 	\]
-	where $\verifier'(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\nu,c_\nu,a_{\nu+1}))$ checks that $c_i = \ro(\pi[0..i])$, for $i\in [0,\nu]\setminus k$. That is it allows the $k$th challenge to be programmed by $\adv$. 
+	where $\verifier'(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\mu,c_\mu,a_{\mu+1}))$ checks that $c_i = \ro(\pi[0..i])$, for $i\in [0,\mu]\setminus k$. That is it allows the $k$th challenge to be programmed by $\adv$. 
 	If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{k}$.
 \end{definition}
 
@@ -421,22 +421,47 @@ witness or can be used to break some computational assumption. However, differen
 
 \hamid{25.3}{This is the new definition. Please check!}
 \chaya{9.4}{changes as per our discussion on 8.4}
-\begin{definition}[$(n_1,	\ldots, n_\mu)$-computational special soundness]
-	Let $n_1, \ldots, n_\mu \in \NN$. Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be a $(2 \mu + 1)$-message proof system for a relation $\REL$. 
-	Let there exists an extractor $\extcss$, such that for any PPT adversary $\advcss$, that outputs a valid proof with probability at least $\accProb$ runs the tree building algorithm $\tdv$ that runs extractor $\zdv_1$ as described in \cref{fig:Attema-ext}, and eventually outputs $\tree$ which is either a tree of acceptable transcript or $\bot$. We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-computational special sound with security loss $\epscss(\secpar, \accProb)$ if
+\begin{definition}[Rewinding-based knowledge soundness]
+	Let $n_1, \ldots, n_\mu \in \NN$. 
+	%
+	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system for relation $\REL$ with an updateable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle.
+	%
+	We require existence of PPT tree builder $\tdv$ that eventually outputs a $\tree$ which is either a $(n_1, \ldots, n_\mu)$-tree of acceptable transcript or $\bot$ and a PPT extractor $\extcss$. Let  adversary $\advcss$ be a PPT algorithm, that outputs a valid proof with probability at least $\accProb$, 
+	where
+	\[
+	\accProb = \condprob{
+	\begin{matrix}
+	  \verifier(\srs, \inp, \zkproof) = 1  \\
+	  \wedge
+	(\inp, \zkproof) \not\in Q
+	\end{matrix}
+}{
+	\begin{matrix}
+	  r \sample \RND{\advcss}\\
+	(\inp, \zkproof) \gets \advcss^{\initU, \ro
+		} (1^\secpar; r)
+	\end{matrix}
+}.
+	\]
+	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound with security loss $\epscss(\secpar, \accProb)$ if
 	\begin{align*}
 	\Pr\left[
-	\REL(\inp, \wit) = 0
+		\begin{matrix}
+			\verifier(\srs, \inp, \zkproof) = 1,  \\
+			\REL(\inp, \wit) = 0
+		  \end{matrix}
 	\,\left|\,
 	\begin{aligned}
 	& 	r \sample \RND{\advcss}, \\
 	& 	(\srs, \inp, \cdot) \gets \advcss^{\ro, \initU} (1^\secpar; r)\\
-	&  	\tree \gets \tdv((\srs, \advcss, r)),
+	&  	\tree \gets \tdv((\srs, \advcss, r,Q_\ro, Q_\srs)),
 	\wit \gets \extcss(\tree)
 	\end{aligned}\right.
-	\right] \leq \epscss(\secpar,\accProb).
+	\right] \leq \epscss(\secpar,\accProb, q).
 	\end{align*}
-	 We call the protocol $(k, n)$-computational special sound when $\tdv$ builds a $(k, n)$-tree of accepting transcripts.
+	Here, $\srs$ is the finalized SRS. List $Q_\ro$ contains all $\advcss$'s
+	queries to $\ro$, $\abs{Q_\ro}\leq q$, and the (simulated) random oracle's answers, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
+%	 We call the protocol $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound when $\tdv$ builds a $(n_1, \ldots, n_\mu)$-tree of transcripts.
 \end{definition}
 	
 \oursubsub{Generalized forking lemma}
@@ -454,46 +479,7 @@ transformation for multi-message protocols. The lemma, given probability of prod
 an accepting transcript, $\accProb$, lower-bounds the probability of generating a
 tree of accepting transcripts $\tree$, which allows to extract a witness.
 
-\begin{lemma}[Generalized forking lemma~\cite{EPRINT:AttFehKlo21}]\label{lem:attema}
-	Let $N = n_1 \cdots n_\mu$. Let $\proofsystem$ be a proof system that is knowledge sound \markulf{22.04}{Requiring knowledge soundness here seems circular.} \chaya{25.04}{do we want to say that $\proofsystem$ is knowledge sound with knowledge error $\epsk$ if there exists a tree buildin algorithm $\tdv$ such that a tree of accepting transcripts is produced with the following probability?}
-	with knowledge error $\epsk$. Assume adversary $\adv$ that makes up to $q$ random
-	oracle queries and outputs an acceptable proof with probability at least
-	$\accProb$. There exists a tree building algorithm $\tdv$ that utilizes the extractor $\zdv_1$ in~\cref{fig:Attema-ext} and succeeds in building a
-	$(n_1, \ldots, n_\mu)$-tree of accepting transcripts in expected
-	running time $N + q (N - 1)$ with probability at least
-	\[
-	\frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)}.
-	\]
-	\end{lemma}
 
-\begin{figure}[t]
-	\centering
-	\fbox{\parbox{\textwidth}{
-			\begin{enumerate}
-				\item Run $\zdv_{m + 1}$ as follows to obtain $(\vec{I}, \zkproof_1, v)$: relay the
-				$q + \mu$ queries to the random oracle and record all query-response pairs. Set
-				$i \gets I_m$, and let $c_i$ be the response to query $i$.
-				\item If $v = 0$, abort with output $v = 0$. 
-				\item Else, repeat
-				\begin{itemize}
-					\item sample $c'_i \in C \setminus \smallset{c_i}$ (without replacement);
-					\item run $\zdv_{m + 1}$ as follows to obtain $(\vec{I'}, \zkproof', v')$, aborting right after the initial run of $\adv$ if $I'_m \neq I_m$: answer the query to $i$ with $c'_i$, while answering all other queries consistently if the query was performed by $\zdv_{m + 1}$ already on a previous run and with a fresh random value in $C$ otherwise; 
-				\end{itemize}
-				until either $k_m - 1$ additional challenges $c'_i$ with $v' = 1$ and $I'_m = I_m$ have been found or until all challenges $c'_i \in C$ have been tried. 
-				\item In the former case, output $\vec{I}$, the $k_m$ accepting
-				$(1, \ldots, 1, k_{m + 1}, \ldots, k_\mu)$-trees $\zkproof_1, \ldots, \zkproof_{k_m}$, and
-				$v \gets 1$; in the latter case, output $v \gets 0$.
-			\end{enumerate}
-	}}
-	\caption{Extractor $\zdv_m$ from Attema et al.~\cite{EPRINT:AttFehKlo21}. Here $\vec{I}$ is an index vector
-		that contains all random oracle queries made by the prover for the output proof;
-		that is, for prover's messages $\vec{a} = a_1, \ldots, a_{\mu + 1}$,
-		$I_1 = (\inp, a_1), \ldots, I_{\mu} = (\inp, a_1, \ldots, a_\mu)$.  $\zkproof$ is a proof
-		transcript that contains both prover's messages and random oracle responses, that is
-		$\zkproof = (a_1, (\inp, a_1), a_2, (\inp, a_1, a_2), \ldots)$. Finally, $v$ is the
-		verification bit, that is $v = \verifier (\srs, \inp, \zkproof)$. }
-	\label{fig:Attema-ext}
-\end{figure}
 
 
 %%% Local Variables:

@@ -158,6 +158,48 @@ We show a reduction from $(q_1, q_2)\mhyph\dlog$ assumption to its variant in th
   %\michals{24.03}{I think we should write a formal proof for the reduction}
 
 
+  \begin{lemma}[Generalized forking lemma~\cite{EPRINT:AttFehKlo21}]\label{lem:attema}
+	Let $N = n_1 \cdots n_\mu$. \markulf{26.04}{are the $n_i$ the same as the $k_i$ in the algoithm of Fig.3?} Let $\proofsystem$ be a proof system that is knowledge sound \markulf{22.04}{Requiring knowledge soundness here seems circular.} \chaya{25.04}{do we want to say that $\proofsystem$ is knowledge sound with knowledge error $\epsk$ if there exists a tree buildin algorithm $\tdv$ such that a tree of accepting transcripts is produced with the following probability?}
+	with knowledge error $\epsk$. Assume adversary $\adv$ that makes up to $q$ random
+	oracle queries and outputs an acceptable proof with probability at least
+	$\accProb$. There exists a tree building algorithm $\tdv$ for $(n_1, \ldots, n_\mu)$-trees that utilizes the extractor $\zdv_1$ in~\cref{fig:Attema-ext} and succeeds in building a
+	tree of accepting transcripts in expected
+	running time $N + q (N - 1)$ with probability at least
+	\[
+	\frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)}.
+	\]
+	\end{lemma}
+
+\begin{figure}[t]
+	\centering
+	\fbox{\parbox{\textwidth}{
+			\begin{enumerate}
+				\item Run $\zdv_{m + 1}$ as follows to obtain $(\vec{I}, \zkproof_1, v)$: relay the
+				$q + \mu$ queries to the random oracle and record all query-response pairs. Set
+				$i \gets I_m$, and let $c_i$ be the response to query $i$.
+				\item If $v = 0$, abort with output $v = 0$. 
+				\item Else, repeat
+				\begin{itemize}
+					\item sample $c'_i \in C \setminus \smallset{c_i}$ (without replacement);
+					\item run $\zdv_{m + 1}$ as follows to obtain $(\vec{I'}, \zkproof', v')$, aborting right after the initial run of $\adv$ if $I'_m \neq I_m$: answer the query to $i$ with $c'_i$, while answering all other queries consistently if the query was performed by $\zdv_{m + 1}$ already on a previous run and with a fresh random value in $C$ otherwise; 
+				\end{itemize}
+				until either $k_m - 1$ additional challenges $c'_i$ with $v' = 1$ and $I'_m = I_m$ have been found or until all challenges $c'_i \in C$ have been tried. 
+				\item In the former case, output $\vec{I}$, the $k_m$ accepting
+				$(1, \ldots, 1, k_{m + 1}, \ldots, k_\mu)$-trees $\zkproof_1, \ldots, \zkproof_{k_m}$, and
+				$v \gets 1$; in the latter case, output $v \gets 0$.
+			\end{enumerate}
+	}}
+	\caption{Extractor $\zdv_m$ from Attema et al.~\cite{EPRINT:AttFehKlo21}. Here $\vec{I}$ is an index vector
+		that contains all random oracle queries made by the prover for the output proof;
+		that is, for prover's messages $\vec{a} = a_1, \ldots, a_{\mu + 1}$,
+		$I_1 = (\inp, a_1), \ldots, I_{\mu} = (\inp, a_1, \ldots, a_\mu)$.  $\zkproof$ is a proof
+		transcript that contains both prover's messages and random oracle responses, that is
+		$\zkproof = (a_1, (\inp, a_1), a_2, (\inp, a_1, a_2), \ldots)$. Finally, $v$ is the
+		verification bit, that is $v = \verifier (\srs, \inp, \zkproof)$. }
+	\label{fig:Attema-ext}
+\end{figure}  
+
+
 \section{Non-Malleability of Plonk} 
 \label{sec:plonk}
 In this section, we show that $\plonkprotfs$ is \COMMENT{forking }simulation-extractable. Towards this end, we first use the unique opening property to show that
