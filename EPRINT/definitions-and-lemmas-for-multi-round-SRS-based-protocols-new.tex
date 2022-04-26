@@ -57,7 +57,7 @@ $\simulator' = (\simulator_1, \simulator_2')$.
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:updsimext}
   \label{def:simext}
-	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof system. We say that
+	Let $\ps = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system. We say that
   $\ps$ is \emph{updatable simulation-extractable} with respect to
   $\simulator' = (\simulator_1, \simulator_2')$ with \emph{extraction error} $\nu$ if for
   any $\ppt$ adversary $\adv$ that is given oracle access to an updatable SRS setup
@@ -133,8 +133,8 @@ follows the definition below:
 
 \begin{definition}[Updatable $\ur{i}$-protocol]
 	\label{def:wiuru}
-	Let $\proofsystem$ be a $(2\mu + 1)$-message public coin proof system
-  $\ps = (\kgen, \prover, \verifier, \simulator)$. Denote
+	Let $\proofsystem$ be a $(2\mu + 1)$-message FS transform NIZK proof system
+  $\ps = (\SRScer, \prover, \verifier, \simulator)$. Denote
   by $\zkproof_1, \ldots, \zkproof_{\mu}, \zkproof_{\mu + 1}$ protocol messages
   output by the prover. We write $\zkproof_i.\ch$ to denote a challenge that the prover gets after sending $\zkproof_{i}$. We say that $\proofsystem$ has \emph{unique responses from $i$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\advur$:
   \[

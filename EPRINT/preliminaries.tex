@@ -261,6 +261,13 @@ defined as follows:
 	et al. in~\cite{C:GKMMM18}, the two definitions are equivalent for the class of SNARKs in this work and thus we use this simpler definition to show our security proofs in the updatable setting.
 \end{remark}} \markulf{25.04}{Move this to where we use it in the proof.}
 
+Let $\SRScer= (\kgen,\upd, \verifyCRS)$ be the algorithm of an updatable SRS ceremony.
+All our definitions and theorems are about non-interactive proof systems $\ps = (\SRScer, \prover, \verifier, \simulator)$ compiled via the $(2\mu + 1)$-message FS transform. 
+%
+That is $\pi = (a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, with $c_i
+= \ro(\zkproof[0..i])$, where $\zkproof[0..j] = (\inp, a_1, c_1, \ldots,
+a_{j - 1}, c_{j - 1}, a_j)$.
+
 %\subsection{Non-malleability definitions for NIZKs}
 %\label{sec:simext_def}
 %Real life applications often require a NIZK proof system to be
