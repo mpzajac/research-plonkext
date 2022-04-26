@@ -4,15 +4,7 @@
 \label{sec:se_definitions}
 
 
-\ourpar{Signatures of Knowledge from SE-SNARKs.}  \markulf{22.04}{wrong place} The work of Groth and Maller
-\cite{C:GroMal17} shows how to construct a signature of knowledge for messages in
-$\{0, 1\}^*$ from target collision-resistant hash-function and simulation-extractable
-SNARKs. This construction can be found in \Cref{sec:SoKconstruction}.
-These schemes inherit the same properties as the underlying SNARK schemes and
-may rely on a structured reference string, which can be updatable or universal, and they are
-succinct.  In the following, our goal will be to show that recent efficient SNARKs are
-simulation extractable, and therefore, they are a perfect candidate to build better
-signatures of knowledge.
+
 
 \ourpar{Simulation-extractability for multi-message protocols.}
 Most recent SNARK schemes follow the same blueprint of constructing an interactive information-theoretic proof system 
@@ -220,12 +212,12 @@ should be able to provide simulated proofs for false statements as well, we thus
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:updsimext}
   \label{def:simext}
-	Let $\ps = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup. We say that
-  $\ps$ is \emph{updatable simulation-extractable} with respect to
+	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup. We say that
+  $\psfs$ is \emph{updatable simulation-extractable} with respect to
   $\simulator$ if for
   any $\ppt$ adversary $\adv$ that is given oracle access to setup oracle
   $\initU$ and simulation oracle $\simulator\oracleo$ and that produces an accepting
-  proof for $\ps$ with probability $\accProb$, where
+  proof for $\psfs$ with probability $\accProb$, where
 	\[
 	\accProb = \condprob{
 	\begin{matrix}
@@ -241,20 +233,20 @@ should be able to provide simulated proofs for false statements as well, we thus
 	\end{matrix}
 }
 	\]
-	there exists an expected polynomial time extractor $\extse$ such that
+	there exists an expected PPT extractor $\extse$ such that
 	\[
 	 \condprob{
 	\begin{matrix}
-  \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1, \\
-   (\inp_{\advse}, \zkproof_{\advse}) \not\in Q,  \\
-	   \REL(\inp_{\advse}, \wit_{\advse}) = 0
+  \verifier(\srs, \inp, \zkproof) = 1, \\
+   (\inp, \zkproof) \not\in Q,  \\
+	   \REL(\inp, \wit) = 0
 	\end{matrix}
 }{
 	\begin{aligned}
 	& r \sample \RND{\advse},
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover'
+	(\inp, \zkproof) \gets \advse^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover'
 		} (1^\secpar; r) \\
-	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r,
+	& \wit \gets \ext_\se (\srs, \advse, r,
 	Q, Q_\ro, Q_\srs) 
 	\end{aligned}
 } \leq \epsilon_{se}(\lambda,\accProb, q)
@@ -293,8 +285,6 @@ response property. More precisely, we say that a $(2\mu + 1)$-message protocol
 has \emph{unique responses from $i$}, and call it a $\ur{i}$-protocol, if it
 follows the definition below:
 
-\chaya{25.4}{define UR for FS compiled protocols?}
-
 \begin{definition}[Updatable $(\ur{k})$-protocol]
 Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. 
 We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\advur$:
@@ -317,30 +307,30 @@ We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\e
 	If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{k}$.
 \end{definition}
 
-\begin{definition}[Updatable $\ur{i}$-protocol]
-	\label{def:wiuru}
-	Let $\proofsystem$ be a $(2\mu + 1)$-message FS transform NIZK proof system
-  $\ps = (\SRScer, \prover, \verifier, \simulator)$. Denote
-  by $\zkproof_1, \ldots, \zkproof_{\mu}, \zkproof_{\mu + 1}$ protocol messages
-  output by the prover. We write $\zkproof_i.\ch$ to denote a challenge that the prover gets after sending $\zkproof_{i}$. We say that $\proofsystem$ has \emph{unique responses from $i$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\advur$:
-  \[
-	\Pr\left[
-		\left.
-	\begin{aligned}
-	& \zkproof \neq \zkproof', (\zkproof_1, \ldots, \zkproof_{i}) = (\zkproof'_1,
-	\ldots, \zkproof'_{i}), \\
-	& (\zkproof_{1}, \ldots, \zkproof_{j}) = (\zkproof'_{1}, \ldots, \zkproof'_{j}) \implies \zkproof_{j}.\ch = \zkproof'_{j}.\ch),\\
-	& \verifier (\srs, \inp, \zkproof) =
-	\verifier (\srs, \inp, \zkproof') = 1  \\
-	\end{aligned}
-	\,\right|\,
-	\begin{aligned}
-		& (\srs, \inp, \zkproof, \zkproof') \gets \adv^{\initU}(1^\secpar) 
-	\end{aligned}
-	\right] \leq \epsur(\secpar) 
-	\]
-	Here $\zkproof$ and $\zkproof'$ are two proofs prepared by the adversary which contain both the prover's messages, and, picked by the adversary, verifier's challenges. If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{i}$.
-\end{definition}
+% \begin{definition}[Updatable $\ur{i}$-protocol]
+% 	\label{def:wiuru}
+% 	Let $\proofsystem$ be a $(2\mu + 1)$-message FS transform NIZK proof system
+%   $\ps = (\SRScer, \prover, \verifier, \simulator)$. Denote
+%   by $\zkproof_1, \ldots, \zkproof_{\mu}, \zkproof_{\mu + 1}$ protocol messages
+%   output by the prover. We write $\zkproof_i.\ch$ to denote a challenge that the prover gets after sending $\zkproof_{i}$. We say that $\proofsystem$ has \emph{unique responses from $i$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\advur$:
+%   \[
+% 	\Pr\left[
+% 		\left.
+% 	\begin{aligned}
+% 	& \zkproof \neq \zkproof', (\zkproof_1, \ldots, \zkproof_{i}) = (\zkproof'_1,
+% 	\ldots, \zkproof'_{i}), \\
+% 	& (\zkproof_{1}, \ldots, \zkproof_{j}) = (\zkproof'_{1}, \ldots, \zkproof'_{j}) \implies \zkproof_{j}.\ch = \zkproof'_{j}.\ch),\\
+% 	& \verifier (\srs, \inp, \zkproof) =
+% 	\verifier (\srs, \inp, \zkproof') = 1  \\
+% 	\end{aligned}
+% 	\,\right|\,
+% 	\begin{aligned}
+% 		& (\srs, \inp, \zkproof, \zkproof') \gets \adv^{\initU}(1^\secpar) 
+% 	\end{aligned}
+% 	\right] \leq \epsur(\secpar) 
+% 	\]
+% 	Here $\zkproof$ and $\zkproof'$ are two proofs prepared by the adversary which contain both the prover's messages, and, picked by the adversary, verifier's challenges. If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{i}$.
+% \end{definition}
 %
 Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using
 the update oracle $\initU$, defined in~\cref{fig:upd}. We also require (cf.~the second line in the probability equation) that the first change that differentiate $\zkproof$ and $\zkproof'$ is prover's message, not a challenge. 
@@ -407,26 +397,28 @@ Before giving the definition of computational special soundness for $2\mu + 1$-m
 
 \fi
 
+
 \markulf{22.04}{Don't repeat discussion from introduction. Improve it in one place.}
-\oursubsub{Computational special soundness}
+
+\oursubsub{Rewinding-based knowledge soundness}
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
 simulation trapdoor for $\plonkprot$, $\sonicprot$ and $\marlinprot$ exists, the protocols
 cannot be special sound in that regard. This is because an unbounded adversary
 can recover the trapdoor and build an arbitrary number of simulated proofs for a fake
-statement. Hence, we provide a weaker, yet sufficient, definition of
-\emph{computational special soundness}. More precisely, we state that an
-adversary that is able to answer correctly multiple challenges either knows the
-witness or can be used to break some computational assumption. However, differently from the standard definition of special soundness, we do not require from the extractor to be able to extract the witness from \emph{any} tree of acceptable transcripts.  We require that the extractor fails to reconstruct the witness with some small probability only. More precisely, we show later that either the extractor extracts a witness from a tree of transcripts or the adversary who was used to produce the tree can be used to break some computationally hard problem. Note that in the definition below, it is implicit that each transcript in the tree is accepting with respect to a ``local programming'' of the random oracle. However, the verification of the proof output by the adversary is with respect to a non-programmed random oracle.
+statement. Hence, we provide a weaker, yet sufficient, definition that somehow lies between 
+computational \emph{knowledge soundness} and \emph{special soundness} for unbounded adversaries. Differently from the standard definition of special soundness, we do not require from the extractor to be able to extract the witness from \emph{any} tree of acceptable transcripts. Similar to knowledge soundness, we require that the extractor fails to reconstruct the witness with some small probability only. 
 
-\hamid{25.3}{This is the new definition. Please check!}
-\chaya{9.4}{changes as per our discussion on 8.4}
+More precisely, in proofs of rewinding-based knowledge soundness we show later that either the extractor extracts a witness from a tree of transcripts or the adversary who was used to produce the tree can be used to break some computationally hard problem. 
+
+Note that in the definition below, it is implicit that each transcript in the tree is accepting with respect to a ``local programming'' of the random oracle. However, the verification of the proof output by the adversary is with respect to a non-programmed random oracle.
+
 \begin{definition}[Rewinding-based knowledge soundness]
 	Let $n_1, \ldots, n_\mu \in \NN$. 
 	%
 	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system for relation $\REL$ with an updateable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle.
 	%
-	We require existence of PPT tree builder $\tdv$ that eventually outputs a $\tree$ which is either a $(n_1, \ldots, n_\mu)$-tree of acceptable transcript or $\bot$ and a PPT extractor $\extcss$. Let  adversary $\advcss$ be a PPT algorithm, that outputs a valid proof with probability at least $\accProb$, 
+	We require existence of an expected PPT tree builder $\tdv$ that eventually outputs a $\tree$ which is either a $(n_1, \ldots, n_\mu)$-tree of acceptable transcript or $\bot$ and a PPT extractor $\extcss$. Let  adversary $\advcss$ be a PPT algorithm, that outputs a valid proof with probability at least $\accProb$, 
 	where
 	\[
 	\accProb = \condprob{
