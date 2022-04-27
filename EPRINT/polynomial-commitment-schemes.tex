@@ -230,13 +230,13 @@ used to show that property for $\PCOMp$.
 			
 			\pchspace
 			
-			\procedure{$\verify(\srs, \gone{c}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
+			\procedure{$\verifyb(\srs, \gone{\vec{c}}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
 			{
 				\vec{r} \gets \FF_p^{\abs{\vec{z}}}\\ [\myskip]
 				\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo \\ [\myskip]
 				\pcind \pcif 
           \sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j}
-          \gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet
+          \gamma_i^{j - 1} c_{i, j} - \sum_{j = 1}^{t_j} s_{i, j}} \bullet
           \gtwo{1} + \\ [\myskip] \pcind \sum_{i = 1}^{\abs{\vec{z}}} r_i z_i
           o_i
           \bullet \gtwo{1} \neq \gone{- \sum_{i = 1}^{\abs{\vec{z}}} r_i o_i }
@@ -245,6 +245,41 @@ used to show that property for $\PCOMp$.
 					\pcreturn 1.
 			}
 		\end{pchstack}
+
+    \begin{pchstack}
+      \procedure{$\verify(\srs, \gone{\vec{c}}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
+			{
+				\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo \\ [\myskip]
+				\pcind \pcif 
+          \gone{\sum_{j = 1}^{t_j}
+          \gamma_i^{j - 1} c_{i, j} - \sum_{j = 1}^{t_j} s_{i, j}} \bullet
+          \gtwo{1} + \\ [\myskip] \pcind  z_i
+          o_i
+          \bullet \gtwo{1} \neq \gone{-o_i }
+          \bullet \gtwo{\chi} \pcthen  \\
+					\pcind \pcreturn 0\\ [\myskip]
+					\pcreturn 1.
+			}
+    \end{pchstack}
+    %
+    % \pchspace
+    %
+    % \begin{pchstack}
+    %   \procedure{$\verify(\srs, \gone{c}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
+		% 	{
+		% 		\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo \\ [\myskip]
+		% 		\pcind \pcif 
+    %       \sum_{i = 1}^{\abs{\vec{z}}} r_i \cdot \gone{\sum_{j = 1}^{t_j}
+    %       \gamma_i^{j - 1} c_{i, j} - \sum{j = 1}^{t_j} s_{i, j}} \bullet
+    %       \gtwo{1} + \\ [\myskip] \pcind \sum_{i = 1}^{\abs{\vec{z}}} r_i z_i
+    %       o_i
+    %       \bullet \gtwo{1} \neq \gone{- \sum_{i = 1}^{\abs{\vec{z}}} r_i o_i }
+    %       \bullet \gtwo{\chi} \pcthen  \\
+		% 			\pcind \pcreturn 0\\ [\myskip]
+		% 			\pcreturn 1.
+%
+		% 	}
+    % \end{pchstack}
 	\end{pcvstack}
 	\caption{$\PCOM$ polynomial commitment scheme.}
 	\label{fig:pcomp}
