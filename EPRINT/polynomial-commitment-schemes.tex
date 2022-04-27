@@ -200,11 +200,9 @@ used to show that property for $\PCOMp$.
 		\begin{pchstack}
 			\procedure{$\kgen(\secparam, \maxdeg)$}
 			{
-			\chi \sample \FF^2_p \\ [\myskip]
-			\pcreturn \gone{1, \ldots, \chi^{\numberofconstrains + 2}}, \gtwo{\chi}\\ [\myskip]
+			\chi \sample \FF_p \\ [\myskip]
+			\pcreturn \gone{1, \ldots, \chi^{\maxdeg}}, \gtwo{\chi}\\ [\myskip]
 				\hphantom{\hspace*{5.5cm}}	
-        %\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1}
-        %\frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
       }
 			
 			\pchspace
@@ -248,7 +246,7 @@ used to show that property for $\PCOMp$.
 			}
 		\end{pchstack}
 	\end{pcvstack}
-	\caption{$\PCOMp$ polynomial commitment scheme.}
+	\caption{$\PCOM$ polynomial commitment scheme.}
 	\label{fig:pcomp}
   \end{figure}
 
@@ -305,62 +303,55 @@ used to show that property for $\PCOMp$.
 % 	\label{fig:pcoms}
 % \end{figure}
 
-\subsection{Unique opening property of $\PCOMp$}
-Now, we show that the version of the KZG polynomial
-commitment scheme that is used in \plonk{}, $\PCOMp$, has the unique opening
-property.
+\subsection{Unique opening property of $\PCOM$}
+Now, we show that the batched variant of the KZG polynomial
+commitment scheme that is used in \plonk{} and $\marlin{}$, has the unique opening property.
 
 \begin{lemma}
 \label{lem:pcomp_op}
-Let $\PCOMp$ be a batched version of a KZG polynomial commitment,
-cf.~\cref{fig:pcomp}, then $\PCOMp$ has the unique opening property  
- in the AGM with security
-$\epsop(\secpar) \leq 2 \epsdlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where
-$\epsdlog(\secpar)$ is security of the $(\noofc + 2, 1)$-$\udlog$ assumption and
-$\FF_p$ is the field used in $\PCOMp$.\end{lemma}
+Let $\PCOM$ be a batched version of a KZG polynomial commitment,
+cf.~\cref{fig:pcomp}, that commits to $l$ polynomials of degree up to $\maxdeg$. Let $\vec{z} = (z_0, \ldots, z_{l - 1}) \in \FF_p^l$ be the points the polynomials are  evaluated at, $k_i \in \NN$ be the number of the committed polynomials to be evaluated at $z_i$, and $K_i$ be the set of indices of these polynomials. Let $\vec{s_{K_i}} \in \FF_p^{k_i}$ the evaluations of polynomials at $z_i$,
+and $\vec{o} = (o_0, \ldots, o_{l - 1}) \in \FF_p^l$ be the commitment openings. We show that the probability an algebraic adversary $\adv$ opens the same commitment in two different ways is at most $\epsop(\secpar)$, for
+$\epsop(\secpar) \leq l \epsudlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where
+$\epsudlog(\secpar)$ is security of the $(\maxdeg, 1)$-$\udlog$ assumption and
+$\FF_p$ is the field used in $\PCOM$.
+\end{lemma}
 \begin{proof}
-  Let $\vec{z} = (z, z') \in \FF_p^2$ be the two points the polynomials are
-  evaluated at, $k \in \NN$ be the number of the committed polynomials to be
-  evaluated at $z$, $k' \in \NN$ be the number of the committed polynomials
-  to be evaluated at $z'$, $\vec{c} \in \GRP^k, \vec{c'} \in \GRP^{k'}$ be the
-  commitments, $\vec{s} \in \FF_p^k, \vec{s'} \in \FF_p^{k'}$ the evaluations,
-  and $\vec{o} = (o, o') \in \FF_p^2$ be the commitment openings.  We need to
-  show that the probability a $\ppt$ $\adv$ opens the same commitment in two
-  different ways is at most $\epsop(\secpar)$, even when the commitment openings
-  are verified in batches.
+  First, we consider a case when for all evaluation points, all openings are verified independently. To that end, we show that the real verifier accepts am incorrect polynomial commitment opening with negligible probability only. Second, we show that the batching increases only negligibly the probability that the adversary opens a commitment to a valid evaluation in two different ways.
 
-  The idealised verifier checks whether the following equality, for $\gamma, r'$
+  The proof goes by game hops.
+
+  \ncase{Game 0} In this game the adversary wins if it provides two different openings for a vector of polynomial commitments and their evaluations that are acceptable by $\verifyb$.
+
+  \ncase{Game 1} This game is identical to Game 0 except it is additionally aborted if for some $j$ \michals{27.04}{Idealised batched verifier does not accept?}.
+
+  \ncase{Game 2} This game is identical to Game 1 except it is additionally aborted if one of the \michals{27.04}{udlog reduction}
+
+  We note that the idealised verifier $\vereq(X)$ does not accept two different openings of a correct evaluation. Furthermore, any discrepancy between the idealised verifier rejection and real verifier acceptance allows one to break the (updatable) discrete logarithm problem. The reduction $\rdvdulog$ proceeds as follows. It answers $\adv$'s queries for SRS updates according to the answers it receives from its udlog update oracle. When $\adv$ finalizes an SRS, $\rdvdulog$ finalizes the corresponding udlog challenge $(\gone{1, \ldots, {\chi'}^{\maxdeg}}, \gtwo{1})$. Consider a proof $\zkproof$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$, but $\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all proof elements are extended by their representation as a combination of the input $\GRP_1$-elements. Therefore, all coefficients of the verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known. Now, $\rdvdulog$ computes the roots of $\vereq_{\inp, \zkproof}(X)$, finds $\chi'$ among them, and returns $\chi'$. Hence the 
+
+  The idealised verifier checks whether the following equality, for $\gamma, r$
   picked at random, holds:
   \begin{multline}
     \label{eq:ver_eq_poly}
-    \left(\sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}
-      \gamma^{i - 1} \cdot s_i\right) + r' \left(\sum_{i = 1}^{k'} \gamma'^{i -
-        1} \cdot \p{f'}_i(X) -
-      \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot s'_i \right)\\
-    \equiv \p{o}(X)(X - z) + r' \p{o}'(X)(X- z').
+    \sum_{j = 0}^{l - 1} r^{j}\left(\sum_{i \in K_j} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i \in K_j} \gamma^{i - 1} \cdot {s_i}_j \right) 
+    \equiv \sum_{j = 0}^{l - 1} r^{j} \p{o_{j}}(X)(X - z_j).
   \end{multline}
-  Since $r'$ has been picked at random from $\FF$, probability that
-  \cref{eq:ver_eq_poly} holds while either
+  Since $r$ has been picked at random from $\FF_p$, probability that
+  \cref{eq:ver_eq_poly} holds while for some $j \in \range{0}{l - 1}$
   \[
-    \sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}
-    \gamma^{i - 1} \cdot s_i \not\equiv \p{o}(X)(X - z) \text{, or}
+    r^j \left(\sum_{i \in K_j} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i \in K_j}
+    \gamma^{i - 1} \cdot {s_i}_j \right) \not\equiv r^j \p{o_j}(X)(X - z_j)
   \]
-  \[
-    \sum_{i = 1}^{k'} \gamma'^{i - 1} \cdot \p{f'}_i(X) - \sum_{i = 1}^{k'}
-    \gamma'^{i - 1} \cdot s'_i \not\equiv \p{o'}(X)(X - z')
-  \]
-  is $\infrac{1}{\abs{\FF_p}}$~cf.~\cite{EPRINT:GabWilCio19}. 
+  is $\infrac{(l - 1)}{\abs{\FF_p}}$~cf.~\cite{EPRINT:GabWilCio19}. 
   When \(
-    \sum_{i = 1}^{k} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i = 1}^{k}
-    \gamma^{i - 1} \cdot s_i = \p{o}(X)(X - z) 
+    r^j \left(\sum_{i \in K_j} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i \in K_j}
+    \gamma^{i - 1} \cdot {s_i}_j \right) \not\equiv r^j \p{o_j}(X)(X - z_j)
   \)
-  holds, polynomial $\p{o}(X)$ is uniquely determined from the uniqueness of
-  polynomial composition. Similarly, $\p{o'}(X)$ is uniquely determined as well.
+  holds, polynomial $\p{o_j}(X)$ is uniquely determined from the uniqueness of
+  polynomial composition. 
 
-  Any discrepancy
-  between the idealised verifier rejection and real verifier acceptance allows
-  one to break the discrete logarithm problem.
-
+  Any discrepancy between the idealised verifier rejection and real verifier acceptance allows one to break the (updatable) discrete logarithm problem.
+%
 %  \textcolor{red}{Old: The reduction $\rdvdlog$ proceeds as follows: $\rdvdlog$ builds a SRS $\srs$ using the input $\dlog$ instance. I.e., it answers $\adv$'s queries for SRS updates and sets the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS. 
 %  Consider a proof $\zkproof$ such
 %      that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
@@ -372,22 +363,11 @@ $\FF_p$ is the field used in $\PCOMp$.\end{lemma}
 %      them.
 %    Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates that are extracted by $\rdvdlog$ from the update proofs given by $\adv$.
 %  $\rdvdlog$ returns $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.}
-
-  \chb{The reduction $\rdvdulog$ proceeds as follows: $\rdvdulog$ answers $\adv$'s queries for SRS updates according to the answers it receives from its dlog update oracle. When $\adv$ finalizes a SRS, $\rdvdulog$ finalizes the corresponding dlog challenge. 
-  	Consider a proof $\zkproof$ such
-  	that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
-  	$\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all proof
-  	elements are extended by their representation as a
-  	combination of the input $\GRP_1$-elements. Therefore, all coefficients of the
-  	verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known.
-  	Now, $\rdvdulog$ computes the roots of $\vereq_{\inp, \zkproof}(X)$ and finds $\chi'$ among
-  	them. $\rdvdulog$ returns $\chi'$.}
+%
+  The reduction $\rdvdulog$ proceeds as follows. It answers $\adv$'s queries for SRS updates according to the answers it receives from its udlog update oracle. When $\adv$ finalizes an SRS, $\rdvdulog$ finalizes the corresponding udlog challenge $(\gone{1, \ldots, {\chi'}^{\maxdeg}}, \gtwo{1})$. Consider a proof $\zkproof$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$, but $\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all proof elements are extended by their representation as a combination of the input $\GRP_1$-elements. Therefore, all coefficients of the verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known. Now, $\rdvdulog$ computes the roots of $\vereq_{\inp, \zkproof}(X)$, finds $\chi'$ among them, and returns $\chi'$.
   
-  Since any discrepancy
-  between the idealised verifier and real verifier rejection allows
-  one to break the discrete logarithm problem, the probability that the real
-  verifier accepts in one of the cases above is upper-bounded by
-  $2 \epsdlog + \infrac{1}{\FF_p}$.
+ Hence, the probability that the adversary breaks the unique opening property of $\PCOM$ is upper-bounded by
+  $l \cdot \epsdlog + \infrac{1}{\FF_p}$.
 
     \qed
 \end{proof}

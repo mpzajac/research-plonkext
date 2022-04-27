@@ -336,12 +336,9 @@ We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\e
 %Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using
 %the update oracle $\initU$, defined in~\cref{fig:upd}. We also require (cf.~the second line in the probability equation) that the first change that differentiate $\zkproof$ and $\zkproof'$ is prover's message, not a challenge. 
 
-Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary to
-produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$ that are
-the same on the first $i$ prover messages.  We note that the definition above is also
-meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty
-string.
+Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary to produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$ that are the same on the first $i$ prover messages.  We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
 
+We note that the definition above can be easily generalized to allow the adversary to program the oracle on more than just a single point. However, since all the protocols we analyse in this paper require only a simple single-point programming, we opted for a simplified version of the definition.
   
 
 \subsection{Computational special soundness and generalized forking lemma}

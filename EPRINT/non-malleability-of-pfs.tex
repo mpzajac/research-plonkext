@@ -6,7 +6,7 @@
 In this section, we show that $\plonkprotfs$ is simulation-extractable. Towards this end, we first use the unique opening property to show that
 $\plonkprot$ has the $\ur{3}$ property,
 cf.~\cref{lem:plonkprot_ur}.
-Next, we show that $\plonkprot$ is rewind-based knowledge sound. That is, given a number of accepting transcripts whose messages match on the first $5$ messages of the protocol, we can either extract a witness for the proven statement or use one of the transcripts to break the $\dlog$ assumption. This result is shown in the AGM, cf.~\cref{lem:plonkprot_ss}. We then show that $\plonkprot$ is trapdoor-less ZK in the AGM, cf.~\cref{lem:plonk_hvzk}.
+Next, we show that $\plonkprot$ is rewind-based knowledge sound. That is, given a number of accepting transcripts whose messages match on the first $5$ messages of the protocol, we can either extract a witness for the proven statement or use one of the transcripts to break the $\dlog$ assumption. This result is shown in the AGM, cf.~\cref{lem:plonkprot_ss}. We then show that $\plonkprot$ is trapdoor-less ZK in the AGM, cf.~\cref{lem:plonk_tlzk}.
 
 Given rewinding-based knowledge soundness, $\ur{3}$ and trapdoor-less zero knowledge of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is simulation-extractable.
 
@@ -157,17 +157,17 @@ the Fiat--Shamir transformed version of Plonk.
 	\end{align*}
 	Split $\p{t}(X)$ into degree less then $\noofc$ polynomials
   $\p{t_{lo}}(X), \p{t_{mid}}(X), \p{t_{hi}}(X)$, such that
-	\[
+	\(
 		\p{t}(X) = \p{t_{lo}}(X) + X^{\noofc} \p{t_{mid}}(X) + X^{2 \noofc}
     \p{t_{hi}}(X)\,.
-	\]
+	\)
 	Output $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$.
 	
 \item[Message 4] Get the challenge $\chz \in \FF_p$, $\chz = \ro(\zkproof[0..3])$.
   Compute opening evaluations
-	\begin{align*}
+	\(
     \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
-	\end{align*}
+	\)
 	Compute the linearisation polynomial
 	\[
 		\p{r}(X) =
@@ -282,11 +282,9 @@ The \plonk{} verifier works as follows
   polynomial at one point).
 \end{enumerate}
 
-\ncase{$\plonk$ simulator $\simulator_\chi(\srs, \td= \chi, \inp)$}\ \newline
+\ncase{$\plonk$ simulator $\simulator_\chi(\srs, \td= \chi, \inp)$}\ 
 We describe the simulator in \cref{lem:plonk_tlzk}.
 
-\hamid{24.3}{The following proof is for the non-batched version of Plonk. Maybe we should say this explicitly somewhere!}
- 
 \subsection{Unique response property}
 \begin{lemma}
 	\label{lem:plonkprot_ur}
@@ -298,102 +296,18 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
   Let $\adv$ be an algebraic adversary tasked to break the $\ur{3}$-ness of
 	$\plonkprotfs$. We show that the first three prover's messages determine, along with 	the verifiers challenges, the rest of it. We denote by $\zkproof^0$ and $\zkproof^1$ the two proofs that the adversary outputs. To distinguish polynomials and commitments which an honest prover would send in the proof from the polynomials and commitments computed by the adversary we write the latter using indices $0$ and $1$ (two indices as we have two transcripts), e.g.~to describe the quotient polynomial provided by the adversary we write $\p{t}^0$ and $\p{t}^1$ instead of $\p{t}$ as in the description of the protocol.
 
-  We note that since the unique response property requires from $\zkproof^{0}$ and $\zkproof^{1}$ that the first place they differ is a prover's message, then the challenge $\chz$, that is picked after the third message is the same in both transcripts. This challenge determines the evaluation point of polynomials $\p{a}, \p{b}, \p{c}, \p{t}, \p{z}$ which commitments are already sent.
+  We note that since the unique response property requires from $\zkproof^{0}$ and $\zkproof^{1}$ that the first place they could differ is the $4$-th prover's message, then the challenge $\chz$, that is picked by the adversary after the $3$-rd message is the same in both transcripts. This challenge determines the evaluation point of polynomials $\p{a}(X), \p{b}(X), \p{c}(X), \p{t}(X), \p{z}(X)$ which commitments are already sent.
 
-  In its fourth message, the prover provides evaluations of the aforementioned polynomials. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $\epsbinding (\secpar)$. 
+  In its fourth message, the prover provides evaluations of the aforementioned polynomials, along with evaluations of publicly known polynomials $
+  \p{S_{\sigma 1}} (\chz), \p{S_{\sigma, 2}} (\chz)$, and evaluation of a linearization polynomial $\p{r}(\chz)$.
+  Note that the adversary can output two acceptable proofs that differ on their fourth message only if it either manages to break evaluation binding of one of the opening, or provides an unacceptable opening which is the accepted due to a batching error. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, and the batched verification equation accepts an incorrect opening with probability at most $\infrac{1}{\abs{\FF_p}}$, cf.~\cite{EPRINT:GabWilCio19}, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $8  \cdot \epsbinding (\secpar) + \infrac{1}{\abs{\FF_p}}$. 
 
-  Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. \michals{24.04}{Reduce to the unique opening property. Change that property so it holds also if the aadversary picks the batching challenge.}
+  Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the a valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$. 
 
+  By the union bound, the adversary is able to break the unique response property with probabilty upper bounded by $8  \cdot \epsbinding (\secpar) + \infrac{1}{\abs{\FF_p}} + \epsop (\secpar)$.
   \end{proof}
 
-  \michals{24.04}{Old proof begins here}
-
-\begin{lemma}
-	\label{lem:plonkprot_ur_old}
-	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening
-	property with loss $\epsop(\secpar)$, let $\plonkprotfs$ be $\epss$-sound and
-		$(\noofc + 2, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{2}$ against algebraic adversaries with security loss $\epsdlog(\secpar) + \epss (\secpar) + 11 \cdot \epsbind (\secpar) + 9 \cdot \epsop(\secpar)$.
-\end{lemma}
-
-\begin{proof}
-	Let $\adv$ be an algebraic adversary tasked to break the $\ur{2}$-ness of
-	$\plonkprotfs$. We show that the first 2 prover's messages determine, along with
-	the verifiers challenges, the rest of it.  This is done by game hops. In the games,
-	the adversary outputs two proofs $\zkproof^0$ and $\zkproof^1$ for the same statement.
-	To distinguish polynomials and commitments which an honest prover sends in the
-	proof from the polynomials and commitments computed by the adversary we write the
-	latter using indices $0$ and $1$ (two indices as we have two transcripts), e.g.~to
-	describe the quotient polynomial provided by the adversary we write $\p{t}^0$ and
-	$\p{t}^1$ instead of $\p{t}$ as in the description of the protocol.
-
-\ngame{0} In this game, the adversary wins if it provides two different transcripts that match on the first two messages of the proof.
-
-\ngame{1} In this game, the adversary additionally wins if it provides two different transcripts that match on the first three messages of the proof.
-
-\ncase{Game 0 to Game 1} In its $3$-rd message the adversary computes the
-quotient polynomial $\pt(X)$ and outputs its commitment that compounds of three separate commitments $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$. Let $\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)}$ be the commitments output by the adversary in one transcript, and $\gone{\p{t^1_{lo}}(\chi), \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$ the commitments output in the other.
-%
-Since the commitment scheme is deterministic, the adversary cannot come up with two different valid commitments for the same polynomial except probability $\epsbind (\secpar)$. Without loss of generality, let $\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)}$ be the invalid commitments to incorrect polynomials (i.e., different from split polynomials of $\pt(X)$) provided by the adversary.  If the adversary can later open any of these commitments $\gone{\p{t^0_{\star}}(\chi)}$ as if $\p{t^0_{\star}} = \p{t_{\star}}$ for any $\star \in \{\p{lo, mid, hi}\}$, it can break the evaluation binding property, which by assumption is upper-bounded by $\epsbind(\secpar)$.
-
-If the adversary picks two different polynomials: $\p{t^0}(X)$, which commitment is $\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)}$, and $\p{t^1}(X)$ which commitment is $\gone{\p{t^1_{lo}}(\chi), \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$, then one of them has to be computed incorrectly or the adversary can be used to break the udlog assumption if $\gone{\p{t^0_{lo}}(\chi), \p{t^0_{mid}}(\chi), \p{t^0_{hi}}(\chi)} = \gone{\p{t^1_{lo}}(\chi), \p{t^1_{mid}}(\chi), \p{t^1_{hi}}(\chi)}$.
-
-More precisely, assume that the adversary is able to output a pair of commitments as above with probability $\eps$. We show that there exists a reduction $\rdv$ that takes as input $\udlog$ challenge $\Ch$ and breaks it with probability at least $\eps$ as well. To that end, the reduction runs $\adv$ internally simulating its access to random and update oracles. For any query $x$ that $\adv$ sends to the random oracle, $\rdv$ responds with $\ro(x)$. Similarly, update oracle responses are also computed honestly. Since the adversary is algebraic, the reduction learns coefficients $t^{b}_{i, \star}$, such that $\p{t}^{b}_{\star} (X) = \sum_{i = 0}^{\numberofconstrains + 5} X^{i} t^{b}_{i, \star}$ for $\star \in \smallset{\p{lo}, \p{med}, \p{hi}}$. Hence, $\rdv$ can compute polynomials $\p{t}^{0} (X)$ and $\p{t}^{1} (X)$. Since these are not equal, yet their evaluations on $\chi$ are the same, $\rdv$ can compute $\chi$ by finding roots of $\p{t}^{0} (X) - \p{t}^{1} (X)$.
-
-Importantly, polynomial $\p{t}(X)$ assures that the constraints of the system
-hold. Hence, the probability that one of $\p{t^0}(X)$, $\p{t^1}(X)$ is computed
-incorrectly, the adversary gives and opens acceptably a commitment to it, and
-the proof is acceptable, is upper bounded by the soundness of the proof system
-$\epss (\secpar)$. Probability of $\adv$ winning in one game but not in the
-other is thus upper bounded by $3 \cdot \epsbind(\secpar) + \epsdlog (\secpar) + \epss (\secpar)$.
-
-\ngame{2} In this game, the adversary additionally wins if it provides two different transcripts that
-match on the first four messages of the proof.
-
-\ncase{Game 1 to Game 2} In its $4$-th message the adversary
-has to provide evaluations
-$a_\chz = \p{a}(\chz), b_\chz = \p{b}(\chz), c_\chz = \p{c}(\chz), t_\chz =
-\p{t}(\chz), S_{1, \chz} = \p{S_{\sigma 1}}(\chz), s_{2, \chz} = \p{S_{\sigma
-		2}}(\chz), z_\chz = \p{z}(\chz \omega)$ of previously committed
-polynomials, and compute and evaluate a linearization polynomial $\p{r}$.
-
-As before, the adversary cannot provide two different evaluations for the
-committed polynomials, since that would require breaking the evaluation
-binding property, which happens (by the union bound) with probability at most
-$7 \cdot \epsbind (\secpar)$. 
-
-The adversary cannot also provide two different linearization polynomials
-$\p{r^0}$ and $\p{r^1}$ evaluations $r^0_\chz$ and $r^1_\chz$ as the
-linearization polynomial is determined by values known to the verifier who
-also can compute a commitment to $\p{r}(X)$ by its
-own. The evaluation of $\p{r}$ provided by the adversary is later checked, as
-$\adv$ opens the commitment in its $5$-th message. Hence, the probability that the
-adversary manages to build two convincing proofs that differ in evaluations
-$r^0_\chz$ and $r^1_\chz$ is at most $\epsbind (\secpar)$.
-
-Hence, the probability that adversary wins in one game but does not in the
-other is upper-bounded by $\abs{\prob{\game{1}} - \prob{\game{2}}} \leq  8 \cdot \epsbind (\secpar)$
-
-\ngame{3} In this game, the adversary additionally wins if it provides two different transcripts that
-match on all $5$ messages sent by the prover.
-
-\ncase{Game 2 to Game 3} We show that the probability that $\adv$
-wins in one game but does not in the other is negligible.  Observe that in
-after its $4$-th message, the adversary is given a challenge $v$ and has to open
-the previously computed commitments. Since the transcripts match up to $\adv$'s 
-$4$-th message, the challenge is the same in both. Hence, to be able to give two different
-openings in its $5$-th message, $\adv$ has to break the unique opening property of the
-KZG commitment scheme which happens with probability $9 \cdot \epsop$ tops (as $9$
-polynomials are evaluated).
-
-\ncase{Conclusion} Taking all the games together, probability that $\adv$ wins
-is upper-bounded by
-\[
-\epsdlog (\secpar) + \epss (\secpar) + 8 \cdot \epsbind (\secpar) + 9 \cdot \epsop (\secpar).
-\]
-\qed
-	\end{proof}
-
-\subsection{Updatable computational special soundness}
+\subsection{Updatable rewinding-based knowledge soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
   $\plonkprot$ is $(3, 3 \noofc + 1)$-updatable computational special sound with security loss $(\epst(\accProb, \secpar), \epss(\secpar))$ against algebraic adversary $\adv^{\ro, \initU} (\secparam)$ where
@@ -408,16 +322,6 @@ is upper-bounded by
 	assumption.
 \end{lemma}
 
-%\hamid{17.4}{Should we not make $\epst$ explicit here as $\epst = (\accProb - (q + 1) \epsk)/(1 - \epsk)$? If yes, then we should also change the statement of lemma as follows:
-%\begin{lemma}
-%	\label{lem:plonkprot_ss}
-%	\chb{Let $\plonkprot$ be knowledge sound with knowledge error $\epsk$.} 
-%	Let $\plonkprot$'s idealized verifier fails with probability $\epsid (\secpar)$, and
-%	$(\noofc + 2, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprot$ is
-%	$(3, 3 \noofc + 1)$-computational special sound with security loss $(\epst, \epss)$ \chb{with $\epst = (\accProb - (q + 1) \epsk)/(1 - \epsk)$ and $\epss = \epsid (\secpar) + \epsdlog (\secpar)$} against algebraic adversary $\adv^{\ro, \initU} (\secparam)$ who makes at most $q$ queries to the random oracle $\ro$ \chb{and outputs an acceptable proof with probability
-%	at least $\accProb$}.
-%\end{lemma}
-%}
 \begin{proof}
 	Let $\adv^{\ro, \initU}(\secparam)$ be the adversary who outputs $(\inp, \zkproof)$ such that $\plonkprotfs.\verifier$ accepts the proof. Let $\tdv$ be a tree-building algorithm that runs $\zdv_1$ from \cref{fig:Attema-ext} and outputs a tree $\tree$, and let $\extt$ be an extractor that given the tree output by $\tdv$ reveals the witness for $\inp$. The main idea of the proof is to show that an adversary who breaks updatable computational special soundness can be used to break a $\udlog$ problem instance. The proof goes by game hops. Note that since the tree branches after $\adv$'s $3$-rd message, the instance $\inp$, commitments $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges $\alpha, \beta, \gamma$ are the same in all the transcripts. The tree branches after the third adversary's message where the challenge $\chz$ is presented, thus tree $\tree$ is built using different values of $\chz$. 
 	%
@@ -526,7 +430,7 @@ We argue about zero knowledge as usually. The property holds since the polynomia
 \end{proof}
 
 \subsection{Simulation extractability of~$\plonkprotfs$}
-Since \cref{lem:plonkprot_ur,lem:plonkprot_ss,lem:plonk_hvzk} hold, $\plonkprot$ is $\ur{2}$,
+Since \cref{lem:plonkprot_ur,lem:plonkprot_ss,lem:plonk_tlzk} hold, $\plonkprot$ is $\ur{2}$,
 computational special sound and trapdoor-less simulatable. We now make use of \cref{thm:se} and show that
 $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:updsimext}.
 
