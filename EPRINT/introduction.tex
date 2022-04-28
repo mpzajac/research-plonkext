@@ -194,11 +194,11 @@ Plonk, both the first and the third messages (i.e.~first two prover's messages w
 we consider Plonk as an interactive protocol) are randomized. Although Sonic prover
 is deterministic after it picks its first message, the protocol has more than $3$
 messages. The same holds for Marlin. We propose a generalisation of the definition which
-states that a protocol is $\ur{i}$ if the prover is deterministic starting from its
-$(i + 1)$-th message. For our proof, it is sufficient that this property is met by Plonk
-for $i = 2$. Since Sonic and Marlin provers are deterministic from the second message
+states that a protocol is $\ur{k}$ if the prover is deterministic starting from its
+$(k + 1)$-th message. For our proof, it is sufficient that this property is met by Plonk
+for $k = 2$. Since Sonic and Marlin provers are deterministic from the second message
 on, they are $\ur{1}$.
-\markulf{22.04}{$i$ is probably not the best, use $\ell$ or $k$?}
+%\markulf{22.04}{$i$ is probably not the best, use $\ell$ or $k$?}
 
 \oursubsub{Trapdoor-less zero-knowledge.}  In order to invoke our main theorem
 on (Fiat--Shamir transformed) Plonk, Sonic and Marlin to conclude USE, we also need
