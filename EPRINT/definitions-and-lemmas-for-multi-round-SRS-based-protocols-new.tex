@@ -214,21 +214,21 @@ should be able to provide simulated proofs for false statements as well, we thus
   \label{def:simext}
 	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup. We say that
   $\psfs$ is \emph{updatable simulation-extractable} with respect to
-  $\simulator$ if for
+  $\simulator$ \hamid{29.4}{with security loss $\epsse(\lambda,\accProb, q)$? --- we should add $\epsse$ parameter somewhere!} if for
   any $\ppt$ adversary $\adv$ that is given oracle access to setup oracle
   $\initU$ and simulation oracle $\simulator\oracleo$ and that produces an accepting
   proof for $\psfs$ with probability $\accProb$, where
 	\[
 	\accProb = \condprob{
 	\begin{matrix}
-	  \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1  \\
+	  \verifier(\srs, \inp, \zkproof) = 1  \\
 	  \wedge
-	(\inp_{\advse}, \zkproof_{\advse}) \not\in Q
+	(\inp, \zkproof) \not\in Q
 	\end{matrix}
 }{
 	\begin{matrix}
 	  r \sample \RND{\advse}\\
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover'
+	(\inp, \zkproof) \gets \advse^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover'
 		} (1^\secpar; r)
 	\end{matrix}
 }
@@ -249,7 +249,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 	& \wit \gets \ext_\se (\srs, \advse, r,
 	Q, Q_\ro, Q_\srs) 
 	\end{aligned}
-} \leq \epsilon_{se}(\lambda,\accProb, q)
+} \leq \epsse(\lambda,\accProb, q)
 	\]
 	%is at least 
 	%\[
@@ -260,7 +260,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
 	$\inp$ is an instance queried to $\simulator_2'$ by the adversary and
 	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-	queries to $\simulator_1$, $\abs{Q_\ro}\leq q$, and the (simulated) random oracle's answers, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
+	queries to $\simulator_1$ and the (simulated) random oracle's answers, $\abs{Q_\ro}\leq q$, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
   % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simulator_1$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
 \end{definition}
 
@@ -433,7 +433,7 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	\end{matrix}
 }.
 	\]
-	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-rewinding-based knowledge sound with security loss $\epscss(\secpar, \accProb)$ if
+	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-rewinding-based knowledge sound with security loss $\epscss(\secpar, \accProb, q)$ if
 	\begin{align*}
 	\Pr\left[
 		\begin{matrix}
@@ -450,7 +450,7 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	\right] \leq \epscss(\secpar,\accProb, q).
 	\end{align*}
 	Here, $\srs$ is the finalized SRS. List $Q_\ro$ contains all $\advcss$'s
-	queries to $\ro$, $\abs{Q_\ro}\leq q$, and the (simulated) random oracle's answers, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
+	queries to $\ro$ and the (simulated) random oracle's answers, $\abs{Q_\ro}\leq q$, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
 %	 We call the protocol $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound when $\tdv$ builds a $(n_1, \ldots, n_\mu)$-tree of transcripts.
 \end{definition}
 	
