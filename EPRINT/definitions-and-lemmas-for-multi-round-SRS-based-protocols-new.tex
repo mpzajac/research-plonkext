@@ -148,8 +148,8 @@ former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less
 \fi
 
 In this paper we distinguish between simulators that require a trapdoor to simulate and those that do not. We call a protocol \emph{trapdoor-less
- simulatable} (TLS) if there exists a simulator does not require the trapdoor, and works by programming the random oracle.
- Moreover, it may be not allowed to program every random oracle challenge but only challenges that come after the $k$-th prover's message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less simulatable} (TLS), and define this in~\cref{def:tls}.
+ zero-knowledge} (TLZK) if there exists a simulator does not require the trapdoor, and works by programming the random oracle.
+ Moreover, it may be not allowed to program every random oracle challenge but only challenges that come after the $k$-th prover's message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less zero-knowledge}, and define this in~\cref{def:tls}.
 
  Our definition of zero-knowledge for non-interactive
 arguments is in the explicitly programmable random oracle model where the simulator
@@ -176,7 +176,7 @@ $\simulator\oracleo.\ro (x)$ simulates $\ro$ using lazy sampling, $\simulator\or
 \begin{remark}[TLZK vs HVZK]
   We note that TLZK notion is closely related to honest-verifier zero knowledge in the
   standard model. That is, if we consider an interactive proof system $\proofsystem$
-  that is HVZK in the standard model then $\proofsystem_\fs$ is TLS. This comes as the simulator $\simulator$ in
+  that is HVZK in the standard model then $\proofsystem_\fs$ is TLZK. This comes as the simulator $\simulator$ in
   $\proofsystem$ produces a valid simulated proof by picking verifier's challenges
   according to a predefined distribution and $\proofsystem_\fs$'s simulator
   $\simulator_\fs$ produces its proofs similarly by picking the challenges and
@@ -188,7 +188,7 @@ $\simulator\oracleo.\ro (x)$ simulates $\ro$ using lazy sampling, $\simulator\or
 We note that $\plonk$ is $2$-programmable TLZK, $\sonic$ is $1$-programmable TLZK,
 and $\marlin$ is $1$-programmable TLZK. This follows directly from the proofs of
 their standard model zero-knowledge property in
-\cref{lem:plonk_hvzk,lem:sonic_hvzk,lem:marlin_hvzk}.
+\cref{lem:plonk_tlzk,lem:sonic_hvzk,lem:marlin_hvzk}.
 
 \subsection{Simulation extractability}
 We note that the zero-knowledge property is only guaranteed for statements in the
@@ -214,21 +214,21 @@ should be able to provide simulated proofs for false statements as well, we thus
   \label{def:simext}
 	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup. We say that
   $\psfs$ is \emph{updatable simulation-extractable} with respect to
-  $\simulator$ if for
+  $\simulator$ \hamid{29.4}{with security loss $\epsse(\lambda,\accProb, q)$? --- we should add $\epsse$ parameter somewhere!} if for
   any $\ppt$ adversary $\adv$ that is given oracle access to setup oracle
   $\initU$ and simulation oracle $\simulator\oracleo$ and that produces an accepting
   proof for $\psfs$ with probability $\accProb$, where
 	\[
 	\accProb = \condprob{
 	\begin{matrix}
-	  \verifier(\srs, \inp_{\advse}, \zkproof_{\advse}) = 1  \\
+	  \verifier(\srs, \inp, \zkproof) = 1  \\
 	  \wedge
-	(\inp_{\advse}, \zkproof_{\advse}) \not\in Q
+	(\inp, \zkproof) \not\in Q
 	\end{matrix}
 }{
 	\begin{matrix}
 	  r \sample \RND{\advse}\\
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover'
+	(\inp, \zkproof) \gets \advse^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover'
 		} (1^\secpar; r)
 	\end{matrix}
 }
@@ -249,7 +249,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 	& \wit \gets \ext_\se (\srs, \advse, r,
 	Q, Q_\ro, Q_\srs) 
 	\end{aligned}
-} \leq \epsilon_{se}(\lambda,\accProb, q)
+} \leq \epsse(\lambda,\accProb, q)
 	\]
 	%is at least 
 	%\[
@@ -260,7 +260,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
 	$\inp$ is an instance queried to $\simulator_2'$ by the adversary and
 	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-	queries to $\simulator_1$, $\abs{Q_\ro}\leq q$, and the (simulated) random oracle's answers, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
+	queries to $\simulator_1$ and the (simulated) random oracle's answers, $\abs{Q_\ro}\leq q$, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
   % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simulator_1$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
 \end{definition}
 
@@ -282,7 +282,7 @@ consider here are not in the standard model, but use an SRS.
 
 We work around these obstacles by providing a generalised notion of the unique
 response property. More precisely, we say that a $(2\mu + 1)$-message protocol
-has \emph{unique responses from $i$}, and call it a $\ur{i}$-protocol, if it
+has \emph{unique responses from $k$}, and call it a $\ur{k}$-protocol, if it
 follows the definition below:
 
 \begin{definition}[Updatable $(\ur{k})$-protocol]
@@ -303,7 +303,7 @@ We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\e
 	\end{aligned}
 	\right] \leq \epsur(\secpar) 
 	\]
-	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\mu,c_\mu,a_{\mu+1}))$ checks that $c_i = \ro(\pi[0..i])$, for $i\in [0,\mu]\setminus k$. That is it allows the $k$th challenge to be programmed by $\adv$. 
+	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\mu,c_\mu,a_{\mu+1}))$ checks that $c_i = \ro(\pi[0..i])$, for $i\in [0,\mu]\setminus k$\hamid{29.4}{$\verifier'(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\mu,c_\mu,a_{\mu+1}))$ should also run $\verifier(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\mu,c_\mu,a_{\mu+1}))$, no?}. That is, it allows the $k$th challenge to be programmed by $\adv$. 
 	If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{k}$.
 \end{definition}
 
@@ -336,7 +336,7 @@ We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\e
 %Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using
 %the update oracle $\initU$, defined in~\cref{fig:upd}. We also require (cf.~the second line in the probability equation) that the first change that differentiate $\zkproof$ and $\zkproof'$ is prover's message, not a challenge. 
 
-Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary to produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$ that are the same on the first $i$ prover messages.  We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
+Intuitively, a protocol is $\ur{k}$ if it is infeasible for a $\ppt$ adversary to produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$ that are the same on the first $k$ prover messages.  We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
 
 We note that the definition above can be easily generalized to allow the adversary to program the oracle on more than just a single point. However, since all the protocols we analyse in this paper require only a simple single-point programming, we opted for a simplified version of the definition.
   
@@ -433,7 +433,7 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	\end{matrix}
 }.
 	\]
-	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound with security loss $\epscss(\secpar, \accProb)$ if
+	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-rewinding-based knowledge sound with security loss $\epscss(\secpar, \accProb, q)$ if
 	\begin{align*}
 	\Pr\left[
 		\begin{matrix}
@@ -450,7 +450,7 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	\right] \leq \epscss(\secpar,\accProb, q).
 	\end{align*}
 	Here, $\srs$ is the finalized SRS. List $Q_\ro$ contains all $\advcss$'s
-	queries to $\ro$, $\abs{Q_\ro}\leq q$, and the (simulated) random oracle's answers, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
+	queries to $\ro$ and the (simulated) random oracle's answers, $\abs{Q_\ro}\leq q$, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
 %	 We call the protocol $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound when $\tdv$ builds a $(n_1, \ldots, n_\mu)$-tree of transcripts.
 \end{definition}
 	
