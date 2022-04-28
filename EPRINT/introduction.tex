@@ -59,9 +59,9 @@ the chain for all blockchain-participants to see.
 
 \paragraph{Fiat-Shamir based zkSNARKs.}
 Most modern zkSNARK constructions follow a modular blueprint that involves the design of an information theoretic interactive protocol, e.g. an Interactive Oracle Proof (IOP), that is then compiled via cryptographic tools to obtain an interactive argument system.  This is then turned into a zkSNARK using the hash-based Fiat-Shamir transform. By additionally hashing the message, the Fiat-Shamir transform is also a popular technique for constructing signatures. While well understood for 3-message sigma protocols and justifiable in the random oracle
-model~\cite{CCS:BelRog93}, is only a heuristic that should be used with
-care since there are counterexamples that it is
-unsound~\cite{FOCS:GolKal03}.
+model~\cite{CCS:BelRog93}, it is only a heuristic that should be used with
+care since there are counterexamples that Fiat-Shamir is
+unsound~\cite{FOCS:GolKal03} and there are real-world attacks when implemented incorrectly~\cite{Blog:FrozenHeart20}.
 
 %The Fiat--Shamir (FS) transform takes a public-coin interactive protocol and makes it interactive by hashing the current protocol transcript to compute the verifier's public coins.
 %
@@ -99,7 +99,6 @@ Consider the following scenario: We assume a rushing adversary that starts off w
 
 A definition of SE in the updatable setting should take these additional powers of the adversary, which are not captured by existing definitions of SE, into consideration.
 While generic lifting techniques/compilers~\cite{EPRINT:KZMQCP15,CCS:AbdRamSla20} can be applied to updatable SRS SNARKs to obtain SE, not only do they inevitably incur overheads and lead to efficiency loss, we contend that the standard definition of SE does not suffice in the updatable setting.
-\markulf{22.04}{Is there more recent work to cite here, ask Karim.}
 
 We investigate the non-malleability properties of a class of zkSNARK protocols obtained by FS-compiling multi-message protocols in the updatable SRS setting and give a modular approach to analyse the simulation-extractability of zkSNARKs.
 \subsection{Our Contributions}
@@ -172,12 +171,12 @@ a pair of transcripts, but a \emph{tree of transcripts}.
 Furthermore, the protocols we consider are arguments and rely on a SRS that comes with a trapdoor. An adversary in
 possession of the trapdoor can produce multiple valid proof transcripts without
 knowing the witness and potentially for false statements. This is true even in
-the updatable setting, where there exists a trapdoor for any updated SRS. Recall
+the updatable setting, where there still exists a trapdoor for any updated SRS---it is just harder to subvert. Recall
 that the standard special soundness definition requires witness extraction from
 \emph{any} tree of accepting transcripts that share a common root. This means
 that there are no such trees for false statements. 
 
-Instead, we give a rewinding-based knowledge soundness definition with an extractor that proceeds in two steps. It first uses a tree building algorithm $\tdv_{\mathsf{build}}$ to obtain a tree of transcripts. In the second it uses a tree extraction algorithm $\tdv_{\mathsf{ext}}$ to compute a witness from this tree. Tree-based knowledge soundness guarantees that it is possible to extract a witness from all
+Instead, we give a rewinding-based knowledge soundness definition with an extractor that proceeds in two steps. It first uses a tree building algorithm $\tdv$ to obtain a tree of transcripts. In the second it uses a tree extraction algorithm $\extcss$ to compute a witness from this tree. Tree-based knowledge soundness guarantees that it is possible to extract a witness from all
 (but negligibly many) trees of accepting transcripts produced by probabilistic
 polynomial time (PPT) adversaries. That
 is, if extraction from such a tree fails, then we break an underlying
@@ -198,9 +197,9 @@ states that a protocol is $\ur{k}$ if the prover is deterministic starting from 
 $(k + 1)$-th message. For our proof, it is sufficient that this property is met by Plonk
 for $k = 2$. Since Sonic and Marlin provers are deterministic from the second message
 on, they are $\ur{1}$.
-%\markulf{22.04}{$i$ is probably not the best, use $\ell$ or $k$?}
 
-\oursubsub{Trapdoor-less zero-knowledge.}  In order to invoke our main theorem
+
+\oursubsub{Trapdoor-less zero-knowledge (TLZK).}  In order to invoke our main theorem
 on (Fiat--Shamir transformed) Plonk, Sonic and Marlin to conclude USE, we also need
 to show that simulators in these protocols produce proofs without relying on the
 knowledge of trapdoor. More precisely, for our reduction, we need simulators that rely
@@ -211,12 +210,13 @@ necessarily break soundness of the protocol as the simulator is required only to
 produce a transcript and is not involved in a real conversation with a real
 verifier. We show simulators for $\plonkprotfs$, $\sonicprotfs$, and $\marlinprotfs$
 that rely only on the programmability of the random oracle, where programmability is only needed
-from some move $i$ onwards. This property can be understood as a generalization of
+for the $k$-th challenge. This property can be understood as a generalization of
 honest-verifier zero-knowledge for Fiat--Shamir transformed proof systems with an
 SRS.
 
+Technically we will make use of the $k$-UR property together with the $k$-TLZK property to bound the probability that the tree produced by $\tdv$ contains any programmed random oracle queries.
+
 \subsection{Related Work}
-\ourpar{Simulation extractability.}
 There are many results on simulation extractability for
 non-interactive zero-knowledge proofs (NIZKs). First, Groth \cite{AC:Groth07}
 noticed that a (black-box) SE NIZK is
@@ -238,6 +238,8 @@ The zkSNARK of~\cite{EC:Groth16} has been shown to be SE by introducing minor mo
 stronger assumptions \cite{EPRINT:BowGab18,EPRINT:AtaBag19}. Recently,~\cite{EPRINT:BKSV20} showed that the
 original Groth's proof system from~\cite{EC:Groth16} is weakly SE and
 randomizable. None of these results are for zkSNARKs in the updatable SRS setting or for zkSNARKs obtained via the Fiat--Shamir transformation. The recent work of~\cite{EC:GOPTT22} shows that Fiat-Shamir transformed Bulletproofs are simulation extractable. While they show a general theorem for multi-round protocols, they do not consider a setting with an SRS, and are therefore inapplicable to zkSNARKs in the updatable SRS setting.
+
+
 
 %%% Local Variables:
 %%% mode: latex
