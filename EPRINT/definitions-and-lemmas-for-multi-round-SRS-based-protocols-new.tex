@@ -148,8 +148,8 @@ former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less
 \fi
 
 In this paper we distinguish between simulators that require a trapdoor to simulate and those that do not. We call a protocol \emph{trapdoor-less
- simulatable} (TLS) if there exists a simulator does not require the trapdoor, and works by programming the random oracle.
- Moreover, it may be not allowed to program every random oracle challenge but only challenges that come after the $k$-th prover's message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less simulatable} (TLS), and define this in~\cref{def:tls}.
+ zero-knowledge} (TLZK) if there exists a simulator does not require the trapdoor, and works by programming the random oracle.
+ Moreover, it may be not allowed to program every random oracle challenge but only challenges that come after the $k$-th prover's message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less zero-knowledge}, and define this in~\cref{def:tls}.
 
  Our definition of zero-knowledge for non-interactive
 arguments is in the explicitly programmable random oracle model where the simulator
@@ -188,7 +188,7 @@ $\simulator\oracleo.\ro (x)$ simulates $\ro$ using lazy sampling, $\simulator\or
 We note that $\plonk$ is $2$-programmable TLZK, $\sonic$ is $1$-programmable TLZK,
 and $\marlin$ is $1$-programmable TLZK. This follows directly from the proofs of
 their standard model zero-knowledge property in
-\cref{lem:plonk_hvzk,lem:sonic_hvzk,lem:marlin_hvzk}.
+\cref{lem:plonk_tlzk,lem:sonic_hvzk,lem:marlin_hvzk}.
 
 \subsection{Simulation extractability}
 We note that the zero-knowledge property is only guaranteed for statements in the
@@ -433,7 +433,7 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	\end{matrix}
 }.
 	\]
-	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound with security loss $\epscss(\secpar, \accProb)$ if
+	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-rewinding-based knowledge sound with security loss $\epscss(\secpar, \accProb)$ if
 	\begin{align*}
 	\Pr\left[
 		\begin{matrix}
