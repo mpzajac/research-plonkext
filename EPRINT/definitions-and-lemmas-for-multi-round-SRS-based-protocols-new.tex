@@ -176,7 +176,7 @@ $\simulator\oracleo.\ro (x)$ simulates $\ro$ using lazy sampling, $\simulator\or
 \begin{remark}[TLZK vs HVZK]
   We note that TLZK notion is closely related to honest-verifier zero knowledge in the
   standard model. That is, if we consider an interactive proof system $\proofsystem$
-  that is HVZK in the standard model then $\proofsystem_\fs$ is TLS. This comes as the simulator $\simulator$ in
+  that is HVZK in the standard model then $\proofsystem_\fs$ is TLZK. This comes as the simulator $\simulator$ in
   $\proofsystem$ produces a valid simulated proof by picking verifier's challenges
   according to a predefined distribution and $\proofsystem_\fs$'s simulator
   $\simulator_\fs$ produces its proofs similarly by picking the challenges and
@@ -303,7 +303,7 @@ We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\e
 	\end{aligned}
 	\right] \leq \epsur(\secpar) 
 	\]
-	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\mu,c_\mu,a_{\mu+1}))$ checks that $c_i = \ro(\pi[0..i])$, for $i\in [0,\mu]\setminus k$. That is it allows the $k$th challenge to be programmed by $\adv$. 
+	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\mu,c_\mu,a_{\mu+1}))$ checks that $c_i = \ro(\pi[0..i])$, for $i\in [0,\mu]\setminus k$\hamid{29.4}{$\verifier'(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\mu,c_\mu,a_{\mu+1}))$ should also run $\verifier(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\mu,c_\mu,a_{\mu+1}))$, no?}. That is, it allows the $k$th challenge to be programmed by $\adv$. 
 	If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{k}$.
 \end{definition}
 
@@ -336,7 +336,7 @@ We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\e
 %Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using
 %the update oracle $\initU$, defined in~\cref{fig:upd}. We also require (cf.~the second line in the probability equation) that the first change that differentiate $\zkproof$ and $\zkproof'$ is prover's message, not a challenge. 
 
-Intuitively, a protocol is $\ur{i}$ if it is infeasible for a $\ppt$ adversary to produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$ that are the same on the first $i$ prover messages.  We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
+Intuitively, a protocol is $\ur{k}$ if it is infeasible for a $\ppt$ adversary to produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$ that are the same on the first $k$ prover messages.  We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
 
 We note that the definition above can be easily generalized to allow the adversary to program the oracle on more than just a single point. However, since all the protocols we analyse in this paper require only a simple single-point programming, we opted for a simplified version of the definition.
   
