@@ -40,25 +40,25 @@ soundness property that links up with our generalized forking lemma.
 
 \subsection{Simulation extractability}
 We note that the zero-knowledge property is only guaranteed for statements in the
-language; for simulator $\simulator = (\simulator_1, \simulator_2)$, $\simulator_2$
+language; for simulator $\simulator = (\simOH, \simOP)$, $\simOP$
 answers with simulated proofs only for true statements.  This is, however, not sufficient
 for \emph{simulation extractability} where the simulator that the adversary has access to
 should be able to provide simulated proofs for false statements as well\footnote{Note,
   that simulation extractability property where the simulator is required to give
   simulated proofs for true statements only is called \emph{true simulation
     extractability.}}. Therefore, we introduce a wrapper oracle around the simulator
-called $\simulator'_2$ that on input $(\srs, \inp)$ always returns the first output of
+called $\simOP'$ that on input $(\srs, \inp)$ always returns the first output of
 $\simulator (2, st, \srs, \inp)$, regardless of whether $\inp$ is in the language. We
-define \emph{simulation-extractability} with respect to oracle $\simulator_2'$; that is,
+define \emph{simulation-extractability} with respect to oracle $\simOP'$; that is,
 simulation-extractability is with respect to a simulator
-$\simulator' = (\simulator_1, \simulator_2')$.
+$\simulator' = (\simOH, \simOP')$.
 %
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:updsimext}
   \label{def:simext}
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a NIZK proof system. We say that
   $\ps$ is \emph{updatable simulation-extractable} with respect to
-  $\simulator' = (\simulator_1, \simulator_2')$ with \emph{extraction error} $\nu$ if for
+  $\simulator' = (\simOH, \simOP')$ with \emph{extraction error} $\nu$ if for
   any $\ppt$ adversary $\adv$ that is given oracle access to an updatable SRS setup
   $\initU$ and simulator $\simulator$ and that produces an accepting
   proof for $\ps$ with probability $\accProb$, where
@@ -72,7 +72,7 @@ $\simulator' = (\simulator_1, \simulator_2')$.
 }{
 	\begin{matrix}
 	  r \sample \RND{\advse}\\
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator_1, \simulator_2'
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simOH, \simOP'
 		} (1^\secpar; r)
 	\end{matrix}
 }
@@ -88,7 +88,7 @@ $\simulator' = (\simulator_1, \simulator_2')$.
 }{
 	\begin{aligned}
 	& r \sample \RND{\advse},
-	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simulator_1, \simulator_2'
+	(\inp_{\advse}, \zkproof_{\advse}) \gets \advse^{\initU, \simOH, \simOP'
 		} (1^\secpar; r) \\
 	& \wit_{\advse} \gets \ext_\se (\srs, \advse, r,
 	Q, Q_\ro, Q_\srs) 
@@ -102,13 +102,13 @@ $\simulator' = (\simulator_1, \simulator_2')$.
 	for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
 	$\accProb \geq \nu$. 
 	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
-	$\inp$ is an instance queried to $\simulator_2'$ by the adversary and
+	$\inp$ is an instance queried to $\simOP'$ by the adversary and
 	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-	queries to $\simulator_1$ and the (simulated) random oracle's answers. \hamid{8.2}{And list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.}
-  % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simulator_1$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
+	queries to $\simOH$ and the (simulated) random oracle's answers. \hamid{8.2}{And list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.}
+  % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simOH$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
 \end{definition}
 
-% \chaya{13.10}{later, we should show $\simulator_2'$ for plonk/sonic/marlin. I think
+% \chaya{13.10}{later, we should show $\simOP'$ for plonk/sonic/marlin. I think
 %   it will follow from TLS. But we should emphasize there how to define the above
 %   oracles so it is clear that $\simO$ can produce accepting proofs for false
 %   statements.}
@@ -191,13 +191,13 @@ string.
   \label{def:tls}
   Let $\ps$ be a $(2\mu + 1)$-message ZK proof system, and
   $\ps_\fs= (\kgen_{\fs}, \prover_{\fs}, \verifier_{\fs}, \simulator_{\fs})$ be its
-  Fiat--Shamir variant, where $\simulator_{\fs} = (\simulator_1, \simulator_2)$ as defined in~\cref{prelim:nizk}. Let $\ro$ be the random oracle. 
+  Fiat--Shamir variant, where $\simulator_{\fs} = (\simOH, \simOP)$ as defined in~\cref{prelim:nizk}. Let $\ro$ be the random oracle. 
   %$\simulator_{\fs}$ takes as input $\srs$ and instance $\inp$, programs $\ro$, and outputs a proof $\zkproof_\simulator$.  
   We call $\psfs$ \emph{trapdoor-less simulatable} with security $\epszk$ if for any
   adversary $\adv$, $\abs{\eps_0(\secpar) - \eps_1(\secpar)} \leq \epszk(\secpar)$, where
   \begin{align*}
     \eps_0 (\secpar) = \Pr\left[ \adv^{\initU, \ro, \prover_{\fs}} (\secparam) \right],\,
-    \eps_1 (\secpar)=  \Pr \left[\adv^{\initU, \simulator_1, \simulator_2} (\secparam) \right].
+    \eps_1 (\secpar)=  \Pr \left[\adv^{\initU, \simOH, \simOP} (\secparam) \right].
   \end{align*}
   
   If $\epszk(\secpar)$ is negligible, we say $\ps_{\fs}$ is trapdoor-less simulatable. Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if $\simulator_\fs$

@@ -55,7 +55,7 @@ soundness property that links up with the generalized forking lemma.
 	\centering
 		\begin{pcvstack}[center,boxed]
 		\begin{pchstack}
-			\procedure{$\simulator\oracleo.\ro (x)$}
+			\procedure{$\simOH (x)$}
 			{
 			\pcif H[x] = \bot \pcthen \\
 			\pcind H[x] \sample \mathsf{Im}(\ro) \\
@@ -75,16 +75,16 @@ soundness property that links up with the generalized forking lemma.
 			}
 			\pchspace
 			%
-			\procedure{$\boxed{\simulator\oracleo.\prover(\inp, \wit)} \ \simulator\oracleo.\prover'(\inp)$}
+			\procedure{$\boxed{\simOP(\inp, \wit)} \ \simOP'(\inp)$}
 			{ 
 				\boxed{\pcassert (\inp,\wit)\in \REL} \\ 
-				\pi \gets \simulator^{\simulator\oracleo.\ro,\simulator\oracleo.\prog}(\srs,\inp)\\
+				\pi \gets \simulator^{\simOH,\simulator\oracleo.\prog}(\srs,\inp)\\
 				Q \gets Q \cup \{(\inp,\pi)\}\\
 				\pcreturn \pi
 			}
 		\end{pchstack}
 	\end{pcvstack}
-	\caption{Simulation oracles: $\srs$ is the finalized SRS, only $\simulator\oracleo.\prover'$ allows for simulation of false statements}
+	\caption{Simulation oracles: $\srs$ is the finalized SRS, only $\simOP'$ allows for simulation of false statements}
 	\label{fig:real_simulator_oracles}
 \end{figure}
 
@@ -101,9 +101,9 @@ soundness property that links up with the generalized forking lemma.
 
 
 % \begin{itemize}
-% \item $\simulator_1 (\srs,q)$ denotes an oracle that returns the first output of
+% \item $\simOH (\srs,q)$ denotes an oracle that returns the first output of
 %   $\simulator (1, st, \srs, q)$;
-% \item $\simulator_2 (\srs,\inp, \wit)$ denotes an oracle that returns the first output of
+% \item $\simOP (\srs,\inp, \wit)$ denotes an oracle that returns the first output of
 %   $\simulator (2, st, \srs, \inp)$ if $(\inp, \wit) \in \REL$, and returns $\bot$ otherwise;
 % \end{itemize}
 
@@ -115,9 +115,9 @@ soundness property that links up with the generalized forking lemma.
 %   \eps_b = \condprob{\adv^{\oracleo_b} (\srs)}{\srs \gets \kgen (\REL)}\,,
 % \]
 % \changedm{where $\oracleo_0$ on input $(1, q)$ responds with $h$ such that
-%   $(h, st') \gets \simulator_1 (1, st, q)$, where $st$ and $st'$ are old and new
+%   $(h, st') \gets \simOH (1, st, q)$, where $st$ and $st'$ are old and new
 %   states of the simulator $\simulator$ and on input $(2, \inp, \wit)$ returns
-%   $\zkproof \gets \simulator_2 (2, st, \srs, \inp)$. Alternatively, $\oracleo_1$ on
+%   $\zkproof \gets \simOP (2, st, \srs, \inp)$. Alternatively, $\oracleo_1$ on
 %   input $(1, q)$ responds with $h \gets \ro (q)$ and on input $(2, \inp, \wit)$
 %   returns $\zkproof \gets \prover (\srs, \inp, \wit)$.}
 % 	%
@@ -126,10 +126,10 @@ soundness property that links up with the generalized forking lemma.
 \iffalse
 We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
 $\REL \in \RELGEN(\secparam)$, and adversary $\adv$ there exists a $\ppt$ simulator
-$\simulator$ with oracles $(\simulator_1,\simulator_2)$ such that for any $(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$,
+$\simulator$ with oracles $(\simOH,\simOP)$ such that for any $(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$,
 where
 \[
-  \eps_0(\secpar) = \condprob{\adv^{\simulator_1,\simulator_2} (\srs)}{\srs \gets \kgen
+  \eps_0(\secpar) = \condprob{\adv^{\simOH,\simOP} (\srs)}{\srs \gets \kgen
     (\REL)},\,  \eps_1 (\secpar) = \condprob{\adv^{\ro,\prover} (\srs)}{\srs \gets \kgen (\REL)},
 \]
 
@@ -155,7 +155,7 @@ In this paper we distinguish between simulators that require a trapdoor to simul
 arguments is in the explicitly programmable random oracle model where the simulator
 $\simulator$ can program the random oracle. 
 We model this using the oracles from Fig.~\ref{fig:real_simulator_oracles} that provide a stateful wrapper around $\simulator$.
-$\simulator\oracleo.\ro (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h)$ allows for programming the simulated $\ro$ and is available only to $\simulator$. $\simulator\oracleo.\prover(x, w)$ and $\simulator\oracleo.\prover'(x)$ call the simulator. The former is used in the zero-knowledge definition and requires the statement and witness to be in the relation, the latter is used in the simulation extraction definition and does not require a witness input.
+$\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h)$ allows for programming the simulated $\ro$ and is available only to $\simulator$. $\simOP(x, w)$ and $\simOP'(x)$ call the simulator. The former is used in the zero-knowledge definition and requires the statement and witness to be in the relation, the latter is used in the simulation extraction definition and does not require a witness input.
 
 \begin{definition}[ ($k$-programmable) Trapdoor-less Zero-Knowledge Proof System]
   \label{def:tls}
@@ -166,7 +166,7 @@ $\simulator\oracleo.\ro (x)$ simulates $\ro$ using lazy sampling, $\simulator\or
   adversary $\adv$, $\abs{\eps_0(\secpar) - \eps_1(\secpar)} \leq \epszk(\secpar)$, where
   \begin{align*}
     \eps_0 (\secpar) = \Pr\left[ \adv^{\initU, \ro, \prover} (\secparam) \right],\,
-    \eps_1 (\secpar)=  \Pr \left[\adv^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover} (\secparam) \right].
+    \eps_1 (\secpar)=  \Pr \left[\adv^{\initU, \simOH, \simOP} (\secparam) \right].
   \end{align*}
   
   If $\epszk(\secpar)$ is negligible, we say $\ps_{\fs}$ is trapdoor-less zero-knowledge. Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if  $\simulator$ before returning a proof $\pi$ only calls $\simulator\oracleo.\prog$ on $(\pi[0..k],h)$. That is, it only programs the $k$th message.
@@ -193,21 +193,21 @@ their standard model zero-knowledge property in
 \subsection{Simulation extractability}
 We note that the zero-knowledge property is only guaranteed for statements in the
 language.
-%; for simulator $\simulator = (\simulator_1, \simulator_2)$, $\simulator_2$
+%; for simulator $\simulator = (\simOH, \simOP)$, $\simOP$
 %answers with simulated proofs only for true statements.  This is, however, not sufficient
 For \emph{simulation extractability} where the simulator
-should be able to provide simulated proofs for false statements as well, we thus use the oracle $\simulator\oracleo.\prover'$
+should be able to provide simulated proofs for false statements as well, we thus use the oracle $\simOP'$
 \footnote{Note,
   that simulation extractability property where the simulator is required to give
   simulated proofs for true statements only is called \emph{true simulation
     extractability.}}. 
 	
 %Therefore, we introduce a wrapper oracle around the simulator
-%called $\simulator'_2$ that on input $(\srs, \inp)$ always returns the first output of
+%called $\simOP'$ that on input $(\srs, \inp)$ always returns the first output of
 %$\simulator (2, st, \srs, \inp)$, regardless of whether $\inp$ is in the language. We
-%define \emph{simulation-extractability} with respect to oracle $\simulator_2'$; that is,
+%define \emph{simulation-extractability} with respect to oracle $\simOP'$; that is,
 %simulation-extractability is with respect to a simulator
-%$\simulator' = (\simulator_1, \simulator_2')$.
+%$\simulator' = (\simOH, \simOP')$.
 %
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:updsimext}
@@ -228,7 +228,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 }{
 	\begin{matrix}
 	  r \sample \RND{\advse}\\
-	(\inp, \zkproof) \gets \advse^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover'
+	(\inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'
 		} (1^\secpar; r)
 	\end{matrix}
 }
@@ -244,7 +244,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 }{
 	\begin{aligned}
 	& r \sample \RND{\advse},
-	(\inp, \zkproof) \gets \advse^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover'
+	(\inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'
 		} (1^\secpar; r) \\
 	& \wit \gets \ext_\se (\srs, \advse, r,
 	Q, Q_\ro, Q_\srs) 
@@ -258,10 +258,10 @@ should be able to provide simulated proofs for false statements as well, we thus
 	%for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
 	%$\accProb \geq \nu$. 
 	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
-	$\inp$ is an instance queried to $\simulator_2'$ by the adversary and
+	$\inp$ is an instance queried to $\simOP'$ by the adversary and
 	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-	queries to $\simulator_1$ and the (simulated) random oracle's answers, $\abs{Q_\ro}\leq q$, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
-  % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simulator_1$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
+	queries to $\simOH$ and the (simulated) random oracle's answers, $\abs{Q_\ro}\leq q$, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
+  % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simOH$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
 \end{definition}
 
 \subsection{Unique-response protocols}

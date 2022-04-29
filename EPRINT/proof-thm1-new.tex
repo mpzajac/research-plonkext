@@ -11,16 +11,16 @@
 
 \begin{proof}	
 	\michals{22.04}{Started writting draft of the proof. Feel free to write your own proof.}
-	Let $(\srs, \inp, \wit) \gets \advse^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover'}(r_{\advse})$ be the USE adversary. We construct an extractor $\extse (\srs, \advse, r_{\advse}, \Qro, \Qsrs, \Qsim)$ that outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with high probability. To that end we define an algorithm $\advcss^{\initU,\ro}(r)$ against rewinding-based knowledge soundness of $\ps$ that runs internally $\advse^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover'}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$. Eventually, we use the computational special soundness extractor $\extcss$ on $\advcss$ to extract the witness.
+	Let $(\srs, \inp, \wit) \gets \advse^{\initU, \simOH, \simOP'}(r_{\advse})$ be the USE adversary. We construct an extractor $\extse (\srs, \advse, r_{\advse}, \Qro, \Qsrs, \Qsim)$ that outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with high probability. To that end we define an algorithm $\advcss^{\initU,\ro}(r)$ against rewinding-based knowledge soundness of $\psfs$ that runs internally $\advse^{\initU, \simOH, \simOP'}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$. Eventually, we use the computational special soundness extractor $\extcss$ on $\advcss$ to extract the witness.
 	
 	Since $\advcss$ runs $\advse$ internally, it needs to take care of $\advse$'s oracle queries.
 	$\advse$'s queries to the update oracle $\initU$ are passed to $\advcss$ oracle $\initU$ directly. Also, the answers from $\advcss$'s oracle $\initU$ are returned to $\advse$.
-	Queries to the simulator $\simulator'_2$ are processed by $\advcss$ who computes the proof running simulators $\simulator_1$ and $\simulator'_2$ internally using randomness $\rsim$. The latter simulator, $\simulator'_{2}$, calls the former, $\simulator_{1}$, when it needs to compute a random oracle challenge. Such calls may either request $\simulator_{1}$ to answer the query with an honest random oracle answer, or to program the oracle, cf.~\cref{fig:simulator_oracles}. Importantly, since $k \leq k'$ , all challenges in simulated proofs, up to round $k'$ are computed honestly, i.e. $\zkproof_{i}.\ch = \simulator_{1}.\ro((\inp, \zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{i}))$, for $i \leq k'$.
+	Queries to the simulator $\simOP'$ are processed by $\advcss$ who computes the proof running simulators $\simOH$ and $\simOP'$ internally using randomness $\rsim$. The latter simulator, $\simOP'$, calls the former, $\simOH$, when it needs to compute a random oracle challenge. Such calls may either request $\simOH$ to answer the query with an honest random oracle answer, or to program the oracle, cf.~\cref{fig:simulator_oracles}. Importantly, since $k \leq k'$ , all challenges in simulated proofs, up to round $k'$ are computed honestly, i.e. $\zkproof_{i}.\ch = \simOH((\inp, \zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{i}))$, for $i \leq k'$.
 	\begin{figure}
 		\centering
 			\begin{pcvstack}[center,boxed]
 			\begin{pchstack}
-				\procedure{$\simulator\oracleo.\ro (x)$}
+				\procedure{$\simOH (x)$}
 				{
 				\pcif H[x] = \bot \pcthen \\
 				\pcind H[x] \gets \ro(x) \\
@@ -42,7 +42,7 @@
 		\label{fig:simulator_oracles}
 	\end{figure}	
 
-	$\advse$'s queries to $\simulator_1$ are processed as queries to $\simulator_1.\ro$. (That is, $\advse$ does not program the oracle.)
+	$\advse$'s queries to $\simOH$ are processed as queries to $\simOH.\ro$. (That is, $\advse$ does not program the oracle.)
 
 	Eventually, $\advse$ outputs a proof $(\inp, \zkproof)$ which $\advcss$ outputs as well. We note that the proof output by $\advcss$ cannot contain any programmed queries as such proof is not acceptable w.r.t~$\ro$. If $\advse$ outputs a proof that does contain programmed challenges, then $\advcss$ aborts. We denote that event by $\event{E}$.
 	
@@ -50,7 +50,7 @@
 		Probability that $\event{E}$ happens is upper-bounded by $\epsur(\secpar)$. 
 	\end{lemma}
 	\begin{proof}
-	We build an adversary $\advur^{\ro, \initU} (\secpar; r)$ that has access to the random oracle $\ro$ and update oracle $\initU$. $\advur$ uses $\advse$ to break the $\ur{k}$ property of $\ps$. Namely, for randomness $r = (r_{\advse}, \rsim)$, $\advur^{\ro, \initU} (\secpar; r)$ runs $\advse^{\initU, \simulator_1, \simulator_2'}(\secparam; r_{\advse})$ internally and answers its oracle queries as $\advcss$ did.
+	We build an adversary $\advur^{\ro, \initU} (\secpar; r)$ that has access to the random oracle $\ro$ and update oracle $\initU$. $\advur$ uses $\advse$ to break the $\ur{k}$ property of $\ps$. Namely, for randomness $r = (r_{\advse}, \rsim)$, $\advur^{\ro, \initU} (\secpar; r)$ runs $\advse^{\initU, \simOH, \simOP'}(\secparam; r_{\advse})$ internally and answers its oracle queries as $\advcss$ did.
 
 	When $\advse$ makes a proof $\zkproof$ for $\inp_{\advse}$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $Q_\ro$ until it finds $\zkproofs[0..k]$ such that $\zkproof_{\advse}[0..k] = \zkproofs[0..k]$ and a random oracle query $\zkproofs[k].\ch$ on $\zkproofs[0..k]$.	$\advur$ returns two proofs for $\inp_{\advse}$:
 		\begin{align*}

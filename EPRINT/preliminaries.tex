@@ -218,8 +218,8 @@ $\verifier$ are given oracle access to a random oracle $\ro$. The simulator
 $\simulator$ is not only given access to $\ro$, but it can also \emph{program}
 it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
 % \changedm{This is
-% formalized by dividing the simulator into two subroutines $\simulator_1,
-% \simulator_2$ that share state. The first subroutine $\simulator_1$ answers random
+% formalized by dividing the simulator into two subroutines $\simOH,
+% \simOP$ that share state. The first subroutine $\simOH$ answers random
 % oracle queries, while the second one provides simulated proofs.}
 
 A non-interactive  proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is

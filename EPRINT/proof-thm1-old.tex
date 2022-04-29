@@ -21,7 +21,7 @@
 	
 	\ngame{0} This is the simulation-extractability game played between an adversary
 	$\advse$ who is given access to an oracle $\initU$ that defines an updatable SRS
-	setup, and a simulation oracle $\simulator = (\simulator_1, \simulator_2')$ which provides the adversary with simulated
+	setup, and a simulation oracle $\simulator = (\simOH, \simOP')$ which provides the adversary with simulated
 	proofs and random oracle functionality. We denote by $\rsim$
 	randomness of $\simulator$ which is randomly sampled. Execution of $\advse$ results in
 	lists of
@@ -56,7 +56,7 @@
 	We can assume that $\adv$ queried the simulator on the instance it wishes to
 	output, i.e.~$\inp_{\adv}$. We show a reduction $\rdvur$ that utilises $\adv$ to
 	break the $\ur{k}$ property of $\ps$. That is, for randomness $r = (r_\adv, \rsim)$,
-	$\rdvur (r)$ runs $\advse^{\initU, \simulator_1, \simulator_2'}(\secparam; r_\adv)$ internally as a black-box:
+	$\rdvur (r)$ runs $\advse^{\initU, \simOH, \simOP'}(\secparam; r_\adv)$ internally as a black-box:
 	\begin{compactitem}
 		\item The reduction answers $\adv$'s update queries by asking the same query from the
 		update oracle in the unique response experiment. The reduction finalises the same
@@ -120,7 +120,7 @@
 	%
 	\ngame{2} Define an adversary $\bdv$ against forking special soundness such that,
 	given access to oracles $\initU$ and $\ro$, and randomness $r = (r_\adv, \rsim)$,
-	internally runs $\advse^{\initU, \simulator_1, \simulator_2'} (1^\secpar; r_\adv)$,
+	internally runs $\advse^{\initU, \simOH, \simOP'} (1^\secpar; r_\adv)$,
 	where
 	\begin{compactenum}
 		\item $\bdv$ answers $\adv$ random oracle and update queries by passing the queries to the real
