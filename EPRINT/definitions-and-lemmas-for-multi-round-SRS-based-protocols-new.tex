@@ -243,49 +243,19 @@ We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\e
 	\Pr\left[
 		\left.
 	\begin{aligned}
-	& \zkproof \neq \zkproof', \zkproof[0..k] = \zkproof'[0..k], c_k = c'_k,  \\
-%	& (\zkproof_{1}, \ldots, \zkproof_{j}) = (\zkproof'_{1}, \ldots, \zkproof'_{j}) \implies \zkproof_{j}.\ch = \zkproof'_{j}.\ch),\\
+	& \zkproof \neq \zkproof', \zkproof[0..k] = \zkproof'[0..k],  \\
 	& \verifier' (\srs, \inp, \zkproof) =
 	\verifier' (\srs, \inp, \zkproof') = 1  \\
 	\end{aligned}
 	\,\right|\,
 	\begin{aligned}
-		& (\inp, \zkproof, \zkproof') \gets \advur^{\initU,\ro}(1^\secpar) 
+		& (\inp, \zkproof, \zkproof', c) \gets \advur^{\initU,\ro}(1^\secpar) 
 	\end{aligned}
 	\right] \leq \epsur(\secpar) 
 	\]
-	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\mu,c_\mu,a_{\mu+1}))$ checks that $c_i = \ro(\pi[0..i])$, for $i\in [0,\mu]\setminus k$\hamid{29.4}{$\verifier'(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\mu,c_\mu,a_{\mu+1}))$ should also run $\verifier(\srs,\inp,\zkproof=(a_1,c_1, \dots, a_\mu,c_\mu,a_{\mu+1}))$, no?}. That is, it allows the $k$th challenge to be programmed by $\adv$. 
+	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1, \dots, a_\mu,a_{\mu+1}))$ behaves as $\verifier (\srs, \inp, \zkproof)$ except for the $k$-th challenge it sets $\ro(\pi[0..k]) = c$. That is, it allows the $k$-th challenge to be programmed by $\adv$. 
 	If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{k}$.
 \end{definition}
-
-% \begin{definition}[Updatable $\ur{i}$-protocol]
-% 	\label{def:wiuru}
-% 	Let $\proofsystem$ be a $(2\mu + 1)$-message FS transform NIZK proof system
-%   $\ps = (\SRScer, \prover, \verifier, \simulator)$. Denote
-%   by $\zkproof_1, \ldots, \zkproof_{\mu}, \zkproof_{\mu + 1}$ protocol messages
-%   output by the prover. We write $\zkproof_i.\ch$ to denote a challenge that the prover gets after sending $\zkproof_{i}$. We say that $\proofsystem$ has \emph{unique responses from $i$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\advur$:
-%   \[
-% 	\Pr\left[
-% 		\left.
-% 	\begin{aligned}
-% 	& \zkproof \neq \zkproof', (\zkproof_1, \ldots, \zkproof_{i}) = (\zkproof'_1,
-% 	\ldots, \zkproof'_{i}), \\
-% 	& (\zkproof_{1}, \ldots, \zkproof_{j}) = (\zkproof'_{1}, \ldots, \zkproof'_{j}) \implies \zkproof_{j}.\ch = \zkproof'_{j}.\ch),\\
-% 	& \verifier (\srs, \inp, \zkproof) =
-% 	\verifier (\srs, \inp, \zkproof') = 1  \\
-% 	\end{aligned}
-% 	\,\right|\,
-% 	\begin{aligned}
-% 		& (\srs, \inp, \zkproof, \zkproof') \gets \adv^{\initU}(1^\secpar) 
-% 	\end{aligned}
-% 	\right] \leq \epsur(\secpar) 
-% 	\]
-% 	Here $\zkproof$ and $\zkproof'$ are two proofs prepared by the adversary which contain both the prover's messages, and, picked by the adversary, verifier's challenges. If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{i}$.
-% \end{definition}
-%
-
-%Note that in the above definition, $\srs$ is the SRS that $\advse$ finalised using
-%the update oracle $\initU$, defined in~\cref{fig:upd}. We also require (cf.~the second line in the probability equation) that the first change that differentiate $\zkproof$ and $\zkproof'$ is prover's message, not a challenge. 
 
 Intuitively, a protocol is $\ur{k}$ if it is infeasible for a $\ppt$ adversary to produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$ that are the same on the first $k$ prover messages.  We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
 

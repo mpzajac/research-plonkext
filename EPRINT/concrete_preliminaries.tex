@@ -32,11 +32,11 @@ have been shown secure using the AGM. An adversary that works in the AGM is call
 \emph{algebraic}.
 
 \oursubsub{Idealised Verifier and Verification Equations.} Let
-$(\kgen, \prover, \verifier, \simulator)$ be a proof system.
+$(\SRScer, \prover, \verifier, \simulator)$ be a proof system.
 % or a polynomial commitment
 % scheme\hamid{might be unclear as we are defining polynomial commitments as
 %   $(\kgen, \com, \open, \verify)$.}.
-Observe that the $\kgen$ algorithm provides an SRS which can be interpreted as a set
+Observe that the $\SRScer$ algorithm provides an SRS which can be interpreted as a set
 of group representation of polynomials evaluated at trapdoor elements. That is, for a
 trapdoor $\chi$ the SRS contains $\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for
 some polynomials $\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. The verifier
@@ -178,16 +178,15 @@ tree of accepting transcripts $\tree$, which allows to extract a witness.
 
 
   \begin{lemma}[Generalized forking lemma~\cite{EPRINT:AttFehKlo21}]\label{lem:attema}
-	Let $\varrho = n_1 \cdots n_\mu$. \markulf{26.04}{are the $n_i$ the same as the $k_i$ in the algoithm of Fig.3? Fixed it in Fig.3 now at least.}\hamid{29}{Yes, they're inconsistent. I'll fix!} Let $\ps$ be an interactive proof system that is knowledge sound  \chaya{25.04}{do we want to say that $\proofsystem$ is knowledge sound with knowledge error $\epsk$ if there exists a tree buildin algorithm $\tdv$ such that a tree of accepting transcripts is produced with the following probability?}\hamid{29.4}{I think $\epsk$ should not be defined as a general notion of knowledge error here. According to Attema paper, this knowledge error for $(2\mu+1)$-move $(n_1, \ldots, n_\mu)$-out-of-$(N_1, \ldots, N_\mu)$ special sound protocols is defined as:
+	Let $N = n_1 \cdot \cdots \cdot n_\mu$.  Let $\psfs$ be a NIZK proof system compiled using $()$ Fiat-Shamir ... has trial knowledge error where $\epsk(\secpar)= Er(n_1, \ldots, n_\mu; \Omega(2^\lambda))$ where
 	$$
-Er(n_1, \ldots, n_\mu; N_1, \ldots, N_\mu) := 1 - \prod_{i=1}^{\mu}(1 - \frac{n_i - 1}{N_i})
-	$$
-In our case, this would be $\epsk = Er(n_1, \ldots, n_\mu; p)$.} \markulf{But is this also the case for arguments and not just information theoretically secure proofs?}
-	with knowledge error $\epsk$. Assume adversary $\adv$ that makes up to $q$ random
+Er(n_1, \ldots, n_\mu; p) := 1 - \prod_{i=1}^{\mu}\left(1 - \frac{n_i - 1}{p}\right)
+	$$ 
+	Assume adversary $\adv$ that makes up to $q$ random
 	oracle queries and outputs an acceptable proof with probability at least
 	$\accProb$. There exists a tree building algorithm $\tdv$ for $(n_1, \ldots, n_\mu)$-trees that utilizes the extractor $\zdv_1$ in~\cref{fig:Attema-ext} and succeeds in building a
 	tree of accepting transcripts in expected
-	running time $\varrho + q (\varrho - 1)$ with probability at least
+	running time $N + q (N - 1)$ with probability at least
 	\[
 	\frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)}.
 	\]
