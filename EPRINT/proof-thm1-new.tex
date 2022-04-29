@@ -15,7 +15,7 @@
 	
 	Since $\advcss$ runs $\advse$ internally, it needs to take care of $\advse$'s oracle queries.
 	$\advse$'s queries to the update oracle $\initU$ are passed to $\advcss$ oracle $\initU$ directly. Also, the answers from $\advcss$'s oracle $\initU$ are returned to $\advse$.
-	Queries to the simulator $\simOP'$ are processed by $\advcss$ who computes the proof running simulators $\simOH$ and $\simOP'$ internally using randomness $\rsim$. The latter simulator, $\simOP'$, calls the former, $\simOH$, when it needs to compute a random oracle challenge. Such calls may either request $\simOH$ to answer the query with an honest random oracle answer, or to program the oracle, cf.~\cref{fig:simulator_oracles}. Importantly, all challenges in simulated proofs, up to round $k$ are computed honestly, i.e. $\zkproof_{i}.\ch = \simOH((\inp, \zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{i}))$, for $i \leq k$.
+	Queries to the simulator $\simOP'$ are processed by $\advcss$ who computes the proof running simulators $\simOH$ and $\simOP'$ internally using randomness $\rsim$. The latter simulator, $\simOP'$, calls $\simOH$ or $\simOHprog$, when it needs to compute a random oracle challenge. If the challenge is to be computed honestly, then $\simOH$ is called. If the challenge should be programmed, $\simOHprog$ is called, cf.~\cref{fig:real_simulator_oracles}. Importantly, all challenges in simulated proofs, up to round $k$ are computed honestly, i.e. $\zkproof_{i}.\ch = \simOH((\inp, \zkproof_1, \zkproof_1.\ch, \ldots, \zkproof_{i}))$, for $i \leq k$.
 	\begin{figure}
 		\centering
 			\begin{pcvstack}[center,boxed]
@@ -41,8 +41,8 @@
 		\caption{Simulating random oracle calls.}
 		\label{fig:simulator_oracles}
 	\end{figure}	
-
-	$\advse$'s queries to $\simOH$ are processed as queries to $\simOH.\ro$. (That is, $\advse$ does not program the oracle.)
+%
+	$\advse$'s queries to $\simOH$ are not programmed.
 
 	Eventually, $\advse$ outputs a proof $(\inp, \zkproof)$ which $\advcss$ outputs as well. We note that the proof output by $\advcss$ cannot contain any programmed queries as such proof is not acceptable w.r.t~$\ro$. If $\advse$ outputs a proof that does contain programmed challenges, then $\advcss$ aborts. We denote that event by $\event{E}$.
 	
@@ -61,14 +61,14 @@
 		\end{align*}
 
 	Importantly, both proofs are acceptable w.r.t~the unique response property verifier. The first, since the unique response property definition allows any challenges after $k$. The latter, since it is an acceptable proof produced by the adversary.
-	We assume that $\zkproof_1 \neq \zkproof_2$ as in the opposite case the $\advse$ would not be able to break the simulation extractability game as $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then $\advur$ breaks $\ur{k}$-ness of $\ps$. This happens only with  probability $\epsur(\secpar)$. 
+	We assume that $\zkproof_1 \neq \zkproof_2$ as in the opposite case the $\advse$ would not be able to break the simulation extractability game as $\zkproof_2 \in Q$. On the other hand, if the proofs are not equal, then $\advur$ breaks $\ur{k}$-ness of $\psfs$. This happens only with  probability $\epsur(\secpar)$. 
 	\qed
 	\end{proof}
 
 	We denote by $\waccProb$ the probability that $\advcss$ outputs an acceptable proof. We note that $\waccProb$ is at most $\epsur (\secpar)$ far from the probability that $\advse$ outputs an acceptable proof. By the union bound probability that $\advcss$ outputs an unacceptable proof is at most $1 - \waccProb \leq 1 - \accProb + \epsur$. Hence, $\waccProb \geq \accProb - \epsur (\secpar)$. 
 
-	Since $\ps$ is $\epscss (\secpar, \waccProb)$ computationally special sound, there is an extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of acceptable transcripts $\tree$ and extracts witness with probability at least $1 - \epscss (\secpar, \waccProb)$. Hence, the extractor $\extse$ outputs the witness with the same probability.
-
+	Since $\psfs$ is $\epscss (\secpar, \waccProb)$ computationally special sound, there is an extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of acceptable transcripts $\tree$ and extracts witness with probability at least $1 - \epscss (\secpar, \waccProb)$. Hence, the extractor $\extse$ outputs the witness with the same probability.
+%
 	Thus $\epsse(\secpar,\accProb,q) \leq \epscss(\secpar,\accProb - \epsur,q)$.
 	\qed
 	\end{proof}
