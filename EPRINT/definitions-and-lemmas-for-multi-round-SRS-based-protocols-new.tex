@@ -1,55 +1,6 @@
 % !TEX root = main.tex
 % !TEX spellcheck = en-US
-\section{Definitions and lemmas for multi-message SRS-based protocols}
-\label{sec:se_definitions}
 
-
-
-
-\ourpar{Simulation-extractability for multi-message protocols.}
-Most recent SNARK schemes follow the same blueprint of constructing an interactive information-theoretic proof system 
-that is then compiled into a public coin computationally sound scheme using cryptographic tools such as polynomial commitments,
-and finally made non-interactive via the Fiat--Shamir transformation.
-Existing results on simulation extractability (for proof systems and
-signatures of knowledge) for Fiat--Shamir transformed systems work for $3$-message protocols without reference string that
-require two transcripts for standard model extraction, e.g.,
-\cite{JC:PoiSte00,INDOCRYPT:FKMV12,C:RotSeg21}.
-
-In this section, we define properties that are necessary for our
-analysis of multi-message protocols with a universal updatable SRS.  In order to
-prove simulation-extractability for such protocols, we require more than just two
-transcripts for extraction. Moreover, in the updatable setting we consider protocols
-that rely on an SRS where the adversary gets to contribute to the SRS. 
-We first define trapdoor-less zero-knowledge and simulation-extractability
-which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then,
-to support multi-message SRS-based protocols compiled using the Fiat--Shamir transform,
-we generalize the unique response property, and define a notion of computational special
-soundness called rewinding-based knowledge soundness.
-
-\iffalse 
-Most recent SNARK schemes
-are following the same blueprint: First, an interactive (multi-message)
-information-theoretic proof system is considered.
-Second, this initial proof system is compiled into an efficient, non-interactive and
-computationally sound scheme using cryptographic tools such as polynomial commitments
-and the Fiat--Shamir transformation.
-
-We remark that existing results on the Fiat--Shamir transform regarding existential
-unforgeability (for signatures) and simulation extraction (for proof systems and
-signatures of knowledge) work for $3$-message protocols without reference string that
-require two transcripts for standard model extraction, e.g.,
-\cite{JC:PoiSte00,INDOCRYPT:FKMV12,C:RotSeg21}.  In this section we prepare our
-analysis for multi-message protocols with a universal or updatable SRS.  In order to
-prove simulation-extractability for such protocols, we require more than just two
-transcripts for extraction.  Moreover, in the updatable setting we consider protocols
-that rely on an SRS where the adversary gets to contribute to the SRS. This makes our
-analysis more challenging.  We first give a definition of simulation-extractability
-which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then,
-to support multi-message SRS-based protocols compiled using the Fiat--Shamir transform
-we generalize the unique response property, replace honest-verifier zero-knowledge
-property with trapdoor-less simulation and special soundness with a computational special
-soundness property that links up with the generalized forking lemma.
-\fi
 
 \begin{figure}
 	\centering
