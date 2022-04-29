@@ -10,7 +10,6 @@
 \end{theorem}
 
 \begin{proof}	
-	\michals{22.04}{Started writting draft of the proof. Feel free to write your own proof.}
 	Let $(\srs, \inp, \wit) \gets \advse^{\initU, \simOH, \simOP'}(r_{\advse})$ be the USE adversary. We construct an extractor $\extse (\srs, \advse, r_{\advse}, \Qro, \Qsrs, \Qsim)$ that outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with high probability. To that end we define an algorithm $\advcss^{\initU,\ro}(r)$ against rewinding-based knowledge soundness of $\psfs$ that runs internally $\advse^{\initU, \simOH, \simOP'}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$. Eventually, we use the rewinding-based knowledge soundness extractor $\extcss$ on $\advcss$ to extract the witness.
 	
 	Since $\advcss$ runs $\advse$ internally, it needs to take care of $\advse$'s oracle queries.
