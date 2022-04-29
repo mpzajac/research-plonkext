@@ -63,43 +63,18 @@ In this section, we define properties that are necessary for our
 analysis of multi-message protocols with a universal updatable SRS.  In order to
 prove simulation-extractability for such protocols, we require more than just two
 transcripts for extraction. Moreover, in the updatable setting we consider protocols
-that rely on an SRS where the adversary gets to contribute to the SRS. 
-We first define trapdoor-less zero-knowledge and simulation-extractability
+that rely on an SRS where the adversary gets to contribute to the SRS. We first recall the updatable SRS setting and the Fiat-Shamir transform for $(2\nu+1)$ message protocols.
+Next, we define trapdoor-less zero-knowledge and simulation-extractability
 which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then,
 to support multi-message SRS-based protocols compiled using the Fiat--Shamir transform,
 we generalize the unique response property, and define a notion of computational special
-soundness called rewinding-based knowledge soundness.
-
-\iffalse 
-Most recent SNARK schemes
-are following the same blueprint: First, an interactive (multi-message)
-information-theoretic proof system is considered.
-Second, this initial proof system is compiled into an efficient, non-interactive and
-computationally sound scheme using cryptographic tools such as polynomial commitments
-and the Fiat--Shamir transformation.
-
-We remark that existing results on the Fiat--Shamir transform regarding existential
-unforgeability (for signatures) and simulation extraction (for proof systems and
-signatures of knowledge) work for $3$-message protocols without reference string that
-require two transcripts for standard model extraction, e.g.,
-\cite{JC:PoiSte00,INDOCRYPT:FKMV12,C:RotSeg21}.  In this section we prepare our
-analysis for multi-message protocols with a universal or updatable SRS.  In order to
-prove simulation-extractability for such protocols, we require more than just two
-transcripts for extraction.  Moreover, in the updatable setting we consider protocols
-that rely on an SRS where the adversary gets to contribute to the SRS. This makes our
-analysis more challenging.  We first give a definition of simulation-extractability
-which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then,
-to support multi-message SRS-based protocols compiled using the Fiat--Shamir transform
-we generalize the unique response property, replace honest-verifier zero-knowledge
-property with trapdoor-less simulation and special soundness with a computational special
-soundness property that links up with the generalized forking lemma.
-\fi
+soundness called rewinding-based knowledge soundness.\medskip
 
 
 %\subsection{Proof Systems With Updateable Setups and Random Oracles}
 \noindent Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called the \emph{prover}
 and the latter the \emph{verifier} of a proof system. Both algorithms take a pre-agreed structured reference string $\srs$ as input. The structured reference strings we consider are (potentially) updatable, a notion we recall shortly.
-
+%
 We focus on proof systems made non-interactive via the multi-message Fiat--Shamir transform presented below where prover and
 verifier are provided with a random oracle $\ro$. 
 We denote by $\zkproof$ a proof created by $\prover$ on input
@@ -152,7 +127,7 @@ The definition of updatable SRS ceremonies of~\cite{C:GKMMM18} requires the foll
 
 
 
-In the next section, we define security notions in the updatable setting by giving the adversary access to an SRS update oracle $\initU$, defined in~\cref{fig:upd}. The oracle allows the adversary to control the SRS generation. A trusted setup can be expressed by the updatable setup definition simply by restricting the adversary to only call the oracle on $\intent = \setup$ and $\intent = \final$. Note that a soundness adversary now has access to both the random oracle $\ro$ and $\initU$:  $(\inp, \zkproof) \gets \adv^{\initU,\ro}(1^\secpar)$. \chaya{29.04}{can we move the update oracle figure to section 5? I know we talk about the oracle here, but I am wondering if there is a way to keep $\initU$ general here and give the description below specific to Plonk/Marlin later on}.\hamid{29.4}{Since we use $\initU$ in most of the definitions 1-5 in section 3, I believe it's better to keep it here.}
+In the next section, we define security notions in the updatable setting by giving the adversary access to an SRS update oracle $\initU$, defined in~\cref{fig:upd}. The oracle allows the adversary to control the SRS generation. A trusted setup can be expressed by the updatable setup definition simply by restricting the adversary to only call the oracle on $\intent = \setup$ and $\intent = \final$. Note that a soundness adversary now has access to both the random oracle $\ro$ and $\initU$:  $(\inp, \zkproof) \gets \adv^{\initU,\ro}(1^\secpar)$. \chaya{29.04}{can we move the update oracle figure to section 5? I know we talk about the oracle here, but I am wondering if there is a way to keep $\initU$ general here and give the description below specific to Plonk/Marlin later on}.\hamid{29.4}{Since we use $\initU$ in most of the definitions 1-5 in section 3, I believe it's better to keep it here.}\markulf{This is a reasonable suggestion to save space, in the beginning of the paper. But I am also slightly leaning to keeping it here.}
 
 \newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}% 
 
@@ -209,6 +184,7 @@ We elide public preprocessing of constraint specific proving and verification ke
 
 
 \subsection{Multi-Message Fiat-Shamir Compiled Provers and Verifiers}
+\markulf{29.04}{Make this clearer to not include challenges in $\pi$.}
 Given interactive prover and (public coin) verifier $\prover', \verifier'$ that exchange messages $(a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
 $\prover'$ and $c_i$ comes from $\verifier'$, the $(2\mu + 1)$-message Fiat-Shamir heuristic defines non-interactive provers and verifiers $\prover, \verifier$ as follows:
 
