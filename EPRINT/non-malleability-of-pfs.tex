@@ -348,7 +348,7 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
   Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upper-bounded by $\epsudlog (\secpar)$.
 
   \ncase{Conclusion}
-  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of acceptable transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for different challenges $\chz$, it obtains the same number of different evaluations of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$ and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined in prover's $3$-rd message description holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are of degree at most $(\noofc + 2)$ and there is more than $(\noofc + 5)$ their evaluations known, $\extcss$ can recreate polynomials' coefficients by interpolation and reveal the witness with probability $1$. Thus, the probability that extraction fails in that case is upper-bounded by probability of an idealised verifier failing $\epsid(\secpar)$.
+  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of acceptable transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(\noofc + 6)$ acceptable transcripts for different challenges $\chz$, it obtains the same number of different evaluations of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$ and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined in prover's $3$-rd message description holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are of degree at most $(\noofc + 5)$ and there is more than $(\noofc + 5)$ their evaluations known, $\extcss$ can recreate polynomials' coefficients by interpolation and reveal the witness with probability $1$. Thus, the probability that extraction fails in that case is upper-bounded by probability of an idealised verifier failing $\epsid(\secpar)$.
 
   Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
   \[
@@ -421,21 +421,11 @@ $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:updsimext}.
 
 \begin{corollary}[Simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
-Assume an idealised $\plonkprot$ verifier fails at most with probability
-$\epsid(\secpar)$, the discrete logarithm advantage is bounded by $\epsdlog(\secpar)$ and
-the $\PCOMp$ is a commitment of knowledge with security $\epsk(\secpar)$, binding security
-$\epsbind(\secpar)$ and has unique opening property with security $\epsop(\secpar)$. Let
-$\ro\colon \bin^* \to \bin^\secpar$ be a random oracle. Let $\advse$ be an adversary that
-can make up to $q$ random oracle queries, and outputs an acceptable proof for
-$\plonkprotfs$ with probability at least $\accProb$. Then $\plonkprotfs$ is
-\COMMENT{forking }simulation-extractable with extraction error $\eta =
-\epsur(\secpar)$. The extraction probability $\extProb$ is at least
+$\plonkprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$ with extraction failure probability 
 \[
-	\extProb \geq \frac{1}{q^{3 \noofc}} (\accProb - \epsk(\secpar) - 2\cdot\epsbind(\secpar) -
-  \epsop(\secpar))^{3\noofc + 1} -\eps(\secpar)\,,
+  \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + \epsudlog (\secpar) + \epsid (\secpar),
 \]
-for some negligible $\eps(\secpar)$ and $\noofc$ being the number of
-constraints in the proven circuit.
+where $\epserr (\secpar) = \left(1 - \frac{\noofc + 6}{\abs{\FF_p}} \right)$, $\abs{\FF_p}$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
 \end{corollary}
  
 %%% Local Variables:
