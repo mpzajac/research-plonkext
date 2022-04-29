@@ -176,7 +176,7 @@ that the standard special soundness definition requires witness extraction from
 \emph{any} tree of accepting transcripts that share a common root. This means
 that there are no such trees for false statements. 
 
-Instead, we give a rewinding-based knowledge soundness definition with an extractor that proceeds in two steps. It first uses a tree building algorithm $\tdv$ to obtain a tree of transcripts. In the second it uses a tree extraction algorithm $\extcss$ to compute a witness from this tree. Tree-based knowledge soundness guarantees that it is possible to extract a witness from all
+Instead, we give a rewinding-based knowledge soundness definition with an extractor that proceeds in two steps. It first uses a tree building algorithm $\tdv$ to obtain a tree of transcripts. In the second step, it uses a tree extraction algorithm $\extcss$ to compute a witness from this tree. Tree-based knowledge soundness guarantees that it is possible to extract a witness from all
 (but negligibly many) trees of accepting transcripts produced by probabilistic
 polynomial time (PPT) adversaries. That
 is, if extraction from such a tree fails, then we break an underlying
