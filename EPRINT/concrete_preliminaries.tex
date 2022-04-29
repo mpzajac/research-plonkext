@@ -63,7 +63,7 @@ proofs. More precisely, we show that
 Analogously, idealised verifier can be defined for polynomial commitment schemes.
 
 \subsection{Dlog assumptions}
-  \markulf{22.04}{Move it to Section 5.}
+
 \label{sec:dlog_assumptions}
 \begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]\label{def:dlog}
 	Let $\adv$ be a $\ppt$ adversary that gets as input
@@ -147,7 +147,7 @@ Analogously, idealised verifier can be defined for polynomial commitment schemes
 	One can consider a slightly different model of setup, where the adversary is given an initial honestly-generated SRS and is then allowed to perform a malicious update in one-shot fashion.
 	As shown by Groth
 	et al. in~\cite{C:GKMMM18}, the two definitions are equivalent for the class of SNARKs in this work and thus we use this simpler definition to show our security proofs in the updatable setting.
-\end{remark}} \markulf{25.04}{Move this to where we use it in the proof.}
+\end{remark}}
 
 We show a reduction from $(q_1, q_2)\mhyph\dlog$ assumption to its variant in the updatable setting according to the update model in~\cref{rem:upd}. We omit showing the reduction $(q_1, q_2)\mhyph\ldlog \Rightarrow (q_1, q_2)\mhyph\uldlog$ as it can be done similarly in a straightforward manner.
 \begin{lemma}
@@ -178,11 +178,11 @@ tree of accepting transcripts $\tree$, which allows to extract a witness.
 
 
   \begin{lemma}[Generalized forking lemma~\cite{EPRINT:AttFehKlo21}]\label{lem:attema}
-	Let $\varrho = n_1 \cdots n_\mu$. \markulf{26.04}{are the $n_i$ the same as the $k_i$ in the algoithm of Fig.3?}\hamid{29}{Yes, they're inconsistent. I'll fix!} Let $\proofsystem$ be a proof system that is knowledge sound \markulf{22.04}{Requiring knowledge soundness here seems circular.} \chaya{25.04}{do we want to say that $\proofsystem$ is knowledge sound with knowledge error $\epsk$ if there exists a tree buildin algorithm $\tdv$ such that a tree of accepting transcripts is produced with the following probability?}\hamid{29.4}{I think $\epsk$ should not be defined as a general notion of knowledge error here. According to Attema paper, this knowledge error for $(2\mu+1)$-move $(n_1, \ldots, n_\mu)$-out-of-$(N_1, \ldots, N_\mu)$ special sound protocols is defined as:
+	Let $\varrho = n_1 \cdots n_\mu$. \markulf{26.04}{are the $n_i$ the same as the $k_i$ in the algoithm of Fig.3? Fixed it in Fig.3 now at least.}\hamid{29}{Yes, they're inconsistent. I'll fix!} Let $\ps$ be an interactive proof system that is knowledge sound  \chaya{25.04}{do we want to say that $\proofsystem$ is knowledge sound with knowledge error $\epsk$ if there exists a tree buildin algorithm $\tdv$ such that a tree of accepting transcripts is produced with the following probability?}\hamid{29.4}{I think $\epsk$ should not be defined as a general notion of knowledge error here. According to Attema paper, this knowledge error for $(2\mu+1)$-move $(n_1, \ldots, n_\mu)$-out-of-$(N_1, \ldots, N_\mu)$ special sound protocols is defined as:
 	$$
 Er(n_1, \ldots, n_\mu; N_1, \ldots, N_\mu) := 1 - \prod_{i=1}^{\mu}(1 - \frac{n_i - 1}{N_i})
 	$$
-In our case, this would be $\epsk = Er(n_1, \ldots, n_\mu; N)$.}
+In our case, this would be $\epsk = Er(n_1, \ldots, n_\mu; p)$.} \markulf{But is this also the case for arguments and not just information theoretically secure proofs?}
 	with knowledge error $\epsk$. Assume adversary $\adv$ that makes up to $q$ random
 	oracle queries and outputs an acceptable proof with probability at least
 	$\accProb$. There exists a tree building algorithm $\tdv$ for $(n_1, \ldots, n_\mu)$-trees that utilizes the extractor $\zdv_1$ in~\cref{fig:Attema-ext} and succeeds in building a
@@ -206,9 +206,9 @@ In our case, this would be $\epsk = Er(n_1, \ldots, n_\mu; N)$.}
 					\item sample $c'_i \in C \setminus \smallset{c_i}$ (without replacement);
 					\item run $\zdv_{m + 1}$ as follows to obtain $(\vec{I'}, \zkproof', v')$, aborting right after the initial run of $\adv$ if $I'_m \neq I_m$: answer the query to $i$ with $c'_i$, while answering all other queries consistently if the query was performed by $\zdv_{m + 1}$ already on a previous run and with a fresh random value in $C$ otherwise; 
 				\end{itemize}
-				until either $k_m - 1$ additional challenges $c'_i$ with $v' = 1$ and $I'_m = I_m$ have been found or until all challenges $c'_i \in C$ have been tried. 
-				\item In the former case, output $\vec{I}$, the $k_m$ accepting
-				$(1, \ldots, 1, k_{m + 1}, \ldots, k_\mu)$-trees $\zkproof_1, \ldots, \zkproof_{k_m}$, and
+				until either $n_m - 1$ additional challenges $c'_i$ with $v' = 1$ and $I'_m = I_m$ have been found or until all challenges $c'_i \in C$ have been tried. 
+				\item In the former case, output $\vec{I}$, the $n_m$ accepting
+				$(1, \ldots, 1, n_{m + 1}, \ldots, n_\mu)$-trees $\zkproof_1, \ldots, \zkproof_{n_m}$, and
 				$v \gets 1$; in the latter case, output $v \gets 0$.
 			\end{enumerate}
 	}}

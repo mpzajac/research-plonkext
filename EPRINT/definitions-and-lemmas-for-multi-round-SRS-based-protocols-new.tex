@@ -292,7 +292,7 @@ Intuitively, a protocol is $\ur{k}$ if it is infeasible for a $\ppt$ adversary t
 We note that the definition above can be easily generalized to allow the adversary to program the oracle on more than just a single point. However, since all the protocols we analyse in this paper require only a simple single-point programming, we opted for a simplified version of the definition.
   
 
-\subsection{rewinding-based knowledge soundness and generalized forking lemma}
+\subsection{Rewinding-based knowledge soundness}
 
 Before giving the definition of rewinding-based knowledge soundness for NIZK proof systems compiled the via $2\mu + 1$-message FS transformation, we first recall the notion of a tree of transcripts.
 \begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
@@ -350,7 +350,6 @@ Before giving the definition of rewinding-based knowledge soundness for NIZK pro
 \markulf{22.04}{Don't repeat discussion from introduction. Improve it in one place.}
 \chaya{29.04}{attempted to address}
 
-\oursubsub{Rewinding-based knowledge soundness}
 \iffalse
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Unfortunately, since a
