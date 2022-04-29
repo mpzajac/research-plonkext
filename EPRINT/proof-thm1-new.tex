@@ -2,17 +2,16 @@
 
 \begin{theorem}[Simulation-extractable multi-message protocols]
 	\label{thm:se}
-	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive
-	$(2 \mu + 1)$-message HVZK proof system for $\RELGEN(\secparam)$. Let
-	$\ro \colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. If $\psfs$ has the
+	$\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. If $\psfs$ has the
 	$k$-\emph{updatable unique response property} with security loss $\epsur(\secpar)$, 
-	\emph{updatable $k'$-programmable trapdoor-less zero knowledge}, and $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-\emph{updatable rewinding-based knowledge soundness} with security loss $\epscss(\secpar)$, where $k \leq k' \leq k''$. Then $\psfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who return an acceptable proof with probability at least $\accProb$ with 	extraction probability $\extProb$ is at least
-	$\extProb \geq 1 - \epscss(\secpar, \accProb)\,$.\hamid{29.4}{Last sentence not clear as we don't have $\ext$ anymore. Also, $q$ is not defined here.} \hamid{29.4}{I would prefer to rewrite the last sentence as follows: Then $\psfs$ is \emph{updatable simulation-extractable} with security loss $\epsse \leq \epscss(\secpar,\accProb - \epsur,q)$ against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$.}
+	\emph{updatable $k$-programmable trapdoor-less zero knowledge}, and $(1, \ldots, 1, n_{k}, \ldots, n_\mu)$-\emph{updatable rewinding-based knowledge soundness} with security loss $\epscss(\secpar)$. 
+	
+	Then $\psfs$ is \emph{updatable simulation-extractable} with security loss $\epsse(\secpar,\accProb,q) \leq \epscss(\secpar,\accProb - \epsur,q)$ against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$.
 \end{theorem}
 
 \begin{proof}	
 	\michals{22.04}{Started writting draft of the proof. Feel free to write your own proof.}
-	Let $(\srs, \inp, \wit) \gets \advse^{\initU, \simulator_1, \simulator_2}(r_{\advse})$. We show that $\extse (\srs, \advse, r_{\advse}, \Qro, \Qsrs, \Qsim)$ outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with probability $\extProb$. To that end we define an algorithm $\advcss^{\initU,\ro}(r)$ against the computational special soundness of $\ps$ that runs internally $\advse^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover'}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$. Eventually, we use the computational special soundness extractor $\extcss$ on $\advcss$ to extract the witness.
+	Let $(\srs, \inp, \wit) \gets \advse^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover'}(r_{\advse})$ be the USE adversary. We construct an extractor $\extse (\srs, \advse, r_{\advse}, \Qro, \Qsrs, \Qsim)$ that outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with high probability. To that end we define an algorithm $\advcss^{\initU,\ro}(r)$ against rewinding-based knowledge soundness of $\ps$ that runs internally $\advse^{\initU, \simulator\oracleo.\ro, \simulator\oracleo.\prover'}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$. Eventually, we use the computational special soundness extractor $\extcss$ on $\advcss$ to extract the witness.
 	
 	Since $\advcss$ runs $\advse$ internally, it needs to take care of $\advse$'s oracle queries.
 	$\advse$'s queries to the update oracle $\initU$ are passed to $\advcss$ oracle $\initU$ directly. Also, the answers from $\advcss$'s oracle $\initU$ are returned to $\advse$.
