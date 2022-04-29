@@ -202,9 +202,9 @@ used to show that property for $\PCOMp$.
 			\procedure{$\kgen(\secparam, \maxdeg)$}
 			{
 			\chi \sample \FF_p \\ [\myskip]
-			\pcreturn \gone{1, \ldots, \chi^{\maxdeg}}, \gtwo{\chi}\\ [\myskip]
-				% \hphantom{\hspace*{5.5cm}}	
-      }
+			\pcreturn \srs = \gone{1, \ldots, \chi^{\maxdeg}}, \gtwo{\chi}\\ [\myskip]
+      }\\
+      \michals{29.04}{adjust to $\initU$}
 			
 			\pchspace
 			
@@ -216,8 +216,9 @@ used to show that property for $\PCOMp$.
 
       \pchspace
 
-      \procedure{$\open(\srs, \vec{\gamma}, \vec{z}, \vec{s}, \vec{\p{f}}(X))$}
+      \procedure{$\open(\srs, \vec{z}, \vec{s}, \vec{\p{f}}(X), \aux)$}
 			{
+      \vec{\gamma} \gets \ro (g_0( \vec{z}, \vec{s}, \gone{\vec{c}}, \aux_0))\\[\myskip]
 			\pcfor i \in \range{1}{\abs{\vec{z}}} \pcdo\\ [\myskip]
       \pcind \p{o}_j(X) \gets \sum_{i \in K_j} \gamma_{j}^{i - 1}
       \frac{\p{f}_{i}(X) - \p{f}_{i}(z_j)}{X - z_j}\\ [\myskip] 
@@ -230,9 +231,10 @@ used to show that property for $\PCOMp$.
 		 \pcvspace
     
 		\begin{pchstack}
-			\procedure{$\verifyb(\srs, \gone{\vec{c}}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
+			\procedure{$\verifyb(\srs, \gone{\vec{c}}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)}, \aux)$}
 			{
-				r \gets \FF_p\\ [\myskip]
+        \vec{\gamma} \gets \ro (g_0( \vec{z}, \vec{s}, \gone{\vec{c}}, \aux_0))\\[\myskip]
+				r \gets \ro (g_1(\gone{\vec{c}}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)}, \aux_1))\\ [\myskip]
 				% \pcfor j \in \range{1}{\abs{\vec{z}}} \pcdo \\ [\myskip]
 				(*) \pcif 
           \sum_{j = 1}^{\abs{\vec{z}}} r^{j} \cdot \gone{\sum_{i \in K_j}
@@ -259,6 +261,7 @@ used to show that property for $\PCOMp$.
       
       \procedure{$\verify(\srs, \gone{\vec{c}}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
 			{
+        \vec{\gamma} \gets \ro (g_0( \vec{z}, \vec{s}, \gone{\vec{c}}, \aux_0))\\[\myskip]
 				\pcfor j \in \range{1}{\abs{\vec{z}}} \pcdo \\ [\myskip]
 				\pcind \pcif 
           \gone{\sum_{i \in K_j}
@@ -282,7 +285,8 @@ used to show that property for $\PCOMp$.
 	\end{pcvstack}
 \end{minipage}
   }
-	\caption{$\PCOM$ polynomial commitment scheme. Here $\abs{\vec{z}} = l$ is the number of evaluation points, the number of committed polynomials is $m$, $K_j$ is the set of polynomials that was evaluated at point $z_j$. In the boxes we describe values returned or equality computed in the ideal protocol where the verifier checks equalities on the polynomials instead of their evaluations. For algorithm $\pcalgostyle{Alg}$ we denote its ideal variant by $\pcalgostyle{Alg}'$.}
+	\caption{$\PCOM$ polynomial commitment scheme. Here $\abs{\vec{z}} = l$ is the number of evaluation points, the number of committed polynomials is $m$, $K_j$ is the set of polynomials that was evaluated at point $z_j$. Functions $g_0$ and $g_1$ are injective and specific to the context in which the polynomial commitment is used. (In our case, functions $g_0$ and $g_1$ are produce partial transcripts of the proof that utilizes the commitment scheme, $\aux$ contains all additional information that is needed by the functions.)
+  In the boxes we describe values returned or equality computed in the ideal protocol where the verifier checks equalities on the polynomials instead of their evaluations. For algorithm $\pcalgostyle{Alg}$ we denote its ideal variant by $\pcalgostyle{Alg}'$.}
 	\label{fig:pcomp}
   \end{figure}
 
@@ -346,7 +350,7 @@ commitment scheme that is used in \plonk{} and $\marlin{}$, has the unique openi
 \begin{lemma}
 \label{lem:pcomp_op}
 Let $\PCOM = (\kgen, \com, \open, \verifyb)$ be a batched version of a KZG polynomial commitment,
-cf.~\cref{fig:pcomp}, that commits to $m$ polynomials of degree up to $\maxdeg$. Let $\vec{z} = (z_0, \ldots, z_{l - 1}) \in \FF_p^l$ be the points the polynomials are  evaluated at, $k_i \in \NN$ be the number of the committed polynomials to be evaluated at $z_i$, and $K_i$ be the set of indices of these polynomials. Let $\vec{s_{K_i}} \in \FF_p^{k_i}$ the evaluations of polynomials at $z_i$, and $\vec{o} = (o_0, \ldots, o_{l - 1}) \in \FF_p^l$ be the commitment openings. We show that the probability an algebraic adversary $\adv$ opens the same commitment in two different ways is at most $\epsop(\secpar)$, for $\epsop(\secpar) \leq l \epsudlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where $\epsudlog(\secpar)$ is security of the $(\maxdeg, 1)$-$\udlog$ assumption and $\FF_p$ is the field used in $\PCOM$.
+cf.~\cref{fig:pcomp}, that commits to $m$ polynomials of degree up to $\maxdeg$. Let $\vec{z} = (z_0, \ldots, z_{l - 1}) \in \FF_p^l$ be the points the polynomials are  evaluated at, $k_i \in \NN$ be the number of the committed polynomials to be evaluated at $z_i$, and $K_i$ be the set of indices of these polynomials. Let $\vec{s_{K_i}} \in \FF_p^{k_i}$ the evaluations of polynomials at $z_i$, and $\vec{o} = (o_0, \ldots, o_{l - 1}) \in \FF_p^l$ be the commitment openings. We show that the probability an algebraic adversary $\adv$, who can made up to $q$ random oracle queries, opens the same commitment in two different ways is at most $\epsop(\secpar)$, for $\epsop(\secpar) \leq l \cdot  \epsudlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where $\epsudlog(\secpar)$ is security of the $(\maxdeg, 1)$-$\udlog$ assumption and $\FF_p$ is the field used in $\PCOM$.
 \end{lemma}
 \begin{proof}
  
@@ -369,13 +373,13 @@ cf.~\cref{fig:pcomp}, that commits to $m$ polynomials of degree up to $\maxdeg$.
     \sum_{j = 0}^{l - 1} r^{j}\left(\sum_{i \in K_j} \gamma_{j}^{i - 1} \cdot \p{f}_i(X) - \sum_{i \in K_j} \gamma_{j}^{i - 1} \cdot {s_i}_j \right) 
     \equiv \sum_{j = 0}^{l - 1} r^{j} \p{o_{j}}(X)(X - z_j).
   \end{multline}
-  Since $r$ has been picked at random from $\FF_p$, probability that
+  Since $r$ has been picked as a random oracle output, probability that
   \cref{eq:ver_eq_poly} holds while for some $j \in \range{0}{l - 1}$
   \[
     r^j \left(\sum_{i \in K_j} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i \in K_j}
     \gamma^{i - 1} \cdot {s_i}_j \right) \not\equiv r^j \p{o_j}(X)(X - z_j)
   \]
-  is $\infrac{1}{\abs{\FF_p}}$~cf.~\cite{EPRINT:GabWilCio19}. 
+  is $\infrac{q}{\abs{\FF_p}}$~cf.~\cite{EPRINT:GabWilCio19}. 
   When \(
     r^j \left(\sum_{i \in K_j} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i \in K_j}
     \gamma^{i - 1} \cdot {s_i}_j \right) = r^j \p{o_j}(X)(X - z_j)
@@ -384,7 +388,7 @@ cf.~\cref{fig:pcomp}, that commits to $m$ polynomials of degree up to $\maxdeg$.
   polynomial composition. 
 
   \ncase{Conclusion} %
-  We note that the idealised verifier $\vereq(X)$ does not accept two different openings of a correct evaluation. Hence the probability that the adversary wins Game 2 is $0$ and the probability that the adversary wins in Game 0 is upper-bounded by \(\epsudlog (\secpar) + \frac{1}{\abs{\FF_p}}\).
+  We note that the idealised verifier $\vereq(X)$ does not accept two different openings of a correct evaluation. Hence the probability that the adversary wins Game 2 is $0$ and the probability that the adversary wins in Game 0 is upper-bounded by \(\epsudlog (\secpar) + \frac{q}{\abs{\FF_p}}\).
     \qed
 \end{proof}
 
