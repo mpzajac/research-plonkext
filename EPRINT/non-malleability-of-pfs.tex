@@ -288,23 +288,21 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
 \subsection{Unique response property}
 \begin{lemma}
 	\label{lem:plonkprot_ur}
-	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening
-	property with loss $\epsop(\secpar)$, let $\plonkprotfs$ be $\epss$-sound and
-		$(\noofc + 5, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries with security loss $\epsdlog(\secpar) + \epss (\secpar) + 11 \cdot \epsbind (\secpar) + 9 \cdot \epsop(\secpar)$.
+	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening property with loss $\epsudlog (\secpar) + 2 \infrac{q}{\FF_p}$, let $(\noofc + 5, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries, who makes up to $q$ random oracle queries, with security loss $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\FF_p}$.
 \end{lemma}
 \begin{proof}
   Let $\adv$ be an algebraic adversary tasked to break the $\ur{3}$-ness of
 	$\plonkprotfs$. We show that the first three prover's messages determine, along with 	the verifiers challenges, the rest of it. We denote by $\zkproof^0$ and $\zkproof^1$ the two proofs that the adversary outputs. To distinguish polynomials and commitments which an honest prover would send in the proof from the polynomials and commitments computed by the adversary we write the latter using indices $0$ and $1$ (two indices as we have two transcripts), e.g.~to describe the quotient polynomial provided by the adversary we write $\p{t}^0$ and $\p{t}^1$ instead of $\p{t}$ as in the description of the protocol.
 
-  We note that since the unique response property requires from $\zkproof^{0}$ and $\zkproof^{1}$ that the first place they could differ is the $4$-th prover's message, then the challenge $\chz$, that is picked by the adversary after the $3$-rd message is the same in both transcripts. This challenge determines the evaluation point of polynomials $\p{a}(X), \p{b}(X), \p{c}(X), \p{t}(X), \p{z}(X)$ which commitments are already sent.
+  We note that since the unique response property requires from $\zkproof^{0}$ and $\zkproof^{1}$ that the first place they possibly differ is the $4$-th prover's message, then the challenge $\chz$, that is picked by the adversary after the $3$-rd message is the same in both transcripts. This challenge determines the evaluation point of polynomials $\p{a}(X), \p{b}(X), \p{c}(X), \p{t}(X), \p{z}(X)$ which commitments are already sent.
 
   In its fourth message, the prover provides evaluations of the aforementioned polynomials, along with evaluations of publicly known polynomials $
   \p{S_{\sigma 1}} (\chz), \p{S_{\sigma, 2}} (\chz)$, and evaluation of a linearization polynomial $\p{r}(\chz)$.
-  Note that the adversary can output two acceptable proofs that differ on their fourth message only if it either manages to break evaluation binding of one of the opening, or provides an unacceptable opening which is the accepted due to a batching error. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, and the batched verification equation accepts an incorrect opening with probability at most $\infrac{1}{\abs{\FF_p}}$, cf.~\cite{EPRINT:GabWilCio19}, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $8  \cdot \epsbinding (\secpar) + \infrac{1}{\abs{\FF_p}}$. 
+  Note that the adversary can output two acceptable proofs that differ on their fourth message only if it either manages to break evaluation binding of one of the opening, or provides an unacceptable opening which is the accepted due to a batching error. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, and the batched verification equation accepts an incorrect opening with probability at most $\infrac{q}{\abs{\FF_p}}$, cf.~\cite{EPRINT:GabWilCio19}, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $8  \cdot \epsbinding (\secpar) + \infrac{q}{\abs{\FF_p}}$. 
 
-  Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the a valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$. 
+  Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$, which is upper-bounded by $\epsudlog (\secpar) + \infrac{q}{\FF_p}$, cf.~\cref{lem:pcomp_op}.
 
-  By the union bound, the adversary is able to break the unique response property with probabilty upper bounded by $8  \cdot \epsbinding (\secpar) + \infrac{1}{\abs{\FF_p}} + \epsop (\secpar)$.
+  By the union bound, the adversary is able to break the unique response property with probabilty upper bounded by $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\FF_p}$.
   \end{proof}
 
 \subsection{Updatable rewinding-based knowledge soundness}
