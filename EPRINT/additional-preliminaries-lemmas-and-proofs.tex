@@ -163,7 +163,7 @@ For any given relation $\REL'$, we consider the  following relation $\REL$:
  	\]
  	
 Let $\RELGEN(\secparam)$ be the relation generator that runs $\REL' \gets \RELGEN'(\secparam)$ and returns $\REL$ defined as above. 
-Let $H$ be a target collision-resistant hash function and let $\ps = (\kgen, \prover, \verifier, \simulator)$ be a SE-NIZK argument for $\RELGEN$. 
+Let $H$ be a target collision-resistant hash function and let $\ps = (\SRScer, \prover, \verifier, \simulator)$ be a SE-NIZK argument for $\RELGEN$. 
 We build a signature of knowledge  $\SoK$ for $\RELGEN'$ that works as follows: 
 
 \begin{description}
@@ -182,7 +182,7 @@ Return $b \gets \verifier(\srs, (K, H_K(\mesage), \inp), \zkproof)$.
 	
     \item[$\simsetup(\REL') \rightarrow (\param, \td)$:]
   Run   $(\srs,\rho) \leftarrow \kgen(\REL)$. 
- Return $( \param = \srs,  \td = \rho)$.
+ Return $( \param = \srs,  \td = \rho)$.\hamid{29.4}{Not clear how the correctness proof $\rho$ is used as a trapdoor?!}
 
     	
    \item[$\simsign(\td, \mesage, \inp) \rightarrow \signature'$:]
@@ -196,7 +196,7 @@ Return $\signature' = (K, \zkproof)$.
 \begin{theorem}[Signature of Knowledge] 
   \label{thm:SoK}
 If $H:\{0, 1\}^{\ell_k} \times \{0, 1\}^* \to \{0, 1\}^{\ell_h}$ is a target collision-resistant hash function 
-and $\ps = (\kgen, \prover, \verifier, \simulator)$ be is a SE-NIZK for $\RELGEN(\secparam)$, then the scheme
+and $\ps = (\SRScer, \prover, \verifier, \simulator)$ be is a SE-NIZK for $\RELGEN(\secparam)$, then the scheme
  $\SoK = (\signsetup,  \sign, \allowbreak \verify,  \simsetup, \simsign)$ above is a signature of knowledge for $\RELGEN'(\secparam)$ for  the message space $\{0, 1\}^*$.
 \end{theorem}
  The proof can be found in 
