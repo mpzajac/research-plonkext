@@ -109,11 +109,11 @@ We propose a definition of simulation extractability in the updatable SRS settin
     
   \item \emph{General theorem for USE of FS-compiled interactive protocols.} We
         then show that a class of interactive proofs of knowledge that when
-        the Fiat--Shamir transform is applied to them are trapdoor-less simulatable, have a
+        the Fiat--Shamir transform is applied to them are trapdoor-less zero-knowledge, have a
         unique response property in the updatable setting, and satisfy a
-        property we define called computational special soundness \emph{are USE
-        out-of-the box} in the random oracle model. Informally, our notion of computational
-        special soundness is a variant of special soundness where 
+        property we define called rewinding-based
+        knowledge soundness \emph{are USE
+        out-of-the box} in the random oracle model. Informally, our notion of rewinding-based knowledge soundness is a variant of special soundness where 
         %the transcripts provided to the extractor are obtained through interaction with an honest verifier, and 
         the extraction guarantee is computational
         instead of unconditional. Our extractor only needs oracle access to the
@@ -176,7 +176,7 @@ that the standard special soundness definition requires witness extraction from
 \emph{any} tree of accepting transcripts that share a common root. This means
 that there are no such trees for false statements. 
 
-Instead, we give a rewinding-based knowledge soundness definition with an extractor that proceeds in two steps. It first uses a tree building algorithm $\tdv$ to obtain a tree of transcripts. In the second it uses a tree extraction algorithm $\extcss$ to compute a witness from this tree. Tree-based knowledge soundness guarantees that it is possible to extract a witness from all
+Instead, we give a rewinding-based knowledge soundness definition with an extractor that proceeds in two steps. It first uses a tree building algorithm $\tdv$ to obtain a tree of transcripts. In the second step, it uses a tree extraction algorithm $\extcss$ to compute a witness from this tree. Tree-based knowledge soundness guarantees that it is possible to extract a witness from all
 (but negligibly many) trees of accepting transcripts produced by probabilistic
 polynomial time (PPT) adversaries. That
 is, if extraction from such a tree fails, then we break an underlying
@@ -237,7 +237,7 @@ succinctness of the argument.
 The zkSNARK of~\cite{EC:Groth16} has been shown to be SE by introducing minor modifications to the construction and making
 stronger assumptions \cite{EPRINT:BowGab18,EPRINT:AtaBag19}. Recently,~\cite{EPRINT:BKSV20} showed that the
 original Groth's proof system from~\cite{EC:Groth16} is weakly SE and
-randomizable. None of these results are for zkSNARKs in the updatable SRS setting or for zkSNARKs obtained via the Fiat--Shamir transformation. The recent work of~\cite{EC:GOPTT22} shows that Fiat-Shamir transformed Bulletproofs are simulation extractable. While they show a general theorem for multi-round protocols, they do not consider a setting with an SRS, and are therefore inapplicable to zkSNARKs in the updatable SRS setting.
+randomizable. None of these results are for zkSNARKs in the updatable SRS setting or for zkSNARKs obtained via the Fiat--Shamir transformation. The recent work of~\cite{cryptoeprint:GOPTT22} shows that Fiat-Shamir transformed Bulletproofs are simulation extractable. While they show a general theorem for multi-round protocols, they do not consider a setting with an SRS, and are therefore inapplicable to zkSNARKs in the updatable SRS setting.
 
 
 
