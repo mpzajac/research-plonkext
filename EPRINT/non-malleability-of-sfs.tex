@@ -358,7 +358,7 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
 \end{proof}
 }
 
-\subsection{Computational special soundness}
+\subsection{rewinding-based knowledge soundness}
 \begin{lemma}
 	\label{lem:sonicprot_ss}
 	$\sonicprot$ is $(2, \multconstr + \linconstr + 1)$-computational special sound with security loss $(\epst (\accProb, \secpar), \epss(\secpar))$ against
@@ -374,7 +374,7 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
 \end{lemma}
 \begin{proof}
 	Similarly as in the case of $\plonk$, the main idea of the proof is to show that an
-  adversary who breaks computational special soundness can be used to break a $\dlog$
+  adversary who breaks rewinding-based knowledge soundness can be used to break a $\dlog$
   problem instance. The proof goes by game hops. Let $\tree$ be the tree produced by
   $\tdv$ by rewinding $\adv$. Note that since the tree branches after prover's $2$-nd
   message, the instance $\inp$, commitments
@@ -519,7 +519,7 @@ $\sonic$ is 2-programmable trapdoor-less simulatable.
   challenges that fits it.
 \end{remark}
 
-\subsection{From computational special soundness and unique response property to \COMMENT{forking
+\subsection{From rewinding-based knowledge soundness and unique response property to \COMMENT{forking
   }simulation extractability of $\sonicprotfs$}
 Since \cref{lem:sonicprot_ur,lem:sonicprot_ss,lem:sonic_hvzk} hold, $\sonicprot$ is $\ur{1}$, computational special sound and trapdoor-less simulatable. We now make use
 of \cref{thm:se} and show that $\sonicprotfs$ is \COMMENT{ forking }simulation-extractable as defined in \cref{def:simext}.

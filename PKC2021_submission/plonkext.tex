@@ -1189,18 +1189,18 @@ algorithm) or not.
 
 % \michals{08.07.20}{Should we change it to "deterministic prover property"?}
 
-\subsection{Computational special soundness}
+\subsection{rewinding-based knowledge soundness}
 Note that the special soundness property (as usually defined) holds for
 all---even computationally unbounded---adversaries. Since a simulation
 trapdoor for $\plonkprot$ exists, it is not special sound in that regard---as
 an unbounded
 adversary could reveal the trapdoor and build a number of simulated proofs for
 a fake statement.  Hence, we provide a weaker, yet sufficient, definition of
-\emph{computational special soundness}. More precisely, we state that an
+\emph{rewinding-based knowledge soundness}. More precisely, we state that an
 adversary that is able to answer correctly multiple challenges either knows
 the witness or can be used to break some computational assumption. 
 
-\begin{definition}[Computational special soundness]
+\begin{definition}[rewinding-based knowledge soundness]
 Let $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ be an $(2 \mu +
 1)$-message proof system for a relation $\REL$. 
 We say that $\proofsystem$ is $(n_1, \ldots, n_\mu)$-\emph{special sound} if
@@ -1648,11 +1648,11 @@ Hence the probability that $\adv$ breaks $\ur{2}$-property of $\plonkprot$ is up
 \end{proof}
 }
 
-\subsection{Computational special soundness}
+\subsection{rewinding-based knowledge soundness}
 \begin{lemma}
 \label{lem:plonkprot_ss}
 Let $\adv$ be a $\ppt$ algebraic adversary. The probability $\epsss$ that $\adv$ breaks 
- $(1, 1, 1, \numberofconstrains + 3, 1)$-computational special soundness of $\plonkprot$ is upper-bounded as
+ $(1, 1, 1, \numberofconstrains + 3, 1)$-rewinding-based knowledge soundness of $\plonkprot$ is upper-bounded as
  \[
 	\epsss \leq \epsbatch + \epsdlog\,,
  \] 
@@ -2362,11 +2362,11 @@ upper-bounded by $\epsbind + \epsop$.
 
 \end{proof}
 
-\subsection{Computational special soundness}
+\subsection{rewinding-based knowledge soundness}
 \begin{lemma}
 	\label{lem:sonicprot_ss}
 	Let $\adv$ be a $\ppt$ algebraic adversary. The probability $\epsss$ that
-	$\adv$ breaks computational special soundness of $\sonicprot$ is upper-bounded as
+	$\adv$ breaks rewinding-based knowledge soundness of $\sonicprot$ is upper-bounded as
 	\[
 			\epsss \leq \epss + \epsldlog\,,
 	\]

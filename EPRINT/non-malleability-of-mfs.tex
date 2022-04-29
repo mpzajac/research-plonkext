@@ -177,7 +177,7 @@ verify that \cref{eq:marlin_eq_2} holds.
   has to be incorrect and will be accepted with probability at most $\epss$.
 \end{proof}}
 
-\subsection{Computational special soundness}
+\subsection{rewinding-based knowledge soundness}
 \begin{lemma}\label{lem:marlinprot_ss}
 	Assume that an idealised $\marlinprot$ verifier fails with probability at most
 	$\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks $\dlog$ is
@@ -277,7 +277,7 @@ random oracle that on partial transcripts it returns the challenges picked by
 $\simulator$.
 \end{proof}
 
-\subsection{From computational special soundness and unique response property to\COMMENT{ forking}
+\subsection{From rewinding-based knowledge soundness and unique response property to\COMMENT{ forking}
   simulation extractability of $\marlinprotfs$}
 \begin{corollary}
   Assume that $\marlinprot$ is $\ur{1}$ with security
