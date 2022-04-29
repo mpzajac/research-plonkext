@@ -165,14 +165,14 @@ Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not gen
 al.~\cite{EPRINT:AttFehKlo21} result \footnote{The earlier versions of this paper used another generalization of the forking lemma provided by the paper authors. Change to Attema's et al.~result was due to better extraction success probability bound.}  which lower-bounds the probability of generating a tree of accepting transcripts $\tree$, which allows to extract a witness.
 
   \begin{lemma}[Proposition 2~\cite{EPRINT:AttFehKlo21}]\label{lem:attema}
-	Let $N = n_1 \cdot \cdots \cdot n_\mu$ and $p = 2^{\Omega(\secpar)}$. Let $\eps(\secpar) = 1 - \prod_{i=1}^{\mu}\left(1 - \frac{n_i - 1}{p}\right)$.
+	Let $N = n_1 \cdot \cdots \cdot n_\mu$ and $p = 2^{\Omega(\secpar)}$. Let $\epserr(\secpar) = 1 - \prod_{i=1}^{\mu}\left(1 - \frac{n_i - 1}{p}\right)$.
 	Assume adversary $\adv$ that makes up to $q$ random
 	oracle queries and outputs an acceptable proof with probability at least
 	$\accProb$. There exists a tree building algorithm $\tdv$ for $(n_1, \ldots, n_\mu)$-trees that utilizes the extractor $\zdv_1$ in~\cref{fig:Attema-ext} and succeeds in building a
 	tree of accepting transcripts in expected
 	running time $N + q (N - 1)$ with probability at least
 	\[
-	\frac{\accProb - (q + 1) \eps (\secpar)}{1 - \eps (\secpar)}.
+	\frac{\accProb - (q + 1) \epserr (\secpar)}{1 - \epserr (\secpar)}.
 	\]
 	\end{lemma}
 
