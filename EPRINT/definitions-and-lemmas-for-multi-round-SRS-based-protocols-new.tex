@@ -214,7 +214,7 @@ should be able to provide simulated proofs for false statements as well, we thus
   \label{def:simext}
 	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup. We say that
   $\psfs$ is \emph{updatable simulation-extractable} with respect to
-  $\simulator$ \hamid{29.4}{with security loss $\epsse(\lambda,\accProb, q)$? --- we should add $\epsse$ parameter somewhere!} if for
+  $\simulator$ with security loss $\epsse(\secpar,\accProb, q)$ if for
   any $\ppt$ adversary $\adv$ that is given oracle access to setup oracle
   $\initU$ and simulation oracle $\simulator\oracleo$ and that produces an accepting
   proof for $\psfs$ with probability $\accProb$, where
@@ -249,7 +249,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 	& \wit \gets \ext_\se (\srs, \advse, r,
 	Q, Q_\ro, Q_\srs) 
 	\end{aligned}
-} \leq \epsse(\lambda,\accProb, q)
+} \leq \epsse(\secpar,\accProb, q)
 	\]
 	%is at least 
 	%\[

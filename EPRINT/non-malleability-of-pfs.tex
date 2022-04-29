@@ -288,49 +288,39 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
 \subsection{Unique response property}
 \begin{lemma}
 	\label{lem:plonkprot_ur}
-	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening
-	property with loss $\epsop(\secpar)$, let $\plonkprotfs$ be $\epss$-sound and
-		$(\noofc + 5, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries with security loss $\epsdlog(\secpar) + \epss (\secpar) + 11 \cdot \epsbind (\secpar) + 9 \cdot \epsop(\secpar)$.
+	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening property with loss $\epsudlog (\secpar) + 2 \infrac{q}{\FF_p}$, let $(\noofc + 5, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries, who makes up to $q$ random oracle queries, with security loss $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\FF_p}$.
 \end{lemma}
 \begin{proof}
   Let $\adv$ be an algebraic adversary tasked to break the $\ur{3}$-ness of
 	$\plonkprotfs$. We show that the first three prover's messages determine, along with 	the verifiers challenges, the rest of it. We denote by $\zkproof^0$ and $\zkproof^1$ the two proofs that the adversary outputs. To distinguish polynomials and commitments which an honest prover would send in the proof from the polynomials and commitments computed by the adversary we write the latter using indices $0$ and $1$ (two indices as we have two transcripts), e.g.~to describe the quotient polynomial provided by the adversary we write $\p{t}^0$ and $\p{t}^1$ instead of $\p{t}$ as in the description of the protocol.
 
-  We note that since the unique response property requires from $\zkproof^{0}$ and $\zkproof^{1}$ that the first place they could differ is the $4$-th prover's message, then the challenge $\chz$, that is picked by the adversary after the $3$-rd message is the same in both transcripts. This challenge determines the evaluation point of polynomials $\p{a}(X), \p{b}(X), \p{c}(X), \p{t}(X), \p{z}(X)$ which commitments are already sent.
+  We note that since the unique response property requires from $\zkproof^{0}$ and $\zkproof^{1}$ that the first place they possibly differ is the $4$-th prover's message, then the challenge $\chz$, that is picked by the adversary after the $3$-rd message is the same in both transcripts. This challenge determines the evaluation point of polynomials $\p{a}(X), \p{b}(X), \p{c}(X), \p{t}(X), \p{z}(X)$ which commitments are already sent.
 
   In its fourth message, the prover provides evaluations of the aforementioned polynomials, along with evaluations of publicly known polynomials $
   \p{S_{\sigma 1}} (\chz), \p{S_{\sigma, 2}} (\chz)$, and evaluation of a linearization polynomial $\p{r}(\chz)$.
-  Note that the adversary can output two acceptable proofs that differ on their fourth message only if it either manages to break evaluation binding of one of the opening, or provides an unacceptable opening which is the accepted due to a batching error. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, and the batched verification equation accepts an incorrect opening with probability at most $\infrac{1}{\abs{\FF_p}}$, cf.~\cite{EPRINT:GabWilCio19}, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $8  \cdot \epsbinding (\secpar) + \infrac{1}{\abs{\FF_p}}$. 
+  Note that the adversary can output two acceptable proofs that differ on their fourth message only if it either manages to break evaluation binding of one of the opening, or provides an unacceptable opening which is the accepted due to a batching error. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, and the batched verification equation accepts an incorrect opening with probability at most $\infrac{q}{\abs{\FF_p}}$, cf.~\cite{EPRINT:GabWilCio19}, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $8  \cdot \epsbinding (\secpar) + \infrac{q}{\abs{\FF_p}}$. 
 
-  Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the a valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$. 
+  Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$, which is upper-bounded by $\epsudlog (\secpar) + \infrac{q}{\FF_p}$, cf.~\cref{lem:pcomp_op}.
 
-  By the union bound, the adversary is able to break the unique response property with probabilty upper bounded by $8  \cdot \epsbinding (\secpar) + \infrac{1}{\abs{\FF_p}} + \epsop (\secpar)$.
+  By the union bound, the adversary is able to break the unique response property with probabilty upper bounded by $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\FF_p}$.
   \end{proof}
 
 \subsection{Updatable rewinding-based knowledge soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
-  $\plonkprot$ is $(3, 3 \noofc + 1)$-updatable computational special sound with security loss $(\epst(\accProb, \secpar), \epss(\secpar))$ against algebraic adversary $\adv^{\ro, \initU} (\secparam)$ where
+  $\plonkprot$ is $(3, 3 \noofc + 1)$-updatable rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
-    \epst(\accProb, \secpar) \leq \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\,,
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,,
   \]
-  and
-	\[
-	  \epss(\secpar) \leq \epsid(\secpar) + \epsudlog(\secpar) \,.
-	\]
-	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + \changedm{5}, 1)$-$\udlog$ %\hamid{18.4}{$(\dconst, \dconst)$-$\uldlog$?}\michals{18.04}{Corrected}
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\plonkprot$, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + \changedm{5}, 1)$-$\udlog$ 
 	assumption.
 \end{lemma}
 
 \begin{proof}
-	Let $\adv^{\ro, \initU}(\secparam)$ be the adversary who outputs $(\inp, \zkproof)$ such that $\plonkprotfs.\verifier$ accepts the proof. Let $\tdv$ be a tree-building algorithm that runs $\zdv_1$ from \cref{fig:Attema-ext} and outputs a tree $\tree$, and let $\extt$ be an extractor that given the tree output by $\tdv$ reveals the witness for $\inp$. The main idea of the proof is to show that an adversary who breaks updatable computational special soundness can be used to break a $\udlog$ problem instance. The proof goes by game hops. Note that since the tree branches after $\adv$'s $3$-rd message, the instance $\inp$, commitments $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges $\alpha, \beta, \gamma$ are the same in all the transcripts. The tree branches after the third adversary's message where the challenge $\chz$ is presented, thus tree $\tree$ is built using different values of $\chz$. 
-	%
-	We consider the following games.
-  \hamid{17.4}{I am happy with the current version of the proof, but I think it might be more readable if we have the explanation in Game 0 not as a game, but as a separate argument that specify $\epst$. Then we define only two games (currently as Game 1 and Game 2) by which we upper-bound $\epss$.}
-  \michals{18.04}{I think it makes more sense to have everything written as a game. I believe that this adds structure to the proof and makes it easier to underestand.}
+	Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkproof)$ such that $\plonkprotfs.\verifier$ accepts the proof. Let $\tdv$ be a tree-building algorithm that runs $\zdv_1$ from \cref{fig:Attema-ext} and outputs a tree $\tree$, and let $\extcss$ be an extractor that given the tree output by $\tdv$ reveals the witness for $\inp$. The main idea of the proof is to show that an adversary who breaks updatable rewinding-based knowledge soundness can be used to break a $\udlog$-problem instance. The proof goes by game hops. Note that since the tree branches after $\adv$'s $3$-rd message, the instance $\inp$, commitments $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges $\alpha, \beta, \gamma$ are the same in all the transcripts. Also, the tree branches after the third adversary's message where the challenge $\chz$ is presented, thus tree $\tree$ is built using different values of $\chz$.	We consider the following games.
 
   \ncase{Game 0} %
-  In this game the adversary wins if it outputs a valid instance--proof pair $(\inp, \zkproof)$, and the extractor $\extt$ does not manage to output a witness $\wit$ such that $\REL (\inp, \wit)$ holds.
+  In this game the adversary wins if it outputs a valid instance--proof pair $(\inp, \zkproof)$, and the extractor $\extcss$ does not manage to output a witness $\wit$ such that $\REL (\inp, \wit)$ holds.
 
   \ncase{Game 1} %
   In this game the environment aborts the game if the tree building algorithm $\tdv$ fails in building a tree of acceptable transcripts $\tree$. 
@@ -342,31 +332,27 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
   \]
 
   \ncase{Game 2} %
-  In this game the environment additionally aborts if at least one of its proofs in $\tree$ is not acceptable by an idealised verifier.
+  In this game the environment additionally aborts if at least one of its proofs in $\tree$ is not acceptable by an ideal verifier.
 
   \ncase{Game 1 to Game 2} % 
-  We show a reduction that breaks an instance of a $\udlog$ assumption when Game 2 is aborted, while Game 1 is not.
+  As usual, we show a reduction that breaks an instance of a $\udlog$ assumption when Game 2 is aborted, while Game 1 is not.
 
-  Let $\rdvudlog$ be a reduction that gets as input an $(\noofc + 2, 1)$-$\udlog$ instance $\gone{1, \ldots, \chi^{\noofc+2}}, \gtwo{\chi}$. Then it can update the instance to another one $\gone{1, \ldots, {\chi'}^{\noofc+2}}, \gtwo{\chi'}$. Eventually, the reduction has to ouput $\chi'$.
+  Let $\rdvudlog$ be a reduction that gets as input an $(\noofc + 5, 1)$-$\udlog$ instance $\gone{1, \ldots, \chi^{\noofc + 5}}, \gtwo{\chi}$. Then it can update the instance to another one $\gone{1, \ldots, {\chi'}^{\noofc + 5}}, \gtwo{\chi'}$. Eventually, the reduction ouputs $\chi'$.
 	%
 	The reduction $\rdvudlog$ proceeds as follows.
-	\begin{enumerate}
-			\item Builds $\adv$'s SRS $\srs$ using the input $\udlog$ instance. Then it processes the adversary's update query by passing it to its own update oracle getting instance $\gone{1, \ldots, {\chi'}^{\noofc+2}}, \gtwo{\chi'}$. The updated SRS $\srs'$ is then built and given to $\adv$. The reduction then starts $\tdv(\adv, \srs')$;
-			\item Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$, but $\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all group
-			elements included in $\tree$ are extended by their representation as a combination of the input $\GRP_1$-elements. Hence, all coefficients of the verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known. 
-			\item Find $\vereq_{\inp, \zkproof}(X)$ zero points and find $\chi'$ among
-			them.
-			\item Return  $\chi'$.
-      \end{enumerate}
+	First, it builds $\adv$'s SRS $\srs$ using the input $\udlog$ instance. Then it processes the adversary's update query by adding it to the list $\Qsrs$ and passing it to its own update oracle getting instance $\gone{1, \ldots, {\chi'}^{\noofc + 5}}, \gtwo{\chi'}$. The updated SRS $\srs'$ is then computed and given to $\adv$. $\rdvdulog$ also takes care of the random oracle queries made by $\adv$. It picks their answers honestly and write them in $\Qro$. The reduction then starts $\tdv(\srs, \adv, r, \Qro, \Qsrs)$.
+	
+  Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$, but $\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all group elements included in $\tree$ are extended by their representation as a combination of the input $\GRP_1$-elements. Hence, all coefficients of the verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known. 
+  Eventually, the reduction finds $\vereq_{\inp, \zkproof}(X)$ zero points and returns $\chi'$ which is one of them.
     
-    Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upperbounded by $\epsudlog (\secpar)$.
+  Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upper-bounded by $\epsudlog (\secpar)$.
 
   \ncase{Conclusion}
-  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of acceptable transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an idealised verifier. Note that since $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for different challenges $\chz$, it obtains the same number of different evaluations of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$ and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined in prover's $3$-rd message description holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are of degree at most $(\noofc + 2)$ and there is more than $(\noofc + 2)$ their evaluations known, $\extt$ can recreate polynomials' coefficients by interpolation and reveal the witness with probability $1$. Hence, the probability that extraction fails in that case is upper-bounded by probability of an idealised verifier failing $\epsid(\secpar)$.
+  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of acceptable transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for different challenges $\chz$, it obtains the same number of different evaluations of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$ and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined in prover's $3$-rd message description holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are of degree at most $(\noofc + 2)$ and there is more than $(\noofc + 5)$ their evaluations known, $\extcss$ can recreate polynomials' coefficients by interpolation and reveal the witness with probability $1$. Thus, the probability that extraction fails in that case is upper-bounded by probability of an idealised verifier failing $\epsid(\secpar)$.
 
-  \hamid{20.4}{Not clear what we have in the rest of the proof here. Should this not be removed?}Probability that the adversary wins in Game 2 but not in Game 1 is 
+  Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
   \[
-  \frac{\accProb + (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)} + \epsudlog(\secpar)  + \epsid (\secpar). 
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,. 
   \]
  \end{proof}
   
