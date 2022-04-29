@@ -109,7 +109,7 @@ $\simulator' = (\simOH, \simOP')$.
 \end{definition}
 
 % \chaya{13.10}{later, we should show $\simOP'$ for plonk/sonic/marlin. I think
-%   it will follow from TLS. But we should emphasize there how to define the above
+%   it will follow from TLZK. But we should emphasize there how to define the above
 %   oracles so it is clear that $\simO$ can produce accepting proofs for false
 %   statements.}
 % \michals{19.10}{Re showing that Plonk's et al simulators can produce acceptable
@@ -185,31 +185,31 @@ string.
  \subsection{Trapdoor-Less Simulation}
  Security reductions in this paper sometimes need to produce simulated NIZK proofs without
  knowing the trapdoor, just by programming the random oracle. We call protocols which
- allow for such a simulation \emph{trapdoor-less simulatable} (TLS).
+ allow for such a simulation \emph{trapdoor-less zero-knowledge} (TLZK).
 
-\begin{definition}[($k$-programmable) Trapdoor-Less Simulatable Proof System]
-  \label{def:tls}
+\begin{definition}[($k$-programmable) Trapdoor-Less Zero-Knowledge Proof System]
+  \label{def:TLZK}
   Let $\ps$ be a $(2\mu + 1)$-message ZK proof system, and
   $\ps_\fs= (\kgen_{\fs}, \prover_{\fs}, \verifier_{\fs}, \simulator_{\fs})$ be its
   Fiat--Shamir variant, where $\simulator_{\fs} = (\simOH, \simOP)$ as defined in~\cref{prelim:nizk}. Let $\ro$ be the random oracle. 
   %$\simulator_{\fs}$ takes as input $\srs$ and instance $\inp$, programs $\ro$, and outputs a proof $\zkproof_\simulator$.  
-  We call $\psfs$ \emph{trapdoor-less simulatable} with security $\epszk$ if for any
+  We call $\psfs$ \emph{trapdoor-less zero-knowledge} with security $\epszk$ if for any
   adversary $\adv$, $\abs{\eps_0(\secpar) - \eps_1(\secpar)} \leq \epszk(\secpar)$, where
   \begin{align*}
     \eps_0 (\secpar) = \Pr\left[ \adv^{\initU, \ro, \prover_{\fs}} (\secparam) \right],\,
     \eps_1 (\secpar)=  \Pr \left[\adv^{\initU, \simOH, \simOP} (\secparam) \right].
   \end{align*}
   
-  If $\epszk(\secpar)$ is negligible, we say $\ps_{\fs}$ is trapdoor-less simulatable. Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if $\simulator_\fs$
+  If $\epszk(\secpar)$ is negligible, we say $\ps_{\fs}$ is trapdoor-less zero-knowledge. Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if $\simulator_\fs$
   programs the random oracle \emph{only} after $k$-th prover's message.
   \end{definition}
 
   
-\begin{remark}[TLS vs HVZK]
-  We note that TLS notion is closely related to honest-verifier zero knowledge in the
+\begin{remark}[TLZK vs HVZK]
+  We note that TLZK notion is closely related to honest-verifier zero knowledge in the
   standard model. That is, if we consider an interactive proof system $\proofsystem$
   that is HVZK in the standard model then its Fiat--Shamir compiled version
-  $\proofsystem_\fs$ is TLS. This comes as the simulator $\simulator$ in
+  $\proofsystem_\fs$ is TLZK. This comes as the simulator $\simulator$ in
   $\proofsystem$ produces a valid simulated proof by picking verifier's challenges
   according to a predefined distribution and $\proofsystem_\fs$'s simulator
   $\simulator_\fs$ produces its proofs similarly by picking the challenges and
@@ -218,8 +218,8 @@ string.
   the simulator does not depend on access to an SRS trapdoor.
 \end{remark}
 
-We note that $\plonk$ is $2$-programmable TLS, $\sonic$ is $1$-programmable TLS,
-and $\marlin$ is $1$-programmable TLS. This follows directly from the proofs of
+We note that $\plonk$ is $2$-programmable TLZK, $\sonic$ is $1$-programmable TLZK,
+and $\marlin$ is $1$-programmable TLZK. This follows directly from the proofs of
 their standard model zero-knowledge property in
 \cref{lem:plonk_hvzk,lem:sonic_hvzk,lem:marlin_hvzk}. 
 

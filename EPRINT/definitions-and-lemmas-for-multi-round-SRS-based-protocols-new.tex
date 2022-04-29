@@ -93,14 +93,14 @@ Alternatively, zero-knowledge can be defined by allowing the simulator to use th
 trapdoor $\td$ that is generated along the $\srs$. In this paper we distinguish
 simulators that requires a trapdoor to simulate and those that do not. We call the
 former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less
-  simulatable} (TLS) if its simulator does not require the trapdoor, cf.~\cref{def:tls}.
+  zero-knowledge} (TLZK) if its simulator does not require the trapdoor, cf.~\cref{def:TLZK}.
 
   \markulf{22.04}{We don't consider SRS-simulators in this paper. I would simplify and move the above after the Updatable SRS scheme section, or maybe the start of Section 3.}
 \fi
 
 In this paper we distinguish between simulators that require a trapdoor to simulate and those that do not. We call a protocol \emph{trapdoor-less
  zero-knowledge} (TLZK) if there exists a simulator does not require the trapdoor, and works by programming the random oracle.
- Moreover, it may be not allowed to program every random oracle challenge but only challenges that come after the $k$-th prover's message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less zero-knowledge}, and define this in~\cref{def:tls}.
+ Moreover, it may be not allowed to program every random oracle challenge but only challenges that come after the $k$-th prover's message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less zero-knowledge}, and define this in~\cref{def:TLZK}.
 
  Our definition of zero-knowledge for non-interactive
 arguments is in the explicitly programmable random oracle model where the simulator
@@ -109,7 +109,7 @@ We model this using the oracles from Fig.~\ref{fig:real_simulator_oracles} that 
 $\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h)$ allows for programming the simulated $\ro$ and is available only to $\simulator$. $\simOP(x, w)$ and $\simOP'(x)$ call the simulator. The former is used in the zero-knowledge definition and requires the statement and witness to be in the relation, the latter is used in the simulation extraction definition and does not require a witness input.
 
 \begin{definition}[ ($k$-programmable) Trapdoor-less Zero-Knowledge Proof System]
-  \label{def:tls}
+  \label{def:TLZK}
   Let 
   $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. 
   %$\simulator_{\fs}$ takes as input $\srs$ and instance $\inp$, programs $\ro$, and outputs a proof $\zkproof_\simulator$.  
