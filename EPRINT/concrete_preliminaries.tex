@@ -32,11 +32,11 @@ have been shown secure using the AGM. An adversary that works in the AGM is call
 \emph{algebraic}.
 
 \oursubsub{Idealised Verifier and Verification Equations.} Let
-$(\kgen, \prover, \verifier, \simulator)$ be a proof system.
+$(\SRScer, \prover, \verifier, \simulator)$ be a proof system.
 % or a polynomial commitment
 % scheme\hamid{might be unclear as we are defining polynomial commitments as
 %   $(\kgen, \com, \open, \verify)$.}.
-Observe that the $\kgen$ algorithm provides an SRS which can be interpreted as a set
+Observe that the $\SRScer$ algorithm provides an SRS which can be interpreted as a set
 of group representation of polynomials evaluated at trapdoor elements. That is, for a
 trapdoor $\chi$ the SRS contains $\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for
 some polynomials $\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. The verifier
