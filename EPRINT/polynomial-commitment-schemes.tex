@@ -233,8 +233,8 @@ used to show that property for $\PCOMp$.
 			\procedure{$\verifyb(\srs, \gone{\vec{c}}, \vec{z}, \vec{s}, \gone{\p{o}(\chi)})$}
 			{
 				r \gets \FF_p\\ [\myskip]
-				\pcfor j \in \range{1}{\abs{\vec{z}}} \pcdo \\ [\myskip]
-				(*) \pcind \pcif 
+				% \pcfor j \in \range{1}{\abs{\vec{z}}} \pcdo \\ [\myskip]
+				(*) \pcif 
           \sum_{j = 1}^{\abs{\vec{z}}} r^{j} \cdot \gone{\sum_{i \in K_j}
           \gamma_j^{i - 1} c_{i} - \sum_{i \in K_j} \gamma_j^{i - 1} s_{i_j}} \bullet \gtwo{1} + \\ [\myskip] 
           \pcind \sum_{j = 1}^{\abs{\vec{z}}} r^{j} z_j o_j
@@ -243,8 +243,8 @@ used to show that property for $\PCOMp$.
 					\pcind \pcreturn 0\\ [\myskip]
           \fbox{
             \begin{minipage}{7cm}
-            (**) $\pcind \pcif $
-              $\sum_{j = 1}^{\abs{\vec{z}}} r_j \cdot (\sum_{i \in K_j}
+            (**) $\pcif $
+              $\sum_{j = 1}^{\abs{\vec{z}}} r^j \cdot (\sum_{i \in K_j}
               \gamma_j^{i - 1} \p{f}_{i} (X) - \sum_{i \in K_j} \gamma_j^{i - 1} s_{i_j}) + $\\ [\myskip] 
               $\pcind \sum_{j = 1}^{\abs{\vec{z}}} r^{j} z_j \p{o}_j (X)
                \neq \sum_{j = 1}^{\abs{\vec{z}}} r^{j} \p{o}_j (X)
