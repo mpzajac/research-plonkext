@@ -360,9 +360,8 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
 \subsection{Trapdoor-less zero-knowledge of Plonk}
 \begin{lemma}
   \label{lem:plonk_tlzk}
-  Let $\plonkprot$ be zero knowledge with security $\epszk(\secpar)$. Then $\plonkprot$
-  is 2-programmable trapdoor-less zero-knowledge
-  with security $\epszk(\secpar) + \epsuber(\secpar)$.
+  Let $\plonkprot$ be zero knowledge with security $\epszk(\secpar)$. Then $\plonkprot$ is 3-programmable trapdoor-less zero-knowledge
+  with security $\epszk(\secpar)$.
 \end{lemma}
 
 \begin{proof}
@@ -416,8 +415,8 @@ We argue about zero knowledge as usually. The property holds since the polynomia
 \end{proof}
 
 \subsection{Simulation extractability of~$\plonkprotfs$}
-Since \cref{lem:plonkprot_ur,lem:plonkprot_ss,lem:plonk_tlzk} hold, $\plonkprot$ is $\ur{2}$,
-computational special sound and trapdoor-less simulatable. We now make use of \cref{thm:se} and show that
+Since \cref{lem:plonkprot_ur,lem:plonkprot_ss,lem:plonk_tlzk} hold, $\plonkprot$ is $\ur{3}$,
+computational special sound and trapdoor-less zero knowledge. We now make use of \cref{thm:se} and show that
 $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:updsimext}.
 
 \begin{corollary}[Simulation extractability of $\plonkprot_\fs$]

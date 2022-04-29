@@ -75,7 +75,7 @@ Equipped with definitional framework of \cref{sec:se_definitions}, we can also s
 %\begin{theorem}[Forking simulation-extractable multi-message protocols]
 %	\label{thm:se}
 %	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive $(2 \mu + 1)$-message
-%	zero-knowledge proof system for $\RELGEN(\secparam)$, which is trapdoor-less simulatable, has
+%	zero-knowledge proof system for $\RELGEN(\secparam)$, which is trapdoor-less zero-knowledge, has
 %	$\ur{k}$ property with security $\epsur(\secpar)$, and is $(\epss(\secpar), k, n)$-forking
 %	sound.  Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle.  Then $\psfs$ is
 %	forking simulation-extractable with extraction error $\epsur(\secpar)$ against $\ppt$
@@ -89,7 +89,7 @@ Equipped with definitional framework of \cref{sec:se_definitions}, we can also s
 \begin{theorem}[Simulation soundness]
 	\label{thm:simsnd}
 	Let $\ps = (\kgen, \prover, \verifier, \simulator)$ be an interactive $(2 \mu + 1)$-message
-	zero-knowledge proof system for $\RELGEN(\secparam)$, which is trapdoor-less simulatable, has
+	zero-knowledge proof system for $\RELGEN(\secparam)$, which is trapdoor-less zero-knowledge, has
 	$\ur{k}$ property with security $\epsur(\secpar)$. Let $\ro\colon \bin^{*} \to \bin^{\secpar}$ be a random oracle. Then, the
 	probability that a $\ppt$ adversary $\adv$ breaks simulation soundness of
 	$\ps$ is upper-bounded by
@@ -213,7 +213,7 @@ We conjecture that based on the recent results on state restoration soundness~\c
 
 
 \subsection{Simulation soundness of~$\plonkprotfs$}
-Since \cref{lem:plonkprot_ur,lem:plonkprot_ss,lem:plonk_hvzk} hold, $\plonkprot$ is $\ur{2}$, computational special sound and trapdoor-less simulatable. We now make use of \cref{thm:simsnd} and show that
+Since \cref{lem:plonkprot_ur,lem:plonkprot_ss,lem:plonk_hvzk} hold, $\plonkprot$ is $\ur{2}$, computational special sound and trapdoor-less zero-knowledge. We now make use of \cref{thm:simsnd} and show that
 $\plonkprot_\fs$ is simulation sound as defined in
 \cref{def:simsnd}.
 
