@@ -161,34 +161,18 @@ We show a reduction from $(q_1, q_2)\mhyph\dlog$ assumption to its variant in th
   %\michals{24.03}{I think we should write a formal proof for the reduction}
 
   \oursubsub{Generalized forking lemma}
-Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general
-enough for our purpose as it is useful only for protocols where a witness can be
-extracted from just two transcripts. To be able to extract a witness from, say, an
-execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 1)$ valid proofs
-(where $\numberofconstrains$ is the number of constrains),
-$(\numberofconstrains+ 1)$ for $\sonicprot$, and $\numberofconstrains + 4$ for $\marlinprot$. Here we use Attema et
-al.~\cite{EPRINT:AttFehKlo21} generalization of the forking lemma\footnote{The
-	earlier versions of this paper used another generalization of the forking lemma
-	provided by the paper authors. Change to Attema's et al.~result was due to better
-	extraction success probability bound.}  which shows security of the Fiat--Shamir
-transformation for multi-message protocols. The lemma, given probability of producing
-an accepting transcript, $\accProb$, lower-bounds the probability of generating a
-tree of accepting transcripts $\tree$, which allows to extract a witness.
+Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general enough for our purpose as it is useful only for protocols where a witness can be extracted from just two transcripts. To be able to extract a witness from, say, an execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 1)$ valid proofs (where $\numberofconstrains$ is the number of constrains), $(\numberofconstrains+ 1)$ for $\sonicprot$, and $\numberofconstrains + 4$ for $\marlinprot$. Here we use Attema et
+al.~\cite{EPRINT:AttFehKlo21} result \footnote{The earlier versions of this paper used another generalization of the forking lemma provided by the paper authors. Change to Attema's et al.~result was due to better extraction success probability bound.}  which lower-bounds the probability of generating a tree of accepting transcripts $\tree$, which allows to extract a witness.
 
-
-
-  \begin{lemma}[Generalized forking lemma~\cite{EPRINT:AttFehKlo21}]\label{lem:attema}
-	Let $N = n_1 \cdot \cdots \cdot n_\mu$.  Let $\psfs$ be a NIZK proof system compiled using $()$ Fiat-Shamir ... has trial knowledge error where $\epsk(\secpar)= Er(n_1, \ldots, n_\mu; \Omega(2^\lambda))$ where
-	$$
-Er(n_1, \ldots, n_\mu; p) := 1 - \prod_{i=1}^{\mu}\left(1 - \frac{n_i - 1}{p}\right)
-	$$ 
+  \begin{lemma}[Proposition 2~\cite{EPRINT:AttFehKlo21}]\label{lem:attema}
+	Let $N = n_1 \cdot \cdots \cdot n_\mu$ and $p = 2^{\Omega(\secpar)}$. Let $\eps(\secpar) = 1 - \prod_{i=1}^{\mu}\left(1 - \frac{n_i - 1}{p}\right)$.
 	Assume adversary $\adv$ that makes up to $q$ random
 	oracle queries and outputs an acceptable proof with probability at least
 	$\accProb$. There exists a tree building algorithm $\tdv$ for $(n_1, \ldots, n_\mu)$-trees that utilizes the extractor $\zdv_1$ in~\cref{fig:Attema-ext} and succeeds in building a
 	tree of accepting transcripts in expected
 	running time $N + q (N - 1)$ with probability at least
 	\[
-	\frac{\accProb - (q + 1) \epsk (\secpar)}{1 - \epsk (\secpar)}.
+	\frac{\accProb - (q + 1) \eps (\secpar)}{1 - \eps (\secpar)}.
 	\]
 	\end{lemma}
 
@@ -196,27 +180,19 @@ Er(n_1, \ldots, n_\mu; p) := 1 - \prod_{i=1}^{\mu}\left(1 - \frac{n_i - 1}{p}\ri
 	\centering
 	\fbox{\parbox{\textwidth}{
 			\begin{enumerate}
-				\item Run $\zdv_{m + 1}$ as follows to obtain $(\vec{I}, \zkproof_1, v)$: relay the
-				$q + \mu$ queries to the random oracle and record all query-response pairs. Set
-				$i \gets I_m$, and let $c_i$ be the response to query $i$.
+				\item Run $\zdv_{m + 1}$ as follows to obtain $(\vec{\zkproof}, \tzkproof_1, v)$: relay the $q + \mu$ queries to the random oracle and record all query-response pairs. Set 				$h \gets \zkproof[m].\ch $, and let $c_h$ be the response to query $i$. 
 				\item If $v = 0$, abort with output $v = 0$. 
 				\item Else, repeat
 				\begin{itemize}
-					\item sample $c'_i \in C \setminus \smallset{c_i}$ (without replacement);
-					\item run $\zdv_{m + 1}$ as follows to obtain $(\vec{I'}, \zkproof', v')$, aborting right after the initial run of $\adv$ if $I'_m \neq I_m$: answer the query to $i$ with $c'_i$, while answering all other queries consistently if the query was performed by $\zdv_{m + 1}$ already on a previous run and with a fresh random value in $C$ otherwise; 
+					\item sample $c'_h \in C \setminus \smallset{c_h}$ (without replacement);
+					\item run $\zdv_{m + 1}$ as follows to obtain $(\vec{\zkproof'}, \tzkproof', v')$, aborting right after the initial run of $\adv$ if $\zkproof'[m].\ch  \neq \zkproof[m].\ch$: answer the query to $h$ with $c'_h$, while answering all other queries consistently if the query was performed by $\zdv_{m + 1}$ already on a previous run and with a fresh random value in $C$ otherwise; 
 				\end{itemize}
-				until either $n_m - 1$ additional challenges $c'_i$ with $v' = 1$ and $I'_m = I_m$ have been found or until all challenges $c'_i \in C$ have been tried. 
-				\item In the former case, output $\vec{I}$, the $n_m$ accepting
-				$(1, \ldots, 1, n_{m + 1}, \ldots, n_\mu)$-trees $\zkproof_1, \ldots, \zkproof_{n_m}$, and
+				until either $n_m - 1$ additional challenges $c'_h$ with $v' = 1$ and $\zkproof'[m].\ch  = \zkproof[m]$ have been found or until all challenges $c'_h \in C$ have been tried. 
+				\item In the former case, output $\vec{\zkproof}$, the $n_m$ accepting
+				$(1, \ldots, 1, n_{m + 1}, \ldots, n_\mu)$-trees $\tzkproof_1, \ldots, \tzkproof_{n_m}$, and
 				$v \gets 1$; in the latter case, output $v \gets 0$.
 			\end{enumerate}
 	}}
-	\caption{Extractor $\zdv_m$ from Attema et al.~\cite{EPRINT:AttFehKlo21}. Here $\vec{I}$ is an index vector
-		that contains all random oracle queries made by the prover for the output proof;
-		that is, for prover's messages $\vec{a} = a_1, \ldots, a_{\mu + 1}$,
-		$I_1 = (\inp, a_1), \ldots, I_{\mu} = (\inp, a_1, \ldots, a_\mu)$.  $\zkproof$ is a proof
-		transcript that contains both prover's messages and random oracle responses, that is
-		$\zkproof = (a_1, (\inp, a_1), a_2, (\inp, a_1, a_2), \ldots)$. Finally, $v$ is the
-		verification bit, that is $v = \verifier (\srs, \inp, \zkproof)$. }
+	\caption{Extractor $\zdv_m$ from Attema et al.~\cite{EPRINT:AttFehKlo21}. Here $\vec{\zkproof}$ is an index vector that contains all random oracle queries made by the prover for the output proof; that is, for prover's messages $\vec{a} = a_1, \ldots, a_{\mu + 1}$, $\zkproof[1].\ch = (\inp, a_1), \ldots, \zkproof[{\mu}].\ch = (\inp, a_1, \ldots, a_\mu)$.  $\tzkproof$ is a proof transcript that contains both prover's messages and random oracle responses, that is $\tzkproof = (a_1, (\inp, a_1), a_2, (\inp, a_1, a_2), \ldots)$. Finally, $v$ is the verification bit, that is $v = \verifier (\srs, \inp, \tzkproof)$. }
 	\label{fig:Attema-ext}
 \end{figure} 
