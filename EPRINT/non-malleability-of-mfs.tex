@@ -7,7 +7,7 @@ that $\marlin$ has all the required properties: has unique response property, is
 computational special sound, and its simulator can provide indistinguishable proofs
 without a trapdoor, just by programming the random oracle.
 
-\subsection{$\marlin$ protocol rolled-out}
+\subsection{$\marlin$ Protocol Rolled-out}
 $\marlin$ uses R1CS as arithmetization method. That is, the prover given
 instance $\inp$ and witness $\wit$ and $|\HHH| \times |\HHH|$ matrices $\vec{A},
 \vec{B}, \vec{C}$ shows that $\vec{A} (\inp^\top, \wit^\top)^\top \circ \vec{B}
@@ -56,7 +56,7 @@ variables required by the sumcheck protocol which allows verifier to efficiently
 verify that \cref{eq:marlin_eq_2} holds.
                          
 
-\subsection{Unique response property}
+\subsection{Unique Response Property}
 \begin{lemma}\label{lem:marlinprot_ur}
   Let $\PCOM$ be a commitment of knowledge with security $\epsk(\secpar)$,
   $\epsbind(\secpar)$ and has unique response property with security
@@ -177,7 +177,7 @@ verify that \cref{eq:marlin_eq_2} holds.
   has to be incorrect and will be accepted with probability at most $\epss$.
 \end{proof}}
 
-\subsection{rewinding-based knowledge soundness}
+\subsection{Rewinding-Based Knowledge Soundness}
 \begin{lemma}\label{lem:marlinprot_ss}
 	Assume that an idealised $\marlinprot$ verifier fails with probability at most
 	$\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks $\dlog$ is
@@ -253,7 +253,7 @@ verify that \cref{eq:marlin_eq_2} holds.
 	
 \end{proof}
 
-\subsection{Trapdoor-less simulatability of Marlin}
+\subsection{Trapdoor-Less Simulatability of Marlin}
 \begin{lemma}
   \label{lem:marlin_hvzk}
   $\marlinprot$ is 2-programmable trapdoor-less zero-knowledge.
@@ -277,8 +277,8 @@ random oracle that on partial transcripts it returns the challenges picked by
 $\simulator$.
 \end{proof}
 
-\subsection{From rewinding-based knowledge soundness and unique response property to\COMMENT{ forking}
-  simulation extractability of $\marlinprotfs$}
+\subsection{From Rewinding-Based Knowledge Soundness and Unique Response Property to\COMMENT{ forking}
+  Simulation Extractability of $\marlinprotfs$}
 \begin{corollary}
   Assume that $\marlinprot$ is $\ur{1}$ with security
   $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and computational special sound

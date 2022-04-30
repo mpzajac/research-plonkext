@@ -42,7 +42,7 @@
 	\gtwo{\smallset{\bar{\chi}^i}_{i = -q_2}^{q_2}} \right)$ is the finalized challenge.
 \end{definition}
 
-\subsection{\sonic{} protocol rolled out}
+\subsection{\sonic{} Protocol Rolled-out}
 In this section we present $\sonic$'s constraint system and algorithms. Reader
 familiar with them may jump directly to the next section.
 
@@ -99,7 +99,7 @@ familiar with them may jump directly to the next section.
 
 
 
-\oursubsub{The constraint system}
+\oursubsub{The Constraint System}
 \label{sec:sonic_constraint_system}
 \cref{fig:pcoms} presents a variant of KZG~\cite{AC:KatZavGol10} polynomial commitment schemes used in \sonic{}. \sonic's system of constraints composes of three $\multconstr$-long vectors
 $\va, \vb, \vc$ which corresponds to left and right inputs to multiplication
@@ -151,7 +151,7 @@ Furthermore, the commitment system in $\sonic$ is designed such that it is
 infeasible for a $\ppt$ algorithm to commit to a polynomial with non-zero
 constant term.
 
-\oursubsub{Algorithms rolled out}
+\oursubsub{Algorithms Rolled out}
 \ourpar{$\sonic$ SRS generation $\kgen(\REL)$.} The SRS generating algorithm picks
 randomly $\alpha, \chi \sample \FF_p$ and outputs
 	\[
@@ -220,7 +220,7 @@ $\p{s}(u, z')$ that is recomputed by the verifier uses separate challenges $u$
 and $z'$. This enables the batching of many proof and outsourcing of this
 part of the proof to an untrusted helper.
 
-\subsection{Unique opening property of $\PCOMs$}
+\subsection{Unique Opening Property of $\PCOMs$}
 \begin{lemma}
 \label{lem:pcoms_unique_op}
 $\PCOMs$ has the unique opening property in the AGM. 
@@ -266,11 +266,11 @@ what is equivalent to
 	\label{eq:pcoms_idealised_check}
 \end{equation}
 Since $o(X)(X - z) \in \FF_p[X]$ then from the uniqueness of polynomial
-composition, there is only one $o(X)$ that fulfils the equation above.
+composition, there is only one $o(X)$ that fulfills the equation above.
 \qed
 \end{proof}
 
-\subsection{Unique response property}
+\subsection{Unique Response Property}
 The unique response property of $\sonicprotfs$ follows from the unique opening
 property of the used polynomial commitment scheme $\PCOMs$.
 \begin{lemma}
@@ -365,7 +365,7 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
   \qed
 \end{proof}
 
-\subsection{Updatable rewinding-based knowledge soundness}
+\subsection{Updatable Rewinding-Based Knowledge Soundness}
 \begin{lemma}
 	\label{lem:sonicprot_ss}
   $\sonicprotfs$ is $(2, \multconstr + \linconstr + 1))$-updatable rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
@@ -472,7 +472,7 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
 	$\epsldlog(\secpar)$.
 \end{proof}
 
-\subsection{Trapdoor-less simulatability of Sonic}
+\subsection{Trapdoor-Less Simulatability of Sonic}
 \begin{lemma}
 \label{lem:sonic_hvzk}
 $\sonic$ is 2-programmable trapdoor-less zero-knowledge.
@@ -535,8 +535,8 @@ $\sonic$ is 2-programmable trapdoor-less zero-knowledge.
   challenges that fits it.
 \end{remark}
 
-\subsection{From rewinding-based knowledge soundness and unique response property to \COMMENT{forking
-  }simulation extractability of $\sonicprotfs$}
+\subsection{From Rewinding-Based Knowledge Soundness and Unique Response Property to \COMMENT{forking
+  }Simulation Extractability of $\sonicprotfs$}
 Since \cref{lem:sonicprot_ur,lem:sonicprot_ss,lem:sonic_hvzk} hold, $\sonicprot$ is $\ur{1}$, computational special sound and trapdoor-less zero-knowledge. We now make use
 of \cref{thm:se} and show that $\sonicprotfs$ is \COMMENT{ forking }simulation-extractable as defined in \cref{def:simext}.
 
