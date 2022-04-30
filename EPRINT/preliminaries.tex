@@ -184,20 +184,22 @@ We elide public preprocessing of constraint specific proving and verification ke
 
 \subsection{Multi-message Fiat-Shamir compiled provers and verifiers}
 \markulf{29.04}{Make this clearer to not include challenges in $\pi$.}
-Given interactive prover and (public coin) verifier $\prover', \verifier'$ that exchange messages $(a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
+Given interactive prover and (public coin) verifier $\prover', \verifier'$ that exchange messages $\tzkproof = (a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
 $\prover'$ and $c_i$ comes from $\verifier'$, the $(2\mu + 1)$-message Fiat-Shamir heuristic defines non-interactive provers and verifiers $\prover, \verifier$ as follows:
 
 \begin{compactitem}
 	\item $\prover$ behaves as $\prover'$ except after sending message
 	  $a_i$, $i \in \range{1}{\mu}$, the prover does not wait for
 	  the message from the verifier but computes it locally setting $c_i
-	  = \ro(\zkproof[0..i])$, where $\zkproof[0..j] = (\inp, a_1, c_1, \ldots,
-	  a_{j - 1}, c_{j - 1}, a_j)$. (Importantly, $\zkproof[0..\mu + 1] =
-	  (\inp, \zkproof)$).\footnote{For Fiat--Shamir based SoK the message signed $m$ is added to $\inp$ before hashing.}
+	  = \ro(\tzkproof[0..i])$, where $\tzkproof[0..j] = (\inp, a_1, c_1, \ldots,
+	  a_{j - 1}, c_{j - 1}, a_j)$.\footnote{For Fiat--Shamir based SoK the message signed $m$ is added to $\inp$ before hashing.} 
+	  
+	  (Importantly, $\zkproof[0..\mu + 1] =
+	  (\inp, \zkproof)$).
 	\item $\verifier$ behaves as $\verifier'$ but does not provide
 	  challenges to the prover's proof. Instead it computes the
 	  challenges locally as $\prover$ does. Then it verifies the
-	  resulting transcript $\zkproof$ as the verifier $\verifier'$ would. 
+	  resulting transcript $\tzkproof$ as the verifier $\verifier'$ would. 
 	\end{compactitem}
 
 \iffalse
@@ -288,6 +290,16 @@ All our definitions and theorems are about non-interactive proof systems $\ps = 
 That is $\pi = (a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, with $c_i
 = \ro(\zkproof[0..i])$, where $\zkproof[0..j] = (\inp, a_1, c_1, \ldots,
 a_{j - 1}, c_{j - 1}, a_j)$.
+
+
+\markulf{30.04}{Do we really use this notation that much here? Lets adapt consistent notation with preliminaries and definition of Fiat--Shamir. Define notation there in detail call it here only brievely or by reference if needed.}
+ We use $\zkproof[i]$ to denote $i$-th prover's
+message. $\zkproof[i].\ch$ denotes the challenge that is given to the prover after
+$\zkproof[i]$, and $\zkproof[i..j]$ denotes all messages of the proof exchanged
+between $i$-th and $j$-th prover's messages, but not challenge
+$\zkproof[j].\ch$. When it is not explicitly stated, we denote the proven instance
+$\inp$ by $\zkproof[0]$. If the proof system starts with a message from the verifier,
+we denote it by $\zkproof[0].\ch$; else, we state that $\zkproof[0].\ch$ is empty.
 
 %\subsection{Non-malleability definitions for NIZKs}
 %\label{sec:simext_def}

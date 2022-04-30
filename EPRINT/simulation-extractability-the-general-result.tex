@@ -30,15 +30,7 @@ Fiat-Shamir compiled multi-message protocols.
 % uniformly random we conclude that we do not change any success probability by running
 % $\rdvur$ and $\bdv$ on $r$. 
 
-\markulf{30.04}{Do we really use this notation that much here? Lets adapt consistent notation with preliminaries and definition of Fiat--Shamir. Define notation there in detail call it here only brievely or by reference if needed.}
-Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs returned by the adversary
-and the simulator respectively. We use $\zkproof[i]$ to denote $i$-th prover's
-message. $\zkproof[i].\ch$ denotes the challenge that is given to the prover after
-$\zkproof[i]$, and $\zkproof[i..j]$ denotes all messages of the proof exchanged
-between $i$-th and $j$-th prover's messages, but not challenge
-$\zkproof[j].\ch$. When it is not explicitly stated, we denote the proven instance
-$\inp$ by $\zkproof[0]$. If the proof system starts with a message from the verifier,
-we denote it by $\zkproof[0].\ch$; else, we state that $\zkproof[0].\ch$ is empty.
+
 
 Without loss of generality, we assume that whenever the accepting proof contains a
 response to a challenge from a random oracle, then the adversary queried the oracle

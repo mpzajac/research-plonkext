@@ -52,6 +52,8 @@
 		Probability that $\event{E}$ happens is upper-bounded by $\epsur(\secpar)$. 
 	\end{lemma}
 	\begin{proof}
+	%Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs returned by the adversary and the simulator respectively.
+
 	We build an adversary $\advur^{\ro, \initU} (\secpar; r)$ that has access to the random oracle $\ro$ and update oracle $\initU$. $\advur$ uses $\advse$ to break the $\ur{k}$ property of $\psfs$. Namely, for randomness $r = (r_{\advse}, \rsim)$, $\advur^{\ro, \initU} (\secpar; r)$ runs $\advse^{\initU, \simOH, \simOP'}(\secparam; r_{\advse})$ internally and answers its oracle queries as $\advcss$ did.
 
 	When $\advse$ makes a proof $\zkproof$ for $\inp_{\advse}$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $Q_\ro$ until it finds $\zkproofs[0..k]$ such that $\zkproof_{\advse}[0..k] = \zkproofs[0..k]$ and a random oracle query $\zkproofs[k].\ch$ on $\zkproofs[0..k]$.	$\advur$ returns two proofs for $\inp_{\advse}$:
