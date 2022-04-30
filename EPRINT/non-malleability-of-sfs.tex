@@ -6,6 +6,7 @@
 
 \markulf{22.04}{I prefer the notation $Pr[\chi \gets \FF_q; \chi' \gets \adv( ...): \chi=\chi']$ as one can start reading at the left. But I will let that one go and will admit that it's a question of taste and it might be an aquired taste. }
 
+\section{Preliminaries}
 \begin{definition}[$(q_1, q_2)\mhyph\ldlog$ assumption]\label{def:ldlog}
   Let $\adv$ be a $\ppt$ adversary that gets as input
   $\gone{\chi^{-q_1}, \ldots, 1, \ldots, \chi^{q_1}}, \gtwo{\chi^{-q_2},
@@ -45,7 +46,6 @@
 In this section we present $\sonic$'s constraint system and algorithms. Reader
 familiar with them may jump directly to the next section.
 
-%\hamid{}{we should put the following figure \ref{fig:pcoms} somewhere in this section.}
  \begin{figure}[h!]
  \centering
  	\begin{pcvstack}[center,boxed]
@@ -57,8 +57,6 @@ familiar with them may jump directly to the next section.
              0}^{\multconstr}},\\
          \pcind \gtwo{\smallset{\chi^i, \alpha \chi^i}_{i =
              -\multconstr}^{\multconstr}}, \gtar{\alpha}\\
- 				%\markulf{03.11.2020}{} \\
- 			%	\hphantom{\pcind \p{o}_i(X) \gets \sum_{j = 1}^{t_i} \gamma_i^{j - 1} \frac{\p{f}_{i,j}(X) - \p{f}_{i, j}(z_i)}{X - z_i}}
  				\hphantom{\hspace*{5.5cm}}
  		}
 
@@ -103,8 +101,7 @@ familiar with them may jump directly to the next section.
 
 \oursubsub{The constraint system}
 \label{sec:sonic_constraint_system}
-\cref{fig:pcoms} presents a variant of KZG~\cite{AC:KatZavGol10} polynomial commitment schemes
-used in \sonic{}. \sonic's system of constraints composes of three $\multconstr$-long vectors
+\cref{fig:pcoms} presents a variant of KZG~\cite{AC:KatZavGol10} polynomial commitment schemes used in \sonic{}. \sonic's system of constraints composes of three $\multconstr$-long vectors
 $\va, \vb, \vc$ which corresponds to left and right inputs to multiplication
 gates and their outputs. It hence holds $\va \cdot \vb = \vc$.
 
@@ -256,12 +253,10 @@ We need to show that for every $\ppt$ adversary $\adv$ probability
 is at most negligible.
 
 As noted in \cite[Lemma 2.2]{EPRINT:GabWilCio19} it is enough to upper bound the
-probability of the adversary succeeding using the idealised verification
-equation---which considers equality between polynomials---instead of the real
-verification equation---which considers equality of the polynomials' evaluations.
+probability of the adversary succeeding against the ideal verifier, who verifies equality between polynomials.
 
 For a polynomial $f$, its degree upper bound $\maxconst$, evaluation point $z$,
-evaluation result $s$, and opening $\gone{o(X)}$ the idealised check verifies that
+evaluation result $s$, and opening $\gone{o(X)}$ the ideal verifier checks that
 \begin{equation}
   \alpha (X^{\dconst - \maxconst}f(X) \cdot X^{-\dconst + \maxconst} -  s) \equiv \alpha \cdot o(X) (X - z)\,,
 \end{equation}
@@ -275,36 +270,39 @@ composition, there is only one $o(X)$ that fulfils the equation above.
 \qed
 \end{proof}
 
-
 \subsection{Unique response property}
-The unique response property of $\sonicprot$ follows from the unique opening
+The unique response property of $\sonicprotfs$ follows from the unique opening
 property of the used polynomial commitment scheme $\PCOMs$.
 \begin{lemma}
 \label{lem:sonicprot_ur}
-If a polynomial commitment scheme $\PCOMs$ is evaluation binding with parameter
-$\epsbind (\secpar)$ and has unique openings property with parameter $\epsop(\secpar)$,
-$\sonicprotfs$ is $\epss (\secpar)$-sound and $(\dconst, \dconst)$-$\ldlog$ problem is
-$\epsldlog (\secpar)$-hard, then $\sonicprot$ is $\ur{1}$ against algebraic adversaries with security loss
+If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security loss $\epsbind (\secpar)$ and has unique openings property with security loss $\epsop(\secpar)$, $\sonicprotfs$ is $\epss (\secpar)$-sound and $(\dconst, \dconst)$-$\uldlog$ problem is $\epsuldlog (\secpar)$-hard, then $\sonicprotfs$ is $\ur{2}$ against algebraic adversaries with security loss
   \[
-    3 \cdot \epsop (\secpar) + 2 \cdot (\epsbind (\secpar) + \epss (\secpar) +
-    \epsdlog (\secpar)).
+    2 \cdot \epsbinding (\secpar) + \epsudlog (\secpar).
   \]
 \end{lemma}
 
-\changedm{
 \begin{proof}
-  Let $\adv$ be an algebraic adversary tasked to break the $\ur{1}$-ness of
-  $\sonicprotfs$. We show that the first prover's message determines, along with
-  the verifiers challenges, the rest of it.  This is done by game hops. In the games,
-  the adversary outputs two proofs $\zkproof^0$ and $\zkproof^1$ for the same statement.
+  Let $\adv$ be an algebraic adversary tasked to break the $\ur{2}$-ness of
+  $\sonicprotfs$. We note that to show $\ur{2}$-ness is is enough to show that the first prover's message determines, along with the verifiers challenges, the rest of it. 
+  % This is done by game hops. In the games, the adversary outputs two proofs 
+  We denote by $\zkproof^0$ and $\zkproof^1$ the two proofs for the same statement the adversary outputs.
   To distinguish polynomials and commitments which an honest prover sends in the
-  proof from the polynomials and commitments computed by the adversary we write the
-  latter using indices $0$ and $1$ (two indices as we have two transcripts), e.g.~to
-  describe the quotient polynomial provided by the adversary we write $\p{t}^0$ and
-  $\p{t}^1$ instead of $\p{t}$ as in the description of the protocol.
+  proof from the polynomials and commitments computed by the adversary we write the latter using indices $0$ and $1$ (two indices as we have two transcripts), e.g.~to describe the quotient polynomial provided by the adversary we write $\p{t}^0$ and   $\p{t}^1$ instead of $\p{t}$ as in the description of the protocol.
 
-  \ngame{0} In this game, the adversary additionally wins if it provides two transcripts that
-  match on all $5$ messages sent by the prover.
+  We note that since the unique response property requires from $\zkproof^{0}$ and $\zkproof^{1}$ that the first place they possibly differ is the $3$-th prover's message, then the challenge $z$, that is picked by the adversary after the $2$-rd message is the same in both transcripts. This challenge determines the evaluation point of polynomials $\p{r}(X, 1), \p{t}(X, y)$ which commitments are already sent.
+
+  In its third message, the prover provides evaluations of these polynomials along with their openings at $z$ or $yz$. Note that the adversary can output two acceptable proofs that differ on their third message only if it  manages to break evaluation binding of one of the opening. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the third message with probability at most $\epsbinding (\secpar) $. 
+
+  Similarly, in its fourth message, the prover provides an evaluation at $u$ of polynomial $\p{s}(X, y)$, an evaluation at $y$of $\p{s} (u, Y)$, and the corresponding openings. Note that the adversary can output two acceptable proofs that differ on their fourth message only if it manages to break evaluation binding of one of the opening. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $\epsbinding (\secpar) $. 
+
+  Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$, which is upper-bounded by $\epsudlog (\secpar)$.
+
+  By the union bound, the adversary is able to break the unique response property with probability upper bounded by $2 \cdot \epsbinding (\secpar) + \epsudlog (\secpar)$.
+\iffalse
+  \michals{30.4}{Old proof starts here}
+
+  \ncase{Game 0} 
+  \ngame{0} In this game, the adversary additionally wins if it provides two transcripts that match on all $5$ messages sent by the prover.
   In this game the adversary cannot win.
 
   \ngame{1} This game is identical to Game $\game{0}$ except that now the
@@ -363,53 +361,33 @@ $\epsldlog (\secpar)$-hard, then $\sonicprot$ is $\ur{1}$ against algebraic adve
     3 \cdot \epsop (\secpar) + 2 \cdot (\epsbind (\secpar) + \epss (\secpar) +
     \epsdlog (\secpar)).
   \]
+  \fi
   \qed
 \end{proof}
-}
 
-\COMMENT{
-  \michals{1.11}{Old proof below}
-\begin{proof}
-  Let $\adv$ be an adversary that breaks $\ur{1}$-ness of $\sonicprot$.  We
-  consider two cases, depending on which message $\adv$ is able to provide at
-  least two different outputs such that the resulting transcripts are
-  acceptable.  For the first case we show that $\adv$ can be used to break the
-  evaluation binding property of $\PCOMs$, while for the second case we show
-  that it can be used to break the unique opening property of $\PCOMs$.
-
-  The proof goes similarly to the proof of \cref{lem:plonkprot_ur} thus we
-  provide only draft of it here.  For $i$-th message ($i > 1$) the prover
-  either commits to some well-defined polynomials (deterministically), evaluates
-  these on randomly picked points, or shows that the evaluations were performed
-  correctly.  Obviously, for a committed polynomial $\p{p}$ evaluated at point
-  $x$ only one value $y = \p{p}(x)$ is correct. If the adversary was able to
-  provide two different values $y$ and $\tilde{y}$ that would be accepted as an
-  evaluation of $\p{p}$ at $x$ then the $\PCOMs$'s evaluation binding would be
-  broken.  Alternatively, if $\adv$ was able to provide two openings $\p{W}$ and
-  $\p{\tilde{W}}$ for $y = \p{p}(x)$ then the unique opening property would be
-  broken.
-%
-Hence the probability that $\adv$ breaks $\ur{1}$-property of $\PCOMs$ is
-upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$. 
-\qed
-
-\end{proof}
-}
-
-\subsection{Rewinding-based knowledge soundness}
+\subsection{Updatable rewinding-based knowledge soundness}
 \begin{lemma}
 	\label{lem:sonicprot_ss}
-	$\sonicprot$ is $(2, \multconstr + \linconstr + 1)$-computational special sound with security loss $(\epst (\accProb, \secpar), \epss(\secpar))$ against
-	algebraic adversaries, where
+  $\sonicprotfs$ is $(2, \multconstr + \linconstr + 1))$-updatable rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
-    \epst(\accProb, \secpar) \leq \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\,,
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,,
   \]
-  and
-	\[
-	  \epss(\secpar) \leq \epsid(\secpar) + \epsldlog(\secpar) \,.
-	\]
-	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\dconst, \dconst)$-$\ldlog$ assumption.
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\sonicprotfs$, and $\epsudlog(\secpar)$ is security of $(\maxdeg, \maxdeg)$-$\uldlog$ assumption.
 \end{lemma}
+
+% 	$\sonicprot$ is $(2, \multconstr + \linconstr + 1)$-computational special sound with security loss $(\epst (\accProb, \secpar), \epss(\secpar))$ against
+% 	algebraic adversaries, where
+%   \[
+%     \epst(\accProb, \secpar) \leq \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\,,
+%   \]
+%   and
+% 	\[
+% 	  \epss(\secpar) \leq \epsid(\secpar) + \epsldlog(\secpar) \,.
+% 	\]
+% 	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\dconst, \dconst)$-$\ldlog$ assumption.
+% \end{lemma}
+
+\michals{30.04}{Old proof begins here}
 \begin{proof}
 	Similarly as in the case of $\plonk$, the main idea of the proof is to show that an
   adversary who breaks rewinding-based knowledge soundness can be used to break a $\dlog$
