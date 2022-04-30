@@ -132,33 +132,42 @@ In the next section, we define security notions in the updatable setting by givi
 
 \begin{figure}[t!]
 	\centering
-	\fbox{
-		\begin{minipage}[t]{0.60\linewidth}
+	\centerline{\fbox{
+		\begin{minipage}[t]{1.20\linewidth}
+			\begin{pchstack}
 			\procedure{$\initU(\intent, \srs_n,\{\rho_j \}_{j=1}^n)$}{
 				\pcif \srs \neq \bot: \pcreturn \bot \\
 				\pcif (\intent = \setup): \\
 				\t (\srs',\rho') \leftarrow \kgen(\REL)\\
 				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
-				\t \pcreturn (\srs',\rho')\\
-				%
+				\t \pcreturn (\srs',\rho')}
+			%
+				\pchspace
+			\procedure{}{
+				\\
 				\pcif (\intent = \update): \\
 				\t b \gets \verifyCRS(\srs_n, \{\rho_j \}_{j=1}^{n})\\
 				\t \pcif (b=0): \pcreturn \bot \\
 				\t (\srs',\rho') \leftarrow \upd (\srs_n,\{\rho_j \}_{j=1}^n)\\
 				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
-		 	\pccomment{$Q_\srs = (Q^{(1)}_\srs, Q^{(2)}_\srs) \text{ s.t. }   Q^{(2)}_\srs \text{ contains the update proofs in } Q_\srs$ } \\
-				\t \pcreturn (\srs',\rho')\\
+		 	% \pccomment{$Q_\srs = (Q^{(1)}_\srs, Q^{(2)}_\srs) \text{ s.t. }   Q^{(2)}_\srs \text{ contains the update proofs in } Q_\srs$ } \\
+				\t \pcreturn (\srs',\rho')}
 				%
+			\pchspace
+			\procedure{}{
+				\\
 				\pcif (\intent = \final): \\
 				\t b \gets \verifyCRS(\srs_n,\{\rho_j \}_{j=1}^{n})\\
-				\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_j \}_i = \emptyset: \pcreturn \bot \\
+				\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_j \}_i = \emptyset: \\
+				\t \pcreturn \bot \\
 				\t 
 				\t \srs \gets \srs_n, \pcreturn \srs \\
 				%
 				\pcelse \pcreturn \bot
 			}
+			\end{pchstack}
 		\end{minipage}
-	}
+	}}
 	\caption{The oracle defines the notion of updatable SRS setup.} 
 		\label{fig:upd}
 \end{figure}
