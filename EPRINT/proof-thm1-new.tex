@@ -76,7 +76,7 @@
 
 	We denote by $\waccProb$ the probability that $\advcss$ outputs an acceptable proof. We note that $\waccProb$ is at most $\epsur (\secpar)$ far from the probability that $\advse$ outputs an acceptable proof. By the union bound the probability that $\advcss$ outputs an acceptable proof is at least $\waccProb \geq \accProb - \epsur (\secpar)$. \markulf{30.04}{I am ignorant. What is the role of the union bound here. Is this the same as up-to-bad reasoning?}
 
-	Since $\psfs$ is $\epscss (\secpar, \waccProb,q)$ computationally special sound, there is an extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of acceptable transcripts $\tree$ and fails to extract the witness with probability at most $\epscss (\secpar, \waccProb, q)$. The extractor $\extse$ outputs the witness with the same probability.
+	Since $\psfs$ is $\epscss (\secpar, \waccProb,q)$ computationally special sound\hamid{30.4}{We probably mean rewinding-based KS here. I think we need to also justify why we require this property with specific parameters $(1, \ldots, 1, n_{k}, \ldots, n_\mu)$ for the tree structure!}, there is an extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of acceptable transcripts $\tree$ and fails to extract the witness with probability at most $\epscss (\secpar, \waccProb, q)$. The extractor $\extse$ outputs the witness with the same probability.
 %
 	Thus $\epsse(\secpar,\accProb,q) = \epscss (\secpar, \waccProb,q) \leq \epscss(\secpar,\accProb - \epsur,q)$.
 	\qed

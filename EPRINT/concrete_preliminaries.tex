@@ -62,7 +62,7 @@ proofs. More precisely, we show that
 
 Analogously, idealised verifier can be defined for polynomial commitment schemes.
 
-\subsection{Dlog assumptions in standard and updatable setting}
+\subsection{Dlog Assumptions in Standard and Updatable setting}
 \label{dlog-upd}
 \label{sec:udlog_assumptions}
 
@@ -125,7 +125,7 @@ We show a reduction from $(q_1, q_2)\mhyph\dlog$ assumption to its variant in th
 	We construct a reduction algorithm $\reduction$ which uses an adversary $\adv$ on the $(q_1, q_2)\mhyph\udlog$ and construct an adversary on the $(q_1, q_2)\mhyph\dlog$. Specifically, $\reduction$ proceeds as follows: given a dlog instance $\Ch$ as input, it sets $\Ch$ as the initial (honestly generated) challenge. Once the dlog challenge in the updatable setting is finalized, it runs $\adv$ and obtains the answer $\chi'$. Let $\chi_\adv$ be the (possibly) partial discrete logarithm of the dlog instance corresponding to the adversary's update. This value can be computed by $\reduction$ by extracting from the update proof given by $\adv$. $\reduction$ now returns $\chi = \chi' \chi_\adv^{-1}$ as the discrete logarithm of $\Ch$.
 	\end{proof}
 
-  \oursubsub{Generalized forking lemma}
+  \oursubsub{Generalized Forking Lemma}
 Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general enough for our purpose as it is useful only for protocols where a witness can be extracted from just two transcripts. To be able to extract a witness from, say, an execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 1)$ valid proofs (where $\numberofconstrains$ is the number of constrains), $(\numberofconstrains+ 1)$ for $\sonicprot$, and $\numberofconstrains + 4$ for $\marlinprot$. Here we use a result by Attema et
 al.~\cite{EPRINT:AttFehKlo21}\footnote{An earlier versions had its own forking lemma generalization. Attema et al.\ has a better bound.}  which lower-bounds the probability of generating a tree of accepting transcripts $\tree$.
 
@@ -163,7 +163,7 @@ al.~\cite{EPRINT:AttFehKlo21}\footnote{An earlier versions had its own forking l
 \end{figure} 
 
 
-\subsection{Opening uniqueness of batched polynomial commitment openings}
+\subsection{Opening Uniqueness of Batched Polynomial Commitment Openings}
 
 %We say that $\PCOM$ has the unique opening property if the following holds:
 To show the unique response property required by our main theorem we show that the polynomial
@@ -418,7 +418,7 @@ used to show that property for $\PCOMp$.
 % 	\label{fig:pcoms}
 % \end{figure}
 
-\subsection{Unique opening property of $\PCOMp$}
+\subsection{Unique Opening Property of $\PCOMp$}
 Now, we show that the batched variant of the KZG polynomial
 commitment scheme that is used in \plonk{} and $\marlin{}$, has the unique opening property.
 \markulf{30.4}{Changed this to $\PCOMp$, hope that's correct. Could simplfy this, given that the body will be only about Plonk?}

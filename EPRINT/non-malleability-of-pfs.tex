@@ -1,7 +1,7 @@
 % !TEX root = main.tex
 % !TEX spellcheck = en-US
 
-\section{Non-Malleability of Plonk} 
+\section{Non-malleability of Plonk} 
 \label{sec:plonk}
 In this section, we show that $\plonkprotfs$ is simulation-extractable. Towards this end, we first use the unique opening property to show that
 $\plonkprot$ has the $\ur{3}$ property,
@@ -17,7 +17,7 @@ Given rewinding-based knowledge soundness, $\ur{3}$ and trapdoor-less zero knowl
 \newcommand{\vx}{\vec{x}}
 \newcommand{\vqc}{\vec{q_{C}}}
 
-\subsection{Plonk protocol description}
+\subsection{Plonk Protocol Description}
 \label{sec:plonk_explained}
 \oursubsub{The constraint system}
 Assume $\CRKT$ is a fan-in two arithmetic circuit,
@@ -285,7 +285,7 @@ The \plonk{} verifier works as follows
 \ncase{$\plonk$ simulator $\simulator_\chi(\srs, \td= \chi, \inp)$}\ 
 We describe the simulator in \cref{lem:plonk_tlzk}.
 
-\subsection{Unique response property}
+\subsection{Unique Response Property}
 \begin{lemma}
 	\label{lem:plonkprot_ur}
 	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening property with loss $\epsudlog (\secpar) + 2 \infrac{q}{\FF_p}$, let $(\noofc + 5, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries, who makes up to $q$ random oracle queries, with security loss $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\FF_p}$.
@@ -305,7 +305,7 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
   By the union bound, the adversary is able to break the unique response property with probabilty upper bounded by $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\FF_p}$.
   \end{proof}
 
-\subsection{Updatable rewinding-based knowledge soundness}
+\subsection{Updatable Rewinding-Based Knowledge Soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
   $\plonkprot$ is $(3, 3 \noofc + 1)$-updatable rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
@@ -357,7 +357,7 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
  \end{proof}
   
 
-\subsection{Trapdoor-less zero-knowledge of Plonk}
+\subsection{Trapdoor-Less Zero-Knowledge of Plonk}
 \begin{lemma}
   \label{lem:plonk_tlzk}
   Let $\plonkprot$ be zero knowledge with security $\epszk(\secpar)$. Then $\plonkprot$ is 3-programmable trapdoor-less zero-knowledge
@@ -414,7 +414,7 @@ at random as well.
 We argue about zero knowledge as usually. The property holds since the polynomials that has witness elements at their coefficients are randomized by at least two randomizers and are evaluated at at most two points; and the simulator computes all polynomials as an honest prover would.
 \end{proof}
 
-\subsection{Simulation extractability of~$\plonkprotfs$}
+\subsection{Simulation Extractability of~$\plonkprotfs$}
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss,lem:plonk_tlzk} hold, $\plonkprot$ is $\ur{3}$,
 computational special sound and trapdoor-less zero knowledge. We now make use of \cref{thm:se} and show that
 $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:updsimext}.

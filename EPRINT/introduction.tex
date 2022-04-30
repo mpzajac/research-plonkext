@@ -151,7 +151,7 @@ In the following, we denote the underlying interactive protocols by $\plonkprot$
 the resulting non-interactive proof systems by $\plonkprotfs$, $\sonicprotfs$,
 $\marlinprotfs$ respectively.
 
-\oursubsub{Rewinding-based knowledge soundness.}
+\oursubsub{Rewinding-Based Knowledge Soundness.}
 Following~\cite{INDOCRYPT:FKMV12}, one would have to show that for the protocols
 we consider a witness can be extracted from sufficiently many valid transcripts
 with a common prefix. The standard definition of special soundness for sigma
@@ -183,7 +183,7 @@ is, if extraction from such a tree fails, then we break an underlying
 computational assumption. Moreover, this should hold even against adversaries
 that contribute to the SRS generation.
 
-\oursubsub{Unique response property.}  Another property
+\oursubsub{Unique Response Property.}  Another property
 required to show USE is the unique response property~\cite{C:Fischlin05} which says
 that for $3$-message sigma protocols, all but the first messages sent by the prover are
 deterministic (intuitively, the prover can only employ fresh randomness in the first
@@ -199,7 +199,7 @@ for $k = 2$. Since Sonic and Marlin provers are deterministic from the second me
 on, they are $\ur{1}$.
 
 
-\oursubsub{Trapdoor-less zero-knowledge (TLZK).}  In order to invoke our main theorem
+\oursubsub{Trapdoor-Less Zero-Knowledge (TLZK).}  In order to invoke our main theorem
 on (Fiat--Shamir transformed) Plonk, Sonic and Marlin to conclude USE, we also need
 to show that simulators in these protocols produce proofs without relying on the
 knowledge of trapdoor. More precisely, for our reduction, we need simulators that rely

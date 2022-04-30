@@ -39,7 +39,7 @@
 	\label{fig:real_simulator_oracles}
 \end{figure}
 
-\subsection{Trapdoor-Less Zero Knowledge}
+\subsection{Trapdoor-Less Zero-Knowledge}
 
 
 
@@ -108,7 +108,7 @@ $\simulator$ can program the random oracle.
 We model this using the oracles from Fig.~\ref{fig:real_simulator_oracles} that provide a stateful wrapper around $\simulator$.
 $\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h)$ allows for programming the simulated $\ro$ and is available only to $\simulator$. $\simOP(x, w)$ and $\simOP'(x)$ call the simulator. The former is used in the zero-knowledge definition and requires the statement and witness to be in the relation, the latter is used in the simulation extraction definition and does not require a witness input.
 
-\begin{definition}[ ($k$-programmable) Trapdoor-less Zero-Knowledge Proof System]
+\begin{definition}[ ($k$-programmable) Trapdoor-Less Zero-Knowledge Proof System]
   \label{def:TLZK}
   Let 
   $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. 
@@ -141,7 +141,7 @@ and $\marlin$ is $1$-programmable TLZK. This follows directly from the proofs of
 their standard model zero-knowledge property in
 \cref{lem:plonk_tlzk,lem:sonic_hvzk,lem:marlin_hvzk}.
 
-\subsection{Simulation extractability}
+\subsection{Simulation Extractability}
 We note that the zero-knowledge property is only guaranteed for statements in the
 language.
 %; for simulator $\simulator = (\simOH, \simOP)$, $\simOP$
@@ -160,7 +160,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 %simulation-extractability is with respect to a simulator
 %$\simulator' = (\simOH, \simOP')$.
 %
-\begin{definition}[Simulation-extractable NIZK]
+\begin{definition}[Simulation Extractable NIZK]
 	\label{def:updsimext}
   \label{def:simext}
 	Let $\psni = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup. We say that
@@ -214,7 +214,7 @@ should be able to provide simulated proofs for false statements as well, we thus
   % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simOH$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
 \end{definition}
 
-\subsection{Unique-response protocols}
+\subsection{Unique Response Protocols}
 A technical hurdle identified by Faust et al.~\cite{INDOCRYPT:FKMV12} for proving
 simulation extraction via the Fiat--Shamir transformation is that the transformed
 proof system satisfies a unique response property. The original Fischlin's
@@ -262,7 +262,7 @@ Intuitively, a protocol is $\ur{k}$ if it is infeasible for a $\ppt$ adversary t
 We note that the definition above can be easily generalized to allow the adversary to program the oracle on more than just a single point. However, since all the protocols we analyse in this paper require only single-point programming, we opted for a simplified version of the definition.
   
 
-\subsection{Rewinding-based knowledge soundness}
+\subsection{Rewinding-Based Knowledge Soundness}
 
 Before giving the definition of rewinding-based knowledge soundness for NIZK proof systems compiled via the $2\mu + 1$-message FS transformation, we first recall the notion of a tree of transcripts.
 \begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
