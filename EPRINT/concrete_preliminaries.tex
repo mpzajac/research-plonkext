@@ -25,7 +25,7 @@ standard model and generic bilinear group model. In the AGM it is assumed that a
 adversary $\adv$ can output a group element $\gnone{y} \in \GRP$ if $\gnone{y}$ has
 been computed by applying group operations to group elements given to $\adv$ as
 input. It is further assumed, that $\adv$ knows how to ``build'' $\gnone{y}$ from
-that elements. More precisely, the AGM requires that whenever $\adv(\gnone{\vec{x}})$
+those elements. More precisely, the AGM requires that whenever $\adv(\gnone{\vec{x}})$
 outputs a group element $\gnone{y}$ then it also outputs $\vec{c}$ such that
 $\gnone{y} = \vec{c}^\top \cdot \gnone{\vec{x}}$. $\plonk$, $\sonic$ and $\marlin$
 have been shown secure using the AGM. An adversary that works in the AGM is called
@@ -36,7 +36,7 @@ $(\SRScer, \prover, \verifier, \simulator)$ be a proof system.
 % or a polynomial commitment
 % scheme\hamid{might be unclear as we are defining polynomial commitments as
 %   $(\kgen, \com, \open, \verify)$.}.
-Observe that the $\SRScer$ algorithm provides an SRS which can be interpreted as a set
+Observe that the $\SRScer$ algorithms provide an SRS which can be interpreted as a set
 of group representation of polynomials evaluated at trapdoor elements. That is, for a
 trapdoor $\chi$ the SRS contains $\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for
 some polynomials $\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. The verifier
@@ -62,7 +62,10 @@ proofs. More precisely, we show that
 
 Analogously, idealised verifier can be defined for polynomial commitment schemes.
 
-\subsection{Dlog assumptions}
+\subsection{Dlog assumptions in standard and updatable setting}
+\label{dlog-upd}
+\label{sec:udlog_assumptions}
+
 
 \label{sec:dlog_assumptions}
 \begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]\label{def:dlog}
@@ -75,36 +78,20 @@ Analogously, idealised verifier can be defined for polynomial commitment schemes
 	\]
 \end{definition}
 
-\markulf{22.04}{I prefer the notation $Pr[\chi \gets \FF_q; \chi' \gets \adv( ...): \chi=\chi']$ as one can start reading at the left. But I will let that one go and will admit that it's a question of taste and it might be an aquired taste. }
+ Since all our protocols and security notions are in the updatable setting, it is natural to define the dlog assumptions also in the updatable setting. That is, instead of being given a dlog challenge the adversary $\adv$ is given access to an update oracle as defined in~\cref{fig:upd}. The honestly generated SRS is set to be a dlog challenge and the update algorithm $\upd$ re-randomizing the challenge. We define this assumptions and show a reduction between the assumptions in the updatable and standard setting. 
 
-\begin{definition}[$(q_1, q_2)\mhyph\ldlog$ assumption]\label{def:ldlog}
-  Let $\adv$ be a $\ppt$ adversary that gets as input
-  $\gone{\chi^{-q_1}, \ldots, 1, \ldots, \chi^{q_1}}, \gtwo{\chi^{-q_2},
-    \ldots, 1, \ldots, \chi^{q_2}}$, for some randomly picked
-  $\chi \in \FF_p$, the assumption requires that $\adv$ cannot compute $\chi$. That is
-	\[
-    \condprob{\chi = \adv(\gone{\chi^{-q_1}, \ldots, 1, \ldots,
-        \chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \ldots, \chi^{q_2}
-      })}{\chi \sample \FF_p} \leq \negl.
-	\]
-\end{definition}
-
-
-\chb{\paragraph{Dlog assumptions in the updatable setting.}\label{dlog-upd} Since all our protocols and security notions are in the updatable setting, we may require to rely on Dlog assumptions that are defined in the updatable setting. That is, the adversary $\adv$ is not given as input a Dlog challenge, but access to an update oracle as defined in~\cref{fig:upd}, wherein an honestly generated SRS is defined as a Dlog challenge and the update algorithm $\upd$ works similarly as in the updatable schemes by re-randomizing the challenge. Here we define these assumptions and then show a reduction between the assumptions and their variant in the updatable setting. \textcolor{blue}{Note that for ease of clarity, with a slight abuse of notation, we here denote the SRS by $\Ch$. Further, to avoid cluttering notation, we do not make the proofs of correctly generating or updating the Dlog challenges explicit as they can be generated in a similar manner to the proofs in~\cref{fig:upd-scheme}.}
+Note that for clarity we here refer to the SRS by $\Ch$. Further, to avoid cluttering notation, we do not make the update proofs explicit. They are generated in the same manner as the proofs in~\cref{fig:upd-scheme}.
 	
 %The reduction $\reduction$ proceeds as follows: given the input dlog instance, $\reduction$ answers adversary's queries for the dlog updates and sets the honest update to be the input dlog instance. Once the dlog challenge in the updatable setting is finalized, it runs the adversary and obtains the answer $\chi'$. Let $\chi_1, \ldots, \chi_\ell$ be the partial discrete logarithms of dlog instances corresponding to the adversary's dlog updates. These values can be computed by $\reduction$ by extracting from the update proofs given by the adversary. $\reduction$ now returns  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$. The same argument holds for the $(q_1, q_2)\mhyph\ldlog$ assumption, ~\cref{def:ldlog}.
 
-\subsection{Dlog assumptions in the updatable setting}
-\label{sec:udlog_assumptions}
-
 \begin{definition}[$(q_1, q_2)\mhyph\udlog$ assumption]\label{def:udlog}
-	Let $\adv$ be a $\ppt$ adversary that gets oracle access to $\initU$ with internal algorithms $(\kgen_{\dlog}, \upd_{\dlog}, \verifyCRS)$, where $\kgen_{\dlog}$ and $\upd_{\dlog}$ are defined as follows:
+	Let $\adv$ be a $\ppt$ adversary that gets oracle access to $\initU$ with internal algorithms $(\kgen, \upd, \verifyCRS)$, where $\kgen$ and $\upd$ are defined as follows:
 	\begin{itemize}
-	\item $\kgen_\dlog(\secpar)$ samples $\chi \sample \FF_p$ and defines 
+	\item $\kgen(\secpar)$ samples $\chi \sample \FF_p$ and defines 
 		$\Ch:=(\gone{1, \chi, \ldots,
 			\chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}
 		})$.
-	\item $\upd_\dlog(\Ch, \{\rho_j \}_{j=1}^n)$ 
+	\item $\upd(\Ch, \{\rho_j \}_{j=1}^n)$ 
 	parses $\Ch$ as $\left( \gone{\smallset{A_i}_{i = 0}^{q_1}},
 	\gtwo{\smallset{B_i}_{i = 0}^{q_2}} \right)$, samples
 	$\widetilde{\chi} \sample \FF_p$, and defines
@@ -120,49 +107,26 @@ Analogously, idealised verifier can be defined for polynomial commitment schemes
 	\gtwo{\smallset{\bar{\chi}^i}_{i = 0}^{q_2}} \right)$ is the finalized challenge.
 \end{definition}
 
-\begin{definition}[$(q_1, q_2)\mhyph\uldlog$ assumption]\label{def:uldlog}
-	Let $\adv$ be a $\ppt$ adversary that gets oracle access to $\initU$ with internal algorithms $(\kgen_{\ldlog}, \upd_{\ldlog}, \verifyCRS)$, where $\kgen_{\ldlog}$ and $\upd_{\ldlog}$ are defined as follows:
-	\begin{itemize}
-		\item $\kgen_\ldlog(\secpar)$ samples $\chi \sample \FF_p$ and defines 
-		$\Ch:=(\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots,
-			\chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \chi, \ldots, \chi^{q_2}
-		})$.
-		\item $\upd_\ldlog(\Ch, \{\rho_j \}_{j=1}^n)$ 
-		parses $\Ch$ as $\left( \gone{\smallset{A_i}_{i = -q_1}^{q_1}},
-		\gtwo{\smallset{B_i}_{i = -q_2}^{q_2}} \right)$, samples
-		$\widetilde{\chi} \sample \FF_p$, and defines
-		$\widetilde{\Ch} := 
-		\left( \gone{\smallset{\widetilde{\chi}^i A_i}_{i = -q_1}^{q_1}},
-		\gtwo{\smallset{\widetilde{\chi}^i B_i}_{i = -q_2}^{q_2}} \right)$.
-	\end{itemize}
-	Then
-	\[
-	\prob{\bar{\chi} \gets \adv^{\initU}(\secpar)} \leq \negl,
-	\]
-	where $\left( \gone{\smallset{\bar{\chi}^i}_{i = -q_1}^{q_1}},
-	\gtwo{\smallset{\bar{\chi}^i}_{i = -q_2}^{q_2}} \right)$ is the finalized challenge.
-\end{definition}
 
-\chb{\begin{remark}[Single adversarial updates after an honest setup.]\label{rem:upd}
+
+\begin{remark}[Single adversarial updates after an honest setup.]\label{rem:upd}
 	One can consider a slightly different model of setup, where the adversary is given an initial honestly-generated SRS and is then allowed to perform a malicious update in one-shot fashion.
-	As shown by Groth
-	et al. in~\cite{C:GKMMM18}, the two definitions are equivalent for the class of SNARKs in this work and thus we use this simpler definition to show our security proofs in the updatable setting.
-\end{remark}}
+	Groth
+	et al.\ show in~\cite{C:GKMMM18} that the two definitions are equivalent for polynomial commitment based SNARKs. We use this simpler definition in the following reduction.
+\end{remark}
 
-We show a reduction from $(q_1, q_2)\mhyph\dlog$ assumption to its variant in the updatable setting according to the update model in~\cref{rem:upd}. We omit showing the reduction $(q_1, q_2)\mhyph\ldlog \Rightarrow (q_1, q_2)\mhyph\uldlog$ as it can be done similarly in a straightforward manner.
+We show a reduction from $(q_1, q_2)\mhyph\dlog$ assumption to its variant in the updatable setting (with single adversarial update). 
+%We omit showing the reduction $(q_1, q_2)\mhyph\ldlog \Rightarrow (q_1, q_2)\mhyph\uldlog$ as it can be done similarly in a straightforward manner.
 \begin{lemma}
 	$(q_1, q_2)\mhyph\dlog \Rightarrow (q_1, q_2)\mhyph\udlog$.
 	\end{lemma}
 \begin{proof}
-	We construct a reduction algorithm $\reduction$ which uses an adversary $\adv$ on the $(q_1, q_2)\mhyph\udlog$ and construct an adversary on the $(q_1, q_2)\mhyph\dlog$. Specifically, $\reduction$ proceeds as follows: given a dlog instance $\Ch$ as input, it sets $\Ch$ as the initial (honestly generated) challenge \sout{and answers adversary's queries for the dlog updates by internally running $\upd_{\dlog}$ in Definition 5.} Once the dlog challenge in the updatable setting is finalized, it runs $\adv$ and obtains the answer $\chi'$. Let \sout{$\chi_1, \ldots, \chi_\ell$} $\chi_\adv$ be the (possibly) partial discrete logarithm of the dlog instance corresponding to the adversary's update. This value can be computed by $\reduction$ by extracting from the update proof given by $\adv$. $\reduction$ now returns  
-	\sout{$\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$} $\chi = \chi' \chi_\adv^{-1}$ as the discrete logarithm of $\Ch$. %The same argument holds for the $(q_1, q_2)\mhyph\ldlog$ assumption, ~\cref{def:ldlog}.
+	We construct a reduction algorithm $\reduction$ which uses an adversary $\adv$ on the $(q_1, q_2)\mhyph\udlog$ and construct an adversary on the $(q_1, q_2)\mhyph\dlog$. Specifically, $\reduction$ proceeds as follows: given a dlog instance $\Ch$ as input, it sets $\Ch$ as the initial (honestly generated) challenge. Once the dlog challenge in the updatable setting is finalized, it runs $\adv$ and obtains the answer $\chi'$. Let $\chi_\adv$ be the (possibly) partial discrete logarithm of the dlog instance corresponding to the adversary's update. This value can be computed by $\reduction$ by extracting from the update proof given by $\adv$. $\reduction$ now returns $\chi = \chi' \chi_\adv^{-1}$ as the discrete logarithm of $\Ch$.
 	\end{proof}
-}
-  %\michals{24.03}{I think we should write a formal proof for the reduction}
 
   \oursubsub{Generalized forking lemma}
-Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general enough for our purpose as it is useful only for protocols where a witness can be extracted from just two transcripts. To be able to extract a witness from, say, an execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 1)$ valid proofs (where $\numberofconstrains$ is the number of constrains), $(\numberofconstrains+ 1)$ for $\sonicprot$, and $\numberofconstrains + 4$ for $\marlinprot$. Here we use Attema et
-al.~\cite{EPRINT:AttFehKlo21} result \footnote{The earlier versions of this paper used another generalization of the forking lemma provided by the paper authors. Change to Attema's et al.~result was due to better extraction success probability bound.}  which lower-bounds the probability of generating a tree of accepting transcripts $\tree$, which allows to extract a witness.
+Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general enough for our purpose as it is useful only for protocols where a witness can be extracted from just two transcripts. To be able to extract a witness from, say, an execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 1)$ valid proofs (where $\numberofconstrains$ is the number of constrains), $(\numberofconstrains+ 1)$ for $\sonicprot$, and $\numberofconstrains + 4$ for $\marlinprot$. Here we use a result by Attema et
+al.~\cite{EPRINT:AttFehKlo21}\footnote{An earlier versions had its own forking lemma generalization. Attema et al.\ has a better bound.}  which lower-bounds the probability of generating a tree of accepting transcripts $\tree$.
 
   \begin{lemma}[Proposition 2~\cite{EPRINT:AttFehKlo21}]\label{lem:attema}
 	Let $N = n_1 \cdot \cdots \cdot n_\mu$ and $p = 2^{\Omega(\secpar)}$. Let $\epserr(\secpar) = 1 - \prod_{i=1}^{\mu}\left(1 - \frac{n_i - 1}{p}\right)$.

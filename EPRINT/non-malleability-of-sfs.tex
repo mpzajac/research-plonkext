@@ -3,6 +3,44 @@
 
 \section{Non-malleability of $\sonicprotfs$}
 \label{sec:sonic}
+
+\markulf{22.04}{I prefer the notation $Pr[\chi \gets \FF_q; \chi' \gets \adv( ...): \chi=\chi']$ as one can start reading at the left. But I will let that one go and will admit that it's a question of taste and it might be an aquired taste. }
+
+\begin{definition}[$(q_1, q_2)\mhyph\ldlog$ assumption]\label{def:ldlog}
+  Let $\adv$ be a $\ppt$ adversary that gets as input
+  $\gone{\chi^{-q_1}, \ldots, 1, \ldots, \chi^{q_1}}, \gtwo{\chi^{-q_2},
+    \ldots, 1, \ldots, \chi^{q_2}}$, for some randomly picked
+  $\chi \in \FF_p$, the assumption requires that $\adv$ cannot compute $\chi$. That is
+	\[
+    \condprob{\chi = \adv(\gone{\chi^{-q_1}, \ldots, 1, \ldots,
+        \chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \ldots, \chi^{q_2}
+      })}{\chi \sample \FF_p} \leq \negl.
+	\]
+\end{definition}
+
+\begin{definition}[$(q_1, q_2)\mhyph\uldlog$ assumption]\label{def:uldlog}
+	Let $\adv$ be a $\ppt$ adversary that gets oracle access to $\initU$ with internal algorithms $(\kgen_{\ldlog}, \upd_{\ldlog}, \verifyCRS)$, where $\kgen_{\ldlog}$ and $\upd_{\ldlog}$ are defined as follows:
+	\begin{itemize}
+		\item $\kgen_\ldlog(\secpar)$ samples $\chi \sample \FF_p$ and defines 
+		$\Ch:=(\gone{\chi^{-q_1}, \ldots, 1, \chi, \ldots,
+			\chi^{q_1}}, \gtwo{\chi^{-q_2}, \ldots, 1, \chi, \ldots, \chi^{q_2}
+		})$.
+		\item $\upd_\ldlog(\Ch, \{\rho_j \}_{j=1}^n)$ 
+		parses $\Ch$ as $\left( \gone{\smallset{A_i}_{i = -q_1}^{q_1}},
+		\gtwo{\smallset{B_i}_{i = -q_2}^{q_2}} \right)$, samples
+		$\widetilde{\chi} \sample \FF_p$, and defines
+		$\widetilde{\Ch} := 
+		\left( \gone{\smallset{\widetilde{\chi}^i A_i}_{i = -q_1}^{q_1}},
+		\gtwo{\smallset{\widetilde{\chi}^i B_i}_{i = -q_2}^{q_2}} \right)$.
+	\end{itemize}
+	Then
+	\[
+	\prob{\bar{\chi} \gets \adv^{\initU}(\secpar)} \leq \negl,
+	\]
+	where $\left( \gone{\smallset{\bar{\chi}^i}_{i = -q_1}^{q_1}},
+	\gtwo{\smallset{\bar{\chi}^i}_{i = -q_2}^{q_2}} \right)$ is the finalized challenge.
+\end{definition}
+
 \subsection{\sonic{} protocol rolled out}
 In this section we present $\sonic$'s constraint system and algorithms. Reader
 familiar with them may jump directly to the next section.
