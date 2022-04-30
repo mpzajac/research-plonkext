@@ -197,7 +197,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 	(\inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'
 		} (1^\secpar; r) \\
 	& \wit \gets \ext_\se (\srs, \advse, r,
-	Q, Q_\ro, Q_\srs) 
+	\Qsim, \Qro, \Qsrs) 
 	\end{aligned}
 } \leq \epsse(\secpar,\accProb, q)
 	\]
@@ -209,8 +209,8 @@ should be able to provide simulated proofs for false statements as well, we thus
 	%$\accProb \geq \nu$. 
 	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
 	$\inp$ is an instance queried to $\simOP'$ by the adversary and
-	$\zkproof$ is the simulator's answer. List $Q_\ro$ contains all $\advse$'s
-	queries to $\simOH$ and the (simulated) random oracle's answers, $\abs{Q_\ro}\leq q$, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
+	$\zkproof$ is the simulator's answer. List $\Qro$ contains all $\advse$'s
+	queries to $\simOH$ and the (simulated) random oracle's answers, $\abs{\Qro}\leq q$, and list $\Qsrs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
   % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simOH$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
 \end{definition}
 
@@ -366,7 +366,7 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	\begin{aligned}
 	& 	r \sample \RND{\advcss}, \\
 	& 	(\srs, \inp, \cdot) \gets \advcss^{\initU, \ro} (1^\secpar; r)\\
-	&  	\tree \gets \tdv((\srs, \advcss, r,Q_\ro, Q_\srs)),
+	&  	\tree \gets \tdv((\srs, \advcss, r,\Qro, \Qsrs)),
 	\wit \gets \extcss(\tree)
 	\end{aligned}\right.
 	\right] \leq \epscss(\secpar,\accProb, q).

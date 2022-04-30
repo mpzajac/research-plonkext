@@ -10,7 +10,7 @@
 \end{theorem}
 
 \begin{proof}	
-	Let $(\inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'}(r_{\advse})$ be the USE adversary. We construct extractor $\extse (\srs, \advse, r_{\advse}, \Qro, \Qsrs, \Qsim)$ that outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with high probability. To that end we define an algorithm $\advcss^{\initU,\ro}(r)$ against rewinding-based knowledge soundness of $\psfs$ that runs internally $\advse^{\initU, \simOH, \simOP'}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$ with $\rsim$ the randomness that will be used to simulate $\simOP'$. 
+	Let $(\inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'}(r_{\advse})$ be the USE adversary. We construct extractor $\extse (\srs, \advse, r_{\advse}, \Qsim, \Qro, \Qsrs)$ that outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with high probability. To that end we define an algorithm $\advcss^{\initU,\ro}(r)$ against rewinding-based knowledge soundness of $\psfs$ that runs internally $\advse^{\initU, \simOH, \simOP'}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$ with $\rsim$ the randomness that will be used to simulate $\simOP'$. 
 
 	The code of $\advcss^{\initU,\ro}(r)$ hardcodes $\Qsim$ such that it does not use any randomness for proofs in $\Qsim$ as long as statements are queried in order. In this case it simple returns the proof from $\Qsim$ but nevertheless queries $\simOHprog$ on it's $k$-th challenge. While it is hard to construct such an adversary without knowing $\Qsim$, it clearly exists and $\extse$ has the necessary inputs to construct $\advcss$. This hardcoding guarantees that $\advcss$ returns the same $\inp,\zkproof$ as the $\advse$ of the experiment.
 	%
@@ -62,7 +62,7 @@
 	We build an adversary $\advur^{\initU, \ro} (\secpar; r)$ that has access to the random oracle $\ro$ and update oracle $\initU$. $\advur$ uses $\advcss$ to break the $\ur{k}$ property of $\psfs$. 
 	%Namely, for randomness $r = (r_{\advse}, \rsim)$, $\advur^{\ro, \initU} (\secpar; r)$ runs $\advse^{\initU, \simOH, \simOP'}(\secparam; r_{\advse})$ internally and answers its oracle queries as $\advcss$ did.
 
-	When $\advcss$ outputs a proof $\zkproof$ for $\inp$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $Q_\ro$ until it finds $\tzkproofs[0..k]$ such that $\tzkproof[0..k] = \tzkproofs[0..k]$ and a programmed random oracle query $\tzkproofs[k].\ch$ on $\tzkproofs[0..k]$.	$\advur$ returns two proofs for $\inp$:
+	When $\advcss$ outputs a proof $\zkproof$ for $\inp$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $\Qro$ until it finds $\tzkproofs[0..k]$ such that $\tzkproof[0..k] = \tzkproofs[0..k]$ and a programmed random oracle query $\tzkproofs[k].\ch$ on $\tzkproofs[0..k]$.	$\advur$ returns two proofs for $\inp$:
 		\begin{align*}
 		\zkproof_1 = \zkproofs =  (\zkproofs[1..k], \zkproofs[k + 1..\mu + 1])\\
 		\zkproof_2 = \zkproof \;\;\;\;\, = (\zkproofs[1..k], \;\;\;\;\zkproof[k + 1..\mu + 1])
