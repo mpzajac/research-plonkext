@@ -3,18 +3,23 @@
 \begin{theorem}[Simulation-extractable multi-message protocols]
 	\label{thm:se}
 	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. If $\psfs$ has the
-	$k$-\emph{updatable unique response property} with security loss $\epsur(\secpar)$, 
-	\emph{updatable $k$-programmable trapdoor-less zero knowledge}, and $(1, \ldots, 1, n_{k}, \ldots, n_\mu)$-\emph{updatable rewinding-based knowledge soundness} with security loss $\epscss(\secpar)$. 
+	$k$-\emph{updatable unique response property} with security loss $\epsur$, is
+	\emph{updatable $k$-programmable trapdoor-less zero knowledge}, and $(1, \ldots, 1, n_{k}, \ldots, n_\mu)$-\emph{updatable rewinding-based knowledge sound} with security loss $\epscss$; 
 	
-	Then $\psfs$ is \emph{updatable simulation-extractable} with security loss $\epsse(\secpar,\accProb,q) \leq \epscss(\secpar,\accProb - \epsur,q)$ against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$.
+	Then $\psfs$ is \emph{updatable simulation-extractable} with security loss $\epsse(\secpar,\accProb,q) \leq \epscss(\secpar,\accProb - \epsur(\secpar),q)$ against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$.
 \end{theorem}
 
 \begin{proof}	
-	Let $(\srs, \inp, \wit) \gets \advse^{\initU, \simOH, \simOP'}(r_{\advse})$ be the USE adversary. We construct an extractor $\extse (\srs, \advse, r_{\advse}, \Qro, \Qsrs, \Qsim)$ that outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with high probability. To that end we define an algorithm $\advcss^{\initU,\ro}(r)$ against rewinding-based knowledge soundness of $\psfs$ that runs internally $\advse^{\initU, \simOH, \simOP'}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$. Eventually, we use the rewinding-based knowledge soundness extractor $\extcss$ on $\advcss$ to extract the witness.
+	Let $(\srs, \inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'}(r_{\advse})$ be the USE adversary. We construct extractor $\extse (\srs, \advse, r_{\advse}, \Qro, \Qsrs, \Qsim)$ that outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with high probability. To that end we define an algorithm $\advcss^{\initU,\ro}(r)$ against rewinding-based knowledge soundness of $\psfs$ that runs internally $\advse^{\initU, \simOH, \simOP'}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$ with $\rsim$ the randomness that will be used to simulate $\simOP'$. 
+
+	The code of $\advcss^{\initU,\ro}(r)$ hardcodes $r$, $\Qro$ and $\Qsim$ such that on randomness $r=(\cdot,r_{\advse})$ and random oracle replies $\Qro$, it does not use any randomness for simulation but deterministically returns proofs from $\Qsim$ but nevertheless queries $\simOHprog$. While it is hard to construct such an adversary without knowing $r$, $\Qro$ and $\Qsim$, it clearly exists and $\extse$ has all the necessary ingredients to construct $\advcss$.
+	%
+	Eventually, $\extse$ uses the extractor $\extcss$ for $\advcss$ to extract the witness for $\inp$. $\extcss$ is guaranteed to exist (and be successful) by rewinding-based knowledge soundness. By this high-level argument we also show existence of $\extse$.
 	
+	We now give the details of the simulation that guarantees that $\advcss$ is successful whenever $\advse$ is---except with a small security loss that we will bound late:
 	Since $\advcss$ runs $\advse$ internally, it needs to take care of $\advse$'s oracle queries.
 	$\advse$'s queries to the update oracle $\initU$ are passed to $\advcss$'s oracle $\initU$ and the answers from $\advcss$'s $\initU$ oracle are returned to $\advse$.
-	Queries to the simulator $\simOP'$ are simulated by $\advcss$ internally by running the $\simulator$ algorithm employing the $\rsim$ part of $\advcss$'s randomness. $\simulator$ requires access to oracles $\simOH$ and $\simOP$. To compute a challenge honestly, $\simulator$ calls $\simOH$. To program a challenge it calls $\simOHprog$. Both of these oracles are again simulated by $\advcss$ internally, cf.~\cref{fig:simulator_oracles}, this time using $\advcss$'s $\ro$ oracle. Importantly, all challenges in simulated proofs, up to round $k$ are computed honestly, i.e. $\zkproof_{i}.\ch = \simOH(\zkproof[0..i])$, for $i < k$.
+	(Non-hardcoded) queries to the simulator $\simOP'$ are internally simulated by $\advcss$  by running the $\simulator$ algorithm employing the $\rsim$ part of $\advcss$'s randomness. $\simulator$ requires access to oracles $\simOH$ and $\simOP$. To compute a challenge honestly, $\simulator$ calls $\simOH$. To program a challenge it calls $\simOHprog$. Both of these oracles are again simulated by $\advcss$ internally, cf.~\cref{fig:simulator_oracles}, this time using $\advcss$'s $\ro$ oracle. Importantly, all challenges in simulated proofs, up to round $k$ are computed honestly, i.e. $\tzkproof[i].\ch = \simOH(\tzkproof[0..i])$, for $i < k$.
 	%
 	$\advse$'s queries to $\simOH$ are not programmed, but passed on to $\ro$. 
 
@@ -46,7 +51,7 @@
 	\end{figure}	
 %
 
-	Eventually, $\advse$ outputs a proof $(\inp, \zkproof)$ which $\advcss$ outputs as well as long as $\zkproof[0..i] \notin \Qprog$, $i\in[1,\mu]$. This models that the proof output by $\advcss$ must not contain any programmed queries as such a proof is not acceptable w.r.t~$\ro$. If $\advse$ outputs a proof that does contain programmed challenges, then $\advcss$ aborts. We denote this event by $\event{E}$.
+	Eventually, $\advse$ outputs a proof $(\inp, \zkproof)$ which $\advcss$ outputs as well as long as $\tzkproof[0..i] \notin \Qprog$, $i\in[1,\mu]$. This models that the proof output by $\advcss$ must not contain any programmed queries as such a proof is not acceptable w.r.t~$\ro$. If $\advse$ outputs a proof that does contain programmed challenges, then $\advcss$ aborts. We denote this event by $\event{E}$.
 	
 	\begin{lemma}
 		Probability that $\event{E}$ happens is upper-bounded by $\epsur(\secpar)$. 
@@ -54,15 +59,15 @@
 	\begin{proof}
 	%Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs returned by the adversary and the simulator respectively.
 
-	We build an adversary $\advur^{\ro, \initU} (\secpar; r)$ that has access to the random oracle $\ro$ and update oracle $\initU$. $\advur$ uses $\advse$ to break the $\ur{k}$ property of $\psfs$. Namely, for randomness $r = (r_{\advse}, \rsim)$, $\advur^{\ro, \initU} (\secpar; r)$ runs $\advse^{\initU, \simOH, \simOP'}(\secparam; r_{\advse})$ internally and answers its oracle queries as $\advcss$ did.
+	We build an adversary $\advur^{\initU, \ro} (\secpar; r)$ that has access to the random oracle $\ro$ and update oracle $\initU$. $\advur$ uses $\advcss$ to break the $\ur{k}$ property of $\psfs$. 
+	%Namely, for randomness $r = (r_{\advse}, \rsim)$, $\advur^{\ro, \initU} (\secpar; r)$ runs $\advse^{\initU, \simOH, \simOP'}(\secparam; r_{\advse})$ internally and answers its oracle queries as $\advcss$ did.
 
-	When $\advse$ makes a proof $\zkproof$ for $\inp_{\advse}$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $Q_\ro$ until it finds $\zkproofs[0..k]$ such that $\zkproof_{\advse}[0..k] = \zkproofs[0..k]$ and a random oracle query $\zkproofs[k].\ch$ on $\zkproofs[0..k]$.	$\advur$ returns two proofs for $\inp_{\advse}$:
+	When $\advcss$ outputs a proof $\zkproof$ for $\inp$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $Q_\ro$ until it finds $\tzkproofs[0..k]$ such that $\tzkproof[0..k] = \tzkproofs[0..k]$ and a programmed random oracle query $\tzkproofs[k].\ch$ on $\tzkproofs[0..k]$.	$\advur$ returns two proofs for $\inp$:
 		\begin{align*}
-		\zkproof_1 = (\zkproofs[1..k],
-		\zkproofs[k].\ch, \zkproofs[k + 1..\mu + 1])\\
-		\zkproof_2 = (\zkproofs[1..k],
-		\zkproofs[k].\ch, \zkproof_{\advse}[k + 1..\mu + 1])
+		\zkproof_1 = \zkproofs =  (\zkproofs[1..k], \zkproofs[k + 1..\mu + 1])\\
+		\zkproof_2 = \zkproof \;\;\;\;\, = (\zkproofs[1..k], \;\;\;\;\zkproof[k + 1..\mu + 1])
 		\end{align*}
+		and the challenge $\tzkproofs[k].\ch$
 
 	Importantly, both proofs are acceptable w.r.t~the unique response property verifier. The first, since it is a correctly computed simulated proof and the unique response property definition allows any challenges at $k$. The latter, since it is an acceptable proof produced by the adversary.
 	We have that $\zkproof_1 \neq \zkproof_2$ as otherwise $\advse$ does not win the simulation extractability game as $\zkproof_2 \in Q$. On the other hand, if the proofs are different, then $\advur$ breaks $\ur{k}$-ness of $\psfs$. This happens only with  probability $\epsur(\secpar)$. 
