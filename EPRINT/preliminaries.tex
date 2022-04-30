@@ -191,13 +191,13 @@ $\prover'$ and $c_i$ comes from $\verifier'$, the $(2\mu + 1)$-message Fiat-Sham
 	\item $\prover$ behaves as $\prover'$ except after sending message
 	  $a_i$, $i \in \range{1}{\mu}$, the prover does not wait for
 	  the message from the verifier but computes it locally setting $c_i
-	  = \ro(\zkproof[0..i])$, where $\zkproof[0..j] = (\inp, a_1, c_1, \ldots,
-	  a_{j - 1}, c_{j - 1}, a_j)$. (Importantly, $\zkproof[0..\mu + 1] =
+	  = \ro(\zkproof[0..i])$, where $\zkproof[0..j] = (\inp, a_1, \ldots,
+	  a_{j - 1}, , a_j)$. (Importantly, $\zkproof[0..\mu + 1] =
 	  (\inp, \zkproof)$).\footnote{For Fiat--Shamir based SoK the message signed $m$ is added to $\inp$ before hashing.}
 	\item $\verifier$ behaves as $\verifier'$ but does not provide
 	  challenges to the prover's proof. Instead it computes the
 	  challenges locally as $\prover$ does. Then it verifies the
-	  resulting transcript $\zkproof$ as the verifier $\verifier'$ would. 
+	  resulting transcript $\zkproof$ as the verifier $\verifier'$ would. We note that since the verifier can compute the challenges by querying the random oracle, they do not need to be sent by the prover.
 	\end{compactitem}
 
 \iffalse
@@ -285,7 +285,7 @@ defined as follows:
 Let $\SRScer= (\kgen,\upd, \verifyCRS)$ be the algorithm of an updatable SRS ceremony.
 All our definitions and theorems are about non-interactive proof systems $\ps = (\SRScer, \prover, \verifier, \simulator)$ compiled via the $(2\mu + 1)$-message FS transform. 
 %
-That is $\pi = (a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, with $c_i
+That is $\pi = (a_1, \ldots, a_{\mu}, a_{\mu + 1})$, with $c_i
 = \ro(\zkproof[0..i])$, where $\zkproof[0..j] = (\inp, a_1, c_1, \ldots,
 a_{j - 1}, c_{j - 1}, a_j)$.
 
