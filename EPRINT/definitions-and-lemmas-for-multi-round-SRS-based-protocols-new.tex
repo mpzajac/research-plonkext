@@ -120,7 +120,7 @@ $\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h
     \eps_1 (\secpar)=  \Pr \left[\adv^{\initU, \simOH, \simOP} (\secparam) \right].
   \end{align*}
   
-  If $\epszk(\secpar)$ is negligible, we say $\ps_{\fs}$ is trapdoor-less zero-knowledge. Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if  $\simulator$ before returning a proof $\pi$ only calls $\simulator\oracleo.\prog$ on $(\pi[0..k],h)$. That is, it only programs the $k$th message.
+  If $\epszk(\secpar)$ is negligible, we say $\ps_{\fs}$ is trapdoor-less zero-knowledge. Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if  $\simulator$ before returning a proof $\pi$ only calls $\simulator\oracleo.\prog$ on $(\tzkproof[0..k],h)$. That is, it only programs the $k$-th message.
   \end{definition}
 
   
@@ -243,8 +243,8 @@ We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\e
 		\left.
 	\begin{aligned}
 	& \zkproof \neq \zkproof', \zkproof[0..k] = \zkproof'[0..k],  \\
-	& \verifier' (\srs, \inp, \zkproof) =
-	\verifier' (\srs, \inp, \zkproof') = 1  \\
+	& \verifier' (\srs, \inp, \zkproof,c) =
+	\verifier' (\srs, \inp, \zkproof',c) = 1  \\
 	\end{aligned}
 	\,\right|\,
 	\begin{aligned}
@@ -252,30 +252,31 @@ We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\e
 	\end{aligned}
 	\right] \leq \epsur(\secpar) 
 	\]
-	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1, \dots, a_\mu,a_{\mu+1}))$ behaves as $\verifier (\srs, \inp, \zkproof)$ except for the $k$-th challenge it sets $\ro(\pi[0..k]) = c$. That is, it allows the $k$-th challenge to be programmed by $\adv$. 
+	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1, \dots, a_\mu,a_{\mu+1}))$ behaves as $\verifier (\srs, \inp, \zkproof)$ except for the $k$-th challenge it uses $c$ instead of calling $\ro(\tzkproof[0..k]) $. That is, it allows the $k$-th challenge to be programmed by $\adv$. 
 	If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ is $\ur{k}$.
 \end{definition}
 
-Intuitively, a protocol is $\ur{k}$ if it is infeasible for a $\ppt$ adversary to produce a pair of acceptable and different proofs $\zkproof$, $\zkproof'$ that are the same on the first $k$ prover messages.  We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
+Intuitively, a protocol is $\ur{k}$ if it is infeasible for a $\ppt$ adversary to produce a pair of accepting proofs $\zkproof \neq \zkproof'$ that are the same on the first $k$ messages of the prover.  
+%We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
 
-We note that the definition above can be easily generalized to allow the adversary to program the oracle on more than just a single point. However, since all the protocols we analyse in this paper require only a simple single-point programming, we opted for a simplified version of the definition.
+We note that the definition above can be easily generalized to allow the adversary to program the oracle on more than just a single point. However, since all the protocols we analyse in this paper require only single-point programming, we opted for a simplified version of the definition.
   
 
 \subsection{Rewinding-based knowledge soundness}
 
-Before giving the definition of rewinding-based knowledge soundness for NIZK proof systems compiled the via $2\mu + 1$-message FS transformation, we first recall the notion of a tree of transcripts.
+Before giving the definition of rewinding-based knowledge soundness for NIZK proof systems compiled via the $2\mu + 1$-message FS transformation, we first recall the notion of a tree of transcripts.
 \begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
 	\label{def:tree_of_accepting_transcripts}
-	Consider a $(2\mu + 1)$-message proof system. \markulf{24.04}{Is this meaningful for interactive or also non-interactive prove systems obtained via FS?} A $(n_1,
+%	Consider a $(2\mu + 1)$-message proof system. \markulf{24.04}{Is this meaningful for interactive or also non-interactive prove systems obtained via FS?} 
+	A $(n_1,
   \ldots, n_\mu)$-tree of accepting transcripts is a tree where each node on
   depth $i$, for $i \in \range{1}{\mu + 1}$, is an $i$-th prover's message in an
-  accepting transcript; edges between the nodes are labeled with verifier's
+  accepting transcript; edges between the nodes are labeled with
   challenges, such that no two edges on the same depth have the same
   label; and each node on depth $i$ has $n_{i} - 1$ siblings and $n_{i +
     1}$ children. The tree consists of $N = \prod_{i = 1}^\mu n_i$
   branches, where $N$ is the number of accepting transcripts. We require $N = \poly$. We refer to a $(1, \ldots, n_k=n, 1, \ldots, 1)$-tree as a $(k,n)$-tree.
 \end{definition}
-\michals{22.04}{Tree should be defined w.r.t. particular $x$}\hamid{22.4}{I checked other related papers e.g., Attema paper and they define it similarly without respect to a particular statement; so I think the definition is okay (unless we're in a different 'adaptive' setting?)} \markulf{24.04}{Accepting transcript is with respect to a statement? So $x$ should be defined.}
 
 \iffalse
 		
@@ -316,8 +317,6 @@ Before giving the definition of rewinding-based knowledge soundness for NIZK pro
 \fi
 
 
-\markulf{22.04}{Don't repeat discussion from introduction. Improve it in one place.}
-\chaya{29.04}{attempted to address}\markulf{29.04}{Great!}
 
 \iffalse
 Note that the special soundness property (as usually defined) holds for

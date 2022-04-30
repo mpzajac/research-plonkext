@@ -195,9 +195,9 @@ $\prover'$ and $c_i$ comes from $\verifier'$, the $(2\mu + 1)$-message Fiat-Sham
 	  
 	  $\prover$ output the non-interactive proof $\pi=(a_1,\ldots, a_{\mu}, a_{\mu + 1})$, that is it omits challenges as they can be recomputed using $\ro$
 
-	\item $\verifier$ takes $\pi$ as input and behaves as $\verifier'$ would but does not provide
+	\item $\verifier$ takes $\inp$ and $\pi$ as input and behaves as $\verifier'$ would but does not provide
 	  challenges to the prover. Instead it computes the
-	  challenges locally as $\prover$ would, starting from $\tzkproof[0..1]=(\inp,a_1)$ which is contained in $\pi$. Then it verifies the
+	  challenges locally as $\prover$ would, starting from $\tzkproof[0..1]=(\inp,a_1)$ which can be obtained from $\inp$ and $\pi$. Then it verifies the
 	  resulting transcript $\tzkproof$ as the verifier $\verifier'$ would. We note that since the verifier can compute the challenges by querying the random oracle, they do not need to be sent by the prover.
 	\end{compactitem}
 
