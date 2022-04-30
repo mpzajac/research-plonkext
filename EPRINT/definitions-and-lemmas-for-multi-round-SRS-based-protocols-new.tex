@@ -163,12 +163,11 @@ should be able to provide simulated proofs for false statements as well, we thus
 \begin{definition}[Simulation-extractable NIZK]
 	\label{def:updsimext}
   \label{def:simext}
-	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup. We say that
-  $\psfs$ is \emph{updatable simulation-extractable} with respect to
-  $\simulator$ with security loss $\epsse(\secpar,\accProb, q)$ if for
+	Let $\psni = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup. We say that
+  $\psni$ is \emph{updatable simulation-extractable} with security loss $\epsse(\secpar,\accProb, q)$ if for
   any $\ppt$ adversary $\adv$ that is given oracle access to setup oracle
   $\initU$ and simulation oracle $\simulator\oracleo$ and that produces an accepting
-  proof for $\psfs$ with probability $\accProb$, where
+  proof for $\psni$ with probability $\accProb$, where
 	\[
 	\accProb = \condprob{
 	\begin{matrix}
@@ -373,8 +372,8 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	\end{aligned}\right.
 	\right] \leq \epscss(\secpar,\accProb, q).
 	\end{align*}
-	Here, $\srs$ is the finalized SRS. List $Q_\ro$ contains all $\advcss$'s
-	queries to $\ro$ and the (simulated) random oracle's answers, $\abs{Q_\ro}\leq q$, and list $Q_\srs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
+	Here, $\srs$ is the finalized SRS. List $Q_\ro$ contains all of the adversaries
+	queries to $\ro$ and the random oracle's answers, $\abs{Q_\ro}\leq q$, and list $Q_\srs$ contains all $(\srs, \rho)$ of updated SRSs and their proofs.
 %	 We call the protocol $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound when $\tdv$ builds a $(n_1, \ldots, n_\mu)$-tree of transcripts.
 \end{definition}
 	

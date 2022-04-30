@@ -2,34 +2,35 @@
 % !TEX spellcheck = en-US
 \section{Simulation-extractability---the general result}
 \label{sec:general}
-Equipped with definitional framework of \cref{sec:se_definitions}, we now present the
+Equipped with the definitional framework of \cref{sec:se_definitions}, we now present the
 main result of this paper---a proof of \COMMENT{forking }simulation extractability of
 Fiat-Shamir compiled multi-message protocols.
 
-The proof proceeds by game hopping. The games are controlled by an environment $\env$ that
-internally runs a simulation extractability adversary $\advse$, provides it with access to
-simulator $\simulator$ which also responds $\adv$'s random oracle queries. The environment
-also rewinds $\adv$ when necessary. The games differ by various breaking points,
-i.e.~points where the environment decides to abort the game.
+% The proof proceeds by game hopping. The games are controlled by an environment $\env$ that
+% internally runs a simulation extractability adversary $\advse$, provides it with access to
+% simulator $\simulator$ which also responds $\adv$'s random oracle queries. The environment
+% also rewinds $\adv$ when necessary. The games differ by various breaking points,
+% i.e.~points where the environment decides to abort the game.
 
-The first game $\game{0}$ is a simulation-extractability game, where the extractor
-gets as input
-\begin{inparaenum}[(1)]
-\item simulated proofs $Q$,
-\item random oracle queries $Q_\ro$,
-\item SRS updates $Q_\srs$
-\end{inparaenum}
-which were made by $\advse$.  We denote by $\radv$ randomness of $\advse$ and by
-$\rsim$ randomness that was used by the simulator to create responses in the list $Q$
-and $Q_\ro$. Formally, one could state that $\rsim$ could be parsed into $r_Q$ and
-$r_\ro$ used to answer queries in $Q$ and $Q_\ro$. Let $r = (\radv,
-\rsim)$. Randomness $r$ is used in the following games -- we pass it to a
-unique-response property reduction $\rdvur$ and rewinding-based knowledge soundness adversary
-$\bdv$. Importantly, since we require that $\rdvur$ and $\bdv$ are successful (with
-non-negligible probability) given uniformly random randomness and $r$ is picked
-uniformly random we conclude that we do not change any success probability by running
-$\rdvur$ and $\bdv$ on $r$. 
+% The first game $\game{0}$ is a simulation-extractability game, where the extractor
+% gets as input
+% \begin{inparaenum}[(1)]
+% \item simulated proofs $Q$,
+% \item random oracle queries $Q_\ro$,
+% \item SRS updates $Q_\srs$
+% \end{inparaenum}
+% which were made by $\advse$.  We denote by $\radv$ randomness of $\advse$ and by
+% $\rsim$ randomness that was used by the simulator to create responses in the list $Q$
+% and $Q_\ro$. Formally, one could state that $\rsim$ could be parsed into $r_Q$ and
+% $r_\ro$ used to answer queries in $Q$ and $Q_\ro$. Let $r = (\radv,
+% \rsim)$. Randomness $r$ is used in the following games -- we pass it to a
+% unique-response property reduction $\rdvur$ and rewinding-based knowledge soundness adversary
+% $\bdv$. Importantly, since we require that $\rdvur$ and $\bdv$ are successful (with
+% non-negligible probability) given uniformly random randomness and $r$ is picked
+% uniformly random we conclude that we do not change any success probability by running
+% $\rdvur$ and $\bdv$ on $r$. 
 
+\markulf{30.04}{Do we really use this notation that much here? Lets adapt consistent notation with preliminaries and definition of Fiat--Shamir. Define notation there in detail call it here only brievely or by reference if needed.}
 Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs returned by the adversary
 and the simulator respectively. We use $\zkproof[i]$ to denote $i$-th prover's
 message. $\zkproof[i].\ch$ denotes the challenge that is given to the prover after
@@ -45,7 +46,9 @@ to get it. It is straightforward to transform any adversary that violates this
 condition into an adversary that makes these additional queries to the random oracle
 and wins with the same probability.
 
-Finally, we note that for a proof system that is $k$-unique response, $k'$-programmable trapdoor-less zero-knowledge, and $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-rewinding-based knowledge sound, the theorem requires that $k \leq k' \leq k''$. The first condition ensures that a $k'$-th move message $\zkproof_{\advse}[k']$ output by $\adv$ is fresh and not coming from the simulator. The second condition $k' \leq k''$ is to make the simulator able to program the random oracle for the challenges that $\advse$ needs to respond in the $k''$-th move.
+The core conceptual insight of the proof is that the $k$-unique response property and $k$-programmable trapdoor-less zero-knowledge together ensures that the $k$-th move challenges in the trees of rewinding-based knowledge soundness are fresh and do not come from the simulator. This allows us to eliminate the simulation oracle in our rewinding argument and enables us to use the existing results of \cite{EPRINT:AttFehKlo21} in later sections.
+
+% Finally, we note that for a proof system that is $k$-unique response, $k$-programmable trapdoor-less zero-knowledge, and $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-rewinding-based knowledge sound, the theorem requires that $k \leq k' \leq k''$. The first condition ensures that a $k'$-th move message $\zkproof_{\advse}[k']$ output by $\adv$ is fresh and not coming from the simulator. The second condition $k' \leq k''$ is to make the simulator able to program the random oracle for the challenges that $\advse$ needs to respond in the $k''$-th move.
 
 \input{proof-thm1-new}
 %\input{proof-thm1-old}

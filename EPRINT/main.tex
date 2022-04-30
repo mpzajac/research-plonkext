@@ -78,7 +78,7 @@
 
 %\title{SNARKY Signatures with Universal and Updatable~Setup}
 
-\title{What Makes Fiat--Shamir SNARKS \\ (Updatable) Simulation Extractable?}
+\title{What Makes Fiat--Shamir SNARKS \\ (Updatable SRS) Simulation Extractable?}
 
 
 %\author{(Submission to EUROCRYPT 2022)}
@@ -105,9 +105,11 @@
 \maketitle
 
 \begin{abstract}
-  In the random oracle model (ROM), the three-message Fiat--Shamir (FS) transformation turns sigma protocols into
-  signature schemes, non-interactive proof systems, and signatures of knowledge
-  (SoK).  The security of the transformation relies on rewinding to
+  We show that three popular universal zero-knowledge SNARKs (Plonk, Sonic, and Marlin) are simulation extractable NIZKs and signatures of knowledge
+  (SoK) with updatable SRS out-of-the-box avoiding unnecessary compilation overheads.
+
+  Towards this we generalize results for the Fiat--Shamir (FS) transformation that turns interactive protocols into
+  signature schemes, non-interactive proof systems, or SoK in the random oracle model (ROM).  The security of the transformation relies on rewinding to
   extract the secret key or the witness, even in the presence of signing queries for
   signatures and simulation queries for proof systems and SoK, respectively.  We
   extend this line of work to multi-round FS for interactive arguments with a structured reference string (SRS). The combination of ROM and SRS, while redundant in theory, is the model of choice for the most efficient practical argument systems to date. We also consider the case that the SRS
@@ -115,7 +117,9 @@
   simulated proofs with respect to an SRS to which the adversary can contribute
   updates.
   
-  We define three properties (trapdoor-less zero-knowledge, rewinding-based knowledge soundness, and a unique response property) that are sufficient for argument systems based on multi-round FS to be also simulation extractable in this strong sense. We show that three popular universal zero-knowledge SNARKs (Plonk, Sonic, and Marlin) satisfy these properties and are thus simulation extractable NIZKs and SoKs with updatable SRS out-of-the-box avoiding unnecessary compilation overheads.
+  We define three properties (trapdoor-less zero-knowledge, rewinding-based knowledge soundness, and a unique response property) that are sufficient for argument systems based on multi-round FS to be also simulation extractable in this strong sense. We show that Plonk, Sonic, and Marlin satisfy these properties.
+  
+  
 \end{abstract}
 
 %\ifupdate
