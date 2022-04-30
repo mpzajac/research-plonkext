@@ -111,7 +111,7 @@ $\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h
 \begin{definition}[ ($k$-programmable) Trapdoor-Less Zero-Knowledge Proof System]
   \label{def:TLZK}
   Let 
-  $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. 
+  $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. 
   %$\simulator_{\fs}$ takes as input $\srs$ and instance $\inp$, programs $\ro$, and outputs a proof $\zkproof_\simulator$.  
   We call $\psfs$ \emph{trapdoor-less zero-knowledge} with security $\epszk$ if for any
   adversary $\adv$, $\abs{\eps_0(\secpar) - \eps_1(\secpar)} \leq \epszk(\secpar)$, where
@@ -163,7 +163,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 \begin{definition}[Simulation Extractable NIZK]
 	\label{def:updsimext}
   \label{def:simext}
-	Let $\psni = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup. We say that
+	Let $\psni = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup. We say that
   $\psni$ is \emph{updatable simulation-extractable} with security loss $\epsse(\secpar,\accProb, q)$ if for
   any $\ppt$ adversary $\adv$ that is given oracle access to setup oracle
   $\initU$ and simulation oracle $\simulator\oracleo$ and that produces an accepting
@@ -236,7 +236,7 @@ has \emph{unique responses from $k$}, and call it a $\ur{k}$-protocol, if it
 follows the definition below:
 
 \begin{definition}[Updatable $(\ur{k})$-protocol]
-Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updateable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. 
+Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. 
 We say that $\proofsystem$ has \emph{unique responses for $k$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\advur$:
   \[
 	\Pr\left[
@@ -336,7 +336,7 @@ Note that in the definition below, it is implicit that each transcript in the tr
 \begin{definition}[Rewinding-based knowledge soundness]
 	Let $n_1, \ldots, n_\mu \in \NN$. 
 	%
-	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system for relation $\REL$ with an updateable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle.
+	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system for relation $\REL$ with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle.
 	%
 	We require existence of an expected PPT tree builder $\tdv$ that eventually outputs a $\tree$ which is either a $(n_1, \ldots, n_\mu)$-tree of acceptable transcript or $\bot$ and a PPT extractor $\extcss$. Let  adversary $\advcss$ be a PPT algorithm, that outputs a valid proof with probability at least $\accProb$, 
 	where
