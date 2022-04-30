@@ -116,7 +116,7 @@ such that
 	\item[Round 2]
 	Get challenges $\beta, \gamma \in \FF_p$
 	\[
-		\beta = \ro(\zkproof[0..1], 0)\,, \qquad \gamma = \ro(\zkproof[0..1], 1)\,.
+		\beta = \ro(\tzkproof[0..1], 0)\,, \qquad \gamma = \ro(\tzkproof[0..1], 1)\,.
 	\]
 	Compute permutation polynomial $\p{z}(X)$
 	\begin{multline*}
@@ -130,7 +130,7 @@ such that
 	Output polynomial commitment $\gone{\p{z}(\chi)}$
 		
 	\item[Round 3]
-	Get the challenge $\alpha = \ro(\zkproof[0..2])$, compute the quotient polynomial 
+	Get the challenge $\alpha = \ro(\tzkproof[0..2])$, compute the quotient polynomial 
 	\begin{align*}
 	& \p{t}(X)  = \\
 	& (\p{a}(X) \p{b}(X) \selmulti(X) + \p{a}(X) \selleft(X) + 
@@ -150,7 +150,7 @@ such that
 	Output $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$.
 	
 	\item[Round 4]
-	Get the challenge $\chz \in \FF_p$, $\chz = \ro(\zkproof[0..3])$.
+	Get the challenge $\chz \in \FF_p$, $\chz = \ro(\tzkproof[0..3])$.
 	Compute opening evaluations
 	\begin{align*}
       \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
@@ -168,7 +168,7 @@ such that
 	Output $\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega), \p{r}(\chz).$
 	
 	\item[Round 5]
-	Compute the opening challenge $v \in \FF_p$, $v = \ro(\zkproof[0..4])$.
+	Compute the opening challenge $v \in \FF_p$, $v = \ro(\tzkproof[0..4])$.
 	Compute the openings for the polynomial commitment scheme 
 	\begin{align*}
 	& \p{W_\chz}(X) = \frac{1}{X - \chz} \left(

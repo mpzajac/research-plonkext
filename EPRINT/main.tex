@@ -165,6 +165,44 @@ to future work.
 \input{non-malleability-of-mfs}
 %\input{simulation-soundness-definitions-and-the-general-result}
 %\input{from-arguments-to-proofs}
+
+\iffalse
+Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
+and the latter \emph{verifier}. 
+
+We denote by $\zkproof$ a proof created by $\prover$ with input
+$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier (\srs, \inp,
+\zkproof)$ accepts it. We focus on proof systems where $\prover$ and
+$\verifier$ are given oracle access to a random oracle $\ro$. The simulator
+$\simulator$ is not only given access to $\ro$, but it can also \emph{program}
+it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
+
+A non-interactive  proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is
+required to have three properties: completeness, soundness and zero knowledge, which are
+defined as follows:
+
+\ourpar{Completeness.}
+
+  A non-interactive proof system $\proofsystem$ is
+  \emph{complete} if an honest prover always convinces an honest verifier, that
+  is for all $\REL \in \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
+	\[
+		\condprob{\verifier^\ro (\srs, \inp, \zkproof) = 1} {\srs \gets \kgen(\REL),
+      \zkproof \gets \prover^\ro (\srs, \inp, \wit)}\,.
+	\]
+
+\ourpar{Soundness.}
+    We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no
+  $\ppt$ prover $\adv$ can convince an honest verifier $\verifier$ to accept a
+  proof for a false statement $\inp \not\in\LANG$. More precisely, for
+  all $\REL \in \RELGEN(\secparam)$
+	\[
+    \condprob{ \verifier^\ro (\srs, \inp, \zkproof) = 1 \land \inp \not\in
+      \LANG_\REL}{\srs \gets \kgen(\REL), (\inp, \zkproof) \gets \adv^\ro(\srs)} \leq
+    \negl.
+	\]
+
+\fi
  
 \end{document}
 %%% Local Variables:
