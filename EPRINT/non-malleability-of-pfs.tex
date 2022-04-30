@@ -126,7 +126,7 @@ the Fiat--Shamir transformed version of Plonk.
 \item[Message 2] Compute challenges $\beta, \gamma \in \FF_p$ by querying random oracle
   on partial proof, that is,
 	\(
-		\beta = \ro(\zkproof[0..1], 0)\,, \qquad \gamma = \ro(\zkproof[0..1], 1)\,.
+		\beta = \ro(\zkproof[0..1], 0)\,, \qquad \gamma = \ro(\tzkproof[0..1], 1)\,.
 	\)
   
 	Compute permutation polynomial $\p{z}(X)$
@@ -141,7 +141,7 @@ the Fiat--Shamir transformed version of Plonk.
 	\end{multline*}
 	Output polynomial commitment $\gone{\p{z}(\chi)}$
 		
-\item[Message 3] Compute the challenge $\alpha = \ro(\zkproof[0..2])$, compute the quotient
+\item[Message 3] Compute the challenge $\alpha = \ro(\tzkproof[0..2])$, compute the quotient
   polynomial
 	\begin{align*}
     & \p{t}(X)  = \\
@@ -163,7 +163,7 @@ the Fiat--Shamir transformed version of Plonk.
 	\)
 	Output $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$.
 	
-\item[Message 4] Get the challenge $\chz \in \FF_p$, $\chz = \ro(\zkproof[0..3])$.
+\item[Message 4] Get the challenge $\chz \in \FF_p$, $\chz = \ro(\tzkproof[0..3])$.
   Compute opening evaluations
 	\(
     \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
@@ -183,7 +183,7 @@ the Fiat--Shamir transformed version of Plonk.
       2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega), \p{r}(\chz).$
 	
 \item[Message 5] Compute the opening challenge $v \in \FF_p$,
-  $v = \ro(\zkproof[0..4])$.  Compute the openings for the polynomial commitment
+  $v = \ro(\tzkproof[0..4])$.  Compute the openings for the polynomial commitment
   scheme
 	\begin{align*}
 	& \p{W_\chz}(X) = \frac{1}{X - \chz} \left(
