@@ -202,13 +202,22 @@ respectively.
 
 
 \cref{fig:pcomp,fig:pcoms} present variants of KZG~\cite{AC:KatZavGol10} polynomial
-commitment schemes used in \plonk{}, \sonic{} and \marlin{}. The key generation algorithm
-$\kgen$ takes as input a security parameter $\secparam$ and a parameter $\maxdeg$ which
-determines the maximal degree of the committed polynomial. We assume that $\maxdeg$ can be
-read from the output SRS. While the figures only describe trusted SRS setup, it is not
-hard to lift the SRS generation into the updatable setting by defining the extra
-algorithms $\upd$, $\verifyCRS$ (see~\cref{def:upd-scheme}) as described in~\cref{fig:upd-scheme}.  \cite{CCS:MBKM19}
-shows, using AGM, that $\PCOMs$ is a commitment of knowledge.  The same reasoning could be
+commitment schemes used in \plonk{}, \sonic{} and \marlin{}. 
+To support batched verification, the inputs to $\com$, $\open$, $\verify$ are vectors, and the algorithms take an additional arbitrary auxiliary string as input. This adversarially chosen string only provides additional context for the computation of challenges. We treat auxiliary input implicitly in the definition.
+
+%
+% The key generation algorithm
+% $\kgen$ takes as input a security parameter $\secparam$ and a parameter $\maxdeg$ which
+% determines the maximal degree of the committed polynomial. 
+% We assume that $\maxdeg$ can be
+% read from the output SRS. While the figures only describe trusted SRS setup, it is not
+% hard to lift the SRS generation into the updatable setting by defining the extra
+% algorithms $\upd$, $\verifyCRS$ (see~\cref{def:upd-scheme}) as described in~\cref{fig:upd-scheme}.  
+
+\markulf{30.04}{Is the following important here?}
+\cite{CCS:MBKM19}
+shows, using AGM, that $\PCOMs$ is a commitment of knowledge.  
+The same reasoning could be
 used to show that property for $\PCOMp$.
  
 
@@ -409,14 +418,15 @@ used to show that property for $\PCOMp$.
 % 	\label{fig:pcoms}
 % \end{figure}
 
-\subsection{Unique opening property of $\PCOM$}
+\subsection{Unique opening property of $\PCOMp$}
 Now, we show that the batched variant of the KZG polynomial
 commitment scheme that is used in \plonk{} and $\marlin{}$, has the unique opening property.
+\markulf{30.4}{Changed this to $\PCOMp$, hope that's correct. Could simplfy this, given that the body will be only about Plonk?}
 
 \begin{lemma}
 \label{lem:pcomp_op}
-Let $\PCOM = (\kgen, \com, \open, \verifyb)$ be a batched version of a KZG polynomial commitment,
-cf.~\cref{fig:pcomp}, that commits to $m$ polynomials of degree up to $\maxdeg$. Let $\vec{z} = (z_0, \ldots, z_{l - 1}) \in \FF_p^l$ be the points the polynomials are  evaluated at, $k_i \in \NN$ be the number of the committed polynomials to be evaluated at $z_i$, and $K_i$ be the set of indices of these polynomials. Let $\vec{s_{K_i}} \in \FF_p^{k_i}$ the evaluations of polynomials at $z_i$, and $\vec{o} = (o_0, \ldots, o_{l - 1}) \in \FF_p^l$ be the commitment openings. We show that the probability an algebraic adversary $\adv$, who can made up to $q$ random oracle queries, opens the same vector of commitments in two different ways is at most $\epsop(\secpar)$, for $\epsop(\secpar) \leq l \cdot  \epsudlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where $\epsudlog(\secpar)$ is security of the $(\maxdeg, 1)$-$\udlog$ assumption and $\FF_p$ is the field used in $\PCOM$.
+Let $\PCOMp = (\kgen, \com, \open, \verifyb)$ be a batched version of a KZG polynomial commitment,
+cf.~\cref{fig:pcomp}, that commits to $m$ polynomials of degree up to $\maxdeg$. Let $\vec{z} = (z_0, \ldots, z_{l - 1}) \in \FF_p^l$ be the points the polynomials are  evaluated at, $k_i \in \NN$ be the number of the committed polynomials to be evaluated at $z_i$, and $K_i$ be the set of indices of these polynomials. Let $\vec{s_{K_i}} \in \FF_p^{k_i}$ the evaluations of polynomials at $z_i$, and $\vec{o} = (o_0, \ldots, o_{l - 1}) \in \FF_p^l$ be the commitment openings. We show that the probability an algebraic adversary $\adv$, who can made up to $q$ random oracle queries, opens the same vector of commitments in two different ways is at most $\epsop(\secpar)$, for $\epsop(\secpar) \leq l \cdot  \epsudlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where $\epsudlog(\secpar)$ is security of the $(\maxdeg, 1)$-$\udlog$ assumption and $\FF_p$ is the field used in $\PCOMp$.
 \end{lemma}
 \begin{proof}
  
