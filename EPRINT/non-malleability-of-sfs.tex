@@ -6,7 +6,7 @@
 
 \markulf{22.04}{I prefer the notation $Pr[\chi \gets \FF_q; \chi' \gets \adv( ...): \chi=\chi']$ as one can start reading at the left. But I will let that one go and will admit that it's a question of taste and it might be an aquired taste. }
 
-\section{Preliminaries}
+\subsection{Preliminaries}
 \begin{definition}[$(q_1, q_2)\mhyph\ldlog$ assumption]\label{def:ldlog}
   Let $\adv$ be a $\ppt$ adversary that gets as input
   $\gone{\chi^{-q_1}, \ldots, 1, \ldots, \chi^{q_1}}, \gtwo{\chi^{-q_2},
@@ -370,7 +370,7 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
 	\label{lem:sonicprot_ss}
   $\sonicprotfs$ is $(2, \multconstr + \linconstr + 1))$-updatable rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,,
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{\multconstr + \linconstr + 1}{\abs{\FF_p}}\right)}{\frac{\multconstr + \linconstr + 1}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,,
   \]
 	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\sonicprotfs$, and $\epsudlog(\secpar)$ is the security of $(\maxdeg, \maxdeg)$-$\uldlog$ assumption.
 \end{lemma}
@@ -387,92 +387,45 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
 % 	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\dconst, \dconst)$-$\ldlog$ assumption.
 % \end{lemma}
 
-\michals{30.04}{Old proof begins here}
-\begin{proof}
-	Similarly as in the case of $\plonk$, the main idea of the proof is to show that an
-  adversary who breaks rewinding-based knowledge soundness can be used to break a $\dlog$
-  problem instance. The proof goes by game hops. Let $\tree$ be the tree produced by
-  $\tdv$ by rewinding $\adv$. Note that since the tree branches after prover's $2$-nd
-  message, the instance $\inp$, commitments
-  $\gone{\p{r} (\chi, 1), \p{r} (\chi, y), \p{s} (\chi, y), \p{t} (\chi, y)}$, and
-  challenge $y$ are the same. The tree branches after the $2$-nd message of the
-  prover when the challenge $z$ is presented, thus tree $\tree$ is build using
-  different values of $z$.
-	%
-	We consider the following games.
-	
-	\ncase{Game 0} In this game the adversary wins if all the transcripts it
-	produced are acceptable by the ideal verifier,
-	i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:ver_eq}, and none of
-	commitments
-	$\gone{\p{r} (\chi, 1), \p{r} (\chi, y), \p{s} (\chi, y), \p{t} (\chi, y)}$ use
-	elements from a simulated proof, and the extractor fails to extract a valid
-	witness out of the proof.
-	
-	\ncase{Probability that $\adv$ wins Game 0 is negligible} Probability of
-	$\adv$ winning this game is $\epsid(\secpar)$ as the protocol $\sonicprot$,
-	instantiated with the idealised verification equation, is perfectly
-	knowledge sound except with negligible probability of the idealised verifier
-	failure $\epsid(\secpar)$. Hence for a valid proof $\zkproof$ for a
-	statement $\inp$ there exists a witness $\wit$, such that $\REL(\inp, \wit)$
-	holds. Note that since the $\tdv$ produces $(\multconstr + \linconstr + 1)$
-	acceptable transcripts for different challenges $z$. As noted in
-	\cite{CCS:MBKM19} this assures that the correct witness is encoded in
-	$\p{r} (X, Y)$. Hence $\extt$ can recreate polynomials' coefficients by
-	interpolation and reveal the witness with probability $1$. Moreover, the
-	probability that extraction fails in that case is upper-bounded by
-	probability of an idealised verifier failing $\epsid(\secpar)$, which is
-	negligible.
-	
-	\ncase{Game 1} In this game the adversary additionally wins if it produces a
-	transcript in $\tree$ such that $\vereq_{\inp, \zkproof}(\chi) = 0$, but
-	$\vereq_{\inp, \zkproof}(X) \neq 0$, and none of commitments
-	$\gone{\p{r} (\chi, 1), \p{r} (\chi, y), \p{s} (\chi, y), \p{t} (\chi, y)}$
-	use elements from a simulated proof.  The first condition means that the
-	ideal verifier does not accept the proof, but the real verifier does.
-	
-	\ncase{Game 0 to Game 1} Assume the adversary wins in Game 1, but does not
-	win in Game 0. We show that such adversary may be used to break an
-	instance of a $\ldlog$ assumption. More precisely, let $\tdv$ be an
-	algorithm that for relation $\REL$ and randomly picked
-	$\srs \sample \kgen(\REL)$ produces a tree of acceptable transcripts such
-	that the winning condition of the game holds. Let $\rdvdlog$ be a
-	reduction that gets as input an
-	$(\dconst, \dconst)$-$\ldlog$ instance
-	$\gone{\chi^{-\dconst}, \ldots, \chi^{\dconst}}, \gtwo{\chi^{-\dconst},
-		\ldots, \chi^{\dconst}}$ and is tasked to output $\chi$.
-	
-	The reduction $\rdvdlog$ proceeds as follows.
-	\begin{enumerate}
-  \item Pick a random $\alpha$ and compute
-    $\gone{\alpha \chi^{- \dconst}, \ldots, \alpha \chi^{-1}, \alpha \chi,
-      \ldots, \alpha \chi^{\dconst}}$,
-    $\gtwo{\alpha \chi^{- \dconst}, \ldots, \alpha \chi^{-1}, \alpha \chi,
-      \ldots, \alpha \chi^{\dconst}}$. Set a SRS $\srs$ to be the
-    $(\dconst, \dconst)$-$\ldlog$ instance and its multiplication with $\alpha$ as
-    computed above.
-    % \hamid{Is this clear?}
-  \item Build $\sonicprot$'s SRS in the updatable setting by answering $\adv$'s
-    queries for SRS updates and setting the honest update of the SRS to be
-    $\srs$. Let $\srs'$ be the finalised SRS.
-		\item Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a
-		relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such
-		that $\vereq_{\inp, \zkproof}(X) \neq 0$, but
-		$\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all group
-		elements included in $\tree$ are extended by their representation as a
-		combination of the input $\GRP_1$-elements. Hence, all coefficients of the
-		verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known.
-		\item Find $\vereq_{\inp, \zkproof}(X)$ zero points and find $\chi'$ among
-		them.
-  \item Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS
-    updates, extracted by the reduction from the update proofs given by $\adv$.
-		\item Return  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$.
-	\end{enumerate}
-	Hence, the probability that the adversary wins Game 1 is upper-bounded by
-	$\epsldlog(\secpar)$.
-\end{proof}
+Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkproof)$ such that $\sonicprotfs.\verifier$ accepts the proof. Let $\tdv$ be a tree-building algorithm that runs $\zdv_1$ from \cref{fig:Attema-ext} and outputs a tree $\tree$, and let $\extcss$ be an extractor that given the tree output by $\tdv$ reveals the witness for $\inp$. The main idea of the proof is to show that an adversary who breaks updatable rewinding-based knowledge soundness can be used to break a $\uldlog$-problem instance. The proof goes by game hops. Note that since the tree branches after $\adv$'s $2$-nd message, the instance $\inp$, commitments $\gone{\p{r} (\chi, 1), \p{t} (\chi, y)}$, and challenge $y$ are the same in all the transcripts. Also, the tree branches after the second adversary's message where the challenge $z$ is presented, thus tree $\tree$ is built using different values of $z$.	We consider the following games.
 
-\subsection{Trapdoor-Less Simulatability of Sonic}
+  \ncase{Game 0} %
+  In this game, the adversary wins if it outputs a valid instance--proof pair $(\inp, \zkproof)$, and the extractor $\extcss$ does not manage to output a witness $\wit$ such that $\REL (\inp, \wit)$ holds.
+
+  \ncase{Game 1} %
+  In this game, the environment aborts the game if the tree building algorithm $\tdv$ fails in building a tree of acceptable transcripts $\tree$. 
+
+  \ncase{Game 0 to Game 1} %
+  By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most 
+  \[
+    \frac{\accProb - (q + 1) \left( 1 - \frac{\multconstr + \linconstr + 1}{\abs{\FF_p}} \right)} {\frac{\multconstr + \linconstr + 1}{\abs{\FF_p}}} \,.
+  \]
+
+  \ncase{Game 2} %
+  In this game the environment additionally aborts if at least one of its proofs in $\tree$ is not acceptable by an ideal verifier.
+
+  \ncase{Game 1 to Game 2} % 
+  As usual, we show a reduction that breaks an instance of a $\uldlog$ assumption when Game 2 is aborted, while Game 1 is not.
+
+  Let $\rdvuldlog$ be a reduction that gets as input an $(\maxdeg, \maxdeg)$-$\uldlog$ instance $\gone{\chi^{-\maxdeg}, 1, \ldots, \chi^{\maxdeg}}, \gtwo{\chi^{-\maxdeg}, 1, \ldots, \chi^{\maxdeg}}$. Then it can update the instance to another one $\gone{\chi'^{-\maxdeg}, 1, \ldots, \chi'^{\maxdeg}}, \gtwo{\chi'^{-\maxdeg}, 1, \ldots, \chi'^{\maxdeg}}$. Eventually, the reduction ouputs $\chi'$.
+	%
+	The reduction $\rdvuldlog$ proceeds as follows.
+	First, it builds $\adv$'s SRS $\srs$ using the input $\uldlog$ instance. Then it processes the adversary's update query by adding it to the list $\Qsrs$ and passing it to its own update oracle getting instance $\gone{\chi'^{-\maxdeg}, 1, \ldots, \chi'^{\maxdeg}}, \gtwo{\chi'^{-\maxdeg}, 1, \ldots, \chi'^{\maxdeg}}$. The updated SRS $\srs'$ is then computed and given to $\adv$. $\rdvuldlog$ also takes care of the random oracle queries made by $\adv$. It picks their answers honestly and writes them in $\Qro$. The reduction then starts $\tdv(\srs, \adv, r, \Qro, \Qsrs)$.
+	
+  Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$, but $\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all group elements included in $\tree$ are extended by their representation as a combination of the input $\GRP_1$-elements. Hence, all coefficients of the verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known. 
+  Eventually, the reduction finds $\vereq_{\inp, \zkproof}(X)$ zero points and returns $\chi'$ which is one of them.
+    
+  Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upper-bounded by $\epsuldlog (\secpar)$.
+
+  \ncase{Conclusion}
+  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of acceptable transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(\multconstr + \linconstr + 1)$ acceptable transcripts for different challenges $z$, it obtains the same number of different evaluations of polynomial $\p{t} (z, y)$ what allows to extract the witness, cf.~\cite{CCS:MBKM19} except with probability $\epsid(\secpar)$.
+
+  Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
+  \[
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( 1 - \frac{\multconstr + \linconstr + 1}{\abs{\FF_p}} \right)}{\frac{\multconstr + \linconstr + 1}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,. 
+  \]
+
+\subsection{Trapdoor-Less Zero-Knowledge of Sonic}
 \begin{lemma}
 \label{lem:sonic_hvzk}
 $\sonic$ is 2-programmable trapdoor-less zero-knowledge.
@@ -535,29 +488,17 @@ $\sonic$ is 2-programmable trapdoor-less zero-knowledge.
   challenges that fits it.
 \end{remark}
 
-\subsection{From Rewinding-Based Knowledge Soundness and Unique Response Property to \COMMENT{forking
-  }Simulation Extractability of $\sonicprotfs$}
-Since \cref{lem:sonicprot_ur,lem:sonicprot_ss,lem:sonic_hvzk} hold, $\sonicprot$ is $\ur{1}$, computational special sound and trapdoor-less zero-knowledge. We now make use
-of \cref{thm:se} and show that $\sonicprotfs$ is \COMMENT{ forking }simulation-extractable as defined in \cref{def:simext}.
+\subsection{Simulation Extractability of $\sonicprotfs$}
+Since \cref{lem:sonicprot_ur,lem:sonicprot_ss,lem:sonic_hvzk} hold, $\sonicprot$ is $\ur{1}$, rewinding-based knowledge sound and trapdoor-less zero-knowledge. We now make use
+of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defined in \cref{def:simext}.
 
-\begin{corollary}[\COMMENT{Forking s}Simulation extractability of $\sonicprotfs$]
+\begin{corollary}Simulation extractability of $\sonicprotfs$]
   \label{thm:sonicprotfs_se}
-  Assume that $\sonicprot$ is $\ur{1}$ with security
-  $\epsur(\secpar) = \epsbind(\secpar) + \epsop(\secpar)$ -- where
-  $\epsbind (\secpar)$ is polynomial commitment's binding security, $\epsop$ is
-  polynomial commitment unique opening security -- and computational special sound with
-  security $\epss(\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
-  random oracle. Let $\advse$ be an adversary that can make up to $q$
-  random oracle queries, and outputs an
-  acceptable proof for $\sonicprotfs$ with probability at least $\accProb$. Then
-  $\sonicprotfs$ is \COMMENT{forking }simulation-extractable with extraction error
-  $\eta = \epsur(\secpar)$. The extraction probability $\extProb$ is at least
+  $\sonicprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$ with extraction failure probability 
 \[
-		\extProb  \geq \frac{1}{q^{\multconstr + \linconstr}} (\accProb - \epsur(\secpar))^{\multconstr +
-		\linconstr + 1} - \eps(\secpar).
-	\]
-	for some negligible $\eps(\secpar)$, $\multconstr$ and $\linconstr$ being,
-  respectively, the number of multiplicative and linear constraints of the system.
+  \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + \epsudlog (\secpar) + \epsid (\secpar),
+\]
+where $\epserr (\secpar) = \left(1 - \frac{\multconstr + \linconstr + 1}{\abs{\FF_p}} \right)$, $\abs{\FF_p}$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
 \end{corollary}
 
 %%% Local Variables:

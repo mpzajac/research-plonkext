@@ -310,9 +310,9 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
 	\label{lem:plonkprot_ss}
   $\plonkprot$ is $(3, 3 \noofc + 1)$-updatable rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,,
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 1}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 1}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,,
   \]
-	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\plonkprot$, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + \changedm{5}, 1)$-$\udlog$ 
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\plonkprot$, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + 5, 1)$-$\udlog$ 
 	assumption.
 \end{lemma}
 
@@ -328,7 +328,7 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
   \ncase{Game 0 to Game 1} %
   By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most 
   \[
-    \frac{\accProb - (q + 1) \epsid (\secpar)} {1 - \epsid (\secpar)} \,.
+    \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 1}{\abs{\FF_p}} \right)} {\frac{3 \noofc + 1}{\abs{\FF_p}}} \,.
   \]
 
   \ncase{Game 2} %
@@ -348,11 +348,11 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
   Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upper-bounded by $\epsudlog (\secpar)$.
 
   \ncase{Conclusion}
-  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of acceptable transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(\noofc + 6)$ acceptable transcripts for different challenges $\chz$, it obtains the same number of different evaluations of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$ and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined in prover's $3$-rd message description holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are of degree at most $(\noofc + 5)$ and there is more than $(\noofc + 5)$ their evaluations known, $\extcss$ can recreate polynomials' coefficients by interpolation and reveal the witness with probability $1$. Thus, the probability that extraction fails in that case is upper-bounded by probability of an idealised verifier failing $\epsid(\secpar)$.
+  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of acceptable transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(3 \noofc + 1)$ acceptable transcripts for different challenges $\chz$, it obtains the same number of different evaluations of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$ and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined in prover's $3$-rd message description holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are of degree at most $(3 \noofc)$ and there is more than $(3 \noofc)$ their evaluations known, $\extcss$ can recreate polynomials' coefficients by interpolation and reveal the witness with probability $1$. Thus, the probability that extraction fails in that case is upper-bounded by probability of an idealised verifier failing $\epsid(\secpar)$.
 
   Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,. 
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 1}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 1}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,. 
   \]
  \end{proof}
   
@@ -425,7 +425,7 @@ $\plonkprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adv
 \[
   \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + \epsudlog (\secpar) + \epsid (\secpar),
 \]
-where $\epserr (\secpar) = \left(1 - \frac{\noofc + 6}{\abs{\FF_p}} \right)$, $\abs{\FF_p}$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
+where $\epserr (\secpar) = \left(1 - \frac{3 \noofc + 1}{\abs{\FF_p}} \right)$, $\abs{\FF_p}$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
 \end{corollary}
  
 %%% Local Variables:
