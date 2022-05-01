@@ -62,21 +62,23 @@
 	We build an adversary $\advur^{\initU, \ro} (\secpar; r)$ that has access to the random oracle $\ro$ and update oracle $\initU$. $\advur$ uses $\advcss$ to break the $\ur{k}$ property of $\psfs$. 
 	%Namely, for randomness $r = (r_{\advse}, \rsim)$, $\advur^{\ro, \initU} (\secpar; r)$ runs $\advse^{\initU, \simOH, \simOP'}(\secparam; r_{\advse})$ internally and answers its oracle queries as $\advcss$ did.
 
-	When $\advcss$ outputs a proof $\zkproof$ for $\inp$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $\Qro$ until it finds $\tzkproofs[0..k]$ such that $\tzkproof[0..k] = \tzkproofs[0..k]$ and a programmed random oracle query $\tzkproofs[k].\ch$ on $\tzkproofs[0..k]$.	$\advur$ returns two proofs for $\inp$:
-		\begin{align*}
-		\zkproof_1 = \zkproofs =  (\zkproofs[1..k], \zkproofs[k + 1..\mu + 1])\\
-		\zkproof_2 = \zkproof \;\;\;\;\, = (\zkproofs[1..k], \;\;\;\;\zkproof[k + 1..\mu + 1])
-		\end{align*}
-		and the challenge $\tzkproofs[k].\ch$
+	When $\advcss$ outputs a proof $\zkproof$ for $\inp$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $\Qro$ until it finds $\tzkproofs[0..k]$ such that $\tzkproof[0..k] = \tzkproofs[0..k]$ and a programmed random oracle query $\tzkproofs[k].\ch$ on $\tzkproofs[0..k]$.	$\advur$ returns two proofs $\zkproof$ and $\zkproofs$ for $\inp$:
+		% \begin{align*}
+		% \zkproof_1 = \zkproofs =  (\zkproofs[1..k], \zkproofs[k + 1..\mu + 1])\\
+		% \zkproof_2 = \zkproof \;\;\;\;\, = (\zkproofs[1..k], \;\;\;\;\zkproof[k + 1..\mu + 1])
+		% \end{align*}
+		and the challenge $\tzkproofs[k].\ch=\tzkproof[k].\ch$
 
 	Importantly, both proofs are acceptable w.r.t~the unique response property verifier. The first, since it is a correctly computed simulated proof and the unique response property definition allows any challenges at $k$. The latter, since it is an acceptable proof produced by the adversary.
 	We have that $\zkproof_1 \neq \zkproof_2$ as otherwise $\advse$ does not win the simulation extractability game as $\zkproof_2 \in Q$. On the other hand, if the proofs are different, then $\advur$ breaks $\ur{k}$-ness of $\psfs$. This happens only with  probability $\epsur(\secpar)$. 
 	\qed
 	\end{proof}
 
-	We denote by $\waccProb$ the probability that $\advcss$ outputs an acceptable proof. We note that $\waccProb$ is at most $\epsur (\secpar)$ far from the probability that $\advse$ outputs an acceptable proof. By the union bound the probability that $\advcss$ outputs an acceptable proof is at least $\waccProb \geq \accProb - \epsur (\secpar)$. \markulf{30.04}{I am ignorant. What is the role of the union bound here. Is this the same as up-to-bad reasoning?}
+	We denote by $\waccProb$ the probability that $\advcss$ outputs an acceptable proof. We note that $\waccProb$ is at most $\epsur (\secpar)$ far from the probability that $\advse$ outputs an acceptable proof. By the union bound the probability that $\advcss$ outputs an acceptable proof is at least $\waccProb \geq \accProb - \epsur (\secpar)$. %\markulf{30.04}{I am ignorant. What is the role of the union bound here. Is this the same as up-to-bad reasoning?}
+%
+	Since $\psfs$ is $\epscss (\secpar, \waccProb,q)$ rewinding-based knowledge sound, there is an extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of accepting transcripts $\tree$ and fails to extract the witness with probability at most $\epscss (\secpar, \waccProb, q)$. The extractor $\extse$ outputs the witness with the same probability.
 
-	Since $\psfs$ is $\epscss (\secpar, \waccProb,q)$ rewinding-based knowledge sound\hamid{30.4}{We probably mean rewinding-based KS here. I think we need to also justify why we require this property with specific parameters $(1, \ldots, 1, n_{k}, \ldots, n_\mu)$ for the tree structure!}\markulf{30.04}{Fixed the typo, if that's what you meant. I don't think we need any specific tree structure. There is nevertheless more to say here, I agree.}, there is an extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of accepting transcripts $\tree$ and fails to extract the witness with probability at most $\epscss (\secpar, \waccProb, q)$. The extractor $\extse$ outputs the witness with the same probability.
+	%\hamid{30.4}{We probably mean rewinding-based KS here. I think we need to also justify why we require this property with specific parameters $(1, \ldots, 1, n_{k}, \ldots, n_\mu)$ for the tree structure!}\markulf{30.04}{Fixed the typo, if that's what you meant. I don't think we need any specific tree structure. There is nevertheless more to say here, I agree.}
 %
 	Thus $\epsse(\secpar,\accProb,q) = \epscss (\secpar, \waccProb,q) \leq \epscss(\secpar,\accProb - \epsur,q)$.
 	\qed

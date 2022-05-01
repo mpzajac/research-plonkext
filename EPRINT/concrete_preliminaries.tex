@@ -51,14 +51,16 @@ accepts only when the polynomial \emph{is} zero.
 
 Although ideal verifiers are impractical, they are very useful in our
 proofs. More precisely, we show that
-\begin{compactenum}
-\item the idealised verifier accepts an incorrect proof (what ``incorrect''
+%\begin{compactenum}
+%\item 
+the idealised verifier accepts an incorrect proof (what ``incorrect''
   means depends on the situation) with at most negligible probability (and in many
   cases---never);
-\item when the real verifier accepts, but not the idealised one, then a malicious
+%\item 
+when the real verifier accepts, but not the idealised one, then a malicious
   prover can be used to break the underlying security assumption (in our case---a
   variant of $\dlog$.)
-\end{compactenum}
+%\end{compactenum}
 
 Analogously, idealised verifier can be defined for polynomial commitment schemes.
 
@@ -100,11 +102,11 @@ Note that for clarity we here refer to the SRS by $\Ch$. Further, to avoid clutt
 	\gtwo{\smallset{\widetilde{\chi}^i B_i}_{i = 0}^{q_2}} \right)$.
 	\end{itemize}
 	Then
-	\[
+	$
 	\prob{\bar{\chi} \gets \adv^{\initU}(\secpar)} \leq \negl,
-	\]
+	$
 	where $\left( \gone{\smallset{\bar{\chi}^i}_{i = 0}^{q_1}},
-	\gtwo{\smallset{\bar{\chi}^i}_{i = 0}^{q_2}} \right)$ is the finalized challenge.
+	\gtwo{\smallset{\bar{\chi}^i}_{i = 0}^{q_2}} \right)$ is the final $\Ch$.
 \end{definition}
 
 
@@ -127,13 +129,14 @@ We show a reduction from $(q_1, q_2)\mhyph\dlog$ assumption to its variant in th
 
   \oursubsub{Generalized Forking Lemma}
 Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general enough for our purpose as it is useful only for protocols where a witness can be extracted from just two transcripts. To be able to extract a witness from, say, an execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 1)$ valid proofs (where $\numberofconstrains$ is the number of constrains), $(\numberofconstrains+ 1)$ for $\sonicprot$, and $\numberofconstrains + 4$ for $\marlinprot$. Here we use a result by Attema et
-al.~\cite{EPRINT:AttFehKlo21}\footnote{An earlier versions had its own forking lemma generalization. Attema et al.\ has a better bound.}  which lower-bounds the probability of generating a tree of accepting transcripts $\tree$.
+al.~\cite{EPRINT:AttFehKlo21short}\footnote{An earlier versions had its own forking lemma generalization. Attema et al.\ has a better bound.}  which lower-bounds the probability of generating a tree of accepting transcripts $\tree$.
 
-  \begin{lemma}[Proposition 2~\cite{EPRINT:AttFehKlo21}]\label{lem:attema}
+  \begin{lemma}[Proposition 2~\cite{EPRINT:AttFehKlo21short}]\label{lem:attema}
 	Let $N = n_1 \cdot \cdots \cdot n_\mu$ and $p = 2^{\Omega(\secpar)}$. Let $\epserr(\secpar) = 1 - \prod_{i=1}^{\mu}\left(1 - \frac{n_i - 1}{p}\right)$.
 	Assume adversary $\adv$ that makes up to $q$ random
 	oracle queries and outputs an acceptable proof with probability at least
-	$\accProb$. There exists a tree building algorithm $\tdv$ for $(n_1, \ldots, n_\mu)$-trees that utilizes the extractor $\zdv_1$ in~\cref{fig:Attema-ext} and succeeds in building a
+	$\accProb$. There exists a tree building algorithm $\tdv$ for $(n_1, \ldots, n_\mu)$-trees that %utilizes the extractor $\zdv_1$ in~\cref{fig:Attema-ext} and 
+	succeeds in building a
 	tree of accepting transcripts in expected
 	running time $N + q (N - 1)$ with probability at least
 	\[
@@ -141,6 +144,7 @@ al.~\cite{EPRINT:AttFehKlo21}\footnote{An earlier versions had its own forking l
 	\]
 	\end{lemma}
 
+	\iffalse
 \begin{figure}[t]
 	\centering
 	\fbox{\parbox{\textwidth}{
@@ -158,10 +162,10 @@ al.~\cite{EPRINT:AttFehKlo21}\footnote{An earlier versions had its own forking l
 				$v \gets 1$; in the latter case, output $v \gets 0$.
 			\end{enumerate}
 	}}
-	\caption{Extractor $\zdv_m$ from Attema et al.~\cite{EPRINT:AttFehKlo21}. Here $\vec{\zkproof}$ is an index vector that contains all random oracle queries made by the prover for the output proof; that is, for prover's messages $\vec{a} = a_1, \ldots, a_{\mu + 1}$, $\zkproof[1].\ch = (\inp, a_1), \ldots, \zkproof[{\mu}].\ch = (\inp, a_1, \ldots, a_\mu)$.  $\tzkproof$ is a proof transcript that contains both prover's messages and random oracle responses, that is $\tzkproof = (a_1, (\inp, a_1), a_2, (\inp, a_1, a_2), \ldots)$. Finally, $v$ is the verification bit, that is $v = \verifier (\srs, \inp, \tzkproof)$. }
+	\caption{Extractor $\zdv_m$ from Attema et al.~\cite{EPRINT:AttFehKlo21short}. Here $\vec{\zkproof}$ is an index vector that contains all random oracle queries made by the prover for the output proof; that is, for prover's messages $\vec{a} = a_1, \ldots, a_{\mu + 1}$, $\zkproof[1].\ch = (\inp, a_1), \ldots, \zkproof[{\mu}].\ch = (\inp, a_1, \ldots, a_\mu)$.  $\tzkproof$ is a proof transcript that contains both prover's messages and random oracle responses, that is $\tzkproof = (a_1, (\inp, a_1), a_2, (\inp, a_1, a_2), \ldots)$. Finally, $v$ is the verification bit, that is $v = \verifier (\srs, \inp, \tzkproof)$. }
 	\label{fig:Attema-ext}
 \end{figure} 
-
+\fi
 
 \oursubsub{Opening Uniqueness of Batched Polynomial Commitment Openings}
 %We say that $\PCOM$ has the unique opening property if the following holds:
