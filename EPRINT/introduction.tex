@@ -129,7 +129,7 @@ While generic compilers~\cite{EPRINT:KZMQCP15,CCS:AbdRamSla20} can be applied to
 
 
 \subsection{Our Contributions}
-We investigate the non-malleability properties of zkSNARK protocols obtained by FS-compiling multi-message protocols in the updatable SRS setting and give a modular approach to analyse their simulation-extractability. We make the following contributions:
+We investigate the non-malleability properties of zkSNARK protocols obtained by FS-compiling multi-message protocols in the updatable SRS setting and give a modular approach to analyze their simulation-extractability. We make the following contributions:
 \begin{itemize}
 \item 
 \emph{Updatable simulation extractability (USE)}. 
@@ -215,7 +215,7 @@ message of the protocol). We cannot use this definition since the protocols
 we consider have multiple rounds of randomized prover messages. In
 Plonk, both the first and the third messages are randomized. Although the Sonic prover
 is deterministic after it picks its first message, the protocol has more than $3$
-messages. The same holds for Marlin. We propose a generalisation of the unique response property called $\ur{k}$. It requires that the behavior of the prover be determined by the first
+messages. The same holds for Marlin. We propose a generalization of the unique response property called $\ur{k}$. It requires that the behavior of the prover be determined by the first
 $k$ of its messages. For our proof, it is sufficient that Plonk is $\ur{3}$, and Sonic and Marlin are $\ur{2}$.
 
 
@@ -225,7 +225,7 @@ The premises of our main theorem include two computational properties that do no
 Our key technique is to simulate simulation queries when reducing to RBKS and UR. For this it is convenient that the zero-knowledge simulator be trapdoor-less, that is can produce proofs without relying on the
 knowledge of the trapdoor. Simulation is based purely on the simulators early control over the challenge. 
 %
-In the ROM this corresponds to a simulator that programs the random oracle and can be understood as a generalisation of
+In the ROM this corresponds to a simulator that programs the random oracle and can be understood as a generalization of
 honest-verifier zero-knowledge for multi-message Fiat--Shamir transformed proof systems with an
 SRS. We say that such a proof system is $k$-TLZK, if the simulator only programs the $k$-th challenge and we construct such simulators for $\plonkprotfs$, $\sonicprotfs$, and $\marlinprotfs$. 
 
