@@ -229,10 +229,10 @@ used to show that property for $\PCOMp$.
 		\begin{minipage}[t]{1.25\linewidth}
 		\begin{pcvstack}
 		\begin{pchstack}
-			\procedure{$\kgen(\REL)$}{
+			\procedure{$\kgen(\secparam, \maxdeg)$}{
 				\chi \sample \FF_p \\ [\myskip]
 				\srs := 
-				\left( \gone{\smallset{\chi^i}_{i = 0}^{\dconst}},
+				\left( \gone{\smallset{\chi^i}_{i = 0}^{\maxdeg}},
 				\gtwo{\chi} \right); 
 				\rho =  \left(\gone{\chi, \chi}, \gtwo{\chi}\right) \\ [\myskip]
 				\pcreturn (\srs, \rho) \\ [\myskip]
@@ -241,11 +241,11 @@ used to show that property for $\PCOMp$.
 		\pchspace
 		% 
 		\procedure{$\upd(\srs, \{\rho_j \}_{j=1}^n)$}{
-			\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\dconst}},
+			\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\maxdeg}},
 			\gtwo{B} \right) \\ [\myskip]
 			\chi' \sample \FF_p  \\ [\myskip]
 			\srs' := 
-			\left( \gone{\smallset{{\chi'}^i A_i}_{i = 0}^{\dconst}},
+			\left( \gone{\smallset{{\chi'}^i A_i}_{i = 0}^{\maxdeg}},
 			\gtwo{\chi' B} \right); 
 			\rho' =	\left( \gone{\chi' A_1, \chi'}, \gtwo{\chi'}\right) \\ [\myskip]
 			\pcreturn (\srs', \rho')
@@ -255,21 +255,21 @@ used to show that property for $\PCOMp$.
 		\begin{pchstack}
 		%
 		\procedure{$\verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$}{
-			\text{Parse }  \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\dconst}},
+			\text{Parse }  \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\maxdeg}},
 			\gtwo{B} \right) \text{and } \{\rho_j \}_{j=1}^n \text{ as } \left\{\left( P_j, \bP_j, \hP_j \right)\right\}_{j=1}^n \\ [\myskip]
 			\text{Verify Update proofs: } \\ [\myskip]
 			\t \bP_1 = P_1 \\ [\myskip]
 			\t P_j \bullet \gtwo{1} = P_{j-1} \bullet \hP_j \quad \forall j \geq 2 \\ [\myskip]
 			\t \bP_n \bullet \gtwo{1} = \gone{1} \bullet \hP_n \\ [\myskip]
 			\text{Verify SRS structure: } \\ [\myskip]
-			\t \gone{A_i} \bullet \gtwo{1} = \gone{A_{i-1}} \bullet \gtwo{B} \text{ for all } 0 < i \leq \dconst %\\ [\myskip]
+			\t \gone{A_i} \bullet \gtwo{1} = \gone{A_{i-1}} \bullet \gtwo{B} \text{ for all } 0 < i \leq \maxdeg %\\ [\myskip]
 		}
 		%
 		\end{pchstack}
 		\end{pcvstack}
 		%
 		\end{minipage}}}
-	\caption{Updatable SRS scheme for $\PCOMp$} 
+	\caption{Updatable SRS scheme $\SRScer$ for $\PCOMp$} 
 	\label{fig:upd-scheme}
 \end{figure}
 
@@ -280,13 +280,12 @@ used to show that property for $\PCOMp$.
 \begin{minipage}{14.3cm}
 \begin{pcvstack}[]
   \begin{pchstack}
-			\procedure{$\kgen(\secparam, \maxdeg)$}
+			\procedure{$\SRScer(\secparam, \maxdeg)$}
 			{
-			\chi \sample \FF_p \\ [\myskip]
-			\pcreturn \srs = \gone{1, \ldots, \chi^{\maxdeg}}, \gtwo{\chi}\\ [\myskip]
+			\text{cf.~\cref{fig:upd-scheme}}
       }\\
       
-			
+			\hspace*{1.7cm}
 			\pchspace
 			
 			\procedure{$\com(\srs, \vec{\p{f}}(X))$}
@@ -296,6 +295,7 @@ used to show that property for $\PCOMp$.
 			}
 
       \pchspace
+	  \hspace*{1.7cm}
 
       \procedure{$\open(\srs, \vec{z}, \vec{s}, \vec{\p{f}}(X), \aux_0)$}
 			{
@@ -366,9 +366,7 @@ used to show that property for $\PCOMp$.
 \end{minipage}
   }}
 	\caption{$\PCOMp$ polynomial commitment scheme. Here $\abs{\vec{z}} = l$ is the number of evaluation points, the number of committed polynomials is $m$, $K_j$ is the set of polynomials that was evaluated at point $z_j$. Functions $g_0$ and $g_1$ are injective and specific to the context in which the polynomial commitment is used. (In our case, functions $g_0$ and $g_1$ are produce partial transcripts of the proof that utilizes the commitment scheme, $\aux$ contains all additional information that is needed by the functions.)
-  In the boxes we describe values returned or equality computed in the ideal protocol where the verifier checks equalities on the polynomials instead of their evaluations. For algorithm $\pcalgostyle{Alg}$ we denote its ideal variant by $\pcalgostyle{Alg}'$.
-  \michals{29.04}{adjust to $\initU$} \markulf{30.04}{Why not just refer to Fig.5?}
-  }
+  In the boxes we describe values returned or equality computed in the ideal protocol where the verifier checks equalities on the polynomials instead of their evaluations. For algorithm $\pcalgostyle{Alg}$ we denote its ideal variant by $\pcalgostyle{Alg}'$.}
 	\label{fig:pcomp}
   \end{figure}
 

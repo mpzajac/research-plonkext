@@ -308,7 +308,7 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
 \subsection{Rewinding-Based Knowledge Soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
-  $\plonkprot$ \hamid{1.5}{$\plonkprot_\fs$?} is $(3, 3 \noofc + 16)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
+  $\plonkprotfs$ is $(3, 3 \noofc + 16)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
     \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 16}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 16}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,,
   \]
@@ -360,7 +360,7 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
 \subsection{Trapdoor-Less Zero-Knowledge of Plonk}
 \begin{lemma}
   \label{lem:plonk_tlzk}
-  Let $\plonkprot$ be zero-knowledge with security $\epszk(\secpar)$. Then $\plonkprot$ \hamid{1.5}{$\plonkprot_\fs$?} is 3-programmable trapdoor-less zero-knowledge
+  Let $\plonkprotfs$ be zero-knowledge with security $\epszk(\secpar)$. Then $\plonkprotfs$ is 3-programmable trapdoor-less zero-knowledge
   with security $\epszk(\secpar)$.
 \end{lemma}
 
