@@ -121,15 +121,15 @@ The definition of updatable SRS ceremonies of~\cite{C:GKMMM18} requires the foll
 
 \begin{itemize} 
 	\item
-	$(\srs,\rho) \gets \kgen(\REL)$ is a PPT algorithm that takes a relation $\REL$ and outputs a SRS $\srs$, and correctness proof $\rho$.
+	$(\srs,\rho) \gets \kgen(\REL)$ is a PPT algorithm that takes a relation $\REL$ and outputs a reference string $\srs$, and correctness proof $\rho$.
 	\item
-	$ (\srs',\rho') \gets \upd(\srs, \{\rho_j \}_{j=1}^n)$ is a PPT algorithm that takes a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
+	$ (\srs',\rho') \gets \upd(\srs, \{\rho_j \}_{j=1}^n)$ is a PPT algorithm that takes a $\srs$, a list of update proofs and outputs an updated $\srs'$ together with a proof of correct update~$\rho'$. 
 	\item
-	$b \gets \verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$ is a DPT algorithm that takes a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.\footnote{For instance \plonk{} and \marlin{} will use the $\kgen$, $\upd$ and $\verifyCRS$ algorithms in~\cref{fig:upd-scheme}.}
+	$b \gets \verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$ takes a reference string $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.\footnote{For instance \plonk{} and \marlin{} will use the $\kgen$, $\upd$ and $\verifyCRS$ algorithms in~\cref{fig:upd-scheme}.}
 \end{itemize}
 
 
-In the next section, we define security notions in the updatable setting by giving the adversary access to an SRS update oracle $\initU$, defined in~\cref{fig:upd}. The oracle allows the adversary to control the SRS generation. A trusted setup can be expressed by the updatable setup definition simply by restricting the adversary to only call the oracle on $\intent = \setup$ and $\intent = \final$. Note that a soundness adversary now has access to both the random oracle $\ro$ and $\initU$:  $(\inp, \zkproof) \gets \adv^{\initU,\ro}(1^\secpar)$. %\chaya{29.04}{can we move the update oracle figure to section 5? I know we talk about the oracle here, but I am wondering if there is a way to keep $\initU$ general here and give the description below specific to Plonk/Marlin later on}.\hamid{29.4}{Since we use $\initU$ in most of the definitions 1-5 in section 3, I believe it's better to keep it here.}>>>>>>> bbec4288f7bec60d201228aa23c50b277515b3f5
+In the next section, we define security notions in the updatable setting by giving the adversary access to an SRS update oracle $\initU$, defined in~\cref{fig:upd}. The oracle allows the adversary to control the SRS generation. A trusted setup can be expressed by the updatable setup definition simply by restricting the adversary to only call the oracle on $\intent = \setup$ and $\intent = \final$. Note that a soundness adversary now has access to both the random oracle $\ro$ and $\initU$:  $(\inp, \zkproof) \gets \adv^{\initU,\ro}(1^\secpar; r)$.
 
 \newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}% 
 
