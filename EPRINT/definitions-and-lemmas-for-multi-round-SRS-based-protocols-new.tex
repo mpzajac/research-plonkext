@@ -237,7 +237,7 @@ follows the definition below:
 
 \begin{definition}[Updatable $(\ur{k})$-protocol]
 Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. 
-We say that $\proofsystem$ \hamid{1.5}{$\psfs$?} has \emph{unique responses for $k$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\advur$:
+We say that $\psfs$ has \emph{unique responses for $k$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\advur$:
   \[
 	\Pr\left[
 		\left.
@@ -253,7 +253,7 @@ We say that $\proofsystem$ \hamid{1.5}{$\psfs$?} has \emph{unique responses for 
 	\right] \leq \epsur(\secpar) 
 	\]
 	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1, \dots, a_\mu,a_{\mu+1}))$ behaves as $\verifier (\srs, \inp, \zkproof)$ except for the $k$-th challenge it uses $c$ instead of calling $\ro(\tzkproof[0..k]) $. That is, it allows the $k$-th challenge to be programmed by $\adv$. 
-	If $\epsur(\secpar)$ is negligible, we simply say $\proofsystem$ \hamid{1.5}{$\psfs$?} is $\ur{k}$.
+	If $\epsur(\secpar)$ is negligible, we simply say $\psfs$  is $\ur{k}$.
 \end{definition}
 
 Intuitively, a protocol is $\ur{k}$ if it is infeasible for a $\ppt$ adversary to produce a pair of accepting proofs $\zkproof \neq \zkproof'$ that are the same on the first $k$ messages of the prover.  
@@ -374,7 +374,9 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	Here, $\srs$ is the finalized SRS. List $\Qro$ contains all of the adversaries
 	queries to $\ro$ and the random oracle's answers, $\abs{\Qro}\leq q$, and list $\Qsrs$ contains all $(\srs, \rho)$ of updated SRSs and their proofs.
 %	 We call the protocol $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound when $\tdv$ builds a $(n_1, \ldots, n_\mu)$-tree of transcripts.
-\hamid{1.5}{We still need this sentence:  We call the protocol $(k, n)$-rewinding-based knowledge sound if $\tree$ is a $(k, n)$-tree of accepting transcripts.}
+% \hamid{1.5}{We still need this sentence:  
+We call the protocol $(k, n)$-rewinding-based knowledge sound if $\tree$ is a $(k, n)$-tree of accepting transcripts.
+% }
 \end{definition}
 	
 
