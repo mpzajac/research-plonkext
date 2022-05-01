@@ -22,7 +22,7 @@ property. Intuitively, this guarantees that a prover that creates a valid proof 
 a valid witness. However, deployments of zkSNARKs in real-world applications, unless
 they are carefully designed to have application-specific malleability protection,
 e.g.~\cite{SP:BCGGMT14}, require a stronger property --
-\textit{simulation-extractability} -- that corresponds much more
+\emph{simulation-extractability} (SE) -- that corresponds much more
 closely to existential unforgeability of signatures.
 
 This correspondence is made precise by SoK, which use an instance of an
@@ -31,14 +31,14 @@ which typically would be related to the public key via a discrete logarithm or s
 other hard relation~\cite{AC:DHLW10}, SoK signing requires knowledge of the
 witness. Intuitively, an SoK is thus a proof of knowledge (PoK) of the witness that is tied to a message. To model strong existential unforgeability of SoK signatures, even
 when given an oracle for obtaining signatures on different instances, an attacker
-must not be able to produce new signatures. Chase and Lysyanskaya model this via the
-notion of simulation extractability (SE) which guarantees extraction of the witness
+must not be able to produce new signatures. Chase and Lysyanskaya~\cite{C:ChaLys06} model this via the
+notion of simulation extractability which guarantees extraction of the witness
 even in the presence of simulated signatures.
 
-In practice, an adversary against a zkSNARK system also has access to proofs computed by honest parties that should be modeled as simulated proofs. The definition of knowledge soundness ignores the ability of an adversary
+In practice, an adversary against a zkSNARK system also has access to proofs computed by honest parties that should be modeled as simulated proofs. The definition of knowledge soundness (KS) ignores the ability of an adversary
 to see other valid proofs that may occur in real-world applications. For instance,
 in applications of zkSNARKs in privacy-preserving blockchains, proofs are posted on
-the chain for all blockchain participants to see. We thus argue that simulation extractability is a more suitable notion for robust protocol design.
+the chain for all blockchain participants to see. We thus argue that SE is a more suitable notion for robust protocol design. We also claim that SE has primarily an intellectual cost, as it is harder to prove SE than KE---another analogy here is CCA vs CPA security for encryption. However, we will show that the proof systems we consider are SE out-of-the-box.
 
 
 \markulf{01.05}{Old:
