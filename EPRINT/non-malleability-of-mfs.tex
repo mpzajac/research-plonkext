@@ -61,13 +61,13 @@ verify that \cref{eq:marlin_eq_2} holds.
   Let $\PCOM$ be a commitment of knowledge with security $\epsk(\secpar)$,
   $\epsbind(\secpar)$ and has unique response property with security
   $\epsop(\secpar)$. Then probability that a $\ppt$ adversary $\adv$ breaks
-  $\marlinprotfs$ $\ur{1}$ property is at most
+  $\marlinprotfs$ $\ur{2}$ property is at most
   \changedm{$11 \cdot (\epsop (\secpar)) + 6 \cdot \epsbind (\secpar) +
     \infrac{3}{\abs{\FF_p}}.$} \mxout{$6 \cdot (\epsbind + \epsop + \epsk) + \epss$}
 \end{lemma}
 \changedm{
 \begin{proof}
-  Let $\adv$ be an algebraic adversary tasked to break the $\ur{1}$-ness of
+  Let $\adv$ be an algebraic adversary tasked to break the $\ur{2}$-ness of
   $\marlinprotfs$. We show that the first prover's message determines, along with
   the verifiers challenges, the rest of it.  This is done by game hops. In the games,
   the adversary outputs two proofs $\zkproof^0$ and $\zkproof^1$ for the same statement.
@@ -280,7 +280,7 @@ $\simulator$.
 \subsection{From Rewinding-Based Knowledge Soundness and Unique Response Property to\COMMENT{ forking}
   Simulation Extractability of $\marlinprotfs$}
 \begin{corollary}
-  Assume that $\marlinprot$ is $\ur{1}$ with security
+  Assume that $\marlinprot$ is $\ur{2}$ with security
   $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and rewinding-based knowledge sound
   with security $\epss(\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
   random oracle. Let $\advse$ be an adversary that can make up to $q$
