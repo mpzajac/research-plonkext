@@ -300,9 +300,9 @@ Due to lack of space we provide here only theorem statements and intuitions why 
 \oursubsub{Rewinding-Based Knowledge Soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
-  $\plonkprotfs$ is $(3, 3 \noofc + 16)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
+  $\plonkprotfs$ is $(3, 3 \noofc + 6)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 15}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 15}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + (3 \noofc + 5) \cdot \epsid (\secpar)\,,
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 15}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 5}{\abs{\FF_p}}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) + (3 \noofc + 6) \cdot \epsid (\secpar)\,,
   \]
 	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\plonkprot$, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + 5, 1)$-$\udlog$ 
 	assumption.
@@ -311,66 +311,20 @@ Due to lack of space we provide here only theorem statements and intuitions why 
 \begin{proof}[Intuitions]
   We use Attema et al.~\cite[Proposition 2]{EPRINT:AttFehKlo21} to bound the probability that an algorithm $\tdv$ does not obtain a tree of acceptable transcript in an expected number of runs. This happens with probability at most
   \[
-    1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 15}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 15}{\abs{\FF_p}}}
+    1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 5}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 5}{\abs{\FF_p}}}
   \]
-  Then we analyse the case if one of the proof in the tree $\tree$ outputted by $\tdv$ is not acceptable by the ideal verifier. This discrepancy can be used to break an instance of an updatable dlog assumption what happens with probability at most $\epsudlog (\secpar)$. Additionally, it may be impossible to extract the witness from a tree where each of the transcripts is acceptable by the ideal verifier if the adversary broke soundness of the ideal verifier in one of the transcripts. That happens with probability at most $(3 \noofc + 5) \epsid (\secpar)$.
+  Then we analyse the case if one of the proof in the tree $\tree$ outputted by $\tdv$ is not acceptable by the ideal verifier. This discrepancy can be used to break an instance of an updatable dlog assumption what happens with probability at most $(3 \noofc + 6)  \cdot \epsudlog (\secpar)$. Additionally, it may be impossible to extract the witness from a tree where each of the transcripts is acceptable by the ideal verifier if the adversary broke soundness of the ideal verifier in one of the transcripts. That happens with probability at most $(3 \noofc + 6) \cdot \epsid (\secpar)$.
  \end{proof}
   
 
 \oursubsub{Trapdoor-Less Zero-Knowledge of Plonk}
 \begin{lemma}
   \label{lem:plonk_tlzk}
-  Let $\plonkprotfs$ be zero-knowledge with security $\epszk(\secpar)$. Then $\plonkprotfs$ is 3-programmable trapdoor-less zero-knowledge
-  with security $\epszk(\secpar)$.
+  $\plonkprotfs$ is 3-programmable trapdoor-less zero-knowledge.
 \end{lemma}
 
-\begin{proof}
-  As noted in \cref{def:upd-scheme}, subvertible zero-knowledge implies updatable zero-knowledge. Hence, here we show that Plonk is TLZK even against adversaries who picks
-  the SRS on its own.
-
-The adversary $\adv(\secparam)$ picks an SRS $\srs$ and instance--witness pair
-$(\inp, \wit)$ and gets a proof $\zkproof$ simulated by the simulator
-$\simulator$ which proceeds as follows.
-
-For its $1$-st message the simulator  picks randomly both the randomizers $b_1, \ldots, b_6$ and
-sets $\wit_i = 0$ for $i \in \range{1}{3\noofc}$. Then $\simulator$
-outputs $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$. For the first
-challenge, the simulator picks permutation argument challenges $\beta, \gamma$
-randomly.
-
-For its $2$-nd message, the simulator computes $\p{z}(X)$ from
-the newly picked randomizers $b_7, b_8, b_9$ and coefficients of polynomials
-$\p{a}(X), \p{b}(X), \p{c}(X)$. Then it evaluates $\p{z}(X)$ honestly and outputs
-$\gone{\p{z}(\chi)}$. Challenge $\alpha$ that should be sent by the verifier
-after the simulator's $2$ message is picked by the simulator at random.
-
-In its $3$-rd message the simulator starts by picking at random a challenge $\chz$, which
-in the real proof comes as a challenge from the verifier sent \emph{after} the prover
-sends its $3$-rd message. Then $\simulator$ computes evaluations
-\(\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma
-    2}}(\chz), \pubinppoly(\chz), \lag_1(\chz), \p{Z_H}(\chz),\allowbreak
-\p{z}(\chz\omega)\) and computes $\p{t}(X)$ honestly. Since for a random
-$\p{a}(X), \p{b}(X), \p{c}(X), \p{z}(X)$ the constraint system is (with
-overwhelming probability) not satisfied and the constraints-related polynomials
-are not divisible by $\p{Z_H}(X)$, hence $\p{t}(X)$ is a rational function
-rather than a polynomial. Then, the simulator evaluates $\p{t}(X)$ at $\chz$ and
-picks randomly a degree-$(3 \noofc + 15)$ polynomial $\p{\tilde{t}}(X)$ such that
-$\p{t}(\chz) = \p{\tilde{t}}(\chz)$ and publishes a commitment
-$\gone{\p{\tilde{t}_{lo}}(\chi), \p{\tilde{t}_{mid}}(\chi),
-  \p{\tilde{t}_{hi}}(\chi)}$. After that the simulator outputs $\chz$ as a
-challenge.
-
-For the next message, the simulator computes polynomial $\p{r}(X)$ as an honest
-prover would, cf.~\cref{sec:plonk_explained} and evaluates $\p{r}(X)$ at $\chz$.
-
-The rest of the evaluations are already computed, thus $\simulator$ simply outputs
-\( \p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma
-    2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega)\,.  \) After that it picks randomly
-the challenge $v$, and prepares the the last message as an honest prover
-would. Eventually, $\simulator$ and outputs the final challenge, $u$, by picking it
-at random as well.
-
-We argue about zero-knowledge as usual. The property holds since the polynomials that has witness elements at their coefficients are randomized by at least two randomizers and are evaluated at at most two points; and the simulator computes all polynomials as an honest prover would.
+\begin{proof}[Intuitions]
+  The simulator, that does not know the SRS trapdoor can make a simulated proof by programming the random oracle. It proceeds as follows. It picks a random witness and behaves as an honest prover up to the point when a commitment to the polynomial $\p{t}(X)$ is sent. Since the simulator picked a random witness and $\p{t}(X)$ is a polynomial only (modulo some negligible function) when the witness is correct, it cannot compute commitment to $\p{t}(X)$ as it is a rational function. However, the simulator can pick a random challenge $\chz$ and a polynomial $\p{\tilde{t}}(X)$ such that $\p{t} (\chz)  = \p{\tilde{t}} (\chz)$. Then the simulator continues behaving as an honest prover. We argue that such a simulated proof is indistinguishable from a real one.
 \end{proof}
 
 \oursubsub{Simulation Extractability of~$\plonkprotfs$}
@@ -382,9 +336,9 @@ $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:updsimext}.
 \label{thm:plonkprotfs_se}
 $\plonkprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$ with extraction failure probability 
 \[
-  \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + \epsudlog (\secpar) + \epsid (\secpar),
+  \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) + (3 \noofc + 6) \cdot \epsid (\secpar),
 \]
-where $\epserr (\secpar) = \left(1 - \frac{3 \noofc + 15}{\abs{\FF_p}} \right)$, $\abs{\FF_p}$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
+where $\epserr (\secpar) = \left(1 - \frac{3 \noofc + 5}{\abs{\FF_p}} \right)$, $\abs{\FF_p}$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
 \end{corollary}
  
 %%% Local Variables:
