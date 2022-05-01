@@ -173,7 +173,7 @@ randomly $\alpha, \chi \sample \FF_p$ and outputs
 \item[Message 3] The prover computes commitment openings. That is, it outputs
   \begin{align*}
     \gone{o_a} & = \open(\srs, z, \pr(z, 1), \pr(X, 1)) \\
-    \gone{o_b} & = \open(\srs, yz, \pr(yz, 1), \pr(X, 1)) \\
+    \gone{o_b} & = \open(\srs, y z, \pr(y z, 1), \pr(X, 1)) \\
     \gone{o_t} & = \open(\srs, z, \pt(z, y), \pt(X, y)) 
   \end{align*}
   along with evaluations $a' = \pr(z, 1), b' = \pr(y, z), t' = \pt(z, y)$.  Then it
@@ -204,7 +204,7 @@ is it sets $t' = a'(b' + s') - \p{k}(y)$ and checks the following:
 \begin{equation*}
   \begin{split}
     &\PCOMs.\verifier(\srs, \multconstr, \gone{r}, z, a', \gone{o_a}), \\
-    &\PCOMs.\verifier(\srs, \multconstr, \gone{r}, yz, b', \gone{o_b}),\\
+    &\PCOMs.\verifier(\srs, \multconstr, \gone{r}, y z, b', \gone{o_b}),\\
     &\PCOMs.\verifier(\srs, \dconst, \gone{t}, z, t', \gone{o_t}),\\
     &\PCOMs.\verifier(\srs, \dconst, \gone{s}, z, s', \gone{o_s}),\\
   \end{split}
@@ -407,7 +407,7 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
   \ncase{Game 1 to Game 2} % 
   As usual, we show a reduction that breaks an instance of a $\uldlog$ assumption when Game 2 is aborted, while Game 1 is not.
 
-  Let $\rdvuldlog$ be a reduction that gets as input an $(\maxdeg, \maxdeg)$-$\uldlog$ instance $\gone{\chi^{-\maxdeg}, 1, \ldots, \chi^{\maxdeg}}, \gtwo{\chi^{-\maxdeg}, 1, \ldots, \chi^{\maxdeg}}$. Then it can update the instance to another one $\gone{\chi'^{-\maxdeg}, 1, \ldots, \chi'^{\maxdeg}}, \gtwo{\chi'^{-\maxdeg}, 1, \ldots, \chi'^{\maxdeg}}$. Eventually, the reduction ouputs $\chi'$.
+  Let $\rdvuldlog$ be a reduction that gets as input an $(\maxdeg, \maxdeg)$-$\uldlog$ instance $\gone{\chi^{-\maxdeg}, 1, \ldots, \chi^{\maxdeg}}, \gtwo{\chi^{-\maxdeg}, 1, \ldots, \chi^{\maxdeg}}$. Then it can update the instance to another one $\gone{\chi'^{-\maxdeg}, 1, \ldots, \chi'^{\maxdeg}}, \gtwo{\chi'^{-\maxdeg}, 1, \ldots, \chi'^{\maxdeg}}$. Eventually, the reduction outputs $\chi'$.
 	%
 	The reduction $\rdvuldlog$ proceeds as follows.
 	First, it builds $\adv$'s SRS $\srs$ using the input $\uldlog$ instance. Then it processes the adversary's update query by adding it to the list $\Qsrs$ and passing it to its own update oracle getting instance $\gone{\chi'^{-\maxdeg}, 1, \ldots, \chi'^{\maxdeg}}, \gtwo{\chi'^{-\maxdeg}, 1, \ldots, \chi'^{\maxdeg}}$. The updated SRS $\srs'$ is then computed and given to $\adv$. $\rdvuldlog$ also takes care of the random oracle queries made by $\adv$. It picks their answers honestly and writes them in $\Qro$. The reduction then starts $\tdv(\srs, \adv, r, \Qro, \Qsrs)$.
@@ -476,7 +476,7 @@ $\sonicprotfs$ is 2-programmable trapdoor-less zero-knowledge.
 \end{proof}
 \begin{remark} 
   As noted in \cite{CCS:MBKM19}, $\sonic$ is statistically subversion zero-knowledge (Sub-ZK). As noted in \cite{AC:ABLZ17}, one way to achieve
-  subversion zero-knowledge is to utilise an extractor that extracts a SRS
+  subversion zero-knowledge is to utilize an extractor that extracts a SRS
   trapdoor from a SRS-generator. Unfortunately, a NIZK made subversion
   zero-knowledge by this approach cannot achieve perfect Sub-ZK as one has to
   count in the probability of extraction failure. However, with the simulation

@@ -221,8 +221,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 \subsection{Unique Response Protocols}
 A technical hurdle identified by Faust et al.~\cite{INDOCRYPT:FKMV12} for proving
 simulation extraction via the Fiat--Shamir transformation is that the transformed
-proof system satisfies a unique response property. The original Fischlin's
-formulation, although suitable for applications presented in
+proof system satisfies a unique response property. The original formulation by Fischlin, although suitable for applications presented in
 \cite{C:Fischlin05,INDOCRYPT:FKMV12}, does not suffice in our case. First, the
 property assumes that the protocol has three messages, with the second being the
 challenge from the verifier. That is not the case we consider here. Second, it is not
@@ -234,7 +233,7 @@ protocol could have a message, beyond the first prover's message, which is
 randomized. Unique response cannot hold in this case. Finally, the protocols we
 consider here are not in the standard model, but use an SRS.
 
-We work around these obstacles by providing a generalised notion of the unique
+We work around these obstacles by providing a generalized notion of the unique
 response property. More precisely, we say that a $(2\mu + 1)$-message protocol
 has \emph{unique responses from $k$}, and call it a $\ur{k}$-protocol, if it
 follows the definition below:
@@ -263,7 +262,7 @@ We say that $\psfs$ has \emph{unique responses for $k$} with security $\epsur(\s
 Intuitively, a protocol is $\ur{k}$ if it is infeasible for a $\ppt$ adversary to produce a pair of accepting proofs $\zkproof \neq \zkproof'$ that are the same on the first $k$ messages of the prover.  
 %We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
 
-We note that the definition above can be easily generalized to allow the adversary to program the oracle on more than just a single point. However, since all the protocols we analyse in this paper require only single-point programming, we opted for a simplified version of the definition.
+We note that the definition above can be easily generalized to allow the adversary to program the oracle on more than just a single point. However, since all the protocols we analyze in this paper require only single-point programming, we opted for a simplified version of the definition.
   
 
 \subsection{Rewinding-Based Knowledge Soundness}
@@ -307,7 +306,7 @@ Before giving the definition of rewinding-based knowledge soundness for NIZK pro
     \pcind 
 		\pcelse \pcreturn (0, \bot)
 	}}
-\caption{Generalised forking algorithm $\genforking_{\zdv}^{m, m'}$
+\caption{Generalized forking algorithm $\genforking_{\zdv}^{m, m'}$
   \michals{5.11}{This forking lemma version is not as general as in Attema et al to
     be exact -- they allow tree of acceptable transcripts to branch at multiple
     places. however, that is not necessary in our case. Later, we should allow ``full
