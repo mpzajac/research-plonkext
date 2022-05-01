@@ -146,14 +146,14 @@ the Fiat--Shamir transformed version of Plonk.
 	\begin{align*}
     & \p{t}(X)  = \\
     & (\p{a}(X) \p{b}(X) \selmulti(X) + \p{a}(X) \selleft(X) + 
-      \p{b}(X)\selright(X) + \p{c}(X)\seloutput(X) + \pubinppoly(X) + \selconst(X)) 
-      \frac{1}{\p{Z_H}(X)} +\\
+      \p{b}(X)\selright(X) + \p{c}(X)\seloutput(X) + \pubinppoly(X) + \selconst(X)) /  
+      \p{Z_H}(X) +\\
     & + ((\p{a}(X) + \beta X + \gamma) (\p{b}(X) + \beta k_1 X + \gamma)(\p{c}(X) 
-      + \beta k_2 X + \gamma)\p{z}(X)) \frac{\alpha}{\p{Z_H}(X)} \\
+      + \beta k_2 X + \gamma)\p{z}(X)) \infrac{\alpha}{\p{Z_H}(X)} \\
     & - (\p{a}(X) + \beta \p{S_{\sigma 1}}(X) + \gamma)(\p{b}(X) + \beta 
       \p{S_{\sigma 2}}(X) + \gamma)(\p{c}(X) + \beta \p{S_{\sigma 3}}(X) + 
-      \gamma)\p{z}(X \omega))  \frac{\alpha}{\p{Z_H}(X)} \\
-    & + (\p{z}(X) - 1) \lag_1(X) \frac{\alpha^2}{\p{Z_H}(X)}
+      \gamma)\p{z}(X \omega))  \infrac{\alpha}{\p{Z_H}(X)} \\
+    & + (\p{z}(X) - 1) \lag_1(X) \infrac{\alpha^2}{\p{Z_H}(X)}
 	\end{align*}
 	Split $\p{t}(X)$ into degree less then $\noofc$ polynomials
   $\p{t_{lo}}(X), \p{t_{mid}}(X), \p{t_{hi}}(X)$, such that
@@ -185,19 +185,19 @@ the Fiat--Shamir transformed version of Plonk.
 \item[Message 5] Compute the opening challenge $v \in \FF_p$,
   $v = \ro(\tzkproof[0..4])$.  Compute the openings for the polynomial commitment
   scheme
-	\begin{align*}
+	\hspace*{-2cm}\begin{align*}
 	& \p{W_\chz}(X) = \frac{1}{X - \chz} \left(
    \begin{aligned}
-     & \p{t_{lo}}(X) + \chz^\noofc \p{t_{mid}}(X) + \chz^{2 \noofc} \p{t_{hi}}(X) - \p{t}(\chz)\\
-     & + v(\p{r}(X) - \p{r}(\chz)) 
+     & \p{t_{lo}}(X) + \chz^\noofc \p{t_{mid}}(X) + \chz^{2 \noofc} \p{t_{hi}}(X) - \p{t}(\chz)
+     + v(\p{r}(X) - \p{r}(\chz)) 
       + v^2 (\p{a}(X) - \p{a}(\chz))\\
      & + v^3 (\p{b}(X) - \p{b}(\chz))
-      + v^4 (\p{c}(X) - \p{c}(\chz))\\
-     & + v^5 (\p{S_{\sigma 1}}(X) - \p{S_{\sigma 1}}(\chz))
-      + v^6 (\p{S_{\sigma 2}}(X) - \p{S_{\sigma 2}}(\chz))
+      + v^4 (\p{c}(X) - \p{c}(\chz))
+      + v^5 (\p{S_{\sigma 1}}(X) - \p{S_{\sigma 1}}(\chz)) \\
+     & + v^6 (\p{S_{\sigma 2}}(X) - \p{S_{\sigma 2}}(\chz))
    \end{aligned}
        \right)\\
-    & \p{W_{\chz \omega}}(X) = \frac{\p{z}(X) - \p{z}(\chz \omega)}{X - \chz \omega}
+    & \p{W_{\chz \omega}}(X) = \infrac{(\p{z}(X) - \p{z}(\chz \omega))}{(X - \chz \omega)}
   \end{align*}
 	Output $\gone{\p{W_{\chz}}(\chi), \p{W_{\chz \omega}}(\chi)}$.
 \end{description}
@@ -219,10 +219,10 @@ The \plonk{} verifier works as follows
       \lag_i(\chz)$.
 	\item Compute quotient polynomials evaluations
 	\begin{multline*}
-    \p{t} (\chz) = \frac{1}{\p{Z_H}(\chz)} \Big(
-    \p{r} (\chz) + \pubinppoly(\chz) - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \\
+    \p{t} (\chz) =  \Big(
+    \p{r} (\chz) + \pubinppoly(\chz) - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) 
     (\p{c}(\chz) + \gamma)\p{z}(\chz \omega) \alpha - \lag_1 (\chz) \alpha^2
-    \Big) \,.
+    \Big) / {\p{Z_H}(\chz)} \,.
 	\end{multline*}
 	\item Compute batched polynomial commitment
 	$\gone{D} = v \gone{r} + u \gone {z}$ that is
@@ -308,7 +308,7 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
 \subsection{Rewinding-Based Knowledge Soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
-  $\plonkprot$ \hamid{1.5}{$\plonkprot_\fs$?} is $(3, 3 \noofc + 16)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
+  $\plonkprotfs$ is $(3, 3 \noofc + 16)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
     \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 16}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 16}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,,
   \]
@@ -360,7 +360,7 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
 \subsection{Trapdoor-Less Zero-Knowledge of Plonk}
 \begin{lemma}
   \label{lem:plonk_tlzk}
-  Let $\plonkprot$ be zero-knowledge with security $\epszk(\secpar)$. Then $\plonkprot$ \hamid{1.5}{$\plonkprot_\fs$?} is 3-programmable trapdoor-less zero-knowledge
+  Let $\plonkprotfs$ be zero-knowledge with security $\epszk(\secpar)$. Then $\plonkprotfs$ is 3-programmable trapdoor-less zero-knowledge
   with security $\epszk(\secpar)$.
 \end{lemma}
 
@@ -394,7 +394,7 @@ $\p{a}(X), \p{b}(X), \p{c}(X), \p{z}(X)$ the constraint system is (with
 overwhelming probability) not satisfied and the constraints-related polynomials
 are not divisible by $\p{Z_H}(X)$, hence $\p{t}(X)$ is a rational function
 rather than a polynomial. Then, the simulator evaluates $\p{t}(X)$ at $\chz$ and
-picks randomly a degree-$(3 \noofc - 1)$ polynomial $\p{\tilde{t}}(X)$ such that
+picks randomly a degree-$(3 \noofc + 15)$ polynomial $\p{\tilde{t}}(X)$ such that
 $\p{t}(\chz) = \p{\tilde{t}}(\chz)$ and publishes a commitment
 $\gone{\p{\tilde{t}_{lo}}(\chi), \p{\tilde{t}_{mid}}(\chi),
   \p{\tilde{t}_{hi}}(\chi)}$. After that the simulator outputs $\chz$ as a
