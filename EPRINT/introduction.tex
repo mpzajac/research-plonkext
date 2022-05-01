@@ -115,7 +115,7 @@ The first universal zkSNARK with updatable and linear size SRS was
 Sonic proposed by Maller et al.~in \cite{CCS:MBKM19}. Subsequently, Gabizon, Williamson, and Ciobotaru designed Plonk~\cite{EPRINT:GabWilCio19} which currently is the
 most efficient updatable universal zkSNARK. Independently, Chiesa et
 al.~\cite{EC:CHMMVW20} proposed Marlin with comparable efficiency to
-Plonk. \chaya{02.05}{we spelled out all author names for Plonk, but not for Sonic and Marlin?}
+Plonk. %\chaya{02.05}{we spelled out all author names for Plonk, but not for Sonic and Marlin?}\markulf{1.5}{I did it because it was only three and plonk is our result in the body.}
 
 \paragraph{The challenge of SE in the updatable setting.}
 
@@ -208,7 +208,7 @@ is, if extraction from such a tree fails, then we break an underlying
 computational assumption. Moreover, this should hold even against adversaries
 that contribute to the SRS generation.
 
-\oursubsub{Unique Response Property (UR).}  Another property
+\oursubsub{Unique Response Protocols (UR).}  Another property
 required to show simulation extractability is the unique response property which says
 that for $3$-message sigma protocols, the response of the prover ($3$-rd message) is determined by the first message and the challenge~\cite{C:Fischlin05} (intuitively, the prover can only employ fresh randomness in the first
 message of the protocol). We cannot use this definition since the protocols

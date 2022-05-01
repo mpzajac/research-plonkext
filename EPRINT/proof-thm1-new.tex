@@ -75,7 +75,7 @@
 	\qed
 	\end{proof}
 
-	We denote by $\waccProb$ the probability that $\advcss$ outputs an acceptable proof. We note that $\waccProb$ is at most $\epsur (\secpar)$ far from the probability that $\advse$ outputs an acceptable proof. By the union bound the probability that $\advcss$ outputs an acceptable proof is at least $\waccProb \geq \accProb - \epsur (\secpar)$. %\markulf{30.04}{I am ignorant. What is the role of the union bound here. Is this the same as up-to-bad reasoning?}
+	We denote by $\waccProb$ the probability that $\advcss$ outputs an acceptable proof. We note that $\waccProb$ is at most $\epsur (\secpar)$ far from the probability that $\advse$ outputs an acceptable proof. The probability that $\advcss$ outputs an acceptable proof is at least $\waccProb \geq \accProb - \epsur (\secpar)$. %\markulf{30.04}{I am ignorant. What is the role of the union bound here. Is this the same as up-to-bad reasoning?}
 %
 	Since $\psfs$ is $\epscss (\secpar, \waccProb,q)$ rewinding-based knowledge sound, there is an extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of accepting transcripts $\tree$ and fails to extract the witness with probability at most $\epscss (\secpar, \waccProb, q)$. The extractor $\extse$ outputs the witness with the same probability.
 
@@ -84,6 +84,14 @@
 	Thus $\epsse(\secpar,\accProb,q) = \epscss (\secpar, \waccProb,q) \leq \epscss(\secpar,\accProb - \epsur,q)$.
 	\qed
 	\end{proof}
+
+\begin{remark}
+Observe that our theorem does not depend on $\epszk(\secpar)$. There is no real prover. What matters is only the $k$-programmability of the TLZK property. 
+\end{remark}
+
+\begin{remark}
+Observe that the theorem does not prescribe a shape for the tree produced by the tree building algorithm $\tdv$. Interestingly, in our concrete results the tree builder outputs a $(k, n)$-tree of accepting transcripts.
+\end{remark}
 
 %%% Local Variables:
 %%% mode: latex
