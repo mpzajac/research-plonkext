@@ -160,10 +160,14 @@ should be able to provide simulated proofs for false statements as well, we thus
 %simulation-extractability is with respect to a simulator
 %$\simulator' = (\simOH, \simOP')$.
 %
+
+
+
 \begin{definition}[Updatable Simulation Extractable NIZK]
 	\label{def:updsimext}
   \label{def:simext}
-	Let $\psni = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup. We say that
+	Let $\psni = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup. 
+	We say that
   $\psni$ is \emph{updatable simulation-extractable} with security loss $\epsse(\secpar,\accProb, q)$ if for
   any $\ppt$ adversary $\adv$ that is given oracle access to setup oracle
   $\initU$ and simulation oracle $\simulator\oracleo$ and that produces an accepting

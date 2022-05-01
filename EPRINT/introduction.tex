@@ -224,45 +224,54 @@ messages. The same holds for Marlin. We propose a generalisation of the unique r
 $k$ of its messages. For our proof, it is sufficient that Plonk is $\ur{3}$, and Sonic and Marlin are $\ur{2}$.
 
 
-\oursubsub{Trapdoor-Less Zero-Knowledge (TLZK).} To invoke our main theorem
-on (Fiat--Shamir transformed) Plonk, Sonic and Marlin to conclude USE, we also need
-to show that simulators in these protocols produce proofs without relying on the
-knowledge of trapdoor. More precisely, for our reduction, we need simulators that rely
-only on reordering the messages and picking suitable verifier challenges without
-knowing the SRS trapdoor. That is, any PPT party should be able to produce a
-simulated proof on its own in a trapdoor-less way. Note that this property does not
-necessarily break the soundness of the protocol as the simulator is required only to
-produce a transcript and is not involved in a real conversation with a real
-verifier. We show simulators for $\plonkprotfs$, $\sonicprotfs$, and $\marlinprotfs$
-that rely only on the programmability of the random oracle, where programmability is only needed
-for the $k$-th challenge. This property can be understood as a generalisation of
-honest-verifier zero-knowledge for Fiat--Shamir transformed proof systems with an
-SRS.
+\oursubsub{Trapdoor-Less Zero-Knowledge (TLZK).} 
+The premises of our main theorem include two computational properties that do not mention a simulator, RBKS and UR, The theorem states that together with a suitable property for the simulator of the zero-knowledge property, they imply USE.
+%
+Our key technique is to simulate simulation queries when reducing to RBKS and UR. For this it is convenient that the zero-knowledge simulator be trapdoor-less, that is can produce proofs without relying on the
+knowledge of the trapdoor. Simulation is based purely on the simulators early control over the challenge. 
+%
+In the ROM this corresponds to a simulator that programs the random oracle and can be understood as a generalisation of
+honest-verifier zero-knowledge for multi-message Fiat--Shamir transformed proof systems with an
+SRS. We say that such a proof system is $k$-TLZK, if the simulator only programs the $k$-th challenge and we construct such simulators for $\plonkprotfs$, $\sonicprotfs$, and $\marlinprotfs$. 
 
-Technically we will make use of the $k$-UR property together with the $k$-TLZK property to bound the probability that the tree produced by $\tdv$ contains any programmed random oracle queries.
+
+%To invoke our main theorem
+%on (Fiat--Shamir transformed) Plonk, Sonic and Marlin to conclude USE, we also need
+%to show that simulators in these protocols produce proofs without relying on the
+%knowledge of trapdoor. More precisely, for our reduction, we need simulators that rely
+%only on reordering the messages and picking suitable verifier challenges without
+%knowing the SRS trapdoor. That is, any PPT party should be able to produce a
+%simulated proof on its own in a trapdoor-less way. Note that this property does not
+%necessarily break the soundness of the protocol as the simulator is required only to
+%produce a transcript and is not involved in a real conversation with a real
+%verifier. 
+
+
+
+Technically we will make use of the $k$-UR property together with the $k$-TLZK property to bound the probability that the tree produced by the tree builder $\tdv$ of RBKS contains any programmed random oracle queries.
 
 \subsection{Related Work}
 There are many results on simulation extractability for
 non-interactive zero-knowledge proofs (NIZKs). First, Groth \cite{AC:Groth07}
 noticed that a (black-box) SE NIZK is
 universally-composable (UC)~\cite{EPRINT:Canetti00}. Then Dodis et al.~\cite{AC:DHLW10} introduced a
-notion of (black-box) \emph{true simulation extractability} and showed that no
+notion of (black-box) \emph{true simulation extractability} (i.e., SE with simulation of true statements only) and showed that no
 NIZK can be UC-secure if it does not have this property. 
 
 In the context of zkSNARKs, the first
 SE zkSNARK was proposed by Groth and Maller~\cite{C:GroMal17} and a SE
 zkSNARK for QAP was designed by Lipmaa~\cite{EPRINT:Lipmaa19a}.
-Kosba's et
+Kosba et
 al.~\cite{EPRINT:KZMQCP15} give a general transformation from a NIZK to a
 black-box SE NIZK. Although their transformation works for zkSNARKs as well,
-the succinctness of the proof system is not preserved by the transformation.
+the succinctness of the proof system is not preserved by this transformation.
 Abdolmaleki et al.~\cite{CCS:AbdRamSla20} showed another transformation that
 obtains non-black-box simulation extractability but also preserves
 the succinctness of the argument. 
 The zkSNARK of~\cite{EC:Groth16} has been shown to be SE by introducing minor modifications to the construction and making
 stronger assumptions \cite{EPRINT:BowGab18,EPRINT:AtaBag19}. Recently,~\cite{EPRINT:BKSV20} showed that the
-original Groth's proof system from~\cite{EC:Groth16} is weakly SE and
-randomizable. None of these results are for zkSNARKs in the updatable SRS setting or for zkSNARKs obtained via the Fiat--Shamir transformation. The recent work of~\cite{cryptoeprint:GOPTT22} shows that Fiat-Shamir transformed Bulletproofs are simulation extractable. While they show a general theorem for multi-round protocols, they do not consider a setting with an SRS, and are therefore inapplicable to zkSNARKs in the updatable SRS setting.
+ Groth's original proof system from~\cite{EC:Groth16} is weakly SE and
+randomizable. None of these results are for zkSNARKs in the updatable SRS setting or for zkSNARKs obtained via the Fiat--Shamir transformation. The recent work of~\cite{cryptoeprint:GOPTT22} shows that Fiat--Shamir transformed Bulletproofs are simulation extractable. While they show a general theorem for multi-round protocols, they do not consider a setting with an SRS, and are therefore inapplicable to zkSNARKs in the updatable SRS setting.
 
 
 
