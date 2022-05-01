@@ -5,7 +5,7 @@
 % \let\accentvec\vec              
 %\documentclass[runningheads,11pt]{llncs}
 %\documentclass[10pt]{llncs}
-\documentclass{llncs}
+\documentclass[10pt]{llncs}
 \pagestyle{plain}
 \let\spvec\vec
 \let\vec\accentvec
@@ -156,7 +156,7 @@ from the SRSs corresponding to all the simulated proofs seen).  This is a strong
 definition of SE than the one we consider in this paper, and we leave exploring this
 to future work.
 
-\bibliographystyle{alpha}
+\bibliographystyle{abbrv}
 \bibliography{../cryptobib/abbrev3,../cryptobib/crypto,additional_bib}
 
 % \clearpage
@@ -165,6 +165,7 @@ to future work.
 
 \input{additional-preliminaries-lemmas-and-proofs}
 \input{polynomial-commitment-schemes}
+\input{unique_opening_property}
 %\input{non-malleability-of-plonk-omitted-protocol-description}
 \input{non-malleability-of-sfs}
 \input{non-malleability-of-mfs}
