@@ -187,7 +187,7 @@ same first message. However, most zkSNARK protocols do not satisfy this notion.
 We put forth a notion analogous to special soundness that is more general and
 applicable to a wider class of protocols. Namely, protocols compiled using multi-round FS that rely on an (updatable) SRS. $\plonkprot$, $\sonicprot$, and
 $\marlinprot$ have more than three messages, and the number of transcripts required for extraction is more
-than two. Concretely, $(3 \noofc + 16)$ for Plonk, where $\noofc$ is the number of
+than two. Concretely, $(3 \noofc + 16)$ \hamid{2.5}{$(3 \noofc + 6)$?}for Plonk, where $\noofc$ is the number of
 constraints in the proven circuit, $(\multconstr + \linconstr + 1)$ for Sonic, where $\multconstr$ and $\linconstr$ are the numbers of multiplicative and
 linear constraints, and $(\multconstr + 3)$ for Marlin, where $\multconstr$
 is the number of multiplicative constraints. Hence, we do not have
