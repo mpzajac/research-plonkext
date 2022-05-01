@@ -39,7 +39,7 @@
 	\label{fig:real_simulator_oracles}
 \end{figure}
 
-\subsection{Trapdoor-Less Zero-Knowledge}
+\subsection{Trapdoor-Less Zero-Knowledge (TLZK)}
 
 
 
@@ -98,20 +98,21 @@ former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less
   \markulf{22.04}{We don't consider SRS-simulators in this paper. I would simplify and move the above after the Updatable SRS scheme section, or maybe the start of Section 3.}
 \fi
 
-In this paper we distinguish between simulators that require a trapdoor to simulate and those that do not. We call a protocol \emph{trapdoor-less
+%In this paper we distinguish between simulators that require a trapdoor to simulate and those that do not. 
+We call a protocol \emph{trapdoor-less
  zero-knowledge} (TLZK) if there exists a simulator does not require the trapdoor, and works by programming the random oracle.
- Moreover, it may be not allowed to program every random oracle challenge but only challenges that come after the $k$-th prover's message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less zero-knowledge}, and define this in~\cref{def:TLZK}.
+ Moreover, the simulator may only be allowed to program the random oracle on point $\tzkproof[0,k]$, that is the simulator can only program the challenges that come after the $k$-th prover message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less zero-knowledge}. %, and define this in~\cref{def:TLZK}.
 
  Our definition of zero-knowledge for non-interactive
-arguments is in the explicitly programmable random oracle model where the simulator
-$\simulator$ can program the random oracle. 
+arguments is in programmable ROM.
+%the explicitly programmable random oracle model where the simulator $\simulator$ can program the random oracle. 
 We model this using the oracles from Fig.~\ref{fig:real_simulator_oracles} that provide a stateful wrapper around $\simulator$.
 $\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h)$ allows for programming the simulated $\ro$ and is available only to $\simulator$. $\simOP(x, w)$ and $\simOP'(x)$ call the simulator. The former is used in the zero-knowledge definition and requires the statement and witness to be in the relation, the latter is used in the simulation extraction definition and does not require a witness input.
 
-\begin{definition}[Updatable ($k$-programmable) Trapdoor-Less Zero-Knowledge]
+\begin{definition}[Updatable k-Programmable Trapdoor-Less Zero-Knowledge]
   \label{def:TLZK}
   Let 
-  $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. 
+  $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. %Let $\ro$ be the random oracle. 
   %$\simulator_{\fs}$ takes as input $\srs$ and instance $\inp$, programs $\ro$, and outputs a proof $\zkproof_\simulator$.  
   We call $\psfs$ \emph{trapdoor-less zero-knowledge} with security $\epszk$ if for any
   adversary $\adv$, $\abs{\eps_0(\secpar) - \eps_1(\secpar)} \leq \epszk(\secpar)$, where
@@ -137,11 +138,11 @@ $\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h
 \end{remark}
 
 We note that $\plonk$ is $2$-programmable TLZK, $\sonic$ is $1$-programmable TLZK,
-and $\marlin$ is $1$-programmable TLZK. This follows directly from the proofs of
+and $\marlin$ is $1$-programmable TLZK. \hamid{1.5}{I think it should be this: We note that $\plonk$ is $3$-programmable TLZK, and $\sonic$ and $\marlin$ are $2$-programmable TLZK.}This follows directly from the proofs of
 their standard model zero-knowledge property in
 \cref{lem:plonk_tlzk,lem:sonic_hvzk,lem:marlin_hvzk}.
 
-\subsection{Simulation Extractability}
+\subsection{Updatable Simulation Extractability (USE)}
 We note that the zero-knowledge property is only guaranteed for statements in the
 language.
 %; for simulator $\simulator = (\simOH, \simOP)$, $\simOP$
@@ -163,7 +164,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 
 
 
-\begin{definition}[Updatable Simulation Extractable NIZK]
+\begin{definition}[Updatable Simulation Extractability]
 	\label{def:updsimext}
   \label{def:simext}
 	Let $\psni = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup. 
@@ -218,11 +219,10 @@ should be able to provide simulated proofs for false statements as well, we thus
   % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simOH$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
 \end{definition}
 
-\subsection{Unique Response Protocols}
+\subsection{Unique Response (UR) Protocols}
 A technical hurdle identified by Faust et al.~\cite{INDOCRYPT:FKMV12} for proving
 simulation extraction via the Fiat--Shamir transformation is that the transformed
-proof system satisfies a unique response property. The original Fischlin's
-formulation, although suitable for applications presented in
+proof system satisfies a unique response property. The original formulation by Fischlin, although suitable for applications presented in
 \cite{C:Fischlin05,INDOCRYPT:FKMV12}, does not suffice in our case. First, the
 property assumes that the protocol has three messages, with the second being the
 challenge from the verifier. That is not the case we consider here. Second, it is not
@@ -234,12 +234,12 @@ protocol could have a message, beyond the first prover's message, which is
 randomized. Unique response cannot hold in this case. Finally, the protocols we
 consider here are not in the standard model, but use an SRS.
 
-We work around these obstacles by providing a generalised notion of the unique
+We work around these obstacles by providing a generalized notion of the unique
 response property. More precisely, we say that a $(2\mu + 1)$-message protocol
 has \emph{unique responses from $k$}, and call it a $\ur{k}$-protocol, if it
 follows the definition below:
 
-\begin{definition}[Updatable $(\ur{k})$-protocol]
+\begin{definition}[Updatable k-Unique Response Protocol]
 Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. 
 We say that $\psfs$ has \emph{unique responses for $k$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\advur$:
   \[
@@ -256,17 +256,17 @@ We say that $\psfs$ has \emph{unique responses for $k$} with security $\epsur(\s
 	\end{aligned}
 	\right] \leq \epsur(\secpar) 
 	\]
-	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1, \dots, a_\mu,a_{\mu+1}))$ behaves as $\verifier (\srs, \inp, \zkproof)$ except for the $k$-th challenge it uses $c$ instead of calling $\ro(\tzkproof[0..k]) $. That is, it allows the $k$-th challenge to be programmed by $\adv$. 
-	If $\epsur(\secpar)$ is negligible, we simply say $\psfs$  is $\ur{k}$.
+	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1, \dots, a_\mu,a_{\mu+1}))$ behaves as $\verifier (\srs, \inp, \zkproof)$ except for using c as the $k$-th challenge instead of calling $\ro(\tzkproof[0..k]) $. Thus, $\adv$ can program the $k$-th challenge. 
+	We say $\psfs$  is $\ur{k}$, if $\epsur(\secpar)$ is negligible.
 \end{definition}
 
 Intuitively, a protocol is $\ur{k}$ if it is infeasible for a $\ppt$ adversary to produce a pair of accepting proofs $\zkproof \neq \zkproof'$ that are the same on the first $k$ messages of the prover.  
 %We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
 
-We note that the definition above can be easily generalized to allow the adversary to program the oracle on more than just a single point. However, since all the protocols we analyse in this paper require only single-point programming, we opted for a simplified version of the definition.
+The definition can be easily generalized to allow for programing the oracle on more than just a single point. We opted for this simplified presentation, since all the protocols analyzed in this paper require only single-point programming, 
   
 
-\subsection{Rewinding-Based Knowledge Soundness}
+\subsection{Rewinding-Based Knowledge Soundness (RBKS)}
 
 Before giving the definition of rewinding-based knowledge soundness for NIZK proof systems compiled via the $2\mu + 1$-message FS transformation, we first recall the notion of a tree of transcripts.
 \begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
@@ -307,7 +307,7 @@ Before giving the definition of rewinding-based knowledge soundness for NIZK pro
     \pcind 
 		\pcelse \pcreturn (0, \bot)
 	}}
-\caption{Generalised forking algorithm $\genforking_{\zdv}^{m, m'}$
+\caption{Generalized forking algorithm $\genforking_{\zdv}^{m, m'}$
   \michals{5.11}{This forking lemma version is not as general as in Attema et al to
     be exact -- they allow tree of acceptable transcripts to branch at multiple
     places. however, that is not necessary in our case. Later, we should allow ``full
@@ -337,7 +337,7 @@ The existence of simulation trapdoor for $\plonkprot$, $\sonicprot$ and $\marlin
 special sound in the standard sense. We therefore put forth the notion of rewinding-based knowledge soundness that is a computational notion. 
 Note that in the definition below, it is implicit that each transcript in the tree is accepting with respect to a ``local programming'' of the random oracle. However, the verification of the proof output by the adversary is with respect to a non-programmed random oracle.
 
-\begin{definition}[Updatable Rewinding-based knowledge soundness]
+\begin{definition}[Updatable Rewinding-Based Knowledge Soundness]
 	Let $n_1, \ldots, n_\mu \in \NN$. 
 	%
 	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system for relation $\REL$ with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle.

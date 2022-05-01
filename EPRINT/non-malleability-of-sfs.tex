@@ -173,7 +173,7 @@ randomly $\alpha, \chi \sample \FF_p$ and outputs
 \item[Message 3] The prover computes commitment openings. That is, it outputs
   \begin{align*}
     \gone{o_a} & = \open(\srs, z, \pr(z, 1), \pr(X, 1)) \\
-    \gone{o_b} & = \open(\srs, yz, \pr(yz, 1), \pr(X, 1)) \\
+    \gone{o_b} & = \open(\srs, y z, \pr(y z, 1), \pr(X, 1)) \\
     \gone{o_t} & = \open(\srs, z, \pt(z, y), \pt(X, y)) 
   \end{align*}
   along with evaluations $a' = \pr(z, 1), b' = \pr(y, z), t' = \pt(z, y)$.  Then it
@@ -204,7 +204,7 @@ is it sets $t' = a'(b' + s') - \p{k}(y)$ and checks the following:
 \begin{equation*}
   \begin{split}
     &\PCOMs.\verifier(\srs, \multconstr, \gone{r}, z, a', \gone{o_a}), \\
-    &\PCOMs.\verifier(\srs, \multconstr, \gone{r}, yz, b', \gone{o_b}),\\
+    &\PCOMs.\verifier(\srs, \multconstr, \gone{r}, y z, b', \gone{o_b}),\\
     &\PCOMs.\verifier(\srs, \dconst, \gone{t}, z, t', \gone{o_t}),\\
     &\PCOMs.\verifier(\srs, \dconst, \gone{s}, z, s', \gone{o_s}),\\
   \end{split}
@@ -476,7 +476,7 @@ $\sonicprotfs$ is 2-programmable trapdoor-less zero-knowledge.
 \end{proof}
 \begin{remark} 
   As noted in \cite{CCS:MBKM19}, $\sonic$ is statistically subversion zero-knowledge (Sub-ZK). As noted in \cite{AC:ABLZ17}, one way to achieve
-  subversion zero-knowledge is to utilise an extractor that extracts a SRS
+  subversion zero-knowledge is to utilize an extractor that extracts a SRS
   trapdoor from a SRS-generator. Unfortunately, a NIZK made subversion
   zero-knowledge by this approach cannot achieve perfect Sub-ZK as one has to
   count in the probability of extraction failure. However, with the simulation
@@ -488,7 +488,7 @@ $\sonicprotfs$ is 2-programmable trapdoor-less zero-knowledge.
 \end{remark}
 
 \subsection{Simulation Extractability of $\sonicprotfs$}
-Since \cref{lem:sonicprot_ur,lem:sonicprot_ss,lem:sonic_hvzk} hold, $\sonicprot$ is $\ur{1}$, rewinding-based knowledge sound and trapdoor-less zero-knowledge. We now make use
+Since \cref{lem:sonicprot_ur,lem:sonicprot_ss,lem:sonic_hvzk} hold, $\sonicprotfs$ is $\ur{2}$, rewinding-based knowledge sound and trapdoor-less zero-knowledge. We now make use
 of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defined in \cref{def:simext}.
 
 \begin{corollary}[Simulation extractability of $\sonicprotfs$]

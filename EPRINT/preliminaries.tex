@@ -71,7 +71,7 @@ we generalize the unique response property, and define a notion of computational
 soundness called rewinding-based knowledge soundness.\medskip
 
 
-%\subsection{Proof Systems With Updateable Setups and Random Oracles}
+%\subsection{Proof Systems With Updatable Setups and Random Oracles}
 \noindent Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called the \emph{prover}
 and the latter the \emph{verifier} of a proof system. Both algorithms take a pre-agreed structured reference string $\srs$ as input. The structured reference strings we consider are (potentially) updatable, a notion we recall shortly.
 %
@@ -121,15 +121,15 @@ The definition of updatable SRS ceremonies of~\cite{C:GKMMM18} requires the foll
 
 \begin{itemize} 
 	\item
-	$(\srs,\rho) \gets \kgen(\REL)$ is a PPT algorithm that takes a relation $\REL$ and outputs a SRS $\srs$, and correctness proof $\rho$.
+	$(\srs,\rho) \gets \kgen(\REL)$ is a PPT algorithm that takes a relation $\REL$ and outputs a reference string $\srs$, and correctness proof $\rho$.
 	\item
-	$ (\srs',\rho') \gets \upd(\srs, \{\rho_j \}_{j=1}^n)$ is a PPT algorithm that takes a SRS $\srs$, a list of update proofs and outputs an updated SRS together with a proof of correct update. 
+	$ (\srs',\rho') \gets \upd(\srs, \{\rho_j \}_{j=1}^n)$ is a PPT algorithm that takes a $\srs$, a list of update proofs and outputs an updated $\srs'$ together with a proof of correct update~$\rho'$. 
 	\item
-	$b \gets \verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$ is a DPT algorithm that takes a SRS $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.\footnote{For instance \plonk{} and \marlin{} will use the $\kgen$, $\upd$ and $\verifyCRS$ algorithms in~\cref{fig:upd-scheme}.}
+	$b \gets \verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$ takes a reference string $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.\footnote{For instance \plonk{} and \marlin{} will use the $\kgen$, $\upd$ and $\verifyCRS$ algorithms in~\cref{fig:upd-scheme}.}
 \end{itemize}
 
 
-In the next section, we define security notions in the updatable setting by giving the adversary access to an SRS update oracle $\initU$, defined in~\cref{fig:upd}. The oracle allows the adversary to control the SRS generation. A trusted setup can be expressed by the updatable setup definition simply by restricting the adversary to only call the oracle on $\intent = \setup$ and $\intent = \final$. Note that a soundness adversary now has access to both the random oracle $\ro$ and $\initU$:  $(\inp, \zkproof) \gets \adv^{\initU,\ro}(1^\secpar)$. %\chaya{29.04}{can we move the update oracle figure to section 5? I know we talk about the oracle here, but I am wondering if there is a way to keep $\initU$ general here and give the description below specific to Plonk/Marlin later on}.\hamid{29.4}{Since we use $\initU$ in most of the definitions 1-5 in section 3, I believe it's better to keep it here.}>>>>>>> bbec4288f7bec60d201228aa23c50b277515b3f5
+In the next section, we define security notions in the updatable setting by giving the adversary access to an SRS update oracle $\initU$, defined in~\cref{fig:upd}. The oracle allows the adversary to control the SRS generation. A trusted setup can be expressed by the updatable setup definition simply by restricting the adversary to only call the oracle on $\intent = \setup$ and $\intent = \final$. Note that a soundness adversary now has access to both the random oracle $\ro$ and $\initU$:  $(\inp, \zkproof) \gets \adv^{\initU,\ro}(1^\secpar; r)$.
 
 \newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}% 
 
@@ -175,18 +175,10 @@ In the next section, we define security notions in the updatable setting by givi
 
 \ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means that both the relation $\REL$ and the reference string $\srs$ allows to prove arithmetic constraints defined over a particular field up to some size bound. The public instance $\inp$ must determine the constraints. 
 If $\REL$ comes with any auxiliary input, the latter is benign. 
-%The
-%description of $\REL$ fixes the security parameter $\secpar$ and the order of a
-%group $\GRP$, if the relation is a relation on field elements (as usually the case for zkSNARKs). 
-%We assume that the $\srs$ defines the relation, and for universal proof
-%systems, such as Plonk and Sonic, we treat both the reference string and the relation as
-%universal. 
 We elide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
-%\markulf{24.04}{Tighten the discussion of universality, one paragraph is enough!}
-
 
 \subsection{Multi-message Fiat-Shamir Compiled Provers and Verifiers}
-Given interactive prover and (public coin) verifier $\prover', \verifier'$ that exchange messages $\tzkproof = (a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
+Given interactive prover and (public coin) verifier $\prover', \verifier'$ that exchange messages resulting in transcript $\tzkproof = (a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
 $\prover'$ and $c_i$ comes from $\verifier'$, the $(2\mu + 1)$-message Fiat-Shamir heuristic defines non-interactive provers and verifiers $\prover, \verifier$ as follows:
 
 \begin{compactitem}
@@ -196,30 +188,27 @@ $\prover'$ and $c_i$ comes from $\verifier'$, the $(2\mu + 1)$-message Fiat-Sham
 	  = \ro(\tzkproof[0..i])$, where $\tzkproof[0..j] = (\inp, a_1, c_1, \ldots,
 	  a_{j - 1}, c_{j - 1}, a_j)$.\footnote{For Fiat--Shamir based SoK the message signed $m$ is added to $\inp$ before hashing.} 
 	  
-	  $\prover$ output the non-interactive proof $\pi=(a_1,\ldots, a_{\mu}, a_{\mu + 1})$, that is it omits challenges as they can be recomputed using $\ro$
+	  $\prover$ output the non-interactive proof $\pi=(a_1,\ldots, a_{\mu}, a_{\mu + 1})$, that omits challenges as they can be recomputed using $\ro$.
 
 	\item $\verifier$ takes $\inp$ and $\pi$ as input and behaves as $\verifier'$ would but does not provide
 	  challenges to the prover. Instead it computes the
 	  challenges locally as $\prover$ would, starting from $\tzkproof[0..1]=(\inp,a_1)$ which can be obtained from $\inp$ and $\pi$. Then it verifies the
-	  resulting transcript $\tzkproof$ as the verifier $\verifier'$ would. We note that since the verifier can compute the challenges by querying the random oracle, they do not need to be sent by the prover.
+	  resulting transcript $\tzkproof$ as the verifier $\verifier'$ would. 
 	\end{compactitem}
-
-
+	We note that since the verifier can compute the challenges by querying the random oracle, they do not need to be sent by the prover. Thus the $\zkproof$ - $\tzkproof$ notational distinction.
 
 \paragraph{Notation for $(2\mu + 1)$-message Fiat--Shamir compiled proof systems.}
 Let $\SRScer= (\kgen,\upd, \verifyCRS)$ be the algorithm of an updatable SRS ceremony.
 All our definitions and theorems are about non-interactive proof systems $\ps = (\SRScer, \prover, \verifier, \simulator)$ compiled via the $(2\mu + 1)$-message FS transform. 
 %
 That is $\pi = (a_1, \ldots, a_{\mu}, a_{\mu + 1})$ and $\tzkproof = (a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, with $c_i
-= \ro(\tzkproof[0..i])$, where $\tzkproof[0..j] = (\inp, a_1, c_1, \ldots,
-a_{j - 1}, c_{j - 1}, a_j)$.
-
-\markulf{30.04}{This paragraph seems a bit of overkill, remove notation that we do not actually use}
- We use $\zkproof[i]$ (and $\tzkproof[i]$) to denote $i$-th prover's
-message $a_i$. $\tzkproof[i].\ch$ denotes the challenge that is given to the prover after $a_i$, and $\tzkproof[i..j]$ denotes all messages of the proof transcript 
-between $i$-th and $j$-th prover's messages, but not challenge
-$\tzkproof[j].\ch$. When it is not explicitly stated, we denote the proven instance
-$\inp$ by $\tzkproof[0]$. 
+= \ro(\tzkproof[0..i])$.
+%
+%\markulf{30.04}{This paragraph seems a bit of overkill, remove notation that we do not actually use}
+We use $\tzkproof[0]$ for instance
+$\inp$  and $\tzkproof[i]$, $\tzkproof[i].\ch$ to denote prover
+message $a_i$ and challenge $c_i$ respectively; $\tzkproof[i..j]$ denotes all messages of the transcript 
+between the $i$-th and $j$-th prover messages, but not $\tzkproof[j].\ch$.  
 
 %If the proof system starts with a message from the verifier,
 %we denote it by $\tzkproof[0].\ch$; else, we state that $\tzkproof[0].\ch$ is empty.
