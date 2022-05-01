@@ -3,16 +3,16 @@
 %\section{Preliminaries}
 
 
-
-\paragraph{Notation.} Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
-security parameter. %All adversaries are stateful. 
-For an algorithm $\adv$, 
+\iffalse
+\paragraph{Notation.} %Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
+%security parameter. %All adversaries are stateful. 
+For a PPT algorithm $\adv$, 
 %let
 %$\image (\adv)$ be the image of $\adv$ (the set of valid outputs of $\adv$), 
 let
-$\RND{\adv}$ denote the set of random tapes of correct length for $\adv$
-(assuming the given value of $\secpar$), and let $r \sample \RND{\adv}$ denote
-the random choice of the randomizer $r$ from $\RND{\adv}$. We denote by $\negl$
+$\RND{\adv}$ denote the set of random tapes of correct length for adversary $\adv$
+(assuming the given value of security parameter $\secpar$), and let $r \sample \RND{\adv}$ denote
+the random choice of tape $r$ from $\RND{\adv}$. We denote by $\negl$
 ($\poly$) an arbitrary negligible (resp.~polynomial) function.
 %
 %For probability ensembles $X = \smallset{X_\secpar}_\secpar$ and
@@ -27,7 +27,7 @@ For functions $a(\secpar)$, $b(\secpar)$ and probability ensembles $X = \smallse
 $Y = \smallset{Y_\secpar}_\secpar$ we
 write $a(\secpar) \approx_\secpar b(\secpar)$ if
 $\abs{a(\secpar) - b(\secpar)} \leq \negl$ and $X \approx_\secpar Y$ if they have \emph{statistical distance} $\SD(X_\secpar, Y_\secpar) \leq \negl )$, respectively. \medskip
-
+\fi
 % For a probability space
 % $(\samplespace, \eventspace, \probfunction)$ and event $\event{E} \in \eventspace$ we
 % denote by $\nevent{E}$ an event that is complementary to $\event{E}$,
@@ -81,7 +81,10 @@ We denote by $\zkproof$ a proof created by $\prover$ on input
 $(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier(\srs, \inp,
 \zkproof)$ accepts it.
 
-
+Let
+$\RND{\adv}$ denote the set of random tapes of correct length for adversary $\adv$
+(assuming the given value of security parameter $\secpar$), and let $r \sample \RND{\adv}$ denote
+the random choice of tape $r$ from $\RND{\adv}$.
 
 %The simulator
 %$\simulator$ is not only given access to $\ro$, but it can also \emph{program}
@@ -216,8 +219,10 @@ a_{j - 1}, c_{j - 1}, a_j)$.
 message $a_i$. $\tzkproof[i].\ch$ denotes the challenge that is given to the prover after $a_i$, and $\tzkproof[i..j]$ denotes all messages of the proof transcript 
 between $i$-th and $j$-th prover's messages, but not challenge
 $\tzkproof[j].\ch$. When it is not explicitly stated, we denote the proven instance
-$\inp$ by $\tzkproof[0]$. If the proof system starts with a message from the verifier,
-we denote it by $\tzkproof[0].\ch$; else, we state that $\tzkproof[0].\ch$ is empty.
+$\inp$ by $\tzkproof[0]$. 
+
+%If the proof system starts with a message from the verifier,
+%we denote it by $\tzkproof[0].\ch$; else, we state that $\tzkproof[0].\ch$ is empty.
 
 %%% Local Variables:
 %%% mode: latex
