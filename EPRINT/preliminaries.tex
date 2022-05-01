@@ -196,8 +196,8 @@ $\prover'$ and $c_i$ comes from $\verifier'$, the $(2\mu + 1)$-message Fiat-Sham
 	  resulting transcript $\tzkproof$ as the verifier $\verifier'$ would. 
 	\end{compactitem}
 	We note that since the verifier can compute the challenges by querying the random oracle, they do not need to be sent by the prover. Thus the $\zkproof$ - $\tzkproof$ notational distinction.
-
-\paragraph{Notation for $(2\mu + 1)$-message Fiat--Shamir compiled proof systems.}
+$(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup
+\paragraph{Notation for $(2\mu + 1)$-message Fiat--Shamir transformed proof systems.}
 Let $\SRScer= (\kgen,\upd, \verifyCRS)$ be the algorithm of an updatable SRS ceremony.
 All our definitions and theorems are about non-interactive proof systems $\ps = (\SRScer, \prover, \verifier, \simulator)$ compiled via the $(2\mu + 1)$-message FS transform. 
 %
