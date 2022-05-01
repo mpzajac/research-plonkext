@@ -275,9 +275,9 @@ The unique response property of $\sonicprotfs$ follows from the unique opening
 property of the used polynomial commitment scheme $\PCOMs$.
 \begin{lemma}
 \label{lem:sonicprot_ur}
-If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security loss $\epsbind (\secpar)$ and has unique openings property with security loss $\epsop(\secpar)$, $\sonicprotfs$ is $\epss (\secpar)$-sound and $(\dconst, \dconst)$-$\uldlog$ problem is $\epsuldlog (\secpar)$-hard, then $\sonicprotfs$ is $\ur{2}$ against algebraic adversaries with security loss
+If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security loss $\epsbind (\secpar)$ and has unique openings property with security loss $\epsop(\secpar)$, $\sonicprotfs$ is $\epss (\secpar)$-sound\hamid{1.5}{we do not use $\epss (\secpar)$-soundness in the proof; should we remove it?} and $(\dconst, \dconst)$-$\uldlog$ problem is $\epsuldlog (\secpar)$-hard, then $\sonicprotfs$ is $\ur{2}$ against algebraic adversaries with security loss
   \[
-    2 \cdot \epsbinding (\secpar) + \epsudlog (\secpar).
+    2 \cdot \epsbinding (\secpar) + \epsuldlog (\secpar).
   \]
 \end{lemma}
 
@@ -293,11 +293,11 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
 
   In its third message, the prover provides evaluations of these polynomials along with their openings at $z$ or $yz$. Note that the adversary can output two acceptable proofs that differ on their third message only if it  manages to break evaluation binding of one of the opening. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the third message with probability at most $\epsbinding (\secpar) $. 
 
-  Similarly, in its fourth message, the prover provides an evaluation at $u$ of polynomial $\p{s}(X, y)$, an evaluation at $y$of $\p{s} (u, Y)$, and the corresponding openings. Note that the adversary can output two acceptable proofs that differ on their fourth message only if it manages to break evaluation binding of one of the opening. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $\epsbinding (\secpar) $. 
+  Similarly, in its fourth message, the prover provides an evaluation at $u$ of polynomial $\p{s}(X, y)$, an evaluation at $y$ of $\p{s} (u, Y)$, and the corresponding openings. Note that the adversary can output two acceptable proofs that differ on their fourth message only if it manages to break evaluation binding of one of the opening. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $\epsbinding (\secpar) $. 
 
-  Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$, which is upper-bounded by $\epsudlog (\secpar)$.
+  Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$, which is upper-bounded by $\epsuldlog (\secpar)$.
 
-  By the union bound, the adversary is able to break the unique response property with probability upper bounded by $2 \cdot \epsbinding (\secpar) + \epsudlog (\secpar)$.
+  By the union bound, the adversary is able to break the unique response property with probability upper bounded by $2 \cdot \epsbinding (\secpar) + \epsuldlog (\secpar)$.
 \iffalse
   \michals{30.4}{Old proof starts here}
 
@@ -370,9 +370,9 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
 	\label{lem:sonicprot_ss}
   $\sonicprotfs$ is $(2, \multconstr + \linconstr + 1)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{\multconstr + \linconstr + 1}{\abs{\FF_p}}\right)}{\frac{\multconstr + \linconstr + 1}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,,
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{\multconstr + \linconstr}{\abs{\FF_p}}\right)}{\frac{\multconstr + \linconstr}{\abs{\FF_p}}}\right) + \epsuldlog (\secpar) + \epsid (\secpar)\,,
   \]
-	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\sonicprotfs$, and $\epsudlog(\secpar)$ is the security of $(\maxdeg, \maxdeg)$-$\uldlog$ assumption.
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\sonicprotfs$, and $\epsuldlog(\secpar)$ is the security of $(\maxdeg, \maxdeg)$-$\uldlog$ assumption.
 \end{lemma}
 
 % 	$\sonicprot$ is $(2, \multconstr + \linconstr + 1)$-computational special sound with security loss $(\epst (\accProb, \secpar), \epss(\secpar))$ against
@@ -398,7 +398,7 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
   \ncase{Game 0 to Game 1} %
   By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most 
   \[
-    \frac{\accProb - (q + 1) \left( 1 - \frac{\multconstr + \linconstr + 1}{\abs{\FF_p}} \right)} {\frac{\multconstr + \linconstr + 1}{\abs{\FF_p}}} \,.
+    \frac{\accProb - (q + 1) \left( 1 - \frac{\multconstr + \linconstr}{\abs{\FF_p}} \right)} {\frac{\multconstr + \linconstr }{\abs{\FF_p}}} \,.
   \]
 
   \ncase{Game 2} %
@@ -407,10 +407,10 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
   \ncase{Game 1 to Game 2} % 
   As usual, we show a reduction that breaks an instance of a $\uldlog$ assumption when Game 2 is aborted, while Game 1 is not.
 
-  Let $\rdvuldlog$ be a reduction that gets as input an $(\maxdeg, \maxdeg)$-$\uldlog$ instance $\gone{\chi^{-\maxdeg}, 1, \ldots, \chi^{\maxdeg}}, \gtwo{\chi^{-\maxdeg}, 1, \ldots, \chi^{\maxdeg}}$. Then it can update the instance to another one $\gone{\chi'^{-\maxdeg}, 1, \ldots, \chi'^{\maxdeg}}, \gtwo{\chi'^{-\maxdeg}, 1, \ldots, \chi'^{\maxdeg}}$. Eventually, the reduction ouputs $\chi'$.
+  Let $\rdvuldlog$ be a reduction that gets as input an $(\maxdeg, \maxdeg)$-$\uldlog$ instance $\gone{\chi^{-\maxdeg}, \ldots, 1, \ldots, \chi^{\maxdeg}}, \gtwo{\chi^{-\maxdeg}, \ldots, 1, \ldots, \chi^{\maxdeg}}$. Then it can update the instance to another one $\gone{\chi'^{-\maxdeg}, \ldots, 1, \ldots, \chi'^{\maxdeg}}, \gtwo{\chi'^{-\maxdeg}, \ldots, 1, \ldots, \chi'^{\maxdeg}}$. Eventually, the reduction outputs $\chi'$.
 	%
 	The reduction $\rdvuldlog$ proceeds as follows.
-	First, it builds $\adv$'s SRS $\srs$ using the input $\uldlog$ instance. Then it processes the adversary's update query by adding it to the list $\Qsrs$ and passing it to its own update oracle getting instance $\gone{\chi'^{-\maxdeg}, 1, \ldots, \chi'^{\maxdeg}}, \gtwo{\chi'^{-\maxdeg}, 1, \ldots, \chi'^{\maxdeg}}$. The updated SRS $\srs'$ is then computed and given to $\adv$. $\rdvuldlog$ also takes care of the random oracle queries made by $\adv$. It picks their answers honestly and writes them in $\Qro$. The reduction then starts $\tdv(\srs, \adv, r, \Qro, \Qsrs)$.
+	First, it builds $\adv$'s SRS $\srs$ using the input $\uldlog$ instance. Then it processes the adversary's update query by adding it to the list $\Qsrs$ and passing it to its own update oracle getting instance $\gone{\chi'^{-\maxdeg}, \ldots, 1, \ldots, \chi'^{\maxdeg}}, \gtwo{\chi'^{-\maxdeg}, \ldots, 1, \ldots, \chi'^{\maxdeg}}$. The updated SRS $\srs'$ is then computed and given to $\adv$. $\rdvuldlog$ also takes care of the random oracle queries made by $\adv$. It picks their answers honestly and writes them in $\Qro$. The reduction then starts $\tdv(\srs, \adv, r, \Qro, \Qsrs)$.
 	
   Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$, but $\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all group elements included in $\tree$ are extended by their representation as a combination of the input $\GRP_1$-elements. Hence, all coefficients of the verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known. 
   Eventually, the reduction finds $\vereq_{\inp, \zkproof}(X)$ zero points and returns $\chi'$ which is one of them.
@@ -422,7 +422,7 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
 
   Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( 1 - \frac{\multconstr + \linconstr + 1}{\abs{\FF_p}} \right)}{\frac{\multconstr + \linconstr + 1}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,. 
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( 1 - \frac{\multconstr + \linconstr}{\abs{\FF_p}} \right)}{\frac{\multconstr + \linconstr}{\abs{\FF_p}}}\right) + \epsuldlog (\secpar) + \epsid (\secpar)\,. 
   \]
 
 \subsection{Trapdoor-Less Zero-Knowledge of Sonic}
@@ -495,9 +495,9 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
   \label{thm:sonicprotfs_se}
   $\sonicprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$ with extraction failure probability 
 \[
-  \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + \epsudlog (\secpar) + \epsid (\secpar),
+  \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + \epsuldlog (\secpar) + \epsid (\secpar),
 \]
-where $\epserr (\secpar) = \left(1 - \frac{\multconstr + \linconstr + 1}{\abs{\FF_p}} \right)$, $\abs{\FF_p}$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
+where $\epserr (\secpar) = \left(1 - \frac{\multconstr + \linconstr}{\abs{\FF_p}} \right)$, $\abs{\FF_p}$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
 \end{corollary}
 
 %%% Local Variables:

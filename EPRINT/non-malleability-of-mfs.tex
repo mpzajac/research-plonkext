@@ -180,10 +180,10 @@ verify that \cref{eq:marlin_eq_2} holds.
 \subsection{Rewinding-Based Knowledge Soundness}
 \begin{lemma}\label{lem:marlinprot_ss}
 	Assume that an idealised $\marlinprot$ verifier fails with probability at most
-	$\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks $\dlog$ is
-	bounded by $\epsdlog(\secpar)$. Then $\marlinprotfs$ is
+	$\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks $\udlog$ is
+	bounded by $\epsudlog(\secpar)$. Then $\marlinprotfs$ is
 	$(2, d + 1)$-rewinding-based knowledge
-	sound with security loss $\epsid (\secpar) + \epsdlog (\secpar)$.
+	sound with security loss $\epsid (\secpar) + \epsudlog (\secpar)$.
 \end{lemma}
 \begin{proof}
 	% \michals{8.9}{Need to check the degrees}
@@ -234,22 +234,22 @@ verify that \cref{eq:marlin_eq_2} holds.
 	
 	\ncase{Game 0 to Game 1} Assume the adversary wins in Game 1, but
 	does not win in Game 0. We show that such adversary may be used to break the
-	$\dlog$ assumption. More precisely, let $\tdv$ be an adversary that for
+	$\udlog$ assumption. More precisely, let $\tdv$ be an adversary that for
 	relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
 	of accepting transcripts such that the winning condition of the game
-	holds. Let $\rdvdlog$ be a reduction that gets as input an
-	$(\dconst, 1)$-$\dlog$ instance $\gone{1, \ldots, \chi^\dconst}, \gtwo{1, \chi}$ and
-	is tasked to output $\chi$. The reduction proceeds as follows---it builds $\adv$'s SRS $\srs$ in the updatable setting using the input $\dlog$ instance. Namely it answers $\adv$'s queries for SRS updates and sets the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS and $(1, \tree)$ be the output
+	holds. Let $\rdvdulog$ be a reduction that gets as input an
+	$(\dconst, 1)$-$\udlog$ instance $\gone{1, \ldots, \chi^\dconst}, \gtwo{1, \chi}$ and
+	is tasked to output $\chi$. The reduction proceeds as follows---it builds $\adv$'s SRS $\srs$ in the updatable setting using the input $\udlog$ instance. Namely it answers $\adv$'s queries for SRS updates and sets the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS and $(1, \tree)$ be the output
 	returned by $\adv$. Let $\inp$ be a relation proven in $\tree$.  Consider a
 	transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$,
 	but $\vereq_{\inp, \zkproof}(\chi) = 0$. Since the adversary is algebraic, all
 	group elements included in $\tree$ are extended by their representation as a
 	combination of the input $\GRP_1$-elements. Hence all coefficients of the
 	verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known and
-	$\rdvdlog$ can find its zero points. Since
+	$\rdvudlog$ can find its zero points. Since
 	$\vereq_{\inp, \zkproof}(\chi) = 0$, the targeted discrete log value $\chi'$ is
-	among them.  Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates,  extracted by the reduction from the update proofs given by $\adv$. Now $\rdvdlog$ returns $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$ and breaks the $\dlog$ assumption. Hence, the probability that this event happens is upper-bounded
-	by $\epsdlog(\secpar)$.
+	among them.  Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates,  extracted by the reduction from the update proofs given by $\adv$. Now $\rdvudlog$ returns $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$ and breaks the $\udlog$ assumption. Hence, the probability that this event happens is upper-bounded
+	by $\epsudlog(\secpar)$.
 	
 \end{proof}
 
