@@ -297,8 +297,8 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
   We note that since the unique response property requires from $\zkproof^{0}$ and $\zkproof^{1}$ that the first place they possibly differ is the $4$-th prover's message, then the challenge $\chz$, that is picked by the adversary after the $3$-rd message is the same in both transcripts. This challenge determines the evaluation point of polynomials $\p{a}(X), \p{b}(X), \p{c}(X), \p{t}(X), \p{z}(X)$ which commitments are already sent.
 
   In its fourth message, the prover provides evaluations of the aforementioned polynomials, along with evaluations of publicly known polynomials $
-  \p{S_{\sigma 1}} (\chz), \p{S_{\sigma, 2}} (\chz)$, and evaluation of a linearization polynomial $\p{r}(\chz)$.
-  Note that the adversary can output two acceptable proofs that differ on their fourth message only if it either manages to break evaluation binding of one of the opening, or provides an unacceptable opening which is the accepted due to a batching error. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, and the batched verification equation accepts an incorrect opening with probability at most $\infrac{q}{\abs{\FF_p}}$, cf.~\cite{EPRINT:GabWilCio19}, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $8  \cdot \epsbinding (\secpar) + \infrac{q}{\abs{\FF_p}}$. 
+  \p{S_{\sigma 1}} (\chz), \p{S_{\sigma 2}} (\chz)$, and evaluation of a linearization polynomial $\p{r}(\chz)$.
+  Note that the adversary can output two acceptable proofs that differ on their fourth message only if it either manages to break evaluation binding of one of the opening, or provides an unacceptable opening which is accepted due to a batching error. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, and the batched verification equation accepts an incorrect opening with probability at most $\infrac{q}{\abs{\FF_p}}$, cf.~\cite{EPRINT:GabWilCio19}, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $8  \cdot \epsbinding (\secpar) + \infrac{q}{\abs{\FF_p}}$. 
 
   Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$, which is upper-bounded by $\epsudlog (\secpar) + \infrac{q}{\abs{\FF_p}}$, cf.~\cref{lem:pcomp_op}.
 
@@ -310,9 +310,9 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
 	\label{lem:plonkprot_ss}
   $\plonkprotfs$ is $(3, 3 \noofc + 16)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 16}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 16}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,,
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 15}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 15}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,,
   \]
-	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\plonkprot$, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + 5, 1)$-$\udlog$ 
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\plonkprot$, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + 5, 1)$-$\udlog$ 
 	assumption.
 \end{lemma}
 
@@ -328,7 +328,7 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
   \ncase{Game 0 to Game 1} %
   By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most 
   \[
-    \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 16}{\abs{\FF_p}} \right)} {\frac{3 \noofc + 16}{\abs{\FF_p}}} \,.
+    \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 15}{\abs{\FF_p}} \right)} {\frac{3 \noofc + 15}{\abs{\FF_p}}} \,.
   \]
 
   \ncase{Game 2} %
@@ -352,7 +352,7 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
 
   Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 16}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 16}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,. 
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 15}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 15}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,. 
   \]
  \end{proof}
   
