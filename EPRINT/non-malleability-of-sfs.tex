@@ -275,7 +275,7 @@ The unique response property of $\sonicprotfs$ follows from the unique opening
 property of the used polynomial commitment scheme $\PCOMs$.
 \begin{lemma}
 \label{lem:sonicprot_ur}
-If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security loss $\epsbind (\secpar)$ and has unique openings property with security loss $\epsop(\secpar)$, $\sonicprotfs$ is $\epss (\secpar)$-sound\hamid{1.5}{we do not use $\epss (\secpar)$-soundness in the proof; should we remove it?} and $(\dconst, \dconst)$-$\uldlog$ problem is $\epsuldlog (\secpar)$-hard, then $\sonicprotfs$ is $\ur{2}$ against algebraic adversaries with security loss
+If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security loss $\epsbind (\secpar)$ and has unique openings property with security loss $\epsop(\secpar)$, and $(\dconst, \dconst)$-$\uldlog$ problem is $\epsuldlog (\secpar)$-hard, then $\sonicprotfs$ is $\ur{2}$ against algebraic adversaries with security loss
   \[
     2 \cdot \epsbinding (\secpar) + \epsuldlog (\secpar).
   \]
@@ -370,7 +370,7 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
 	\label{lem:sonicprot_ss}
   $\sonicprotfs$ is $(2, \multconstr + \linconstr + 1)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{\multconstr + \linconstr}{\abs{\FF_p}}\right)}{\frac{\multconstr + \linconstr}{\abs{\FF_p}}}\right) + \epsuldlog (\secpar) + \epsid (\secpar)\,,
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{\multconstr + \linconstr}{\abs{\FF_p}}\right)}{\frac{\multconstr + \linconstr}{\abs{\FF_p}}}\right) + (\multconstr + \linconstr + 1) \cdot \epsuldlog (\secpar) + (\multconstr + \linconstr + 1) \cdot \epsid (\secpar)\,,
   \]
 	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\sonicprotfs$, and $\epsuldlog(\secpar)$ is the security of $(\maxdeg, \maxdeg)$-$\uldlog$ assumption.
 \end{lemma}
@@ -415,14 +415,14 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
   Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$, but $\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all group elements included in $\tree$ are extended by their representation as a combination of the input $\GRP_1$-elements. Hence, all coefficients of the verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known. 
   Eventually, the reduction finds $\vereq_{\inp, \zkproof}(X)$ zero points and returns $\chi'$ which is one of them.
     
-  Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upper-bounded by $\epsuldlog (\secpar)$.
+  Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upper-bounded by $(\multconstr + \linconstr + 1) \cdot \epsuldlog (\secpar)$.
 
   \ncase{Conclusion}
-  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of accepting transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(\multconstr + \linconstr + 1)$ accepting transcripts for different challenges $z$, it obtains the same number of different evaluations of polynomial $\p{t} (z, y)$ what allows to extract the witness, cf.~\cite{CCS:MBKM19} except with probability $\epsid(\secpar)$.
+  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of accepting transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(\multconstr + \linconstr + 1)$ accepting transcripts for different challenges $z$, it obtains the same number of different evaluations of polynomial $\p{t} (z, y)$ what allows to extract the witness, cf.~\cite{CCS:MBKM19} except with probability $(\multconstr + \linconstr + 1) \cdot \epsid(\secpar)$.
 
   Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( 1 - \frac{\multconstr + \linconstr}{\abs{\FF_p}} \right)}{\frac{\multconstr + \linconstr}{\abs{\FF_p}}}\right) + \epsuldlog (\secpar) + \epsid (\secpar)\,. 
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( 1 - \frac{\multconstr + \linconstr}{\abs{\FF_p}} \right)}{\frac{\multconstr + \linconstr}{\abs{\FF_p}}}\right) + (\multconstr + \linconstr + 1) \cdot\epsuldlog (\secpar) + (\multconstr + \linconstr + 1) \cdot \epsid (\secpar)\,. 
   \]
 
 \subsection{Trapdoor-Less Zero-Knowledge of Sonic}
@@ -496,12 +496,12 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
   \label{thm:sonicprotfs_se}
   $\sonicprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$ with extraction failure probability 
 \[
-  \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + \epsuldlog (\secpar) + \epsid (\secpar),
+  \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (\multconstr + \linconstr + 1) \cdot \epsuldlog (\secpar) + (\multconstr + \linconstr + 1) \cdot \epsid (\secpar),
 \]
 where $\epserr (\secpar) = \left(1 - \frac{\multconstr + \linconstr}{\abs{\FF_p}} \right)$, $\abs{\FF_p}$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
 \end{corollary}
 
 %%% Local Variables:
-%%% mode: latex
+%%% mode: latex 
 %%% TeX-master: "main"
 %%% End:
