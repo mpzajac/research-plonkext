@@ -288,7 +288,7 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
 \subsection{Unique Response Property}
 \begin{lemma}
 	\label{lem:plonkprot_ur}
-	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening property with loss $\epsudlog (\secpar) + 2 \infrac{q}{\abs{\FF_p}}$, let $(\noofc + 5, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries, who makes up to $q$ random oracle queries, with security loss $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\abs{\FF_p}}$.
+	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening property with loss $\epsudlog (\secpar) + 2 \infrac{q}{\abs{\FF_p}}$, let $(\noofc + 5, 1)$-$\udlog$ problem be $\epsudlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries, who makes up to $q$ random oracle queries, with security loss $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\abs{\FF_p}}$.
 \end{lemma}
 \begin{proof}
   Let $\adv$ be an algebraic adversary tasked to break the $\ur{3}$-ness of
