@@ -3,8 +3,8 @@
 \begin{theorem}[Simulation-extractable multi-message protocols]
 	\label{thm:se}
 	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. If $\psfs$ has the
-	$k$-\emph{updatable unique response property} with security loss $\epsur$, is
-	\emph{updatable $k$-programmable trapdoor-less zero knowledge}, and $(1, \ldots, 1, n_{k}, \ldots, n_\mu)$-\emph{updatable rewinding-based knowledge sound} with security loss $\epscss$; 
+	\emph{updatable $k$-unique response property} with security loss $\epsur$, is
+	\emph{updatable $k$-programmable trapdoor-less zero-knowledge}, and $(1, \ldots, 1, n_{k}, \ldots, n_\mu)$-\emph{updatable rewinding-based knowledge sound} with security loss $\epscss$; 
 	
 	Then $\psfs$ is \emph{updatable simulation-extractable} with security loss $\epsse(\secpar,\accProb,q) \leq \epscss(\secpar,\accProb - \epsur(\secpar),q)$ against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$.
 \end{theorem}
@@ -76,7 +76,7 @@
 
 	We denote by $\waccProb$ the probability that $\advcss$ outputs an acceptable proof. We note that $\waccProb$ is at most $\epsur (\secpar)$ far from the probability that $\advse$ outputs an acceptable proof. By the union bound the probability that $\advcss$ outputs an acceptable proof is at least $\waccProb \geq \accProb - \epsur (\secpar)$. \markulf{30.04}{I am ignorant. What is the role of the union bound here. Is this the same as up-to-bad reasoning?}
 
-	Since $\psfs$ is $\epscss (\secpar, \waccProb,q)$ rewinding-based knowledge sound\hamid{30.4}{We probably mean rewinding-based KS here. I think we need to also justify why we require this property with specific parameters $(1, \ldots, 1, n_{k}, \ldots, n_\mu)$ for the tree structure!}\markulf{30.04}{Fixed the typo, if that's what you meant. I don't think we need any specific tree structure. There is nevertheless more to say here, I agree.}, there is an extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of acceptable transcripts $\tree$ and fails to extract the witness with probability at most $\epscss (\secpar, \waccProb, q)$. The extractor $\extse$ outputs the witness with the same probability.
+	Since $\psfs$ is $\epscss (\secpar, \waccProb,q)$ rewinding-based knowledge sound\hamid{30.4}{We probably mean rewinding-based KS here. I think we need to also justify why we require this property with specific parameters $(1, \ldots, 1, n_{k}, \ldots, n_\mu)$ for the tree structure!}\markulf{30.04}{Fixed the typo, if that's what you meant. I don't think we need any specific tree structure. There is nevertheless more to say here, I agree.}, there is an extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of accepting transcripts $\tree$ and fails to extract the witness with probability at most $\epscss (\secpar, \waccProb, q)$. The extractor $\extse$ outputs the witness with the same probability.
 %
 	Thus $\epsse(\secpar,\accProb,q) = \epscss (\secpar, \waccProb,q) \leq \epscss(\secpar,\accProb - \epsur,q)$.
 	\qed

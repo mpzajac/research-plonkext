@@ -4,7 +4,7 @@
 \section{Non-malleability of Marlin}
 We show that $\marlin$ is \COMMENT{forking }simulation-extractable. To that end, we show
 that $\marlin$ has all the required properties: has unique response property, is
-computational special sound, and its simulator can provide indistinguishable proofs
+rewinding-based knowledge sound, and its simulator can provide indistinguishable proofs
 without a trapdoor, just by programming the random oracle.
 
 \subsection{$\marlin$ Protocol Rolled-out}
@@ -181,8 +181,8 @@ verify that \cref{eq:marlin_eq_2} holds.
 \begin{lemma}\label{lem:marlinprot_ss}
 	Assume that an idealised $\marlinprot$ verifier fails with probability at most
 	$\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks $\dlog$ is
-	bounded by $\epsdlog(\secpar)$. Then $\marlinprot$ is
-	$(2, d + 1)$-computational special
+	bounded by $\epsdlog(\secpar)$. Then $\marlinprotfs$ is
+	$(2, d + 1)$-rewinding-based knowledge
 	sound with security loss $\epsid (\secpar) + \epsdlog (\secpar)$.
 \end{lemma}
 \begin{proof}
@@ -191,7 +191,7 @@ verify that \cref{eq:marlin_eq_2} holds.
 	$\sonic$. That is, let $\srs$ be $\marlinprot$'s finalised SRS and denote by $\srs_1$
 	all SRS's $\GRP_1$-elements. Let $\tdv$ be an algebraic adversary that
 	produces a statement $\inp$ and a $(1, \dconst + 1, 1, 1)$-tree of
-	acceptable transcripts $\tree$. Note that in all transcripts the instance
+	accepting transcripts $\tree$. Note that in all transcripts the instance
 	$\inp$, proof elements
 	$\sigma_1, \gone{\p{w}(\chi), \p{z_A}(\chi), \p{z_B}(\chi), \p{z_C}(\chi),
 		\p{h_0}(\chi), \p{s}(\chi)}, \gone{\p{g_1}(\chi), \p{h_1}(\chi)}$
@@ -212,7 +212,7 @@ verify that \cref{eq:marlin_eq_2} holds.
 	perfectly sound except with negligible probability of the idealised verifier
 	failure $\epsid(\secpar)$. Hence for a valid proof $\zkproof$ for a statement
 	$\inp$ there exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note
-	that since the $\tdv$ produces $(\dconst + 1)$ acceptable transcripts for
+	that since the $\tdv$ produces $(\dconst + 1)$ accepting transcripts for
 	different challenges $\beta_1$, it obtains the same number of different
 	evaluations of polynomials $\p{z_A}, \p{z_B}, \p{z_C}$.
 	
@@ -236,7 +236,7 @@ verify that \cref{eq:marlin_eq_2} holds.
 	does not win in Game 0. We show that such adversary may be used to break the
 	$\dlog$ assumption. More precisely, let $\tdv$ be an adversary that for
 	relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
-	of acceptable transcripts such that the winning condition of the game
+	of accepting transcripts such that the winning condition of the game
 	holds. Let $\rdvdlog$ be a reduction that gets as input an
 	$(\dconst, 1)$-$\dlog$ instance $\gone{1, \ldots, \chi^\dconst}, \gtwo{1, \chi}$ and
 	is tasked to output $\chi$. The reduction proceeds as follows---it builds $\adv$'s SRS $\srs$ in the updatable setting using the input $\dlog$ instance. Namely it answers $\adv$'s queries for SRS updates and sets the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS and $(1, \tree)$ be the output
@@ -253,10 +253,10 @@ verify that \cref{eq:marlin_eq_2} holds.
 	
 \end{proof}
 
-\subsection{Trapdoor-Less Simulatability of Marlin}
+\subsection{Trapdoor-Less Zero-Knowledge of Marlin}
 \begin{lemma}
   \label{lem:marlin_hvzk}
-  $\marlinprot$ is 2-programmable trapdoor-less zero-knowledge.
+  $\marlinprotfs$ is 2-programmable trapdoor-less zero-knowledge.
 \end{lemma}
 \begin{proof}
 The simulator follows the protocol except it picks the challenges $\alpha,
@@ -281,7 +281,7 @@ $\simulator$.
   Simulation Extractability of $\marlinprotfs$}
 \begin{corollary}
   Assume that $\marlinprot$ is $\ur{1}$ with security
-  $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and computational special sound
+  $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and rewinding-based knowledge sound
   with security $\epss(\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
   random oracle. Let $\advse$ be an adversary that can make up to $q$
   random oracle queries, and outputs an

@@ -108,7 +108,7 @@ $\simulator$ can program the random oracle.
 We model this using the oracles from Fig.~\ref{fig:real_simulator_oracles} that provide a stateful wrapper around $\simulator$.
 $\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h)$ allows for programming the simulated $\ro$ and is available only to $\simulator$. $\simOP(x, w)$ and $\simOP'(x)$ call the simulator. The former is used in the zero-knowledge definition and requires the statement and witness to be in the relation, the latter is used in the simulation extraction definition and does not require a witness input.
 
-\begin{definition}[ ($k$-programmable) Trapdoor-Less Zero-Knowledge Proof System]
+\begin{definition}[Updatable ($k$-programmable) Trapdoor-Less Zero-Knowledge]
   \label{def:TLZK}
   Let 
   $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. 
@@ -125,7 +125,7 @@ $\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h
 
   
 \begin{remark}[TLZK vs HVZK]
-  We note that TLZK notion is closely related to honest-verifier zero knowledge in the
+  We note that TLZK notion is closely related to honest-verifier zero-knowledge in the
   standard model. That is, if we consider an interactive proof system $\proofsystem$
   that is HVZK in the standard model then $\proofsystem_\fs$ is TLZK. This comes as the simulator $\simulator$ in
   $\proofsystem$ produces a valid simulated proof by picking verifier's challenges
@@ -160,7 +160,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 %simulation-extractability is with respect to a simulator
 %$\simulator' = (\simOH, \simOP')$.
 %
-\begin{definition}[Simulation Extractable NIZK]
+\begin{definition}[Updatable Simulation Extractable NIZK]
 	\label{def:updsimext}
   \label{def:simext}
 	Let $\psni = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup. We say that
@@ -333,12 +333,12 @@ The existence of simulation trapdoor for $\plonkprot$, $\sonicprot$ and $\marlin
 special sound in the standard sense. We therefore put forth the notion of rewinding-based knowledge soundness that is a computational notion. 
 Note that in the definition below, it is implicit that each transcript in the tree is accepting with respect to a ``local programming'' of the random oracle. However, the verification of the proof output by the adversary is with respect to a non-programmed random oracle.
 
-\begin{definition}[Rewinding-based knowledge soundness]
+\begin{definition}[Updatable Rewinding-based knowledge soundness]
 	Let $n_1, \ldots, n_\mu \in \NN$. 
 	%
 	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system for relation $\REL$ with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle.
 	%
-	We require existence of an expected PPT tree builder $\tdv$ that eventually outputs a $\tree$ which is either a $(n_1, \ldots, n_\mu)$-tree of acceptable transcript or $\bot$ and a PPT extractor $\extcss$. Let  adversary $\advcss$ be a PPT algorithm, that outputs a valid proof with probability at least $\accProb$, 
+	We require existence of an expected PPT tree builder $\tdv$ that eventually outputs a $\tree$ which is either a $(n_1, \ldots, n_\mu)$-tree of accepting transcript or $\bot$ and a PPT extractor $\extcss$. Let  adversary $\advcss$ be a PPT algorithm, that outputs a valid proof with probability at least $\accProb$, 
 	where
 	\[
 	\accProb = \condprob{
@@ -374,6 +374,7 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	Here, $\srs$ is the finalized SRS. List $\Qro$ contains all of the adversaries
 	queries to $\ro$ and the random oracle's answers, $\abs{\Qro}\leq q$, and list $\Qsrs$ contains all $(\srs, \rho)$ of updated SRSs and their proofs.
 %	 We call the protocol $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound when $\tdv$ builds a $(n_1, \ldots, n_\mu)$-tree of transcripts.
+\hamid{1.5}{We still need this sentence:  We call the protocol $(k, n)$-rewinding-based knowledge sound if $\tree$ is a $(k, n)$-tree of accepting transcripts.}
 \end{definition}
 	
 

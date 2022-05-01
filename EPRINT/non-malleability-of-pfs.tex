@@ -8,7 +8,7 @@ $\plonkprot$ has the $\ur{3}$ property,
 cf.~\cref{lem:plonkprot_ur}.
 Next, we show that $\plonkprot$ is rewind-based knowledge sound. That is, given a number of accepting transcripts whose messages match on the first $5$ messages of the protocol, we can either extract a witness for the proven statement or use one of the transcripts to break the $\dlog$ assumption. This result is shown in the AGM, cf.~\cref{lem:plonkprot_ss}. We then show that $\plonkprot$ is trapdoor-less ZK in the AGM, cf.~\cref{lem:plonk_tlzk}.
 
-Given rewinding-based knowledge soundness, $\ur{3}$ and trapdoor-less zero knowledge of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is simulation-extractable.
+Given rewinding-based knowledge soundness, $\ur{3}$ and trapdoor-less zero-knowledge of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is simulation-extractable.
 
 \newcommand{\vql}{\vec{q_{L}}}
 \newcommand{\vqr}{\vec{q_{R}}}
@@ -305,10 +305,10 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
   By the union bound, the adversary is able to break the unique response property with probabilty upper bounded by $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\FF_p}$.
   \end{proof}
 
-\subsection{Updatable Rewinding-Based Knowledge Soundness}
+\subsection{Rewinding-Based Knowledge Soundness}
 \begin{lemma}
 	\label{lem:plonkprot_ss}
-  $\plonkprot$ is $(3, 3 \noofc + 16)$-updatable rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
+  $\plonkprot$ \hamid{1.5}{$\plonkprot_\fs$?} is $(3, 3 \noofc + 16)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
     \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 16}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 16}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,,
   \]
@@ -317,13 +317,13 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
 \end{lemma}
 
 \begin{proof}
-	Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkproof)$ such that $\plonkprotfs.\verifier$ accepts the proof. Let $\tdv$ be a tree-building algorithm that runs $\zdv_1$ from \cref{fig:Attema-ext} and outputs a tree $\tree$, and let $\extcss$ be an extractor that given the tree output by $\tdv$ reveals the witness for $\inp$. The main idea of the proof is to show that an adversary who breaks updatable rewinding-based knowledge soundness can be used to break a $\udlog$-problem instance. The proof goes by game hops. Note that since the tree branches after $\adv$'s $3$-rd message, the instance $\inp$, commitments $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges $\alpha, \beta, \gamma$ are the same in all the transcripts. Also, the tree branches after the third adversary's message where the challenge $\chz$ is presented, thus tree $\tree$ is built using different values of $\chz$.	We consider the following games.
+	Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkproof)$ such that $\plonkprotfs.\verifier$ accepts the proof. Let $\tdv$ be a tree-building algorithm that runs $\zdv_1$ from \cref{fig:Attema-ext} and outputs a tree $\tree$, and let $\extcss$ be an extractor that given the tree output by $\tdv$ reveals the witness for $\inp$. The main idea of the proof is to show that an adversary who breaks rewinding-based knowledge soundness can be used to break a $\udlog$-problem instance. The proof goes by game hops. Note that since the tree branches after $\adv$'s $3$-rd message, the instance $\inp$, commitments $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges $\alpha, \beta, \gamma$ are the same in all the transcripts. Also, the tree branches after the third adversary's message where the challenge $\chz$ is presented, thus tree $\tree$ is built using different values of $\chz$.	We consider the following games.
 
   \ncase{Game 0} %
   In this game the adversary wins if it outputs a valid instance--proof pair $(\inp, \zkproof)$, and the extractor $\extcss$ does not manage to output a witness $\wit$ such that $\REL (\inp, \wit)$ holds.
 
   \ncase{Game 1} %
-  In this game the environment aborts the game if the tree building algorithm $\tdv$ fails in building a tree of acceptable transcripts $\tree$. 
+  In this game the environment aborts the game if the tree building algorithm $\tdv$ fails in building a tree of accepting transcripts $\tree$. 
 
   \ncase{Game 0 to Game 1} %
   By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most 
@@ -348,7 +348,7 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
   Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upper-bounded by $\epsudlog (\secpar)$.
 
   \ncase{Conclusion}
-  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of acceptable transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(3 \noofc + 16)$ acceptable transcripts for different challenges $\chz$, it obtains the same number of different evaluations of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$ and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined in prover's $3$-rd message description holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are of degree at most $(3 \noofc)$ and there is more than $(3 \noofc)$ their evaluations known, $\extcss$ can recreate polynomials' coefficients by interpolation and reveal the witness with probability $1$. Thus, the probability that extraction fails in that case is upper-bounded by probability of an idealised verifier failing $\epsid(\secpar)$.
+  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of accepting transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(3 \noofc + 16)$ accepting transcripts for different challenges $\chz$, it obtains the same number of different evaluations of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since the transcripts are acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$ and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined in prover's $3$-rd message description holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven statement. Since $\p{a} (X), \p{b} (X), \p{c} (X)$ are of degree at most $(3 \noofc)$ and there is more than $(3 \noofc)$ their evaluations known, $\extcss$ can recreate polynomials' coefficients by interpolation and reveal the witness with probability $1$. Thus, the probability that extraction fails in that case is upper-bounded by probability of an idealised verifier failing $\epsid(\secpar)$.
 
   Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
   \[
@@ -360,27 +360,26 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
 \subsection{Trapdoor-Less Zero-Knowledge of Plonk}
 \begin{lemma}
   \label{lem:plonk_tlzk}
-  Let $\plonkprot$ be zero knowledge with security $\epszk(\secpar)$. Then $\plonkprot$ is 3-programmable trapdoor-less zero-knowledge
+  Let $\plonkprot$ be zero-knowledge with security $\epszk(\secpar)$. Then $\plonkprot$ \hamid{1.5}{$\plonkprot_\fs$?} is 3-programmable trapdoor-less zero-knowledge
   with security $\epszk(\secpar)$.
 \end{lemma}
 
 \begin{proof}
-  As noted in \cref{def:upd-scheme}, subvertible zero knowledge implies updatable zero
-  knowledge. Hence, here we show that Plonk is TLZK even against adversaries who picks
+  As noted in \cref{def:upd-scheme}, subvertible zero-knowledge implies updatable zero-knowledge. Hence, here we show that Plonk is TLZK even against adversaries who picks
   the SRS on its own.
 
 The adversary $\adv(\secparam)$ picks an SRS $\srs$ and instance--witness pair
 $(\inp, \wit)$ and gets a proof $\zkproof$ simulated by the simulator
 $\simulator$ which proceeds as follows.
 
-For its $1$-st message the simulator  picks randomly both the randomisers $b_1, \ldots, b_6$ and
+For its $1$-st message the simulator  picks randomly both the randomizers $b_1, \ldots, b_6$ and
 sets $\wit_i = 0$ for $i \in \range{1}{3\noofc}$. Then $\simulator$
 outputs $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$. For the first
 challenge, the simulator picks permutation argument challenges $\beta, \gamma$
 randomly.
 
 For its $2$-nd message, the simulator computes $\p{z}(X)$ from
-the newly picked randomisers $b_7, b_8, b_9$ and coefficients of polynomials
+the newly picked randomizers $b_7, b_8, b_9$ and coefficients of polynomials
 $\p{a}(X), \p{b}(X), \p{c}(X)$. Then it evaluates $\p{z}(X)$ honestly and outputs
 $\gone{\p{z}(\chi)}$. Challenge $\alpha$ that should be sent by the verifier
 after the simulator's $2$ message is picked by the simulator at random.
@@ -411,12 +410,12 @@ the challenge $v$, and prepares the the last message as an honest prover
 would. Eventually, $\simulator$ and outputs the final challenge, $u$, by picking it
 at random as well.
 
-We argue about zero knowledge as usual. The property holds since the polynomials that has witness elements at their coefficients are randomized by at least two randomizers and are evaluated at at most two points; and the simulator computes all polynomials as an honest prover would.
+We argue about zero-knowledge as usual. The property holds since the polynomials that has witness elements at their coefficients are randomized by at least two randomizers and are evaluated at at most two points; and the simulator computes all polynomials as an honest prover would.
 \end{proof}
 
 \subsection{Simulation Extractability of~$\plonkprotfs$}
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss,lem:plonk_tlzk} hold, $\plonkprot$ is $\ur{3}$,
-computational special sound and trapdoor-less zero knowledge. We now make use of \cref{thm:se} and show that
+rewinding-based knowledge sound and trapdoor-less zero-knowledge. We now make use of \cref{thm:se} and show that
 $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:updsimext}.
 
 \begin{corollary}[Simulation extractability of $\plonkprot_\fs$]

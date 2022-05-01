@@ -162,7 +162,7 @@ randomly $\alpha, \chi \sample \FF_p$ and outputs
 	\]
 \ourpar{$\sonic$ prover $\prover(\srs, \inp, \wit=\va, \vb, \vc)$.}
 \begin{description}
-\item[Message 1] The prover picks randomly randomisers
+\item[Message 1] The prover picks randomly randomizers
   $c_{\multconstr + 1}, c_{\multconstr + 2}, c_{\multconstr + 3}, c_{\multconstr
     + 4} \sample \FF_p$. Sets
   $\pr(X, Y) \gets \pr(X, Y) + \sum_{i = 1}^4 c_{\multconstr + i} X^{- 2
@@ -365,10 +365,10 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
   \qed
 \end{proof}
 
-\subsection{Updatable Rewinding-Based Knowledge Soundness}
+\subsection{Rewinding-Based Knowledge Soundness}
 \begin{lemma}
 	\label{lem:sonicprot_ss}
-  $\sonicprotfs$ is $(2, \multconstr + \linconstr + 1))$-updatable rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
+  $\sonicprotfs$ is $(2, \multconstr + \linconstr + 1)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
     \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{\multconstr + \linconstr + 1}{\abs{\FF_p}}\right)}{\frac{\multconstr + \linconstr + 1}{\abs{\FF_p}}}\right) + \epsudlog (\secpar) + \epsid (\secpar)\,,
   \]
@@ -387,13 +387,13 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
 % 	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\dconst, \dconst)$-$\ldlog$ assumption.
 % \end{lemma}
 
-Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkproof)$ such that $\sonicprotfs.\verifier$ accepts the proof. Let $\tdv$ be a tree-building algorithm that runs $\zdv_1$ from \cref{fig:Attema-ext} and outputs a tree $\tree$, and let $\extcss$ be an extractor that given the tree output by $\tdv$ reveals the witness for $\inp$. The main idea of the proof is to show that an adversary who breaks updatable rewinding-based knowledge soundness can be used to break a $\uldlog$-problem instance. The proof goes by game hops. Note that since the tree branches after $\adv$'s $2$-nd message, the instance $\inp$, commitments $\gone{\p{r} (\chi, 1), \p{t} (\chi, y)}$, and challenge $y$ are the same in all the transcripts. Also, the tree branches after the second adversary's message where the challenge $z$ is presented, thus tree $\tree$ is built using different values of $z$.	We consider the following games.
+Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkproof)$ such that $\sonicprotfs.\verifier$ accepts the proof. Let $\tdv$ be a tree-building algorithm that runs $\zdv_1$ from \cref{fig:Attema-ext} and outputs a tree $\tree$, and let $\extcss$ be an extractor that given the tree output by $\tdv$ reveals the witness for $\inp$. The main idea of the proof is to show that an adversary who breaks rewinding-based knowledge soundness can be used to break a $\uldlog$-problem instance. The proof goes by game hops. Note that since the tree branches after $\adv$'s $2$-nd message, the instance $\inp$, commitments $\gone{\p{r} (\chi, 1), \p{t} (\chi, y)}$, and challenge $y$ are the same in all the transcripts. Also, the tree branches after the second adversary's message where the challenge $z$ is presented, thus tree $\tree$ is built using different values of $z$.	We consider the following games.
 
   \ncase{Game 0} %
   In this game, the adversary wins if it outputs a valid instance--proof pair $(\inp, \zkproof)$, and the extractor $\extcss$ does not manage to output a witness $\wit$ such that $\REL (\inp, \wit)$ holds.
 
   \ncase{Game 1} %
-  In this game, the environment aborts the game if the tree building algorithm $\tdv$ fails in building a tree of acceptable transcripts $\tree$. 
+  In this game, the environment aborts the game if the tree building algorithm $\tdv$ fails in building a tree of accepting transcripts $\tree$. 
 
   \ncase{Game 0 to Game 1} %
   By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most 
@@ -418,7 +418,7 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
   Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upper-bounded by $\epsuldlog (\secpar)$.
 
   \ncase{Conclusion}
-  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of acceptable transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(\multconstr + \linconstr + 1)$ acceptable transcripts for different challenges $z$, it obtains the same number of different evaluations of polynomial $\p{t} (z, y)$ what allows to extract the witness, cf.~\cite{CCS:MBKM19} except with probability $\epsid(\secpar)$.
+  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of accepting transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(\multconstr + \linconstr + 1)$ accepting transcripts for different challenges $z$, it obtains the same number of different evaluations of polynomial $\p{t} (z, y)$ what allows to extract the witness, cf.~\cite{CCS:MBKM19} except with probability $\epsid(\secpar)$.
 
   Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
   \[
@@ -428,7 +428,7 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
 \subsection{Trapdoor-Less Zero-Knowledge of Sonic}
 \begin{lemma}
 \label{lem:sonic_hvzk}
-$\sonic$ is 2-programmable trapdoor-less zero-knowledge.
+$\sonicprotfs$ is 2-programmable trapdoor-less zero-knowledge.
 \end{lemma}
 \begin{proof}
   The simulator proceeds as follows.
@@ -438,7 +438,7 @@ $\sonic$ is 2-programmable trapdoor-less zero-knowledge.
       \label{eq:ab_eq_c}
       \vec{c} = \vec{a} \cdot \vec{b}. 
     \end{equation}
-  \item Pick randomisers $c_{\multconstr + 1}, \ldots, c_{\multconstr + 4}$,
+  \item Pick randomizers $c_{\multconstr + 1}, \ldots, c_{\multconstr + 4}$,
     honestly compute polynomials $\p{r}(X, Y), \p{r'}(X, Y), \p{s}(X, Y)$ and
     pick randomly challenges $y$, $z$.
   \item Output commitment $\gone{r} \gets \com(\srs, \multconstr, \p{r} (X,
@@ -475,9 +475,8 @@ $\sonic$ is 2-programmable trapdoor-less zero-knowledge.
   constant term). \qed
 \end{proof}
 \begin{remark} 
-  As noted in \cite{CCS:MBKM19}, $\sonic$ is statistically subversion-zero
-  knowledge (Sub-ZK). As noted in \cite{AC:ABLZ17}, one way to achieve
-  subversion zero knowledge is to utilise an extractor that extracts a SRS
+  As noted in \cite{CCS:MBKM19}, $\sonic$ is statistically subversion zero-knowledge (Sub-ZK). As noted in \cite{AC:ABLZ17}, one way to achieve
+  subversion zero-knowledge is to utilise an extractor that extracts a SRS
   trapdoor from a SRS-generator. Unfortunately, a NIZK made subversion
   zero-knowledge by this approach cannot achieve perfect Sub-ZK as one has to
   count in the probability of extraction failure. However, with the simulation
@@ -492,7 +491,7 @@ $\sonic$ is 2-programmable trapdoor-less zero-knowledge.
 Since \cref{lem:sonicprot_ur,lem:sonicprot_ss,lem:sonic_hvzk} hold, $\sonicprot$ is $\ur{1}$, rewinding-based knowledge sound and trapdoor-less zero-knowledge. We now make use
 of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defined in \cref{def:simext}.
 
-\begin{corollary}Simulation extractability of $\sonicprotfs$]
+\begin{corollary}[Simulation extractability of $\sonicprotfs$]
   \label{thm:sonicprotfs_se}
   $\sonicprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$ with extraction failure probability 
 \[
