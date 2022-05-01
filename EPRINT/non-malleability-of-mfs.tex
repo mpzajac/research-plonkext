@@ -61,13 +61,13 @@ verify that \cref{eq:marlin_eq_2} holds.
   Let $\PCOM$ be a commitment of knowledge with security $\epsk(\secpar)$,
   $\epsbind(\secpar)$ and has unique response property with security
   $\epsop(\secpar)$. Then probability that a $\ppt$ adversary $\adv$ breaks
-  $\marlinprotfs$ $\ur{1}$ property is at most
+  $\marlinprotfs$ $\ur{2}$ property is at most
   \changedm{$11 \cdot (\epsop (\secpar)) + 6 \cdot \epsbind (\secpar) +
     \infrac{3}{\abs{\FF_p}}.$} \mxout{$6 \cdot (\epsbind + \epsop + \epsk) + \epss$}
 \end{lemma}
 \changedm{
 \begin{proof}
-  Let $\adv$ be an algebraic adversary tasked to break the $\ur{1}$-ness of
+  Let $\adv$ be an algebraic adversary tasked to break the $\ur{2}$-ness of
   $\marlinprotfs$. We show that the first prover's message determines, along with
   the verifiers challenges, the rest of it.  This is done by game hops. In the games,
   the adversary outputs two proofs $\zkproof^0$ and $\zkproof^1$ for the same statement.
@@ -188,7 +188,7 @@ verify that \cref{eq:marlin_eq_2} holds.
 \begin{proof}
 	% \michals{8.9}{Need to check the degrees}
 	The proof goes similarly to the respective proofs for $\plonk$ and
-	$\sonic$. That is, let $\srs$ be $\marlinprot$'s finalised SRS and denote by $\srs_1$
+	$\sonic$. That is, let $\srs$ be $\marlinprot$'s finalized SRS and denote by $\srs_1$
 	all SRS's $\GRP_1$-elements. Let $\tdv$ be an algebraic adversary that
 	produces a statement $\inp$ and a $(1, \dconst + 1, 1, 1)$-tree of
 	accepting transcripts $\tree$. Note that in all transcripts the instance
@@ -239,7 +239,7 @@ verify that \cref{eq:marlin_eq_2} holds.
 	of accepting transcripts such that the winning condition of the game
 	holds. Let $\rdvdulog$ be a reduction that gets as input an
 	$(\dconst, 1)$-$\udlog$ instance $\gone{1, \ldots, \chi^\dconst}, \gtwo{1, \chi}$ and
-	is tasked to output $\chi$. The reduction proceeds as follows---it builds $\adv$'s SRS $\srs$ in the updatable setting using the input $\udlog$ instance. Namely it answers $\adv$'s queries for SRS updates and sets the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalised SRS and $(1, \tree)$ be the output
+	is tasked to output $\chi$. The reduction proceeds as follows---it builds $\adv$'s SRS $\srs$ in the updatable setting using the input $\udlog$ instance. Namely it answers $\adv$'s queries for SRS updates and sets the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalized SRS and $(1, \tree)$ be the output
 	returned by $\adv$. Let $\inp$ be a relation proven in $\tree$.  Consider a
 	transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$,
 	but $\vereq_{\inp, \zkproof}(\chi) = 0$. Since the adversary is algebraic, all
@@ -280,7 +280,7 @@ $\simulator$.
 \subsection{From Rewinding-Based Knowledge Soundness and Unique Response Property to\COMMENT{ forking}
   Simulation Extractability of $\marlinprotfs$}
 \begin{corollary}
-  Assume that $\marlinprot$ is $\ur{1}$ with security
+  Assume that $\marlinprot$ is $\ur{2}$ with security
   $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and rewinding-based knowledge sound
   with security $\epss(\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
   random oracle. Let $\advse$ be an adversary that can make up to $q$
