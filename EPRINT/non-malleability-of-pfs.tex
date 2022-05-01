@@ -4,11 +4,11 @@
 \section{Non-malleability of Plonk} 
 \label{sec:plonk}
 In this section, we show that $\plonkprotfs$ is simulation-extractable. Towards this end, we first use the unique opening property to show that
-$\plonkprot$ has the $\ur{3}$ property,
+$\plonkprotfs$ has the $\ur{3}$ property,
 cf.~\cref{lem:plonkprot_ur}.
-Next, we show that $\plonkprot$ is rewind-based knowledge sound. That is, given a number of accepting transcripts whose messages match on the first $5$ messages of the protocol, we can either extract a witness for the proven statement or use one of the transcripts to break the $\dlog$ assumption. This result is shown in the AGM, cf.~\cref{lem:plonkprot_ss}. We then show that $\plonkprot$ is trapdoor-less ZK in the AGM, cf.~\cref{lem:plonk_tlzk}.
+Next, we show that $\plonkprotfs$ is rewind-based knowledge sound. That is, given a number of accepting transcripts whose messages match on the first $5$ messages of the protocol, we can either extract a witness for the proven statement or use one of the transcripts to break the $\dlog$ assumption. This result is shown in the AGM, cf.~\cref{lem:plonkprot_ss}. We then show that $\plonkprotfs$ is trapdoor-less ZK in the AGM, cf.~\cref{lem:plonk_tlzk}.
 
-Given rewinding-based knowledge soundness, $\ur{3}$ and trapdoor-less zero-knowledge of $\plonkprot$, we invoke \cref{thm:se} and conclude that $\plonkprot_\fs$ is simulation-extractable.
+Given rewinding-based knowledge soundness, $\ur{3}$ and trapdoor-less zero-knowledge of $\plonkprotfs$, we invoke \cref{thm:se} and conclude that $\plonkprotfs$ is simulation-extractable.
 
 \newcommand{\vql}{\vec{q_{L}}}
 \newcommand{\vqr}{\vec{q_{R}}}
