@@ -112,7 +112,7 @@ $\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h
 \begin{definition}[Updatable k-Programmable Trapdoor-Less Zero-Knowledge]
   \label{def:TLZK}
   Let 
-  $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. %Let $\ro$ be the random oracle. 
+  $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a $(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup. %Let $\ro$ be the random oracle. 
   %$\simulator_{\fs}$ takes as input $\srs$ and instance $\inp$, programs $\ro$, and outputs a proof $\zkproof_\simulator$.  
   We call $\psfs$ \emph{trapdoor-less zero-knowledge} with security $\epszk$ if for any
   adversary $\adv$, $\abs{\eps_0(\secpar) - \eps_1(\secpar)} \leq \epszk(\secpar)$, where
@@ -201,7 +201,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 	(\inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'
 		} (1^\secpar; r) \\
 	& \wit \gets \ext_\se (\srs, \advse, r,
-	\Qsim, \Qro, \Qsrs) 
+	\Qsrs,\Qro,\Qsim ) 
 	\end{aligned}
 } \leq \epsse(\secpar,\accProb, q)
 	\]
@@ -211,10 +211,10 @@ should be able to provide simulated proofs for false statements as well, we thus
 	%\]
 	%for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
 	%$\accProb \geq \nu$. 
-	Here, $\srs$ is the finalized SRS, list $Q$ contains all $(\inp, \zkproof)$ pairs where 
+	Here, $\srs$ is the finalized SRS. List $\Qsrs$ contains all $(\srs, \rho)$ of update SRSs and their proofs, list $\Qro$ contains all $\advse$'s
+	queries to $\simOH$ and the (simulated) random oracle's answers, $\abs{\Qro}\leq q$, and list $Q$ contains all $(\inp, \zkproof)$ pairs where 
 	$\inp$ is an instance queried to $\simOP'$ by the adversary and
-	$\zkproof$ is the simulator's answer. List $\Qro$ contains all $\advse$'s
-	queries to $\simOH$ and the (simulated) random oracle's answers, $\abs{\Qro}\leq q$, and list $\Qsrs$ contains all $(\srs, \rho)$ of update SRSs and their proofs.
+	$\zkproof$ is the simulator's answer .
   % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simOH$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
 \end{definition}
 
@@ -239,7 +239,7 @@ has \emph{unique responses from $k$}, and call it a $\ur{k}$-protocol, if it
 follows the definition below:
 
 \begin{definition}[Updatable k-Unique Response Protocol]
-Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. 
+Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a $(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup. Let $\ro$ be the random oracle. 
 We say that $\psfs$ has \emph{unique responses for $k$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\advur$:
   \[
 	\Pr\left[
@@ -278,7 +278,7 @@ Before giving the definition of rewinding-based knowledge soundness for NIZK pro
   challenges, such that no two edges on the same depth have the same
   label; and each node on depth $i$ has $n_{i} - 1$ siblings and $n_{i +
     1}$ children. The tree consists of $N = \prod_{i = 1}^\mu n_i$
-  branches, where $N$ is the number of accepting transcripts. We require $N = \poly$. We refer to a $(1, \ldots, n_k=n, 1, \ldots, 1)$-tree as a $(k,n)$-tree.
+  branches, where $N$ is the number of accepting transcripts. We require $N = \poly$. \markulf{1.5}{Cut? We refer to a $(1, \ldots, n_k=n, 1, \ldots, 1)$-tree as a $(k,n)$-tree.}
 \end{definition}
 
 \iffalse
@@ -339,7 +339,7 @@ Note that in the definition below, it is implicit that each transcript in the tr
 \begin{definition}[Updatable Rewinding-Based Knowledge Soundness]
 	Let $n_1, \ldots, n_\mu \in \NN$. 
 	%
-	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system for relation $\REL$ with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle.
+	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a $(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup for relation $\REL$. Let $\ro$ be the random oracle.
 	%
 	We require existence of an expected PPT tree builder $\tdv$ that eventually outputs a $\tree$ which is either a $(n_1, \ldots, n_\mu)$-tree of accepting transcript or $\bot$ and a PPT extractor $\extcss$. Let  adversary $\advcss$ be a PPT algorithm, that outputs a valid proof with probability at least $\accProb$, 
 	where
@@ -369,16 +369,16 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	\begin{aligned}
 	& 	r \sample \RND{\advcss}, \\
 	& 	(\srs, \inp, \cdot) \gets \advcss^{\initU, \ro} (1^\secpar; r)\\
-	&  	\tree \gets \tdv(\srs, \advcss, r,\Qro, \Qsrs),
+	&  	\tree \gets \tdv(\srs, \advcss, r, \Qsrs, \Qro),
 	\wit \gets \extcss(\tree)
 	\end{aligned}\right.
 	\right] \leq \epscss(\secpar,\accProb, q).
 	\end{align*}
-	Here, $\srs$ is the finalized SRS. List $\Qro$ contains all of the adversaries
-	queries to $\ro$ and the random oracle's answers, $\abs{\Qro}\leq q$, and list $\Qsrs$ contains all $(\srs, \rho)$ of updated SRSs and their proofs.
+	Here, $\srs$ is the finalized SRS. List $\Qsrs$ contains all $(\srs, \rho)$ of updated SRSs and their proofs, and list $\Qro$ contains all of the adversaries
+	queries to $\ro$ and the random oracle's answers, $\abs{\Qro}\leq q$.
 %	 We call the protocol $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound when $\tdv$ builds a $(n_1, \ldots, n_\mu)$-tree of transcripts.
 % \hamid{1.5}{We still need this sentence:  
-We call the protocol $(k, n)$-rewinding-based knowledge sound if $\tree$ is a $(k, n)$-tree of accepting transcripts.
+\markulf{1.5}{Cut? We call the protocol $(k, n)$-rewinding-based knowledge sound if $\tree$ is a $(k, n)$-tree of accepting transcripts.}
 % }
 \end{definition}
 	

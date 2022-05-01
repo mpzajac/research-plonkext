@@ -2,11 +2,12 @@
 
 \begin{theorem}[Simulation-extractable multi-message protocols]
 	\label{thm:se}
-	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup compiled via the $(2\mu + 1)$-message Fiat--Shamir transformation. Let $\ro$ be the random oracle. If $\psfs$ has the
-	\emph{updatable $k$-unique response property} with security loss $\epsur$, is
-	\emph{updatable $k$-programmable trapdoor-less zero-knowledge}, and $(1, \ldots, 1, n_{k}, \ldots, n_\mu)$-\emph{updatable rewinding-based knowledge sound} with security loss $\epscss$; 
-	
-	Then $\psfs$ is \emph{updatable simulation-extractable} with security loss $\epsse(\secpar,\accProb,q) \leq \epscss(\secpar,\accProb - \epsur(\secpar),q)$ against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$.
+	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a  $(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup. If $\psfs$ is an
+	updatable $k$-unique response protocol with security loss $\epsur$, is
+	updatable $k$-programmable trapdoor-less zero-knowledge, and %$(1, \ldots, 1, n_{k}, \ldots, n_\mu)$-
+	updatable rewinding-based knowledge sound with security loss $\epscss$; 
+	%
+	Then $\psfs$ is \emph{updatable simulation-extractable} with security loss $$\epsse(\secpar,\accProb,q) \leq \epscss(\secpar,\accProb - \epsur(\secpar),q)$$ against any $\ppt$ adversary $\advse$ that makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$.
 \end{theorem}
 
 \begin{proof}	

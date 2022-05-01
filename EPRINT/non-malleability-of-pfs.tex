@@ -3,10 +3,10 @@
 
 \section{Non-malleability of Plonk} 
 \label{sec:plonk}
-In this section, we show that $\plonkprotfs$ is simulation-extractable. Towards this end, we first use the unique opening property to show that
+In this section, we show that $\plonkprotfs$ is simulation-extractable. To this end, we first use the unique opening property to show that
 $\plonkprotfs$ has the $\ur{3}$ property,
 cf.~\cref{lem:plonkprot_ur}.
-Next, we show that $\plonkprotfs$ is rewind-based knowledge sound. That is, given a number of accepting transcripts whose messages match on the first $5$ messages of the protocol, we can either extract a witness for the proven statement or use one of the transcripts to break the $\dlog$ assumption. This result is shown in the AGM, cf.~\cref{lem:plonkprot_ss}. We then show that $\plonkprotfs$ is trapdoor-less ZK in the AGM, cf.~\cref{lem:plonk_tlzk}.
+Next, we show that $\plonkprotfs$ is rewinding-based knowledge sound. That is, given a number of accepting transcripts whose messages match on the first $5$ messages of the protocol, we can either extract a witness for the proven statement or use one of the transcripts to break the $\dlog$ assumption. This result is shown in the AGM, cf.~\cref{lem:plonkprot_ss}. We then show that $\plonkprotfs$ is trapdoor-less ZK in the AGM, cf.~\cref{lem:plonk_tlzk}.
 
 Given rewinding-based knowledge soundness, $\ur{3}$ and trapdoor-less zero-knowledge of $\plonkprotfs$, we invoke \cref{thm:se} and conclude that $\plonkprotfs$ is simulation-extractable.
 
@@ -19,9 +19,9 @@ Given rewinding-based knowledge soundness, $\ur{3}$ and trapdoor-less zero-knowl
 
 \subsection{Plonk Protocol Description}
 \label{sec:plonk_explained}
-\oursubsub{The constraint system}
-Assume $\CRKT$ is a fan-in two arithmetic circuit,
-which fan-out is unlimited and has $\numberofconstrains$ gates and $\noofw$ wires
+\oursubsub{The constraint system.}
+Assume $\CRKT$ is a fan-in two arithmetic circuit, whose
+fan-out is unlimited and has $\numberofconstrains$ gates and $\noofw$ wires
 ($\numberofconstrains \leq \noofw \leq 2\numberofconstrains$). \plonk's constraint
 system is defined as follows:
 \begin{compactitem}
