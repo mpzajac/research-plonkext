@@ -2,14 +2,14 @@
 	\centering
 	% \small
 	\centerline{\fbox{
-		\begin{minipage}[t]{1.25\linewidth}
+		\begin{minipage}[t]{0.75\linewidth}
 		\begin{pcvstack}
 		\begin{pchstack}
 			\procedure{$\kgen(\secparam, \maxdeg)$}{
 				\chi \sample \FF_p \\ [\myskip]
 				\srs := 
 				\left( \gone{\smallset{\chi^i}_{i = 0}^{\maxdeg}},
-				\gtwo{\chi} \right); 
+				\gtwo{\chi} \right); \\
 				\rho =  \left(\gone{\chi, \chi}, \gtwo{\chi}\right) \\ [\myskip]
 				\pcreturn (\srs, \rho) \\ [\myskip]
 			}
@@ -22,7 +22,7 @@
 			\chi' \sample \FF_p  \\ [\myskip]
 			\srs' := 
 			\left( \gone{\smallset{{\chi'}^i A_i}_{i = 0}^{\maxdeg}},
-			\gtwo{\chi' B} \right); 
+			\gtwo{\chi' B} \right); \\
 			\rho' =	\left( \gone{\chi' A_1, \chi'}, \gtwo{\chi'}\right) \\ [\myskip]
 			\pcreturn (\srs', \rho')
 		}
@@ -32,7 +32,7 @@
 		%
 		\procedure{$\verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$}{
 			\text{Parse }  \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\maxdeg}},
-			\gtwo{B} \right) \text{and } \{\rho_j \}_{j=1}^n \text{ as } \left\{\left( P_j, \bP_j, \hP_j \right)\right\}_{j=1}^n \\ [\myskip]
+			\gtwo{B} \right) \\ \text{and } \{\rho_j \}_{j=1}^n \text{ as } \left\{\left( P_j, \bP_j, \hP_j \right)\right\}_{j=1}^n \\ [\myskip]
 			\text{Verify Update proofs: } \\ [\myskip]
 			\t \bP_1 = P_1 \\ [\myskip]
 			\t P_j \bullet \gtwo{1} = P_{j-1} \bullet \hP_j \quad \forall j \geq 2 \\ [\myskip]
@@ -203,7 +203,7 @@
 \label{sec:uop}
 Now, we show that the batched variant of the KZG polynomial
 commitment scheme that is used in \plonk{} and $\marlin{}$, has the unique opening property.
-\markulf{30.4}{Changed this to $\PCOMp$, hope that's correct. Could simplfy this, given that the body will be only about Plonk?}
+%\markulf{30.4}{Changed this to $\PCOMp$, hope that's correct. Could simplfy this, given that the body will be only about Plonk?}
 
 \begin{lemma}
 \label{lem:pcomp_op}

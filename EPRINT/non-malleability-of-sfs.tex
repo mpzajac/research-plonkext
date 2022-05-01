@@ -4,7 +4,7 @@
 \section{Non-malleability of $\sonicprotfs$}
 \label{sec:sonic}
 
-\markulf{22.04}{I prefer the notation $Pr[\chi \gets \FF_q; \chi' \gets \adv( ...): \chi=\chi']$ as one can start reading at the left. But I will let that one go and will admit that it's a question of taste and it might be an aquired taste. }
+\markulfdone{22.04}{I prefer the notation $Pr[\chi \gets \FF_q; \chi' \gets \adv( ...): \chi=\chi']$ as one can start reading at the left. But I will let that one go and will admit that it's a question of taste and it might be an aquired taste. }
 
 \subsection{Preliminaries}
 \begin{definition}[$(q_1, q_2)\mhyph\ldlog$ assumption]\label{def:ldlog}
@@ -272,7 +272,7 @@ composition, there is only one $o(X)$ that fulfills the equation above.
 
 \subsection{Unique Response Property}
 The unique response property of $\sonicprotfs$ follows from the unique opening
-property of the used polynomial commitment scheme $\PCOMs$.
+property of the polynomial commitment scheme $\PCOMs$.
 \begin{lemma}
 \label{lem:sonicprot_ur}
 If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security loss $\epsbind (\secpar)$ and has unique openings property with security loss $\epsop(\secpar)$, and $(\dconst, \dconst)$-$\uldlog$ problem is $\epsuldlog (\secpar)$-hard, then $\sonicprotfs$ is $\ur{2}$ against algebraic adversaries with security loss
@@ -386,6 +386,7 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
 % 	\]
 % 	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\dconst, \dconst)$-$\ldlog$ assumption.
 % \end{lemma}
+
 
 Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkproof)$ such that $\sonicprotfs.\verifier$ accepts the proof. Let $\tdv$ be the tree-building algorithm of \cref{lem:attema} that outputs a tree $\tree$, and let $\extcss$ be an extractor that given the tree output by $\tdv$ reveals the witness for $\inp$. The main idea of the proof is to show that an adversary who breaks rewinding-based knowledge soundness can be used to break a $\uldlog$-problem instance. The proof goes by game hops. Note that since the tree branches after $\adv$'s $2$-nd message, the instance $\inp$, commitments $\gone{\p{r} (\chi, 1), \p{t} (\chi, y)}$, and challenge $y$ are the same in all the transcripts. Also, the tree branches after the second adversary's message where the challenge $z$ is presented, thus tree $\tree$ is built using different values of $z$.	We consider the following games.
 
