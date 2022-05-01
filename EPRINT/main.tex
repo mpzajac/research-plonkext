@@ -78,7 +78,7 @@
 
 %\title{SNARKY Signatures with Universal and Updatable~Setup}
 
-\title{What Makes Fiat--Shamir SNARKS \\ (Updatable SRS) Simulation Extractable?}
+\title{What Makes Fiat--Shamir zkSNARKs \\ (Updatable SRS) Simulation Extractable?}
 
 
 %\author{(Submission to EUROCRYPT 2022)}
@@ -117,12 +117,12 @@
   signature schemes, non-interactive proof systems, or SoK in the random oracle model (ROM).  The security of the transformation relies on rewinding to
   extract the secret key or the witness, even in the presence of signing queries for
   signatures and simulation queries for proof systems and SoK, respectively.  We
-  extend this line of work to multi-round FS for interactive arguments with a structured reference string (SRS). The combination of ROM and SRS, while redundant in theory, is the model of choice for the most efficient practical argument systems to date. We also consider the case that the SRS
+  build on this line of work and analyze multi-round FS for interactive arguments with a structured reference string (SRS). The combination of ROM and SRS, while redundant in theory, is the model of choice for the most efficient practical argument systems to date. We also consider the case where the SRS
   is updatable and define a strong simulation extractability notion that allows for
   simulated proofs with respect to an SRS to which the adversary can contribute
   updates.
   
-  We define three properties (trapdoor-less zero-knowledge, rewinding-based knowledge soundness, and a unique response property) that are sufficient for argument systems based on multi-round FS to be also simulation extractable in this strong sense. We show that Plonk, Sonic, and Marlin satisfy these properties, and conjecture that Lunar and Basilisk proof system satisfy them as well.
+  We define three properties (trapdoor-less zero-knowledge, rewinding-based knowledge soundness, and a unique response property) that are sufficient for argument systems based on multi-round FS to be also simulation extractable in this strong sense. We show that Plonk, Sonic, and Marlin satisfy these properties, and conjecture that many other proof systems such as Lunar, Basilisk, and transparent variants of Plonk also fall within the reach of our main theorem.
   
   
 \end{abstract}
