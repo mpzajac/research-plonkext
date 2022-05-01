@@ -288,7 +288,7 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
 \subsection{Unique Response Property}
 \begin{lemma}
 	\label{lem:plonkprot_ur}
-	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening property with loss $\epsudlog (\secpar) + 2 \infrac{q}{\FF_p}$, let $(\noofc + 5, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries, who makes up to $q$ random oracle queries, with security loss $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\FF_p}$.
+	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening property with loss $\epsudlog (\secpar) + 2 \infrac{q}{\abs{\FF_p}}$, let $(\noofc + 5, 1)$-$\udlog$ problem be $\epsdlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries, who makes up to $q$ random oracle queries, with security loss $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\abs{\FF_p}}$.
 \end{lemma}
 \begin{proof}
   Let $\adv$ be an algebraic adversary tasked to break the $\ur{3}$-ness of
@@ -300,9 +300,9 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
   \p{S_{\sigma 1}} (\chz), \p{S_{\sigma, 2}} (\chz)$, and evaluation of a linearization polynomial $\p{r}(\chz)$.
   Note that the adversary can output two acceptable proofs that differ on their fourth message only if it either manages to break evaluation binding of one of the opening, or provides an unacceptable opening which is the accepted due to a batching error. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, and the batched verification equation accepts an incorrect opening with probability at most $\infrac{q}{\abs{\FF_p}}$, cf.~\cite{EPRINT:GabWilCio19}, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $8  \cdot \epsbinding (\secpar) + \infrac{q}{\abs{\FF_p}}$. 
 
-  Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$, which is upper-bounded by $\epsudlog (\secpar) + \infrac{q}{\FF_p}$, cf.~\cref{lem:pcomp_op}.
+  Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$, which is upper-bounded by $\epsudlog (\secpar) + \infrac{q}{\abs{\FF_p}}$, cf.~\cref{lem:pcomp_op}.
 
-  By the union bound, the adversary is able to break the unique response property with probabilty upper bounded by $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\FF_p}$.
+  By the union bound, the adversary is able to break the unique response property with probability upper bounded by $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\abs{\FF_p}}$.
   \end{proof}
 
 \subsection{Rewinding-Based Knowledge Soundness}
@@ -337,7 +337,7 @@ We describe the simulator in \cref{lem:plonk_tlzk}.
   \ncase{Game 1 to Game 2} % 
   As usual, we show a reduction that breaks an instance of a $\udlog$ assumption when Game 2 is aborted, while Game 1 is not.
 
-  Let $\rdvudlog$ be a reduction that gets as input an $(\noofc + 5, 1)$-$\udlog$ instance $\gone{1, \ldots, \chi^{\noofc + 5}}, \gtwo{\chi}$. Then it can update the instance to another one $\gone{1, \ldots, {\chi'}^{\noofc + 5}}, \gtwo{\chi'}$. Eventually, the reduction ouputs $\chi'$.
+  Let $\rdvudlog$ be a reduction that gets as input an $(\noofc + 5, 1)$-$\udlog$ instance $\gone{1, \ldots, \chi^{\noofc + 5}}, \gtwo{\chi}$. Then it can update the instance to another one $\gone{1, \ldots, {\chi'}^{\noofc + 5}}, \gtwo{\chi'}$. Eventually, the reduction outputs $\chi'$.
 	%
 	The reduction $\rdvudlog$ proceeds as follows.
 	First, it builds $\adv$'s SRS $\srs$ using the input $\udlog$ instance. Then it processes the adversary's update query by adding it to the list $\Qsrs$ and passing it to its own update oracle getting instance $\gone{1, \ldots, {\chi'}^{\noofc + 5}}, \gtwo{\chi'}$. The updated SRS $\srs'$ is then computed and given to $\adv$. $\rdvdulog$ also takes care of the random oracle queries made by $\adv$. It picks their answers honestly and write them in $\Qro$. The reduction then starts $\tdv(\srs, \adv, r, \Qro, \Qsrs)$.
