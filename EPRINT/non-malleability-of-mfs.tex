@@ -58,14 +58,23 @@ verify that \cref{eq:marlin_eq_2} holds.
 
 \subsection{Unique Response Property}
 \begin{lemma}\label{lem:marlinprot_ur}
-  Let $\PCOM$ be a commitment of knowledge with security $\epsk(\secpar)$,
-  $\epsbind(\secpar)$ and has unique response property with security
-  $\epsop(\secpar)$. Then probability that a $\ppt$ adversary $\adv$ breaks
-  $\marlinprotfs$ $\ur{2}$ property is at most
-  \changedm{$11 \cdot (\epsop (\secpar)) + 6 \cdot \epsbind (\secpar) +
-    \infrac{3}{\abs{\FF_p}}.$} \mxout{$6 \cdot (\epsbind + \epsop + \epsk) + \epss$}
+  Let $\PCOM$ be a commitment of knowledge that is evaluation binding with security loss 
+  $\epsbind(\secpar)$ and has unique opening property with security loss
+  $\epsop(\secpar)$. Then
+  $\marlinprotfs$ is $\ur{2}$ against algebraic adversaries with security loss $2 \cdot \epsbinding (\secpar) + \epsop (\secpar)$.
 \end{lemma}
-\changedm{
+
+\begin{proof}
+	The proof is similar to the proof of \cref{lem:plonkprot_ur} and \cref{lem:sonicprot_ur}.
+	An adversary who can break the $2$-unique response property of $\marlinprotfs$ can be either used to break the commitment scheme's evaluation binding or unique opening property. The former happens with the probability upper-bounded by $2 \cdot \epsbinding (\secpar)$, the latter with probability at most $\epsop (\secpar)$.
+	By the union bound, the adversary is able to break the unique response property with probability upper bounded by $2 \cdot \epsbinding (\secpar) + \epsop (\secpar)$.
+	\qed
+	\end{proof}
+%  \changedm{$11 \cdot (\epsop (\secpar)) + 6 \cdot \epsbind (\secpar) +
+%    \infrac{3}{\abs{\FF_p}}.$} \mxout{$6 \cdot (\epsbind + \epsop + \epsk) + \epss$}
+
+
+\COMMENT{\changedm{
 \begin{proof}
   Let $\adv$ be an algebraic adversary tasked to break the $\ur{2}$-ness of
   $\marlinprotfs$. We show that the first prover's message determines, along with
@@ -138,7 +147,7 @@ verify that \cref{eq:marlin_eq_2} holds.
   \]
   \qed
 \end{proof}
-}
+}}
 
 \COMMENT{
   \michals{2.11}{Old proof}
@@ -178,7 +187,26 @@ verify that \cref{eq:marlin_eq_2} holds.
 \end{proof}}
 
 \subsection{Rewinding-Based Knowledge Soundness}
-\begin{lemma}\label{lem:marlinprot_ss}
+\begin{lemma}
+	\label{lem:marlinprot_ss}
+	$\marlinprotfs$ is $(2, \multconstr + 3)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
+	\[
+	\epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{\multconstr + 3}{\abs{\FF_p}}\right)}{\frac{\multconstr + 3}{\abs{\FF_p}}}\right) + (\multconstr + 3)\cdot\epsudlog (\secpar) + (\multconstr + 3) \cdot \epsid (\secpar)\,,
+	\]
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\marlinprotfs$, and $\epsudlog(\secpar)$ is the security of $(\multconstr + 2, 1)$-$\udlog$ \hamid{2.5}{Not sure about $(\multconstr + 2, 1)$!}assumption.
+\end{lemma}
+\begin{proof}
+The proof is similar to the proof of \cref{lem:plonkprot_ss} and \cref{lem:sonicprot_ss}. 
+We use Attema et al.~\cite[Proposition 2]{EPRINT:AttFehKlo21} to bound the probability that the tree-building algorithm $\tdv$ does not obtain a tree of acceptable transcript in an expected number of runs. This happens with probability at most
+\[
+1 - \frac{\accProb - (q + 1) \left(1 - \frac{ \noofc + 3}{\abs{\FF_p}} \right)}{\frac{\noofc + 3}{\abs{\FF_p}}}
+\]
+Let $\tree$ be the tree outputted by $\tdv$. If one of the proofs in $\tree$ is not acceptable by the ideal verifier, one can break an instance of an updatable dlog assumption which happens with probability at most $(\noofc + 3)  \cdot \epsudlog (\secpar)$. In the case that all the transcripts are acceptable by the ideal verifier, but $\extss$ fails to extract a valid witness from $\tree$, one can break the soundness of the ideal verifier in one of the transcripts. That happens with probability at most $(\noofc + 3) \cdot \epsid (\secpar)$. Taking a union bound completes the proof.
+\qed
+\end{proof}
+
+
+\COMMENT{\begin{lemma}\label{lem:marlinprot_ss}
 	Assume that an idealised $\marlinprot$ verifier fails with probability at most
 	$\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks $\udlog$ is
 	bounded by $\epsudlog(\secpar)$. Then $\marlinprotfs$ is
@@ -251,7 +279,7 @@ verify that \cref{eq:marlin_eq_2} holds.
 	among them.  Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates,  extracted by the reduction from the update proofs given by $\adv$. Now $\rdvudlog$ returns $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$ and breaks the $\udlog$ assumption. Hence, the probability that this event happens is upper-bounded
 	by $\epsudlog(\secpar)$.
 	
-\end{proof}
+\end{proof}}
 
 \subsection{Trapdoor-Less Zero-Knowledge of Marlin}
 \begin{lemma}
@@ -277,25 +305,39 @@ random oracle that on partial transcripts it returns the challenges picked by
 $\simulator$.
 \end{proof}
 
-\subsection{From Rewinding-Based Knowledge Soundness and Unique Response Property to\COMMENT{ forking}
-  Simulation Extractability of $\marlinprotfs$}
-\begin{corollary}
-  Assume that $\marlinprot$ is $\ur{2}$ with security
-  $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and rewinding-based knowledge sound
-  with security $\epss(\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
-  random oracle. Let $\advse$ be an adversary that can make up to $q$
-  random oracle queries, and outputs an
-  acceptable proof for $\marlinprotfs$ with probability at least
-  $\accProb$. Then $\marlinprotfs$ is \COMMENT{forking }simulation-extractable with
-  extraction error $\eta = \epsur(\secpar)$. The extraction probability
-  $\extProb$ is at least
-  \[
-    \extProb \geq q^{-\dconst} (\accProb - 6 \cdot (\epsbind + \epsop +
-    \epsk))^{\dconst + 1} -\eps(\secpar)\,.
-\]
-	for some negligible $\eps(\secpar)$, $\dconst$ being, the upper bound of
-  constraints of the system.
+%\subsection{From Rewinding-Based Knowledge Soundness and Unique Response Property to\COMMENT{ forking}
+%  Simulation Extractability of $\marlinprotfs$}
+%\begin{corollary}
+%  Assume that $\marlinprotfs$ is $\ur{2}$ with security
+%  $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and rewinding-based knowledge sound
+%  with security $\epss(\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
+%  random oracle. Let $\advse$ be an adversary that can make up to $q$
+%  random oracle queries, and outputs an
+%  acceptable proof for $\marlinprotfs$ with probability at least
+%  $\accProb$. Then $\marlinprotfs$ is \COMMENT{forking }simulation-extractable with
+%  extraction error $\eta = \epsur(\secpar)$. The extraction probability
+%  $\extProb$ is at least
+%  \[
+%    \extProb \geq q^{-\dconst} (\accProb - 6 \cdot (\epsbind + \epsop +
+%    \epsk))^{\dconst + 1} -\eps(\secpar)\,.
+%\]
+%	for some negligible $\eps(\secpar)$, $\dconst$ being, the upper bound of
+%  constraints of the system.
+%\end{corollary}
+
+\subsection{Simulation Extractability of $\marlinprotfs$}
+Since \cref{lem:marlinprot_ur,lem:marlinprot_ss,lem:marlin_hvzk} hold, $\marlinprotfs$ is $\ur{2}$, rewinding-based knowledge sound and trapdoor-less zero-knowledge. By making use
+of \cref{thm:se}, we conclude that $\marlinprotfs$ is simulation-extractable as defined in \cref{def:simext}.
+
+\begin{corollary}[Simulation extractability of $\marlinprotfs$]
+	\label{thm:marlinprotfs_se}
+	$\marlinprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$ with extraction failure probability 
+	\[
+	\epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (\multconstr  + 3) \cdot \epsudlog (\secpar) + (\multconstr + 3) \cdot \epsid (\secpar),
+	\]
+	where $\epserr (\secpar) = \left(1 - \frac{\multconstr + 3}{\abs{\FF_p}} \right)$, $\abs{\FF_p}$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
 \end{corollary}
+
 
 %\section{Further work}
 %We identify a number of problems which we left as further work. First of all,
