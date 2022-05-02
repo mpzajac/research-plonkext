@@ -2393,7 +2393,7 @@ upper-bounded by $\epsbind + \epsop$.
 	acceptable proof $\zkproof$ for a statement $\inp$ there exists a witness
 	$\wit$ such that $\REL(\inp, \wit)$ holds and the polynomial $\p{r}(X, Y)$
 	contains witness at its coefficients.  Note that the witness-carrying
-	polynomial $\p{r}(X, y)$ has degree at most $(\multconstr + \linconstr)$
+	polynomial $\p{r}(X, y)$ has degree at most $(\noofc)$
 	and since $\adv$ answered correctly on $(\noofc + 1)$
 	different challenges $z$ (for the sake of concreteness let us call them
 	$z_1, \ldots, z_{\noofc + 1}$) then $(\multconstr +
@@ -2529,11 +2529,12 @@ queries and outputs an acceptable proof for $\sonicprotfs$ with probability
 at least $\accProb$.  Then $\sonicprotfs$ is simulation-extractable with
 extraction error $\eta = \epsur$. The extraction probability $\extProb$ is at least
 \[
-		\extProb  \geq \frac{1}{q^{\multconstr + \linconstr}} (\accProb - \epsur)^{\multconstr +
+		\extProb  \geq \frac{1}{q^{\noofc}} (\accProb - \epsur)^{\multconstr +
 		\linconstr + 1} - \eps.
 	\]
-	for some negligible $\eps$, $\multconstr$ and $\linconstr$ being,
-	respectively, the multiplicative and linear constrains of the system.
+	 for some negligible $\eps$.,
+	 % $\multconstr$ and $\linconstr$ being,
+	% respectively, the multiplicative and linear constrains of the system.
 \end{corollary}
 
 \section{Omitted lemmas and proofs}
