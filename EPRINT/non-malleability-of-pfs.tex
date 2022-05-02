@@ -46,6 +46,11 @@ We say that vector $\vx \in \FF^\noofw$ satisfies constraint system if for all $
   \vqm_i \cdot (\vx_{\va_i} \vx_{\vb_i}) + \vqc_i = 0. 
 \]
 
+Public inputs $\brak{\inp_j}_{j = 1}^{\instsize}$ are enforced by adding the constrains
+\[ \va_i = j, \vql_i = 1, \vqm_i = \vqr_i = \vqo_i = 0, \vqc_i = -\inp_j\,,
+\]
+for some $i \in \range{1}{\noofc}$.
+
 \oursubsub{Algorithms rolled out}
 \label{sec:plonk_explained}
 \plonk{} argument system is universal. That is, it allows to verify computation
@@ -307,7 +312,9 @@ Due to lack of space we provide here only theorem statements and intuitions why 
     \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)}{1 - \frac{3 \noofc + 5}{p}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) %+ (3 \noofc + 6) \cdot \epsid (\secpar)
     \,,
   \]
-	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\plonkprot$, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + 5, 1)$-$\udlog$ 
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, 
+  %$\epsid(\secpar)$ is a soundness error of the ideal verifier for $\plonkprot$, 
+  and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + 5, 1)$-$\udlog$ 
 	assumption.
 \end{lemma}
 
@@ -339,9 +346,9 @@ $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:updsimext}.
 \label{thm:plonkprotfs_se}
 $\plonkprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$ with extraction failure probability 
 \[
-  \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) + (3 \noofc + 6) \cdot \epsid (\secpar),
+  \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar)\COMMENT{ + (3 \noofc + 6) \cdot \epsid (\secpar)},
 \]
-where $\epserr (\secpar) = \frac{3 \noofc + 5}{p}$, $p$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
+where $\epserr (\secpar) = \frac{3 \noofc + 5}{p}$, $\epsur (\secpar) \leq \epsbind (\secpar) + \epsop (\secpar)$, $p$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
 \end{corollary}
  
 %%% Local Variables:

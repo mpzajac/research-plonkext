@@ -185,9 +185,9 @@ protocols requires the extraction of a witness from any two transcripts with the
 same first message. However, most zkSNARK protocols do not satisfy this notion.
 We put forth a notion analogous to special soundness that is more general and
 applicable to a wider class of protocols. Namely, protocols compiled using multi-round FS that rely on an (updatable) SRS. $\plonkprot$, $\sonicprot$, and
-$\marlinprot$ have more than three messages, and the number of transcripts required for extraction is more than two. Concretely, $(3 \noofc + 6)$ for Plonk, where $\noofc$ is the number of constraints in the proven circuit, $(\noofc + 1)$ for Sonic
+$\marlinprot$ have more than three messages, and the number of transcripts required for extraction is more than two. Concretely, $(3 \noofc + 6)$ for Plonk,  $(\noofc + 1)$ for Sonic
 %, where $\multconstr$ and $\linconstr$ are the numbers of multiplicative and linear constraints
-, and $(\multconstr + 3)$ for Marlin, where $\multconstr$ is the number of multiplicative constraints. Hence, we do not have a pair of transcripts but a \emph{tree of transcripts}.
+, and $(2 \noofc + 3)$ for Marlin, where $\noofc$ is the number of constraints in the proven circuit. Hence, we do not have a pair of transcripts but a \emph{tree of transcripts}.
 
 Furthermore, the protocols we consider are arguments and rely on a SRS that comes with a trapdoor. An adversary in
 possession of the trapdoor can produce multiple valid proof transcripts potentially for false statements without
