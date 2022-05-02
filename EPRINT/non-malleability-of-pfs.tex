@@ -327,7 +327,7 @@ Due to lack of space we provide here only theorem statements and intuitions why 
   The simulator, that does not know the SRS trapdoor can make a simulated proof by programming the random oracle. It proceeds as follows. It picks a random witness and behaves as an honest prover up to the point when a commitment to the polynomial $\p{t}(X)$ is sent. Since the simulator picked a random witness and $\p{t}(X)$ is a polynomial only (modulo some negligible function) when the witness is correct, it cannot compute commitment to $\p{t}(X)$ as it is a rational function. However, the simulator can pick a random challenge $\chz$ and a polynomial $\p{\tilde{t}}(X)$ such that $\p{t} (\chz)  = \p{\tilde{t}} (\chz)$. Then the simulator continues behaving as an honest prover. We argue that such a simulated proof is indistinguishable from a real one.
 \end{proof}
 
-\oursubsub{Simulation Extractability of~$\plonkprotfs$}
+\subsection*{Simulation Extractability of~$\plonkprotfs$}
 Since \cref{lem:plonkprot_ur,lem:plonkprot_ss,lem:plonk_tlzk} hold, $\plonkprot$ is $\ur{3}$,
 rewinding-based knowledge sound and trapdoor-less zero-knowledge. We now make use of \cref{thm:se} and show that
 $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:updsimext}.
