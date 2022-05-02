@@ -370,7 +370,7 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
 	\label{lem:sonicprot_ss}
   $\sonicprotfs$ is $(2, \multconstr + \linconstr + 1)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{\multconstr + \linconstr}{\abs{\FF_p}}\right)}{\frac{\multconstr + \linconstr}{\abs{\FF_p}}}\right) + (\multconstr + \linconstr + 1) \cdot \epsuldlog (\secpar) + (\multconstr + \linconstr + 1) \cdot \epsid (\secpar)\,,
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{\multconstr + \linconstr}{p}\right)}{\frac{\multconstr + \linconstr}{p}}\right) + (\multconstr + \linconstr + 1) \cdot \epsuldlog (\secpar) + (\multconstr + \linconstr + 1) \cdot \epsid (\secpar)\,,
   \]
 	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\sonicprotfs$, and $\epsuldlog(\secpar)$ is the security of $(\maxdeg, \maxdeg)$-$\uldlog$ assumption.
 \end{lemma}
@@ -399,7 +399,7 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
   \ncase{Game 0 to Game 1} %
   By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most 
   \[
-    \frac{\accProb - (q + 1) \left( 1 - \frac{\multconstr + \linconstr}{\abs{\FF_p}} \right)} {\frac{\multconstr + \linconstr }{\abs{\FF_p}}} \,.
+    \frac{\accProb - (q + 1) \left( 1 - \frac{\multconstr + \linconstr}{p} \right)} {\frac{\multconstr + \linconstr }{p}} \,.
   \]
 
   \ncase{Game 2} %
@@ -423,7 +423,7 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
 
   Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( 1 - \frac{\multconstr + \linconstr}{\abs{\FF_p}} \right)}{\frac{\multconstr + \linconstr}{\abs{\FF_p}}}\right) + (\multconstr + \linconstr + 1) \cdot\epsuldlog (\secpar) + (\multconstr + \linconstr + 1) \cdot \epsid (\secpar)\,. 
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( 1 - \frac{\multconstr + \linconstr}{p} \right)}{\frac{\multconstr + \linconstr}{p}}\right) + (\multconstr + \linconstr + 1) \cdot\epsuldlog (\secpar) + (\multconstr + \linconstr + 1) \cdot \epsid (\secpar)\,. 
   \]
 
 \subsection{Trapdoor-Less Zero-Knowledge of Sonic}
@@ -499,7 +499,7 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
 \[
   \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (\multconstr + \linconstr + 1) \cdot \epsuldlog (\secpar) + (\multconstr + \linconstr + 1) \cdot \epsid (\secpar),
 \]
-where $\epserr (\secpar) = \left(1 - \frac{\multconstr + \linconstr}{\abs{\FF_p}} \right)$, $\abs{\FF_p}$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
+where $\epserr (\secpar) = \left(1 - \frac{\multconstr + \linconstr}{p} \right)$, $p$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
 \end{corollary}
 
 %%% Local Variables:

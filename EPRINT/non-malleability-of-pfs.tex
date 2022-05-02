@@ -291,7 +291,7 @@ Due to lack of space we provide here only theorem statements and intuitions why 
 \oursubsub{Unique Response Property}
 \begin{lemma}
 	\label{lem:plonkprot_ur}
-	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening property with loss $\epsudlog (\secpar) + 2 \infrac{q}{\abs{\FF_p}}$, let $(\noofc + 5, 1)$-$\udlog$ problem be $\epsudlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries, who makes up to $q$ random oracle queries, with security loss $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\abs{\FF_p}}$.
+	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening property with loss $\epsudlog (\secpar) + 2 \infrac{q}{p}$, let $(\noofc + 5, 1)$-$\udlog$ problem be $\epsudlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries, who makes up to $q$ random oracle queries, with security loss $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{p}$.
 \end{lemma}
 \begin{proof}[Intuitions]
   We show that an adversary who can break the $3$-unique response property of $\plonkprotfs$ can be either used to break the commitment scheme's evaluation binding or unique opening property. The former happens with the probability upper-bounded by $8 \cdot \epsbinding (\secpar) + q / p$, the latter with the probability upper bounded by $\epsudlog (\secpar) + q / p$. We note that the probability of breaking evaluation binding increases by an additional $q / p$ (at most) since $\plonk$ batches verification of polynomial evaluations, which may lead to accepting an opening which would not be accepted by a verifier who verifies all openings separately. Similarly, the additional $q / p$ security loss from unique opening property comes from the batching as well.
@@ -302,7 +302,7 @@ Due to lack of space we provide here only theorem statements and intuitions why 
 	\label{lem:plonkprot_ss}
   $\plonkprotfs$ is $(3, 3 \noofc + 6)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 15}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 5}{\abs{\FF_p}}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) + (3 \noofc + 6) \cdot \epsid (\secpar)\,,
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 15}{p} \right)}{\frac{3 \noofc + 5}{p}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) + (3 \noofc + 6) \cdot \epsid (\secpar)\,,
   \]
 	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\plonkprot$, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + 5, 1)$-$\udlog$ 
 	assumption.
@@ -311,7 +311,7 @@ Due to lack of space we provide here only theorem statements and intuitions why 
 \begin{proof}[Intuitions]
   We use Attema et al.~\cite[Proposition 2]{EPRINT:AttFehKlo21} to bound the probability that an algorithm $\tdv$ does not obtain a tree of acceptable transcript in an expected number of runs. This happens with probability at most
   \[
-    1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 5}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 5}{\abs{\FF_p}}}
+    1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 5}{p} \right)}{\frac{3 \noofc + 5}{p}}
   \]
   Then we analyse the case if one of the proof in the tree $\tree$ outputted by $\tdv$ is not acceptable by the ideal verifier. This discrepancy can be used to break an instance of an updatable dlog assumption what happens with probability at most $(3 \noofc + 6)  \cdot \epsudlog (\secpar)$. Additionally, it may be impossible to extract the witness from a tree where each of the transcripts is acceptable by the ideal verifier if the adversary broke soundness of the ideal verifier in one of the transcripts. That happens with probability at most $(3 \noofc + 6) \cdot \epsid (\secpar)$.
  \end{proof}
@@ -338,7 +338,7 @@ $\plonkprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adv
 \[
   \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) + (3 \noofc + 6) \cdot \epsid (\secpar),
 \]
-where $\epserr (\secpar) = \left(1 - \frac{3 \noofc + 5}{\abs{\FF_p}} \right)$, $\abs{\FF_p}$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
+where $\epserr (\secpar) = \left(1 - \frac{3 \noofc + 5}{p} \right)$, $p$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
 \end{corollary}
  
 %%% Local Variables:

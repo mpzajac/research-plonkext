@@ -11,11 +11,11 @@
   
     In its fourth message, the prover provides evaluations of the aforementioned polynomials, along with evaluations of publicly known polynomials $
     \p{S_{\sigma 1}} (\chz), \p{S_{\sigma 2}} (\chz)$, and evaluation of a linearization polynomial $\p{r}(\chz)$.
-    Note that the adversary can output two acceptable proofs that differ on their fourth message only if it either manages to break evaluation binding of one of the opening, or provides an unacceptable opening which is accepted due to a batching error. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, and the batched verification equation accepts an incorrect opening with probability at most $\infrac{q}{\abs{\FF_p}}$, cf.~\cite{EPRINT:GabWilCio19}, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $8  \cdot \epsbinding (\secpar) + \infrac{q}{\abs{\FF_p}}$. 
+    Note that the adversary can output two acceptable proofs that differ on their fourth message only if it either manages to break evaluation binding of one of the opening, or provides an unacceptable opening which is accepted due to a batching error. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, and the batched verification equation accepts an incorrect opening with probability at most $\infrac{q}{p}$, cf.~\cite{EPRINT:GabWilCio19}, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $8  \cdot \epsbinding (\secpar) + \infrac{q}{p}$. 
   
-    Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$, which is upper-bounded by $\epsudlog (\secpar) + \infrac{q}{\abs{\FF_p}}$, cf.~\cref{lem:pcomp_op}.
+    Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$, which is upper-bounded by $\epsudlog (\secpar) + \infrac{q}{p}$, cf.~\cref{lem:pcomp_op}.
   
-    By the union bound, the adversary is able to break the unique response property with probability upper bounded by $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{\abs{\FF_p}}$.
+    By the union bound, the adversary is able to break the unique response property with probability upper bounded by $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{p}$.
     \end{proof}
 
 \oursubsub{Proof of \cref{lem:plonkprot_ss}}
@@ -31,7 +31,7 @@
   \ncase{Game 0 to Game 1} %
   By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most 
   \[
-    \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 15}{\abs{\FF_p}} \right)} {\frac{3 \noofc + 15}{\abs{\FF_p}}} \,.
+    \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 15}{p} \right)} {\frac{3 \noofc + 15}{p}} \,.
   \]
 
   \ncase{Game 2} %
@@ -55,7 +55,7 @@
 
   Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 15}{\abs{\FF_p}} \right)}{\frac{3 \noofc + 15}{\abs{\FF_p}}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) + (3 \noofc + 6) \cdot \epsid (\secpar)\,. 
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 15}{p} \right)}{\frac{3 \noofc + 15}{p}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) + (3 \noofc + 6) \cdot \epsid (\secpar)\,. 
   \]
  \end{proof}
 

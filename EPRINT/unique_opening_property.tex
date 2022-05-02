@@ -208,7 +208,7 @@ commitment scheme that is used in \plonk{} and $\marlin{}$, has the unique openi
 \begin{lemma}
 \label{lem:pcomp_op}
 Let $\PCOMp = (\kgen, \com, \open, \verifyb)$ be a batched version of a KZG polynomial commitment,
-cf.~\cref{fig:pcomp}, that commits to $m$ polynomials of degree up to $\maxdeg$. Let $\vec{z} = (z_0, \ldots, z_{l - 1}) \in \FF_p^l$ be the points the polynomials are  evaluated at, $k_i \in \NN$ be the number of the committed polynomials to be evaluated at $z_i$, and $K_i$ be the set of indices of these polynomials. Let $\vec{s_{K_i}} \in \FF_p^{k_i}$ the evaluations of polynomials at $z_i$, and $\vec{o} = (o_0, \ldots, o_{l - 1}) \in \FF_p^l$ be the commitment openings. We show that the probability an algebraic adversary $\adv$, who can made up to $q$ random oracle queries, opens the same vector of commitments in two different ways is at most $\epsop(\secpar)$, for $\epsop(\secpar) \leq l \cdot  \epsudlog(\secpar) + \infrac{1}{\abs{\FF_p}}$, where $\epsudlog(\secpar)$ is security of the $(\maxdeg, 1)$-$\udlog$ assumption and $\FF_p$ is the field used in $\PCOMp$.
+cf.~\cref{fig:pcomp}, that commits to $m$ polynomials of degree up to $\maxdeg$. Let $\vec{z} = (z_0, \ldots, z_{l - 1}) \in \FF_p^l$ be the points the polynomials are  evaluated at, $k_i \in \NN$ be the number of the committed polynomials to be evaluated at $z_i$, and $K_i$ be the set of indices of these polynomials. Let $\vec{s_{K_i}} \in \FF_p^{k_i}$ the evaluations of polynomials at $z_i$, and $\vec{o} = (o_0, \ldots, o_{l - 1}) \in \FF_p^l$ be the commitment openings. We show that the probability an algebraic adversary $\adv$, who can made up to $q$ random oracle queries, opens the same vector of commitments in two different ways is at most $\epsop(\secpar)$, for $\epsop(\secpar) \leq l \cdot  \epsudlog(\secpar) + \infrac{1}{p}$, where $\epsudlog(\secpar)$ is security of the $(\maxdeg, 1)$-$\udlog$ assumption and $p$ is the field used in $\PCOMp$.
 \end{lemma}
 \begin{proof}
  
@@ -237,7 +237,7 @@ cf.~\cref{fig:pcomp}, that commits to $m$ polynomials of degree up to $\maxdeg$.
     r^j \left(\sum_{i \in K_j} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i \in K_j}
     \gamma^{i - 1} \cdot {s_i}_j \right) \not\equiv r^j \p{o_j}(X)(X - z_j)
   \]
-  is $\infrac{q}{\abs{\FF_p}}$~cf.~\cite{EPRINT:GabWilCio19}. 
+  is $\infrac{q}{p}$~cf.~\cite{EPRINT:GabWilCio19}. 
   When \(
     r^j \left(\sum_{i \in K_j} \gamma^{i - 1} \cdot \p{f}_i(X) - \sum_{i \in K_j}
     \gamma^{i - 1} \cdot {s_i}_j \right) = r^j \p{o_j}(X)(X - z_j)
@@ -246,6 +246,6 @@ cf.~\cref{fig:pcomp}, that commits to $m$ polynomials of degree up to $\maxdeg$.
   polynomial composition. 
 
   \ncase{Conclusion} %
-  We note that the idealised verifier $\vereq(X)$ does not accept two different openings of a correct evaluation. Hence the probability that the adversary wins Game 2 is $0$ and the probability that the adversary wins in Game 0 is upper-bounded by \(\epsudlog (\secpar) + \frac{q}{\abs{\FF_p}}\).
+  We note that the idealised verifier $\vereq(X)$ does not accept two different openings of a correct evaluation. Hence the probability that the adversary wins Game 2 is $0$ and the probability that the adversary wins in Game 0 is upper-bounded by \(\epsudlog (\secpar) + \frac{q}{p}\).
     \qed
 \end{proof}
