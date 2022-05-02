@@ -6,7 +6,7 @@
 In this section, we show that $\plonkprotfs$ is simulation-extractable. To this end, we first use the unique opening property to show that
 $\plonkprotfs$ has the $\ur{3}$ property,
 cf.~\cref{lem:plonkprot_ur}.
-Next, we show that $\plonkprotfs$ is rewinding-based knowledge sound. That is, given a number of accepting transcripts whose messages match on the first $5$ messages of the protocol, we can either extract a witness for the proven statement or use one of the transcripts to break the $\dlog$ assumption. This result is shown in the AGM, cf.~\cref{lem:plonkprot_ss}. We then show that $\plonkprotfs$ is trapdoor-less ZK in the AGM, cf.~\cref{lem:plonk_tlzk}.
+Next, we show that $\plonkprotfs$ is rewinding-based knowledge sound. That is, given a number of accepting transcripts whose first $3$ messages match, we can either extract a witness for the proven statement or use one of the transcripts to break the $\udlog$ assumption. This result is shown in the AGM, cf.~\cref{lem:plonkprot_ss}. We then show that $\plonkprotfs$ is $3$-programmable trapdoor-less ZK in the AGM, cf.~\cref{lem:plonk_tlzk}.
 
 Given rewinding-based knowledge soundness, $\ur{3}$ and trapdoor-less zero-knowledge of $\plonkprotfs$, we invoke \cref{thm:se} and conclude that $\plonkprotfs$ is simulation-extractable.
 
@@ -22,20 +22,20 @@ Given rewinding-based knowledge soundness, $\ur{3}$ and trapdoor-less zero-knowl
 \oursubsub{The constraint system.}
 Assume $\CRKT$ is a fan-in two arithmetic circuit, whose
 fan-out is unlimited and has $\numberofconstrains$ gates and $\noofw$ wires
-($\numberofconstrains \leq \noofw \leq 2\numberofconstrains$). \plonk's constraint
-system is defined as follows:
+($\numberofconstrains \leq \noofw \leq 2\numberofconstrains$). The constraint
+system of $\plonk$ is defined as follows:
 \begin{compactitem}
 \item Let $\vec{V} = (\va, \vb, \vc)$, where $\va, \vb, \vc
   \in \range{1}{\noofw}^\numberofconstrains$. Entries $\va_i, \vb_i, \vc_i$ represent indices of left,
-  right and output wires of circuits $i$-th gate.
+  right and output wires of the circuit's $i$-th gate.
 \item Vectors $\vec{Q} = (\vql, \vqr, \vqo, \vqm, \vqc) \in
   (\FF^\numberofconstrains)^5$ are called \emph{selector vectors}:
   \begin{inparaenum}[(a)]
-  \item If the $i$-th gate is a multiplicative gate then $\vql_i = \vqr_i = 0$,
+  \item If the $i$-th gate is a multiplication gate then $\vql_i = \vqr_i = 0$,
     $\vqm_i = 1$, and $\vqo_i = -1$. 
   \item If the $i$-th gate is an addition gate then $\vql_i = \vqr_i  = 1$, $\vqm_i =
     0$, and $\vqo_i = -1$. 
-  \item $\vqc_i = 0$ always. 
+  \item $\vqc_i = 0$ for multiplication and addition gates.\footnote{The $\vqc_i$ selector vector is meant to encode (input independent) constants.} 
   \end{inparaenum}
 \end{compactitem}
 
@@ -56,8 +56,8 @@ circuit-related polynomial evaluations.
 
 For the sake of simplicity of the security reductions presented in this paper, we
 include in the SRS only these elements that cannot be computed without knowing
-the secret trapdoor $\chi$. The rest of the SRS---the preprocessed input---can
-be computed using these SRS elements thus we leave them to be computed by the
+the secret trapdoor $\chi$. The rest of the preprocessed input can
+be computed using these SRS elements. We thus let them to be computed by the
 prover, verifier, and simulator separately.
 
 \ourpar{$\plonk$ SRS generating algorithm $\kgen(\REL)$:}
@@ -91,7 +91,7 @@ $\p{j} \in \range{1}{3}$, are computed:
 \end{equation*}
 Coefficients $k_1$, $k_2$ are such that $H, k_1 \cdot H, k_2 \cdot H$ are
 different cosets of $\FF^*$, thus they define $3 \cdot \noofc$
-different elements. \cite{EPRINT:GabWilCio19} notes that it is enough to set
+different elements. Gabizon et al.~\cite{EPRINT:GabWilCio19} notes that it is enough to set
 $k_1$ to a quadratic residue and $k_2$ to a quadratic non-residue.
 
 Furthermore, we define polynomials $\p{q_L}, \p{q_R}, \p{q_O}, \p{q_M}, \p{q_C}$
@@ -111,8 +111,8 @@ such that
 \end{equation*}
 
 \ourpar{Proving statements in $\plonkprotfs$} We show how prover's algorithm
-$\prover(\srs, \inp, \wit = (\wit_i)_{i \in \range{1}{3 \cdot \noofc}})$ operates for
-the Fiat--Shamir transformed version of Plonk.
+$\prover(\srs, \inp=\brak{\wit'_i}_{i = 1}^\instsize, \wit = \brak{\wit_i}_{i=1}^{3 \cdot \noofc})$ operates for
+the Fiat--Shamir transformed version of Plonk. Note that for notational convenience $\wit$ also contains the public input wires $\wit'_i=\wit_i$, $i\in \range{1}{\ell}$.
 \begin{description}
 \item[Message 1] Sample $b_1, \ldots, b_9 \sample \FF_p$; compute
   $\p{a}(X), \p{b}(X), \p{c}(X)$ as
@@ -202,13 +202,13 @@ the Fiat--Shamir transformed version of Plonk.
 	Output $\gone{\p{W_{\chz}}(\chi), \p{W_{\chz \omega}}(\chi)}$.
 \end{description}
 
-\ncase{$\plonk$ verifier $\verifier(\srs, \inp, \zkproof)$}\ \newline
+\ncase{Plonk verifier $\verifier(\srs, \inp, \zkproof)$}\ \newline
 The \plonk{} verifier works as follows
 \begin{enumerate}
 	\item Validate all obtained group elements.
 	\item Validate all obtained field elements.
-	\item Validate the instance
-      $\inp = \smallset{\wit_i}_{i = 1}^\instsize$.
+	\item Parse the instance as
+      $\smallset{\wit_i}_{i = 1}^\instsize \gets \inp$.
 	\item Compute challenges $\beta, \gamma, \alpha, \chz, v, u$ from the transcript.
 	\item Compute zero polynomial evaluation
       $\p{Z_H} (\chz) =\chz^\noofc - 1$.
@@ -271,7 +271,7 @@ The \plonk{} verifier works as follows
 		\label{eq:ver_eq} 
 		\left( \gone{\p{W_{\chz}}(\chi)} + u \cdot \gone{\p{W_{\chz
                 \omega}}(\chi)} \right) \bullet
-		\gtwo{\chi} - %\\
+		\gtwo{\chi} - \\
 		\left( \chz \cdot \gone{\p{W_{\chz}}(\chi)} + u \chz \omega \cdot
           \gone{\p{W_{\chz \omega}}(\chi)} + \gone{F} - \gone{E} \right) \bullet
         \gtwo{1} = 0\,.
@@ -282,7 +282,7 @@ The \plonk{} verifier works as follows
   polynomial at one point).
 \end{enumerate}
 
-\ncase{$\plonk$ simulator $\simulator_\chi(\srs, \td= \chi, \inp)$}\ 
+\ncase{Plonk simulator $\simulator_\chi(\srs, \td= \chi, \inp)$}\ 
 We describe the simulator in \cref{lem:plonk_tlzk}.
 
 \subsection{Simulation extractability of $\plonk${}}
@@ -291,10 +291,12 @@ Due to lack of space we provide here only theorem statements and intuitions why 
 \oursubsub{Unique Response Property}
 \begin{lemma}
 	\label{lem:plonkprot_ur}
-	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening property with loss $\epsudlog (\secpar) + 2 \infrac{q}{p}$, let $(\noofc + 5, 1)$-$\udlog$ problem be $\epsudlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries, who makes up to $q$ random oracle queries, with security loss $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{p}$.
+	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening property with loss $\epsop (\secpar)$. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries, who makes up to $q$ random oracle queries, with security loss $\epsbinding (\secpar) + \epsop ( \secpar )$.
 \end{lemma}
 \begin{proof}[Intuitions]
-  We show that an adversary who can break the $3$-unique response property of $\plonkprotfs$ can be either used to break the commitment scheme's evaluation binding or unique opening property. The former happens with the probability upper-bounded by $8 \cdot \epsbinding (\secpar) + q / p$, the latter with the probability upper bounded by $\epsudlog (\secpar) + q / p$. We note that the probability of breaking evaluation binding increases by an additional $q / p$ (at most) since $\plonk$ batches verification of polynomial evaluations, which may lead to accepting an opening which would not be accepted by a verifier who verifies all openings separately. Similarly, the additional $q / p$ security loss from unique opening property comes from the batching as well.
+  We show that an adversary who can break the $3$-unique response property of $\plonkprotfs$ can be either used to break the commitment scheme's evaluation binding or unique opening property. The former happens with the probability upper-bounded by $\epsbinding (\secpar)$, the latter with the probability upper bounded by $\epsop (\secpar)$. 
+  
+  %We note that the probability of breaking evaluation binding increases by an additional $q / p$ (at most) since $\plonk$ batches verification of polynomial evaluations, which may lead to accepting an opening which would not be accepted by a verifier who verifies all openings separately. Similarly, the additional $q / p$ security loss from unique opening property comes from the batching as well.
 \end{proof}
 
 \oursubsub{Rewinding-Based Knowledge Soundness}
@@ -302,18 +304,19 @@ Due to lack of space we provide here only theorem statements and intuitions why 
 	\label{lem:plonkprot_ss}
   $\plonkprotfs$ is $(3, 3 \noofc + 6)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)}{1 - \frac{3 \noofc + 5}{p}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) + (3 \noofc + 6) \cdot \epsid (\secpar)\,,
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)}{1 - \frac{3 \noofc + 5}{p}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) %+ (3 \noofc + 6) \cdot \epsid (\secpar)
+    \,,
   \]
 	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\plonkprot$, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + 5, 1)$-$\udlog$ 
 	assumption.
 \end{lemma}
 
 \begin{proof}[Intuitions]
-  We use Attema et al.~\cite[Proposition 2]{EPRINT:AttFehKlo21} to bound the probability that an algorithm $\tdv$ does not obtain a tree of acceptable transcript in an expected number of runs. This happens with probability at most
+  We use Attema et al.~\cite[Proposition 2]{EPRINT:AttFehKlo21} to bound the probability that an algorithm $\tdv$ does not obtain a tree of acceptable transcripts in an expected number of runs. This happens with probability at most
   \[
     1 - \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)}{1 - \frac{3 \noofc + 5}{p}}
   \]
-  Then we analyze the case if one of the proof in the tree $\tree$ outputted by $\tdv$ is not acceptable by the ideal verifier. This discrepancy can be used to break an instance of an updatable dlog assumption what happens with probability at most $(3 \noofc + 6)  \cdot \epsudlog (\secpar)$. Additionally, it may be impossible to extract the witness from a tree where each of the transcripts is acceptable by the ideal verifier if the adversary broke soundness of the ideal verifier in one of the transcripts. That happens with probability at most $(3 \noofc + 6) \cdot \epsid (\secpar)$.
+  Then we analyze the case that one of the proof in the tree $\tree$ outputted by $\tdv$ is not acceptable by the ideal verifier. This discrepancy can be used to break an instance of an updatable dlog assumption which happens with probability at most $(3 \noofc + 6)  \cdot \epsudlog (\secpar)$. %Additionally, it may be impossible to extract the witness from a tree where each of the transcripts is acceptable by the ideal verifier if the adversary broke soundness of the ideal verifier in one of the transcripts. That happens with probability at most $(3 \noofc + 6) \cdot \epsid (\secpar)$.
  \end{proof}
   
 
