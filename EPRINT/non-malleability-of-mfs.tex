@@ -189,19 +189,19 @@ verify that \cref{eq:marlin_eq_2} holds.
 \subsection{Rewinding-Based Knowledge Soundness}
 \begin{lemma}
 	\label{lem:marlinprot_ss}
-	$\marlinprotfs$ is $(2, \multconstr + 3)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
+	$\marlinprotfs$ is $(2, 2 \noofc + 3)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
 	\[
-	\epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( \frac{\multconstr + 2}{p}\right)}{1 - \frac{\multconstr + 2}{p}}\right) + (\multconstr + 3)\cdot\epsudlog (\secpar) + (\multconstr + 3) \cdot \epsid (\secpar)\,,
+	\epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( \frac{2 \noofc + 2}{p}\right)}{1 - \frac{2 \noofc + 2}{p}}\right) + (2 \noofc + 3)\cdot\epsudlog (\secpar)\,,
 	\]
-	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\marlinprotfs$, and $\epsudlog(\secpar)$ is the security of $(\multconstr + 2, 1)$-$\udlog$ assumption.\hamid{2.5}{Not sure about $(\multconstr + 2, 1)$!}\markulf{2.5}{What is your suggestion? Degree seems to be consistent with number of rewindings.}
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof,  and $\epsudlog(\secpar)$ is the security of $(2 \noofc + 2, 1)$-$\udlog$ assumption.
 \end{lemma}
 \begin{proof}
 The proof is similar to the proof of \cref{lem:plonkprot_ss} and \cref{lem:sonicprot_ss}. 
 We use Attema et al.~\cite[Proposition 2]{EPRINT:AttFehKlo21} to bound the probability that the tree-building algorithm $\tdv$ does not obtain a tree of acceptable transcript in an expected number of runs. This happens with probability at most
 \[
-1 - \frac{\accProb - (q + 1) \left(\frac{ \noofc + 2}{p} \right)}{1 - \frac{\noofc + 2}{p}}
+1 - \frac{\accProb - (q + 1) \left(\frac{2 \noofc + 2}{p} \right)}{1 - \frac{2 \noofc + 2}{p}}
 \]
-Let $\tree$ be the tree output by $\tdv$. If one of the proofs in $\tree$ is not accepting by the ideal verifier, one can break an instance of an updatable dlog assumption which happens with probability at most $(\noofc + 3)  \cdot \epsudlog (\secpar)$. In the case that all the transcripts are accepting by the ideal verifier, but $\extss$ fails to extract a valid witness from $\tree$, one can break the soundness of the ideal verifier in one of the transcripts. That happens with probability at most $(\noofc + 3) \cdot \epsid (\secpar)$. Taking a union bound completes the proof.
+Let $\tree$ be the tree output by $\tdv$. If one of the proofs in $\tree$ is not accepting by the ideal verifier, one can break an instance of an updatable dlog assumption which happens with probability at most $(2 \noofc + 3)  \cdot \epsudlog (\secpar)$. In the case that all the transcripts are accepting by the ideal verifier, but $\extss$ fails to extract a valid witness from $\tree$, one can break the soundness of the ideal verifier in one of the transcripts. Taking a union bound completes the proof.
 \qed
 \end{proof}
 
@@ -333,9 +333,9 @@ of \cref{thm:se}, we conclude that $\marlinprotfs$ is simulation-extractable as 
 	\label{thm:marlinprotfs_se}
 	$\marlinprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$ with extraction failure probability 
 	\[
-	\epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (\multconstr  + 3) \cdot \epsudlog (\secpar) + (\multconstr + 3) \cdot \epsid (\secpar),
+	\epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (2 \noofc + 3) \cdot \epsudlog (\secpar),
 	\]
-	where $\epserr (\secpar) = \frac{\multconstr + 2}{p}$, $p$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
+	where $\epserr (\secpar) = \frac{2 \noofc + 2}{p}$, $p$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
 \end{corollary}
 
 
