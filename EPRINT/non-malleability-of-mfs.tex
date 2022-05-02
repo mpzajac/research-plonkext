@@ -8,11 +8,11 @@ rewinding-based knowledge sound, and its simulator can provide indistinguishable
 without a trapdoor, just by programming the random oracle.
 
 \subsection{$\marlin$ Protocol Rolled-out}
-$\marlin$ uses R1CS as arithmetization method. That is, the prover given
-instance $\inp$ and witness $\wit$ and $|\HHH| \times |\HHH|$ matrices $\vec{A},
-\vec{B}, \vec{C}$ shows that $\vec{A} (\inp^\top, \wit^\top)^\top \circ \vec{B}
-(\inp^\top, \wit^\top)^\top = \vec{C} (\inp^\top, \wit^\top)^\top$. (Here
-$\circ$ is a entry-wise product.)
+$\marlin$ uses R1CS as its arithmetization method. Given
+instance $\inp$, witness $\wit$ and $|\HHH| \times |\HHH|$ matrices $\vec{A},
+\vec{B}, \vec{C}$, the prover shows that $\vec{A} (\inp^\top, \wit^\top)^\top \circ \vec{B}
+(\inp^\top, \wit^\top)^\top = \vec{C} (\inp^\top, \wit^\top)^\top$, where
+$\circ$ denotes entry-wise product.
 
 We assume that the matrices have at most $|\KKK|$ non-zero entries. Obviously,
 $|\KKK| \leq |\HHH|^2$. Let $b = 3$, the upper-bound of polynomial evaluations
@@ -52,7 +52,7 @@ The ideal verifier checks the following equalities
 \end{equation}
 where $\p{g_i} (X), \p{h_i} (X)$, $i \in \range{1}{3}$,
 $\p{a} (X), \p{b} (X), \sigma_1, \sigma_2, \sigma_3$ are polynomials and
-variables required by the sumcheck protocol which allows verifier to efficiently
+variables required by the sumcheck protocol which allows the verifier to efficiently
 verify that \cref{eq:marlin_eq_2} holds.
                          
 
@@ -201,7 +201,7 @@ We use Attema et al.~\cite[Proposition 2]{EPRINT:AttFehKlo21} to bound the proba
 \[
 1 - \frac{\accProb - (q + 1) \left(\frac{ \noofc + 2}{p} \right)}{1 - \frac{\noofc + 2}{p}}
 \]
-Let $\tree$ be the tree outputted by $\tdv$. If one of the proofs in $\tree$ is not acceptable by the ideal verifier, one can break an instance of an updatable dlog assumption which happens with probability at most $(\noofc + 3)  \cdot \epsudlog (\secpar)$. In the case that all the transcripts are acceptable by the ideal verifier, but $\extss$ fails to extract a valid witness from $\tree$, one can break the soundness of the ideal verifier in one of the transcripts. That happens with probability at most $(\noofc + 3) \cdot \epsid (\secpar)$. Taking a union bound completes the proof.
+Let $\tree$ be the tree output by $\tdv$. If one of the proofs in $\tree$ is not accepting by the ideal verifier, one can break an instance of an updatable dlog assumption which happens with probability at most $(\noofc + 3)  \cdot \epsudlog (\secpar)$. In the case that all the transcripts are accepting by the ideal verifier, but $\extss$ fails to extract a valid witness from $\tree$, one can break the soundness of the ideal verifier in one of the transcripts. That happens with probability at most $(\noofc + 3) \cdot \epsid (\secpar)$. Taking a union bound completes the proof.
 \qed
 \end{proof}
 
@@ -287,8 +287,8 @@ Let $\tree$ be the tree outputted by $\tdv$. If one of the proofs in $\tree$ is 
   $\marlinprotfs$ is 2-programmable trapdoor-less zero-knowledge.
 \end{lemma}
 \begin{proof}
-The simulator follows the protocol except it picks the challenges $\alpha,
-\eta_A, \eta_B, \eta_C, \beta_1, \beta_2, \beta_3$ before it picks polynomials
+The simulator follows the protocol except that it picks the challenges $\alpha,
+\eta_A, \eta_B, \eta_C, \beta_1, \beta_2, \beta_3$ before it picks the polynomials
 it sends.
 
 First, it picks $\p{\tilde{z}}_A (X)$, $\p{\tilde{z}}_B (X)$ at random and
@@ -301,7 +301,7 @@ $\sigma_1 \gets \sum_{\kappa \in \HHH} \p{s}(\kappa) + \p{r}(\alpha, X) (\sum_{M
     B, C}} \eta_M \p{r}_M (\alpha, X) \p{\tilde{z}} (X)$.
 
 Then the simulator starts the protocol and follows it, except it programs the
-random oracle that on partial transcripts it returns the challenges picked by
+random oracle such that on partial transcripts, it returns the challenges already picked by
 $\simulator$.
 \end{proof}
 
