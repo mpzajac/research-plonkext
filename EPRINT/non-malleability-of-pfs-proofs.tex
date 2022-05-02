@@ -47,9 +47,10 @@
   In this game the environment aborts the game if the tree building algorithm $\tdv$ fails in building a tree of accepting transcripts $\tree$. 
 
   \ncase{Game 0 to Game 1} %
-  By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most \hamid{2.5}{Should this not be "1 minus the following"?}
+  By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most 
+  %\hamid{2.5}{Should this not be "1 minus the following"?}
   \[
-    \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)} {1 - \frac{3 \noofc + 5}{p}} \,.
+    1 - \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)} {1 - \frac{3 \noofc + 5}{p}} \,.
   \]
 
   \ncase{Game 2} %

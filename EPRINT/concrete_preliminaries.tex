@@ -11,10 +11,12 @@ i.e., that there is no efficient isomorphism from $\GRP_1$ to $\GRP_2$ or from
 $\GRP_2$ to $\GRP_1$. We use the by now standard bracket notation, i.e., we
 write $\bmap{a}{\gi}$ to denote $a \bmap{1}{\gi}$. %where $g_{\gi}$ is a fixed generator of $\GRP_{\gi}$. 
 We denote $\pair (\gone{a}, \gtwo{b})$ as $\gone{a} \bullet
-\gtwo{b}$. Thus, $\gone{a} \bullet \gtwo{b} = \gtar{a b}$. We freely use the
-bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \vec{C}$ then
-$\vec{A} \grpgi{\vec{B}} = \grpgi{\vec{C}}$ and $\gone{\vec{A}}\bullet
-\gtwo{\vec{B}} = \gtar{\vec{C}}$.\markulf{2.5}{do we use any matrices?} Since every algorithm $\adv$ takes as input
+\gtwo{b}$. Thus, $\gone{a} \bullet \gtwo{b} = \gtar{a b}$. 
+% We freely use the
+% bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \vec{C}$ then
+% $\vec{A} \grpgi{\vec{B}} = \grpgi{\vec{C}}$ and $\gone{\vec{A}}\bullet
+% \gtwo{\vec{B}} = \gtar{\vec{C}}$.\markulf{2.5}{do we use any matrices?} 
+Since every algorithm $\adv$ takes as input
 the public parameters we skip them when describing $\adv$'s input. Similarly, we
 do not explicitly state that each protocol starts by running $\pgen$.
 
@@ -127,9 +129,12 @@ We show a reduction from $(q_1, q_2)\mhyph\dlog$ assumption to its variant in th
 	\end{proof}
 
 	\markulf{2.5}{Old numbers: To be able to extract a witness from, say, an execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 1)$ valid proofs (where $\numberofconstrains$ is the number of constrains), $(\numberofconstrains+ 1)$ for $\sonicprot$, and $\numberofconstrains + 4$ for $\marlinprot$.}
+	% \michals{2.5}{Should be $\plonkprot$ we need at least $(3 \numberofconstrains + 6)$ valid proofs (where $\numberofconstrains$ is the number of constrains), $(\numberofconstrains + 1)$ for $\sonicprot$ (if we count ), and $\numberofconstrains + 4$ for $\marlinprot$}
 
   \oursubsub{Generalized Forking Lemma}
-Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general enough for our purpose as it is useful only for protocols where a witness can be extracted from just two transcripts. To be able to extract a witness from, say, an execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 1)$ valid proofs (where $\numberofconstrains$ is the number of constrains), $(\numberofconstrains+ 1)$ for $\sonicprot$, and $\numberofconstrains + 4$ for $\marlinprot$.\hamid{2.5}{Numbers are incorrect! Maybe $(3 \numberofconstrains + 6)$ for Plonk, $(\numberofconstrains+ \linconstr+ 1)$ for Sonic and $(\numberofconstrains+ 3)$ for Marlin? } Here we use a result by Attema et
+Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general enough for our purpose as it is useful only for protocols where a witness can be extracted from just two transcripts. To be able to extract a witness from, say, an execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 6)$ valid proofs (where $\numberofconstrains$ is the number of constrains), $(\numberofconstrains + 1)$ for $\sonicprot$, and $\numberofconstrains + 4$ for $\marlinprot$.\hamid{2.5}{Numbers are incorrect! Maybe $(3 \numberofconstrains + 6)$ for Plonk, $(\numberofconstrains + \linconstr+ 1)$ for Sonic and $(\numberofconstrains+ 3)$ for Marlin? }
+\michals{2.5}{$\multconstr + \linconstr = \noofc$}
+ Here we use a result by Attema et
 al.~\cite{EPRINT:AttFehKlo21short}\footnote{An earlier versions had its own forking lemma generalization. Attema et al.\ has a better bound.}  which lower-bounds the probability of generating a tree of accepting transcripts $\tree$. We restate their Proposition 2 in our notation:
 
   \begin{lemma}[Run Time and Success Probability]\label{lem:attema}

@@ -259,7 +259,7 @@ $\plonkprot$ and $\sonicprot$ that gives nothing. The definition had to be tuned
 protocols that have more messages than just three.  Furthermore, the number of
 transcripts required is much greater---$(\numberofconstrains + 3)$---where
 $\numberofconstrains$ is the number of constraints in the proven circuit---for
-$\plonkprot$ and $(\multconstr + \linconstr + 1)$--where $\multconstr$ and
+$\plonkprot$ and $(\noofc + 1)$--where $\multconstr$ and
 $\linconstr$ are the numbers of multiplicative and linear constraints---
 for $\sonicprot$. Hence, we do not have a \emph{pair of transcripts}, but a \emph{tree of transcripts}.
 
@@ -2376,7 +2376,7 @@ upper-bounded by $\epsbind + \epsop$.
 \begin{proof}
 	The proof goes similarly to the proof of \cref{lem:plonkprot_ss}.
 %
-	Let $\adv$ be an adversary that produces a $(1, 1, \multconstr + \linconstr + 1, 1, 1)$-tree of acceptable
+	Let $\adv$ be an adversary that produces a $(1, 1, \noofc + 1, 1, 1)$-tree of acceptable
 	transcripts $\tree$ for a statement $\inp$. We consider two disjunctive
 	events $\event{E}$ and $\nevent{E}$. The first corresponds to a case when
 	all transcripts in $\tree$ are acceptable for the ideal verifier,
@@ -2394,9 +2394,9 @@ upper-bounded by $\epsbind + \epsop$.
 	$\wit$ such that $\REL(\inp, \wit)$ holds and the polynomial $\p{r}(X, Y)$
 	contains witness at its coefficients.  Note that the witness-carrying
 	polynomial $\p{r}(X, y)$ has degree at most $(\multconstr + \linconstr)$
-	and since $\adv$ answered correctly on $(\multconstr + \linconstr + 1)$
+	and since $\adv$ answered correctly on $(\noofc + 1)$
 	different challenges $z$ (for the sake of concreteness let us call them
-	$z_1, \ldots, z_{\multconstr + \linconstr + 1}$) then $(\multconstr +
+	$z_1, \ldots, z_{\noofc + 1}$) then $(\multconstr +
 	\linconstr + 1)$ evaluations $\p{r}(z_1, y), \ldots, \p{r}(z_{\multconstr
 	+ \linconstr + 1}, y)$ of $\p{r}(X, y)$ are known. The extractor $\extss$
 	interpolates $\p{r}(X, y)$ and reveals the corresponding witness $\wit$.
