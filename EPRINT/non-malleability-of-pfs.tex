@@ -307,16 +307,16 @@ Due to lack of space we provide here only theorem statements and intuitions why 
     \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)}{1 - \frac{3 \noofc + 5}{p}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) %+ (3 \noofc + 6) \cdot \epsid (\secpar)
     \,,
   \]
-	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\plonkprot$, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + 5, 1)$-$\udlog$ 
+	Here $\accProb$ is a probability that the adversary outputs an accepting proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\plonkprot$, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + 5, 1)$-$\udlog$ 
 	assumption.
 \end{lemma}
 
 \begin{proof}[Intuitions]
-  We use Attema et al.~\cite[Proposition 2]{EPRINT:AttFehKlo21} to bound the probability that an algorithm $\tdv$ does not obtain a tree of acceptable transcripts in an expected number of runs. This happens with probability at most
+  We use Attema et al.~\cite[Proposition 2]{EPRINT:AttFehKlo21} to bound the probability that an algorithm $\tdv$ does not obtain a tree of accepting transcripts in an expected number of runs. This happens with probability at most
   \[
     1 - \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)}{1 - \frac{3 \noofc + 5}{p}}
   \]
-  Then we analyze the case that one of the proof in the tree $\tree$ outputted by $\tdv$ is not acceptable by the ideal verifier. This discrepancy can be used to break an instance of an updatable dlog assumption which happens with probability at most $(3 \noofc + 6)  \cdot \epsudlog (\secpar)$. %Additionally, it may be impossible to extract the witness from a tree where each of the transcripts is acceptable by the ideal verifier if the adversary broke soundness of the ideal verifier in one of the transcripts. That happens with probability at most $(3 \noofc + 6) \cdot \epsid (\secpar)$.
+  Then we analyze the case that one of the proof in the tree $\tree$ outputted by $\tdv$ is not accepting by the ideal verifier. This discrepancy can be used to break an instance of an updatable dlog assumption which happens with probability at most $(3 \noofc + 6)  \cdot \epsudlog (\secpar)$. %Additionally, it may be impossible to extract the witness from a tree where each of the transcripts is accepting by the ideal verifier if the adversary broke soundness of the ideal verifier in one of the transcripts. That happens with probability at most $(3 \noofc + 6) \cdot \epsid (\secpar)$.
  \end{proof}
   
 
@@ -337,7 +337,7 @@ $\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:updsimext}.
 
 \begin{corollary}[Simulation extractability of $\plonkprot_\fs$]
 \label{thm:plonkprotfs_se}
-$\plonkprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$ with extraction failure probability 
+$\plonkprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an accepting proof with probability at least $\accProb$ with extraction failure probability 
 \[
   \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) + (3 \noofc + 6) \cdot \epsid (\secpar),
 \]
