@@ -17,10 +17,9 @@
   
     In its fourth message, the prover provides evaluations of the aforementioned polynomials, along with evaluations of publicly known polynomials $
     \p{S_{\sigma 1}} (\chz), \p{S_{\sigma 2}} (\chz)$, and evaluation of a linearization polynomial $\p{r}(\chz)$.
-    Note that the adversary can output two acceptable proofs that differ on their fourth message only if it either manages to break evaluation binding of one of the opening, or provides an unacceptable opening which is accepted due to a batching error. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$,
-    % , and the batched verification equation accepts an incorrect opening with probability at most $\infrac{q}{p}$, cf.~\cite{EPRINT:GabWilCio19}, 
-    the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with the same probability at most. 
-    % $8  \cdot \epsbinding (\secpar) + \infrac{q}{p}$. 
+
+    Note that the adversary can output two accepting proofs that differ on their fourth message only if it either manages to break evaluation binding of one of the opening, or provides an incorrect opening which is accepted due to a batching error. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, %and the batched verification equation accepts an incorrect opening with probability at most $\infrac{q}{p}$, cf.~\cite{EPRINT:GabWilCio19}, 
+	the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with the same probability. % at most $8  \cdot \epsbinding (\secpar) + \infrac{q}{p}$. 
   
     Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$. (We note that for the KZG polynolmial commitment scheme, as used in \cite{EPRINT:GabWilCio19}, $\epsop (\secpar) \leq \epsudlog (\secpar) + \infrac{q}{p}$, cf.~\cref{lem:pcomp_op}.)
     % , which is upper-bounded by $\epsudlog (\secpar) + \infrac{q}{p}$, cf.~\cref{lem:pcomp_op}.
@@ -37,8 +36,8 @@
 	\[
 	\epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)}{1 - \frac{3 \noofc + 5}{p}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar)\,,
 	\]
-	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + 5, 1)$-$\udlog$ 
-	assumption.
+
+	Here $\accProb$ is a probability that the adversary outputs an accepting proof, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + 5, 1)$-$\udlog$.
 \end{lemma}
 
 \begin{proof}
@@ -58,7 +57,7 @@
   \]
 
   \ncase{Game 2} %
-  In this game the environment additionally aborts if at least one of its proofs in $\tree$ is not acceptable by an ideal verifier.
+  In this game the environment additionally aborts if at least one of its proofs in $\tree$ is not accepting by an ideal verifier.
 
   \ncase{Game 1 to Game 2} % 
   As usual, we show a reduction that breaks an instance of a $\udlog$ assumption when Game 2 is aborted, while Game 1 is not.
@@ -74,8 +73,10 @@
   Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upper-bounded by $(3 \noofc + 6) \cdot \epsudlog (\secpar)$.
 
   \ncase{Conclusion}
-  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of accepting transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(3 \noofc + 6)$ accepting transcripts for different challenges $\chz$, it obtains the same number of different evaluations of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since all the transcripts are acceptable by an idealised verifier, the equality between polynomial $\p{t} (X)$ and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined in prover's $3$-rd message description holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven statement. $\extcss$ can recreate polynomials' coefficients by interpolation and reveal the witness given $(3 \noofc + 6)$ evaluations. 
+
+  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of accepting transcripts $\tree$, such that each of the transcripts in $\tree$ is accepting by an ideal verifier. Note that since $\tdv$ produces $(3 \noofc + 6)$ accepting transcripts for different challenges $\chz$, it obtains the same number of different evaluations of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X), \p{t} (X)$. Since all the transcripts are accepting by an idealised verifier, the equality between polynomial $\p{t} (X)$ and combination of polynomials $\p{a} (X), \p{b} (X), \p{c} (X), \p{z} (X)$ defined in prover's $3$-rd message description holds. Hence, $\p{a} (X), \p{b} (X), \p{c} (X)$ encodes the valid witness for the proven statement. $\extcss$ can recreate polynomials' coefficients by interpolation and reveal the witness given $(3 \noofc + 6)$ evaluations. 
   % Thus, the probability that extraction fails in that case is upper-bounded by $(3 \noofc + 6) \cdot \epsid(\secpar)$.
+
 
   Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
   \[
