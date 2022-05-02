@@ -397,16 +397,10 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
   In this game, the environment aborts the game if the tree building algorithm $\tdv$ fails in building a tree of accepting transcripts $\tree$. 
 
   \ncase{Game 0 to Game 1} %
-<<<<<<< HEAD
-  By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most
+  By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is, at most
   \[
     1 - \frac{\accProb - (q + 1) \left( \frac{\noofc}{p} \right)} {1 - \frac{\noofc }{p}} \,.
-=======
-  By \cref{lem:attema} the probability that Game 1 is aborted, while Game 0 is not, is at most
-  \[
-    1-\frac{\accProb - (q + 1) \left( \frac{\noofc}{p} \right)} {1 - \frac{\noofc }{p}} \,.
->>>>>>> dda7f535c8e38c27dfa4ef2a817f08943b114bc1
-  \]
+\]
 
   \ncase{Game 2} %
   In this game the environment additionally aborts if at least one of its proofs in $\tree$ is not acceptable by an ideal verifier.
