@@ -397,9 +397,9 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
   In this game, the environment aborts the game if the tree building algorithm $\tdv$ fails in building a tree of accepting transcripts $\tree$. 
 
   \ncase{Game 0 to Game 1} %
-  By \cref{lem:attema} the probability that Game 1 is aborted, while Game 0 is not, is at most \hamid{2.5}{Should this not be "1 minus the following"?}
+  By \cref{lem:attema} the probability that Game 1 is aborted, while Game 0 is not, is at most
   \[
-    \frac{\accProb - (q + 1) \left( \frac{\noofc}{p} \right)} {1 - \frac{\noofc }{p}} \,.
+    1-\frac{\accProb - (q + 1) \left( \frac{\noofc}{p} \right)} {1 - \frac{\noofc }{p}} \,.
   \]
 
   \ncase{Game 2} %
