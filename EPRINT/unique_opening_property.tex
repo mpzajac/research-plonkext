@@ -212,16 +212,16 @@ cf.~\cref{fig:pcomp}, that commits to $m$ polynomials of degree up to $\maxdeg$.
 \end{lemma}
 \begin{proof}
  
-  The proof goes by game hops. In the first game the adversary wins if it presents two acceptable openings of a vector of polynomials. Then, we restrict the winning condition and require that the adversary also makes the idealized batched verifier to accept the proof. In the next game, we abort if the idealized verifier rejects a proof for one of the evaluation point. 
+  The proof goes by game hops. In the first game the adversary wins if it presents two accepting openings of a vector of polynomials. Then, we restrict the winning condition and require that the adversary also makes the idealized batched verifier to accept the proof. In the next game, we abort if the idealized verifier rejects a proof for one of the evaluation point. 
 
-  \ncase{Game 0} In this game the adversary wins if it provides two different openings for a vector of polynomial commitments and their evaluations that are acceptable by $\verifyb$.
+  \ncase{Game 0} In this game the adversary wins if it provides two different openings for a vector of polynomial commitments and their evaluations that are accepting by $\verifyb$.
 
-  \ncase{Game 1} This game is identical to Game 0 except it is additionally aborted if the commitment opening are not acceptable by $\verifyb'$.
+  \ncase{Game 1} This game is identical to Game 0 except it is additionally aborted if the commitment opening are not accepting by $\verifyb'$.
 
   \ncase{Game 0 to Game 1} %
   Any discrepancy between the idealised verifier rejection and real verifier acceptance allows one to break the (updatable) discrete logarithm problem.  The reduction $\rdvdulog$ proceeds as follows. It answers $\adv$'s queries for SRS updates according to the answers it receives from its udlog update oracle. When $\adv$ finalizes an SRS, $\rdvdulog$ finalizes the corresponding udlog challenge $(\gone{1, \ldots, {\chi'}^{\maxdeg}}, \gtwo{1})$. We consider verification equation $(**)$ as a polynomial in $X$ and the verification equation $(*)$ as it's evaluation at $\chi'$. Consider an opening such that verification equation (**), cf.~\cref{fig:pcomp}, does not hold, i.e.~(**) is not a zero polynomial, but (*) does, i.e.~(**) zeroes at $\chi'$. Since $\adv$ is algebraic, all proof elements are extended by their representation as a combination of the input $\GRP_1$-elements. Therefore, all coefficients of the verification equation polynomial related to (**) are known. Now, $\rdvdulog$ computes the roots of (**), finds $\chi'$ among them, and returns $\chi'$. Hence the probability that the adversary wins in Game 1, but does not win in Game 0 is upper-bounded by $\epsudlog (\secpar)$.
 
-  \ncase{Game 2} This game is identical to Game 1 except it is additionally aborted if one of the opening is not acceptable by an idealised verifier $\verify'$.
+  \ncase{Game 2} This game is identical to Game 1 except it is additionally aborted if one of the opening is not accepting by an idealised verifier $\verify'$.
 
   \ncase{Game 1 to Game 2}
   The ideal verifier checks whether the following equality, for $\smallset{\gamma_j}_{j = 1}^{l}, r$

@@ -291,9 +291,9 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
 
   We note that since the unique response property requires from $\zkproof^{0}$ and $\zkproof^{1}$ that the first place they possibly differ is the $3$-th prover's message, then the challenge $z$, that is picked by the adversary after the $2$-rd message is the same in both transcripts. This challenge determines the evaluation point of polynomials $\p{r}(X, 1), \p{t}(X, y)$ which commitments are already sent.
 
-  In its third message, the prover provides evaluations of these polynomials along with their openings at $z$ or $yz$. Note that the adversary can output two acceptable proofs that differ on their third message only if it  manages to break evaluation binding of one of the opening. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the third message with probability at most $\epsbinding (\secpar) $. 
+  In its third message, the prover provides evaluations of these polynomials along with their openings at $z$ or $yz$. Note that the adversary can output two accepting proofs that differ on their third message only if it  manages to break evaluation binding of one of the opening. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the third message with probability at most $\epsbinding (\secpar) $. 
 
-  Similarly, in its fourth message, the prover provides an evaluation at $u$ of polynomial $\p{s}(X, y)$, an evaluation at $y$ of $\p{s} (u, Y)$, and the corresponding openings. Note that the adversary can output two acceptable proofs that differ on their fourth message only if it manages to break evaluation binding of one of the opening. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $\epsbinding (\secpar) $. 
+  Similarly, in its fourth message, the prover provides an evaluation at $u$ of polynomial $\p{s}(X, y)$, an evaluation at $y$ of $\p{s} (u, Y)$, and the corresponding openings. Note that the adversary can output two accepting proofs that differ on their fourth message only if it manages to break evaluation binding of one of the opening. Since the commitment scheme is evaluation binding with security loss $\epsbinding (\secpar)$, the adversary can make $\zkproof^{0}$ and $\zkproof^{1}$ differ on the fourth message with probability at most $\epsbinding (\secpar) $. 
 
   Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$.%, which is upper-bounded by $\epsuldlog (\secpar)$.
 
@@ -342,7 +342,7 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
   upper bounded by $4 \cdot (\epsop (\secpar) + \epsbind (\secpar))$. Since the polynomial
   commitment scheme is deterministic, if commitment to $\p{s^0} (X, y)$ does not equal
   commitment to $\p{s^1} (X, y)$, then at least one of these values has been computed
-  incorrectly. Probability that the adversary outputs an acceptable proof, where signature
+  incorrectly. Probability that the adversary outputs an accepting proof, where signature
   of correct computation has been computed incorrectly is upper-bounded by $\epss
   (\secpar) + \epsdlog (\secpar)$, cf.~\cref{lem:plonkprot_ur}.
 
@@ -352,7 +352,7 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
 
   \ncase{Game 4 to Game 5} In its second message the adversary commits to polynomial
   $\p{t} (X, y)$. Since the commitment scheme is deterministic, probability that adversary
-  outputs acceptable proofs where commitment to $\p{t^0} (X, y)$ does not equal commitment
+  outputs accepting proofs where commitment to $\p{t^0} (X, y)$ does not equal commitment
   to $\p{t^1} (X)$ is upper-bounded by $\epss (\secpar) + \epsdlog (\secpar)$, cf.~\cref{lem:plonkprot_ur}.
 
   \ncase{Conclusion} Taking all the games together, the probability that $\adv$ wins
@@ -372,7 +372,7 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
   \[
     \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( \frac{\noofc}{p}\right)}{1 - \frac{\noofc}{p}}\right) + (\noofc + 1) \cdot \epsuldlog (\secpar)\,,
   \]
-	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, and $\epsuldlog(\secpar)$ is the security of $(\maxdeg, \maxdeg)$-$\uldlog$ assumption.
+	Here $\accProb$ is a probability that the adversary outputs an accepting proof, and $\epsuldlog(\secpar)$ is the security of $(\maxdeg, \maxdeg)$-$\uldlog$ assumption.
 \end{lemma}
 
 % 	$\sonicprot$ is $(2, \noofc + 1)$-computational special sound with security loss $(\epst (\accProb, \secpar), \epss(\secpar))$ against
@@ -384,7 +384,7 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
 % 	\[
 % 	  \epss(\secpar) \leq \epsid(\secpar) + \epsldlog(\secpar) \,.
 % 	\]
-% 	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\dconst, \dconst)$-$\ldlog$ assumption.
+% 	Here $\accProb$ is a probability that the adversary outputs an accepting proof, $q$ is the upper bound for a number of random oracle queries the adversary makes, $\epsid(\secpar)$ is a soundness error of the idealized verifier, and $\epsldlog(\secpar)$ is security of $(\dconst, \dconst)$-$\ldlog$ assumption.
 % \end{lemma}
 
 
@@ -403,7 +403,7 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
 \]
 
   \ncase{Game 2} %
-  In this game the environment additionally aborts if at least one of its proofs in $\tree$ is not acceptable by an ideal verifier.
+  In this game the environment additionally aborts if at least one of its proofs in $\tree$ is not accepting by an ideal verifier.
 
   \ncase{Game 1 to Game 2} % 
   As usual, we show a reduction that breaks an instance of a $\uldlog$ assumption when Game 2 is aborted, while Game 1 is not.
@@ -419,7 +419,7 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
   Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upper-bounded by $(\noofc + 1) \cdot \epsuldlog (\secpar)$.
 
   \ncase{Conclusion}
-  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of accepting transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(\noofc + 1)$ accepting transcripts for different challenges $z$, it obtains the same number of different evaluations of polynomial $\p{t} (z, y)$ what allows to extract the witness, cf.~\cite{CCS:MBKM19}.
+  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of accepting transcript $\tree$, such that each of the transcripts in $\tree$ is accepting by an ideal verifier. Note that since $\tdv$ produces $(\noofc + 1)$ accepting transcripts for different challenges $z$, it obtains the same number of different evaluations of polynomial $\p{t} (z, y)$ what allows to extract the witness, cf.~\cite{CCS:MBKM19}.
 
   Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
   \[
@@ -495,7 +495,7 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
 
 \begin{corollary}[Simulation extractability of $\sonicprotfs$]
   \label{thm:sonicprotfs_se}
-  $\sonicprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$ with extraction failure probability 
+  $\sonicprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an accepting proof with probability at least $\accProb$ with extraction failure probability 
 \[
   \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (\noofc + 1) \cdot \epsuldlog (\secpar) ,
 \]
