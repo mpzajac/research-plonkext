@@ -368,14 +368,14 @@ If a polynomial commitment scheme $\PCOMs$ is evaluation binding with security l
 \subsection{Rewinding-Based Knowledge Soundness}
 \begin{lemma}
 	\label{lem:sonicprot_ss}
-  $\sonicprotfs$ is $(2, \multconstr + \linconstr + 1)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
+  $\sonicprotfs$ is $(2, \noofc + 1)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( \frac{\multconstr + \linconstr}{p}\right)}{1 - \frac{\multconstr + \linconstr}{p}}\right) + (\multconstr + \linconstr + 1) \cdot \epsuldlog (\secpar) + (\multconstr + \linconstr + 1) \cdot \epsid (\secpar)\,,
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( \frac{\noofc}{p}\right)}{1 - \frac{\noofc}{p}}\right) + (\noofc + 1) \cdot \epsuldlog (\secpar) + (\noofc + 1) \cdot \epsid (\secpar)\,,
   \]
 	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\sonicprotfs$, and $\epsuldlog(\secpar)$ is the security of $(\maxdeg, \maxdeg)$-$\uldlog$ assumption.
 \end{lemma}
 
-% 	$\sonicprot$ is $(2, \multconstr + \linconstr + 1)$-computational special sound with security loss $(\epst (\accProb, \secpar), \epss(\secpar))$ against
+% 	$\sonicprot$ is $(2, \noofc + 1)$-computational special sound with security loss $(\epst (\accProb, \secpar), \epss(\secpar))$ against
 % 	algebraic adversaries, where
 %   \[
 %     \epst(\accProb, \secpar) \leq \frac{\accProb - (q + 1) \epsid (\secpar)}{1 - \epsid (\secpar)}\,,
@@ -399,7 +399,7 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
   \ncase{Game 0 to Game 1} %
   By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most \hamid{2.5}{Should this not be "1 minus the following"?}
   \[
-    \frac{\accProb - (q + 1) \left( \frac{\multconstr + \linconstr}{p} \right)} {1 - \frac{\multconstr + \linconstr }{p}} \,.
+    \frac{\accProb - (q + 1) \left( \frac{\noofc}{p} \right)} {1 - \frac{\noofc }{p}} \,.
   \]
 
   \ncase{Game 2} %
@@ -416,14 +416,14 @@ Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkp
   Let $(1, \tree)$ be the output returned by $\tdv$. Let $\inp$ be a relation proven in $\tree$.  Consider a transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$, but $\vereq_{\inp, \zkproof}(\chi') = 0$. Since $\adv$ is algebraic, all group elements included in $\tree$ are extended by their representation as a combination of the input $\GRP_1$-elements. Hence, all coefficients of the verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known. 
   Eventually, the reduction finds $\vereq_{\inp, \zkproof}(X)$ zero points and returns $\chi'$ which is one of them.
     
-  Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upper-bounded by $(\multconstr + \linconstr + 1) \cdot \epsuldlog (\secpar)$.
+  Hence, the probability that the adversary wins in Game 2 but does not win in Game 1 is upper-bounded by $(\noofc + 1) \cdot \epsuldlog (\secpar)$.
 
   \ncase{Conclusion}
-  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of accepting transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(\multconstr + \linconstr + 1)$ accepting transcripts for different challenges $z$, it obtains the same number of different evaluations of polynomial $\p{t} (z, y)$ what allows to extract the witness, cf.~\cite{CCS:MBKM19} except with probability $(\multconstr + \linconstr + 1) \cdot \epsid(\secpar)$.
+  Note that the adversary can win in Game 2 only if $\tdv$ manages to produce a tree of accepting transcript $\tree$, such that each of the transcripts in $\tree$ is acceptable by an ideal verifier. Note that since $\tdv$ produces $(\noofc + 1)$ accepting transcripts for different challenges $z$, it obtains the same number of different evaluations of polynomial $\p{t} (z, y)$ what allows to extract the witness, cf.~\cite{CCS:MBKM19} except with probability $(\noofc + 1) \cdot \epsid(\secpar)$.
 
   Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( \frac{\multconstr + \linconstr}{p} \right)}{1 - \frac{\multconstr + \linconstr}{p}}\right) + (\multconstr + \linconstr + 1) \cdot\epsuldlog (\secpar) + (\multconstr + \linconstr + 1) \cdot \epsid (\secpar)\,. 
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( \frac{\noofc}{p} \right)}{1 - \frac{\noofc}{p}}\right) + (\noofc + 1) \cdot\epsuldlog (\secpar) + (\noofc + 1) \cdot \epsid (\secpar)\,. 
   \]
 
 \subsection{Trapdoor-Less Zero-Knowledge of Sonic}
@@ -497,9 +497,9 @@ of \cref{thm:se} and show that $\sonicprotfs$ is simulation-extractable as defin
   \label{thm:sonicprotfs_se}
   $\sonicprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$ with extraction failure probability 
 \[
-  \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (\multconstr + \linconstr + 1) \cdot \epsuldlog (\secpar) + (\multconstr + \linconstr + 1) \cdot \epsid (\secpar),
+  \epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (\noofc + 1) \cdot \epsuldlog (\secpar) + (\noofc + 1) \cdot \epsid (\secpar),
 \]
-where $\epserr (\secpar) = \frac{\multconstr + \linconstr}{p}$, $p$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
+where $\epserr (\secpar) = \frac{\noofc}{p}$, $p$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
 \end{corollary}
 
 %%% Local Variables:

@@ -707,7 +707,7 @@ First of all, although dubbed ``general'', \cref{lem:forking_lemma} is not
 general enough for our purpose as it is useful only for protocols where witness
 can be extracted from just two transcripts. To be able to extract a witness
 from, say, an execution of $\plonkprot$ we need to obtain at least
-$(3 \numberofconstrains + 1)$ valid proofs, and $(\multconstr + \linconstr + 1)$ for $\sonicprot$. Here we
+$(3 \numberofconstrains + 1)$ valid proofs, and $(\noofc + 1)$ for $\sonicprot$. Here we
 propose a generalisation of the general forking lemma that given probability of
 producing an accepting transcript, $\accProb$, lower-bounds the probability of
 generating a \emph{tree of accepting transcripts} $\tree$, which allows to
@@ -2386,7 +2386,7 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
 \subsection{Forking soundness}
 \begin{lemma}
 	\label{lem:sonicprot_ss}
-  $\sonicprot$ is $(\epsss(\secpar), 2, \multconstr + \linconstr + 1)$-forking sound against
+  $\sonicprot$ is $(\epsss(\secpar), 2, \noofc + 1)$-forking sound against
   algebraic adversaries with
   \[
 			\epss(\secpar) \leq \epsid(\secpar) + \epsldlog(\secpar) \,,
@@ -2421,7 +2421,7 @@ upper-bounded by $\epsbind(\secpar) + \epsop(\secpar)$.
     knowledge sound except with negligible probability of the idealised verifier
     failure $\epsid(\secpar)$. Hence for a valid proof $\zkproof$ for a
     statement $\inp$ there exists a witness $\wit$, such that $\REL(\inp, \wit)$
-    holds. Note that since the $\tdv$ produces $(\multconstr + \linconstr + 1)$
+    holds. Note that since the $\tdv$ produces $(\noofc + 1)$
     acceptable transcripts for different challenges $z$. As noted in
     \cite{CCS:MBKM19} this assures that the correct witness is encoded in
     $\p{r} (X, Y)$. Hence $\extt$ can recreate polynomials' coefficients by
@@ -2552,7 +2552,7 @@ of \cref{thm:se} and show that $\sonicprotfs$ is forking simulation-extractable 
   $\sonicprotfs$ is forking simulation-extractable with extraction error
   $\eta = \epsur(\secpar)$. The extraction probability $\extProb$ is at least
 \[
-		\extProb  \geq \frac{1}{q^{\multconstr + \linconstr}} (\accProb - \epsur(\secpar))^{\multconstr +
+		\extProb  \geq \frac{1}{q^{\noofc}} (\accProb - \epsur(\secpar))^{\multconstr +
 		\linconstr + 1} - \eps(\secpar).
 	\]
 	for some negligible $\eps(\secpar)$, $\multconstr$ and $\linconstr$ being,

@@ -229,8 +229,10 @@ enough for our purpose as it is useful only for protocols where a witness can be
 extracted from just two transcripts. To be able to extract a witness from, say, an
 execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 1)$ valid proofs
 (where $\numberofconstrains$ is the number of constrains),
-$(\multconstr + \linconstr + 1)$ for $\sonicprot$ (where $\multconstr$ and
-$\linconstr$ are numbers of multiplicative and linear constrains respectively), and
+$(\noofc + 1)$ for $\sonicprot$ 
+% (where $\multconstr$ and
+% $\linconstr$ are numbers of multiplicative and linear constrains respectively)
+, and
 $\abs{\HHH} + 4$ for $\marlinprot$ (where $\abs{\HHH}$ is an upper bound for the size
 of the witness, i.e.~number of gates). Here we use Attema et
 al.~\cite{EPRINT:AttFehKlo21short} generalization of the forking lemma\footnote{The
