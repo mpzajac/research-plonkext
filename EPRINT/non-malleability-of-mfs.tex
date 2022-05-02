@@ -193,7 +193,11 @@ verify that \cref{eq:marlin_eq_2} holds.
 	\[
 	\epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( \frac{2 \noofc + 2}{p}\right)}{1 - \frac{2 \noofc + 2}{p}}\right) + (2 \noofc + 3)\cdot\epsudlog (\secpar)\,,
 	\]
+<<<<<<< HEAD
 	Here $\accProb$ is a probability that the adversary outputs an acceptable proof,  and $\epsudlog(\secpar)$ is the security of $(2 \noofc + 2, 1)$-$\udlog$ assumption.
+=======
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\marlinprotfs$, and $\epsudlog(\secpar)$ is the security of $(\multconstr + 2, 1)$-$\udlog$ assumption.\hamid{2.5}{Not sure about $(\multconstr + 2, 1)$!}\markulf{2.5}{What is your suggestion? Degree seems to be consistent with number of rewindings.}
+>>>>>>> dda7f535c8e38c27dfa4ef2a817f08943b114bc1
 \end{lemma}
 \begin{proof}
 The proof is similar to the proof of \cref{lem:plonkprot_ss} and \cref{lem:sonicprot_ss}. 
