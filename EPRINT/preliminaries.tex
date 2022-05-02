@@ -63,7 +63,7 @@ In this section, we define properties that are necessary for our
 analysis of multi-message protocols with a universal updatable SRS.  In order to
 prove simulation-extractability for such protocols, we require more than just two
 transcripts for extraction. Moreover, in the updatable setting we consider protocols
-that rely on an SRS where the adversary gets to contribute to the SRS. We first recall the updatable SRS setting and the Fiat-Shamir transform for $(2\nu+1)$ message protocols.
+that rely on an SRS where the adversary gets to contribute to the SRS. We first recall the updatable SRS setting and the Fiat-Shamir transform for $(2\mu+1)$ message protocols.
 Next, we define trapdoor-less zero-knowledge and simulation-extractability
 which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then,
 to support multi-message SRS-based protocols compiled using the Fiat--Shamir transform,
@@ -136,7 +136,7 @@ In the next section, we define security notions in the updatable setting by givi
 \begin{figure}[t!]
 	\centering
 	\centerline{\fbox{
-		\begin{minipage}[t]{1.20\linewidth}
+		\begin{minipage}[t]{1.15\linewidth}
 			\begin{pchstack}
 			\procedure{$\initU(\intent, \srs_n,\{\rho_j \}_{j=1}^n)$}{
 				\pcif \srs \neq \bot: \pcreturn \bot \\
@@ -207,8 +207,8 @@ That is $\pi = (a_1, \ldots, a_{\mu}, a_{\mu + 1})$ and $\tzkproof = (a_1, c_1, 
 %\markulf{30.04}{This paragraph seems a bit of overkill, remove notation that we do not actually use}
 We use $\tzkproof[0]$ for instance
 $\inp$  and $\tzkproof[i]$, $\tzkproof[i].\ch$ to denote prover
-message $a_i$ and challenge $c_i$ respectively; $\tzkproof[i..j]$ denotes all messages of the transcript 
-between the $i$-th and $j$-th prover messages, but not $\tzkproof[j].\ch$.  
+message $a_i$ and challenge $c_i$ respectively. %$\tzkproof[i..j]$ denotes all messages of the transcript 
+%between the $i$-th and $j$-th prover messages, but not $\tzkproof[j].\ch$.  
 
 %If the proof system starts with a message from the verifier,
 %we denote it by $\tzkproof[0].\ch$; else, we state that $\tzkproof[0].\ch$ is empty.

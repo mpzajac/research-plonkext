@@ -11,18 +11,19 @@
 \end{theorem}
 
 \begin{proof}	
-	Let $(\inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'}(r_{\advse})$ be the USE adversary. We construct extractor $\extse (\srs, \advse, r_{\advse}, \Qsim, \Qro, \Qsrs)$ that outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with high probability. To that end we define an algorithm $\advcss^{\initU,\ro}(r)$ against rewinding-based knowledge soundness of $\psfs$ that runs internally $\advse^{\initU, \simOH, \simOP'}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$ with $\rsim$ the randomness that will be used to simulate $\simOP'$. 
+	Let $(\inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'}(r_{\advse})$ be the USE adversary. We show how to build an extractor $\extse (\srs, \advse, r_{\advse}, \Qsim, \Qro, \Qsrs)$ that outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with high probability. To that end we define an algorithm $\advcss^{\initU,\ro}(r)$ against rewinding-based knowledge soundness of $\psfs$ that runs internally $\advse^{\initU, \simOH, \simOP'}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$ with $\rsim$ the randomness that will be used to simulate $\simOP'$. 
 
-	The code of $\advcss^{\initU,\ro}(r)$ hardcodes $\Qsim$ such that it does not use any randomness for proofs in $\Qsim$ as long as statements are queried in order. In this case it simple returns the proof from $\Qsim$ but nevertheless queries $\simOHprog$ on it's $k$-th challenge. While it is hard to construct such an adversary without knowing $\Qsim$, it clearly exists and $\extse$ has the necessary inputs to construct $\advcss$. This hardcoding guarantees that $\advcss$ returns the same $\inp,\zkproof$ as the $\advse$ of the experiment.
+	The code of $\advcss^{\initU,\ro}(r)$ hardcodes $\Qsim$ such that it does not use any randomness for proofs in $\Qsim$ as long as statements are queried in order. In this case it simple returns a proof $\zkproofs$ from $\Qsim$ but nevertheless queries $\simOHprog$ on $(\tzkproofs[0..k],\tzkproofs[k].ch]$, i.e. it programs the $k$-th challenge. While it is hard to construct such an adversary without knowing $\Qsim$, it clearly exists and $\extse$ has the necessary inputs to construct $\advcss$. This hardcoding guarantees that $\advcss$ returns the same $(\inp,\zkproof)$ as $\advse$ in the experiment.
 	%
-	Eventually, $\extse$ uses the extractor $\extcss$ for $\advcss$ to extract the witness for $\inp$. $\extcss$ is guaranteed to exist (and be successful) by rewinding-based knowledge soundness. By this high-level argument we also show existence of $\extse$.
+	Eventually, $\extse$ uses the tree builder $\tdv$ and extractor $\extcss$ for $\advcss$ to extract the witness for $\inp$. Both guaranteed to exist (and be successful with high probability) by rewinding-based knowledge soundness. This high-level argument shows that $\extse$ exists as well.
 	
 	We now give the details of the simulation that guarantees that $\advcss$ is successful whenever $\advse$ is---except with a small security loss that we will bound late:
 	Since $\advcss$ runs $\advse$ internally, it needs to take care of $\advse$'s oracle queries.
-	$\advse$'s queries to the update oracle $\initU$ are passed to $\advcss$'s oracle $\initU$ and the answers from $\advcss$'s $\initU$ oracle are returned to $\advse$.
-	(Non-hardcoded) queries to the simulator $\simOP'$ are internally simulated by $\advcss$  by running the $\simulator$ algorithm employing the $\rsim$ part of $\advcss$'s randomness. $\simulator$ requires access to oracles $\simOH$ and $\simOP$. To compute a challenge honestly, $\simulator$ calls $\simOH$. To program a challenge it calls $\simOHprog$. Both of these oracles are again simulated by $\advcss$ internally, cf.~\cref{fig:simulator_oracles}, this time using $\advcss$'s $\ro$ oracle. Importantly, all challenges in simulated proofs, up to round $k$ are computed honestly, i.e. $\tzkproof[i].\ch = \simOH(\tzkproof[0..i])$, for $i < k$.
+	$\advcss$ passes on queries of $\advse$ to the update oracle $\initU$ to its own $\initU$ oracle and returns the result to $\advse$.
+	$\advcss$ internally simulates (non-hardcoded) queries to the simulator $\simOP'$ by running the $\simulator$ algorithm on randomness $\rsim$ of its tape. $\simulator$ requires access to oracles $\simOH$ to compute a challenge honestly and $\simOHprog$ to program a challenge. Again $\advcss$ simulates both of these oracles internally, cf.~\cref{fig:simulator_oracles}, this time using the $\ro$ oracle of $\advcss$. 	Note that queries of $\advse$ to $\simOH$ are not programmed, but passed on to $\ro$. 
+	
+	Importantly, all challenges in simulated proofs, up to round $k$ are also computed honestly, i.e. $\tzkproof[i].\ch = \ro(\tzkproof[0..i])$, for $i < k$.
 	%
-	$\advse$'s queries to $\simOH$ are not programmed, but passed on to $\ro$. 
 
 	
 	\begin{figure}
@@ -52,7 +53,7 @@
 	\end{figure}	
 %
 
-	Eventually, $\advse$ outputs a proof $(\inp, \zkproof)$ which $\advcss$ outputs as well as long as $\tzkproof[0..i] \notin \Qprog$, $i\in[1,\mu]$. This models that the proof output by $\advcss$ must not contain any programmed queries as such a proof is not acceptable w.r.t~$\ro$. If $\advse$ outputs a proof that does contain programmed challenges, then $\advcss$ aborts. We denote this event by $\event{E}$.
+	Eventually, $\advse$ outputs an instance and proof $(\inp, \zkproof)$. $\advcss$ returns the same values as long as $\tzkproof[0..i] \notin \Qprog$, $i\in[1,\mu]$. This models that the proof output by $\advcss$ must not contain any programmed queries as such a proof would not acceptable w.r.t~$\ro$ in the RBKS experiment. If $\advse$ outputs a proof that does contain programmed challenges, then $\advcss$ aborts. We denote this event by $\event{E}$.
 	
 	\begin{lemma}
 		Probability that $\event{E}$ happens is upper-bounded by $\epsur(\secpar)$. 
@@ -70,20 +71,28 @@
 		% \end{align*}
 		and the challenge $\tzkproofs[k].\ch=\tzkproof[k].\ch$
 
-	Importantly, both proofs are acceptable w.r.t~the unique response property verifier. The first, since it is a correctly computed simulated proof and the unique response property definition allows any challenges at $k$. The latter, since it is an acceptable proof produced by the adversary.
-	We have that $\zkproof_1 \neq \zkproof_2$ as otherwise $\advse$ does not win the simulation extractability game as $\zkproof_2 \in Q$. On the other hand, if the proofs are different, then $\advur$ breaks $\ur{k}$-ness of $\psfs$. This happens only with  probability $\epsur(\secpar)$. 
+	Importantly, both proofs are acceptable w.r.t~the unique response verifier. The first, since it is a correctly computed simulated proof for which the unique response property definition allows any challenges at $k$. The latter, since it is an acceptable proof produced by the adversary.
+	We have that $\zkproof \neq \zkproofs$ as otherwise $\advse$ does not win the simulation extractability game as $\zkproof \in Q$. On the other hand, if the proofs are different, then $\advur$ breaks $\ur{k}$-ness of $\psfs$. This happens only with  probability $\epsur(\secpar)$. 
 	\qed
 	\end{proof}
 
-	We denote by $\waccProb$ the probability that $\advcss$ outputs an acceptable proof. We note that $\waccProb$ is at most $\epsur (\secpar)$ far from the probability that $\advse$ outputs an acceptable proof. By the union bound the probability that $\advcss$ outputs an acceptable proof is at least $\waccProb \geq \accProb - \epsur (\secpar)$. %\markulf{30.04}{I am ignorant. What is the role of the union bound here. Is this the same as up-to-bad reasoning?}
+	We denote by $\waccProb$ the probability that $\advcss$ outputs an acceptable proof. We note that by up-to-bad reasoning $\waccProb$ is at most $\epsur (\secpar)$ far from the probability that $\advse$ outputs an acceptable proof. Thus, the probability that $\advcss$ outputs an acceptable proof is at least $\waccProb \geq \accProb - \epsur (\secpar)$. %\markulf{30.04}{I am ignorant. What is the role of the union bound here. Is this the same as up-to-bad reasoning?}
 %
-	Since $\psfs$ is $\epscss (\secpar, \waccProb,q)$ rewinding-based knowledge sound, there is an extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of accepting transcripts $\tree$ and fails to extract the witness with probability at most $\epscss (\secpar, \waccProb, q)$. The extractor $\extse$ outputs the witness with the same probability.
+	Since $\psfs$ is $\epscss (\secpar, \waccProb,q)$ rewinding-based knowledge sound, there is a tree builder $\tdv$ and extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of accepting transcripts $\tree$ and fails to extract the witness with probability at most $\epscss (\secpar, \waccProb, q)$. The extractor $\extse$ outputs the witness with the same probability.
 
 	%\hamid{30.4}{We probably mean rewinding-based KS here. I think we need to also justify why we require this property with specific parameters $(1, \ldots, 1, n_{k}, \ldots, n_\mu)$ for the tree structure!}\markulf{30.04}{Fixed the typo, if that's what you meant. I don't think we need any specific tree structure. There is nevertheless more to say here, I agree.}
 %
 	Thus $\epsse(\secpar,\accProb,q) = \epscss (\secpar, \waccProb,q) \leq \epscss(\secpar,\accProb - \epsur,q)$.
 	\qed
 	\end{proof}
+
+\begin{remark}
+Observe that our theorem does not depend on $\epszk(\secpar)$. There is no real prover algorithm $\prover$ in the experiment. Only the $k$-programmability of TLZK matters. 
+\end{remark}
+
+\begin{remark}
+Observe that the theorem does not prescribe a tree shape for the tree builder $\tdv$. Interestingly, in our concrete results $\tdv$ outputs a $(k, *)$-tree of accepting transcripts.
+\end{remark}
 
 %%% Local Variables:
 %%% mode: latex

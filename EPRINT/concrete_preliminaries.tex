@@ -9,19 +9,18 @@ and $\pair: \GRP_1 \times \GRP_2 \to \GRP_T$ is a non-degenerate
 $\ppt$-computable bilinear pairing. We assume the bilinear pairing to be Type-3,
 i.e., that there is no efficient isomorphism from $\GRP_1$ to $\GRP_2$ or from
 $\GRP_2$ to $\GRP_1$. We use the by now standard bracket notation, i.e., we
-write $\bmap{a}{\gi}$ to denote $a g_{\gi}$ where $g_{\gi}$ is a fixed generator
-of $\GRP_{\gi}$. We denote $\pair (\gone{a}, \gtwo{b})$ as $\gone{a} \bullet
+write $\bmap{a}{\gi}$ to denote $a \bmap{1}{\gi}$. %where $g_{\gi}$ is a fixed generator of $\GRP_{\gi}$. 
+We denote $\pair (\gone{a}, \gtwo{b})$ as $\gone{a} \bullet
 \gtwo{b}$. Thus, $\gone{a} \bullet \gtwo{b} = \gtar{a b}$. We freely use the
 bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \vec{C}$ then
 $\vec{A} \grpgi{\vec{B}} = \grpgi{\vec{C}}$ and $\gone{\vec{A}}\bullet
-\gtwo{\vec{B}} = \gtar{\vec{C}}$. Since every algorithm $\adv$ takes as input
+\gtwo{\vec{B}} = \gtar{\vec{C}}$.\markulf{2.5}{do we use any matrices?} Since every algorithm $\adv$ takes as input
 the public parameters we skip them when describing $\adv$'s input. Similarly, we
-do not explicitly state that each protocol starts with generating these
-parameters by $\pgen$.
+do not explicitly state that each protocol starts by running $\pgen$.
 
 \subsection{Algebraic Group Model}
-The algebraic group model (AGM) introduced in \cite{C:FucKilLos18} lies between the
-standard model and generic bilinear group model. In the AGM it is assumed that an
+The algebraic group model (AGM) of Fuchsbauer, Kiltz, and Loss~\cite{C:FucKilLos18} lies somewhat between the
+standard and generic bilinear group model. In the AGM it is assumed that an
 adversary $\adv$ can output a group element $\gnone{y} \in \GRP$ if $\gnone{y}$ has
 been computed by applying group operations to group elements given to $\adv$ as
 input. It is further assumed, that $\adv$ knows how to ``build'' $\gnone{y}$ from
@@ -112,7 +111,7 @@ Note that for clarity we here refer to the SRS by $\Ch$. Further, to avoid clutt
 
 
 \begin{remark}[Single adversarial updates after an honest setup.]\label{rem:upd}
-	One can consider a slightly different model of setup, where the adversary is given an initial honestly-generated SRS and is then allowed to perform a malicious update in one-shot fashion.
+	As an alternative to the updatable setting defined in~\cref{fig:upd}, one can consider a slightly different model of setup, where the adversary is given an initial honestly-generated SRS and is then allowed to perform a malicious update in one-shot fashion.
 	Groth
 	et al.\ show in~\cite{C:GKMMM18} that the two definitions are equivalent for polynomial commitment based SNARKs. We use this simpler definition in our reductions.
 \end{remark}
@@ -124,14 +123,16 @@ We show a reduction from $(q_1, q_2)\mhyph\dlog$ assumption to its variant in th
 	$(q_1, q_2)\mhyph\dlog \Rightarrow (q_1, q_2)\mhyph\udlog$.
 	\end{lemma}
 \begin{proof}
-	We construct a reduction algorithm $\reduction$ which uses an adversary $\adv$ on the $(q_1, q_2)\mhyph\udlog$ and construct an adversary on the $(q_1, q_2)\mhyph\dlog$. Specifically, $\reduction$ proceeds as follows: given a dlog instance $\Ch$ as input, it sets $\Ch$ as the initial (honestly generated) challenge. Once the dlog challenge in the updatable setting is finalized, it runs $\adv$ and obtains the answer $\chi'$. Let $\chi_\adv$ be the (possibly) partial discrete logarithm of the dlog instance corresponding to the adversary's update. This value can be computed by $\reduction$ by extracting from the update proof given by $\adv$. $\reduction$ now returns $\chi = \chi' \chi_\adv^{-1}$ as the discrete logarithm of $\Ch$.
+	We show a reduction $\reduction$ that uses an adversary $\adv$ that breaks $(q_1, q_2)\mhyph\udlog$ to break $(q_1, q_2)\mhyph\dlog$. Specifically, $\reduction$ proceeds as follows: given a dlog instance $\Ch$ as input, it sets $\Ch$ to be the initial (honestly generated) challenge and runs $\adv$. After $\adv$ performs its update and finalizes the dlog challenge it returns the answer $\chi'$. Let $\chi_\adv$ be the trapdoor contribution of adversary $\adv$ in its update. Reduction $\reduction$ can extract this value from the update proof of $\adv$. $\reduction$ now returns $\chi = \chi' \chi_\adv^{-1}$ as the discrete logarithm of the original challenge $\Ch$.\qed
 	\end{proof}
 
-  \oursubsub{Generalized Forking Lemma}
-Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general enough for our purpose as it is useful only for protocols where a witness can be extracted from just two transcripts. To be able to extract a witness from, say, an execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 1)$ valid proofs (where $\numberofconstrains$ is the number of constrains), $(\numberofconstrains+ 1)$ for $\sonicprot$, and $\numberofconstrains + 4$ for $\marlinprot$. Here we use a result by Attema et
-al.~\cite{EPRINT:AttFehKlo21short}\footnote{An earlier versions had its own forking lemma generalization. Attema et al.\ has a better bound.}  which lower-bounds the probability of generating a tree of accepting transcripts $\tree$.
+	\markulf{2.5}{Old numbers: To be able to extract a witness from, say, an execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 1)$ valid proofs (where $\numberofconstrains$ is the number of constrains), $(\numberofconstrains+ 1)$ for $\sonicprot$, and $\numberofconstrains + 4$ for $\marlinprot$.}
 
-  \begin{lemma}[Proposition 2~\cite{EPRINT:AttFehKlo21short}]\label{lem:attema}
+  \oursubsub{Generalized Forking Lemma}
+Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general enough for our purpose as it is useful only for protocols where a witness can be extracted from just two transcripts. To be able to extract a witness from, say, an execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 1)$ valid proofs (where $\numberofconstrains$ is the number of constrains), $(\numberofconstrains+ 1)$ for $\sonicprot$, and $\numberofconstrains + 4$ for $\marlinprot$.\hamid{2.5}{Numbers are incorrect! Maybe $(3 \numberofconstrains + 6)$ for Plonk, $(\numberofconstrains+ \linconstr+ 1)$ for Sonic and $(\numberofconstrains+ 3)$ for Marlin? } Here we use a result by Attema et
+al.~\cite{EPRINT:AttFehKlo21short}\footnote{An earlier versions had its own forking lemma generalization. Attema et al.\ has a better bound.}  which lower-bounds the probability of generating a tree of accepting transcripts $\tree$. We restate their Proposition 2 in our notation:
+
+  \begin{lemma}[Run Time and Success Probability]\label{lem:attema}
 	Let $N = n_1 \cdot \cdots \cdot n_\mu$ and $p = 2^{\Omega(\secpar)}$. Let $\epserr(\secpar) = 1 - \prod_{i=1}^{\mu}\left(1 - \frac{n_i - 1}{p}\right)$.
 	Assume adversary $\adv$ that makes up to $q$ random
 	oracle queries and outputs an acceptable proof with probability at least
@@ -170,7 +171,7 @@ al.~\cite{EPRINT:AttFehKlo21short}\footnote{An earlier versions had its own fork
 \oursubsub{Opening Uniqueness of Batched Polynomial Commitment Openings}
 %We say that $\PCOM$ has the unique opening property if the following holds:
 To show the unique response property required by our main theorem we show that the polynomial commitment schemes employed by concrete proof systems have unique openings, which, intuitively, assures that there is only one
-valid opening for the committed polynomial and given evaluation point
+valid opening for a given committed polynomial and evaluation point:
 
 \begin{definition}[Unique opening property]
 	Let $m \in \NN$ be the number of committed polynomials, $l \in \NN$ number of evaluation points, $\vec{c} \in \GRP^m$ be the commitments, $\vec{z} \in \FF_p^l$ be the arguments the polynomials are evaluated at, $K_j$ set of indices of polynomials which are evaluated at $z_j$, $\vec{s_{i}}$ vector of evaluations of $\p{f_i}$,, and $\vec{o_j}, \vec{o'_j} \in \FF_p^{K_j}$ be the commitment openings. Then for every $\ppt$ adversary $\adv$
@@ -190,8 +191,8 @@ valid opening for the committed polynomial and given evaluation point
 	  \]
 \end{definition}
 
-We show that $\plonk$'s, $\sonic$'s, and $\marlin$'s polynomial commitment schemes satisfy this requirement in \cref{sec:uop}.
+We show that the polynomial commitment schemes of $\plonk$, $\sonic$, and $\marlin$ satisfy this requirement in \cref{sec:uop}.
 
-\cref{fig:pcomp}, cf.~\cref{sec:uop}, presents variants of KZG~\cite{AC:KatZavGol10} polynomial commitment schemes used in \plonk{}, \sonic{} and \marlin{}. 
-To support batched verification, the inputs to $\com$, $\open$, $\verify$ are vectors, and the algorithms take an additional arbitrary auxiliary string as input. This adversarially chosen string only provides additional context for the computation of challenges. We treat auxiliary input implicitly in the definition.
- 
+\begin{remark}
+\cref{fig:pcomp}, cf.~\cref{sec:uop}, presents efficient variants of KZG~\cite{AC:KatZavGol10} polynomial commitment schemes used in \plonk{}, \sonic{} and \marlin{} that support batched verification. Algorithms $\com$, $\open$, $\verify$ take vectors as input and receive an additional arbitrary auxiliary string. This adversarially chosen string only provides additional context for the computation of challenges and allows reconstruction of proof transcripts $\tzkproof[0..i]$ for batch challenge computations. We treat auxiliary input implicitly in the definition above.
+\end{remark}
