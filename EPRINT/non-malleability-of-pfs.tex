@@ -286,14 +286,14 @@ The \plonk{} verifier works as follows
 We describe the simulator in \cref{lem:plonk_tlzk}.
 
 \subsection{Simulation extractability of $\plonk${}}
-Due to lack of space we provide here only theorem statements and intuitions why they hold. Full proofs are given in \cref{sec:plonkse_proofs}.
+Due to lack of space, we provide here only theorem statements and intuition for why they hold. Full proofs are given in \cref{sec:plonkse_proofs}.
 
 \oursubsub{Unique Response Property}
 \begin{lemma}
 	\label{lem:plonkprot_ur}
 	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening property with loss $\epsop (\secpar)$. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries, who makes up to $q$ random oracle queries, with security loss $\epsbinding (\secpar) + \epsop ( \secpar )$.
 \end{lemma}
-\begin{proof}[Intuitions]
+\begin{proof}[Intuition]
   We show that an adversary who can break the $3$-unique response property of $\plonkprotfs$ can be either used to break the commitment scheme's evaluation binding or unique opening property. The former happens with the probability upper-bounded by $\epsbinding (\secpar)$, the latter with the probability upper bounded by $\epsop (\secpar)$. 
   
   %We note that the probability of breaking evaluation binding increases by an additional $q / p$ (at most) since $\plonk$ batches verification of polynomial evaluations, which may lead to accepting an opening which would not be accepted by a verifier who verifies all openings separately. Similarly, the additional $q / p$ security loss from unique opening property comes from the batching as well.
@@ -311,7 +311,7 @@ Due to lack of space we provide here only theorem statements and intuitions why 
 	assumption.
 \end{lemma}
 
-\begin{proof}[Intuitions]
+\begin{proof}[Intuition]
   We use Attema et al.~\cite[Proposition 2]{EPRINT:AttFehKlo21} to bound the probability that an algorithm $\tdv$ does not obtain a tree of accepting transcripts in an expected number of runs. This happens with probability at most
   \[
     1 - \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)}{1 - \frac{3 \noofc + 5}{p}}
@@ -326,7 +326,7 @@ Due to lack of space we provide here only theorem statements and intuitions why 
   $\plonkprotfs$ is 3-programmable trapdoor-less zero-knowledge.
 \end{lemma}
 
-\begin{proof}[Intuitions]
+\begin{proof}[Intuition]
   The simulator, that does not know the SRS trapdoor can make a simulated proof by programming the random oracle. It proceeds as follows. It picks a random witness and behaves as an honest prover up to the point when a commitment to the polynomial $\p{t}(X)$ is sent. Since the simulator picked a random witness and $\p{t}(X)$ is a polynomial only (modulo some negligible function) when the witness is correct, it cannot compute commitment to $\p{t}(X)$ as it is a rational function. However, the simulator can pick a random challenge $\chz$ and a polynomial $\p{\tilde{t}}(X)$ such that $\p{t} (\chz)  = \p{\tilde{t}} (\chz)$. Then the simulator continues behaving as an honest prover. We argue that such a simulated proof is indistinguishable from a real one.
 \end{proof}
 
