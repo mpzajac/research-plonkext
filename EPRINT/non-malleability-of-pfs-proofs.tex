@@ -29,9 +29,9 @@
   In this game the environment aborts the game if the tree building algorithm $\tdv$ fails in building a tree of accepting transcripts $\tree$. 
 
   \ncase{Game 0 to Game 1} %
-  By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most 
+  By \cref{lem:attema} probability that Game 1 is aborted, while Game 0 is not, is at most \hamid{2.5}{Should this not be "1 minus the following"?}
   \[
-    \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 15}{p} \right)} {\frac{3 \noofc + 15}{p}} \,.
+    \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)} {1 - \frac{3 \noofc + 5}{p}} \,.
   \]
 
   \ncase{Game 2} %
@@ -55,7 +55,7 @@
 
   Hence, the probability that the adversary wins in Game 0 is upper-bounded by 
   \[
-    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(1 - \frac{3 \noofc + 15}{p} \right)}{\frac{3 \noofc + 15}{p}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) + (3 \noofc + 6) \cdot \epsid (\secpar)\,. 
+    \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)}{1 - \frac{3 \noofc + 5}{p}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) + (3 \noofc + 6) \cdot \epsid (\secpar)\,. 
   \]
  \end{proof}
 
