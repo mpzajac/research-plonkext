@@ -1,7 +1,13 @@
 \section{Simulation extractability of $\plonk$, omitted proofs}
 \label{sec:plonkse_proofs}
 
-\oursubsub{Proof of \cref{lem:plonkprot_ur}}
+
+%\oursubsub{Proof of \cref{lem:plonkprot_ur}}
+
+\begin{lemma}[\cref{lem:plonkprot_ur} restated]
+	\label{lem:app:plonkprot_ur}
+	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening property with loss $\epsudlog (\secpar) + 2 \infrac{q}{p}$, let $(\noofc + 5, 1)$-$\udlog$ problem be $\epsudlog (\secpar)$ hard. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries, who makes up to $q$ random oracle queries, with security loss $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{p}$.
+\end{lemma}
 
 \begin{proof}
     Let $\adv$ be an algebraic adversary tasked to break the $\ur{3}$-ness of
@@ -16,9 +22,21 @@
     Next, assume that the transcripts are the same up to the fourth message, but differ at the fifth. In that message, the adversary provides openings of the evaluations. Since the unique opening property, the adversary can open the valid evaluation of a polynomial to two different values with probability at most $\epsop (\secpar)$, which is upper-bounded by $\epsudlog (\secpar) + \infrac{q}{p}$, cf.~\cref{lem:pcomp_op}.
   
     By the union bound, the adversary is able to break the unique response property with probability upper bounded by $8  \cdot \epsbinding (\secpar) + \epsudlog (\secpar) + 2 \infrac{q}{p}$.
+    \qed
     \end{proof}
 
-\oursubsub{Proof of \cref{lem:plonkprot_ss}}
+%\oursubsub{Proof of \cref{lem:plonkprot_ss}}
+
+\begin{lemma}[\cref{lem:plonkprot_ss} restated]
+	\label{lem:app:plonkprot_ss}
+	$\plonkprotfs$ is $(3, 3 \noofc + 6)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
+	\[
+	\epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)}{1 - \frac{3 \noofc + 5}{p}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) + (3 \noofc + 6) \cdot \epsid (\secpar)\,,
+	\]
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof, $\epsid(\secpar)$ is a soundness error of the ideal verifier for $\plonkprot$, and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + 5, 1)$-$\udlog$ 
+	assumption.
+\end{lemma}
+
 \begin{proof}
 	Let $\adv^{\ro, \initU}(\secparam; r)$ be the adversary who outputs $(\inp, \zkproof)$ such that $\plonkprotfs.\verifier$ accepts the proof. Let $\tdv$ be a tree-building algorithm of \cref{lem:attema} that outputs a tree $\tree$, and let $\extcss$ be an extractor that given the tree output by $\tdv$ reveals the witness for $\inp$. The main idea of the proof is to show that an adversary who breaks rewinding-based knowledge soundness can be used to break a $\udlog$-problem instance. The proof goes by game hops. Note that since the tree branches after $\adv$'s $3$-rd message, the instance $\inp$, commitments $\gone{\p{a} (\chi), \p{b} (\chi), \p{c} (\chi), \p{z} (\chi), \p{t_{lo}} (\chi), \p{t_{mid}} (\chi), \p{t_{hi}} (\chi)}$, and challenges $\alpha, \beta, \gamma$ are the same in all the transcripts. Also, the tree branches after the third adversary's message where the challenge $\chz$ is presented, thus tree $\tree$ is built using different values of $\chz$.	We consider the following games.
 
@@ -57,9 +75,15 @@
   \[
     \epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)}{1 - \frac{3 \noofc + 5}{p}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) + (3 \noofc + 6) \cdot \epsid (\secpar)\,. 
   \]
+  \qed
  \end{proof}
 
-\oursubsub{Proof of \cref{lem:plonk_tlzk}}
+%\oursubsub{Proof of \cref{lem:plonk_tlzk}}
+\begin{lemma}[\cref{lem:plonk_tlzk} restated]
+	\label{lem:app:plonk_tlzk}
+	$\plonkprotfs$ is 3-programmable trapdoor-less zero-knowledge.
+\end{lemma}
+
 \begin{proof}
     As noted in \cref{def:upd-scheme}, subvertible zero-knowledge implies updatable zero-knowledge. Hence, here we show that Plonk is TLZK even against adversaries who picks
     the SRS on its own.
@@ -107,5 +131,6 @@
   at random as well.
   
   We argue about zero-knowledge as usual. The property holds since the polynomials that has witness elements at their coefficients are randomized by at least two randomizers and are evaluated at at most two points; and the simulator computes all polynomials as an honest prover would.
+  \qed
   \end{proof}
   
