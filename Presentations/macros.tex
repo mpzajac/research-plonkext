@@ -4,13 +4,13 @@
 
 %general formatting
 \newcommand{\pcvarstyle}[1]{\mathsf{#1}}
-\renewcommand{\comment}[1]{{\color{lightgray}#1}}
+\newcommand{\comment}[1]{{\color{lightgray}#1}}
 \newcommand{\continue}{{\Huge{\hl{$\cdots$}}}}
 % \renewcommand{\case}[1]{\medskip\noindent{\fbox{Case #1:}}}
 % \newcommand{\ncase}[1]{\medskip\noindent{\fbox{#1:}}}
 % \newcommand{\ngame}[1]{\medskip\noindent{\fbox{Game $\game{#1}$:}}}
 \newcommand{\mhyph}{\text{-}}
-\renewcommand{\case}[1]{\medskip\noindent{\textbf{Case #1:}}}
+\newcommand{\case}[1]{\medskip\noindent{\textbf{Case #1:}}}
 \newcommand{\ncase}[1]{\medskip\noindent{\textbf{#1:}}}
 \newcommand{\ngame}[1]{\medskip\noindent{\textbf{Game $\game{#1}$:}}}
 \newcommand{\conclude}{\medskip\noindent{}}
@@ -34,6 +34,7 @@
 \newcommand{\w}{\omega}
 \newcommand{\const}{\pcpolynomialstyle{const}}
 \newcommand{\p}[1]{\pcpolynomialstyle{#1}}
+\newcommand{\cp}[1]{\p{c}_\p{#1}}
 \newcommand{\ptx}{\p{t_{X^0}}}
 \newcommand{\ptxsim}{\p{\tilde{t}_{X^0}}}
 \newcommand{\ev}[1]{\widetilde{\pcpolynomialstyle{#1}}}
@@ -93,8 +94,8 @@
 
 % zero knowledge
 \newcommand{\oracleo}{\mathsf{O}}
+\newcommand{\oracles}{\oracleo_{\simulator}}
 \newcommand{\oraclesrs}{\oracleo_{srs}}
-\newcommand{\oraclec}{\oracleo_\cdv}
 % for srs updatability
 \newcommand{\intent}{\msg{intent}}
 \newcommand{\update}{\msg{update}}
@@ -110,7 +111,7 @@
 \newcommand{\proofsystem}{\pcschemestyle{\Psi}}
 \newcommand{\ps}{\proofsystem}
 \newcommand{\psfs}{\proofsystem_\fs}
-% \newcommand{\ps}{\proofsystem}
+\newcommand{\PS}{\proofsystem}
 \newcommand{\nuppt}{\pcmachinemodelstyle{NUPPT}}
 \newcommand{\ro}{\mathcal{H}}
 \newcommand{\rof}[2]{\mathbf{\Omega}_{#1, #2}}
@@ -127,6 +128,8 @@
 \newcommand{\zk}{\pcvarstyle{zk}}
 
 
+
+
 %rewinding---tree of transcripts
 \newcommand{\pcboolstyle}[1]{\mathtt{#1}}
 \newcommand{\treebuild}{\pcalgostyle{TreeBuild}}
@@ -135,13 +138,11 @@
 
 
 %PLONK related
-\newcommand{\pcschemestyle}[1]{\bm{\mathsf{#1}}}
+\newcommand{\pcschemestyle}[1]{{\mathsf{#1}}}
 \newcommand{\plonkprot}{\pcschemestyle{P}}
 \newcommand{\plonkprotfs}{\pcschemestyle{P}_\fs}
 \newcommand{\sonicprot}{\pcschemestyle{S}}
 \newcommand{\sonicprotfs}{\pcschemestyle{S}_\fs}
-\newcommand{\marlinprot}{\pcschemestyle{M}}
-\newcommand{\marlinprotfs}{\pcschemestyle{M}_\fs}
 \newcommand{\selector}[1]{\pcvarstyle{q_{#1}}}
 \newcommand{\selmulti}{\selector{M}}
 \newcommand{\selleft}{\selector{L}}
@@ -158,11 +159,6 @@
 
 \newcommand{\lag}{\p{L}}
 \newcommand{\pubinppoly}{\p{PI}}
-
-\newcommand{\ZERO}{\p{Z}}
-%\newcommand{\pcsetstyle}[1]{\mathrm{#1}}
-\newcommand{\HHH}{\mathsf{H}}
-\newcommand{\KKK}{\mathsf{K}}
 
 % general complexity theory
 % \newcommand{\RND}[1]{\pcalgostyle{RND}(#1)}
@@ -237,7 +233,6 @@
 
 \newcommand{\epsss}{\eps_\pcvarstyle{f}}
 \newcommand{\epsur}{\eps_\pcvarstyle{ur}}
-\newcommand{\epsh}{\eps_{\pcvarstyle{hid}}}
 \newcommand{\epsk}{\eps_{\pcvarstyle{k}}}
 \newcommand{\epsbind}{\eps_\pcvarstyle{bind}}
 \newcommand{\epsbinding}{\eps_\pcvarstyle{bind}}
@@ -249,8 +244,7 @@
 \newcommand{\epsdlog}{\eps_\dlog}
 \newcommand{\epsldlog}{\eps_\ldlog}
 \newcommand{\epsuber}{\eps_{\pcvarstyle{uber}}}
-\newcommand{\epszk}{\eps_{\pcvarstyle{zk}}}
-\newcommand{\epsro}{\eps_{\ro}}
+\newcommand{\epszk}{\eps_{\pcvarstyle{zk}}} 
 
 %errors
 \newcommand{\err}{Err}
@@ -262,12 +256,6 @@
 %forking
 \newcommand{\forking}{\pcalgostyle{F}}
 \newcommand{\genforking}{\pcalgostyle{GF}}
-
-%moving proofs and instances
-\newcommand{\MoveInstanceForward}{\pcalgostyle{MoveInstanceForward}}
-\newcommand{\MoveInstanceBackward}{\pcalgostyle{MoveInstanceBackward}}
-\newcommand{\MoveProofForward}{\pcalgostyle{MoveProofForward}}
-\newcommand{\MoveProofBackward}{\pcalgostyle{MoveProofBackward}}
 
 %colors
 \definecolor{darkmagenta}{rgb}{0.5,0,0.5}
@@ -282,10 +270,8 @@
 
 %comments
 \DeclareRobustCommand{\markulf}[2]  {{\color{darkmagenta}\hl{\scriptsize\textsf{Markulf #1:} #2}}}
-\DeclareRobustCommand{\michals}[2]  {{\color{blueish}{\scriptsize\textsf{Michal #1:}} #2}}
-\newcommand{\chaya}[1]{\textcolor{magenta}{[{\footnotesize {\bf Chaya:} { {#1}}}]}}
-\newcommand{\hamid}[1]{\textcolor{blue}{[{\footnotesize {\bf Hamid:} { {#1}}}]}}
+\DeclareRobustCommand{\michals}[2]  {{\color{blueish}\sethlcolor{pinkish}\hl{\scriptsize\textsf{Michal #1:} #2}}}
 \newcommand{\task}[2]{\todo[author=\textbf{Task},inline]{({\textit{#1}}) #2}}
 % \newcommand{\task}[2] {\xcommenti{Task}{#1}{#2}}
 % \DeclareRobustCommand{\task}[2]  {{\color{black}\sethlcolor{yellow}\hl{\textsf{TASK #1:} #2}}}
-\DeclareRobustCommand{\changedm}[1] {{\color{violet} #1}}
+\DeclareRobustCommand{\changedm}[1] {{\color{blueish} #1}}

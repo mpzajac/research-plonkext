@@ -1,0 +1,224 @@
+% l\newif\ifupdate
+% \updatetrue % Uncomment to compile non-updatable version.
+
+% !TEX spellcheck = en-US
+% \let\accentvec\vec              
+%\documentclass[runningheads,11pt]{llncs}
+%\documentclass[10pt]{llncs}
+\documentclass[10pt]{llncs}
+\pagestyle{plain}
+\let\spvec\vec
+\let\vec\accentvec
+
+\newcommand\hmmax{0}
+\newcommand\bmmax{0}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\widebar}{0}{mathx}{"73}
+
+\let\spvec\vec
+\usepackage{amssymb,amsmath}
+\let\vec\spvec
+%\usepackage{newtxmath,newtxtext}
+\usepackage{newtxtext}
+\usepackage[T1]{fontenc}
+\usepackage[most]{tcolorbox}
+  \def\vec#1{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
+  {\mbox{\boldmath$\textstyle#1$}} {\mbox{\boldmath$\scriptstyle#1$}}
+  {\mbox{\boldmath$\scriptscriptstyle#1$}}}
+
+
+% lncs size (as printed in books, with small margins):
+ % \usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={13.2cm,20.3cm},centering]{geometry}
+%\usepackage{fullpage}
+\usepackage{soulutf8} \soulregister\cite7 \soulregister\ref7
+\soulregister\pageref7
+\usepackage{hyperref}
+\usepackage[color=yellow]{todonotes} \hypersetup{final}
+\usepackage{mathrsfs}
+\usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
+
+\usepackage[capitalise]{cleveref}
+% \crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
+% \Crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
+% \
+\usepackage{cite} 
+\usepackage{booktabs}
+\usepackage{paralist}
+%\usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed}
+\usepackage{caption}
+\captionsetup{belowskip=0pt}
+\usepackage{bm}
+\usepackage{url}
+%\usepackage{dirtytalk}
+%\usepackage[margin=1in,a4paper]{geometry}
+\usepackage[normalem]{ulem}
+\usepackage{dashbox}
+\newcommand\dboxed[1]{\dbox{\ensuremath{#1}}}
+\usepackage{setspace}
+
+\usepackage{floatrow}
+\floatsetup[figure]{font=footnotesize}
+ 
+\include{macros}
+
+
+%% Save the class definition of \subparagraph
+\let\llncssubparagraph\subparagraph
+%% Provide a definition to \subparagraph to keep titlesec happy
+\let\subparagraph\paragraph
+%% Load titlesec
+\usepackage[compact]{titlesec}
+%% Revert \subparagraph to the llncs definition
+\let\subparagraph\llncssubparagraph
+
+\newcommand{\oursubsub}[1] {\smallskip\noindent\textbf{#1}}
+\newcommand{\ourpar}[1] {\smallskip\noindent\emph{#1}}
+
+%\title{SNARKY Signatures with Universal and Updatable~Setup}
+
+\title{What Makes Fiat--Shamir zkSNARKs \\ (Updatable SRS) Simulation Extractable?}
+
+
+%\author{(Submission to EUROCRYPT 2022)}
+\institute{}
+\author{}
+
+%\author{Chaya Ganesh \and Hamidreza Khoshakhlagh \and Markulf Kohlweiss \and \\ Anca Nitulescu \and Michał Zając} 
+
+\author{Chaya Ganesh\inst{1} \and Hamidreza Khoshakhlagh\inst{2} \and Markulf Kohlweiss\inst{3} \and \\ Anca Nitulescu\inst{4} \and Michał Zając\inst{5}} 
+\institute{Indian Institute of Science
+  \email{chaya@iisc.ac.in}
+  \and
+  Aarhus University 
+  \email{hamidreza@cs.au.dk} \\
+  \and
+  University of Edinburgh and IOHK 
+  \email{mkohlwei@inf.ed.ac.uk}
+  \and
+  Protocol Labs  \email{anca@protocol.ai} \\
+  \and
+  Nethermind
+\email{m.p.zajac@gmail.com}}
+
+
+\allowdisplaybreaks
+
+\begin{document} \sloppy
+%\titlerunning{Non-Malleability of the FS transform Revisited [\ldots]}
+\maketitle
+
+
+\begin{abstract}
+  We show that three popular universal zero-knowledge SNARKs (Plonk, Sonic, and Marlin) are updatable SRS simulation extractable NIZKs and signatures of knowledge
+  (SoK) out-of-the-box avoiding any compilation overhead.
+
+  Towards this we generalize results for the Fiat--Shamir (FS) transformation, which turns interactive protocols into
+  signature schemes, non-interactive proof systems, or SoK in the random oracle model (ROM).  The security of the transformation relies on rewinding to
+  extract the secret key or the witness, even in the presence of signing queries for
+  signatures and simulation queries for proof systems and SoK, respectively.  We
+  build on this line of work and analyze multi-round FS for arguments with a structured reference string (SRS). The combination of ROM and SRS, while redundant in theory, is the model of choice for the most efficient practical systems to date. We also consider the case where the SRS
+  is updatable and define a strong simulation extractability notion that allows for
+  simulated proofs with respect to an SRS to which the adversary can contribute
+  updates.
+  
+  We define three properties (trapdoor-less zero-knowledge, rewinding-based knowledge soundness, and a unique response property) that are sufficient for argument systems based on multi-round FS to be also simulation extractable in this strong sense. We show that Plonk, Sonic, and Marlin satisfy these properties, and conjecture that many other argument systems such as Lunar, Basilisk, and transparent variants of Plonk fall within the reach of our main theorem.
+  
+  
+\end{abstract}
+
+%\ifupdate
+%
+%\input{todo}
+\input{introduction}
+\input{preliminaries}
+\input{definitions-and-lemmas-for-multi-round-SRS-based-protocols-new}
+\input{simulation-extractability-the-general-result}
+\input{concrete_preliminaries}
+\input{non-malleability-of-pfs}
+
+%\input{polynomial-commitment-schemes}
+%\input{non-malleability-of-plonk-omitted-protocol-description}
+%\input{non-malleability-of-sfs}
+%\input{non-malleability-of-mfs}
+%\input{simulation-soundness-definitions-and-the-general-result}
+
+\iffalse
+\section{Conclusion and Future Work}
+
+Since the SRS is being continually updated, one could argue that there might be
+simulated proofs with respect to \textit{different} SRSs available for the adversary
+to see before attempting to forge a proof with respect to a current SRS.  That is,
+each SRS in the update chain spawns a simulation oracle. Intuitively, the
+updatability of the SRS allows an adversarial prover to contribute to updating, and
+see proofs with respect to different updated SRSs before attempting to provide a
+proof for a false statement (potentially output a proof wrt a SRS that is different
+from the SRSs corresponding to all the simulated proofs seen).  This is a stronger
+definition of SE than the one we consider in this paper, and we leave exploring this
+to future work.
+\fi
+
+\bibliographystyle{abbrv}
+%\bibliographystyle{splncs_srt_helger}
+
+\bibliography{../cryptobib/abbrev3,additional_bib,../cryptobib/crypto}
+
+\clearpage
+%{\Huge{Supplementary Materials}}
+\appendix
+
+%\input{additional-preliminaries-lemmas-and-proofs}
+\input{polynomial-commitment-schemes}
+\input{unique_opening_property}
+%\input{non-malleability-of-plonk-omitted-protocol-description}
+\input{non-malleability-of-pfs-proofs}
+\input{non-malleability-of-sfs}
+\input{non-malleability-of-mfs}
+%\input{simulation-soundness-definitions-and-the-general-result}
+%\input{from-arguments-to-proofs}
+
+\iffalse
+Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
+and the latter \emph{verifier}. 
+
+We denote by $\zkproof$ a proof created by $\prover$ with input
+$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier (\srs, \inp,
+\zkproof)$ accepts it. We focus on proof systems where $\prover$ and
+$\verifier$ are given oracle access to a random oracle $\ro$. The simulator
+$\simulator$ is not only given access to $\ro$, but it can also \emph{program}
+it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
+
+A non-interactive  proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is
+required to have three properties: completeness, soundness and zero knowledge, which are
+defined as follows:
+
+\ourpar{Completeness.}
+
+  A non-interactive proof system $\proofsystem$ is
+  \emph{complete} if an honest prover always convinces an honest verifier, that
+  is for all $\REL \in \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
+	\[
+		\condprob{\verifier^\ro (\srs, \inp, \zkproof) = 1} {\srs \gets \kgen(\REL),
+      \zkproof \gets \prover^\ro (\srs, \inp, \wit)}\,.
+	\]
+
+\ourpar{Soundness.}
+    We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no
+  $\ppt$ prover $\adv$ can convince an honest verifier $\verifier$ to accept a
+  proof for a false statement $\inp \not\in\LANG$. More precisely, for
+  all $\REL \in \RELGEN(\secparam)$
+	\[
+    \condprob{ \verifier^\ro (\srs, \inp, \zkproof) = 1 \land \inp \not\in
+      \LANG_\REL}{\srs \gets \kgen(\REL), (\inp, \zkproof) \gets \adv^\ro(\srs)} \leq
+    \negl.
+	\]
+
+\fi
+ 
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

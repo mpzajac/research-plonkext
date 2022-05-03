@@ -1,0 +1,373 @@
+% !TEX root = main.tex
+% !TEX spellcheck = en-US
+
+\section{Non-malleability of Marlin}
+We show that $\marlin$ is \COMMENT{forking }simulation-extractable. To that end, we show
+that $\marlin$ has all the required properties: has unique response property, is
+rewinding-based knowledge sound, and its simulator can provide indistinguishable proofs
+without a trapdoor, just by programming the random oracle.
+
+\subsection{$\marlin$ Protocol Rolled-out}
+$\marlin$ uses R1CS as its arithmetization method. Given
+instance $\inp$, witness $\wit$ and $|\HHH| \times |\HHH|$ matrices $\vec{A},
+\vec{B}, \vec{C}$, the prover shows that $\vec{A} (\inp^\top, \wit^\top)^\top \circ \vec{B}
+(\inp^\top, \wit^\top)^\top = \vec{C} (\inp^\top, \wit^\top)^\top$, where
+$\circ$ denotes entry-wise product.
+
+We assume that the matrices have at most $|\KKK|$ non-zero entries. Obviously,
+$|\KKK| \leq |\HHH|^2$. Let $b = 3$, the upper-bound of polynomial evaluations
+the prover has to provide for each of the sent polynomials.  Denote by $\dconst$
+an upper-bound for $\smallset{|\HHH| + 2b -1, 2 |\HHH| + b - 1, 6 |\KKK| - 6}$.
+
+The idea of showing that the constraint system is fulfilled is as
+follows. Denote by $\vec{z} = (\inp, \wit)$. The prover computes polynomials
+$\p{z_A} (X), \p{z_B} (X), \p{z_C} (X)$ which encode vectors
+$\vec{A} \vec{z}, \vec{B} \vec{z}, \vec{C} \vec{z}$ and have degree $<
+|\HHH|$. Importantly, when constraints are fulfilled,
+$ \p{z_A} (X) \p{z_B} (X) - \p{z_C} (X) = \p{h_0} (X) \ZERO_\HHH (X)$, for some
+$\p{h_0} (X)$ and vanishing polynomial $\ZERO_\HHH (X)$. The prover sends
+commitments to these polynomials and shows that they have been computed
+correctly. More precisely, it shows that
+\begin{equation}
+  \label{eq:marlin_eq_2}
+\forall \vec{M} \in \smallset{\vec{A}, \vec{B}, \vec{C}},  \forall \kappa \in \HHH,
+\p{z_M} (\kappa) = \sum_{\iota \in \HHH} \vec{M}[\kappa, \iota] \p{z}(\iota).
+\end{equation}
+
+The ideal verifier checks the following equalities
+\begin{equation}
+  \label{eq:marlin_ver_eq}
+  \begin{aligned}
+    \p{h}_3 (\beta_3) \ZERO_\KKK (\beta_3) & = \p{a} (\beta_3) - \p{b} (\beta_3)
+    (\beta_3 \p{g_3} (\beta_3) + \sigma_3 / |\KKK|)\\
+    \p{r}(\alpha, \beta_2) \sigma_3 & = \p{h_2} (\beta_2) \ZERO_\HHH (\beta_2) +
+    \beta_2 \p{g2} (\beta_2) + \sigma_2/|\HHH|\\
+    \p{s}(\beta_1) + \p{r}(\alpha, \beta_1) (\sum_M \eta_M \p{z_M} (\beta_1)) -
+    \sigma_2 \p{z} (\beta_1) & = \p{h_1} (\beta_1) \ZERO_\HHH (\beta_1) +
+    \beta_1
+    \p{g_1} (\beta_1) + \sigma_1/|\HHH| \\
+    \p{z_A} (\beta_1) \p{z_B} (\beta_1) - \p{z_C} (\beta_1) & = \p{h_0}
+    (\beta_1) \ZERO_\HHH (\beta_1)
+  \end{aligned}
+\end{equation}
+where $\p{g_i} (X), \p{h_i} (X)$, $i \in \range{1}{3}$,
+$\p{a} (X), \p{b} (X), \sigma_1, \sigma_2, \sigma_3$ are polynomials and
+variables required by the sumcheck protocol which allows the verifier to efficiently
+verify that \cref{eq:marlin_eq_2} holds.
+                         
+
+\subsection{Unique Response Property}
+\begin{lemma}\label{lem:marlinprot_ur}
+  Let $\PCOM$ be a commitment of knowledge that is evaluation binding with security loss 
+  $\epsbind(\secpar)$ and has unique opening property with security loss
+  $\epsop(\secpar)$. Then
+  $\marlinprotfs$ is $\ur{2}$ against algebraic adversaries with security loss $2 \cdot \epsbinding (\secpar) + \epsop (\secpar)$.
+\end{lemma}
+
+\begin{proof}
+	The proof is similar to the proof of \cref{lem:plonkprot_ur} and \cref{lem:sonicprot_ur}.
+	An adversary who can break the $2$-unique response property of $\marlinprotfs$ can be either used to break the commitment scheme's evaluation binding or unique opening property. The former happens with the probability upper-bounded by $2 \cdot \epsbinding (\secpar)$, the latter with probability at most $\epsop (\secpar)$.
+	By the union bound, the adversary is able to break the unique response property with probability upper bounded by $2 \cdot \epsbinding (\secpar) + \epsop (\secpar)$.
+	\qed
+	\end{proof}
+%  \changedm{$11 \cdot (\epsop (\secpar)) + 6 \cdot \epsbind (\secpar) +
+%    \infrac{3}{\abs{\FF_p}}.$} \mxout{$6 \cdot (\epsbind + \epsop + \epsk) + \epss$}
+
+
+\COMMENT{\changedm{
+\begin{proof}
+  Let $\adv$ be an algebraic adversary tasked to break the $\ur{2}$-ness of
+  $\marlinprotfs$. We show that the first prover's message determines, along with
+  the verifiers challenges, the rest of it.  This is done by game hops. In the games,
+  the adversary outputs two proofs $\zkproof^0$ and $\zkproof^1$ for the same statement.
+  To distinguish polynomials and commitments which an honest prover sends in the
+  proof from the polynomials and commitments computed by the adversary we write the
+  latter using indices $0$ and $1$ (two indices as we have two transcripts), e.g.~to
+  describe a polynomial provided by the adversary we write $\p{f}^0$ and
+  $\p{f}^1$ instead of $\p{f}$ as in the description of the protocol.
+
+  \ngame{0} In this game, the adversary additionally wins if it provides two transcripts that
+  match on all $5$ messages sent by the prover.
+  Obviously, in this game the adversary cannot win.
+
+  \ngame{1} This game is identical to Game $\game{0}$ except that now the
+  adversary additionally wins if it provides two transcripts that matches on the first four
+  messages of the proof.
+
+  \ncase{Game 0 to Game 1} We show that the probability that $\adv$ wins in one game but
+  does not in the other is negligible.  Observe that in its $4$-th message, the
+  adversary is given a challenge $\beta_3$ and has to open the previously computed
+  commitments for polynomials $\p{g_3} (X), \p{h_3} (X)$. Since the transcripts match up
+  to $\adv$'s $4$-th message, the challenge is the same in both.  Also, the adversary
+  evaluates and opens evaluations of polynomials $\p{g_2} (X), \p{h_2} (X)$ evaluated at
+  $\beta_2$ and
+  $\p{s} (X), \p{z} (X), \p{z_A} (X), \p{z_B} (X), \p{z_C} (X), \p{h_1} (X), \p{g_1} (X)$
+  evaluated at $\beta_1$. Hence, to be able to give two different openings in its $5$-th
+  message, $\adv$ has to break the unique opening property of the KZG commitment scheme
+  which happens with probability $11 \cdot \epsop (\secpar)$ tops (as $11$ polynomials are
+  evaluated).
+  
+  \ngame{2} This game is identical to Game $\game{1}$ except that now the
+  adversary additionally wins if it provides two transcripts that matches on the
+  first three messages of the proof.
+
+  \ncase{Game 1 to Game 2} In its $4$-th message the adversary
+  provides $\sigma_3$ and commits to polynomials $\p{g_3} (X), \p{h_3} (X)$ which are
+  uniquely determined. Probability that the adversary commits to wrong polynomials that it
+  can later evaluate to correct values (i.e.~to values of evaluated correct polynomials)
+  is upper bounded by $2 \cdot \epsbind (\secpar) + 1 / \abs{\FF_p}$. This is since the
+  adversary either has to break binding property in at least one of two commitments or
+  guess the evaluation point.
+
+  \ngame{3} This game is identical to Game $\game{2}$ except that now the
+  adversary additionally wins if it provides two transcripts that matches on the
+  first two messages of the proof.
+
+  \ncase{Game 2 to Game 3} In its $3$-rd message the adversary
+  provides $\sigma_2$ and commits to polynomials $\p{g_2} (X), \p{h_2} (X)$ which are
+  uniquely determined. Probability that the adversary commits to wrong polynomials that it
+  can later evaluate to correct values (i.e.~to values of evaluated correct polynomials)
+  is upper bounded by $2 \cdot \epsbind (\secpar) + 1 / \abs{\FF_p}$ as explained in the
+  previous point.
+
+  \ngame{4}  This game is identical to Game $\game{3}$ except that now the
+  adversary additionally wins if it provides two transcripts that matches on the
+  first message of the proof.
+
+  \ncase{Game 3 to Game 4} In its $2$-nd message the adversary
+  provides $\sigma_1$ and commits to polynomials $\p{g_1} (X), \p{h_1} (X)$ which are
+  uniquely determined. Probability that the adversary commits to wrong polynomials that it
+  can later evaluate to correct values (i.e.~to values of evaluated correct polynomials)
+  is upper bounded by $2 \cdot \epsbind (\secpar) + 1 / \abs{\FF_p}$ as explained before.
+  
+  \ncase{Conclusion} Taking all the games together, probability that $\adv$ wins
+  in Game 4 is upper-bounded by
+  \[
+    11 \cdot (\epsop (\secpar)) + 6 \cdot \epsbind (\secpar) + \frac{3}{\abs{\FF_p}}.
+  \]
+  \qed
+\end{proof}
+}}
+
+\COMMENT{
+  \michals{2.11}{Old proof}
+\begin{proof}
+  As in previous proofs, we show the property by game hops. Let
+  $N = \p{g_1}, \p{h_1}, \p{g_2}, \p{h_2}, \p{g_3}, \p{h_3}$. That is, $N$ is a
+  set of all polynomials which commitments prover sends after it sends its first message.
+
+  \ncase{Game 0} In this game the adversary wins if it breaks evaluation
+  binding, unique opening property, or knowledge soundness of one of commitments
+  for polynomials in $N$.
+
+  Probability that a $\ppt$ adversary wins in Game 0, is upper bounded by $6
+  \cdot (\epsbind + \epsop + \epsk)$.
+
+  \ncase{Game 1} In this game the adversary additionally wins if it breaks the
+  $\ur{1}$ property of the protocol
+
+  \ncase{Game 0 to Game 1} Probability that the adversary wins in Game 1 but not in Game 0
+  is $\epss$. This is since in the honest proof the polynomials in $N$ are uniquely
+  determined. W.l.o.g.~we analyse probability that adversary is able to produce two
+  (different) pairs of polynomials $(\p{h_2}, \p{g_2})$ and $(\p{h'_2}, \p{g'_2})$ such
+  that
+  \begin{align*}
+    \p{h_2} (X) \ZERO_{\HHH} (X) + X \p{g_2} (X) & = \p{h_2} (X) \ZERO_{\HHH} (X) +
+                                                   X \p{g_2} (X)\\
+    (\p{h_2} (X) - \p{h'_2} (X)) \ZERO_{\HHH} (X) & = X (\p{g'_2} (X) - \p{g'_2}
+    (X)).
+  \end{align*}
+  Since $\p{h_2}, \p{g_2} \in \FF^{< |\HHH| - 1} [X]$ and
+  $\ZERO \in \FF^{|\HHH|} [X]$, LHS has different degree than RHS unless both
+  sides have degree $0$. This happens when $\p{h_2} (X) = \p{h'_2} (X)$ and
+  $\p{g_2} (X) - \p{g'_2} (X)$.
+  Thus, for the adversary to be successful in this game it has to provide acceptable
+  proofs where $(\p{h_2}, \p{g_2})$ and $(\p{h'_2}, \p{g'_2})$ differ. One of such pair
+  has to be incorrect and will be accepted with probability at most $\epss$.
+\end{proof}}
+
+\subsection{Rewinding-Based Knowledge Soundness}
+\begin{lemma}
+	\label{lem:marlinprot_ss}
+	$\marlinprotfs$ is $(2, 2 \noofc + 3)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
+	\[
+	\epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left( \frac{2 \noofc + 2}{p}\right)}{1 - \frac{2 \noofc + 2}{p}}\right) + (2 \noofc + 3)\cdot\epsudlog (\secpar)\,,
+	\]
+	Here $\accProb$ is a probability that the adversary outputs an acceptable proof,  and $\epsudlog(\secpar)$ is the security of $(2 \noofc + 2, 1)$-$\udlog$ assumption.
+\end{lemma}
+\begin{proof}
+The proof is similar to the proof of \cref{lem:plonkprot_ss} and \cref{lem:sonicprot_ss}. 
+We use Attema et al.~\cite[Proposition 2]{EPRINT:AttFehKlo21} to bound the probability that the tree-building algorithm $\tdv$ does not obtain a tree of acceptable transcript in an expected number of runs. This happens with probability at most
+\[
+1 - \frac{\accProb - (q + 1) \left(\frac{2 \noofc + 2}{p} \right)}{1 - \frac{2 \noofc + 2}{p}}
+\]
+Let $\tree$ be the tree output by $\tdv$. If one of the proofs in $\tree$ is not accepting by the ideal verifier, one can break an instance of an updatable dlog assumption which happens with probability at most $(2 \noofc + 3)  \cdot \epsudlog (\secpar)$. In the case that all the transcripts are accepting by the ideal verifier, but $\extss$ fails to extract a valid witness from $\tree$, one can break the soundness of the ideal verifier in one of the transcripts. Taking a union bound completes the proof.
+\qed
+\end{proof}
+
+
+\COMMENT{\begin{lemma}\label{lem:marlinprot_ss}
+	Assume that an idealised $\marlinprot$ verifier fails with probability at most
+	$\epsid(\secpar)$ and probability that a $\ppt$ adversary breaks $\udlog$ is
+	bounded by $\epsudlog(\secpar)$. Then $\marlinprotfs$ is
+	$(2, d + 1)$-rewinding-based knowledge
+	sound with security loss $\epsid (\secpar) + \epsudlog (\secpar)$.
+\end{lemma}
+\begin{proof}
+	% \michals{8.9}{Need to check the degrees}
+	The proof goes similarly to the respective proofs for $\plonk$ and
+	$\sonic$. That is, let $\srs$ be $\marlinprot$'s finalized SRS and denote by $\srs_1$
+	all SRS's $\GRP_1$-elements. Let $\tdv$ be an algebraic adversary that
+	produces a statement $\inp$ and a $(1, \dconst + 1, 1, 1)$-tree of
+	accepting transcripts $\tree$. Note that in all transcripts the instance
+	$\inp$, proof elements
+	$\sigma_1, \gone{\p{w}(\chi), \p{z_A}(\chi), \p{z_B}(\chi), \p{z_C}(\chi),
+		\p{h_0}(\chi), \p{s}(\chi)}, \gone{\p{g_1}(\chi), \p{h_1}(\chi)}$
+	and challenges $\alpha, \eta_1, \eta_2, \eta_3$ are common as the transcripts
+	share the first $3$ messages. The tree branches after the third message of the
+	protocol where the challenge $\beta_1$ is presented, thus tree $\tree$ is
+	build using different values of $\beta_1$.
+	
+	We consider the following games.
+	
+	\ncase{Game 0} In this game the adversary wins if all the transcripts it
+	produced are acceptable by the ideal verifier,
+	i.e.~$\vereq_{\inp, \zkproof}(X) = 0$, cf.~\cref{eq:marlin_ver_eq}, yet the extractor
+	fails to extract a valid witness out of them.
+	
+	Probability of $\tdv$ winning this game is $\epsid(\secpar)$ as the protocol
+	$\marlinprot$, instantiated with the idealised verification equation, is
+	perfectly sound except with negligible probability of the idealised verifier
+	failure $\epsid(\secpar)$. Hence for a valid proof $\zkproof$ for a statement
+	$\inp$ there exists a witness $\wit$, such that $\REL(\inp, \wit)$ holds. Note
+	that since the $\tdv$ produces $(\dconst + 1)$ accepting transcripts for
+	different challenges $\beta_1$, it obtains the same number of different
+	evaluations of polynomials $\p{z_A}, \p{z_B}, \p{z_C}$.
+	
+	Since the transcripts are acceptable by an idealised verifier, the equality
+	$\p{z_A} (X) \p{z_B} (X) - \p{z_C} (X) = \p{h_0} (X) \ZERO_\HHH (X)$ holds and
+	each of $\p{z}_M$, $M \in \smallset{A, B, C}$, has been computed
+	correctly. Hence, $\p{z_A}, \p{z_B}, \p{z_C}$ encodes the valid witness for
+	the proven statement. Since $\p{z_A}, \p{z_B}, \p{z_C}$ are of degree at most
+	$\dconst$ and there is more than $(\dconst + 1)$ their evaluations
+	known, $\extt$ can recreate their coefficients by interpolation and reveal the
+	witness with probability $1$. Hence, the probability that extraction fails in
+	that case is upper-bounded by probability of an idealised verifier failing
+	$\epsid(\secpar)$, which is negligible.
+	
+	\ncase{Game 1} In this game the adversary additionally wins if it produces a
+	transcript in $\tree$ such that $\vereq_{\inp, \zkproof}(\chi) = 0$, but
+	$\vereq_{\inp, \zkproof}(X) \neq 0$. That is, the ideal verifier does not
+	accept the proof, but the real verifier does.
+	
+	\ncase{Game 0 to Game 1} Assume the adversary wins in Game 1, but
+	does not win in Game 0. We show that such adversary may be used to break the
+	$\udlog$ assumption. More precisely, let $\tdv$ be an adversary that for
+	relation $\REL$ and randomly picked $\srs \sample \kgen(\REL)$ produces a tree
+	of accepting transcripts such that the winning condition of the game
+	holds. Let $\rdvdulog$ be a reduction that gets as input an
+	$(\dconst, 1)$-$\udlog$ instance $\gone{1, \ldots, \chi^\dconst}, \gtwo{1, \chi}$ and
+	is tasked to output $\chi$. The reduction proceeds as follows---it builds $\adv$'s SRS $\srs$ in the updatable setting using the input $\udlog$ instance. Namely it answers $\adv$'s queries for SRS updates and sets the honest update of the SRS to be $\srs$. Let $\srs'$ be the finalized SRS and $(1, \tree)$ be the output
+	returned by $\adv$. Let $\inp$ be a relation proven in $\tree$.  Consider a
+	transcript $\zkproof \in \tree$ such that $\vereq_{\inp, \zkproof}(X) \neq 0$,
+	but $\vereq_{\inp, \zkproof}(\chi) = 0$. Since the adversary is algebraic, all
+	group elements included in $\tree$ are extended by their representation as a
+	combination of the input $\GRP_1$-elements. Hence all coefficients of the
+	verification equation polynomial $\vereq_{\inp, \zkproof}(X)$ are known and
+	$\rdvudlog$ can find its zero points. Since
+	$\vereq_{\inp, \zkproof}(\chi) = 0$, the targeted discrete log value $\chi'$ is
+	among them.  Let $\chi_1, \ldots, \chi_\ell$ be the partial trapdoors of $\adv$'s SRS updates,  extracted by the reduction from the update proofs given by $\adv$. Now $\rdvudlog$ returns $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$ and breaks the $\udlog$ assumption. Hence, the probability that this event happens is upper-bounded
+	by $\epsudlog(\secpar)$.
+	
+\end{proof}}
+
+\subsection{Trapdoor-Less Zero-Knowledge of Marlin}
+\begin{lemma}
+  \label{lem:marlin_hvzk}
+  $\marlinprotfs$ is 2-programmable trapdoor-less zero-knowledge.
+\end{lemma}
+\begin{proof}
+The simulator follows the protocol except that it picks the challenges $\alpha,
+\eta_A, \eta_B, \eta_C, \beta_1, \beta_2, \beta_3$ before it picks the polynomials
+it sends.
+
+First, it picks $\p{\tilde{z}}_A (X)$, $\p{\tilde{z}}_B (X)$ at random and
+$\p{\tilde{z}}_C (X)$ such that
+$\p{\tilde{z}}_A (\beta_1) \p{\tilde{z}}_B (\beta_1) = \p{\tilde{z}}_C
+(\beta_1)$.  Given the challenges and polynomials $\p{\tilde{z}}_A (X)$,
+$\p{\tilde{z}}_B (X)$, $\p{\tilde{z}}_C (X)$ the simulator computes
+$\sigma_1 \gets \sum_{\kappa \in \HHH} \p{s}(\kappa) + \p{r}(\alpha, X) (\sum_{M
+  \in \smallset{A, B, C}}\eta_M \p{\tilde{z}}_M(X)) - \sum_{M \in \smallset{A,
+    B, C}} \eta_M \p{r}_M (\alpha, X) \p{\tilde{z}} (X)$.
+
+Then the simulator starts the protocol and follows it, except it programs the
+random oracle such that on partial transcripts, it returns the challenges already picked by
+$\simulator$.
+\end{proof}
+
+%\subsection{From Rewinding-Based Knowledge Soundness and Unique Response Property to\COMMENT{ forking}
+%  Simulation Extractability of $\marlinprotfs$}
+%\begin{corollary}
+%  Assume that $\marlinprotfs$ is $\ur{2}$ with security
+%  $\epsur(\secpar) = 6 \cdot (\epsbind + \epsop + \epsk)$, and rewinding-based knowledge sound
+%  with security $\epss(\secpar)$. Let $\ro\colon \bin^* \to \bin^\secpar$ be a
+%  random oracle. Let $\advse$ be an adversary that can make up to $q$
+%  random oracle queries, and outputs an
+%  acceptable proof for $\marlinprotfs$ with probability at least
+%  $\accProb$. Then $\marlinprotfs$ is \COMMENT{forking }simulation-extractable with
+%  extraction error $\eta = \epsur(\secpar)$. The extraction probability
+%  $\extProb$ is at least
+%  \[
+%    \extProb \geq q^{-\dconst} (\accProb - 6 \cdot (\epsbind + \epsop +
+%    \epsk))^{\dconst + 1} -\eps(\secpar)\,.
+%\]
+%	for some negligible $\eps(\secpar)$, $\dconst$ being, the upper bound of
+%  constraints of the system.
+%\end{corollary}
+
+\subsection{Simulation Extractability of $\marlinprotfs$}
+Since \cref{lem:marlinprot_ur,lem:marlinprot_ss,lem:marlin_hvzk} hold, $\marlinprotfs$ is $\ur{2}$, rewinding-based knowledge sound and trapdoor-less zero-knowledge. By making use
+of \cref{thm:se}, we conclude that $\marlinprotfs$ is simulation-extractable as defined in \cref{def:simext}.
+
+\begin{corollary}[Simulation extractability of $\marlinprotfs$]
+	\label{thm:marlinprotfs_se}
+	$\marlinprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an acceptable proof with probability at least $\accProb$ with extraction failure probability 
+	\[
+	\epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (2 \noofc + 3) \cdot \epsudlog (\secpar),
+	\]
+	where $\epserr (\secpar) = \frac{2 \noofc + 2}{p}$, $p$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
+\end{corollary}
+
+
+%\section{Further work}
+%We identify a number of problems which we left as further work. First of all,
+%the generalised version of the forking lemma presented in this paper can be
+%generalised even further to include protocols where forking soundness holds for
+%protocols where $\extt$ extracts a witness from a $(n_1, \ldots, n_\mu)$-tree of
+%acceptable transcripts, where more than one $n_j > 1$. I.e.~to include
+%protocols that for witness extraction require transcripts that branch at more
+%than one point.
+%
+%Although we picked $\plonk$ and $\sonic$ as examples for our framework, it is
+%not limited to SRS-based NIZKs. Thus, it would be interesting to apply it to
+%known so-called transparent zkSNARKs like Bulletproofs \cite{SP:BBBPWM18},
+%Aurora \cite{EC:BCRSVW19} or AuroraLight \cite{EPRINT:Gabizon19a}.
+%
+%Since the rewinding technique and the forking lemma used to show simulation
+%extractability of $\plonkprotfs$ and $\sonicprotfs$ come with security loss,
+%it would be interesting to show SE of these protocols directly in the
+%algebraic group model.
+%
+%Although we focused here only on zkSNARKs, it is worth to
+%investigating other protocols that may benefit from our framework, like
+%e.g.~identification schemes.
+%
+%Last, but not least, this paper would benefit greatly if a more tight version
+%of the generalised forking lemma was provided. However, we have to note here
+%that some of the inequalities used in the proof are already tight, i.e.~for
+%specific adversaries, some of the inequalities are already equalities.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
