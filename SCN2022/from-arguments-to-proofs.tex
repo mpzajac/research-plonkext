@@ -1,0 +1,122 @@
+% !TEX root = main.tex
+% !TEX spellcheck = en-US
+
+\section{Making Attema et al work in our setting}
+\newcommand{\epsa}{\eps_{\mathsf{attema}}}
+
+\subsection{Extractability of polynomial commitments}
+\michals{27.01}{In this section we want to show how one could extract polynomials from a
+  PCOM}
+
+\begin{lemma}
+  Let $\PCOM$ be a polynomial commitment scheme and $\proofsystem$ a $(2 \mu + 1)$-message
+  proof system where the adversary $\adv$ sends polynomial commitments using $\PCOM$ for
+  polynomials that are evaluated in the run of the protocol. Denote by $\accProb$
+  probability that the adversary outputs an acceptable proof. Then there exists an
+  extractor $\ext$ that for each commitment $c$ provided by $\adv$ outputs polynomial $f$
+  such that $c = \com (f)$ with probability at least \hl{...}
+\end{lemma}
+
+\begin{proof}
+  Denote by $k$ the number of polynomials that are committed during a run of
+  $\proofsystem$ and denote by $d$ the maximum degree of the polynomials. We assume that
+  each polynomial is evaluated at least at one point during the protocol.
+
+  The extractor proceeds as follows. It gets as input the polynomial commitment SRS
+  $\srs_{pcom}$ and build a proof system SRS $\srs$; then it runs internally $\adv (\srs)$
+  and plays the role of the verifier. Each time the adversary outputs a commitment $c$, it
+  continues the protocol, randomly picks the evaluation points $x$, adds $x$ to initially
+  empty list $X$, and learns evaluation of $c$ and the corresponding opening. Then it
+  rewinds the adversary to the point just before $x$ was presented to the adversary and
+  picks a new challenge $x' \not \in X$.
+
+  This procedure is repeated till the adversary learns $d + 1$ evaluations of $c$, what
+  allows it to re-create the underlying polynomial $f$. Expected number of runs the
+  adversary makes is \michals{27.01}{Here we need to do once more the analysis of attema
+    et al?!}
+\end{proof}
+
+\subsection{From arguments to proofs}
+\michals{25.01}{Here I describe how to make Attema et al result ``for proofs'' usable in
+  our ``arguments''}
+%
+\michals{26.1}{Should we give adversary access to the simulator oracle? Probably not, as
+  that would force us to write the whole SE proof here. Let's focus on a simpler case and
+  introduce the simulator later on
+}
+%
+\michals{26.1}{Should we show this result for every proof system separately?}
+%
+Let $\proofsystem'$ be a statistically sound idealised proof system and $\proofsystem$ a
+computationally sound proof system (i.e.~an argument) obtained from $\proofsystem'$. We
+show how to build a knowledge extractor for $\proofsystem$ using extractor for $\proofsystem'$.
+
+\begin{lemma}
+  Let $\proofsystem'$ be a knowledge sound proof system with knowledge error
+  $\epsid$. Let $\proofsystem$ be a computationally sound proof system \changedm{compiled
+    from $\proofsystem'$ with security loss $\eps$}. Let $\adv'$ be a $\proofsystem'$
+  adversary that outputs an acceptable proof with probability $\accProb'$, then \hl{...}  
+\end{lemma}
+
+
+\ncase{Game 1} %
+The $\proofsystem$ adversary $\adv$ is a PPT machine that gets as input an SRS $\srs$ --
+that encodes relation $\REL$ --, oracle access to a random oracle $\ro$, and outputs an
+instance--proof pair $(\inp, \zkproof)$. We denote by $\accProb$ probability that
+$\verifier (\srs, \inp, \zkproof)$ accepts the proof. We build an extractor $\ext$ that
+rewinds $\adv$ expected number of $N$ times each time providing it with a modified set of
+random oracle responses $Q_i$ and builds a tree $\tree$ of acceptable transcripts.
+Eventually the extractor outputs $\wit$ such that $\REL(\inp, \wit) = 1$ with
+\changedm{non-negligible} probability.  Adversary $\adv$ wins whenever $\ext$ fails to
+output the witness.
+
+\ncase{Game $2.i$} %
+This game is identical to Game 1, except now the environment aborts if the $i$-th proof
+submitted by the adversary $\adv$ in not acceptable by the idealized verifier
+$\verifier'$.
+
+\michals{26.1}{Add more explanation of what the above means.}
+
+\ncase{Game $1$ to Game $2.i$} %
+\michals{26.1}{Here we are using the reduction known from, e.g.~plonk -- if the adversary
+manages to provide a proof acceptable by $\verifier$, but not $\verifier'$ then we can
+break the dlog assumption. This happens with probability at most $\epsdlog$.
+}
+
+\ncase{Game $3.i$}
+\michals{26.1} {(this game was previously a part of Game 2, maybe that was a good idea.)}
+  We now introduce $\proofsystem'$ adversary $\adv'$ that internally runs $\adv$ (provides
+  it with the SRS, passes $\verifier'$ challenges as $\verifier$ challenges) and whenever
+  $\adv$ outputs a polynomial commitment it extracts the underlying polynomial and sends
+  it to $\prover'$.
+
+\ncase{Game $2.i$ to Game $3.i$} %
+The environment aborts Game $3.i$ when $\adv'$ fails to extract a polynomial from
+a commitment submitted by $\adv$. This happens with probability at most $k \cdot \epsk$,
+where $k$ is the number of polynomial commitments output by $\adv$ and $\epsk$ is a
+knowledge error of polynomial commitment knowledge extractor.
+
+Probability $\accProb'$ that $\adv'$ makes an acceptable proof is thus at least
+$\accProb - \epsdlog - k \cdot \epsk$.
+
+\ncase{Game $4$} %
+\michals{26.1} { Here we run the Attema et al extractor on $\proofsystem'$ adversary
+  $\adv'$. Probability that this extractor fails is upper-bounded by
+  $\epsa (\secpar, \accProb')$.
+
+  Note that $\epsa$ already includes the probability that $\adv'$ breaks knowledge soundness
+  of $\proofsystem'$, in our paper denoted by $\epsid$.  }
+
+\ncase{Conclusion}
+\michals{26.1}{Probability that $\adv$ outputs a valid proof that is acceptable by
+  $\verifier$ but $\ext_\adv$ fails is upper-bounded by
+  \[
+    \epsa + N \cdot (\epsdlog + k \cdot \epsk).
+  \]
+  }
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

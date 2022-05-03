@@ -1,0 +1,272 @@
+% !TEX root = main.tex
+% !TEX spellcheck = en-US
+\section{Introduction}
+Zero-knowledge proof systems, which allow a prover to convince a verifier of an NP statement $\REL(\inp,\wit)$ without revealing anything else about the witness $\wit$ have broad application in cryptography and theory of computation~\cite{FOCS:GolMicWig86,STOC:Fortnow87,C:BGGHKMR88}.
+When restricted to computationally sound proof systems, also called \emph{argument systems}\footnote{We use both terms interchangeably.}, proof size can be shorter than the size of the witness~\cite{brassard1988minimum}. 
+Zero-knowledge Succinct Non-interactive ARguments of Knowledge (zkSNARKs) are zero-knowledge argument systems that additionally have two succinctness properties: small proof sizes and fast verification. 
+Since their introduction in~\cite{FOCS:Micali94}, zk-SNARKs have been a versatile design tool for secure cryptographic protocols. They became particularly relevant for blockchain applications that demand short proofs and fast verification for on-chain storage and processing. Starting with their deployment by Zcash~\cite{SP:BCGGMT14}, they have seen broad adoption, e.g., for privacy-preserving cryptocurrencies and scalable and private smart contracts in Ethereum.%\footnote{\url{https://z.cash/} and \url{https://ethereum.org} respectively}.
+
+%The work of~\cite{EC:GGPR13} proposed a preprocessing zk-SNARK for general NP statements phrased in the language of Quadratic Span Programs (QSP) and Quadratic Arithmetic Programs (QAP) for Boolean and arithmetic circuits respectively. This built on previous works of~\cite{IKO07,AC:Groth10a,TCC:Lipmaa12} and led to several works~\cite{TCC:BCIOP13,SP:PHGR13,C:BCGTV13,AC:Lipmaa13,USENIX:BCTV14,EC:Groth16} with very short proof sizes and fast verification.
+
+While research on zkSNARKs has seen rapid
+progress~\cite{EC:GGPR13,AC:Groth10a,TCC:Lipmaa12,TCC:BCIOP13,SP:PHGR13,C:BCGTV13,AC:Lipmaa13,USENIX:BCTV14,EC:Groth16}
+with many works proposing significant improvements in proof size, verifier and prover efficiency, and complexity of the public setup,
+less attention has been paid to non-malleable zkSNARKs and succinct signatures of
+knowledge~\cite{C:CamSta97,C:ChaLys06} (sometimes abbreviated SoK or referred to as SNARKY signatures~\cite{C:GroMal17,EPRINT:BKSV20}). 
+
+
+\paragraph{Relevance of simulation extractability.}
+
+Most zkSNARKs are shown only to satisfy a standard knowledge soundness
+property. Intuitively, this guarantees that a prover that creates a valid proof in isolation knows
+a valid witness. However, deployments of zkSNARKs in real-world applications, unless
+they are carefully designed to have application-specific malleability protection,
+e.g.~\cite{SP:BCGGMT14}, require a stronger property --
+\emph{simulation-extractability} (SE) -- that corresponds much more
+closely to existential unforgeability of signatures.
+
+This correspondence is made precise by SoK, which use an
+NP-language instance as the public verification key. Instead of signing with the secret key, SoK signing requires knowledge of the
+NP-witness. Intuitively, an SoK is thus a proof of knowledge (PoK) of a witness that is tied to a message. In fact, many signatures schemes, e.g., Schnorr, can be read as SoK for a specific hard relation, e.g., DL~\cite{AC:DHLW10}. To model strong existential unforgeability of SoK signatures, even
+when given an oracle for obtaining signatures on different instances, an attacker
+must not be able to produce new signatures. Chase and Lysyanskaya~\cite{C:ChaLys06} model this via the
+notion of simulation extractability which guarantees extraction of a witness
+even in the presence of simulated signatures.
+
+In practice, an adversary against a zkSNARK system also has access to proofs computed by honest parties that should be modeled as simulated proofs. The definition of knowledge soundness (KS) ignores the ability of an adversary
+to see other valid proofs that may occur in real-world applications. For instance,
+in applications of zkSNARKs in privacy-preserving blockchains, proofs are posted on-chain for all blockchain participants to see. We thus argue that SE is a much more suitable notion for robust protocol design. We also claim that SE has primarily an intellectual cost, as it is harder to prove SE than KS---another analogy here is IND-CCA vs IND-CPA security for encryption. However, we will show that the proof systems we consider are SE out-of-the-box.
+
+
+\markulfdone{01.05}{Old:
+
+
+\paragraph{Signatures of knowledge}
+A
+signature of knowledge~\cite{C:CamSta97,C:ChaLys06} uses an instance of an
+NP-language as the public verification key. Instead of signing using a secret key,
+which typically would be related to the public key via a discrete logarithm or some
+other hard relation~\cite{AC:DHLW10}, SoK signing requires knowledge of the
+NP-witness. Chase and Lysyanskaya~\cite{C:ChaLys06} require signatures of knowledge
+to be simulatable to assure protection against signing key/witness extraction. Signatures can be simulated without a witness, given
+a trapdoor associated with the public setup. Furthermore, to model strong existential unforgeability of signatures, even
+when given an oracle for obtaining signatures on different instances, an attacker
+must not be able to produce new signatures. Chase and Lysyanskaya model this via the
+notion of simulation extractability (SE) which guarantees extraction of a witness
+even in the presence of simulated signatures. Moreover, Groth and Maller
+\cite{C:GroMal17} showed how to construct SoK from zkSNARK schemes that are
+simulation-extractable. Therefore, our focus can be moved from SoK to the main
+building block, zkSNARK schemes, for which we have many new efficient constructions
+in recent literature.
+ 
+
+\paragraph{Relevance of simulation extractability.}
+
+Most zkSNARKs are shown only to satisfy a standard knowledge soundness
+property. Intuitively, this guarantees that a prover that creates valid proof knows
+a valid witness. However, deployments of zkSNARKs in real-world applications, unless
+they are carefully designed to have application-specific malleability protection,
+e.g.~\cite{SP:BCGGMT14}, require a stronger property --
+\textit{simulation-extractability} -- that, as discussed above, corresponds more
+closely to existential unforgeability of signatures. In practice, an adversary
+against the zkSNARK has access to proofs provided by other parties using the same
+zkSNARK. The definition of knowledge soundness ignores the ability of an adversary
+to see other valid proofs that may occur in real-world applications. For instance,
+in applications of zkSNARKs in privacy-preserving blockchains, proofs are posted on
+the chain for all blockchain-participants to see.
+}
+% Therefore, it is necessary for a zero-knowledge proof system to be
+% \emph{non-malleable}, that is, resilient against adversaries that additionally get
+% to see proofs generated by different parties before trying to forge. Therefore, it
+% is necessary for a zero-knowledge proof system to be \emph{simulation-extractable},
+% that is, resilient against adversaries that additionally get to see proofs
+% generated by different parties before trying to forge. This captures the more
+% general scenario where an adversary against the zkSNARK has access to proofs
+% provided by other parties as it is in applications of zkSNARKs in
+% privacy-preserving blockchains, where proofs are posted on the chain for all
+% participants in the network to verify.
+
+\paragraph{Fiat--Shamir-based zkSNARKs.}
+Most modern zkSNARK constructions follow a modular blueprint that involves the design of an information-theoretic interactive protocol, e.g. an Interactive Oracle Proof (IOP)~\cite{TCC:BenChiSpo16}, that is then compiled via cryptographic tools to obtain an interactive argument system. This is then turned into a zkSNARK using the Fiat-Shamir transform. By additionally hashing the message, the Fiat-Shamir transform is also a popular technique for constructing signatures. While well-understood for 3-message sigma protocols and justifiable in the ROM~\cite{CCS:BelRog93}, Fiat--Shamir should be used with
+care because there are both counterexamples in theory~\cite{FOCS:GolKal03} and real-world attacks in practice when implemented incorrectly~\cite{Blog:FrozenHeart20}.
+
+%The Fiat--Shamir (FS) transform takes a public-coin interactive protocol and makes it interactive by hashing the current protocol transcript to compute the verifier's public coins.
+%
+%The FS transform is a popular design tool for constructing
+%zkSNARKs. In the updatable universal SRS setting, works like \sonic{}~\cite{CCS:MBKM19}
+%\plonk{}~\cite{EPRINT:GabWilCio19}, and \marlin~\cite{EC:CHMMVW20} are designed
+%and proven secure as multi-round interactive protocols. Security is then only
+%\emph{conjectured} for their non-interactive variants by employing the FS
+%transform.
+
+In particular, several schemes such as
+Sonic~\cite{CCS:MBKM19}, Plonk~\cite{EPRINT:GabWilCio19}, Marlin~\cite{EC:CHMMVW20} 
+follow this approach where the information-theoretic object is a multi-message algebraic variant of IOP, and the cryptographic primitive in the compiler is a polynomial commitment scheme (PC) that requires a trusted setup. To date, this blueprint lacks an analysis in the ROM in terms of simulation extractability.
+
+
+\paragraph{Updatable SRS zkSNARKs.}
+One of the downsides of many efficient zkSNARKs~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16} is that they rely on a \textit{trusted setup}, where there is a structured reference string (SRS) that is assumed to be generated by a trusted party. In practice, however, this assumption is not well-founded; if the party that generates the SRS is not honest, they can produce proofs for false statements. If the trusted setup assumption does not hold, knowledge soundness breaks down.
+Groth et al.~\cite{C:GKMMM18} propose a setting to tackle this challenge which allows parties -- provers and verifiers -- to \emph{update} the SRS.\footnote{This can be seen as an efficient player-replaceable~\cite{EPRINT:GHMVZ17} multi-party computation.} The update protocol takes an existing SRS and contributes to its randomness in a verifiable way to obtain a new SRS. The guarantee in this \textit{updatable setting} is that knowledge soundness holds as long as one of the parties updating the SRS is honest. The SRS is also \emph{universal}, in that it does not depend on the relation to be proved but only on an upper bound on the size of the statement's circuit.
+Although inefficient, as the SRS size is quadratic in the size of the circuit,~\cite{C:GKMMM18} set a new
+paradigm for designing zkSNARKs.
+
+The first universal zkSNARK with updatable and linear size SRS was
+Sonic proposed by Maller et al.~in \cite{CCS:MBKM19}. Subsequently, Gabizon, Williamson, and Ciobotaru designed Plonk~\cite{EPRINT:GabWilCio19} which currently is the
+most efficient updatable universal zkSNARK. Independently, Chiesa et
+al.~\cite{EC:CHMMVW20} proposed Marlin with comparable efficiency to
+Plonk. %\chaya{02.05}{we spelled out all author names for Plonk, but not for Sonic and Marlin?}\markulf{1.5}{I did it because it was only three and plonk is our result in the body.}
+
+\paragraph{The challenge of SE in the updatable setting.}
+
+The notion of simulation-extractability for zkSNARKs which is well motivated in practice, has not been studied in the updatable setting.
+Consider the following scenario: We assume a ``rushing'' adversary that starts off with a sequence of updates by malicious parties resulting in a subverted reference string $\srs$. By combining their trapdoor contributions and employing the simulation algorithm, these parties can easily compute a proof to obtain a triple $(\srs,\inp,\pi)$  that convinces the verifier of a statement $\inp$ without knowing a witness. Now, assume that at a later stage, a party produces a triple $(\srs',\inp,\pi')$ for the same statement with respect to an updated $\srs'$ that has an honest update contribution. We want the guarantee that this party must know a witness corresponding to $\inp$. The ability to ``maul" the proof $\pi$ from the old SRS to a proof $\pi'$ for the new SRS without knowing a witness would clearly violate security. The natural idea is to require that honestly \emph{updated} reference strings are indistinguishable from honestly \emph{generated} reference strings even for parties that previously contributed updates. However, this is not sufficient as the adversary can also rush toward the end of the SRS generation ceremony to perform the last update.
+%That is, an adversary who does not know the trapdoor for the update from $\srs$ to $\srs'$ should not be able to break SE. % as long as there was at least one honest update to $\srs$.\markulf{30/09/2021}{We currently don't achieve this strong USE notion.}
+
+
+A definition of SE in the updatable setting should take these additional powers of the adversary, which are not captured by existing definitions of SE, into consideration.
+While generic compilers~\cite{EPRINT:KZMQCP15,CCS:AbdRamSla20short} can be applied to updatable SRS SNARKs to obtain SE, not only do they inevitably incur overheads and lead to efficiency loss, we contend that the standard definition of SE does not suffice in the updatable setting.
+
+
+\subsection{Our Contributions}
+We investigate the non-malleability properties of zkSNARK protocols obtained by FS-compiling multi-message protocols in the updatable SRS setting and give a modular approach to analyze their simulation-extractability. We make the following contributions:
+\begin{itemize}
+\item 
+\emph{Updatable simulation extractability (USE)}. 
+We propose a definition of simulation extractability in the updatable SRS setting called USE, that captures the additional power the adversary gets by being able to update the SRS. 
+    
+  \item \emph{Theorem for USE of FS-compiled proof systems.} We
+         define three notions in the updatable SRS and ROM model, 
+        \emph{trapdoor-less zero-knowledge},
+        a \emph{unique response} property, and \emph{rewinding-based
+        knowledge soundness}. Our main theorem shows that multi-message FS-compiled proof systems that satisfy these notions \emph{are USE
+        out-of-the box}. %Informally, our notion of rewinding-based knowledge soundness is a variant of special soundness where 
+        %the transcripts provided to the extractor are obtained through interaction with an honest verifier, and 
+        %the extraction guarantee is computational
+        %instead of unconditional. 
+        %Our extractor only needs oracle access to the
+        %adversary, it does not depend on the adversary’s code, nor does it rely on
+        %knowledge assumptions.
+    
+\item
+\emph{USE for concrete zkSNARKs.}
+We prove that the most efficient updatable SRS SNARKS -- Plonk/Sonic/Marlin -- satisfy the premises of our theorem. We thus show that these zkSNARKs are updatable simulation extractable.
+%In instantiating our general theorem for these concrete zkSNARK candidates, we rely on the algebraic group model (AGM).
+
+\item
+  \emph{SNARKY signatures in the updatable setting.} Our results validate the folklore that the Fiat--Shamir transform is a natural means for constructing signatures of knowledge. This gives rise to the first SoK in the updatable setting and confirms that a much larger class of zkSNARKs, besides \cite{C:GroMal17}, can be lifted to SoK.
+
+\item \emph{Broad applicability.} The updatable SRS plus ROM model includes both the trusted SRS and the ROM model as special cases. This implies the relevance of our theorem for transparent zkSNARKs such as Halo2 and Plonky2 that replace the polynomial commitments of~Kate et al.~\cite{AC:KatZavGol10} with commitments from Bulletproof~\cite{SP:BBBPWM18} and STARKs~\cite{EPRINT:BBHR18}, respectively.
+  
+\end{itemize}
+
+
+\subsection{Technical Overview}
+%unique response, forking special soundness. General theorem without additional assumptions. to apply the theorem to concrete schemes like plonk, we show it satisfies unique response, forking soundness, in AGM.
+
+At a high level, the proof of our main theorem for updatable simulation
+extractability is along the lines of the simulation extractability proof for
+FS-compiled sigma protocol from~\cite{INDOCRYPT:FKMV12}. However, our theorem
+introduces new notions that are more general to allow us to consider proof
+systems that are richer than sigma protocols and support an updatable setup. We
+discuss some of the technical challenges below.
+
+\plonk{}, \sonic{}, and \marlin{} were originally presented as interactive
+proofs of knowledge that are made non-interactive via the Fiat--Shamir transform.
+In the following, we denote the underlying interactive protocols by $\plonkprot$
+(for $\plonk$), $\sonicprot$ (for $\sonic$), and $\marlinprot$ (for \marlin) and
+the resulting non-interactive proof systems by $\plonkprotfs$, $\sonicprotfs$,
+$\marlinprotfs$ respectively.
+
+\oursubsub{Rewinding-Based Knowledge Soundness (RBKS).}
+Following~\cite{INDOCRYPT:FKMV12}, one would have to show that for the protocols
+we consider, a witness can be extracted from sufficiently many valid transcripts
+with a common prefix. The standard definition of special soundness for sigma
+protocols requires the extraction of a witness from any two transcripts with the
+same first message. However, most zkSNARK protocols do not satisfy this notion.
+We put forth a notion analogous to special soundness that is more general and
+applicable to a wider class of protocols. Namely, protocols compiled using multi-round FS that rely on an (updatable) SRS. $\plonkprot$, $\sonicprot$, and
+$\marlinprot$ have more than three messages, and the number of transcripts required for extraction is more than two. Concretely, $(3 \noofc + 6)$ for Plonk,  $(\noofc + 1)$ for Sonic
+%, where $\multconstr$ and $\linconstr$ are the numbers of multiplicative and linear constraints
+, and $(2 \noofc + 3)$ for Marlin, where $\noofc$ is the number of constraints in the proven circuit. Hence, we do not have a pair of transcripts but a \emph{tree of transcripts}.
+
+Furthermore, the protocols we consider are arguments and rely on a SRS that comes with a trapdoor. An adversary in
+possession of the trapdoor can produce multiple valid proof transcripts potentially for false statements without
+knowing any witness. This is true even in
+the updatable setting, where a trapdoor still exists for any updated SRS. Recall
+that the standard special soundness definition requires witness extraction from
+\emph{any} suitably structured tree of accepting transcripts. This means
+that there are no such trees for false statements. 
+
+Instead, we give a rewinding-based knowledge soundness definition with an extractor that proceeds in two steps. It first uses a tree building algorithm $\tdv$ to obtain a tree of transcripts. In the second step, it uses a tree extraction algorithm $\extcss$ to compute a witness from this tree. Tree-based knowledge soundness guarantees that it is possible to extract a witness from all
+(but negligibly many) trees of accepting transcripts produced by probabilistic
+polynomial time (PPT) adversaries. That
+is, if extraction from such a tree fails, then we break an underlying
+computational assumption. Moreover, this should hold even against adversaries
+that contribute to the SRS generation.
+
+\oursubsub{Unique Response Protocols (UR).}  Another property
+required to show simulation extractability is the unique response property which says
+that for $3$-message sigma protocols, the response of the prover ($3$-rd message) is determined by the first message and the challenge~\cite{C:Fischlin05} (intuitively, the prover can only employ fresh randomness in the first
+message of the protocol). We cannot use this definition since the protocols
+we consider have multiple rounds of randomized prover messages. In
+Plonk, both the first and the third messages are randomized. Although the Sonic prover
+is deterministic after it picks its first message, the protocol has more than $3$
+messages. The same holds for Marlin. We propose a generalization of the unique response property called $\ur{k}$. It requires that the behavior of the prover be determined by the first
+$k$ of its messages. For our proof, it is sufficient that Plonk is $\ur{3}$, and Sonic and Marlin are $\ur{2}$.
+
+
+\oursubsub{Trapdoor-Less Zero-Knowledge (TLZK).} 
+The premises of our main theorem include two computational properties that do not mention a simulator, RBKS and UR, The theorem states that together with a suitable property for the simulator of the zero-knowledge property, they imply USE.
+%
+Our key technique is to simulate simulation queries when reducing to RBKS and UR. For this it is convenient that the zero-knowledge simulator be trapdoor-less, that is can produce proofs without relying on the
+knowledge of the trapdoor. Simulation is based purely on the simulators early control over the challenge. 
+%
+In the ROM this corresponds to a simulator that programs the random oracle and can be understood as a generalization of
+honest-verifier zero-knowledge for multi-message Fiat--Shamir transformed proof systems with an
+SRS. We say that such a proof system is $k$-TLZK, if the simulator only programs the $k$-th challenge and we construct such simulators for $\plonkprotfs$, $\sonicprotfs$, and $\marlinprotfs$. 
+
+
+%To invoke our main theorem
+%on (Fiat--Shamir transformed) Plonk, Sonic and Marlin to conclude USE, we also need
+%to show that simulators in these protocols produce proofs without relying on the
+%knowledge of trapdoor. More precisely, for our reduction, we need simulators that rely
+%only on reordering the messages and picking suitable verifier challenges without
+%knowing the SRS trapdoor. That is, any PPT party should be able to produce a
+%simulated proof on its own in a trapdoor-less way. Note that this property does not
+%necessarily break the soundness of the protocol as the simulator is required only to
+%produce a transcript and is not involved in a real conversation with a real
+%verifier. 
+
+
+
+Technically we will make use of the $k$-UR property together with the $k$-TLZK property to bound the probability that the tree produced by the tree builder $\tdv$ of RBKS contains any programmed random oracle queries.
+
+\subsection{Related Work}
+There are many results on simulation extractability for
+non-interactive zero-knowledge proofs (NIZKs). First, Groth \cite{AC:Groth07}
+noticed that a (black-box) SE NIZK is
+universally-composable (UC)~\cite{EPRINT:Canetti00}. Then Dodis et al.~\cite{AC:DHLW10} introduced a
+notion of (black-box) \emph{true simulation extractability} (i.e., SE with simulation of true statements only) and showed that no
+NIZK can be UC-secure if it does not have this property. 
+
+In the context of zkSNARKs, the first
+SE zkSNARK was proposed by Groth and Maller~\cite{C:GroMal17} and a SE
+zkSNARK for QAP was designed by Lipmaa~\cite{EPRINT:Lipmaa19a}.
+Kosba et
+al.~\cite{EPRINT:KZMQCP15} give a general transformation from a NIZK to a
+black-box SE NIZK. Although their transformation works for zkSNARKs as well,
+the succinctness of the proof system is not preserved by this transformation.
+Abdolmaleki et al.~\cite{CCS:AbdRamSla20short} showed another transformation that
+obtains non-black-box simulation extractability but also preserves
+the succinctness of the argument. 
+The zkSNARK of~\cite{EC:Groth16} has been shown to be SE by introducing minor modifications to the construction and making
+stronger assumptions \cite{EPRINT:BowGab18,EPRINT:AtaBag19}. Recently,~\cite{EPRINT:BKSV20} showed that the
+ Groth's original proof system from~\cite{EC:Groth16} is weakly SE and
+randomizable. None of these results are for zkSNARKs in the updatable SRS setting or for zkSNARKs obtained via the Fiat--Shamir transformation. The recent work of~\cite{cryptoeprint:GOPTT22} shows that Fiat--Shamir transformed Bulletproofs are simulation extractable. While they show a general theorem for multi-round protocols, they do not consider a setting with an SRS, and are therefore inapplicable to zkSNARKs in the updatable SRS setting.
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

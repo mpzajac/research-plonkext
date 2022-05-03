@@ -1,0 +1,391 @@
+% !TEX root = main.tex
+% !TEX spellcheck = en-US
+
+
+\begin{figure}
+	\centering
+		\begin{pcvstack}[center,boxed]
+		\begin{pchstack}
+			\procedure{$\simOH (x)$}
+			{
+			\pcif H[x] = \bot \pcthen \\
+			\pcind H[x] \sample \mathsf{Im}(\ro) \\
+		%	Q_\ro \gets \{(x,H[x])\}\\
+			\pcreturn H[x]
+			  }
+			%
+			\pchspace
+			%
+			\procedure{$\simulator\oracleo.\prog(x, h)$}
+			{ 
+				\pcif H[x] = \bot \pcthen \\ 
+				\pcind H[x] \gets h \\
+				\pcind \Qprog \gets \Qprog \cup \{x\}\\
+		%		Q_\ro \gets \{(x,H[x])\}\\
+				\pcreturn H[x]
+			}
+			\pchspace
+			%
+			\procedure{$\boxed{\simOP(\inp, \wit)} \ \simOP'(\inp)$}
+			{ 
+				\boxed{\pcassert (\inp,\wit)\in \REL} \\ 
+				\pi \gets \simulator^{\simOH,\simulator\oracleo.\prog}(\srs,\inp)\\
+				Q \gets Q \cup \{(\inp,\pi)\}\\
+				\pcreturn \pi
+			}
+		\end{pchstack}
+	\end{pcvstack}
+	\caption{Simulation oracles: $\srs$ is the finalized SRS, only $\simOP'$ allows for simulation of false statements}
+	\label{fig:real_simulator_oracles}
+\end{figure}
+
+\subsection{Trapdoor-Less Zero-Knowledge (TLZK)}
+
+
+
+%We model $\simulator$ as a stateful
+%algorithm that runs in two modes. The first mode,
+%$(h, st') \gets \simulator (1, st, \srs, q)$ answers random oracle calls to $\ro$ on input
+%$q$. The second mode $(\zkproof, st') \gets \simulator (2, st, \srs, \inp)$ simulates the
+%actual argument for instance $\inp$.  
+
+
+
+% \begin{itemize}
+% \item $\simOH (\srs,q)$ denotes an oracle that returns the first output of
+%   $\simulator (1, st, \srs, q)$;
+% \item $\simOP (\srs,\inp, \wit)$ denotes an oracle that returns the first output of
+%   $\simulator (2, st, \srs, \inp)$ if $(\inp, \wit) \in \REL$, and returns $\bot$ otherwise;
+% \end{itemize}
+
+% We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
+% $\REL \in \RELGEN(\secparam)$, and adversary $\adv$ there exists a $\ppt$ simulator
+% $\simulator$ such that for any $(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$,
+% where
+% \[
+%   \eps_b = \condprob{\adv^{\oracleo_b} (\srs)}{\srs \gets \kgen (\REL)}\,,
+% \]
+% \changedm{where $\oracleo_0$ on input $(1, q)$ responds with $h$ such that
+%   $(h, st') \gets \simOH (1, st, q)$, where $st$ and $st'$ are old and new
+%   states of the simulator $\simulator$ and on input $(2, \inp, \wit)$ returns
+%   $\zkproof \gets \simOP (2, st, \srs, \inp)$. Alternatively, $\oracleo_1$ on
+%   input $(1, q)$ responds with $h \gets \ro (q)$ and on input $(2, \inp, \wit)$
+%   returns $\zkproof \gets \prover (\srs, \inp, \wit)$.}
+% 	%
+% We call zero knowledge \emph{perfect} if the distributions are equal and
+% \emph{computational} if they are indistinguishable for any $\ppt$ distinguisher.
+\iffalse
+We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
+$\REL \in \RELGEN(\secparam)$, and adversary $\adv$ there exists a $\ppt$ simulator
+$\simulator$ with oracles $(\simOH,\simOP)$ such that for any $(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$,
+where
+\[
+  \eps_0(\secpar) = \condprob{\adv^{\simOH,\simOP} (\srs)}{\srs \gets \kgen
+    (\REL)},\,  \eps_1 (\secpar) = \condprob{\adv^{\ro,\prover} (\srs)}{\srs \gets \kgen (\REL)},
+\]
+
+We call zero knowledge \emph{perfect} if the distributions are equal and
+\emph{computational} if they are indistinguishable for any $\ppt$ distinguisher.
+
+
+% \end{description}
+Alternatively, zero-knowledge can be defined by allowing the simulator to use the
+trapdoor $\td$ that is generated along the $\srs$. In this paper we distinguish
+simulators that requires a trapdoor to simulate and those that do not. We call the
+former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less
+  zero-knowledge} (TLZK) if its simulator does not require the trapdoor, cf.~\cref{def:TLZK}.
+
+  \markulf{22.04}{We don't consider SRS-simulators in this paper. I would simplify and move the above after the Updatable SRS scheme section, or maybe the start of Section 3.}
+\fi
+
+%In this paper we distinguish between simulators that require a trapdoor to simulate and those that do not. 
+We call a protocol \emph{trapdoor-less
+ zero-knowledge} (TLZK) if there exists a simulator does not require the trapdoor, and works by programming the random oracle.
+ Moreover, the simulator may only be allowed to program the random oracle on point $\tzkproof[0,k]$, that is the simulator can only program the challenges that come after the $k$-th prover message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less zero-knowledge}. %, and define this in~\cref{def:TLZK}.
+
+ Our definition of zero-knowledge for non-interactive
+arguments is in programmable ROM.
+%the explicitly programmable random oracle model where the simulator $\simulator$ can program the random oracle. 
+We model this using the oracles from Fig.~\ref{fig:real_simulator_oracles} that provide a stateful wrapper around $\simulator$.
+$\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h)$ allows for programming the simulated $\ro$ and is available only to $\simulator$. $\simOP(x, w)$ and $\simOP'(x)$ call the simulator. The former is used in the zero-knowledge definition and requires the statement and witness to be in the relation, the latter is used in the simulation extraction definition and does not require a witness input.
+
+\begin{definition}[Updatable k-Programmable Trapdoor-Less Zero-Knowledge]
+  \label{def:TLZK}
+  Let 
+  $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a $(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup. %Let $\ro$ be the random oracle. 
+  %$\simulator_{\fs}$ takes as input $\srs$ and instance $\inp$, programs $\ro$, and outputs a proof $\zkproof_\simulator$.  
+  We call $\psfs$ \emph{trapdoor-less zero-knowledge} with security $\epszk$ if for any
+  adversary $\adv$, $\abs{\eps_0(\secpar) - \eps_1(\secpar)} \leq \epszk(\secpar)$, where
+  \begin{align*}
+    \eps_0 (\secpar) = \Pr\left[ \adv^{\initU, \ro, \prover} (\secparam) \right],\,
+    \eps_1 (\secpar)=  \Pr \left[\adv^{\initU, \simOH, \simOP} (\secparam) \right].
+  \end{align*}
+  
+  If $\epszk(\secpar)$ is negligible, we say $\ps_{\fs}$ is trapdoor-less zero-knowledge. Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if  $\simulator$ before returning a proof $\pi$ only calls $\simulator\oracleo.\prog$ on $(\tzkproof[0..k],h)$. That is, it only programs the $k$-th message.
+  \end{definition}
+
+  
+\begin{remark}[TLZK vs HVZK]
+  We note that TLZK notion is closely related to honest-verifier zero-knowledge in the
+  standard model. That is, if we consider an interactive proof system $\proofsystem$
+  that is HVZK in the standard model then $\proofsystem_\fs$ is TLZK. This comes as the simulator $\simulator$ in
+  $\proofsystem$ produces a valid simulated proof by picking verifier's challenges
+  according to a predefined distribution and $\proofsystem_\fs$'s simulator
+  $\simulator_\fs$ produces its proofs similarly by picking the challenges and
+  additionally programming the random oracle to return the picked
+  challenges. Importantly, in both $\proofsystem$ and $\proofsystem_\fs$ success of
+  the simulator does not depend on access to an SRS trapdoor.
+\end{remark}
+
+We note that $\plonk$ is $3$-programmable TLZK, and $\sonic$ and $\marlin$ are $2$-programmable TLZK. This follows directly from the proofs of
+their standard model zero-knowledge property in
+\cref{lem:plonk_tlzk,lem:sonic_hvzk,lem:marlin_hvzk}.
+
+\subsection{Updatable Simulation Extractability (USE)}
+We note that the zero-knowledge property is only guaranteed for statements in the
+language.
+%; for simulator $\simulator = (\simOH, \simOP)$, $\simOP$
+%answers with simulated proofs only for true statements.  This is, however, not sufficient
+For \emph{simulation extractability} where the simulator
+should be able to provide simulated proofs for false statements as well, we thus use the oracle $\simOP'$
+\footnote{Note,
+  that simulation extractability property where the simulator is required to give
+  simulated proofs for true statements only is called \emph{true simulation
+    extractability.}}. 
+	
+%Therefore, we introduce a wrapper oracle around the simulator
+%called $\simOP'$ that on input $(\srs, \inp)$ always returns the first output of
+%$\simulator (2, st, \srs, \inp)$, regardless of whether $\inp$ is in the language. We
+%define \emph{simulation-extractability} with respect to oracle $\simOP'$; that is,
+%simulation-extractability is with respect to a simulator
+%$\simulator' = (\simOH, \simOP')$.
+%
+
+
+
+\begin{definition}[Updatable Simulation Extractability]
+	\label{def:updsimext}
+  \label{def:simext}
+	Let $\psni = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup. 
+	We say that
+  $\psni$ is \emph{updatable simulation-extractable} with security loss $\epsse(\secpar,\accProb, q)$ if for
+  any $\ppt$ adversary $\adv$ that is given oracle access to setup oracle
+  $\initU$ and simulation oracle $\simulator\oracleo$ and that produces an accepting
+  proof for $\psni$ with probability $\accProb$, where
+	\[
+	\accProb = \condprob{
+	\begin{matrix}
+	  \verifier(\srs, \inp, \zkproof) = 1  \\
+	  \wedge
+	(\inp, \zkproof) \not\in Q
+	\end{matrix}
+}{
+	\begin{matrix}
+	  r \sample \RND{\advse}\\
+	(\inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'
+		} (1^\secpar; r)
+	\end{matrix}
+}
+	\]
+	there exists an expected PPT extractor $\extse$ such that
+	\[
+	 \condprob{
+	\begin{matrix}
+  \verifier(\srs, \inp, \zkproof) = 1, \\
+   (\inp, \zkproof) \not\in Q,  \\
+	   \REL(\inp, \wit) = 0
+	\end{matrix}
+}{
+	\begin{aligned}
+	& r \sample \RND{\advse},
+	(\inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'
+		} (1^\secpar; r) \\
+	& \wit \gets \ext_\se (\srs, \advse, r,
+	\Qsrs,\Qro,\Qsim ) 
+	\end{aligned}
+} \leq \epsse(\secpar,\accProb, q)
+	\]
+	%is at least 
+	%\[
+	%\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
+	%\]
+	%for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
+	%$\accProb \geq \nu$. 
+	Here, $\srs$ is the finalized SRS. List $\Qsrs$ contains all $(\srs, \rho)$ of update SRSs and their proofs, list $\Qro$ contains all $\advse$'s
+	queries to $\simOH$ and the (simulated) random oracle's answers, $\abs{\Qro}\leq q$, and list $Q$ contains all $(\inp, \zkproof)$ pairs where 
+	$\inp$ is an instance queried to $\simOP'$ by the adversary and
+	$\zkproof$ is the simulator's answer .
+  % \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simOH$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
+\end{definition}
+
+\subsection{Unique Response (UR) Protocols}
+A technical hurdle identified by Faust et al.~\cite{INDOCRYPT:FKMV12} for proving
+simulation extraction via the Fiat--Shamir transformation is that the transformed
+proof system satisfies a unique response property. The original formulation by Fischlin, although suitable for applications presented in
+\cite{C:Fischlin05,INDOCRYPT:FKMV12}, does not suffice in our case. First, the
+property assumes that the protocol has three messages, with the second being the
+challenge from the verifier. That is not the case we consider here. Second, it is not
+entirely clear how to generalize the property. Should one require that after the
+first challenge from the verifier, the prover's responses are fixed?  That does not
+work since the prover needs to answer differently on different verifier's challenges,
+as otherwise the protocol could have fewer messages.  Another problem is that the
+protocol could have a message, beyond the first prover's message, which is
+randomized. Unique response cannot hold in this case. Finally, the protocols we
+consider here are not in the standard model, but use an SRS.
+
+We work around these obstacles by providing a generalized notion of the unique
+response property. More precisely, we say that a $(2\mu + 1)$-message protocol
+has \emph{unique responses from $k$}, and call it a $\ur{k}$-protocol, if it
+follows the definition below:
+
+\begin{definition}[Updatable k-Unique Response Protocol]
+Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a $(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup. Let $\ro$ be the random oracle. 
+We say that $\psfs$ has \emph{unique responses for $k$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\advur$:
+  \[
+	\Pr\left[
+		\left.
+	\begin{aligned}
+	& \zkproof \neq \zkproof', \tzkproof[0..k] = \tzkproof'[0..k],  \\
+	& \verifier' (\srs, \inp, \zkproof,c) =
+	\verifier' (\srs, \inp, \zkproof',c) = 1  \\
+	\end{aligned}
+	\,\right|\,
+	\begin{aligned}
+		& (\inp, \zkproof, \zkproof', c) \gets \advur^{\initU,\ro}(1^\secpar) 
+	\end{aligned}
+	\right] \leq \epsur(\secpar) 
+	\]
+	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1, \dots, a_\mu,a_{\mu+1}))$ behaves as $\verifier (\srs, \inp, \zkproof)$ except for using c as the $k$-th challenge instead of calling $\ro(\tzkproof[0..k]) $. Thus, $\adv$ can program the $k$-th challenge. 
+	We say $\psfs$  is $\ur{k}$, if $\epsur(\secpar)$ is negligible.
+\end{definition}
+
+Intuitively, a protocol is $\ur{k}$ if it is infeasible for a $\ppt$ adversary to produce a pair of accepting proofs $\zkproof \neq \zkproof'$ that are the same on the first $k$ messages of the prover.  
+%We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
+
+The definition can be easily generalized to allow for programing the oracle on more than just a single point. We opted for this simplified presentation, since all the protocols analyzed in this paper require only single-point programming, 
+  
+
+\subsection{Rewinding-Based Knowledge Soundness (RBKS)}
+
+Before giving the definition of rewinding-based knowledge soundness for NIZK proof systems compiled via the $2\mu + 1$-message FS transformation, we first recall the notion of a tree of transcripts.
+\begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
+	\label{def:tree_of_accepting_transcripts}
+%	Consider a $(2\mu + 1)$-message proof system. \markulf{24.04}{Is this meaningful for interactive or also non-interactive prove systems obtained via FS?} 
+	A $(n_1,
+  \ldots, n_\mu)$-tree of accepting transcripts is a tree where each node on
+  depth $i$, for $i \in \range{1}{\mu + 1}$, is an $i$-th prover's message in an
+  accepting transcript; edges between the nodes are labeled with
+  challenges, such that no two edges on the same depth have the same
+  label; and each node on depth $i$ has $n_{i} - 1$ siblings and $n_{i +
+    1}$ children. The tree consists of $N = \prod_{i = 1}^\mu n_i$
+  branches, where $N$ is the number of accepting transcripts. We require $N = \poly$. We refer to a $(1, \ldots, n_k=n, 1, \ldots, 1)$-tree as a $(k,n)$-tree.
+\end{definition}
+
+\iffalse
+		
+	\begin{figure}[t]
+		\centering
+		\fbox{
+		\procedure{$\genforking_{\zdv}^{m, m'} (y,h_1^{1}, \ldots, h_{q}^{1})$}		
+		{
+		\rho \sample \RND{\zdv}\\
+		(i, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; \rho)\\
+    i_1 \gets i\\
+		% \pcif i = 0\ \pcreturn (0, \bot)\\
+		\pcfor j \in \range{2}{m'}\\
+		\pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
+		h_{i - 1}^{j - 1}\\
+		\pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
+		\pcind (i_j, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
+		\ldots, h_{q}^{j}; \rho)\\
+		%\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
+   % \pcif \exists (j, j') \in \range{1}{m}^2, j \neq j' : (h_{i}^{j} = h_{i}^{j'})\
+    \pcif \exists (j_1, \ldots, j_m) \in \range{1}{m'}^m, \text{ s.t. }\\
+    \pcind j_k \neq j_{k'} \text{ for } k \neq k' \land \\
+    \pcind i_{j_k} = i_{j_k'} \land \\
+    \pcind 
+		\pcelse \pcreturn (0, \bot)
+	}}
+\caption{Generalized forking algorithm $\genforking_{\zdv}^{m, m'}$
+  \michals{5.11}{This forking lemma version is not as general as in Attema et al to
+    be exact -- they allow tree of acceptable transcripts to branch at multiple
+    places. however, that is not necessary in our case. Later, we should allow ``full
+    generality'' but that would also require modification of the forking soundness
+    definition (which now also relies on a fact that the tree branches at a single
+    point)}}
+	\label{fig:genforking_lemma}
+\end{figure}
+
+
+\fi
+
+
+
+\iffalse
+Note that the special soundness property (as usually defined) holds for
+all---even computationally unbounded---adversaries. Unfortunately, since a
+simulation trapdoor for $\plonkprot$, $\sonicprot$ and $\marlinprot$ exists, the protocols
+cannot be special sound in that regard. This is because an unbounded adversary
+can recover the trapdoor and build an arbitrary number of simulated proofs for a fake
+statement. Hence, we provide a weaker, yet sufficient, definition that somehow lies between 
+computational \emph{knowledge soundness} and \emph{special soundness} for unbounded adversaries. Differently from the standard definition of special soundness, we do not require from the extractor to be able to extract the witness from \emph{any} tree of acceptable transcripts. Similar to knowledge soundness, we require that the extractor fails to reconstruct the witness with some small probability only. 
+
+More precisely, in proofs of rewinding-based knowledge soundness we show later that either the extractor extracts a witness from a tree of transcripts or the adversary who was used to produce the tree can be used to break some computationally hard problem. 
+\fi
+The existence of simulation trapdoor for $\plonkprot$, $\sonicprot$ and $\marlinprot$ means that they are not
+special sound in the standard sense. We therefore put forth the notion of rewinding-based knowledge soundness that is a computational notion. 
+Note that in the definition below, it is implicit that each transcript in the tree is accepting with respect to a ``local programming'' of the random oracle. However, the verification of the proof output by the adversary is with respect to a non-programmed random oracle.
+
+\begin{definition}[Updatable Rewinding-Based Knowledge Soundness]
+	Let $n_1, \ldots, n_\mu \in \NN$. 
+	%
+	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a $(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup for relation $\REL$. Let $\ro$ be the random oracle.
+	%
+	We require existence of an expected PPT tree builder $\tdv$ that eventually outputs a $\tree$ which is either a $(n_1, \ldots, n_\mu)$-tree of accepting transcript or $\bot$ and a PPT extractor $\extcss$. Let  adversary $\advcss$ be a PPT algorithm, that outputs a valid proof with probability at least $\accProb$, 
+	where
+	\[
+	\accProb = \condprob{
+	\begin{matrix}
+	  \verifier(\srs, \inp, \zkproof) = 1  \\
+	  \wedge
+	(\inp, \zkproof) \not\in Q
+	\end{matrix}
+}{
+	\begin{matrix}
+	  r \sample \RND{\advcss}\\
+	(\inp, \zkproof) \gets \advcss^{\initU, \ro
+		} (1^\secpar; r)
+	\end{matrix}
+}.
+	\]
+	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-rewinding-based knowledge sound with security loss $\epscss(\secpar, \accProb, q)$ if
+	\begin{align*}
+	\Pr\left[
+		\begin{matrix}
+			\verifier(\srs, \inp, \zkproof) = 1,  \\
+			\REL(\inp, \wit) = 0
+		  \end{matrix}
+	\,\left|\,
+	\begin{aligned}
+	& 	r \sample \RND{\advcss}, \\
+	& 	(\srs, \inp, \cdot) \gets \advcss^{\initU, \ro} (1^\secpar; r)\\
+	&  	\tree \gets \tdv(\srs, \advcss, r, \Qsrs, \Qro),
+	\wit \gets \extcss(\tree)
+	\end{aligned}\right.
+	\right] \leq \epscss(\secpar,\accProb, q).
+	\end{align*}
+	Here, $\srs$ is the finalized SRS. List $\Qsrs$ contains all $(\srs, \rho)$ of updated SRSs and their proofs, and list $\Qro$ contains all of the adversaries
+	queries to $\ro$ and the random oracle's answers, $\abs{\Qro}\leq q$.
+%	 We call the protocol $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound when $\tdv$ builds a $(n_1, \ldots, n_\mu)$-tree of transcripts.
+% \hamid{1.5}{We still need this sentence:  
+%\markulf{1.5}{Cut? We call the protocol $(k, n)$-rewinding-based knowledge sound if $\tree$ is a $(k, n)$-tree of accepting transcripts.}
+% }
+\end{definition}
+	
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

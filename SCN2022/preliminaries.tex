@@ -1,0 +1,219 @@
+% !TEX root = main.tex
+% !TEX spellcheck = en-US
+%\section{Preliminaries}
+
+
+\iffalse
+\paragraph{Notation.} %Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
+%security parameter. %All adversaries are stateful. 
+For a PPT algorithm $\adv$, 
+%let
+%$\image (\adv)$ be the image of $\adv$ (the set of valid outputs of $\adv$), 
+let
+$\RND{\adv}$ denote the set of random tapes of correct length for adversary $\adv$
+(assuming the given value of security parameter $\secpar$), and let $r \sample \RND{\adv}$ denote
+the random choice of tape $r$ from $\RND{\adv}$. We denote by $\negl$
+($\poly$) an arbitrary negligible (resp.~polynomial) function.
+%
+%For probability ensembles $X = \smallset{X_\secpar}_\secpar$ and
+%$Y = \smallset{Y_\secpar}_\secpar$, with distributions $X_\secpar, Y_\secpar$ that have
+%\emph{statistical distance} $\SD(X_\secpar, Y_\secpar) = \epsilon(\secpar)$ 
+%if
+%$\sum_{a \in \supp{X_\secpar \cup Y_\secpar}} \abs{\prob{X_\secpar = a} -
+%  \prob{Y_\secpar = a}} = \epsilon(\secpar)$. 
+%we write $X \approx_\secpar Y$ if
+%$\SD(X_\secpar, Y_\secpar) \leq \negl$. 
+For functions $a(\secpar)$, $b(\secpar)$ and probability ensembles $X = \smallset{X_\secpar}_\secpar$,
+$Y = \smallset{Y_\secpar}_\secpar$ we
+write $a(\secpar) \approx_\secpar b(\secpar)$ if
+$\abs{a(\secpar) - b(\secpar)} \leq \negl$ and $X \approx_\secpar Y$ if they have \emph{statistical distance} $\SD(X_\secpar, Y_\secpar) \leq \negl )$, respectively. \medskip
+\fi
+% For a probability space
+% $(\samplespace, \eventspace, \probfunction)$ and event $\event{E} \in \eventspace$ we
+% denote by $\nevent{E}$ an event that is complementary to $\event{E}$,
+% i.e.~$\nevent{E} = \samplespace \setminus \event{E}$.
+
+% \begin{lemma}[Difference lemma,~{\cite[Lemma 1]{EPRINT:Shoup04}}]
+% 	\label{lem:difference_lemma}
+% 	Let $\event{A}, \event{B}, \event{F}$ be events defined in some probability
+% 	space, and suppose that $\event{A} \land \nevent{F} \iff \event{B}
+% 		\land \nevent{F}$.  Then 
+% 	$
+% 		\abs{\prob{\event{A}} - \prob{\event{B}}} \leq \prob{\event{F}}\,.
+% 	$
+% \end{lemma}
+
+
+\section{Definitions and Lemmas for Multi-message SRS-based Protocols}
+\label{sec:se_definitions}
+\label{sec:preliminaries}
+
+
+
+\ourpar{Simulation-extractability for multi-message protocols.}
+Most recent SNARK schemes follow the same blueprint of constructing an interactive information-theoretic proof system 
+that is then compiled into a public coin computationally sound scheme using cryptographic tools such as polynomial commitments,
+and finally made non-interactive via the Fiat--Shamir transformation.
+Existing results on simulation extractability (for proof systems and
+signatures of knowledge) for Fiat--Shamir transformed systems work for $3$-message protocols without reference string that
+require two transcripts for standard model extraction, e.g.,
+\cite{JC:PoiSte00,INDOCRYPT:FKMV12,C:RotSeg21}.
+
+In this section, we define properties that are necessary for our
+analysis of multi-message protocols with a universal updatable SRS.  In order to
+prove simulation-extractability for such protocols, we require more than just two
+transcripts for extraction. Moreover, in the updatable setting we consider protocols
+that rely on an SRS where the adversary gets to contribute to the SRS. We first recall the updatable SRS setting and the Fiat-Shamir transform for $(2\mu+1)$ message protocols.
+Next, we define trapdoor-less zero-knowledge and simulation-extractability
+which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then,
+to support multi-message SRS-based protocols compiled using the Fiat--Shamir transform,
+we generalize the unique response property, and define a notion of computational special
+soundness called rewinding-based knowledge soundness.\medskip
+
+
+%\subsection{Proof Systems With Updatable Setups and Random Oracles}
+\noindent Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called the \emph{prover}
+and the latter the \emph{verifier} of a proof system. Both algorithms take a pre-agreed structured reference string $\srs$ as input. The structured reference strings we consider are (potentially) updatable, a notion we recall shortly.
+%
+We focus on proof systems made non-interactive via the multi-message Fiat--Shamir transform presented below where prover and
+verifier are provided with a random oracle $\ro$. 
+We denote by $\zkproof$ a proof created by $\prover$ on input
+$(\srs, \inp, \wit)$. We say that proof is accepting if $\verifier(\srs, \inp,
+\zkproof)$ accepts it.
+
+Let
+$\RND{\adv}$ denote the set of random tapes of correct length for adversary $\adv$
+(assuming the given value of security parameter $\secpar$), and let $r \sample \RND{\adv}$ denote
+the random choice of tape $r$ from $\RND{\adv}$.
+
+%The simulator
+%$\simulator$ is not only given access to $\ro$, but it can also \emph{program}
+%it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
+
+
+  
+\iffalse
+\subsection{Zero-Knowledge Proof Systems}\label{prelim:nizk}
+In a zero-knowledge proof system, a prover convinces the verifier of the veracity of a statement
+without leaking any other information. The zero-knowledge property is proven by constructing a
+simulator that can simulate the view of a cheating verifier without knowing the secret
+information -- witness -- of the prover. A proof system has to be sound as well, i.e.~for a
+malicious prover it should be infeasible to convince a verifier of a false statement. Here, we
+focus on proof systems, so-called arguments, that guarantee soundness against $\ppt$ malicious provers. 
+\markulf{24.04}{Nice text, but maybe too basic? Also we don't really have views, but really reconstruct the non-interactive proof.}
+Typically, a stronger notion of soundness is required -- besides requiring that the
+verifier rejects proofs of statements outside the language, we request from the
+prover to know a witness corresponding to the proven statement. This property is
+called \emph{knowledge soundness}. In this work we investigate an even stronger notion of soundness, \emph{simulation extractability} for non-interactive protocols obtained from interactive arguments via the \emph{Fiat--Shamir heuristic} via random oracles in a setting with an \emph{updatable common reference string.} 
+
+We now introduce these concepts.
+\fi
+
+
+\subsection{Updatable SRS Setup Ceremonies}\label{def:upd-scheme}
+
+%Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
+%and the latter \emph{verifier}. We allow our proof system to have a setup, i.e.~there is a
+%$\kgen$ algorithm that takes as input the relation description $\REL$ and outputs a common
+%reference string $\srs$.
+
+The definition of updatable SRS ceremonies of~\cite{C:GKMMM18} requires the following algorithms.
+
+\begin{itemize} 
+	\item
+	$(\srs,\rho) \gets \kgen(\REL)$ is a PPT algorithm that takes a relation $\REL$ and outputs a reference string $\srs$, and correctness proof $\rho$.
+	\item
+	$ (\srs',\rho') \gets \upd(\srs, \{\rho_j \}_{j=1}^n)$ is a PPT algorithm that takes a $\srs$, a list of update proofs and outputs an updated $\srs'$ together with a proof of correct update~$\rho'$. 
+	\item
+	$b \gets \verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$ takes a reference string $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.\footnote{For instance \plonk{} and \marlin{} will use the $\kgen$, $\upd$ and $\verifyCRS$ algorithms in~\cref{fig:upd-scheme}.}
+\end{itemize}
+
+
+In the next section, we define security notions in the updatable setting by giving the adversary access to an SRS update oracle $\initU$, defined in~\cref{fig:upd}. The oracle allows the adversary to control the SRS generation. A trusted setup can be expressed by the updatable setup definition simply by restricting the adversary to only call the oracle on $\intent = \setup$ and $\intent = \final$. Note that a soundness adversary now has access to both the random oracle $\ro$ and $\initU$:  $(\inp, \zkproof) \gets \adv^{\initU,\ro}(1^\secpar; r)$.
+
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}% 
+
+\begin{figure}[t!]
+	\centering
+	\centerline{\fbox{
+		\begin{minipage}[t]{1.15\linewidth}
+			\begin{pchstack}
+			\procedure{$\initU(\intent, \srs_n,\{\rho_j \}_{j=1}^n)$}{
+				\pcif \srs \neq \bot: \pcreturn \bot \\
+				\pcif (\intent = \setup): \\
+				\t (\srs',\rho') \leftarrow \kgen(\REL)\\
+				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+				\t \pcreturn (\srs',\rho')}
+			%
+			\procedure{}{
+				\\
+				\pcif (\intent = \update): \\
+				\t b \gets \verifyCRS(\srs_n, \{\rho_j \}_{j=1}^{n})\\
+				\t \pcif (b=0): \pcreturn \bot \\
+				\t (\srs',\rho') \leftarrow \upd (\srs_n,\{\rho_j \}_{j=1}^n)\\
+				\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+		 	% \pccomment{$Q_\srs = (Q^{(1)}_\srs, Q^{(2)}_\srs) \text{ s.t. }   Q^{(2)}_\srs \text{ contains the update proofs in } Q_\srs$ } \\
+				\t \pcreturn (\srs',\rho')}
+				%
+			\procedure{}{
+				\\
+				\pcif (\intent = \final): \\
+				\t b \gets \verifyCRS(\srs_n,\{\rho_j \}_{j=1}^{n})\\
+				\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_j \}_i = \emptyset: \\
+				\t \pcreturn \bot \\
+				\t 
+				\t \srs \gets \srs_n, \pcreturn \srs \\
+				%
+				\pcelse \pcreturn \bot
+			}
+			\end{pchstack}
+		\end{minipage}
+	}}
+	\caption{The oracle defines the notion of updatable SRS setup.} 
+		\label{fig:upd}
+\end{figure}
+
+\ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means that both the relation $\REL$ and the reference string $\srs$ allows to prove arithmetic constraints defined over a particular field up to some size bound. The public instance $\inp$ must determine the constraints. 
+If $\REL$ comes with any auxiliary input, the latter is benign. 
+We elide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
+
+\subsection{Multi-message Fiat-Shamir Compiled Provers and Verifiers}
+Given interactive prover and (public coin) verifier $\prover', \verifier'$ that exchange messages resulting in transcript $\tzkproof = (a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
+$\prover'$ and $c_i$ comes from $\verifier'$, the $(2\mu + 1)$-message Fiat-Shamir heuristic defines non-interactive provers and verifiers $\prover, \verifier$ as follows:
+
+\begin{compactitem}
+	\item $\prover$ behaves as $\prover'$ except after sending message
+	  $a_i$, $i \in \range{1}{\mu}$, the prover does not wait for
+	  the message from the verifier but computes it locally setting $c_i
+	  = \ro(\tzkproof[0..i])$, where $\tzkproof[0..j] = (\inp, a_1, c_1, \ldots,
+	  a_{j - 1}, c_{j - 1}, a_j)$.\footnote{For Fiat--Shamir based SoK the message signed $m$ is added to $\inp$ before hashing.} 
+	  
+	  $\prover$ output the non-interactive proof $\pi=(a_1,\ldots, a_{\mu}, a_{\mu + 1})$, that omits challenges as they can be recomputed using $\ro$.
+
+	\item $\verifier$ takes $\inp$ and $\pi$ as input and behaves as $\verifier'$ would but does not provide
+	  challenges to the prover. Instead it computes the
+	  challenges locally as $\prover$ would, starting from $\tzkproof[0..1]=(\inp,a_1)$ which can be obtained from $\inp$ and $\pi$. Then it verifies the
+	  resulting transcript $\tzkproof$ as the verifier $\verifier'$ would. 
+	\end{compactitem}
+	We note that since the verifier can compute the challenges by querying the random oracle, they do not need to be sent by the prover. Thus the $\zkproof$ - $\tzkproof$ notational distinction.
+$(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup
+\paragraph{Notation for $(2\mu + 1)$-message Fiat--Shamir transformed proof systems.}
+Let $\SRScer= (\kgen,\upd, \verifyCRS)$ be the algorithm of an updatable SRS ceremony.
+All our definitions and theorems are about non-interactive proof systems $\ps = (\SRScer, \prover, \verifier, \simulator)$ compiled via the $(2\mu + 1)$-message FS transform. 
+%
+That is $\pi = (a_1, \ldots, a_{\mu}, a_{\mu + 1})$ and $\tzkproof = (a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, with $c_i
+= \ro(\tzkproof[0..i])$.
+%
+%\markulf{30.04}{This paragraph seems a bit of overkill, remove notation that we do not actually use}
+We use $\tzkproof[0]$ for instance
+$\inp$  and $\tzkproof[i]$, $\tzkproof[i].\ch$ to denote prover
+message $a_i$ and challenge $c_i$ respectively. %$\tzkproof[i..j]$ denotes all messages of the transcript 
+%between the $i$-th and $j$-th prover messages, but not $\tzkproof[j].\ch$.  
+
+%If the proof system starts with a message from the verifier,
+%we denote it by $\tzkproof[0].\ch$; else, we state that $\tzkproof[0].\ch$ is empty.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

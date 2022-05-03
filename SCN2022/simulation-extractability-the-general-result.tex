@@ -1,0 +1,54 @@
+% !TEX root = main.tex
+% !TEX spellcheck = en-US
+\section{Simulation Extractability---The General Result}
+\label{sec:general}
+Equipped with the definitional framework of \cref{sec:se_definitions}, we now present the
+main result of this paper: a proof of simulation extractability for multi-message
+Fiat--Shamir-transformed NIZK proof systems.
+
+% The proof proceeds by game hopping. The games are controlled by an environment $\env$ that
+% internally runs a simulation extractability adversary $\advse$, provides it with access to
+% simulator $\simulator$ which also responds $\adv$'s random oracle queries. The environment
+% also rewinds $\adv$ when necessary. The games differ by various breaking points,
+% i.e.~points where the environment decides to abort the game.
+
+% The first game $\game{0}$ is a simulation-extractability game, where the extractor
+% gets as input
+% \begin{inparaenum}[(1)]
+% \item simulated proofs $Q$,
+% \item random oracle queries $Q_\ro$,
+% \item SRS updates $Q_\srs$
+% \end{inparaenum}
+% which were made by $\advse$.  We denote by $\radv$ randomness of $\advse$ and by
+% $\rsim$ randomness that was used by the simulator to create responses in the list $Q$
+% and $Q_\ro$. Formally, one could state that $\rsim$ could be parsed into $r_Q$ and
+% $r_\ro$ used to answer queries in $Q$ and $Q_\ro$. Let $r = (\radv,
+% \rsim)$. Randomness $r$ is used in the following games -- we pass it to a
+% unique-response property reduction $\rdvur$ and rewinding-based knowledge soundness adversary
+% $\bdv$. Importantly, since we require that $\rdvur$ and $\bdv$ are successful (with
+% non-negligible probability) given uniformly random randomness and $r$ is picked
+% uniformly random we conclude that we do not change any success probability by running
+% $\rdvur$ and $\bdv$ on $r$. 
+
+
+Without loss of generality, we assume that whenever the accepting proof contains a
+response to a challenge from a random oracle, then the adversary queried the oracle
+to get it. It is straightforward to transform any adversary that violates this
+condition into an adversary that makes these additional queries to the random oracle
+and wins with the same probability.
+
+The core conceptual insight of the proof is that the $k$-unique response  and $k$-programmable trapdoor-less zero-knowledge properties together ensures that the $k$-th move challenges in the trees of rewinding-based knowledge soundness are fresh and do not come from the simulator. This allows us to eliminate the simulation oracle in our rewinding argument and enables us to use the existing results of \cite{EPRINT:AttFehKlo21short} in later sections.
+
+% Finally, we note that for a proof system that is $k$-unique response, $k$-programmable trapdoor-less zero-knowledge, and $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-rewinding-based knowledge sound, the theorem requires that $k \leq k' \leq k''$. The first condition ensures that a $k'$-th move message $\zkproof_{\advse}[k']$ output by $\adv$ is fresh and not coming from the simulator. The second condition $k' \leq k''$ is to make the simulator able to program the random oracle for the challenges that $\advse$ needs to respond in the $k''$-th move.
+
+\input{proof-thm1-new}
+%\input{proof-thm1-old}
+
+%\hamid{7.3}{This should be rephrased or removed:}\michals{21.4}{Check now} 
+
+% We conjecture that based on the recent results on state restoration soundness~\cite{C:GhoTes21}, which effectively allows to query the verifier multiple times on different overlapping transcripts, the $q$ loss could be avoided. However, this would reduce the class of protocols covered by our results. More precisely, we would require that the input interactive protocols are state-restoration sound \cite{TCC:BenChiSpo16}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

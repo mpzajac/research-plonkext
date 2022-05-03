@@ -1,0 +1,108 @@
+% !TEX root = main.tex
+% !TEX spellcheck = en-US
+
+
+
+\section{Polynomial Commitment Schemes}
+\label{sec:pcom}
+A polynomial commitment scheme $\PCOM = (\kgen, \com, \open, \verify)$ consists of four
+algorithms and allows to commit to a polynomial $\p{f}$ and later open the evaluation in a
+point $z$ to some value $s=\p{f}(z)$. More formally:
+\begin{description}
+\item[$\kgen(1^\secpar, \maxdeg)$:] The key generation algorithm takes in a security
+  parameter $\secpar$ and a parameter $\maxdeg$ which determines the maximal degree of the
+  committed polynomial. It outputs a structured reference string $\srs$ (the commitment
+  key). Note that $\srs$ implicitly determines $\secpar$ and $\maxdeg$.
+\item[$\com(\srs, \p{f})$:] The commitment algorithm $\com(\srs, \p{f})$ takes
+  in $\srs$ and a polynomial $\p{f}$ with maximum degree $\maxdeg$, and outputs
+  a commitment $c$.
+\item[$\open(\srs, z, s, \p{f})$:] The opening algorithm
+  takes as input $\srs$, an evaluation point $z$, a
+  value $s$ and the polynomial $\p{f}$. It outputs an opening $o$.
+\item[$\verify(\srs, c, z, s, o)$:] The verification algorithm takes in $\srs$,
+  a commitment $c$, an evaluation point $z$, a value $s$ and an opening $o$. It
+  outputs 1 if $o$ is a valid opening for $(c, z, s)$ and 0 otherwise.
+\end{description} 
+
+A secure polynomial commitment $\PCOM$ should satisfy correctness, evaluation binding,
+opening uniqueness, hiding and knowledge-binding.  Note that since we are in the updatable
+setting, $\srs$ in these security definitions is the SRS that $\advse$ finalizes using the
+update oracle $\initU$ (See~\cref{fig:upd}).
+
+\begin{description}
+\item[Evaluation binding:] A $\ppt$ adversary $\adv$ which outputs a commitment
+  $\vec{c}$ and evaluation points $\vec{z}$ has at most negligible chances to open
+  the commitment to two different evaluations $\vec{s}, \vec{s'}$. That is, let
+  $k \in \NN$ be the number of committed polynomials, $l \in \NN$ number of
+  evaluation points, $\vec{c} \in \GRP^k$ be the commitments, $\vec{z} \in
+  \FF_p^l$ be the arguments the polynomials are evaluated at, $\vec{s},\vec{s}'
+  \in \FF_p^k$ the evaluations, and $\vec{o},\vec{o}' \in \FF_p^l$ be the
+  commitment openings. Then for every $\ppt$ adversary $\adv$
+	\[
+		\condprob{
+			\begin{matrix}
+				  \verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o}) = 1,  \\ 
+				  \verify(\srs, \vec{c}, \vec{z}, \vec{s}', \vec{o}') = 1, \\
+				  \vec{s} \neq \vec{s}'
+			\end{matrix}}
+			{
+			\begin{matrix}
+%				& \srs \gets \kgen(\secparam, \maxdeg),\\
+				 (\vec{c}, \vec{z}, \vec{s}, \vec{s}', \vec{o}, \vec{o}') \gets \adv^{\initU}(\maxdeg)
+			\end{matrix}
+		} \leq \negl\,.
+	\]
+
+\end{description}
+	
+\begin{description}
+\item[Hiding:] We also formalize notion of $k$-hiding property of a polynomial commitment scheme. Let $\HHH$ be a set of size $\maxdeg + 1$ and $\ZERO_\HHH$ its
+  vanishing polynomial. We say that a polynomial scheme is \emph{hiding} with
+  security $\epsh(\secpar)$ if for every $\ppt$ adversary $\adv$, $k \in \NN$,
+  probability
+  \begin{align*}
+    \condprob
+   { b' = b}{
+    (f_0, f_1, c, k, b') \gets \adv^{\initU, \oraclec}(\maxdeg, c), f_0, f_1 \in \FF^{\maxdeg}
+    [X]}
+\leq \frac{1}{2} + \eps(\secpar).
+  \end{align*}
+  Where $c = f'_b (\chi)$, for a random bit $b$ and the polynomial
+      $f'_b (X) = f_b + \ZERO_\HHH (X) (a_0 + a_1 X + \ldots a_{k - 1} X^{k -
+        1})$,
+and the oracle $\oraclec$ on adversary's evaluation query $x$ it adds $x$ to initially empty set
+      $Q_x$ and if $|Q_x| \leq k$, it provides $f'_b (x)$.
+ 
+  \end{description}
+
+\begin{description}
+\item[Commitment of knowledge:] Intuitively, when a commitment scheme is ``of knowledge'' then if an
+adversary produces a (valid) commitment $c$, which it can open correctly in an evaluation point, then it must
+know the underlying polynomial $\p{f}$ which commits to that value.  For every $\ppt$ adversary $\adv$ who produces
+  commitment $c$, evaluation $s$ and opening $o$ there
+  exists a $\ppt$ extractor $\ext$ such that
+\[
+  \condprob{
+    \begin{matrix}
+       \deg \p{f} \leq \maxdeg,
+       c = \com(\srs, \p{f}),\\
+       \verify(\srs, c, z, s, o) = 1
+    \end{matrix}
+        }{
+    \begin{matrix}
+      %
+     % & \srs \gets \kgen(\secparam, \maxdeg),\\
+      c \gets \adv^{\initU}(\maxdeg),
+      z \sample \FF_p \\
+      (s, o) \gets \adv(c, z), \\
+   \p{f} = \ext_\adv(\srs, c)\\
+    \end{matrix}}
+  \geq 1 - \epsk(\secpar).
+\]
+In that case we say that $\PCOM$ is $\epsk(\secpar)$-knowledge.
+\end{description}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
