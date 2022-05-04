@@ -31,15 +31,15 @@
 
 
 % lncs size (as printed in books, with small margins):
- % \usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={13.2cm,20.3cm},centering]{geometry}
-%\usepackage{fullpage}
+\usepackage[a4paper]{geometry}
+\usepackage{fullpage}
 \usepackage{soulutf8} \soulregister\cite7 \soulregister\ref7
 \soulregister\pageref7
 \usepackage{hyperref}
 \usepackage[color=yellow]{todonotes} \hypersetup{final}
 \usepackage{mathrsfs}
 \usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
-
+%\usepackage{fullpage}
 \usepackage[capitalise]{cleveref}
 % \crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
 % \Crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
@@ -136,9 +136,12 @@
 \input{preliminaries}
 \input{definitions-and-lemmas-for-multi-round-SRS-based-protocols-new}
 \input{simulation-extractability-the-general-result}
+\input{polynomial-commitment-schemes}
+\input{unique_opening_property}
 \input{concrete_preliminaries}
-\input{non-malleability-of-pfs}
-
+\input{non-malleability-of-pfs-eprint}
+\input{non-malleability-of-sfs}
+\input{non-malleability-of-mfs}
 %\input{polynomial-commitment-schemes}
 %\input{non-malleability-of-plonk-omitted-protocol-description}
 %\input{non-malleability-of-sfs}
@@ -170,12 +173,8 @@ to future work.
 \appendix
 
 %\input{additional-preliminaries-lemmas-and-proofs}
-\input{polynomial-commitment-schemes}
-\input{unique_opening_property}
 %\input{non-malleability-of-plonk-omitted-protocol-description}
-\input{non-malleability-of-pfs-proofs}
-\input{non-malleability-of-sfs}
-\input{non-malleability-of-mfs}
+%\input{non-malleability-of-pfs-proofs}
 %\input{simulation-soundness-definitions-and-the-general-result}
 %\input{from-arguments-to-proofs}
 
