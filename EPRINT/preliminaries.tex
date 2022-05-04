@@ -136,8 +136,8 @@ In the next section, we define security notions in the updatable setting by givi
 \begin{figure}[t!]
 	\centering
 	\centerline{\fbox{
-		\begin{minipage}[t]{1.15\linewidth}
-			\begin{pchstack}
+		\begin{minipage}[t]{0.5\linewidth}
+			\begin{pcvstack}
 			\procedure{$\initU(\intent, \srs_n,\{\rho_j \}_{j=1}^n)$}{
 				\pcif \srs \neq \bot: \pcreturn \bot \\
 				\pcif (\intent = \setup): \\
@@ -166,7 +166,7 @@ In the next section, we define security notions in the updatable setting by givi
 				%
 				\pcelse \pcreturn \bot
 			}
-			\end{pchstack}
+			\end{pcvstack}
 		\end{minipage}
 	}}
 	\caption{The oracle defines the notion of updatable SRS setup.} 
