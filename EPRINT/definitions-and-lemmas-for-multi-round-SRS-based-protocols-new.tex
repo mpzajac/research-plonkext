@@ -255,7 +255,7 @@ We say that $\psfs$ has \emph{unique responses for $k$} with security $\epsur(\s
 	\end{aligned}
 	\right] \leq \epsur(\secpar) 
 	\]
-	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1, \dots, a_\mu,a_{\mu+1}))$ behaves as $\verifier (\srs, \inp, \zkproof)$ except for using c as the $k$-th challenge instead of calling $\ro(\tzkproof[0..k]) $. Thus, $\adv$ can program the $k$-th challenge. 
+	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1, \dots, a_\mu,a_{\mu+1}), c)$ behaves as $\verifier (\srs, \inp, \zkproof)$ except for using c as the $k$-th challenge instead of calling $\ro(\tzkproof[0..k]) $. Thus, $\adv$ can program the $k$-th challenge. 
 	We say $\psfs$  is $\ur{k}$, if $\epsur(\secpar)$ is negligible.
 \end{definition}
 
@@ -267,7 +267,7 @@ The definition can be easily generalized to allow for programing the oracle on m
 
 \subsection{Rewinding-Based Knowledge Soundness (RBKS)}
 
-Before giving the definition of rewinding-based knowledge soundness for NIZK proof systems compiled via the $2\mu + 1$-message FS transformation, we first recall the notion of a tree of transcripts.
+Before giving the definition of rewinding-based knowledge soundness for NIZK proof systems compiled via the $(2\mu + 1)$-message FS transformation, we first recall the notion of a tree of transcripts.
 \begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
 	\label{def:tree_of_accepting_transcripts}
 %	Consider a $(2\mu + 1)$-message proof system. \markulf{24.04}{Is this meaningful for interactive or also non-interactive prove systems obtained via FS?} 
@@ -376,6 +376,7 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	\end{align*}
 	Here, $\srs$ is the finalized SRS. List $\Qsrs$ contains all $(\srs, \rho)$ of updated SRSs and their proofs, and list $\Qro$ contains all of the adversaries
 	queries to $\ro$ and the random oracle's answers, $\abs{\Qro}\leq q$.
+We call the protocol $(k, n)$-rewinding-based knowledge sound if $\tree$ is a $(k, n)$-tree of accepting transcripts.
 %	 We call the protocol $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound when $\tdv$ builds a $(n_1, \ldots, n_\mu)$-tree of transcripts.
 % \hamid{1.5}{We still need this sentence:  
 %\markulf{1.5}{Cut? We call the protocol $(k, n)$-rewinding-based knowledge sound if $\tree$ is a $(k, n)$-tree of accepting transcripts.}
