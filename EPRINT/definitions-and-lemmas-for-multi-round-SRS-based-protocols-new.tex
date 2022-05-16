@@ -100,14 +100,14 @@ former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less
 
 %In this paper we distinguish between simulators that require a trapdoor to simulate and those that do not. 
 We call a protocol \emph{trapdoor-less
- zero-knowledge} (TLZK) if there exists a simulator does not require the trapdoor, and works by programming the random oracle.
+ zero-knowledge} (TLZK) if there exists a simulator that does not require the trapdoor, and works by programming the random oracle.
  Moreover, the simulator may only be allowed to program the random oracle on point $\tzkproof[0,k]$, that is the simulator can only program the challenges that come after the $k$-th prover message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less zero-knowledge}. %, and define this in~\cref{def:TLZK}.
 
  Our definition of zero-knowledge for non-interactive
 arguments is in programmable ROM.
 %the explicitly programmable random oracle model where the simulator $\simulator$ can program the random oracle. 
 We model this using the oracles from Fig.~\ref{fig:real_simulator_oracles} that provide a stateful wrapper around $\simulator$.
-$\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h)$ allows for programming the simulated $\ro$ and is available only to $\simulator$. $\simOP(x, w)$ and $\simOP'(x)$ call the simulator. The former is used in the zero-knowledge definition and requires the statement and witness to be in the relation, the latter is used in the simulation extraction definition and does not require a witness input.
+$\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h)$ allows for programming the simulated $\ro$ and is available only to $\simulator$. $\simOP(\inp, \wit)$ and $\simOP'(\inp)$ call the simulator. The former is used in the zero-knowledge definition and requires the statement and witness to be in the relation, the latter is used in the simulation extraction definition and does not require a witness input.
 
 \begin{definition}[Updatable k-Programmable Trapdoor-Less Zero-Knowledge]
   \label{def:TLZK}
@@ -169,7 +169,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 	Let $\psni = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup. 
 	We say that
   $\psni$ is \emph{updatable simulation-extractable} with security loss $\epsse(\secpar,\accProb, q)$ if for
-  any $\ppt$ adversary $\adv$ that is given oracle access to setup oracle
+  any $\ppt$ adversary $\adv$ that is given oracle access to setup oracle\hamid{10.5}{We always call this "update oracle"!}
   $\initU$ and simulation oracle $\simulator\oracleo$ and that produces an accepting
   proof for $\psni$ with probability $\accProb$, where
 	\[
@@ -255,7 +255,7 @@ We say that $\psfs$ has \emph{unique responses for $k$} with security $\epsur(\s
 	\end{aligned}
 	\right] \leq \epsur(\secpar) 
 	\]
-	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1, \dots, a_\mu,a_{\mu+1}))$ behaves as $\verifier (\srs, \inp, \zkproof)$ except for using c as the $k$-th challenge instead of calling $\ro(\tzkproof[0..k]) $. Thus, $\adv$ can program the $k$-th challenge. 
+	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1, \dots, a_\mu,a_{\mu+1}), c)$ behaves as $\verifier (\srs, \inp, \zkproof)$ except for using c as the $k$-th challenge instead of calling $\ro(\tzkproof[0..k]) $. Thus, $\adv$ can program the $k$-th challenge. 
 	We say $\psfs$  is $\ur{k}$, if $\epsur(\secpar)$ is negligible.
 \end{definition}
 
@@ -267,7 +267,7 @@ The definition can be easily generalized to allow for programing the oracle on m
 
 \subsection{Rewinding-Based Knowledge Soundness (RBKS)}
 
-Before giving the definition of rewinding-based knowledge soundness for NIZK proof systems compiled via the $2\mu + 1$-message FS transformation, we first recall the notion of a tree of transcripts.
+Before giving the definition of rewinding-based knowledge soundness for NIZK proof systems compiled via the $(2\mu + 1)$-message FS transformation, we first recall the notion of a tree of transcripts.
 \begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
 	\label{def:tree_of_accepting_transcripts}
 %	Consider a $(2\mu + 1)$-message proof system. \markulf{24.04}{Is this meaningful for interactive or also non-interactive prove systems obtained via FS?} 
@@ -347,7 +347,7 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	\accProb = \condprob{
 	\begin{matrix}
 	  \verifier(\srs, \inp, \zkproof) = 1  \\
-	  \wedge
+	  \wedge \ 
 	(\inp, \zkproof) \not\in Q
 	\end{matrix}
 }{
@@ -363,6 +363,7 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	\Pr\left[
 		\begin{matrix}
 			\verifier(\srs, \inp, \zkproof) = 1,  \\
+			\wedge \ 
 			\REL(\inp, \wit) = 0
 		  \end{matrix}
 	\,\left|\,
@@ -374,8 +375,10 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	\end{aligned}\right.
 	\right] \leq \epscss(\secpar,\accProb, q).
 	\end{align*}
+	\hamid{10.5}{Should we remove $\srs$ as part of $\adv$'s output in the second probability equation? Also, why $\pi$ is not explicit as part of $\adv$'s output? (what is $\pi$ in the left side of probability in $\verifier(\srs, \inp, \zkproof) = 1$ then?)}
 	Here, $\srs$ is the finalized SRS. List $\Qsrs$ contains all $(\srs, \rho)$ of updated SRSs and their proofs, and list $\Qro$ contains all of the adversaries
 	queries to $\ro$ and the random oracle's answers, $\abs{\Qro}\leq q$.
+We call the protocol $(k, n)$-rewinding-based knowledge sound if $\tree$ is a $(k, n)$-tree of accepting transcripts.
 %	 We call the protocol $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound when $\tdv$ builds a $(n_1, \ldots, n_\mu)$-tree of transcripts.
 % \hamid{1.5}{We still need this sentence:  
 %\markulf{1.5}{Cut? We call the protocol $(k, n)$-rewinding-based knowledge sound if $\tree$ is a $(k, n)$-tree of accepting transcripts.}
