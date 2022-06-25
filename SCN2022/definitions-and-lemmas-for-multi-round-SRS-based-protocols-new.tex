@@ -107,7 +107,7 @@ We call a protocol \emph{trapdoor-less
 arguments is in the programmable ROM.
 %the explicitly programmable random oracle model where the simulator $\simulator$ can program the random oracle. 
 We model this using the oracles from Fig.~\ref{fig:real_simulator_oracles} that provide a stateful wrapper around $\simulator$.
-$\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h)$ allows for programming the simulated $\ro$ and is available only to $\simulator$. $\simOP(x, w)$ and $\simOP'(x)$ call the simulator. The former is used in the zero-knowledge definition and requires the statement and witness to be in the relation, the latter is used in the simulation extraction definition and does not require a witness input.
+$\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h)$ allows for programming the simulated $\ro$ and is available only to $\simulator$. $\simOP(\inp, \wit)$ and $\simOP'(\inp)$ call the simulator. The former is used in the zero-knowledge definition and requires the statement and witness to be in the relation, the latter is used in the simulation extraction definition and does not require a witness input.
 
 \begin{definition}[Updatable k-Programmable Trapdoor-Less Zero-Knowledge]
   \label{def:TLZK}

@@ -53,7 +53,9 @@
 	\end{figure}	
 %
 
-	Eventually, $\advse$ outputs an instance and proof $(\inp, \zkproof)$. $\advcss$ returns the same values as long as $\tzkproof[0..i] \notin \Qprog$, $i\in[1,\mu]$.\hamid{14.5}{I am probably missing something, but I don't see how we relate this to $k$-UR property in lemma 1!} This models that the proof output by $\advcss$ must not contain any programmed queries as such a proof would not be consistent to~$\ro$ in the RBKS experiment. If $\advse$ outputs a proof that does contain programmed challenges, then $\advcss$ aborts. We denote this event by $\event{E}$.
+	Eventually, $\advse$ outputs an instance and proof $(\inp, \zkproof)$. $\advcss$ returns the same values as long as $\tzkproof[0..i] \notin \Qprog$, $i\in[1,\mu]$.
+	%\hamid{14.5}{I am probably missing something, but I don't see how we relate this to $k$-UR property in lemma 1!}
+	This models that the proof output by $\advcss$ must not contain any programmed queries as such a proof would not be consistent to~$\ro$ in the RBKS experiment. If $\advse$ outputs a proof that does contain programmed challenges, then $\advcss$ aborts. We denote this event by $\event{E}$.
 	
 	\begin{lemma}
 		Probability that $\event{E}$ happens is upper-bounded by $\epsur(\secpar)$. 
