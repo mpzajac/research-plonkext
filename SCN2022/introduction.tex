@@ -25,7 +25,7 @@ e.g.~\cite{SP:BCGGMT14}, require a stronger property --
 \emph{simulation-extractability} (SE) -- that corresponds much more
 closely to existential unforgeability of signatures.
 
-This correspondence is made precise by SoK, which use an
+This correspondence is made precise by SoK, which uses an
 NP-language instance as the public verification key. Instead of signing with the secret key, SoK signing requires knowledge of the
 NP-witness. Intuitively, an SoK is thus a proof of knowledge (PoK) of a witness that is tied to a message. In fact, many signatures schemes, e.g., Schnorr, can be read as SoK for a specific hard relation, e.g., DL~\cite{AC:DHLW10}. To model strong existential unforgeability of SoK signatures, even
 when given an oracle for obtaining signatures on different instances, an attacker
@@ -135,7 +135,7 @@ We investigate the non-malleability properties of zkSNARK protocols obtained by 
 We propose a definition of simulation extractability in the updatable SRS setting called USE, that captures the additional power the adversary gets by being able to update the SRS. 
     
   \item \emph{Theorem for USE of FS-compiled proof systems.} We
-         define three notions in the updatable SRS and ROM model, 
+         define three notions in the updatable SRS and ROM, 
         \emph{trapdoor-less zero-knowledge},
         a \emph{unique response} property, and \emph{rewinding-based
         knowledge soundness}. Our main theorem shows that multi-message FS-compiled proof systems that satisfy these notions \emph{are USE
@@ -155,7 +155,7 @@ We prove that the most efficient updatable SRS SNARKS -- Plonk/Sonic/Marlin -- s
 \item
   \emph{SNARKY signatures in the updatable setting.} Our results validate the folklore that the Fiat--Shamir transform is a natural means for constructing signatures of knowledge. This gives rise to the first SoK in the updatable setting and confirms that a much larger class of zkSNARKs, besides \cite{C:GroMal17}, can be lifted to SoK.
 
-\item \emph{Broad applicability.} The updatable SRS plus ROM model includes both the trusted SRS and the ROM model as special cases. This implies the relevance of our theorem for transparent zkSNARKs such as Halo2 and Plonky2 that replace the polynomial commitments of~Kate et al.~\cite{AC:KatZavGol10} with commitments from Bulletproof~\cite{SP:BBBPWM18} and STARKs~\cite{EPRINT:BBHR18}, respectively.
+\item \emph{Broad applicability.} The updatable SRS plus ROM includes both the trusted SRS and the ROM model as special cases. This implies the relevance of our theorem for transparent zkSNARKs such as Halo2 and Plonky2 that replace the polynomial commitments of~Kate et al.~\cite{AC:KatZavGol10} with commitments from Bulletproof~\cite{SP:BBBPWM18} and STARKs~\cite{EPRINT:BBHR18}, respectively.
   
 \end{itemize}
 
@@ -165,7 +165,7 @@ We prove that the most efficient updatable SRS SNARKS -- Plonk/Sonic/Marlin -- s
 
 At a high level, the proof of our main theorem for updatable simulation
 extractability is along the lines of the simulation extractability proof for
-FS-compiled sigma protocol from~\cite{INDOCRYPT:FKMV12}. However, our theorem
+FS-compiled sigma protocols from~\cite{INDOCRYPT:FKMV12}. However, our theorem
 introduces new notions that are more general to allow us to consider proof
 systems that are richer than sigma protocols and support an updatable setup. We
 discuss some of the technical challenges below.
@@ -185,9 +185,9 @@ protocols requires the extraction of a witness from any two transcripts with the
 same first message. However, most zkSNARK protocols do not satisfy this notion.
 We put forth a notion analogous to special soundness that is more general and
 applicable to a wider class of protocols. Namely, protocols compiled using multi-round FS that rely on an (updatable) SRS. $\plonkprot$, $\sonicprot$, and
-$\marlinprot$ have more than three messages, and the number of transcripts required for extraction is more than two. Concretely, $(3 \noofc + 6)$ for Plonk,  $(\noofc + 1)$ for Sonic
+$\marlinprot$ have more than three messages, and the number of transcripts required for extraction is more than two. Concretely, $(3 \noofc + 6)$ for Plonk,  $(\noofc + 1)$ for Sonic,
 %, where $\multconstr$ and $\linconstr$ are the numbers of multiplicative and linear constraints
-, and $(2 \noofc + 3)$ for Marlin, where $\noofc$ is the number of constraints in the proven circuit. Hence, we do not have a pair of transcripts but a \emph{tree of transcripts}.
+and $(2 \noofc + 3)$ for Marlin, where $\noofc$ is the number of constraints in the proven circuit. Hence, we do not have a pair of transcripts but a \emph{tree of transcripts}.
 
 Furthermore, the protocols we consider are arguments and rely on a SRS that comes with a trapdoor. An adversary in
 possession of the trapdoor can produce multiple valid proof transcripts potentially for false statements without
@@ -216,7 +216,7 @@ $k$ of its messages. For our proof, it is sufficient that Plonk is $\ur{3}$, and
 
 
 \oursubsub{Trapdoor-Less Zero-Knowledge (TLZK).} 
-The premises of our main theorem include two computational properties that do not mention a simulator, RBKS and UR, The theorem states that together with a suitable property for the simulator of the zero-knowledge property, they imply USE.
+The premises of our main theorem include two computational properties that do not mention a simulator, RBKS and UR. The theorem states that together with a suitable property for the simulator of the zero-knowledge property, they imply USE.
 %
 Our key technique is to simulate simulation queries when reducing to RBKS and UR. For this it is convenient that the zero-knowledge simulator be trapdoor-less, that is can produce proofs without relying on the
 knowledge of the trapdoor. Simulation is based purely on the simulators early control over the challenge. 

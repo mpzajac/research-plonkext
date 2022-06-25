@@ -1,7 +1,8 @@
 % !TEX root = main.tex
 % !TEX spellcheck = en-US
 \section{Introduction}
-Zero-knowledge proof systems, which allow a prover to convince a verifier of an NP statement $\REL(\inp,\wit)$ \hamid{10.5}{Why we call $\REL(\inp,\wit)$ the statement? Should it not be $\inp$?} without revealing anything else about the witness $\wit$ have broad application in cryptography and theory of computation~\cite{FOCS:GolMicWig86,STOC:Fortnow87,C:BGGHKMR88}.
+Zero-knowledge proof systems, which allow a prover to convince a verifier of an NP statement $\REL(\inp,\wit)$ %\hamid{10.5}{Why we call $\REL(\inp,\wit)$ the statement? Should it not be $\inp$?}
+without revealing anything else about the witness $\wit$ have broad application in cryptography and theory of computation~\cite{FOCS:GolMicWig86,STOC:Fortnow87,C:BGGHKMR88}.
 When restricted to computationally sound proof systems, also called \emph{argument systems}\footnote{We use both terms interchangeably.}, proof size can be shorter than the size of the witness~\cite{brassard1988minimum}. 
 Zero-knowledge Succinct Non-interactive ARguments of Knowledge (zkSNARKs) are zero-knowledge argument systems that additionally have two succinctness properties: small proof sizes and fast verification. 
 Since their introduction in~\cite{FOCS:Micali94}, zk-SNARKs have been a versatile design tool for secure cryptographic protocols. They became particularly relevant for blockchain applications that demand short proofs and fast verification for on-chain storage and processing. Starting with their deployment by Zcash~\cite{SP:BCGGMT14}, they have seen broad adoption, e.g., for privacy-preserving cryptocurrencies and scalable and private smart contracts in Ethereum.%\footnote{\url{https://z.cash/} and \url{https://ethereum.org} respectively}.
@@ -216,7 +217,7 @@ $k$ of its messages. For our proof, it is sufficient that Plonk is $\ur{3}$, and
 
 
 \oursubsub{Trapdoor-Less Zero-Knowledge (TLZK).} 
-The premises of our main theorem include two computational properties that do not mention a simulator, RBKS and UR, The theorem states that together with a suitable property for the simulator of the zero-knowledge property, they imply USE.
+The premises of our main theorem include two computational properties that do not mention a simulator, RBKS and UR. The theorem states that together with a suitable property for the simulator of the zero-knowledge property, they imply USE.
 %
 Our key technique is to simulate simulation queries when reducing to RBKS and UR. For this it is convenient that the zero-knowledge simulator be trapdoor-less, that is can produce proofs without relying on the
 knowledge of the trapdoor. Simulation is based purely on the simulators early control over the challenge. 
