@@ -177,6 +177,57 @@ In the next section, we define security notions in the updatable setting by givi
 If $\REL$ comes with any auxiliary input, the latter is benign. 
 We elide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
 
+\begin{figure}[t!]
+	\centering
+	% \small
+	\centerline{\fbox{
+			\begin{minipage}[t]{0.75\linewidth}
+				\begin{pcvstack}
+					\begin{pchstack}
+						\procedure{$\kgen(\secparam, \maxdeg)$}{
+							\chi \sample \FF_p \\ [\myskip]
+							\srs := 
+							\left( \gone{\smallset{\chi^i}_{i = 0}^{\maxdeg}},
+							\gtwo{\chi} \right); \\
+							\rho =  \left(\gone{\chi, \chi}, \gtwo{\chi}\right) \\ [\myskip]
+							\pcreturn (\srs, \rho) \\ [\myskip]
+						}
+						%
+						\pchspace
+						% 
+						\procedure{$\upd(\srs, \{\rho_j \}_{j=1}^n)$}{
+							\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\maxdeg}},
+							\gtwo{B} \right) \\ [\myskip]
+							\chi' \sample \FF_p  \\ [\myskip]
+							\srs' := 
+							\left( \gone{\smallset{{\chi'}^i A_i}_{i = 0}^{\maxdeg}},
+							\gtwo{\chi' B} \right); \\
+							\rho' =	\left( \gone{\chi' A_1, \chi'}, \gtwo{\chi'}\right) \\ [\myskip]
+							\pcreturn (\srs', \rho')
+						}
+					\end{pchstack}
+					\pcvspace
+					\begin{pchstack}
+						%
+						\procedure{$\verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$}{
+							\text{Parse }  \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\maxdeg}},
+							\gtwo{B} \right) \text{and } \{\rho_j \}_{j=1}^n \text{ as } \left\{\left( P_j, \bP_j, \hP_j \right)\right\}_{j=1}^n \\ [\myskip]
+							\text{Verify Update proofs: } \\ [\myskip]
+							\t \bP_1 = P_1 \\ [\myskip]
+							\t P_j \bullet \gtwo{1} = P_{j-1} \bullet \hP_j \quad \forall j \geq 2 \\ [\myskip]
+							\t \bP_n \bullet \gtwo{1} = \gone{1} \bullet \hP_n \\ [\myskip]
+							\text{Verify SRS structure: } \\ [\myskip]
+							\t \gone{A_i} \bullet \gtwo{1} = \gone{A_{i-1}} \bullet \gtwo{B} \text{ for all } 0 < i \leq \maxdeg %\\ [\myskip]
+						}
+						%
+					\end{pchstack}
+				\end{pcvstack}
+				%
+	\end{minipage}}}
+	\caption{Updatable SRS scheme $\SRScer$ for $\PCOMp$} 
+	\label{fig:upd-scheme}
+\end{figure}
+
 \subsection{Multi-message Fiat-Shamir Compiled Provers and Verifiers}
 Given interactive prover and (public coin) verifier $\prover', \verifier'$ that exchange messages resulting in transcript $\tzkproof = (a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
 $\prover'$ and $c_i$ comes from $\verifier'$, the $(2\mu + 1)$-message Fiat-Shamir heuristic defines non-interactive provers and verifiers $\prover, \verifier$ as follows:
