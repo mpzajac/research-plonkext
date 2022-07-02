@@ -559,7 +559,6 @@
 %\titlerunning{Non-Malleability of the FS transform Revisited [\ldots]}
 \maketitle
 
-
 \begin{abstract}
   We show that three popular universal zero-knowledge SNARKs (Plonk, Sonic, and Marlin) are updatable SRS simulation extractable NIZKs and signatures of knowledge
   (SoK) out-of-the-box avoiding any compilation overhead.
@@ -1881,7 +1880,7 @@ Given rewinding-based knowledge soundness, $\ur{3}$ and trapdoor-less zero-knowl
 \newcommand{\vqc}{\vec{q_{C}}}
 
 \subsection{Plonk Protocol Description}
-\label{sec:plonk_explained}
+%\label{sec:plonk_explained}
 \oursubsub{The constraint system.}
 Assume $\CRKT$ is a fan-in two arithmetic circuit, whose
 fan-out is unlimited and has $\numberofconstrains$ gates and $\noofw$ wires
@@ -1915,7 +1914,7 @@ Public inputs $\brak{\inp_j}_{j = 1}^{\instsize}$ are enforced by adding the con
 for some $i \in \range{1}{\noofc}$.
 
 \oursubsub{Algorithms rolled out}
-\label{sec:plonk_explained}
+%\label{sec:plonk_explained}
 \plonk{} argument system is universal. That is, it allows to verify computation
 of any arithmetic circuit which has up to $\numberofconstrains$
 gates using a single SRS. However, to make computation efficient, for each
