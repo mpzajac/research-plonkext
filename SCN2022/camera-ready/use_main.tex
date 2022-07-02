@@ -36,6 +36,7 @@
 \usepackage{soulutf8} \soulregister\cite7 \soulregister\ref7
 \soulregister\pageref7
 \usepackage{hyperref}
+\usepackage{bbding}
 \usepackage[color=yellow]{todonotes} \hypersetup{final}
 \usepackage{mathrsfs}
 \usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
@@ -536,11 +537,11 @@
 
 %\author{Chaya Ganesh \and Hamidreza Khoshakhlagh \and Markulf Kohlweiss \and \\ Anca Nitulescu \and Michał Zając} 
 
-\author{Chaya Ganesh\inst{1} \and Hamidreza Khoshakhlagh\inst{2} \and Markulf Kohlweiss\inst{3} \and \\ Anca Nitulescu\inst{4} \and Michał Zając\inst{5}} 
-\institute{Indian Institute of Science
+\author{Chaya Ganesh\inst{1}\orcidID{0000-0002-2909-9177} \and Hamidreza Khoshakhlagh\inst{2}\orcidID{0000-0001-7220-0763}(\Envelope) \and Markulf Kohlweiss\inst{3} \and \\ Anca Nitulescu\inst{4} \and Michał Zając\inst{5}} 
+\institute{Indian Institute of Science, India
   \email{chaya@iisc.ac.in}
   \and
-  Aarhus University 
+  Aarhus University, Denmark
   \email{hamidreza@cs.au.dk} \\
   \and
   University of Edinburgh and IOHK 
@@ -1614,13 +1615,12 @@ The core conceptual insight of the proof is that the $k$-unique response  and $k
 		We build an adversary $\advur^{\initU, \ro} (\secpar; r)$ that has access to the random oracle $\ro$ and update oracle $\initU$. $\advur$ uses $\advcss$ to break the $\ur{k}$ property of $\psfs$. 
 		%Namely, for randomness $r = (r_{\advse}, \rsim)$, $\advur^{\ro, \initU} (\secpar; r)$ runs $\advse^{\initU, \simOH, \simOP'}(\secparam; r_{\advse})$ internally and answers its oracle queries as $\advcss$ did.
 		
-		When $\advcss$ outputs a proof $\zkproof$ for $\inp$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $\Qro$ until it finds $\tzkproofs[0..k]$ such that $\tzkproof[0..k] = \tzkproofs[0..k]$ and a programmed random oracle query $\tzkproofs[k].\ch$ on $\tzkproofs[0..k]$.	$\advur$ returns two proofs $\zkproof$ and $\zkproofs$ for $\inp$:
-		\begin{align*}
-		\zkproof_1 = \zkproofs =  (\zkproofs[1..k], \zkproofs[k + 1..\mu + 1])\\
-		\zkproof_2 = \zkproof \;\;\;\;\, = (\zkproofs[1..k], \;\;\;\;\zkproof[k + 1..\mu + 1])
-		\end{align*}
+		When $\advcss$ outputs a proof $\zkproof$ for $\inp$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $\Qro$ until it finds $\tzkproofs[0..k]$ such that $\tzkproof[0..k] = \tzkproofs[0..k]$ and a programmed random oracle query $\tzkproofs[k].\ch$ on $\tzkproofs[0..k]$.	$\advur$ returns two proofs $\zkproof$ and $\zkproofs$ for $\inp$,
+%		\begin{align*}
+%		\zkproof_1 = \zkproofs =  (\zkproofs[1..k], \zkproofs[k + 1..\mu + 1])\\
+%		\zkproof_2 = \zkproof \;\;\;\;\, = (\zkproofs[1..k], \;\;\;\;\zkproof[k + 1..\mu + 1])
+%		\end{align*}
 		and the challenge $\tzkproofs[k].\ch=\tzkproof[k].\ch$.
-		
 		Importantly, both proofs are  w.r.t~the unique response verifier. The first, since it is a correctly computed simulated proof for which the unique response property definition allows any challenges at $k$. The latter, since it is an accepting proof produced by the adversary.
 		We have that $\zkproof \neq \zkproofs$ as otherwise $\advse$ does not win the simulation extractability game as $\zkproof \in Q$. On the other hand, if the proofs are different, then $\advur$ breaks $\ur{k}$-ness of $\psfs$. This happens only with  probability $\epsur(\secpar)$. 
 		\qed
@@ -2240,10 +2240,10 @@ definition of SE than the one we consider in this paper, and we leave exploring 
 to future work.
 \fi
 
-\bibliographystyle{splncs}
+\bibliographystyle{splncs04}
 %\bibliographystyle{splncs_srt_helger}
 
-\bibliography{abbrev3,use}
+\bibliography{abbrev3,crypto,more}
 
 \clearpage
 %{\Huge{Supplementary Materials}}
