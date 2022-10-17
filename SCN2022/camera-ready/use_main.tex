@@ -1,0 +1,2303 @@
+% l\newif\ifupdate
+% \updatetrue % Uncomment to compile non-updatable version.
+
+% !TEX spellcheck = en-US
+% \let\accentvec\vec              
+%\documentclass[runningheads,11pt]{llncs}
+%\documentclass[10pt]{llncs}
+\documentclass[10pt]{llncs}
+\pagestyle{plain}
+\let\spvec\vec
+\let\vec\accentvec
+
+\newcommand\hmmax{0}
+\newcommand\bmmax{0}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\widebar}{0}{mathx}{"73}
+
+\let\spvec\vec
+\usepackage{amssymb,amsmath}
+\let\vec\spvec
+%\usepackage{newtxmath,newtxtext}
+\usepackage{newtxtext}
+\usepackage[T1]{fontenc}
+\usepackage[most]{tcolorbox}
+  \def\vec#1{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
+  {\mbox{\boldmath$\textstyle#1$}} {\mbox{\boldmath$\scriptstyle#1$}}
+  {\mbox{\boldmath$\scriptscriptstyle#1$}}}
+
+
+% lncs size (as printed in books, with small margins):
+ % \usepackage[paperheight=23.5cm,paperwidth=15.5cm,text={13.2cm,20.3cm},centering]{geometry}
+%\usepackage{fullpage}
+\usepackage{soulutf8} \soulregister\cite7 \soulregister\ref7
+\soulregister\pageref7
+\usepackage{hyperref}
+\usepackage{bbding}
+\usepackage[color=yellow]{todonotes} \hypersetup{final}
+\usepackage{mathrsfs}
+\usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
+
+\usepackage[capitalise]{cleveref}
+% \crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
+% \Crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
+% \
+\usepackage{cite} 
+\usepackage{booktabs}
+\usepackage{paralist}
+%\usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed}
+\usepackage{caption}
+\captionsetup{belowskip=0pt}
+\usepackage{bm}
+\usepackage{url}
+%\usepackage{dirtytalk}
+%\usepackage[margin=1in,a4paper]{geometry}
+\usepackage[normalem]{ulem}
+\usepackage{dashbox}
+\newcommand\dboxed[1]{\dbox{\ensuremath{#1}}}
+\usepackage{setspace}
+
+\usepackage{floatrow}
+\floatsetup[figure]{font=footnotesize}
+ 
+%%%%%%%%%%%Algorithms and  inputs%%%%%%%%%%%
+\newcommand{\inpa}{\inp_\adv}
+\newcommand{\inpb}{\inp_\bdv}
+\newcommand{\inps}{\inp_\simulator}
+\newcommand{\zkproofa}{\zkproof_\adv}
+\newcommand{\zkproofb}{\zkproof_\bdv}
+\newcommand{\zkproofs}{\zkproof_\simulator}
+\newcommand{\tzkproofs}{\tilde\zkproof_\simulator}
+
+\newcommand{\tra}{\trans_\adv}
+\newcommand{\trb}{\trans_\bdv}
+
+%%%%%%Preliminaries%%%
+\newcommand{\samplespace}{\Omega}
+\newcommand{\eventspace}{\mathcal{F}}
+\newcommand{\probfunction}{\mu}
+
+\def\pcassert{\mathbf{assert}\ }
+
+
+%%%%%%%%%%%%%SE MAcros%%%%%%%%%%%%
+
+\newcommand{\SRScer}{\pcalgostyle{SRS}}
+\renewcommand{\kgen}{\pcalgostyle{GenSRS}}
+\newcommand{\upd}{\pcalgostyle{UpdSRS}}
+\newcommand{\verifyCRS}{\pcalgostyle{VerifySRS}}
+\newcommand{\simO}{\simulator\oracleo}
+\newcommand{\simOH}{\simO.\ro}
+\newcommand{\simOHprog}{\simO.\prog}
+\newcommand{\simOP}{\simO.\prover}
+\newcommand{\initU}{\pcalgostyle{Upd}\oracleo}
+\newcommand{\Adv}{\pcalgostyle{Adv}}
+
+\newcommand{\uks}{\pcvarstyle{uks}}
+\newcommand{\use}{\pcvarstyle{use}}
+\newcommand{\luse}{\pcvarstyle{luse}}
+\newcommand{\UKS}{\pcvarstyle{UKS}}
+\newcommand{\USE}{\pcvarstyle{USE}}
+\newcommand{\SE}{\pcvarstyle{SE}}
+\newcommand{\LUSE}{\pcvarstyle{LUSE}}
+
+
+\newtcbox{\dottedbox}[1][]{
+	math upper,
+	baseline=0.3\baselineskip,
+	%	equal height group=dashedbox,
+	nobeforeafter,
+	colback=white,
+	boxrule=0pt,
+	enhanced jigsaw,
+	boxsep=0pt,
+	top=2pt,
+	bottom=2pt,
+	left=2pt,
+	right=2pt,
+	borderline horizontal={0.5pt}{0pt}{dotted},
+	borderline vertical={0.5pt}{0pt}{dotted},
+	%	drop lifted shadow,
+	#1
+}
+
+
+\newtcbox{\dashedbox}[1][]{
+	math upper,
+	baseline=0.3\baselineskip,
+	%	equal height group=dashedbox,
+	nobeforeafter,
+	colback=white,
+	boxrule=0pt,
+	enhanced jigsaw,
+	boxsep=0pt,
+	top=2pt,
+	bottom=2pt,
+	left=2pt,
+	right=2pt,
+	borderline horizontal={0.5pt}{0pt}{dashed},
+	borderline vertical={0.5pt}{0pt}{dashed},
+	%	drop lifted shadow,
+	#1
+}
+
+\newtcbox{\fedbox}[1][]{
+	math upper,
+	baseline=0.3\baselineskip,
+	%	equal height group=dashedbox,
+	nobeforeafter,
+	colback=white,
+	boxrule=0pt,
+	enhanced jigsaw,
+	boxsep=0pt,
+	top=2pt,
+	bottom=2pt,
+	left=2pt,
+	right=2pt,
+	borderline horizontal={0.5pt}{0pt}{black},
+	borderline vertical={0.5pt}{0pt}{black},
+	%	drop lifted shadow,
+	#1
+}
+
+
+%%%%%%%%%%%%%%5
+\newcommand{\newdefs}[1] {\setlength{\fboxsep}{1pt}\colorbox{gray!20}{\(#1\)}}
+
+\newcommand{\COMMENT}[1]  {}
+
+%general formatting
+\newcommand{\pcvarstyle}[1]{\mathsf{#1}}
+\renewcommand{\comment}[1]{{\color{lightgray}#1}}
+\newcommand{\continue}{{\Huge{\hl{$\cdots$}}}}
+% \renewcommand{\case}[1]{\medskip\noindent{\fbox{Case #1:}}}
+% \newcommand{\ncase}[1]{\medskip\noindent{\fbox{#1:}}}
+% \newcommand{\ngame}[1]{\medskip\noindent{\fbox{Game $\game{#1}$:}}}
+\newcommand{\mhyph}{\text{-}}
+\renewcommand{\case}[1]{\medskip\noindent{\textbf{Case #1:}}}
+\newcommand{\ncase}[1]{\medskip\noindent{\textbf{#1:}}}
+\newcommand{\ngame}[1]{\medskip\noindent{\textbf{Game #1:}}}
+\newcommand{\conclude}{\medskip\noindent{}}
+\newcommand{\myskip}{-0.16\baselineskip}
+
+% General mathematics
+\newcommand{\range}[2] {[#1 \, .. \, #2]}
+\newcommand{\SD}{\Delta}
+\newcommand{\smallset}[1] {\{#1\}}
+\newcommand{\bigset}[1] {\left\{#1\right\}}
+\newcommand{\GRP} {\mathbb{G}}
+\newcommand{\HRP} {\mathbb{H}}
+\newcommand{\pair} {\hat{e}}
+\newcommand{\brak}[1] {\left(#1\right)}
+\newcommand{\sbrak}[1] {(#1)}
+\newcommand{\alg}[1] {\pcalgostyle{#1}}
+\newcommand{\image} {\operatorname{im}}
+\newcommand{\myland} {\,\land\,}
+\newcommand{\mylor} {\,\lor\,}
+\newcommand{\vect}[1] {\operatorname{vect}(#1)}
+\newcommand{\w}{\omega}
+%l\renewcommand{\pcpolynomialstyle} [1] {#1}
+\newcommand{\const}{\pcpolynomialstyle{const}}
+\newcommand{\p}[1]{\pcpolynomialstyle{#1}}
+\newcommand{\ptx}{\p{t_{X^0}}}
+\newcommand{\ptxsim}{\p{\tilde{t}_{X^0}}}
+\newcommand{\ev}[1]{\widetilde{\pcpolynomialstyle{#1}}}
+\newcommand{\maxconst}{\pcvarstyle{max}}
+\newcommand{\numberofconstrains}{\pcvarstyle{n}}
+\newcommand{\noofc}{\numberofconstrains}
+\newcommand{\noofw}{\pcvarstyle{m}}
+\newcommand{\dconst}{\pcvarstyle{d}}
+\newcommand{\multconstr}{\pcvarstyle{Q_{mult}}}
+\newcommand{\linconstr}{\pcvarstyle{Q_{lin}}}
+\newcommand{\expected}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\infrac}[2]{#1 / #2}
+\newcommand{\eps}{\varepsilon}
+\DeclareMathOperator{\SPAN}{Span}
+\newcommand{\maxdeg}{\pcvarstyle{max}}
+%polynomials
+\newcommand{\pf}{\p{f}}
+\newcommand{\pF}{\p{F}}
+\newcommand{\pa}{\p{a}}
+\newcommand{\pb}{\p{b}}
+\newcommand{\pc}{\p{c}}
+\newcommand{\pz}{\p{z}}
+\newcommand{\pt}{\p{t}}
+\newcommand{\pR}{\p{R}}
+\newcommand{\pr}{\p{r}}
+\newcommand{\ptlo}{\p{t_{lo}}}
+\newcommand{\ptmid}{\p{t_{mid}}}
+\newcommand{\pthi}{\p{t_{hi}}}
+\newcommand{\pS}{\p{S}}
+\newcommand{\pT}{\p{T}}
+\newcommand{\pta}{\tilde{\p{a}}}
+\newcommand{\ptb}{\tilde{\p{b}}}
+\newcommand{\ptc}{\tilde{\p{c}}}
+\newcommand{\ptz}{\tilde{\p{z}}}
+\newcommand{\ptZH}{\tilde{\p{Z_H}}}
+\newcommand{\vX}{\vec{X}}
+\newcommand{\vB}{\vec{B}}
+\newcommand{\va}{\vec{a}}
+\newcommand{\vb}{\vec{b}}
+\newcommand{\vc}{\vec{c}}
+
+%reduction
+\newcommand{\tb}{\tilde{b}} 
+\newcommand{\tw}{\tilde{w}} 
+
+% bilinear maps
+
+\newcommand{\bmap}[2] {\left[#1\right]_{#2}}
+\newcommand{\gone}[1] {\bmap{#1}{1}}
+\newcommand{\gtwo}[1] {\bmap{#1}{2}}
+\newcommand{\gi} {\iota}
+\newcommand{\gtar}[1] {\bmap{#1}{T}}
+\newcommand{\grpgi}[1] {\bmap{#1}{\gi}}
+\newcommand{\gnone}[1]{\left[#1\right]}
+
+\newcommand{\msg}[1]{\mathtt{#1}}
+
+% zero knowledge
+\newcommand{\oracleo}{\mathsf{O}}
+\newcommand{\oraclesrs}{\oracleo_{srs}}
+\newcommand{\oraclec}{\oracleo_\cdv}
+% for srs updatability
+\newcommand{\intent}{\msg{intent}}
+\newcommand{\update}{\msg{update}}
+\newcommand{\setup}{\msg{setup}}
+\newcommand{\final}{\msg{final}}
+\newcommand{\verifysrs}{\verify_{srs}}
+\newcommand{\srsupdate}{\pcalgostyle{Update}}
+\newcommand{\crs}{\pcvarstyle{crs}}
+\newcommand{\srs}{\pcvarstyle{srs}}
+\newcommand{\td}{\pcvarstyle{td}}
+\newcommand{\ip}[2]{\left\langle #1, #2\right\rangle}
+\newcommand{\zkproof}{\pi}
+\newcommand{\tzkproof}{\tilde{\zkproof}}
+\newcommand{\proofsystem}{\pcschemestyle{\Psi}}
+\newcommand{\ps}{\proofsystem}
+\newcommand{\psfs}{\proofsystem_\fs}
+\newcommand{\psni}{\proofsystem_{\mathsf{NI}}}
+
+% \newcommand{\ps}{\proofsystem}
+\newcommand{\nuppt}{\pcmachinemodelstyle{NUPPT}}
+\newcommand{\ro}{\mathcal{H}}
+\newcommand{\rof}[2]{\mathbf{\Omega}_{#1, #2}}
+\newcommand{\trans}{\pcvarstyle{trans}}
+\newcommand{\tr}{\pcvarstyle{tr}}
+\newcommand{\instsize}{\pcvarstyle{\ell}}
+\newcommand{\KG} {\mathsf{K}}
+\newcommand{\kcrs} {\KG_{\crs}}
+\renewcommand{\dist}{\ddv}
+\newcommand{\fs}{\pcalgostyle{FS}}
+\newcommand{\sigmaprot}{\pcalgostyle{\Sigma}}
+\newcommand{\se}{\pcvarstyle{se}}
+\newcommand{\snd}{\pcvarstyle{snd}}
+\newcommand{\zk}{\pcvarstyle{zk}}
+
+
+%rewinding---tree of transcripts
+\newcommand{\pcboolstyle}[1]{\mathtt{#1}}
+\newcommand{\treebuild}{\pcalgostyle{TreeBuild}}
+\newcommand{\tree}{\pcvarstyle{T}}
+\newcommand{\counter}{\pcvarstyle{counter}}
+
+
+%PLONK related
+\newcommand{\pcschemestyle}[1]{\bm{\mathsf{#1}}}
+\newcommand{\plonkprot}{\pcschemestyle{P}}
+\newcommand{\plonkprotfs}{\pcschemestyle{P}_\fs}
+\newcommand{\sonicprot}{\pcschemestyle{S}}
+\newcommand{\sonicprotfs}{\pcschemestyle{S}_\fs}
+\newcommand{\marlinprot}{\pcschemestyle{M}}
+\newcommand{\marlinprotfs}{\pcschemestyle{M}_\fs}
+\newcommand{\selector}[1]{\pcvarstyle{q_{#1}}}
+\newcommand{\selmulti}{\selector{M}}
+\newcommand{\selleft}{\selector{L}}
+\newcommand{\selright}{\selector{R}}
+\newcommand{\seloutput}{\selector{O}}
+\newcommand{\selconst}{\selector{C}}
+\newcommand{\chz}{\mathfrak{z}}
+\newcommand{\ochz}{{\omega \mathfrak{z}}}
+\newcommand{\reduction}{\rdv}
+\newcommand{\tdv}{\pcadvstyle{T}}
+\newcommand{\ch}{\pcvarstyle{ch}}
+\newcommand{\Ch}{\pcvarstyle{Ch}}
+
+\newcommand{\game}[1]{\pcalgostyle{G}_{#1}}
+
+\newcommand{\lag}{\p{L}}
+\newcommand{\pubinppoly}{\p{PI}}
+
+\newcommand{\ZERO}{\p{Z}}
+%\newcommand{\pcsetstyle}[1]{\mathrm{#1}}
+\newcommand{\HHH}{\mathsf{H}}
+\newcommand{\KKK}{\mathsf{K}}
+
+% general complexity theory
+% \newcommand{\RND}[1]{\pcalgostyle{RND}(#1)}
+\newcommand{\RND}[1]{\pcvarstyle{R}(#1)}
+\newcommand{\RELGEN}{\mathcal{R}}
+\newcommand{\REL}{\mathbf{R}}
+\newcommand{\LANG}{\mathcal{L}}
+\newcommand{\inp}{\pcvarstyle{x}}
+\newcommand{\wit}{\pcvarstyle{w}}
+\newcommand{\mesage}{\pcvarstyle{m}}
+\newcommand{\param}{\pcvarstyle{param}}
+\newcommand{\signature}{\pcvarstyle{\sigma}}
+\newcommand{\class}[1]{\mathfrak{#1}}
+\newcommand{\ig}{\pcalgostyle{IG}}
+\newcommand{\accProb}{\event{acc}}
+\newcommand{\waccProb}{\event{\widetilde{acc}}}
+\newcommand{\frkProb}{\event{frk}}
+\newcommand{\extProb}{\event{ext}}
+\newcommand{\ssndProb}{\event{ssnd}}
+\newcommand{\FS}{\pcalgostyle{FS}} % Fiat-Shamir transform
+\newcommand{\aux}{\pcvarstyle{aux}} %auxiliary input
+% \newcommand{\dlog}{\pcvarstyle{dlog}}
+\newcommand{\vereq}{\p{ve}}
+
+%Commitment schemes
+\newcommand{\COM}{\pcschemestyle{C}}
+\newcommand{\PCOM}{\pcschemestyle{PC}}
+\newcommand{\PCOMp}{\pcschemestyle{PC}_{\plonkprot}}
+\newcommand{\PCOMs}{\pcschemestyle{PC}_{\sonicprot}}
+\newcommand{\com}{\pcalgostyle{Com}}
+\newcommand{\op}{\pcalgostyle{Op}}
+\newcommand{\open}{\op}
+
+\newcommand{\committer}{\pcalgostyle{C}}
+\newcommand{\receiver}{\pcalgostyle{R}}
+
+
+%SoK
+\newcommand{\SoK}{\pcschemestyle{SoK}}
+\newcommand{\signsetup}{\pcalgostyle{Setup}}
+%\newcommand{\sign}{\pcalgostyle{Sign}}
+\renewcommand{\verify}{\pcalgostyle{Verify}}
+\newcommand{\verifyb}{\pcalgostyle{VerifyBatched}}
+\newcommand{\simsetup}{\pcalgostyle{SimSetup}}
+\newcommand{\simsign}{\pcalgostyle{SimSign}}
+
+\newcommand{\prog}{\pcalgostyle{Prog}}
+
+
+
+%Plonk and Sonic
+\newcommand{\ur}[1]{{#1\text{-}\mathsf{UR}}}
+
+\newcommand{\plonk}{\ensuremath{\textnormal{{Plonk}}}}
+\newcommand{\marlin}{{\ensuremath{\textnormal{{Marlin}}}}}
+\newcommand{\sonic}{{\ensuremath{\textnormal{{Sonic}}}}}
+\newcommand{\groth}{\ensuremath{\textsc{Groth16}}}
+%\newcommand{\plonkmod}{\ensuremath{\plonk^\star}}
+%\newcommand{\plonkint}{\ensuremath{\plonk^\star}}
+\newcommand{\polyprot}{\pcalgostyle{poly}}
+%\newcommand{\plonkintpoly}{\plonkint_\polyprot}
+% \newcommand{\sonic}{\textsc{Sonic}}
+\newcommand{\maxdegree}{\pcvarstyle{N}}
+
+\newcommand{\dlog}{\pcvarstyle{dlog}}
+\newcommand{\ldlog}{\pcvarstyle{ldlog}}
+
+\newcommand{\udlog}{\pcvarstyle{udlog}}
+\newcommand{\uldlog}{\pcvarstyle{uldlog}}
+
+
+%reductions
+\newcommand{\extss}{\ext_\css}
+\newcommand{\extse}{\ext_\se}
+\newcommand{\extt}{\ext_{\pcvarstyle{tree}}}
+\newcommand{\extcss}{\ext_{\css}}
+\newcommand{\compass}{\mathtt{C}}
+\newcommand{\ks}{\pcvarstyle{ks}}
+\newcommand{\css}{\pcvarstyle{ks}}
+\newcommand{\rdvks}{{\rdv_\ks}}
+\newcommand{\rdvs}{{\rdv_\pcvarstyle{s}}}
+\newcommand{\rdvdlog}{{\rdv_\dlog}}
+\newcommand{\rdvldlog}{{\rdv_\ldlog}}
+\newcommand{\rdvdulog}{{\rdv_\udlog}}
+\newcommand{\rdvudlog}{{\rdv_\udlog}}
+\newcommand{\rdvludlog}{{\rdv_\uldlog}}
+\newcommand{\rdvuldlog}{{\rdv_\uldlog}}
+\newcommand{\rdvse}{{\rdv_\se}}
+\newcommand{\rdvss}{{\rdv_\ks}}
+\newcommand{\rdvur}{\rdv_\pcvarstyle{ur}}
+
+\newcommand{\env}{\pcadvstyle{E}}
+\newcommand{\zdv}{\pcadvstyle{Z}}
+
+\newcommand{\advse}{\adv}
+\newcommand{\advss}{{\adv_\css}}
+\newcommand{\advur}{\adv_{\pcvarstyle{ur}}}
+\newcommand{\advcss}{\adv_{\pcvarstyle{ks}}}
+
+\newcommand{\epsss}{\eps_\pcvarstyle{f}}
+\newcommand{\epsur}{\eps_\pcvarstyle{ur}}
+\newcommand{\epsh}{\eps_{\pcvarstyle{hid}}}
+\newcommand{\epsk}{\eps_{\pcvarstyle{k}}}
+\newcommand{\epsbind}{\eps_\pcvarstyle{bind}}
+\newcommand{\epsbinding}{\eps_\pcvarstyle{bind}}
+\newcommand{\epsid}{\eps_{\pcvarstyle{id}}}
+\newcommand{\epsop}{\eps_\pcvarstyle{op}}
+\newcommand{\epss}{\eps_\pcvarstyle{s}}
+\newcommand{\epsfor}{\eps_\pcvarstyle{f}}
+\newcommand{\epsbatch}{\eps_\pcvarstyle{btch}}
+\newcommand{\epsdlog}{\eps_\dlog}
+\newcommand{\epsldlog}{\eps_\ldlog}
+\newcommand{\epsudlog}{\eps_\udlog}
+\newcommand{\epsuldlog}{\eps_\uldlog}
+\newcommand{\epsuber}{\eps_{\pcvarstyle{uber}}}
+\newcommand{\epszk}{\eps_{\pcvarstyle{zk}}}
+\newcommand{\epsro}{\eps_{\ro}}
+\newcommand{\epst}{\eps_{\pcvarstyle{t}}}
+\newcommand{\epscss}{\eps_{\pcvarstyle{ks}}}
+\newcommand{\epsse}{\eps_{\pcvarstyle{se}}}
+\newcommand{\epserr}{\eps_{\pcvarstyle{err}}}
+
+\newcommand{\Qro}{Q_{\ro}}
+\newcommand{\Qsrs}{Q_{\pcvarstyle{srs}}}
+\newcommand{\Qprog}{Q_{\pcvarstyle{prog}}}
+\newcommand{\Qsim}{Q}
+%errors
+\newcommand{\err}{Err}
+\newcommand{\errur}{\err_{ur}}
+\newcommand{\errss}{\err_\css}
+\newcommand{\errfrk}{\err_\frkProb}
+
+
+%forking
+\newcommand{\forking}{\pcalgostyle{F}}
+\newcommand{\genforking}{\pcalgostyle{GF}}
+
+%moving proofs and instances
+\newcommand{\MoveInstanceForward}{\pcalgostyle{MoveInstanceForward}}
+\newcommand{\MoveInstanceBackward}{\pcalgostyle{MoveInstanceBackward}}
+\newcommand{\MoveProofForward}{\pcalgostyle{MoveProofForward}}
+\newcommand{\MoveProofBackward}{\pcalgostyle{MoveProofBackward}}
+
+%colors
+\definecolor{darkmagenta}{rgb}{0.5,0,0.5}
+\definecolor{lightmagenta}{rgb}{1,0.85,1}
+\definecolor{lightmagenta}{rgb}{0.9,0.9,0.9}
+\definecolor{darkred}{rgb}{0.7,0,0}
+\definecolor{blueish}{rgb}{0.1,0.1,0.5}
+\definecolor{pinkish}{rgb}{0.9,0.8,0.8}
+\definecolor{darkgreen}{rgb}{0,0.6,0}
+\definecolor{lightgreen}{rgb}{0.85,1,0.85}
+\definecolor{skyblue}{rgb}{0.3,0.9,0.99}
+
+%comments
+\DeclareRobustCommand{\markulf}[2] {}%{{\color{darkmagenta}\hl{\scriptsize\textsf{Markulf #1:} #2}}}
+\DeclareRobustCommand{\markulfdone}[2] {}
+\DeclareRobustCommand{\michals}[2] {} % {{\color{magenta}{$\big[$\scriptsize\textsf{Michal #1:}} #2$\big]$}}
+\DeclareRobustCommand{\mxout}[1] {} %{{\color{magenta}{\sout{#1:}}}}
+\newcommand{\chaya}[2] {} % {\textcolor{magenta}{[{\footnotesize {\bf Chaya #1:} { {#2}}}]}}
+\newcommand{\hamid}[2] {} % {\textcolor{blue}{[{\footnotesize {\bf Hamid  #1:} { {#2}}}]}}
+\newcommand{\anca}[2] {} % {\textcolor{orange}{[{\footnotesize {\bf Anca:} { {#1}}}]}}
+\newcommand{\task}[2] {} % {\todo[author=\textbf{Task},inline]{({\textit{#1}}) #2}}
+% \newcommand{\task}[2] {\xcommenti{Task}{#1}{#2}}
+% \DeclareRobustCommand{\task}[2]  {{\color{black}\sethlcolor{yellow}\hl{\textsf{TASK #1:} #2}}}
+\DeclareRobustCommand{\changedm}[1] {{\color{black} #1}}
+\DeclareRobustCommand{\chm}[1] {{\changedm{#1}}}
+\DeclareRobustCommand{\changedmx}[2] {{\color{black} \xout{#1} #2}}
+\newcommand{\chb}[1] {{\color{black}#1}}
+
+\newcommand{\rsim}{r_\simulator}
+\newcommand{\radv}{r_\adv}
+
+\newcommand{\bP}{\widebar{P}}
+\newcommand{\bQ}{\widebar{Q}} 
+\newcommand{\hP}{\widehat{P}} 
+\newcommand{\hQ}{\widehat{Q}}
+
+
+%% Save the class definition of \subparagraph
+\let\llncssubparagraph\subparagraph
+%% Provide a definition to \subparagraph to keep titlesec happy
+\let\subparagraph\paragraph
+%% Load titlesec
+\usepackage[compact]{titlesec}
+%% Revert \subparagraph to the llncs definition
+\let\subparagraph\llncssubparagraph
+
+\newcommand{\oursubsub}[1] {\smallskip\noindent\textbf{#1}}
+\newcommand{\ourpar}[1] {\smallskip\noindent\emph{#1}}
+
+%\title{SNARKY Signatures with Universal and Updatable~Setup}
+
+\title{What Makes Fiat--Shamir zkSNARKs \\ (Updatable SRS) Simulation Extractable?}
+
+
+%\author{(Submission to EUROCRYPT 2022)}
+\institute{}
+\author{}
+
+%\author{Chaya Ganesh \and Hamidreza Khoshakhlagh \and Markulf Kohlweiss \and \\ Anca Nitulescu \and Michał Zając} 
+
+\author{Chaya Ganesh\inst{1}\orcidID{0000-0002-2909-9177} \and Hamidreza Khoshakhlagh\inst{2}\orcidID{0000-0001-7220-0763}(\Envelope) \and Markulf Kohlweiss\inst{3} \and \\ Anca Nitulescu\inst{4} \and Michał Zając\inst{5}} 
+\institute{Indian Institute of Science, India
+  \email{chaya@iisc.ac.in}
+  \and
+  Aarhus University, Denmark
+  \email{hamidreza@cs.au.dk} \\
+  \and
+  University of Edinburgh and IOHK, UK 
+  \email{mkohlwei@inf.ed.ac.uk}
+  \and
+  Protocol Labs, USA  \email{anca@protocol.ai} \\
+  \and
+  Nethermind, UK
+\email{m.p.zajac@gmail.com}}
+
+
+\allowdisplaybreaks
+
+\begin{document} \sloppy
+%\titlerunning{Non-Malleability of the FS transform Revisited [\ldots]}
+\maketitle
+
+\begin{abstract}
+  We show that three popular universal zero-knowledge SNARKs (Plonk, Sonic, and Marlin) are updatable SRS simulation extractable NIZKs and signatures of knowledge
+  (SoK) out-of-the-box avoiding any compilation overhead.
+
+  Towards this we generalize results for the Fiat--Shamir (FS) transformation, which turns interactive protocols into
+  signature schemes, non-interactive proof systems, or SoK in the random oracle model (ROM).  The security of the transformation relies on rewinding to
+  extract the secret key or the witness, even in the presence of signing queries for
+  signatures and simulation queries for proof systems and SoK, respectively.  We
+  build on this line of work and analyze multi-round FS for arguments with a structured reference string (SRS). The combination of ROM and SRS, while redundant in theory, is the model of choice for the most efficient practical systems to date. We also consider the case where the SRS
+  is updatable and define a strong simulation extractability notion that allows for
+  simulated proofs with respect to an SRS to which the adversary can contribute
+  updates.
+  
+  We define three properties (trapdoor-less zero-knowledge, rewinding-based knowledge soundness, and a unique response property) that are sufficient for argument systems based on multi-round FS to be also simulation extractable in this strong sense. We show that Plonk, Sonic, and Marlin satisfy these properties, and conjecture that many other argument systems such as Lunar, Basilisk, and transparent variants of Plonk fall within the reach of our main theorem.
+  
+  
+\end{abstract}
+
+%\ifupdate
+%
+%\input{todo}
+\section{Introduction}
+Zero-knowledge proof systems, which allow a prover to convince a verifier of an NP statement $\REL(\inp,\wit)$ without revealing anything else about the witness $\wit$ have broad application in cryptography and theory of computation~\cite{FOCS:GolMicWig86,STOC:Fortnow87,C:BGGHKMR88}.
+When restricted to computationally sound proof systems, also called \emph{argument systems}\footnote{We use both terms interchangeably.}, proof size can be shorter than the size of the witness~\cite{brassard1988minimum}. 
+Zero-knowledge Succinct Non-interactive ARguments of Knowledge (zkSNARKs) are zero-knowledge argument systems that additionally have two succinctness properties: small proof sizes and fast verification. 
+Since their introduction in~\cite{FOCS:Micali94}, zk-SNARKs have been a versatile design tool for secure cryptographic protocols. They became particularly relevant for blockchain applications that demand short proofs and fast verification for on-chain storage and processing. Starting with their deployment by Zcash~\cite{SP:BCGGMT14}, they have seen broad adoption, e.g., for privacy-preserving cryptocurrencies and scalable and private smart contracts in Ethereum.%\footnote{\url{https://z.cash/} and \url{https://ethereum.org} respectively}.
+
+%The work of~\cite{EC:GGPR13} proposed a preprocessing zk-SNARK for general NP statements phrased in the language of Quadratic Span Programs (QSP) and Quadratic Arithmetic Programs (QAP) for Boolean and arithmetic circuits respectively. This built on previous works of~\cite{IKO07,AC:Groth10a,TCC:Lipmaa12} and led to several works~\cite{TCC:BCIOP13,SP:PHGR13,C:BCGTV13,AC:Lipmaa13,USENIX:BCTV14,EC:Groth16} with very short proof sizes and fast verification.
+
+While research on zkSNARKs has seen rapid
+progress~\cite{EC:GGPR13,AC:Groth10a,TCC:Lipmaa12,TCC:BCIOP13,SP:PHGR13,C:BCGTV13,AC:Lipmaa13,USENIX:BCTV14,EC:Groth16}
+with many works proposing significant improvements in proof size, verifier and prover efficiency, and complexity of the public setup,
+less attention has been paid to non-malleable zkSNARKs and succinct signatures of
+knowledge~\cite{C:CamSta97,C:ChaLys06} (sometimes abbreviated SoK or referred to as SNARKY signatures~\cite{C:GroMal17,EPRINT:BKSV20}). 
+
+
+\paragraph{Relevance of simulation extractability.}
+
+Most zkSNARKs are shown only to satisfy a standard knowledge soundness
+property. Intuitively, this guarantees that a prover that creates a valid proof in isolation knows
+a valid witness. However, deployments of zkSNARKs in real-world applications, unless
+they are carefully designed to have application-specific malleability protection,
+e.g.~\cite{SP:BCGGMT14}, require a stronger property --
+\emph{simulation-extractability} (SE) -- that corresponds much more
+closely to existential unforgeability of signatures.
+
+This correspondence is made precise by SoK, which uses an
+NP-language instance as the public verification key. Instead of signing with the secret key, SoK signing requires knowledge of the
+NP-witness. Intuitively, an SoK is thus a proof of knowledge (PoK) of a witness that is tied to a message. In fact, many signatures schemes, e.g., Schnorr, can be read as SoK for a specific hard relation, e.g., DL~\cite{AC:DHLW10}. To model strong existential unforgeability of SoK signatures, even
+when given an oracle for obtaining signatures on different instances, an attacker
+must not be able to produce new signatures. Chase and Lysyanskaya~\cite{C:ChaLys06} model this via the
+notion of simulation extractability which guarantees extraction of a witness
+even in the presence of simulated signatures.
+
+In practice, an adversary against a zkSNARK system also has access to proofs computed by honest parties that should be modeled as simulated proofs. The definition of knowledge soundness (KS) ignores the ability of an adversary
+to see other valid proofs that may occur in real-world applications. For instance,
+in applications of zkSNARKs in privacy-preserving blockchains, proofs are posted on-chain for all blockchain participants to see. We thus argue that SE is a much more suitable notion for robust protocol design. We also claim that SE has primarily an intellectual cost, as it is harder to prove SE than KS---another analogy here is IND-CCA vs IND-CPA security for encryption. However, we will show that the proof systems we consider are SE out-of-the-box.
+
+
+\markulfdone{01.05}{Old:
+	
+	
+	\paragraph{Signatures of knowledge}
+	A
+	signature of knowledge~\cite{C:CamSta97,C:ChaLys06} uses an instance of an
+	NP-language as the public verification key. Instead of signing using a secret key,
+	which typically would be related to the public key via a discrete logarithm or some
+	other hard relation~\cite{AC:DHLW10}, SoK signing requires knowledge of the
+	NP-witness. Chase and Lysyanskaya~\cite{C:ChaLys06} require signatures of knowledge
+	to be simulatable to assure protection against signing key/witness extraction. Signatures can be simulated without a witness, given
+	a trapdoor associated with the public setup. Furthermore, to model strong existential unforgeability of signatures, even
+	when given an oracle for obtaining signatures on different instances, an attacker
+	must not be able to produce new signatures. Chase and Lysyanskaya model this via the
+	notion of simulation extractability (SE) which guarantees extraction of a witness
+	even in the presence of simulated signatures. Moreover, Groth and Maller
+	\cite{C:GroMal17} showed how to construct SoK from zkSNARK schemes that are
+	simulation-extractable. Therefore, our focus can be moved from SoK to the main
+	building block, zkSNARK schemes, for which we have many new efficient constructions
+	in recent literature.
+	
+	
+	\paragraph{Relevance of simulation extractability.}
+	
+	Most zkSNARKs are shown only to satisfy a standard knowledge soundness
+	property. Intuitively, this guarantees that a prover that creates valid proof knows
+	a valid witness. However, deployments of zkSNARKs in real-world applications, unless
+	they are carefully designed to have application-specific malleability protection,
+	e.g.~\cite{SP:BCGGMT14}, require a stronger property --
+	\textit{simulation-extractability} -- that, as discussed above, corresponds more
+	closely to existential unforgeability of signatures. In practice, an adversary
+	against the zkSNARK has access to proofs provided by other parties using the same
+	zkSNARK. The definition of knowledge soundness ignores the ability of an adversary
+	to see other valid proofs that may occur in real-world applications. For instance,
+	in applications of zkSNARKs in privacy-preserving blockchains, proofs are posted on
+	the chain for all blockchain-participants to see.
+}
+% Therefore, it is necessary for a zero-knowledge proof system to be
+% \emph{non-malleable}, that is, resilient against adversaries that additionally get
+% to see proofs generated by different parties before trying to forge. Therefore, it
+% is necessary for a zero-knowledge proof system to be \emph{simulation-extractable},
+% that is, resilient against adversaries that additionally get to see proofs
+% generated by different parties before trying to forge. This captures the more
+% general scenario where an adversary against the zkSNARK has access to proofs
+% provided by other parties as it is in applications of zkSNARKs in
+% privacy-preserving blockchains, where proofs are posted on the chain for all
+% participants in the network to verify.
+
+\paragraph{Fiat--Shamir-based zkSNARKs.}
+Most modern zkSNARK constructions follow a modular blueprint that involves the design of an information-theoretic interactive protocol, e.g. an Interactive Oracle Proof (IOP)~\cite{TCC:BenChiSpo16}, that is then compiled via cryptographic tools to obtain an interactive argument system. This is then turned into a zkSNARK using the Fiat-Shamir transform. By additionally hashing the message, the Fiat-Shamir transform is also a popular technique for constructing signatures. While well-understood for 3-message sigma protocols and justifiable in the ROM~\cite{CCS:BelRog93}, Fiat--Shamir should be used with
+care because there are both counterexamples in theory~\cite{FOCS:GolKal03} and real-world attacks in practice when implemented incorrectly~\cite{Blog:FrozenHeart20}.
+
+%The Fiat--Shamir (FS) transform takes a public-coin interactive protocol and makes it interactive by hashing the current protocol transcript to compute the verifier's public coins.
+%
+%The FS transform is a popular design tool for constructing
+%zkSNARKs. In the updatable universal SRS setting, works like \sonic{}~\cite{CCS:MBKM19}
+%\plonk{}~\cite{EPRINT:GabWilCio19}, and \marlin~\cite{EC:CHMMVW20} are designed
+%and proven secure as multi-round interactive protocols. Security is then only
+%\emph{conjectured} for their non-interactive variants by employing the FS
+%transform.
+
+In particular, several schemes such as
+Sonic~\cite{CCS:MBKM19}, Plonk~\cite{EPRINT:GabWilCio19}, Marlin~\cite{EC:CHMMVW20} 
+follow this approach where the information-theoretic object is a multi-message algebraic variant of IOP, and the cryptographic primitive in the compiler is a polynomial commitment scheme (PC) that requires a trusted setup. To date, this blueprint lacks an analysis in the ROM in terms of simulation extractability.
+
+
+\paragraph{Updatable SRS zkSNARKs.}
+One of the downsides of many efficient zkSNARKs~\cite{AC:Groth10a,TCC:Lipmaa12,EC:GGPR13,SP:PHGR13,AC:Lipmaa13,AC:DFGK14,EC:Groth16} is that they rely on a \textit{trusted setup}, where there is a structured reference string (SRS) that is assumed to be generated by a trusted party. In practice, however, this assumption is not well-founded; if the party that generates the SRS is not honest, they can produce proofs for false statements. If the trusted setup assumption does not hold, knowledge soundness breaks down.
+Groth et al.~\cite{C:GKMMM18} propose a setting to tackle this challenge which allows parties -- provers and verifiers -- to \emph{update} the SRS.\footnote{This can be seen as an efficient player-replaceable~\cite{EPRINT:GHMVZ17} multi-party computation.} The update protocol takes an existing SRS and contributes to its randomness in a verifiable way to obtain a new SRS. The guarantee in this \textit{updatable setting} is that knowledge soundness holds as long as one of the parties updating the SRS is honest. The SRS is also \emph{universal}, in that it does not depend on the relation to be proved but only on an upper bound on the size of the statement's circuit.
+Although inefficient, as the SRS size is quadratic in the size of the circuit,~\cite{C:GKMMM18} set a new
+paradigm for designing zkSNARKs.
+
+The first universal zkSNARK with updatable and linear size SRS was
+Sonic proposed by Maller et al.~in \cite{CCS:MBKM19}. Subsequently, Gabizon, Williamson, and Ciobotaru designed Plonk~\cite{EPRINT:GabWilCio19} which currently is the
+most efficient updatable universal zkSNARK. Independently, Chiesa et
+al.~\cite{EC:CHMMVW20} proposed Marlin with comparable efficiency to
+Plonk. %\chaya{02.05}{we spelled out all author names for Plonk, but not for Sonic and Marlin?}\markulf{1.5}{I did it because it was only three and plonk is our result in the body.}
+
+\paragraph{The challenge of SE in the updatable setting.}
+
+The notion of simulation-extractability for zkSNARKs which is well motivated in practice, has not been studied in the updatable setting.
+Consider the following scenario: We assume a ``rushing'' adversary that starts off with a sequence of updates by malicious parties resulting in a subverted reference string $\srs$. By combining their trapdoor contributions and employing the simulation algorithm, these parties can easily compute a proof to obtain a triple $(\srs,\inp,\pi)$  that convinces the verifier of a statement $\inp$ without knowing a witness. Now, assume that at a later stage, a party produces a triple $(\srs',\inp,\pi')$ for the same statement with respect to an updated $\srs'$ that has an honest update contribution. We want the guarantee that this party must know a witness corresponding to $\inp$. The ability to ``maul" the proof $\pi$ from the old SRS to a proof $\pi'$ for the new SRS without knowing a witness would clearly violate security. The natural idea is to require that honestly \emph{updated} reference strings are indistinguishable from honestly \emph{generated} reference strings even for parties that previously contributed updates. However, this is not sufficient as the adversary can also rush toward the end of the SRS generation ceremony to perform the last update.
+%That is, an adversary who does not know the trapdoor for the update from $\srs$ to $\srs'$ should not be able to break SE. % as long as there was at least one honest update to $\srs$.\markulf{30/09/2021}{We currently don't achieve this strong USE notion.}
+
+
+A definition of SE in the updatable setting should take these additional powers of the adversary, which are not captured by existing definitions of SE, into consideration.
+While generic compilers~\cite{EPRINT:KZMQCP15,CCS:AbdRamSla20} can be applied to updatable SRS SNARKs to obtain SE, not only do they inevitably incur overheads and lead to efficiency loss, we contend that the standard definition of SE does not suffice in the updatable setting.
+
+
+\subsection{Our Contributions}
+We investigate the non-malleability properties of zkSNARK protocols obtained by FS-compiling multi-message protocols in the updatable SRS setting and give a modular approach to analyze their simulation-extractability. We make the following contributions:
+\begin{itemize}
+	\item 
+	\emph{Updatable simulation extractability (USE)}. 
+	We propose a definition of simulation extractability in the updatable SRS setting called USE, that captures the additional power the adversary gets by being able to update the SRS. 
+	
+	\item \emph{Theorem for USE of FS-compiled proof systems.} We
+	define three notions in the updatable SRS and ROM, 
+	\emph{trapdoor-less zero-knowledge},
+	a \emph{unique response} property, and \emph{rewinding-based
+		knowledge soundness}. Our main theorem shows that multi-message FS-compiled proof systems that satisfy these notions \emph{are USE
+		out-of-the box}. %Informally, our notion of rewinding-based knowledge soundness is a variant of special soundness where 
+	%the transcripts provided to the extractor are obtained through interaction with an honest verifier, and 
+	%the extraction guarantee is computational
+	%instead of unconditional. 
+	%Our extractor only needs oracle access to the
+	%adversary, it does not depend on the adversary’s code, nor does it rely on
+	%knowledge assumptions.
+	
+	\item
+	\emph{USE for concrete zkSNARKs.}
+	We prove that the most efficient updatable SRS SNARKS -- Plonk/Sonic/Marlin -- satisfy the premises of our theorem. We thus show that these zkSNARKs are updatable simulation extractable.
+	%In instantiating our general theorem for these concrete zkSNARK candidates, we rely on the algebraic group model (AGM).
+	
+	\item
+	\emph{SNARKY signatures in the updatable setting.} Our results validate the folklore that the Fiat--Shamir transform is a natural means for constructing signatures of knowledge. This gives rise to the first SoK in the updatable setting and confirms that a much larger class of zkSNARKs, besides \cite{C:GroMal17}, can be lifted to SoK.
+	
+	\item \emph{Broad applicability.} The updatable SRS plus ROM includes both the trusted SRS and the ROM model as special cases. This implies the relevance of our theorem for transparent zkSNARKs such as Halo2 and Plonky2 that replace the polynomial commitments of~Kate et al.~\cite{AC:KatZavGol10} with commitments from Bulletproof~\cite{SP:BBBPWM18} and STARKs~\cite{EPRINT:BBHR18}, respectively.
+	
+\end{itemize}
+
+
+\subsection{Technical Overview}
+%unique response, forking special soundness. General theorem without additional assumptions. to apply the theorem to concrete schemes like plonk, we show it satisfies unique response, forking soundness, in AGM.
+
+At a high level, the proof of our main theorem for updatable simulation
+extractability is along the lines of the simulation extractability proof for
+FS-compiled sigma protocols from~\cite{INDOCRYPT:FKMV12}. However, our theorem
+introduces new notions that are more general to allow us to consider proof
+systems that are richer than sigma protocols and support an updatable setup. We
+discuss some of the technical challenges below.
+
+\plonk{}, \sonic{}, and \marlin{} were originally presented as interactive
+proofs of knowledge that are made non-interactive via the Fiat--Shamir transform.
+In the following, we denote the underlying interactive protocols by $\plonkprot$
+(for $\plonk$), $\sonicprot$ (for $\sonic$), and $\marlinprot$ (for \marlin) and
+the resulting non-interactive proof systems by $\plonkprotfs$, $\sonicprotfs$,
+$\marlinprotfs$ respectively.
+
+\oursubsub{Rewinding-Based Knowledge Soundness (RBKS).}
+Following~\cite{INDOCRYPT:FKMV12}, one would have to show that for the protocols
+we consider, a witness can be extracted from sufficiently many valid transcripts
+with a common prefix. The standard definition of special soundness for sigma
+protocols requires the extraction of a witness from any two transcripts with the
+same first message. However, most zkSNARK protocols do not satisfy this notion.
+We put forth a notion analogous to special soundness that is more general and
+applicable to a wider class of protocols. Namely, protocols compiled using multi-round FS that rely on an (updatable) SRS. $\plonkprot$, $\sonicprot$, and
+$\marlinprot$ have more than three messages, and the number of transcripts required for extraction is more than two. Concretely, $(3 \noofc + 6)$ for Plonk,  $(\noofc + 1)$ for Sonic,
+%, where $\multconstr$ and $\linconstr$ are the numbers of multiplicative and linear constraints
+and $(2 \noofc + 3)$ for Marlin, where $\noofc$ is the number of constraints in the proven circuit. Hence, we do not have a pair of transcripts but a \emph{tree of transcripts}.
+
+Furthermore, the protocols we consider are arguments and rely on a SRS that comes with a trapdoor. An adversary in
+possession of the trapdoor can produce multiple valid proof transcripts potentially for false statements without
+knowing any witness. This is true even in
+the updatable setting, where a trapdoor still exists for any updated SRS. Recall
+that the standard special soundness definition requires witness extraction from
+\emph{any} suitably structured tree of accepting transcripts. This means
+that there are no such trees for false statements. 
+
+Instead, we give a rewinding-based knowledge soundness definition with an extractor that proceeds in two steps. It first uses a tree building algorithm $\tdv$ to obtain a tree of transcripts. In the second step, it uses a tree extraction algorithm $\extcss$ to compute a witness from this tree. Tree-based knowledge soundness guarantees that it is possible to extract a witness from all
+(but negligibly many) trees of accepting transcripts produced by probabilistic
+polynomial time (PPT) adversaries. That
+is, if extraction from such a tree fails, then we break an underlying
+computational assumption. Moreover, this should hold even against adversaries
+that contribute to the SRS generation.
+
+\oursubsub{Unique Response Protocols (UR).}  Another property
+required to show simulation extractability is the unique response property which says
+that for $3$-message sigma protocols, the response of the prover ($3$-rd message) is determined by the first message and the challenge~\cite{C:Fischlin05} (intuitively, the prover can only employ fresh randomness in the first
+message of the protocol). We cannot use this definition since the protocols
+we consider have multiple rounds of randomized prover messages. In
+Plonk, both the first and the third messages are randomized. Although the Sonic prover
+is deterministic after it picks its first message, the protocol has more than $3$
+messages. The same holds for Marlin. We propose a generalization of the unique response property called $\ur{k}$. It requires that the behavior of the prover be determined by the first
+$k$ of its messages. For our proof, it is sufficient that Plonk is $\ur{3}$, and Sonic and Marlin are $\ur{2}$.
+
+
+\oursubsub{Trapdoor-Less Zero-Knowledge (TLZK).} 
+The premises of our main theorem include two computational properties that do not mention a simulator, RBKS and UR. The theorem states that together with a suitable property for the simulator of the zero-knowledge property, they imply USE.
+%
+Our key technique is to simulate simulation queries when reducing to RBKS and UR. For this it is convenient that the zero-knowledge simulator be trapdoor-less, that is can produce proofs without relying on the
+knowledge of the trapdoor. Simulation is based purely on the simulators early control over the challenge. 
+%
+In the ROM this corresponds to a simulator that programs the random oracle and can be understood as a generalization of
+honest-verifier zero-knowledge for multi-message Fiat--Shamir transformed proof systems with an
+SRS. We say that such a proof system is $k$-TLZK, if the simulator only programs the $k$-th challenge and we construct such simulators for $\plonkprotfs$, $\sonicprotfs$, and $\marlinprotfs$. 
+
+
+%To invoke our main theorem
+%on (Fiat--Shamir transformed) Plonk, Sonic and Marlin to conclude USE, we also need
+%to show that simulators in these protocols produce proofs without relying on the
+%knowledge of trapdoor. More precisely, for our reduction, we need simulators that rely
+%only on reordering the messages and picking suitable verifier challenges without
+%knowing the SRS trapdoor. That is, any PPT party should be able to produce a
+%simulated proof on its own in a trapdoor-less way. Note that this property does not
+%necessarily break the soundness of the protocol as the simulator is required only to
+%produce a transcript and is not involved in a real conversation with a real
+%verifier. 
+
+
+
+Technically we will make use of the $k$-UR property together with the $k$-TLZK property to bound the probability that the tree produced by the tree builder $\tdv$ of RBKS contains any programmed random oracle queries.
+
+\subsection{Related Work}
+There are many results on simulation extractability for
+non-interactive zero-knowledge proofs (NIZKs). First, Groth \cite{AC:Groth07}
+noticed that a (black-box) SE NIZK is
+universally-composable (UC)~\cite{EPRINT:Canetti00}. Then Dodis et al.~\cite{AC:DHLW10} introduced a
+notion of (black-box) \emph{true simulation extractability} (i.e., SE with simulation of true statements only) and showed that no
+NIZK can be UC-secure if it does not have this property. 
+
+In the context of zkSNARKs, the first
+SE zkSNARK was proposed by Groth and Maller~\cite{C:GroMal17} and a SE
+zkSNARK for QAP was designed by Lipmaa~\cite{EPRINT:Lipmaa19a}.
+Kosba et
+al.~\cite{EPRINT:KZMQCP15} give a general transformation from a NIZK to a
+black-box SE NIZK. Although their transformation works for zkSNARKs as well,
+the succinctness of the proof system is not preserved by this transformation.
+Abdolmaleki et al.~\cite{CCS:AbdRamSla20} showed another transformation that
+obtains non-black-box simulation extractability but also preserves
+the succinctness of the argument. 
+The zkSNARK of~\cite{EC:Groth16} has been shown to be SE by introducing minor modifications to the construction and making
+stronger assumptions \cite{EPRINT:BowGab18,EPRINT:AtaBag19}. Recently,~\cite{EPRINT:BKSV20} showed that the
+Groth's original proof system from~\cite{EC:Groth16} is weakly SE and
+randomizable. None of these results are for zkSNARKs in the updatable SRS setting or for zkSNARKs obtained via the Fiat--Shamir transformation. The recent work of~\cite{cryptoeprint:GOPTT22} shows that Fiat--Shamir transformed Bulletproofs are simulation extractable. While they show a general theorem for multi-round protocols, they do not consider a setting with an SRS, and are therefore inapplicable to zkSNARKs in the updatable SRS setting.
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
+
+%\section{Preliminaries}
+
+
+\iffalse
+\paragraph{Notation.} %Let $\ppt$ denote probabilistic polynomial-time and $\secpar \in \NN$ be the
+%security parameter. %All adversaries are stateful. 
+For a PPT algorithm $\adv$, 
+%let
+%$\image (\adv)$ be the image of $\adv$ (the set of valid outputs of $\adv$), 
+let
+$\RND{\adv}$ denote the set of random tapes of correct length for adversary $\adv$
+(assuming the given value of security parameter $\secpar$), and let $r \sample \RND{\adv}$ denote
+the random choice of tape $r$ from $\RND{\adv}$. We denote by $\negl$
+($\poly$) an arbitrary negligible (resp.~polynomial) function.
+%
+%For probability ensembles $X = \smallset{X_\secpar}_\secpar$ and
+%$Y = \smallset{Y_\secpar}_\secpar$, with distributions $X_\secpar, Y_\secpar$ that have
+%\emph{statistical distance} $\SD(X_\secpar, Y_\secpar) = \epsilon(\secpar)$ 
+%if
+%$\sum_{a \in \supp{X_\secpar \cup Y_\secpar}} \abs{\prob{X_\secpar = a} -
+%  \prob{Y_\secpar = a}} = \epsilon(\secpar)$. 
+%we write $X \approx_\secpar Y$ if
+%$\SD(X_\secpar, Y_\secpar) \leq \negl$. 
+For functions $a(\secpar)$, $b(\secpar)$ and probability ensembles $X = \smallset{X_\secpar}_\secpar$,
+$Y = \smallset{Y_\secpar}_\secpar$ we
+write $a(\secpar) \approx_\secpar b(\secpar)$ if
+$\abs{a(\secpar) - b(\secpar)} \leq \negl$ and $X \approx_\secpar Y$ if they have \emph{statistical distance} $\SD(X_\secpar, Y_\secpar) \leq \negl )$, respectively. \medskip
+\fi
+% For a probability space
+% $(\samplespace, \eventspace, \probfunction)$ and event $\event{E} \in \eventspace$ we
+% denote by $\nevent{E}$ an event that is complementary to $\event{E}$,
+% i.e.~$\nevent{E} = \samplespace \setminus \event{E}$.
+
+% \begin{lemma}[Difference lemma,~{\cite[Lemma 1]{EPRINT:Shoup04}}]
+% 	\label{lem:difference_lemma}
+% 	Let $\event{A}, \event{B}, \event{F}$ be events defined in some probability
+% 	space, and suppose that $\event{A} \land \nevent{F} \iff \event{B}
+% 		\land \nevent{F}$.  Then 
+% 	$
+% 		\abs{\prob{\event{A}} - \prob{\event{B}}} \leq \prob{\event{F}}\,.
+% 	$
+% \end{lemma}
+
+
+\section{Definitions and Lemmas for Multi-message SRS-based Protocols}
+\label{sec:se_definitions}
+\label{sec:preliminaries}
+
+
+
+\ourpar{Simulation-extractability for multi-message protocols.}
+Most recent SNARK schemes follow the same blueprint of constructing an interactive information-theoretic proof system 
+that is then compiled into a public coin computationally sound scheme using cryptographic tools such as polynomial commitments,
+and finally made non-interactive via the Fiat--Shamir transformation.
+Existing results on simulation extractability (for proof systems and
+signatures of knowledge) for Fiat--Shamir transformed systems work for $3$-message protocols without reference string that
+require two transcripts for standard model extraction, e.g.,
+\cite{JC:PoiSte00,INDOCRYPT:FKMV12,C:RotSeg21}.
+
+In this section, we define properties that are necessary for our
+analysis of multi-message protocols with a universal updatable SRS.  In order to
+prove simulation-extractability for such protocols, we require more than just two
+transcripts for extraction. Moreover, in the updatable setting we consider protocols
+that rely on an SRS where the adversary gets to contribute to the SRS. We first recall the updatable SRS setting and the Fiat-Shamir transform for $(2\mu+1)$-message protocols.
+Next, we define trapdoor-less zero-knowledge and simulation-extractability
+which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then,
+to support multi-message SRS-based protocols compiled using the Fiat--Shamir transform,
+we generalize the unique response property, and define a notion of computational special
+soundness called rewinding-based knowledge soundness.\medskip
+
+
+%\subsection{Proof Systems With Updatable Setups and Random Oracles}
+\noindent Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called the \emph{prover}
+and the latter the \emph{verifier} of a proof system. Both algorithms take a pre-agreed structured reference string $\srs$ as input. The structured reference strings we consider are (potentially) updatable, a notion we recall shortly.
+%
+We focus on proof systems made non-interactive via the multi-message Fiat--Shamir transform presented below where prover and
+verifier are provided with a random oracle $\ro$. 
+We denote by $\zkproof$ a proof created by $\prover$ on input
+$(\srs, \inp, \wit)$. We say that proof is accepting if $\verifier(\srs, \inp,
+\zkproof)$ accepts it.
+
+Let
+$\RND{\adv}$ denote the set of random tapes of correct length for adversary $\adv$
+(assuming the given value of security parameter $\secpar$), and let $r \sample \RND{\adv}$ denote
+the random choice of tape $r$ from $\RND{\adv}$.
+
+%The simulator
+%$\simulator$ is not only given access to $\ro$, but it can also \emph{program}
+%it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
+
+
+
+\iffalse
+\subsection{Zero-Knowledge Proof Systems}\label{prelim:nizk}
+In a zero-knowledge proof system, a prover convinces the verifier of the veracity of a statement
+without leaking any other information. The zero-knowledge property is proven by constructing a
+simulator that can simulate the view of a cheating verifier without knowing the secret
+information -- witness -- of the prover. A proof system has to be sound as well, i.e.~for a
+malicious prover it should be infeasible to convince a verifier of a false statement. Here, we
+focus on proof systems, so-called arguments, that guarantee soundness against $\ppt$ malicious provers. 
+\markulf{24.04}{Nice text, but maybe too basic? Also we don't really have views, but really reconstruct the non-interactive proof.}
+Typically, a stronger notion of soundness is required -- besides requiring that the
+verifier rejects proofs of statements outside the language, we request from the
+prover to know a witness corresponding to the proven statement. This property is
+called \emph{knowledge soundness}. In this work we investigate an even stronger notion of soundness, \emph{simulation extractability} for non-interactive protocols obtained from interactive arguments via the \emph{Fiat--Shamir heuristic} via random oracles in a setting with an \emph{updatable common reference string.} 
+
+We now introduce these concepts.
+\fi
+
+
+\subsection{Updatable SRS Setup Ceremonies}\label{def:upd-scheme}
+
+%Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
+%and the latter \emph{verifier}. We allow our proof system to have a setup, i.e.~there is a
+%$\kgen$ algorithm that takes as input the relation description $\REL$ and outputs a common
+%reference string $\srs$.
+
+The definition of updatable SRS ceremonies of~\cite{C:GKMMM18} requires the following algorithms.
+
+\begin{itemize} 
+	\item
+	$(\srs,\rho) \gets \kgen(\REL)$ is a PPT algorithm that takes a relation $\REL$ and outputs a reference string $\srs$, and correctness proof $\rho$.
+	\item
+	$ (\srs',\rho') \gets \upd(\srs, \{\rho_j \}_{j=1}^n)$ is a PPT algorithm that takes a $\srs$, a list of update proofs and outputs an updated $\srs'$ together with a proof of correct update~$\rho'$. 
+	\item
+	$b \gets \verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$ takes a reference string $\srs$, a list of update proofs, and outputs a bit indicating acceptance or not.\footnote{For instance \plonk{} and \marlin{} will use the $\kgen$, $\upd$ and $\verifyCRS$ algorithms in~\cref{fig:upd-scheme}.}
+\end{itemize}
+
+
+In the next section, we define security notions in the updatable setting by giving the adversary access to an SRS update oracle $\initU$, defined in~\cref{fig:upd}. The oracle allows the adversary to control the SRS generation. A trusted setup can be expressed by the updatable setup definition simply by restricting the adversary to only call the oracle on $\intent = \setup$ and $\intent = \final$. Note that a soundness adversary now has access to both the random oracle $\ro$ and $\initU$:  $(\inp, \zkproof) \gets \adv^{\initU,\ro}(1^\secpar; r)$.
+
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}% 
+
+\begin{figure}[t!]
+	\centering
+	\centerline{\fbox{
+			\begin{minipage}[t]{1.15\linewidth}
+				\begin{pchstack}
+					\procedure{$\initU(\intent, \srs_n,\{\rho_j \}_{j=1}^n)$}{
+						\pcif \srs \neq \bot: \pcreturn \bot \\
+						\pcif (\intent = \setup): \\
+						\t (\srs',\rho') \leftarrow \kgen(\REL)\\
+						\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+						\t \pcreturn (\srs',\rho')}
+					%
+					\procedure{}{
+						\\
+						\pcif (\intent = \update): \\
+						\t b \gets \verifyCRS(\srs_n, \{\rho_j \}_{j=1}^{n})\\
+						\t \pcif (b=0): \pcreturn \bot \\
+						\t (\srs',\rho') \leftarrow \upd (\srs_n,\{\rho_j \}_{j=1}^n)\\
+						\t Q_\srs \gets Q_\srs \cup \{(\srs',\rho')\}\\
+						% \pccomment{$Q_\srs = (Q^{(1)}_\srs, Q^{(2)}_\srs) \text{ s.t. }   Q^{(2)}_\srs \text{ contains the update proofs in } Q_\srs$ } \\
+						\t \pcreturn (\srs',\rho')}
+					%
+					\procedure{}{
+						\\
+						\pcif (\intent = \final): \\
+						\t b \gets \verifyCRS(\srs_n,\{\rho_j \}_{j=1}^{n})\\
+						\t \pcif (b=0) \vee Q^{(2)}_\srs \cap \{ \rho_j \}_i = \emptyset: \\
+						\t \pcreturn \bot \\
+						\t 
+						\t \srs \gets \srs_n, \pcreturn \srs \\
+						%
+						\pcelse \pcreturn \bot
+					}
+				\end{pchstack}
+			\end{minipage}
+	}}
+	\caption{The oracle defines the notion of updatable SRS setup.} 
+	\label{fig:upd}
+\end{figure}
+
+\ourpar{Remark on universality of the SRS.} The proof systems we consider in this work are universal. This means that both the relation $\REL$ and the reference string $\srs$ allows to prove arithmetic constraints defined over a particular field up to some size bound. The public instance $\inp$ must determine the constraints. 
+If $\REL$ comes with any auxiliary input, the latter is benign. 
+We elide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
+
+\begin{figure}[t!]
+	\centering
+	% \small
+	\centerline{\fbox{
+			\begin{minipage}[t]{0.75\linewidth}
+				\begin{pcvstack}
+					\begin{pchstack}
+						\procedure{$\kgen(\secparam, \maxdeg)$}{
+							\chi \sample \FF_p \\ [\myskip]
+							\srs := 
+							\left( \gone{\smallset{\chi^i}_{i = 0}^{\maxdeg}},
+							\gtwo{\chi} \right); \\
+							\rho =  \left(\gone{\chi, \chi}, \gtwo{\chi}\right) \\ [\myskip]
+							\pcreturn (\srs, \rho) \\ [\myskip]
+						}
+						%
+						\pchspace
+						% 
+						\procedure{$\upd(\srs, \{\rho_j \}_{j=1}^n)$}{
+							\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\maxdeg}},
+							\gtwo{B} \right) \\ [\myskip]
+							\chi' \sample \FF_p  \\ [\myskip]
+							\srs' := 
+							\left( \gone{\smallset{{\chi'}^i A_i}_{i = 0}^{\maxdeg}},
+							\gtwo{\chi' B} \right); \\
+							\rho' =	\left( \gone{\chi' A_1, \chi'}, \gtwo{\chi'}\right) \\ [\myskip]
+							\pcreturn (\srs', \rho')
+						}
+					\end{pchstack}
+					\pcvspace
+					\begin{pchstack}
+						%
+						\procedure{$\verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$}{
+							\text{Parse }  \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\maxdeg}},
+							\gtwo{B} \right) \text{and } \{\rho_j \}_{j=1}^n \text{ as } \left\{\left( P_j, \bP_j, \hP_j \right)\right\}_{j=1}^n \\ [\myskip]
+							\text{Verify Update proofs: } \\ [\myskip]
+							\t \bP_1 = P_1 \\ [\myskip]
+							\t P_j \bullet \gtwo{1} = P_{j-1} \bullet \hP_j \quad \forall j \geq 2 \\ [\myskip]
+							\t \bP_n \bullet \gtwo{1} = \gone{1} \bullet \hP_n \\ [\myskip]
+							\text{Verify SRS structure: } \\ [\myskip]
+							\t \gone{A_i} \bullet \gtwo{1} = \gone{A_{i-1}} \bullet \gtwo{B} \text{ for all } 0 < i \leq \maxdeg %\\ [\myskip]
+						}
+						%
+					\end{pchstack}
+				\end{pcvstack}
+				%
+	\end{minipage}}}
+	\caption{Updatable SRS scheme $\SRScer$ for $\PCOMp$} 
+	\label{fig:upd-scheme}
+\end{figure}
+
+\subsection{Multi-message Fiat-Shamir Compiled Provers and Verifiers}
+Given interactive prover and (public coin) verifier $\prover', \verifier'$ that exchange messages resulting in transcript $\tzkproof = (a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
+$\prover'$ and $c_i$ comes from $\verifier'$, the $(2\mu + 1)$-message Fiat-Shamir heuristic defines non-interactive provers and verifiers $\prover, \verifier$ as follows:
+
+\begin{compactitem}
+	\item $\prover$ behaves as $\prover'$ except after sending message
+	$a_i$, $i \in \range{1}{\mu}$, the prover does not wait for
+	the message from the verifier but computes it locally setting $c_i
+	= \ro(\tzkproof[0..i])$, where $\tzkproof[0..j] = (\inp, a_1, c_1, \ldots,
+	a_{j - 1}, c_{j - 1}, a_j)$.\footnote{For Fiat--Shamir based SoK the message signed $m$ is added to $\inp$ before hashing.} 
+	
+	$\prover$ outputs the non-interactive proof $\pi=(a_1,\ldots, a_{\mu}, a_{\mu + 1})$, that omits challenges as they can be recomputed using $\ro$.
+	
+	\item $\verifier$ takes $\inp$ and $\pi$ as input and behaves as $\verifier'$ would but does not provide
+	challenges to the prover. Instead it computes the
+	challenges locally as $\prover$ would, starting from $\tzkproof[0..1]=(\inp,a_1)$ which can be obtained from $\inp$ and $\pi$. Then it verifies the
+	resulting transcript $\tzkproof$ as the verifier $\verifier'$ would. 
+\end{compactitem}
+We note that since the verifier can compute the challenges by querying the random oracle, they do not need to be sent by the prover. Thus the $\zkproof$ - $\tzkproof$ notational distinction.
+%$(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup
+\paragraph{Notation for $(2\mu + 1)$-message Fiat--Shamir transformed proof systems.}
+Let $\SRScer= (\kgen,\upd, \verifyCRS)$ be the algorithm of an updatable SRS ceremony.
+All our definitions and theorems are about non-interactive proof systems $\ps = (\SRScer, \prover, \verifier, \simulator)$ compiled via the $(2\mu + 1)$-message FS transform. 
+%
+That is $\pi = (a_1, \ldots, a_{\mu}, a_{\mu + 1})$ and $\tzkproof = (a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, with $c_i
+= \ro(\tzkproof[0..i])$.
+%
+%\markulf{30.04}{This paragraph seems a bit of overkill, remove notation that we do not actually use}
+We use $\tzkproof[0]$ for instance
+$\inp$  and $\tzkproof[i]$, $\tzkproof[i].\ch$ to denote prover
+message $a_i$ and challenge $c_i$ respectively. %$\tzkproof[i..j]$ denotes all messages of the transcript 
+%between the $i$-th and $j$-th prover messages, but not $\tzkproof[j].\ch$.  
+
+%If the proof system starts with a message from the verifier,
+%we denote it by $\tzkproof[0].\ch$; else, we state that $\tzkproof[0].\ch$ is empty.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
+
+
+\begin{figure}
+	\centering
+	\begin{pcvstack}[center,boxed]
+		\begin{pchstack}
+			\procedure{$\simOH (x)$}
+			{
+				\pcif H[x] = \bot \pcthen \\
+				\pcind H[x] \sample \mathsf{Im}(\ro) \\
+				%	Q_\ro \gets \{(x,H[x])\}\\
+				\pcreturn H[x]
+			}
+			%
+			\pchspace
+			%
+			\procedure{$\simulator\oracleo.\prog(x, h)$}
+			{ 
+				\pcif H[x] = \bot \pcthen \\ 
+				\pcind H[x] \gets h \\
+				\pcind \Qprog \gets \Qprog \cup \{x\}\\
+				%		Q_\ro \gets \{(x,H[x])\}\\
+				\pcreturn H[x]
+			}
+			\pchspace
+			%
+			\procedure{$\boxed{\simOP(\inp, \wit)} \ \simOP'(\inp)$}
+			{ 
+				\boxed{\pcassert (\inp,\wit)\in \REL} \\ 
+				\pi \gets \simulator^{\simOH,\simulator\oracleo.\prog}(\srs,\inp)\\
+				Q \gets Q \cup \{(\inp,\pi)\}\\
+				\pcreturn \pi
+			}
+		\end{pchstack}
+	\end{pcvstack}
+	\caption{Simulation oracles: $\srs$ is the finalized SRS, only $\simOP'$ allows for simulation of false statements}
+	\label{fig:real_simulator_oracles}
+\end{figure}
+
+\subsection{Trapdoor-Less Zero-Knowledge (TLZK)}
+
+
+
+%We model $\simulator$ as a stateful
+%algorithm that runs in two modes. The first mode,
+%$(h, st') \gets \simulator (1, st, \srs, q)$ answers random oracle calls to $\ro$ on input
+%$q$. The second mode $(\zkproof, st') \gets \simulator (2, st, \srs, \inp)$ simulates the
+%actual argument for instance $\inp$.  
+
+
+
+% \begin{itemize}
+% \item $\simOH (\srs,q)$ denotes an oracle that returns the first output of
+%   $\simulator (1, st, \srs, q)$;
+% \item $\simOP (\srs,\inp, \wit)$ denotes an oracle that returns the first output of
+%   $\simulator (2, st, \srs, \inp)$ if $(\inp, \wit) \in \REL$, and returns $\bot$ otherwise;
+% \end{itemize}
+
+% We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
+% $\REL \in \RELGEN(\secparam)$, and adversary $\adv$ there exists a $\ppt$ simulator
+% $\simulator$ such that for any $(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$,
+% where
+% \[
+%   \eps_b = \condprob{\adv^{\oracleo_b} (\srs)}{\srs \gets \kgen (\REL)}\,,
+% \]
+% \changedm{where $\oracleo_0$ on input $(1, q)$ responds with $h$ such that
+%   $(h, st') \gets \simOH (1, st, q)$, where $st$ and $st'$ are old and new
+%   states of the simulator $\simulator$ and on input $(2, \inp, \wit)$ returns
+%   $\zkproof \gets \simOP (2, st, \srs, \inp)$. Alternatively, $\oracleo_1$ on
+%   input $(1, q)$ responds with $h \gets \ro (q)$ and on input $(2, \inp, \wit)$
+%   returns $\zkproof \gets \prover (\srs, \inp, \wit)$.}
+% 	%
+% We call zero knowledge \emph{perfect} if the distributions are equal and
+% \emph{computational} if they are indistinguishable for any $\ppt$ distinguisher.
+\iffalse
+We call a proof system $\proofsystem$ \emph{zero-knowledge} if for any
+$\REL \in \RELGEN(\secparam)$, and adversary $\adv$ there exists a $\ppt$ simulator
+$\simulator$ with oracles $(\simOH,\simOP)$ such that for any $(\inp, \wit) \in \REL$, $\eps_0 \approx \eps_1$,
+where
+\[
+\eps_0(\secpar) = \condprob{\adv^{\simOH,\simOP} (\srs)}{\srs \gets \kgen
+	(\REL)},\,  \eps_1 (\secpar) = \condprob{\adv^{\ro,\prover} (\srs)}{\srs \gets \kgen (\REL)},
+\]
+
+We call zero knowledge \emph{perfect} if the distributions are equal and
+\emph{computational} if they are indistinguishable for any $\ppt$ distinguisher.
+
+
+% \end{description}
+Alternatively, zero-knowledge can be defined by allowing the simulator to use the
+trapdoor $\td$ that is generated along the $\srs$. In this paper we distinguish
+simulators that requires a trapdoor to simulate and those that do not. We call the
+former \emph{SRS-simulators}. We say that a protocol is \emph{trapdoor-less
+	zero-knowledge} (TLZK) if its simulator does not require the trapdoor, cf.~\cref{def:TLZK}.
+
+\markulf{22.04}{We don't consider SRS-simulators in this paper. I would simplify and move the above after the Updatable SRS scheme section, or maybe the start of Section 3.}
+\fi
+
+%In this paper we distinguish between simulators that require a trapdoor to simulate and those that do not. 
+We call a protocol \emph{trapdoor-less
+	zero-knowledge} (TLZK) if there exists a simulator that does not require the trapdoor, and works by programming the random oracle.
+Moreover, the simulator may only be allowed to program the random oracle on point $\tzkproof[0,k]$, that is the simulator can only program the challenges that come after the $k$-th prover message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less zero-knowledge}. %, and define this in~\cref{def:TLZK}.
+
+Our definition of zero-knowledge for non-interactive
+arguments is in the programmable ROM.
+%the explicitly programmable random oracle model where the simulator $\simulator$ can program the random oracle. 
+We model this using the oracles from Fig.~\ref{fig:real_simulator_oracles} that provide a stateful wrapper around $\simulator$.
+$\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h)$ allows for programming the simulated $\ro$ and is available only to $\simulator$. $\simOP(\inp, \wit)$ and $\simOP'(\inp)$ call the simulator. The former is used in the zero-knowledge definition and requires the statement and witness to be in the relation, the latter is used in the simulation extraction definition and does not require a witness input.
+
+\begin{definition}[Updatable k-Programmable Trapdoor-Less Zero-Knowledge]
+	\label{def:TLZK}
+	Let 
+	$\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a $(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup. %Let $\ro$ be the random oracle. 
+	%$\simulator_{\fs}$ takes as input $\srs$ and instance $\inp$, programs $\ro$, and outputs a proof $\zkproof_\simulator$.  
+	We call $\psfs$ \emph{trapdoor-less zero-knowledge} with security $\epszk$ if for any
+	adversary $\adv$, $\abs{\eps_0(\secpar) - \eps_1(\secpar)} \leq \epszk(\secpar)$, where
+	\begin{align*}
+	\eps_0 (\secpar) = \Pr\left[ \adv^{\initU, \ro, \prover} (\secparam) \right],\,
+	\eps_1 (\secpar)=  \Pr \left[\adv^{\initU, \simOH, \simOP} (\secparam) \right].
+	\end{align*}
+	
+	If $\epszk(\secpar)$ is negligible, we say $\ps_{\fs}$ is trapdoor-less zero-knowledge. Additionally, we say that $\ps_{\fs}$ is $k$-programmable, if  $\simulator$ before returning a proof $\pi$ only calls $\simulator\oracleo.\prog$ on $(\tzkproof[0..k],h)$. That is, it only programs the $k$-th message.
+\end{definition}
+
+
+\begin{remark}[TLZK vs HVZK]
+	We note that TLZK notion is closely related to honest-verifier zero-knowledge in the
+	standard model. That is, if we consider an interactive proof system $\proofsystem$
+	that is HVZK in the standard model then $\proofsystem_\fs$ is TLZK. This comes as the simulator $\simulator$ in
+	$\proofsystem$ produces a valid simulated proof by picking verifier's challenges
+	according to a predefined distribution and $\proofsystem_\fs$'s simulator
+	$\simulator_\fs$ produces its proofs similarly by picking the challenges and
+	additionally programming the random oracle to return the picked
+	challenges. Importantly, in both $\proofsystem$ and $\proofsystem_\fs$ success of
+	the simulator does not depend on access to an SRS trapdoor.
+\end{remark}
+
+We note that $\plonk$ is $3$-programmable TLZK, and $\sonic$ and $\marlin$ are $2$-programmable TLZK. This follows directly from the proofs of
+their standard model zero-knowledge property in
+\cref{lem:plonk_tlzk} and lemmas 11 and 14 in the full version~\cite{EPRINT:GKKNZ21}.
+
+\subsection{Updatable Simulation Extractability (USE)}
+We note that the zero-knowledge property is only guaranteed for statements in the
+language.
+%; for simulator $\simulator = (\simOH, \simOP)$, $\simOP$
+%answers with simulated proofs only for true statements.  This is, however, not sufficient
+For \emph{simulation extractability} where the simulator
+should be able to provide simulated proofs for false statements as well, we thus use the oracle $\simOP'$
+\footnote{Note,
+	that simulation extractability property where the simulator is required to give
+	simulated proofs for true statements only is called \emph{true simulation
+		extractability.}}. 
+
+%Therefore, we introduce a wrapper oracle around the simulator
+%called $\simOP'$ that on input $(\srs, \inp)$ always returns the first output of
+%$\simulator (2, st, \srs, \inp)$, regardless of whether $\inp$ is in the language. We
+%define \emph{simulation-extractability} with respect to oracle $\simOP'$; that is,
+%simulation-extractability is with respect to a simulator
+%$\simulator' = (\simOH, \simOP')$.
+%
+
+
+
+\begin{definition}[Updatable Simulation Extractability]
+	\label{def:updsimext}
+	\label{def:simext}
+	Let $\psni = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup. 
+	We say that
+	$\psni$ is \emph{updatable simulation-extractable} with security loss $\epsse(\secpar,\accProb, q)$ if for
+	any $\ppt$ adversary $\adv$ that is given oracle access to setup oracle
+	$\initU$ and simulation oracle $\simulator\oracleo$ and that produces an accepting
+	proof for $\psni$ with probability $\accProb$, where
+	\[
+	\accProb = \condprob{
+		\begin{matrix}
+		\verifier(\srs, \inp, \zkproof) = 1  \\
+		\wedge
+		(\inp, \zkproof) \not\in Q
+		\end{matrix}
+	}{
+		\begin{matrix}
+		r \sample \RND{\advse}\\
+		(\inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'
+		} (1^\secpar; r)
+		\end{matrix}
+	}
+	\]
+	there exists an expected PPT extractor $\extse$ such that
+	\[
+	\condprob{
+		\begin{matrix}
+		\verifier(\srs, \inp, \zkproof) = 1, \\
+		(\inp, \zkproof) \not\in Q,  \\
+		\REL(\inp, \wit) = 0
+		\end{matrix}
+	}{
+		\begin{aligned}
+		& r \sample \RND{\advse},
+		(\inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'
+		} (1^\secpar; r) \\
+		& \wit \gets \ext_\se (\srs, \advse, r,
+		\Qsrs,\Qro,\Qsim ) 
+		\end{aligned}
+	} \leq \epsse(\secpar,\accProb, q)
+	\]
+	%is at least 
+	%\[
+	%\extProb \geq \frac{1}{\poly} (\accProb - \nu)^d - \eps(\secpar)\,,
+	%\]
+	%for some polynomial $\poly$, constant $d$ and negligible $\eps(\secpar)$ whenever
+	%$\accProb \geq \nu$. 
+	Here, $\srs$ is the finalized SRS. List $\Qsrs$ contains all $(\srs, \rho)$ of update SRSs and their proofs, list $\Qro$ contains all $\advse$'s
+	queries to $\simOH$ and the (simulated) random oracle's answers, $\abs{\Qro}\leq q$, and list $Q$ contains all $(\inp, \zkproof)$ pairs where 
+	$\inp$ is an instance queried to $\simOP'$ by the adversary and
+	$\zkproof$ is the simulator's answer .
+	% \hamid{17.10}{shouldn't be "List $Q_\ro$ contains all $\advse$'s queries to $\simOH$"? Also, I think we need to remove $\ro$ from the statement of the definition!}
+\end{definition}
+
+\subsection{Unique Response (UR) Protocols}
+A technical hurdle identified by Faust et al.~\cite{INDOCRYPT:FKMV12} for proving
+simulation extraction via the Fiat--Shamir transformation is that the transformed
+proof system satisfies a unique response property. The original formulation by Fischlin, although suitable for applications presented in
+\cite{C:Fischlin05,INDOCRYPT:FKMV12}, does not suffice in our case. First, the
+property assumes that the protocol has three messages, with the second being the
+challenge from the verifier. That is not the case we consider here. Second, it is not
+entirely clear how to generalize the property. Should one require that after the
+first challenge from the verifier, the prover's responses are fixed?  That does not
+work since the prover needs to answer differently on different verifier's challenges,
+as otherwise the protocol could have fewer messages.  Another problem is that the
+protocol could have a message, beyond the first prover's message, which is
+randomized. Unique response cannot hold in this case. Finally, the protocols we
+consider here are not in the standard model, but use an SRS.
+
+We work around these obstacles by providing a generalized notion of the unique
+response property. More precisely, we say that a $(2\mu + 1)$-message protocol
+has \emph{unique responses from $k$}, and call it a $\ur{k}$-protocol, if it
+follows the definition below:
+
+\begin{definition}[Updatable k-Unique Response Protocol]
+	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a $(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup. Let $\ro$ be the random oracle. 
+	We say that $\psfs$ has \emph{unique responses for $k$} with security $\epsur(\secpar)$ if for any $\ppt$ adversary $\advur$:
+	\[
+	\Pr\left[
+	\left.
+	\begin{aligned}
+	& \zkproof \neq \zkproof', \tzkproof[0..k] = \tzkproof'[0..k],  \\
+	& \verifier' (\srs, \inp, \zkproof,c) =
+	\verifier' (\srs, \inp, \zkproof',c) = 1  \\
+	\end{aligned}
+	\,\right|\,
+	\begin{aligned}
+	& (\inp, \zkproof, \zkproof', c) \gets \advur^{\initU,\ro}(1^\secpar) 
+	\end{aligned}
+	\right] \leq \epsur(\secpar) 
+	\]
+	where $\srs$ is the finalized SRS and $\verifier'(\srs,\inp,\zkproof=(a_1, \dots, a_\mu,a_{\mu+1}))$ behaves as $\verifier (\srs, \inp, \zkproof)$ except for using c as the $k$-th challenge instead of calling $\ro(\tzkproof[0..k]) $. Thus, $\adv$ can program the $k$-th challenge. 
+	We say $\psfs$  is $\ur{k}$, if $\epsur(\secpar)$ is negligible.
+\end{definition}
+
+Intuitively, a protocol is $\ur{k}$ if it is infeasible for a $\ppt$ adversary to produce a pair of accepting proofs $\zkproof \neq \zkproof'$ that are the same on the first $k$ messages of the prover.  
+%We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
+
+The definition can be easily generalized to allow for programming the oracle on more than just a single point. We opted for this simplified presentation, since all the protocols analyzed in this paper require only single-point programming, 
+
+
+\subsection{Rewinding-Based Knowledge Soundness (RBKS)}
+
+Before giving the definition of rewinding-based knowledge soundness for NIZK proof systems compiled via the $(2\mu + 1)$-message FS transformation, we first recall the notion of a tree of transcripts.
+\begin{definition}[Tree of accepting transcripts, cf.~{\cite{EC:BCCGP16}}]
+	\label{def:tree_of_accepting_transcripts}
+	%	Consider a $(2\mu + 1)$-message proof system. \markulf{24.04}{Is this meaningful for interactive or also non-interactive prove systems obtained via FS?} 
+	A $(n_1,
+	\ldots, n_\mu)$-tree of accepting transcripts is a tree where each node on
+	depth $i$, for $i \in \range{1}{\mu + 1}$, is an $i$-th prover's message in an
+	accepting transcript; edges between the nodes are labeled with
+	challenges, such that no two edges on the same depth have the same
+	label; and each node on depth $i$ has $n_{i} - 1$ siblings and $n_{i +
+		1}$ children. The tree consists of $N = \prod_{i = 1}^\mu n_i$
+	branches, where $N$ is the number of accepting transcripts. We require $N = \poly$. We refer to a $(1, \ldots, n_k=n, 1, \ldots, 1)$-tree as a $(k,n)$-tree.
+\end{definition}
+
+\iffalse
+
+\begin{figure}[t]
+	\centering
+	\fbox{
+		\procedure{$\genforking_{\zdv}^{m, m'} (y,h_1^{1}, \ldots, h_{q}^{1})$}		
+		{
+			\rho \sample \RND{\zdv}\\
+			(i, s_1) \gets \zdv(y, h_1^{1}, \ldots, h_{q}^{1}; \rho)\\
+			i_1 \gets i\\
+			% \pcif i = 0\ \pcreturn (0, \bot)\\
+			\pcfor j \in \range{2}{m'}\\
+			\pcind h_{1}^{j}, \ldots, h_{i - 1}^{j} \gets h_{1}^{j - 1}, \ldots,
+			h_{i - 1}^{j - 1}\\
+			\pcind h_{i}^{j}, \ldots, h_{q}^{j} \sample H\\
+			\pcind (i_j, s_j) \gets \zdv(y, h_1^{j}, \ldots, h_{i - 1}^{j}, h_{i}^{j},
+			\ldots, h_{q}^{j}; \rho)\\
+			%\pcind \pcif i_j = 0 \lor i_j \neq i\ \pcreturn (0, \bot)\\
+			% \pcif \exists (j, j') \in \range{1}{m}^2, j \neq j' : (h_{i}^{j} = h_{i}^{j'})\
+			\pcif \exists (j_1, \ldots, j_m) \in \range{1}{m'}^m, \text{ s.t. }\\
+			\pcind j_k \neq j_{k'} \text{ for } k \neq k' \land \\
+			\pcind i_{j_k} = i_{j_k'} \land \\
+			\pcind 
+			\pcelse \pcreturn (0, \bot)
+	}}
+	\caption{Generalized forking algorithm $\genforking_{\zdv}^{m, m'}$
+		\michals{5.11}{This forking lemma version is not as general as in Attema et al to
+			be exact -- they allow tree of acceptable transcripts to branch at multiple
+			places. however, that is not necessary in our case. Later, we should allow ``full
+			generality'' but that would also require modification of the forking soundness
+			definition (which now also relies on a fact that the tree branches at a single
+			point)}}
+	\label{fig:genforking_lemma}
+\end{figure}
+
+
+\fi
+
+
+
+\iffalse
+Note that the special soundness property (as usually defined) holds for
+all---even computationally unbounded---adversaries. Unfortunately, since a
+simulation trapdoor for $\plonkprot$, $\sonicprot$ and $\marlinprot$ exists, the protocols
+cannot be special sound in that regard. This is because an unbounded adversary
+can recover the trapdoor and build an arbitrary number of simulated proofs for a fake
+statement. Hence, we provide a weaker, yet sufficient, definition that somehow lies between 
+computational \emph{knowledge soundness} and \emph{special soundness} for unbounded adversaries. Differently from the standard definition of special soundness, we do not require from the extractor to be able to extract the witness from \emph{any} tree of acceptable transcripts. Similar to knowledge soundness, we require that the extractor fails to reconstruct the witness with some small probability only. 
+
+More precisely, in proofs of rewinding-based knowledge soundness we show later that either the extractor extracts a witness from a tree of transcripts or the adversary who was used to produce the tree can be used to break some computationally hard problem. 
+\fi
+The existence of simulation trapdoor for $\plonkprot$, $\sonicprot$ and $\marlinprot$ means that they are not
+special sound in the standard sense. We therefore put forth the notion of rewinding-based knowledge soundness that is a computational notion. 
+Note that in the definition below, it is implicit that each transcript in the tree is accepting with respect to a ``local programming'' of the random oracle. However, the verification of the proof output by the adversary is with respect to a non-programmed random oracle.
+
+\begin{definition}[Updatable Rewinding-Based Knowledge Soundness]
+	Let $n_1, \ldots, n_\mu \in \NN$. 
+	%
+	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a $(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup for relation $\REL$. Let $\ro$ be the random oracle.
+	%
+	We require existence of an expected PPT tree builder $\tdv$ that eventually outputs a $\tree$ which is either a $(n_1, \ldots, n_\mu)$-tree of accepting transcript or $\bot$ and a PPT extractor $\extcss$. Let  adversary $\advcss$ be a PPT algorithm, that outputs a valid proof with probability at least $\accProb$, 
+	where
+	\[
+	\accProb = \condprob{
+		\begin{matrix}
+		\verifier(\srs, \inp, \zkproof) = 1  \\
+		\wedge
+		(\inp, \zkproof) \not\in Q
+		\end{matrix}
+	}{
+		\begin{matrix}
+		r \sample \RND{\advcss}\\
+		(\inp, \zkproof) \gets \advcss^{\initU, \ro
+		} (1^\secpar; r)
+		\end{matrix}
+	}.
+	\]
+	We say that $\psfs$ is $(n_1, \ldots, n_\mu)$-rewinding-based knowledge sound with security loss $\epscss(\secpar, \accProb, q)$ if
+	\begin{align*}
+	\Pr\left[
+	\begin{matrix}
+	\verifier(\srs, \inp, \zkproof) = 1,  \\
+	\REL(\inp, \wit) = 0
+	\end{matrix}
+	\,\left|\,
+	\begin{aligned}
+	& 	r \sample \RND{\advcss}, \\
+	& 	(\srs, \inp, \cdot) \gets \advcss^{\initU, \ro} (1^\secpar; r)\\
+	&  	\tree \gets \tdv(\srs, \advcss, r, \Qsrs, \Qro),
+	\wit \gets \extcss(\tree)
+	\end{aligned}\right.
+	\right] \leq \epscss(\secpar,\accProb, q).
+	\end{align*}
+	Here, $\srs$ is the finalized SRS. List $\Qsrs$ contains all $(\srs, \rho)$ of updated SRSs and their proofs, and list $\Qro$ contains all of the adversaries
+	queries to $\ro$ and the random oracle's answers, $\abs{\Qro}\leq q$.
+	%	 We call the protocol $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound when $\tdv$ builds a $(n_1, \ldots, n_\mu)$-tree of transcripts.
+	% \hamid{1.5}{We still need this sentence:  
+	%\markulf{1.5}{Cut? We call the protocol $(k, n)$-rewinding-based knowledge sound if $\tree$ is a $(k, n)$-tree of accepting transcripts.}
+	% }
+\end{definition}
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
+
+\section{Simulation Extractability---The General Result}
+\label{sec:general}
+Equipped with the definitional framework of \cref{sec:se_definitions}, we now present the
+main result of this paper: a proof of simulation extractability for multi-message
+Fiat--Shamir-transformed NIZK proof systems.
+
+% The proof proceeds by game hopping. The games are controlled by an environment $\env$ that
+% internally runs a simulation extractability adversary $\advse$, provides it with access to
+% simulator $\simulator$ which also responds $\adv$'s random oracle queries. The environment
+% also rewinds $\adv$ when necessary. The games differ by various breaking points,
+% i.e.~points where the environment decides to abort the game.
+
+% The first game $\game{0}$ is a simulation-extractability game, where the extractor
+% gets as input
+% \begin{inparaenum}[(1)]
+% \item simulated proofs $Q$,
+% \item random oracle queries $Q_\ro$,
+% \item SRS updates $Q_\srs$
+% \end{inparaenum}
+% which were made by $\advse$.  We denote by $\radv$ randomness of $\advse$ and by
+% $\rsim$ randomness that was used by the simulator to create responses in the list $Q$
+% and $Q_\ro$. Formally, one could state that $\rsim$ could be parsed into $r_Q$ and
+% $r_\ro$ used to answer queries in $Q$ and $Q_\ro$. Let $r = (\radv,
+% \rsim)$. Randomness $r$ is used in the following games -- we pass it to a
+% unique-response property reduction $\rdvur$ and rewinding-based knowledge soundness adversary
+% $\bdv$. Importantly, since we require that $\rdvur$ and $\bdv$ are successful (with
+% non-negligible probability) given uniformly random randomness and $r$ is picked
+% uniformly random we conclude that we do not change any success probability by running
+% $\rdvur$ and $\bdv$ on $r$. 
+
+
+Without loss of generality, we assume that whenever the accepting proof contains a
+response to a challenge from a random oracle, then the adversary queried the oracle
+to get it. It is straightforward to transform any adversary that violates this
+condition into an adversary that makes these additional queries to the random oracle
+and wins with the same probability.
+
+The core conceptual insight of the proof is that the $k$-unique response  and $k$-programmable trapdoor-less zero-knowledge properties together ensures that the $k$-th move challenges in the trees of rewinding-based knowledge soundness are fresh and do not come from the simulator. This allows us to eliminate the simulation oracle in our rewinding argument and enables us to use the existing results of \cite{EPRINT:AttFehKlo21} in later sections.
+
+% Finally, we note that for a proof system that is $k$-unique response, $k$-programmable trapdoor-less zero-knowledge, and $(1, \ldots, 1, n_{k''}, \ldots, n_\mu)$-rewinding-based knowledge sound, the theorem requires that $k \leq k' \leq k''$. The first condition ensures that a $k'$-th move message $\zkproof_{\advse}[k']$ output by $\adv$ is fresh and not coming from the simulator. The second condition $k' \leq k''$ is to make the simulator able to program the random oracle for the challenges that $\advse$ needs to respond in the $k''$-th move.
+
+\begin{theorem}[Simulation-extractable multi-message protocols]
+	\label{thm:se}
+	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a  $(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup. If $\psfs$ is an
+	updatable $k$-unique response protocol with security loss $\epsur$,
+	updatable $k$-programmable trapdoor-less zero-knowledge, and %$(1, \ldots, 1, n_{k}, \ldots, n_\mu)$-
+	updatable rewinding-based knowledge sound with security loss $\epscss$; 
+	%
+	Then $\psfs$ is \emph{updatable simulation-extractable} with security loss $$\epsse(\secpar,\accProb,q) \leq \epscss(\secpar,\accProb - \epsur(\secpar),q)$$ against any $\ppt$ adversary $\advse$ that makes up to $q$ random oracle queries and returns an accepting proof with probability at least $\accProb$.
+\end{theorem}
+
+\begin{proof}	
+	Let $(\inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'}(r_{\advse})$ be the USE adversary. We show how to build an extractor $\extse (\srs, \advse, r_{\advse}, \Qsim, \Qro, \Qsrs)$ that outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with high probability. To that end we define an algorithm $\advcss^{\initU,\ro}(r)$ against rewinding-based knowledge soundness of $\psfs$ that runs internally $\advse^{\initU, \simOH, \simOP'}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$ with $\rsim$ the randomness that will be used to simulate $\simOP'$. 
+	
+	The code of $\advcss^{\initU,\ro}(r)$ hardcodes $\Qsim$ such that it does not use any randomness for proofs in $\Qsim$ as long as statements are queried in order. In this case it simply returns a proof $\zkproofs$ from $\Qsim$ but nevertheless queries $\simOHprog$ on $(\tzkproofs[0..k],\tzkproofs[k].ch)$, i.e. it programs the $k$-th challenge. While it is hard to construct such an adversary without knowing $\Qsim$, it clearly exists and $\extse$ has the necessary inputs to construct $\advcss$. This hardcoding guarantees that $\advcss$ returns the same $(\inp,\zkproof)$ as $\advse$ in the experiment.
+	%
+	Eventually, $\extse$ uses the tree builder $\tdv$ and extractor $\extcss$ for $\advcss$ to extract the witness for $\inp$. Both guaranteed to exist (and be successful with high probability) by rewinding-based knowledge soundness. This high-level argument shows that $\extse$ exists as well.
+	
+	We now give the details of the simulation that guarantees that $\advcss$ is successful whenever $\advse$ is---except with a small security loss that we will bound later:
+	Since $\advcss$ runs $\advse$ internally, it needs to take care of $\advse$'s oracle queries.
+	$\advcss$ passes on queries of $\advse$ to the update oracle $\initU$ to its own $\initU$ oracle and returns the result to $\advse$.
+	$\advcss$ internally simulates (non-hardcoded) queries to the simulator $\simOP'$ by running the $\simulator$ algorithm on randomness $\rsim$ of its tape. $\simulator$ requires access to oracles $\simOH$ to compute a challenge honestly and $\simOHprog$ to program a challenge. Again $\advcss$ simulates both of these oracles internally, cf.~\cref{fig:simulator_oracles}, this time using the $\ro$ oracle of $\advcss$. 	Note that queries of $\advse$ to $\simOH$ are not programmed, but passed on to $\ro$. 
+	
+	Importantly, all challenges in simulated proofs, up to round $k$ are also computed honestly, i.e. $\tzkproof[i].\ch = \ro(\tzkproof[0..i])$, for $i < k$.
+	%
+	
+	
+	\begin{figure}
+		\centering
+		\begin{pcvstack}[center,boxed]
+			\begin{pchstack}
+				\procedure{$\simOH (x)$}
+				{
+					\pcif H[x] = \bot \pcthen \\
+					\pcind H[x] \gets \ro(x) \\
+					\pcreturn H[x]
+				}
+				%
+				\pchspace
+				%
+				\procedure{$\simulator\oracleo.\prog(x, h)$}
+				{ 
+					\pcif H[x] = \bot \pcthen \\ 
+					\pcind H[x] \gets h \\
+					\pcind \Qprog \gets \Qprog \cup \{x\}\\
+					\pcreturn H[x]
+				}
+			\end{pchstack}
+		\end{pcvstack}
+		\caption{Simulating random oracle calls.}
+		\label{fig:simulator_oracles}
+	\end{figure}	
+	%
+	
+	Eventually, $\advse$ outputs an instance and proof $(\inp, \zkproof)$. $\advcss$ returns the same values as long as $\tzkproof[0..i] \notin \Qprog$, $i\in[1,\mu]$. This models that the proof output by $\advcss$ must not contain any programmed queries as such a proof would not be consistent to~$\ro$ in the RBKS experiment. If $\advse$ outputs a proof that does contain programmed challenges, then $\advcss$ aborts. We denote this event by $\event{E}$.
+	
+	\begin{lemma}
+		Probability that $\event{E}$ happens is upper-bounded by $\epsur(\secpar)$. 
+	\end{lemma}
+	\begin{proof}
+		%Denote by $\zkproof_{\advse}, \zkproof_{\simulator}$ proofs returned by the adversary and the simulator respectively.
+		
+		We build an adversary $\advur^{\initU, \ro} (\secpar; r)$ that has access to the random oracle $\ro$ and update oracle $\initU$. $\advur$ uses $\advcss$ to break the $\ur{k}$ property of $\psfs$. 
+		%Namely, for randomness $r = (r_{\advse}, \rsim)$, $\advur^{\ro, \initU} (\secpar; r)$ runs $\advse^{\initU, \simOH, \simOP'}(\secparam; r_{\advse})$ internally and answers its oracle queries as $\advcss$ did.
+		
+		When $\advcss$ outputs a proof $\zkproof$ for $\inp$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $\Qro$ until it finds $\tzkproofs[0..k]$ such that $\tzkproof[0..k] = \tzkproofs[0..k]$ and a programmed random oracle query $\tzkproofs[k].\ch$ on $\tzkproofs[0..k]$.	$\advur$ returns two proofs $\zkproof$ and $\zkproofs$ for $\inp$,
+%		\begin{align*}
+%		\zkproof_1 = \zkproofs =  (\zkproofs[1..k], \zkproofs[k + 1..\mu + 1])\\
+%		\zkproof_2 = \zkproof \;\;\;\;\, = (\zkproofs[1..k], \;\;\;\;\zkproof[k + 1..\mu + 1])
+%		\end{align*}
+		and the challenge $\tzkproofs[k].\ch=\tzkproof[k].\ch$.
+		Importantly, both proofs are  w.r.t~the unique response verifier. The first, since it is a correctly computed simulated proof for which the unique response property definition allows any challenges at $k$. The latter, since it is an accepting proof produced by the adversary.
+		We have that $\zkproof \neq \zkproofs$ as otherwise $\advse$ does not win the simulation extractability game as $\zkproof \in Q$. On the other hand, if the proofs are different, then $\advur$ breaks $\ur{k}$-ness of $\psfs$. This happens only with  probability $\epsur(\secpar)$. 
+		\qed
+	\end{proof}
+	
+	We denote by $\waccProb$ the probability that $\advcss$ outputs an accepting proof. We note that by up-to-bad reasoning $\waccProb$ is at most $\epsur (\secpar)$ far from the probability that $\advse$ outputs an  accepting proof. Thus, the probability that $\advcss$ outputs an accepting proof is at least $\waccProb \geq \accProb - \epsur (\secpar)$. %\markulf{30.04}{I am ignorant. What is the role of the union bound here. Is this the same as up-to-bad reasoning?}
+	%
+	Since $\psfs$ is $\epscss (\secpar, \waccProb,q)$ rewinding-based knowledge sound, there is a tree builder $\tdv$ and extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of accepting transcripts $\tree$ and fails to extract the witness with probability at most $\epscss (\secpar, \waccProb, q)$. The extractor $\extse$ outputs the witness with the same probability.
+	
+	%\hamid{30.4}{We probably mean rewinding-based KS here. I think we need to also justify why we require this property with specific parameters $(1, \ldots, 1, n_{k}, \ldots, n_\mu)$ for the tree structure!}\markulf{30.04}{Fixed the typo, if that's what you meant. I don't think we need any specific tree structure. There is nevertheless more to say here, I agree.}
+	%
+	Thus $\epsse(\secpar,\accProb,q) = \epscss (\secpar, \waccProb,q) \leq \epscss(\secpar,\accProb - \epsur,q)$.
+	\qed
+\end{proof}
+
+\begin{remark}
+	Observe that our theorem does not depend on $\epszk(\secpar)$. There is no real prover algorithm $\prover$ in the experiment. Only the $k$-programmability of TLZK matters. 
+\end{remark}
+
+\begin{remark}
+	Observe that the theorem does not prescribe a tree shape for the tree builder $\tdv$. Interestingly, in our concrete results $\tdv$ outputs a $(k, *)$-tree of accepting transcripts.
+\end{remark}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
+
+
+%\input{proof-thm1-old}
+
+%\hamid{7.3}{This should be rephrased or removed:}\michals{21.4}{Check now} 
+
+% We conjecture that based on the recent results on state restoration soundness~\cite{C:GhoTes21}, which effectively allows to query the verifier multiple times on different overlapping transcripts, the $q$ loss could be avoided. However, this would reduce the class of protocols covered by our results. More precisely, we would require that the input interactive protocols are state-restoration sound \cite{TCC:BenChiSpo16}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
+
+\section{Concrete SNARKs Preliminaries}
+
+\ourpar{Bilinear groups.}
+A bilinear group generator $\pgen (\secparam)$ returns public parameters $ \pp =
+(p, \GRP_1, \GRP_2, \GRP_T, \pair, \gone{1}, \gtwo{1})$, where $\GRP_1$,
+$\GRP_2$, and $\GRP_T$ are additive cyclic groups of prime order $p = 2^{\Omega
+	(\secpar)}$, $\gone{1}, \gtwo{1}$ are generators of $\GRP_1$, $\GRP_2$, resp.,
+and $\pair: \GRP_1 \times \GRP_2 \to \GRP_T$ is a non-degenerate
+$\ppt$-computable bilinear pairing. We assume the bilinear pairing to be Type-3,
+i.e., that there is no efficient isomorphism from $\GRP_1$ to $\GRP_2$ or from
+$\GRP_2$ to $\GRP_1$. We use the by now standard bracket notation, i.e., we
+write $\bmap{a}{\gi}$ to denote $a \bmap{1}{\gi}$. %where $g_{\gi}$ is a fixed generator of $\GRP_{\gi}$. 
+We denote $\pair (\gone{a}, \gtwo{b})$ as $\gone{a} \bullet
+\gtwo{b}$. Thus, $\gone{a} \bullet \gtwo{b} = \gtar{a b}$. 
+% We freely use the
+% bracket notation with matrices, e.g., if $\vec{A} \vec{B} = \vec{C}$ then
+% $\vec{A} \grpgi{\vec{B}} = \grpgi{\vec{C}}$ and $\gone{\vec{A}}\bullet
+% \gtwo{\vec{B}} = \gtar{\vec{C}}$.\markulf{2.5}{do we use any matrices?} 
+Since every algorithm $\adv$ takes as input
+the public parameters we skip them when describing $\adv$'s input. Similarly, we
+do not explicitly state that each protocol starts by running $\pgen$.
+
+\subsection{Algebraic Group Model}
+The algebraic group model (AGM) of Fuchsbauer, Kiltz, and Loss~\cite{C:FucKilLos18} lies somewhat between the
+standard and generic bilinear group model. In the AGM it is assumed that an
+adversary $\adv$ can output a group element $\gnone{y} \in \GRP$ if $\gnone{y}$ has
+been computed by applying group operations to group elements given to $\adv$ as
+input. It is further assumed, that $\adv$ knows how to ``build'' $\gnone{y}$ from
+those elements. More precisely, the AGM requires that whenever $\adv(\gnone{\vec{x}})$
+outputs a group element $\gnone{y}$ then it also outputs $\vec{c}$ such that
+$\gnone{y} = \vec{c}^\top \cdot \gnone{\vec{x}}$. $\plonk$, $\sonic$ and $\marlin$
+have been shown secure using the AGM. An adversary that works in the AGM is called
+\emph{algebraic}.
+
+\oursubsub{Ideal Verifier and Verification Equations.} Let
+$(\SRScer, \prover, \verifier, \simulator)$ be a proof system.
+% or a polynomial commitment
+% scheme\hamid{might be unclear as we are defining polynomial commitments as
+%   $(\kgen, \com, \open, \verify)$.}.
+Observe that the $\SRScer$ algorithms provide an SRS which can be interpreted as a set
+of group representation of polynomials evaluated at trapdoor elements. That is, for a
+trapdoor $\chi$ the SRS contains $\gone{\p{p_1}(\chi), \ldots, \p{p_k}(\chi)}$, for
+some polynomials $\p{p_1}(X), \ldots, \p{p_k}(X) \in \FF_p[X]$. The verifier
+$\verifier$ accepts a proof $\zkproof$ for instance $\inp$ if (a set of) verification
+equation $\vereq_{\inp, \zkproof}$ (which can also be interpreted as a polynomial in
+$\FF_p[X]$ whose coefficients depend on messages sent by the prover) zeroes at
+$\chi$. Following \cite{EPRINT:GabWilCio19} we call verifiers who check that
+$\vereq_{\inp, \zkproof}(\chi) = 0$ \emph{real verifiers} as opposed to \emph{ideal
+	verifiers} who accept only when $\vereq_{\inp, \zkproof}(X) = 0$. That is, while a
+real verifier accepts when a polynomial \emph{evaluates} to zero, an ideal verifier
+accepts only when the polynomial \emph{is} zero.
+
+Although ideal verifiers are impractical, they are very useful in our
+proofs. More precisely, we show that
+%\begin{compactenum}
+%\item 
+the idealized verifier accepts an incorrect proof (what ``incorrect''
+means depends on the situation) with at most negligible probability (and in many
+cases---never);
+%\item 
+when the real verifier accepts, but not the idealized one, then a malicious
+prover can be used to break the underlying security assumption (in our case---a
+variant of $\dlog$.)
+%\end{compactenum}
+
+Analogously, idealized verifier can be defined for polynomial commitment schemes.
+
+\subsection{Dlog Assumptions in Standard and Updatable Setting}
+\label{dlog-upd}
+\label{sec:udlog_assumptions}
+
+
+\label{sec:dlog_assumptions}
+\begin{definition}[$(q_1, q_2)\mhyph\dlog$ assumption]\label{def:dlog}
+	Let $\adv$ be a $\ppt$ adversary that gets as input
+	$\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}}$, for
+	some randomly picked $\chi \in \FF_p$, the assumption requires that $\adv$ cannot compute $\chi$. That is
+	\[
+	\condprob{\chi = \adv(\gone{1, \chi, \ldots, \chi^{q_1}}, \gtwo{1, \chi,
+			\ldots, \chi^{q_2} })}{\chi \sample \FF_p} \leq \negl.
+	\]
+\end{definition}
+
+Since all our protocols and security notions are in the updatable setting, it is natural to define the dlog assumptions also in the updatable setting. That is, instead of being given a dlog challenge the adversary $\adv$ is given access to an update oracle as defined in~\cref{fig:upd}. The honestly generated SRS is set to be a dlog challenge and the update algorithm $\upd$ re-randomizing the challenge. We define this assumptions and show a reduction between the assumptions in the updatable and standard setting. 
+
+Note that for clarity we here refer to the SRS by $\Ch$. Further, to avoid cluttering notation, we do not make the update proofs explicit. They are generated in the same manner as the proofs in~\cref{fig:upd-scheme}.
+
+%The reduction $\reduction$ proceeds as follows: given the input dlog instance, $\reduction$ answers adversary's queries for the dlog updates and sets the honest update to be the input dlog instance. Once the dlog challenge in the updatable setting is finalized, it runs the adversary and obtains the answer $\chi'$. Let $\chi_1, \ldots, \chi_\ell$ be the partial discrete logarithms of dlog instances corresponding to the adversary's dlog updates. These values can be computed by $\reduction$ by extracting from the update proofs given by the adversary. $\reduction$ now returns  $\chi = \chi' (\chi_1 \chi_2 \ldots \chi_\ell)^{-1}$. The same argument holds for the $(q_1, q_2)\mhyph\ldlog$ assumption, ~\cref{def:ldlog}.
+
+\begin{definition}[$(q_1, q_2)\mhyph\udlog$ assumption]\label{def:udlog}
+	Let $\adv$ be a $\ppt$ adversary that gets oracle access to $\initU$ with internal algorithms $(\kgen, \upd, \verifyCRS)$, where $\kgen$ and $\upd$ are defined as follows:
+	\begin{itemize}
+		\item $\kgen(\secpar)$ samples $\chi \sample \FF_p$ and defines 
+		$\Ch:=(\gone{1, \chi, \ldots,
+			\chi^{q_1}}, \gtwo{1, \chi, \ldots, \chi^{q_2}
+		})$.
+		\item $\upd(\Ch, \{\rho_j \}_{j=1}^n)$ 
+		parses $\Ch$ as $\left( \gone{\smallset{A_i}_{i = 0}^{q_1}},
+		\gtwo{\smallset{B_i}_{i = 0}^{q_2}} \right)$, samples
+		$\widetilde{\chi} \sample \FF_p$, and defines
+		$\widetilde{\Ch} := 
+		\left( \gone{\smallset{\widetilde{\chi}^i A_i}_{i = 0}^{q_1}},
+		\gtwo{\smallset{\widetilde{\chi}^i B_i}_{i = 0}^{q_2}} \right)$.
+	\end{itemize}
+	Then
+	$
+	\prob{\bar{\chi} \gets \adv^{\initU}(\secpar)} \leq \negl,
+	$
+	where $\left( \gone{\smallset{\bar{\chi}^i}_{i = 0}^{q_1}},
+	\gtwo{\smallset{\bar{\chi}^i}_{i = 0}^{q_2}} \right)$ is the final $\Ch$.
+\end{definition}
+
+
+
+\begin{remark}[Single adversarial updates after an honest setup.]\label{rem:upd}
+	As an alternative to the updatable setting defined in~\cref{fig:upd}, one can consider a slightly different model of setup, where the adversary is given an initial honestly-generated SRS and is then allowed to perform a malicious update in one-shot fashion.
+	Groth
+	et al.\ show in~\cite{C:GKMMM18} that the two definitions are equivalent for polynomial commitment based SNARKs. We use this simpler definition in our reductions.
+\end{remark}
+
+
+In the full version~\cite{EPRINT:GKKNZ21}, we show a reduction from $(q_1, q_2)\mhyph\dlog$ assumption to its variant in the updatable setting (with single adversarial update). 
+%We omit showing the reduction $(q_1, q_2)\mhyph\ldlog \Rightarrow (q_1, q_2)\mhyph\uldlog$ as it can be done similarly in a straightforward manner.
+%\begin{lemma}
+%	$(q_1, q_2)\mhyph\dlog \Rightarrow (q_1, q_2)\mhyph\udlog$.
+%	\end{lemma}
+%\begin{proof}
+%	We show a reduction $\reduction$ that uses an adversary $\adv$ that breaks $(q_1, q_2)\mhyph\udlog$ to break $(q_1, q_2)\mhyph\dlog$. Specifically, $\reduction$ proceeds as follows: given a dlog instance $\Ch$ as input, it sets $\Ch$ to be the initial (honestly generated) challenge and runs $\adv$. After $\adv$ performs its update and finalizes the dlog challenge it returns the answer $\chi'$. Let $\chi_\adv$ be the trapdoor contribution of adversary $\adv$ in its update. Reduction $\reduction$ can extract this value from the update proof of $\adv$. $\reduction$ now returns $\chi = \chi' \chi_\adv^{-1}$ as the discrete logarithm of the original challenge $\Ch$.\qed
+%	\end{proof}
+
+
+\oursubsub{Generalized Forking Lemma}
+Although dubbed ``general'', the forking lemma of~\cite{CCS:BelNev06} is not general enough for our purpose as it is useful only for protocols where a witness can be extracted from just two transcripts. To be able to extract a witness from, say, an execution of $\plonkprot$ we need at least $(3 \numberofconstrains + 6)$ valid proofs (where $\numberofconstrains$ is the number of constrains), $(\numberofconstrains + 1)$ for $\sonicprot$, and $2 \numberofconstrains + 3$ for $\marlinprot$.
+% \hamid{2.5}{Numbers are incorrect! Maybe $(3 \numberofconstrains + 6)$ for Plonk, $(\numberofconstrains + \linconstr+ 1)$ for Sonic and $(\numberofconstrains+ 3)$ for Marlin? }
+% \michals{2.5}{$\multconstr + \linconstr = \noofc$}
+Here we use a result by Attema et
+al.~\cite{EPRINT:AttFehKlo21}\footnote{An earlier versions had its own forking lemma generalization. Attema et al.\ has a better bound.}  which lower-bounds the probability of generating a tree of accepting transcripts $\tree$. We restate their Proposition 2 in our notation:
+
+\begin{lemma}[Run Time and Success Probability]\label{lem:attema}
+	Let $N = n_1 \cdot \cdots \cdot n_\mu$ and $p = 2^{\Omega(\secpar)}$. Let $\epserr(\secpar) = 1 - \prod_{i=1}^{\mu}\left(1 - \frac{n_i - 1}{p}\right)$.
+	Assume adversary $\adv$ that makes up to $q$ random
+	oracle queries and outputs an accepting proof with probability at least
+	$\accProb$. There exists a tree building algorithm $\tdv$ for $(n_1, \ldots, n_\mu)$-trees that %utilizes the extractor $\zdv_1$ in~\cref{3 \noofc + 5ema-ext} and 
+	succeeds in building a
+	tree of accepting transcripts in expected
+	running time $N + q (N - 1)$ with probability at least
+	\[
+	\frac{\accProb - (q + 1) \epserr (\secpar)}{1 - \epserr (\secpar)}.
+	\]
+\end{lemma}
+
+\iffalse
+\begin{figure}[t]
+	\centering
+	\fbox{\parbox{\textwidth}{
+			\begin{enumerate}
+				\item Run $\zdv_{m + 1}$ as follows to obtain $(\vec{\zkproof}, \tzkproof_1, v)$: relay the $q + \mu$ queries to the random oracle and record all query-response pairs. Set 				$h \gets \zkproof[m].\ch $, and let $c_h$ be the response to query $i$. 
+				\item If $v = 0$, abort with output $v = 0$. 
+				\item Else, repeat
+				\begin{itemize}
+					\item sample $c'_h \in C \setminus \smallset{c_h}$ (without replacement);
+					\item run $\zdv_{m + 1}$ as follows to obtain $(\vec{\zkproof'}, \tzkproof', v')$, aborting right after the initial run of $\adv$ if $\zkproof'[m].\ch  \neq \zkproof[m].\ch$: answer the query to $h$ with $c'_h$, while answering all other queries consistently if the query was performed by $\zdv_{m + 1}$ already on a previous run and with a fresh random value in $C$ otherwise; 
+				\end{itemize}
+				until either $n_m - 1$ additional challenges $c'_h$ with $v' = 1$ and $\zkproof'[m].\ch  = \zkproof[m]$ have been found or until all challenges $c'_h \in C$ have been tried. 
+				\item In the former case, output $\vec{\zkproof}$, the $n_m$ accepting
+				$(1, \ldots, 1, n_{m + 1}, \ldots, n_\mu)$-trees $\tzkproof_1, \ldots, \tzkproof_{n_m}$, and
+				$v \gets 1$; in the latter case, output $v \gets 0$.
+			\end{enumerate}
+	}}
+	\caption{Extractor $\zdv_m$ from Attema et al.~\cite{EPRINT:AttFehKlo21short}. Here $\vec{\zkproof}$ is an index vector that contains all random oracle queries made by the prover for the output proof; that is, for prover's messages $\vec{a} = a_1, \ldots, a_{\mu + 1}$, $\zkproof[1].\ch = (\inp, a_1), \ldots, \zkproof[{\mu}].\ch = (\inp, a_1, \ldots, a_\mu)$.  $\tzkproof$ is a proof transcript that contains both prover's messages and random oracle responses, that is $\tzkproof = (a_1, (\inp, a_1), a_2, (\inp, a_1, a_2), \ldots)$. Finally, $v$ is the verification bit, that is $v = \verifier (\srs, \inp, \tzkproof)$. }
+	\label{fig:Attema-ext}
+\end{figure} 
+\fi
+
+\oursubsub{Opening Uniqueness of Batched Polynomial Commitment Openings}
+%We say that $\PCOM$ has the unique opening property if the following holds:
+To show the unique response property required by our main theorem we show that the polynomial commitment schemes employed by concrete proof systems have unique openings, which, intuitively, assures that there is only one
+valid opening for a given committed polynomial and evaluation point:
+
+\begin{definition}[Unique opening property]
+	Let $m \in \NN$ be the number of committed polynomials, $l \in \NN$ number of evaluation points, $\vec{c} \in \GRP^m$ be the commitments, $\vec{z} \in \FF_p^l$ be the arguments the polynomials are evaluated at, $K_j$ set of indices of polynomials which are evaluated at $z_j$, $\vec{s_{i}}$ vector of evaluations of $\p{f_i}$, and $\vec{o_j}, \vec{o'_j} \in \FF_p^{K_j}$ be the commitment openings. Then for every $\ppt$ adversary $\adv$
+	\[
+	\condprob{
+		\begin{matrix}
+		\verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o}) = 1,  \\ 
+		\verify(\srs, \vec{c}, \vec{z}, \vec{s}, \vec{o'}) = 1, \\
+		\vec{o} \neq \vec{o'}
+		\end{matrix}
+	}{
+		\begin{matrix}
+		%				& \srs \gets \kgen(\secparam, \maxdeg),\\
+		(\vec{c}, \vec{z}, \vec{s}, \vec{o}, \vec{o'}) \gets \adv^{\initU}(\maxdeg)
+		\end{matrix}
+	}\leq \negl\,.
+	\]
+\end{definition}
+
+We show that the polynomial commitment schemes of $\plonk$, $\sonic$, and $\marlin$ satisfy this requirement in the full version~\cite{EPRINT:GKKNZ21}.
+
+\begin{remark}
+	In the full version~\cite{EPRINT:GKKNZ21}, we presents efficient variants of KZG~\cite{AC:KatZavGol10} polynomial commitment schemes used in \plonk{}, \sonic{} and \marlin{} that support batched verification. Algorithms $\com$, $\open$, $\verify$ take vectors as input and receive an additional arbitrary auxiliary string. This adversarially chosen string only provides additional context for the computation of challenges and allows reconstruction of proof transcripts $\tzkproof[0..i]$ for batch challenge computations. We treat auxiliary input implicitly in the definition above.
+\end{remark}
+
+\section{Non-malleability of Plonk} 
+\label{sec:plonk}
+In this section, we show that $\plonkprotfs$ is simulation-extractable. To this end, we first use the unique opening property to show that
+$\plonkprotfs$ has the $\ur{3}$ property,
+cf.~\cref{lem:plonkprot_ur}.
+Next, we show that $\plonkprotfs$ is rewinding-based knowledge sound. That is, given a number of accepting transcripts whose first $3$ messages match, we can either extract a witness for the proven statement or use one of the transcripts to break the $\udlog$ assumption. This result is shown in the AGM, cf.~\cref{lem:plonkprot_ss}. We then show that $\plonkprotfs$ is $3$-programmable trapdoor-less ZK in the AGM, cf.~\cref{lem:plonk_tlzk}.
+
+Given rewinding-based knowledge soundness, $\ur{3}$ and trapdoor-less zero-knowledge of $\plonkprotfs$, we invoke \cref{thm:se} and conclude that $\plonkprotfs$ is simulation-extractable.
+
+\newcommand{\vql}{\vec{q_{L}}}
+\newcommand{\vqr}{\vec{q_{R}}}
+\newcommand{\vqm}{\vec{q_{M}}}
+\newcommand{\vqo}{\vec{q_{O}}}
+\newcommand{\vx}{\vec{x}}
+\newcommand{\vqc}{\vec{q_{C}}}
+
+\subsection{Plonk Protocol Description}
+%\label{sec:plonk_explained}
+\oursubsub{The constraint system.}
+Assume $\CRKT$ is a fan-in two arithmetic circuit, whose
+fan-out is unlimited and has $\numberofconstrains$ gates and $\noofw$ wires
+($\numberofconstrains \leq \noofw \leq 2\numberofconstrains$). The constraint
+system of $\plonk$ is defined as follows:
+\begin{compactitem}
+	\item Let $\vec{V} = (\va, \vb, \vc)$, where $\va, \vb, \vc
+	\in \range{1}{\noofw}^\numberofconstrains$. Entries $\va_i, \vb_i, \vc_i$ represent indices of left,
+	right and output wires of the circuit's $i$-th gate.
+	\item Vectors $\vec{Q} = (\vql, \vqr, \vqo, \vqm, \vqc) \in
+	(\FF^\numberofconstrains)^5$ are called \emph{selector vectors}:
+	\begin{inparaenum}[(a)]
+		\item If the $i$-th gate is a multiplication gate then $\vql_i = \vqr_i = 0$,
+		$\vqm_i = 1$, and $\vqo_i = -1$. 
+		\item If the $i$-th gate is an addition gate then $\vql_i = \vqr_i  = 1$, $\vqm_i =
+		0$, and $\vqo_i = -1$. 
+		\item $\vqc_i = 0$ for multiplication and addition gates.\footnote{The $\vqc_i$ selector vector is meant to encode (input independent) constants.} 
+	\end{inparaenum}
+\end{compactitem}
+
+We say that vector $\vx \in \FF^\noofw$ satisfies constraint system if for all $i
+\in \range{1}{\numberofconstrains}$
+\[
+\vql_i \cdot \vx_{\va_i} + \vqr_i \cdot \vx_{\vb_i} + \vqo \cdot \vx_{\vc_i} +
+\vqm_i \cdot (\vx_{\va_i} \vx_{\vb_i}) + \vqc_i = 0. 
+\]
+
+Public inputs $\brak{\inp_j}_{j = 1}^{\instsize}$ are enforced by adding the constrains
+\[ \va_i = j, \vql_i = 1, \vqm_i = \vqr_i = \vqo_i = 0, \vqc_i = -\inp_j\,,
+\]
+for some $i \in \range{1}{\noofc}$.
+
+\oursubsub{Algorithms rolled out}
+%\label{sec:plonk_explained}
+\plonk{} argument system is universal. That is, it allows to verify computation
+of any arithmetic circuit which has up to $\numberofconstrains$
+gates using a single SRS. However, to make computation efficient, for each
+circuit there is a preprocessing phase which extends the SRS with
+circuit-related polynomial evaluations.
+
+For the sake of simplicity of the security reductions presented in this paper, we
+include in the SRS only these elements that cannot be computed without knowing
+the secret trapdoor $\chi$. The rest of the preprocessed input can
+be computed using these SRS elements. We thus let them to be computed by the
+prover, verifier, and simulator separately.
+
+\ourpar{$\plonk$ SRS generating algorithm $\kgen(\REL)$:}
+The SRS generating algorithm picks at random $\chi \sample \FF_p$, computes
+and outputs
+\(
+\srs = \left(\gone{\smallset{\chi^i}_{i = 0}^{\numberofconstrains + 5}},
+\gtwo{\chi} \right).
+\)
+
+\ourpar{Preprocessing:}
+Let $H = \smallset{\omega^i}_{i = 1}^{\numberofconstrains }$ be a
+(multiplicative) $\numberofconstrains$-element subgroup of a field $\FF$
+compound of $\numberofconstrains$-th roots of unity in $\FF$. Let $\lag_i(X)$ be
+the $i$-th element of an $\numberofconstrains$-elements Lagrange basis. During
+the preprocessing phase polynomials $\p{S_{id j}}, \p{S_{\sigma j}}$, for
+$\p{j} \in \range{1}{3}$, are computed:
+\begin{equation*}
+\begin{aligned}
+\p{S_{id 1}}(X) & = X,\\[\myskip]
+\p{S_{id 2}}(X) & = k_1 \cdot X,\\[\myskip]
+\p{S_{id 3}}(X) & = k_2 \cdot X,
+\end{aligned}
+\qquad
+\begin{aligned}
+\p{S_{\sigma 1}}(X) & = {\textstyle{\sum_{i = 1}^{\noofc} \sigma(i) \lag_i(X)}},\\[\myskip]
+\p{S_{\sigma 2}}(X) & = {\textstyle \sum_{i = 1}^{\noofc}
+	\sigma(\noofc + i) \lag_i(X)},\\[\myskip]
+\p{S_{\sigma 3}}(X) & ={\textstyle\sum_{i = 1}^{\noofc} \sigma(2 \noofc + i) \lag_i(X)}.
+\end{aligned}
+\end{equation*}
+Coefficients $k_1$, $k_2$ are such that $H, k_1 \cdot H, k_2 \cdot H$ are
+different cosets of $\FF^*$, thus they define $3 \cdot \noofc$
+different elements. Gabizon et al.~\cite{EPRINT:GabWilCio19} notes that it is enough to set
+$k_1$ to a quadratic residue and $k_2$ to a quadratic non-residue.
+
+Furthermore, we define polynomials $\p{q_L}, \p{q_R}, \p{q_O}, \p{q_M}, \p{q_C}$
+such that
+\begin{equation*}
+\begin{aligned}
+\p{q_L}(X) & = {\textstyle \sum_{i = 1}^{\noofc}} \vql_i \lag_i(X), \\
+\p{q_R}(X) & = \textstyle \sum_{i = 1}^{\noofc} \vqr_i \lag_i(X), \\
+\p{q_M}(X) & = \textstyle \sum_{i = 1}^{\noofc} \vqm_i \lag_i(X),
+\end{aligned}
+\qquad
+\begin{aligned}
+\p{q_O}(X) & = \textstyle  \sum_{i = 1}^{\noofc} \vqo_i \lag_i(X), \\
+\p{q_C}(X) & =  \textstyle \sum_{i = 1}^{\noofc} \vqc_i \lag_i(X). \\
+\vphantom{\p{q_M}(X)  = \textstyle \sum_{i = 1}^{\noofc} \vqm_i \lag_i(X),}
+\end{aligned}
+\end{equation*}
+
+\ourpar{Proving statements in $\plonkprotfs$} We show how prover's algorithm
+$\prover(\srs, \inp=\brak{\wit'_i}_{i = 1}^\instsize, \wit = \brak{\wit_i}_{i=1}^{3 \cdot \noofc})$ operates for
+the Fiat--Shamir transformed version of Plonk. Note that for notational convenience $\wit$ also contains the public input wires $\wit'_i=\wit_i$, $i\in \range{1}{\ell}$.
+\begin{description}
+	\item[Message 1] Sample $b_1, \ldots, b_9 \sample \FF_p$; compute
+	$\p{a}(X), \p{b}(X), \p{c}(X)$ as
+	\begin{align*}
+	\p{a}(X) &= (b_1 X + b_2)\p{Z_H}(X) + \textstyle \sum_{i = 1}^{\noofc} \wit_i \lag_i(X) \\
+	\p{b}(X) &= (b_3 X + b_4)\p{Z_H}(X) + \textstyle \sum_{i = 1}^{\noofc} \wit_{\noofc + i} \lag_i(X) \\
+	\p{c}(X) &= (b_5 X + b_6)\p{Z_H}(X) + \textstyle \sum_{i = 1}^{\noofc} \wit_{2 \cdot \noofc + i} \lag_i(X) 
+	\end{align*}
+	Output polynomial commitments $\gone{\p{a}(\chi), \p{b}(\chi), \p{c}(\chi)}$.  
+	
+	\item[Message 2] Compute challenges $\beta, \gamma \in \FF_p$ by querying random oracle
+	on partial proof, that is,
+	\(
+	\beta = \ro(\tzkproof[0..1], 0)\,, \qquad \gamma = \ro(\tzkproof[0..1], 1)\,.
+	\)
+	
+	Compute permutation polynomial $\p{z}(X)$
+	\begin{multline*}
+	\p{z}(X) = (b_7 X^2 + b_8 X + b_9)\p{Z_H}(X) + \lag_1(X) + \\
+	+ \sum_{i = 1}^{\noofc - 1} \left(\lag_{i + 1} (X) \prod_{j = 1}^{i} \frac{
+		(\wit_j +\beta \omega^{j - 1} + \gamma)(\wit_{\noofc + j} + \beta k_1
+		\omega^{j - 1} + \gamma)(\wit_{2 \noofc + j} +\beta k_2 \omega^{j- 1} +
+		\gamma)} {(\wit_j+\sigma(j) \beta + \gamma)(\wit_{\noofc + j} + \sigma(\noofc
+		+ j)\beta + \gamma)(\wit_{2 \noofc + j} + \sigma(2 \noofc + j)\beta +
+		\gamma)}\right)
+	\end{multline*}
+	Output polynomial commitment $\gone{\p{z}(\chi)}$
+	
+	\item[Message 3] Compute the challenge $\alpha = \ro(\tzkproof[0..2])$, compute the quotient
+	polynomial
+	\begin{align*}
+	& \p{t}(X)  = \\
+	& (\p{a}(X) \p{b}(X) \selmulti(X) + \p{a}(X) \selleft(X) + 
+	\p{b}(X)\selright(X) + \p{c}(X)\seloutput(X) + \pubinppoly(X) + \selconst(X)) /  
+	\p{Z_H}(X) +\\
+	& + ((\p{a}(X) + \beta X + \gamma) (\p{b}(X) + \beta k_1 X + \gamma)(\p{c}(X) 
+	+ \beta k_2 X + \gamma)\p{z}(X)) \infrac{\alpha}{\p{Z_H}(X)} \\
+	& - (\p{a}(X) + \beta \p{S_{\sigma 1}}(X) + \gamma)(\p{b}(X) + \beta 
+	\p{S_{\sigma 2}}(X) + \gamma)(\p{c}(X) + \beta \p{S_{\sigma 3}}(X) + 
+	\gamma)\p{z}(X \omega))  \infrac{\alpha}{\p{Z_H}(X)} \\
+	& + (\p{z}(X) - 1) \lag_1(X) \infrac{\alpha^2}{\p{Z_H}(X)}
+	\end{align*}
+	Split $\p{t}(X)$ into degree less then $\noofc$ polynomials
+	$\p{t_{lo}}(X), \p{t_{mid}}(X), \p{t_{hi}}(X)$, such that
+	\(
+	\p{t}(X) = \p{t_{lo}}(X) + X^{\noofc} \p{t_{mid}}(X) + X^{2 \noofc}
+	\p{t_{hi}}(X)\,.
+	\)
+	Output $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$.
+	
+	\item[Message 4] Get the challenge $\chz \in \FF_p$, $\chz = \ro(\tzkproof[0..3])$.
+	Compute opening evaluations
+	\(
+	\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma 2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega),
+	\)
+	Compute the linearization polynomial
+	\[
+	\p{r}(X) =
+	\begin{aligned}
+	& \p{a}(\chz) \p{b}(\chz) \selmulti(X) + \p{a}(\chz) \selleft(X) + \p{b}(\chz) \selright(X) + \p{c}(\chz) \seloutput(X) + \selconst(X) \\
+	& + \alpha \cdot \left( (\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma)(\p{c}(\chz) + \beta k_2 \chz + \gamma) \cdot \p{z}(X)\right) \\
+	& - \alpha \cdot \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma)\beta \p{z}(\chz\omega) \cdot \p{S_{\sigma 3}}(X)\right) \\
+	& + \alpha^2 \cdot \lag_1(\chz) \cdot \p{z}(X)
+	\end{aligned}
+	\]
+	Output
+	$\p{a}(\chz), \p{b}(\chz), \p{c}(\chz), \p{S_{\sigma 1}}(\chz), \p{S_{\sigma
+			2}}(\chz), \p{t}(\chz), \p{z}(\chz \omega), \p{r}(\chz).$
+	
+	\item[Message 5] Compute the opening challenge $v \in \FF_p$,
+	$v = \ro(\tzkproof[0..4])$.  Compute the openings for the polynomial commitment
+	scheme
+	\hspace*{-2cm}\begin{align*}
+	& \p{W_\chz}(X) = \frac{1}{X - \chz} \left(
+	\begin{aligned}
+	& \p{t_{lo}}(X) + \chz^\noofc \p{t_{mid}}(X) + \chz^{2 \noofc} \p{t_{hi}}(X) - \p{t}(\chz)
+	+ v(\p{r}(X) - \p{r}(\chz)) 
+	+ v^2 (\p{a}(X) - \p{a}(\chz))\\
+	& + v^3 (\p{b}(X) - \p{b}(\chz))
+	+ v^4 (\p{c}(X) - \p{c}(\chz))
+	+ v^5 (\p{S_{\sigma 1}}(X) - \p{S_{\sigma 1}}(\chz)) \\
+	& + v^6 (\p{S_{\sigma 2}}(X) - \p{S_{\sigma 2}}(\chz))
+	\end{aligned}
+	\right)\\
+	& \p{W_{\chz \omega}}(X) = \infrac{(\p{z}(X) - \p{z}(\chz \omega))}{(X - \chz \omega)}
+	\end{align*}
+	Output $\gone{\p{W_{\chz}}(\chi), \p{W_{\chz \omega}}(\chi)}$.
+\end{description}
+
+\ncase{Plonk verifier $\verifier(\srs, \inp, \zkproof)$}\ %\newline
+The \plonk{} verifier works as follows
+\begin{enumerate}
+	\item Validate all obtained group elements.
+	\item Validate all obtained field elements.
+	\item Parse the instance as
+	$\smallset{\wit_i}_{i = 1}^\instsize \gets \inp$.
+	\item Compute challenges $\beta, \gamma, \alpha, \chz, v, u$ from the transcript.
+	\item Compute zero polynomial evaluation
+	$\p{Z_H} (\chz) =\chz^\noofc - 1$.
+	\item Compute Lagrange polynomial evaluation
+	$\lag_1 (\chz) = \frac{\chz^\noofc -1}{\noofc (\chz - 1)}$.
+	\item Compute public input polynomial evaluation
+	$\pubinppoly (\chz) = \sum_{i \in \range{1}{\instsize}} \wit_i
+	\lag_i(\chz)$.
+	\item Compute quotient polynomials evaluations
+	\begin{multline*}
+	\p{t} (\chz) =  \Big(
+	\p{r} (\chz) + \pubinppoly(\chz) - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) 
+	(\p{c}(\chz) + \gamma)\p{z}(\chz \omega) \alpha - \lag_1 (\chz) \alpha^2
+	\Big) / {\p{Z_H}(\chz)} \,.
+	\end{multline*}
+	\item Compute batched polynomial commitment
+	$\gone{D} = v \gone{r} + u \gone {z}$ that is
+	\begin{align*}
+	\gone{D} & = v
+	\left(
+	\begin{aligned}
+	& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}  \gone{\selright} + \p{c}  \gone{\seloutput} + \\
+	& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c} + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
+	% &   \\
+	& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz)
+	+ \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha \beta \p{z}(\chz
+	\omega) \gone{\p{S_{\sigma 3}}(\chi)})
+	\end{aligned}
+	\right) + \\
+	& + u \gone{\p{z}(\chi)}\,.
+	\end{align*}
+	\item Computes full batched polynomial commitment $\gone{F}$:
+	\begin{align*}
+	\gone{F} & = \left(\gone{\p{t_{lo}}(\chi)} + \chz^\noofc \gone{\p{t_{mid}}(\chi)} + \chz^{2 \noofc} \gone{\p{t_{hi}}(\chi)}\right) + u \gone{\p{z}(\chi)} + \\
+	& + v
+	\left(
+	\begin{aligned}
+	& \p{a}(\chz)\p{b}(\chz) \cdot \gone{\selmulti} + \p{a}(\chz)  \gone{\selleft} + \p{b}(\chz)   \gone{\selright} + \p{c}(\chz)  \gone{\seloutput} + \\
+	& + (	(\p{a}(\chz) + \beta \chz + \gamma) (\p{b}(\chz) + \beta k_1 \chz + \gamma) (\p{c}(\chz)  + \beta k_2 \chz + \gamma) \alpha  + \lag_1(\chz) \alpha^2)  + \\
+	% &   \\
+	& - (\p{a}(\chz) + \beta \p{S_{\sigma 1}}(\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}}(\chz) + \gamma) \alpha  \beta \p{z}(\chz \omega) \gone{\p{S_{\sigma 3}}(\chi)})
+	\end{aligned}
+	\right) \\
+	& + v^2 \gone{\p{a}(\chi)} + v^3 \gone{\p{b}(\chi)} + v^4 \gone{\p{c}(\chi)} + v^5 \gone{\p{S_{\sigma 1}(\chi)}} + v^6 \gone{\p{S_{\sigma 2}}(\chi)}\,.
+	\end{align*}
+	\item Compute group-encoded batch evaluation $\gone{E}$
+	\begin{align*}
+	\gone{E}  = \frac{1}{\p{Z_H}(\chz)} & \gone{
+		\begin{aligned}
+		& \p{r}(\chz) + \pubinppoly(\chz) +  \alpha^2  \lag_1 (\chz) + \\
+		& - \alpha \left( (\p{a}(\chz) + \beta \p{S_{\sigma 1}} (\chz) + \gamma) (\p{b}(\chz) + \beta \p{S_{\sigma 2}} (\chz) + \gamma) (\p{c}(\chz) + \gamma) \p{z}(\chz \omega) \right)
+		\end{aligned}
+	}\\
+	+ & \gone{v \p{r}(\chz) + v^2 \p{a}(\chz) + v^3 \p{b}(\chz) + v^4 \p{c}(\chz) + v^5 \p{S_{\sigma 1}}(\chz) + v^6 \p{S_{\sigma 2}}(\chz) + u \p{z}(\chz \omega) }\,.
+	\end{align*}
+	\item Check whether the verification
+	% $\vereq_\zkproof(\chi)$
+	equation holds
+	\begin{multline}
+	\label{eq:ver_eq} 
+	\left( \gone{\p{W_{\chz}}(\chi)} + u \cdot \gone{\p{W_{\chz
+				\omega}}(\chi)} \right) \bullet
+	\gtwo{\chi} - \\
+	\left( \chz \cdot \gone{\p{W_{\chz}}(\chi)} + u \chz \omega \cdot
+	\gone{\p{W_{\chz \omega}}(\chi)} + \gone{F} - \gone{E} \right) \bullet
+	\gtwo{1} = 0\,.
+	\end{multline}
+	The verification equation is a batched version of the verification equation
+	from \cite{AC:KatZavGol10} which allows the verifier to check openings of
+	multiple polynomials in two points (instead of checking an opening of a single
+	polynomial at one point).
+\end{enumerate}
+
+\ncase{Plonk simulator $\simulator_\chi(\srs, \td= \chi, \inp)$}\ 
+We describe the simulator in \cref{lem:plonk_tlzk}.
+
+\subsection{Simulation extractability of $\plonk${}}
+Due to lack of space, we provide here only theorem statements and intuition for why they hold. Full proofs are given in the full version~\cite{EPRINT:GKKNZ21}.
+
+\oursubsub{Unique Response Property}
+\begin{lemma}
+	\label{lem:plonkprot_ur}
+	Let $\PCOMp$ be a polynomial commitment that is $\epsbind(\secpar)$-binding and has unique opening property with loss $\epsop (\secpar)$. Then $\plonkprotfs$ is $\ur{3}$ against algebraic adversaries, who makes up to $q$ random oracle queries, with security loss $\epsbinding (\secpar) + \epsop ( \secpar )$.
+\end{lemma}
+\begin{proof}[Intuition]
+	We show that an adversary who can break the $3$-unique response property of $\plonkprotfs$ can be either used to break the commitment scheme's evaluation binding or unique opening property. The former happens with the probability upper-bounded by $\epsbinding (\secpar)$, the latter with the probability upper bounded by $\epsop (\secpar)$. 
+	
+	%We note that the probability of breaking evaluation binding increases by an additional $q / p$ (at most) since $\plonk$ batches verification of polynomial evaluations, which may lead to accepting an opening which would not be accepted by a verifier who verifies all openings separately. Similarly, the additional $q / p$ security loss from unique opening property comes from the batching as well.
+\end{proof}
+
+\oursubsub{Rewinding-Based Knowledge Soundness}
+\begin{lemma}
+	\label{lem:plonkprot_ss}
+	$\plonkprotfs$ is $(3, 3 \noofc + 6)$-rewinding-based knowledge sound against algebraic adversaries who make up to $q$ random oracle queries with security loss 
+	\[
+	\epscss(\secpar,\accProb, q) \leq \left(1 - \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)}{1 - \frac{3 \noofc + 5}{p}}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar) %+ (3 \noofc + 6) \cdot \epsid (\secpar)
+	\,,
+	\]
+	Here $\accProb$ is a probability that the adversary outputs an accepting proof, 
+	%$\epsid(\secpar)$ is a soundness error of the ideal verifier for $\plonkprot$, 
+	and $\epsudlog(\secpar)$ is security of $(\numberofconstrains + 5, 1)$-$\udlog$ 
+	assumption.
+\end{lemma}
+
+\begin{proof}[Intuition]
+	We use Attema et al.~\cite[Proposition 2]{EPRINT:AttFehKlo21} to bound the probability that an algorithm $\tdv$ does not obtain a tree of accepting transcripts in an expected number of runs. This happens with probability at most
+	\[
+	1 - \frac{\accProb - (q + 1) \left(\frac{3 \noofc + 5}{p} \right)}{1 - \frac{3 \noofc + 5}{p}}
+	\]
+	Then we analyze the case that one of the proofs in the tree $\tree$ outputted by $\tdv$ is not accepting by the ideal verifier. This discrepancy can be used to break an instance of an updatable dlog assumption which happens with probability at most $(3 \noofc + 6)  \cdot \epsudlog (\secpar)$. %Additionally, it may be impossible to extract the witness from a tree where each of the transcripts is accepting by the ideal verifier if the adversary broke soundness of the ideal verifier in one of the transcripts. That happens with probability at most $(3 \noofc + 6) \cdot \epsid (\secpar)$.
+\end{proof}
+
+
+\oursubsub{Trapdoor-Less Zero-Knowledge of Plonk}
+\begin{lemma}
+	\label{lem:plonk_tlzk}
+	$\plonkprotfs$ is 3-programmable trapdoor-less zero-knowledge.
+\end{lemma}
+
+\begin{proof}[Intuition]
+	The simulator, that does not know the SRS trapdoor can make a simulated proof by programming the random oracle. It proceeds as follows. It picks a random witness and behaves as an honest prover up to the point when a commitment to the polynomial $\p{t}(X)$ is sent. Since the simulator picked a random witness and $\p{t}(X)$ is a polynomial only (modulo some negligible function) when the witness is correct, it cannot compute commitment to $\p{t}(X)$ as it is a rational function. However, the simulator can pick a random challenge $\chz$ and a polynomial $\p{\tilde{t}}(X)$ such that $\p{t} (\chz)  = \p{\tilde{t}} (\chz)$. Then the simulator continues behaving as an honest prover. We argue that such a simulated proof is indistinguishable from a real one.
+\end{proof}
+
+\subsection*{Simulation Extractability of~$\plonkprotfs$}
+Since \cref{lem:plonkprot_ur,lem:plonkprot_ss,lem:plonk_tlzk} hold, $\plonkprot$ is $\ur{3}$,
+rewinding-based knowledge sound and trapdoor-less zero-knowledge. We now make use of \cref{thm:se} and show that
+$\plonkprot_\fs$ is simulation-extractable as defined in \cref{def:updsimext}.
+
+\begin{corollary}[Simulation extractability of $\plonkprot_\fs$]
+	\label{thm:plonkprotfs_se}
+	$\plonkprotfs$ is \emph{updatable simulation-extractable} against any $\ppt$ adversary $\advse$ who makes up to $q$ random oracle queries and returns an accepting proof with probability at least $\accProb$ with extraction failure probability 
+	\[
+	\epsse(\secpar, \accProb, q) \leq \left(1 - \frac{\accProb - \epsur (\secpar) - (q + 1) \epserr (\secpar)} {1 - \epserr (\secpar)}\right) + (3 \noofc + 6) \cdot \epsudlog (\secpar)\COMMENT{ + (3 \noofc + 6) \cdot \epsid (\secpar)},
+	\]
+	where $\epserr (\secpar) = \frac{3 \noofc + 5}{p}$, $\epsur (\secpar) \leq \epsbind (\secpar) + \epsop (\secpar)$, $p$ is the size of the field, and $\noofc$ is the number of constrains in the circuit. 
+\end{corollary}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
+
+%\input{polynomial-commitment-schemes}
+%\input{non-malleability-of-plonk-omitted-protocol-description}
+%\input{non-malleability-of-sfs}
+%\input{non-malleability-of-mfs}
+%\input{simulation-soundness-definitions-and-the-general-result}
+
+\iffalse
+\section{Conclusion and Future Work}
+
+Since the SRS is being continually updated, one could argue that there might be
+simulated proofs with respect to \textit{different} SRSs available for the adversary
+to see before attempting to forge a proof with respect to a current SRS.  That is,
+each SRS in the update chain spawns a simulation oracle. Intuitively, the
+updatability of the SRS allows an adversarial prover to contribute to updating, and
+see proofs with respect to different updated SRSs before attempting to provide a
+proof for a false statement (potentially output a proof wrt a SRS that is different
+from the SRSs corresponding to all the simulated proofs seen).  This is a stronger
+definition of SE than the one we consider in this paper, and we leave exploring this
+to future work.
+\fi
+
+\bibliographystyle{splncs04}
+%\bibliographystyle{splncs_srt_helger}
+
+\bibliography{abbrev3,crypto,more}
+
+\clearpage
+%{\Huge{Supplementary Materials}}
+\appendix
+
+%\input{additional-preliminaries-lemmas-and-proofs}
+%\input{polynomial-commitment-schemes}
+%\input{unique_opening_property}
+%\input{non-malleability-of-plonk-omitted-protocol-description}
+%\input{non-malleability-of-pfs-proofs}
+%\input{non-malleability-of-sfs}
+%\input{non-malleability-of-mfs}
+%\input{simulation-soundness-definitions-and-the-general-result}
+%\input{from-arguments-to-proofs}
+
+\iffalse
+Let $\prover$ and $\verifier$ be $\ppt$ algorithms, the former called \emph{prover}
+and the latter \emph{verifier}. 
+
+We denote by $\zkproof$ a proof created by $\prover$ with input
+$(\srs, \inp, \wit)$. We say that proof is acceptable if $\verifier (\srs, \inp,
+\zkproof)$ accepts it. We focus on proof systems where $\prover$ and
+$\verifier$ are given oracle access to a random oracle $\ro$. The simulator
+$\simulator$ is not only given access to $\ro$, but it can also \emph{program}
+it. That is, it can require that for $(x, y)$ of its choice, $\ro (x) = y$.
+
+A non-interactive  proof system $\proofsystem = (\kgen, \prover, \verifier, \simulator)$ for $\RELGEN$ is
+required to have three properties: completeness, soundness and zero knowledge, which are
+defined as follows:
+
+\ourpar{Completeness.}
+
+  A non-interactive proof system $\proofsystem$ is
+  \emph{complete} if an honest prover always convinces an honest verifier, that
+  is for all $\REL \in \RELGEN(\secparam)$ and $(\inp, \wit) \in \REL$
+	\[
+		\condprob{\verifier^\ro (\srs, \inp, \zkproof) = 1} {\srs \gets \kgen(\REL),
+      \zkproof \gets \prover^\ro (\srs, \inp, \wit)}\,.
+	\]
+
+\ourpar{Soundness.}
+    We say that $\proofsystem$ for $\RELGEN$ is \emph{sound} if no
+  $\ppt$ prover $\adv$ can convince an honest verifier $\verifier$ to accept a
+  proof for a false statement $\inp \not\in\LANG$. More precisely, for
+  all $\REL \in \RELGEN(\secparam)$
+	\[
+    \condprob{ \verifier^\ro (\srs, \inp, \zkproof) = 1 \land \inp \not\in
+      \LANG_\REL}{\srs \gets \kgen(\REL), (\inp, \zkproof) \gets \adv^\ro(\srs)} \leq
+    \negl.
+	\]
+
+\fi
+ 
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

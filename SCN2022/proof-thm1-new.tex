@@ -3,21 +3,21 @@
 \begin{theorem}[Simulation-extractable multi-message protocols]
 	\label{thm:se}
 	Let $\psfs = (\SRScer, \prover, \verifier, \simulator)$ be a  $(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup. If $\psfs$ is an
-	updatable $k$-unique response protocol with security loss $\epsur$, is
+	updatable $k$-unique response protocol with security loss $\epsur$,
 	updatable $k$-programmable trapdoor-less zero-knowledge, and %$(1, \ldots, 1, n_{k}, \ldots, n_\mu)$-
 	updatable rewinding-based knowledge sound with security loss $\epscss$; 
 	%
-	Then $\psfs$ is \emph{updatable simulation-extractable} with security loss $$\epsse(\secpar,\accProb,q) \leq \epscss(\secpar,\accProb - \epsur(\secpar),q)$$ against any $\ppt$ adversary $\advse$ that makes up to $q$ random oracle queries and returns an  proof with probability at least $\accProb$.
+	Then $\psfs$ is \emph{updatable simulation-extractable} with security loss $$\epsse(\secpar,\accProb,q) \leq \epscss(\secpar,\accProb - \epsur(\secpar),q)$$ against any $\ppt$ adversary $\advse$ that makes up to $q$ random oracle queries and returns an accepting proof with probability at least $\accProb$.
 \end{theorem}
 
 \begin{proof}	
 	Let $(\inp, \zkproof) \gets \advse^{\initU, \simOH, \simOP'}(r_{\advse})$ be the USE adversary. We show how to build an extractor $\extse (\srs, \advse, r_{\advse}, \Qsim, \Qro, \Qsrs)$ that outputs a witness $\wit$, such that $\REL(\inp, \wit)$ holds with high probability. To that end we define an algorithm $\advcss^{\initU,\ro}(r)$ against rewinding-based knowledge soundness of $\psfs$ that runs internally $\advse^{\initU, \simOH, \simOP'}(r_{\advse})$. Here $r = (\rsim, r_{\advse})$ with $\rsim$ the randomness that will be used to simulate $\simOP'$. 
 
-	The code of $\advcss^{\initU,\ro}(r)$ hardcodes $\Qsim$ such that it does not use any randomness for proofs in $\Qsim$ as long as statements are queried in order. In this case it simple returns a proof $\zkproofs$ from $\Qsim$ but nevertheless queries $\simOHprog$ on $(\tzkproofs[0..k],\tzkproofs[k].ch]$, i.e. it programs the $k$-th challenge. While it is hard to construct such an adversary without knowing $\Qsim$, it clearly exists and $\extse$ has the necessary inputs to construct $\advcss$. This hardcoding guarantees that $\advcss$ returns the same $(\inp,\zkproof)$ as $\advse$ in the experiment.
+	The code of $\advcss^{\initU,\ro}(r)$ hardcodes $\Qsim$ such that it does not use any randomness for proofs in $\Qsim$ as long as statements are queried in order. In this case it simply returns a proof $\zkproofs$ from $\Qsim$ but nevertheless queries $\simOHprog$ on $(\tzkproofs[0..k],\tzkproofs[k].ch)$, i.e. it programs the $k$-th challenge. While it is hard to construct such an adversary without knowing $\Qsim$, it clearly exists and $\extse$ has the necessary inputs to construct $\advcss$. This hardcoding guarantees that $\advcss$ returns the same $(\inp,\zkproof)$ as $\advse$ in the experiment.
 	%
 	Eventually, $\extse$ uses the tree builder $\tdv$ and extractor $\extcss$ for $\advcss$ to extract the witness for $\inp$. Both guaranteed to exist (and be successful with high probability) by rewinding-based knowledge soundness. This high-level argument shows that $\extse$ exists as well.
 	
-	We now give the details of the simulation that guarantees that $\advcss$ is successful whenever $\advse$ is---except with a small security loss that we will bound late:
+	We now give the details of the simulation that guarantees that $\advcss$ is successful whenever $\advse$ is---except with a small security loss that we will bound later:
 	Since $\advcss$ runs $\advse$ internally, it needs to take care of $\advse$'s oracle queries.
 	$\advcss$ passes on queries of $\advse$ to the update oracle $\initU$ to its own $\initU$ oracle and returns the result to $\advse$.
 	$\advcss$ internally simulates (non-hardcoded) queries to the simulator $\simOP'$ by running the $\simulator$ algorithm on randomness $\rsim$ of its tape. $\simulator$ requires access to oracles $\simOH$ to compute a challenge honestly and $\simOHprog$ to program a challenge. Again $\advcss$ simulates both of these oracles internally, cf.~\cref{fig:simulator_oracles}, this time using the $\ro$ oracle of $\advcss$. 	Note that queries of $\advse$ to $\simOH$ are not programmed, but passed on to $\ro$. 
@@ -53,7 +53,7 @@
 	\end{figure}	
 %
 
-	Eventually, $\advse$ outputs an instance and proof $(\inp, \zkproof)$. $\advcss$ returns the same values as long as $\tzkproof[0..i] \notin \Qprog$, $i\in[1,\mu]$. This models that the proof output by $\advcss$ must not contain any programmed queries as such a proof would not  w.r.t~$\ro$ in the RBKS experiment. If $\advse$ outputs a proof that does contain programmed challenges, then $\advcss$ aborts. We denote this event by $\event{E}$.
+	Eventually, $\advse$ outputs an instance and proof $(\inp, \zkproof)$. $\advcss$ returns the same values as long as $\tzkproof[0..i] \notin \Qprog$, $i\in[1,\mu]$. This models that the proof output by $\advcss$ must not contain any programmed queries as such a proof would not be consistent to~$\ro$ in the RBKS experiment. If $\advse$ outputs a proof that does contain programmed challenges, then $\advcss$ aborts. We denote this event by $\event{E}$.
 	
 	\begin{lemma}
 		Probability that $\event{E}$ happens is upper-bounded by $\epsur(\secpar)$. 
@@ -65,18 +65,18 @@
 	%Namely, for randomness $r = (r_{\advse}, \rsim)$, $\advur^{\ro, \initU} (\secpar; r)$ runs $\advse^{\initU, \simOH, \simOP'}(\secparam; r_{\advse})$ internally and answers its oracle queries as $\advcss$ did.
 
 	When $\advcss$ outputs a proof $\zkproof$ for $\inp$ such that $\event{E}$ holds, $\advur$ looks through lists $Q$ and $\Qro$ until it finds $\tzkproofs[0..k]$ such that $\tzkproof[0..k] = \tzkproofs[0..k]$ and a programmed random oracle query $\tzkproofs[k].\ch$ on $\tzkproofs[0..k]$.	$\advur$ returns two proofs $\zkproof$ and $\zkproofs$ for $\inp$:
-		% \begin{align*}
-		% \zkproof_1 = \zkproofs =  (\zkproofs[1..k], \zkproofs[k + 1..\mu + 1])\\
-		% \zkproof_2 = \zkproof \;\;\;\;\, = (\zkproofs[1..k], \;\;\;\;\zkproof[k + 1..\mu + 1])
-		% \end{align*}
-		and the challenge $\tzkproofs[k].\ch=\tzkproof[k].\ch$
+		 \begin{align*}
+		 \zkproof_1 = \zkproofs =  (\zkproofs[1..k], \zkproofs[k + 1..\mu + 1])\\
+		 \zkproof_2 = \zkproof \;\;\;\;\, = (\zkproofs[1..k], \;\;\;\;\zkproof[k + 1..\mu + 1])
+		 \end{align*}
+		and the challenge $\tzkproofs[k].\ch=\tzkproof[k].\ch$.
 
-	Importantly, both proofs are  w.r.t~the unique response verifier. The first, since it is a correctly computed simulated proof for which the unique response property definition allows any challenges at $k$. The latter, since it is an  proof produced by the adversary.
+	Importantly, both proofs are  w.r.t~the unique response verifier. The first, since it is a correctly computed simulated proof for which the unique response property definition allows any challenges at $k$. The latter, since it is an accepting proof produced by the adversary.
 	We have that $\zkproof \neq \zkproofs$ as otherwise $\advse$ does not win the simulation extractability game as $\zkproof \in Q$. On the other hand, if the proofs are different, then $\advur$ breaks $\ur{k}$-ness of $\psfs$. This happens only with  probability $\epsur(\secpar)$. 
 	\qed
 	\end{proof}
 
-	We denote by $\waccProb$ the probability that $\advcss$ outputs an  proof. We note that by up-to-bad reasoning $\waccProb$ is at most $\epsur (\secpar)$ far from the probability that $\advse$ outputs an  proof. Thus, the probability that $\advcss$ outputs an  proof is at least $\waccProb \geq \accProb - \epsur (\secpar)$. %\markulf{30.04}{I am ignorant. What is the role of the union bound here. Is this the same as up-to-bad reasoning?}
+	We denote by $\waccProb$ the probability that $\advcss$ outputs an accepting proof. We note that by up-to-bad reasoning $\waccProb$ is at most $\epsur (\secpar)$ far from the probability that $\advse$ outputs an  accepting proof. Thus, the probability that $\advcss$ outputs an accepting proof is at least $\waccProb \geq \accProb - \epsur (\secpar)$. %\markulf{30.04}{I am ignorant. What is the role of the union bound here. Is this the same as up-to-bad reasoning?}
 %
 	Since $\psfs$ is $\epscss (\secpar, \waccProb,q)$ rewinding-based knowledge sound, there is a tree builder $\tdv$ and extractor $\extcss$ that rewinds $\advcss$ to obtain a tree of accepting transcripts $\tree$ and fails to extract the witness with probability at most $\epscss (\secpar, \waccProb, q)$. The extractor $\extse$ outputs the witness with the same probability.
 

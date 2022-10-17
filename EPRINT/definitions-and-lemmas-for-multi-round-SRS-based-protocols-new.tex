@@ -104,7 +104,7 @@ We call a protocol \emph{trapdoor-less
  Moreover, the simulator may only be allowed to program the random oracle on point $\tzkproof[0,k]$, that is the simulator can only program the challenges that come after the $k$-th prover message. We call protocols which allow for such a simulation $k$-\emph{programmable trapdoor-less zero-knowledge}. %, and define this in~\cref{def:TLZK}.
 
  Our definition of zero-knowledge for non-interactive
-arguments is in programmable ROM.
+arguments is in the programmable ROM.
 %the explicitly programmable random oracle model where the simulator $\simulator$ can program the random oracle. 
 We model this using the oracles from Fig.~\ref{fig:real_simulator_oracles} that provide a stateful wrapper around $\simulator$.
 $\simOH (x)$ simulates $\ro$ using lazy sampling, $\simulator\oracleo.\prog(x, h)$ allows for programming the simulated $\ro$ and is available only to $\simulator$. $\simOP(\inp, \wit)$ and $\simOP'(\inp)$ call the simulator. The former is used in the zero-knowledge definition and requires the statement and witness to be in the relation, the latter is used in the simulation extraction definition and does not require a witness input.
@@ -169,7 +169,7 @@ should be able to provide simulated proofs for false statements as well, we thus
 	Let $\psni = (\SRScer, \prover, \verifier, \simulator)$ be a NIZK proof system with an updatable SRS setup. 
 	We say that
   $\psni$ is \emph{updatable simulation-extractable} with security loss $\epsse(\secpar,\accProb, q)$ if for
-  any $\ppt$ adversary $\adv$ that is given oracle access to setup oracle\hamid{10.5}{We always call this "update oracle"!}
+  any $\ppt$ adversary $\adv$ that is given oracle access to setup oracle.%\hamid{10.5}{We always call this "update oracle"!}
   $\initU$ and simulation oracle $\simulator\oracleo$ and that produces an accepting
   proof for $\psni$ with probability $\accProb$, where
 	\[
@@ -262,7 +262,7 @@ We say that $\psfs$ has \emph{unique responses for $k$} with security $\epsur(\s
 Intuitively, a protocol is $\ur{k}$ if it is infeasible for a $\ppt$ adversary to produce a pair of accepting proofs $\zkproof \neq \zkproof'$ that are the same on the first $k$ messages of the prover.  
 %We note that the definition above is also meaningful for protocols without an SRS. Intuitively in that case $\srs$ is the empty string.
 
-The definition can be easily generalized to allow for programing the oracle on more than just a single point. We opted for this simplified presentation, since all the protocols analyzed in this paper require only single-point programming, 
+The definition can be easily generalized to allow for programming the oracle on more than just a single point. We opted for this simplified presentation, since all the protocols analyzed in this paper require only single-point programming, 
   
 
 \subsection{Rewinding-Based Knowledge Soundness (RBKS)}
@@ -378,7 +378,7 @@ Note that in the definition below, it is implicit that each transcript in the tr
 	\hamid{10.5}{Should we remove $\srs$ as part of $\adv$'s output in the second probability equation? Also, why $\pi$ is not explicit as part of $\adv$'s output? (what is $\pi$ in the left side of probability in $\verifier(\srs, \inp, \zkproof) = 1$ then?)}
 	Here, $\srs$ is the finalized SRS. List $\Qsrs$ contains all $(\srs, \rho)$ of updated SRSs and their proofs, and list $\Qro$ contains all of the adversaries
 	queries to $\ro$ and the random oracle's answers, $\abs{\Qro}\leq q$.
-We call the protocol $(k, n)$-rewinding-based knowledge sound if $\tree$ is a $(k, n)$-tree of accepting transcripts.
+\hamid{25.6}{I think we still need to define what $(k,n)$-RBKS means:} We call the protocol $(k, n)$-rewinding-based knowledge sound if $\tree$ is a $(k, n)$-tree of accepting transcripts.
 %	 We call the protocol $(n_1, \ldots, n_\mu)$ rewinding-based knowledge sound when $\tdv$ builds a $(n_1, \ldots, n_\mu)$-tree of transcripts.
 % \hamid{1.5}{We still need this sentence:  
 %\markulf{1.5}{Cut? We call the protocol $(k, n)$-rewinding-based knowledge sound if $\tree$ is a $(k, n)$-tree of accepting transcripts.}

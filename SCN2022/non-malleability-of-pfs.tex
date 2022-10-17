@@ -56,7 +56,7 @@ for some $i \in \range{1}{\noofc}$.
 \plonk{} argument system is universal. That is, it allows to verify computation
 of any arithmetic circuit which has up to $\numberofconstrains$
 gates using a single SRS. However, to make computation efficient, for each
-circuit there is allowed a preprocessing phase which extends the SRS with
+circuit there is a preprocessing phase which extends the SRS with
 circuit-related polynomial evaluations.
 
 For the sake of simplicity of the security reductions presented in this paper, we
@@ -207,7 +207,7 @@ the Fiat--Shamir transformed version of Plonk. Note that for notational convenie
 	Output $\gone{\p{W_{\chz}}(\chi), \p{W_{\chz \omega}}(\chi)}$.
 \end{description}
 
-\ncase{Plonk verifier $\verifier(\srs, \inp, \zkproof)$}\ \newline
+\ncase{Plonk verifier $\verifier(\srs, \inp, \zkproof)$}\ %\newline
 The \plonk{} verifier works as follows
 \begin{enumerate}
 	\item Validate all obtained group elements.
@@ -291,7 +291,7 @@ The \plonk{} verifier works as follows
 We describe the simulator in \cref{lem:plonk_tlzk}.
 
 \subsection{Simulation extractability of $\plonk${}}
-Due to lack of space, we provide here only theorem statements and intuition for why they hold. Full proofs are given in \cref{sec:plonkse_proofs}.
+Due to lack of space, we provide here only theorem statements and intuition for why they hold. Full proofs are given in the full version~\cite{EPRINT:GKKNZ21}.
 
 \oursubsub{Unique Response Property}
 \begin{lemma}

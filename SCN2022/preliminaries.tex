@@ -63,7 +63,7 @@ In this section, we define properties that are necessary for our
 analysis of multi-message protocols with a universal updatable SRS.  In order to
 prove simulation-extractability for such protocols, we require more than just two
 transcripts for extraction. Moreover, in the updatable setting we consider protocols
-that rely on an SRS where the adversary gets to contribute to the SRS. We first recall the updatable SRS setting and the Fiat-Shamir transform for $(2\mu+1)$ message protocols.
+that rely on an SRS where the adversary gets to contribute to the SRS. We first recall the updatable SRS setting and the Fiat-Shamir transform for $(2\mu+1)$-message protocols.
 Next, we define trapdoor-less zero-knowledge and simulation-extractability
 which we base on~\cite{INDOCRYPT:FKMV12} adapted to the updatable SRS setting. Then,
 to support multi-message SRS-based protocols compiled using the Fiat--Shamir transform,
@@ -177,6 +177,57 @@ In the next section, we define security notions in the updatable setting by givi
 If $\REL$ comes with any auxiliary input, the latter is benign. 
 We elide public preprocessing of constraint specific proving and verification keys. While important for performance, this modeling is not critical for security.
 
+\begin{figure}[t!]
+	\centering
+	% \small
+	\centerline{\fbox{
+			\begin{minipage}[t]{0.75\linewidth}
+				\begin{pcvstack}
+					\begin{pchstack}
+						\procedure{$\kgen(\secparam, \maxdeg)$}{
+							\chi \sample \FF_p \\ [\myskip]
+							\srs := 
+							\left( \gone{\smallset{\chi^i}_{i = 0}^{\maxdeg}},
+							\gtwo{\chi} \right); \\
+							\rho =  \left(\gone{\chi, \chi}, \gtwo{\chi}\right) \\ [\myskip]
+							\pcreturn (\srs, \rho) \\ [\myskip]
+						}
+						%
+						\pchspace
+						% 
+						\procedure{$\upd(\srs, \{\rho_j \}_{j=1}^n)$}{
+							\text{Parse } \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\maxdeg}},
+							\gtwo{B} \right) \\ [\myskip]
+							\chi' \sample \FF_p  \\ [\myskip]
+							\srs' := 
+							\left( \gone{\smallset{{\chi'}^i A_i}_{i = 0}^{\maxdeg}},
+							\gtwo{\chi' B} \right); \\
+							\rho' =	\left( \gone{\chi' A_1, \chi'}, \gtwo{\chi'}\right) \\ [\myskip]
+							\pcreturn (\srs', \rho')
+						}
+					\end{pchstack}
+					\pcvspace
+					\begin{pchstack}
+						%
+						\procedure{$\verifyCRS(\srs, \{\rho_j \}_{j=1}^n)$}{
+							\text{Parse }  \srs \text{ as } \left( \gone{\smallset{A_i}_{i = 0}^{\maxdeg}},
+							\gtwo{B} \right) \text{and } \{\rho_j \}_{j=1}^n \text{ as } \left\{\left( P_j, \bP_j, \hP_j \right)\right\}_{j=1}^n \\ [\myskip]
+							\text{Verify Update proofs: } \\ [\myskip]
+							\t \bP_1 = P_1 \\ [\myskip]
+							\t P_j \bullet \gtwo{1} = P_{j-1} \bullet \hP_j \quad \forall j \geq 2 \\ [\myskip]
+							\t \bP_n \bullet \gtwo{1} = \gone{1} \bullet \hP_n \\ [\myskip]
+							\text{Verify SRS structure: } \\ [\myskip]
+							\t \gone{A_i} \bullet \gtwo{1} = \gone{A_{i-1}} \bullet \gtwo{B} \text{ for all } 0 < i \leq \maxdeg %\\ [\myskip]
+						}
+						%
+					\end{pchstack}
+				\end{pcvstack}
+				%
+	\end{minipage}}}
+	\caption{Updatable SRS scheme $\SRScer$ for $\PCOMp$} 
+	\label{fig:upd-scheme}
+\end{figure}
+
 \subsection{Multi-message Fiat-Shamir Compiled Provers and Verifiers}
 Given interactive prover and (public coin) verifier $\prover', \verifier'$ that exchange messages resulting in transcript $\tzkproof = (a_1, c_1, \ldots, a_{\mu}, c_{\mu}, a_{\mu + 1})$, where $a_i$ comes from
 $\prover'$ and $c_i$ comes from $\verifier'$, the $(2\mu + 1)$-message Fiat-Shamir heuristic defines non-interactive provers and verifiers $\prover, \verifier$ as follows:
@@ -188,7 +239,7 @@ $\prover'$ and $c_i$ comes from $\verifier'$, the $(2\mu + 1)$-message Fiat-Sham
 	  = \ro(\tzkproof[0..i])$, where $\tzkproof[0..j] = (\inp, a_1, c_1, \ldots,
 	  a_{j - 1}, c_{j - 1}, a_j)$.\footnote{For Fiat--Shamir based SoK the message signed $m$ is added to $\inp$ before hashing.} 
 	  
-	  $\prover$ output the non-interactive proof $\pi=(a_1,\ldots, a_{\mu}, a_{\mu + 1})$, that omits challenges as they can be recomputed using $\ro$.
+	  $\prover$ outputs the non-interactive proof $\pi=(a_1,\ldots, a_{\mu}, a_{\mu + 1})$, that omits challenges as they can be recomputed using $\ro$.
 
 	\item $\verifier$ takes $\inp$ and $\pi$ as input and behaves as $\verifier'$ would but does not provide
 	  challenges to the prover. Instead it computes the
@@ -196,7 +247,7 @@ $\prover'$ and $c_i$ comes from $\verifier'$, the $(2\mu + 1)$-message Fiat-Sham
 	  resulting transcript $\tzkproof$ as the verifier $\verifier'$ would. 
 	\end{compactitem}
 	We note that since the verifier can compute the challenges by querying the random oracle, they do not need to be sent by the prover. Thus the $\zkproof$ - $\tzkproof$ notational distinction.
-$(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup
+%$(2\mu + 1)$-message FS-transformed NIZK proof system with an updatable SRS setup
 \paragraph{Notation for $(2\mu + 1)$-message Fiat--Shamir transformed proof systems.}
 Let $\SRScer= (\kgen,\upd, \verifyCRS)$ be the algorithm of an updatable SRS ceremony.
 All our definitions and theorems are about non-interactive proof systems $\ps = (\SRScer, \prover, \verifier, \simulator)$ compiled via the $(2\mu + 1)$-message FS transform. 
