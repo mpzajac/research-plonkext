@@ -1,0 +1,231 @@
+% l\newif\ifupdate
+% \updatetrue % Uncomment to compile non-updatable version.
+
+% !TEX spellcheck = en-US
+% \let\accentvec\vec              
+%\documentclass[runningheads,11pt]{llncs}
+%\documentclass[10pt]{llncs}
+\documentclass[11pt]{llncs}
+\pagestyle{plain}
+\let\spvec\vec
+\let\vec\accentvec
+
+\newcommand\hmmax{0}
+\newcommand\bmmax{0}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\widebar}{0}{mathx}{"73}
+
+\let\spvec\vec
+\usepackage{amssymb,amsmath}
+\let\vec\spvec
+%\usepackage{newtxmath,newtxtext}
+\usepackage{newtxtext}
+\usepackage[T1]{fontenc}
+\usepackage[most]{tcolorbox}
+  \def\vec#1{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
+  {\mbox{\boldmath$\textstyle#1$}} {\mbox{\boldmath$\scriptstyle#1$}}
+  {\mbox{\boldmath$\scriptscriptstyle#1$}}}
+
+
+% lncs size (as printed in books, with small margins):
+\usepackage[a4paper]{geometry}
+\usepackage{fullpage}
+\usepackage{soulutf8} \soulregister\cite7 \soulregister\ref7
+\soulregister\pageref7
+\usepackage{hyperref}
+\usepackage[color=yellow]{todonotes} \hypersetup{final}
+\usepackage{mathrsfs}
+\usepackage[advantage,asymptotics,adversary,sets,keys,ff,lambda,primitives,events,operators,probability,logic,mm,complexity]{cryptocode}
+%\usepackage{fullpage}
+\usepackage[capitalise]{cleveref}
+% \crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
+% \Crefname{appendix}{Supp.~Mat.}{Supp.~Mat.}
+% \
+\usepackage{cite} 
+\usepackage{booktabs}
+\usepackage{paralist}
+%\usepackage[innerleftmargin=5pt,innerrightmargin=5pt]{mdframed}
+\usepackage{caption}
+\captionsetup{belowskip=0pt}
+\usepackage{bm}
+\usepackage{url}
+%\usepackage{dirtytalk}
+%\usepackage[margin=1in,a4paper]{geometry}
+\usepackage[normalem]{ulem}
+\usepackage{dashbox}
+\newcommand\dboxed[1]{\dbox{\ensuremath{#1}}}
+\usepackage{setspace}
+
+\usepackage{floatrow}
+\floatsetup[figure]{font=footnotesize}
+ 
+\include{EPRINT/macros}
+
+
+%% Save the class definition of \subparagraph
+\let\llncssubparagraph\subparagraph
+%% Provide a definition to \subparagraph to keep titlesec happy
+\let\subparagraph\paragraph
+%% Load titlesec
+\usepackage[compact]{titlesec}
+%% Revert \subparagraph to the llncs definition
+\let\subparagraph\llncssubparagraph
+
+\newcommand{\oursubsub}[1] {\smallskip\noindent\textbf{#1}}
+\newcommand{\ourpar}[1] {\smallskip\noindent\emph{#1}}
+
+%\title{SNARKY Signatures with Universal and Updatable~Setup}
+
+\title{What Makes Fiat--Shamir zkSNARKs \\ (Updatable SRS) Simulation Extractable?}
+
+
+%\author{(Submission to EUROCRYPT 2022)}
+\institute{}
+\author{}
+
+%\author{Chaya Ganesh \and Hamidreza Khoshakhlagh \and Markulf Kohlweiss \and \\ Anca Nitulescu \and Michał Zając} 
+
+\author{Chaya Ganesh\inst{1} \and Hamidreza Khoshakhlagh\inst{2} \and Markulf Kohlweiss\inst{3} \and \\ Anca Nitulescu\inst{4} \and Michał Zając\inst{5}} 
+\institute{Indian Institute of Science
+  \email{chaya@iisc.ac.in}
+  \and
+  Aarhus University 
+  \email{hamidreza@cs.au.dk} \\
+  \and
+  University of Edinburgh and IOHK 
+  \email{mkohlwei@inf.ed.ac.uk}
+  \and
+  Protocol Labs  \email{anca@protocol.ai} \\
+  \and
+  Nethermind
+\email{m.p.zajac@gmail.com}}
+
+\allowdisplaybreaks
+
+\begin{document} \sloppy
+%\titlerunning{Non-Malleability of the FS transform Revisited [\ldots]}
+%\maketitle
+\section{Header}
+\begin{description}
+    \item[Type:] 3
+    \item[Topic:] Security and Terminology. Definitions and security properties
+    \item[Title of the talk:] Simulation-extractability of zkSNARKs
+    \item[Authors:] Chaya Ganesh (Indian Institute of Science), Hamidreza Khoshakhlagh (Concordia), Markulf Kohlweiss (University of Edinburgh and IOHK), Anca Nitulescu (Protocol Labs), Michal Zajac (Nethermind)
+    \item[Speakers:] Michal Zajac (Nethermind)
+    \item[Desired time slot:] 20 minutes   
+\end{description}
+\section{Content}
+Simulation extractability of zkSNARKs
+
+\subsection{Motivation}
+Most zkSNARKs are shown only to satisfy a standard knowledge soundness property.
+Intuitively, this guarantees that a prover that creates a valid proof
+in isolation knows a valid witness. However, deployments of zkSNARKs in
+real-world applications, unless they are carefully designed to have
+application-specific malleability protection, (Ben-Sasson et al. 2014),
+require a stronger property -- simulation-extractability (SE) -- that
+corresponds much more closely to existential unforgeability of signatures.
+
+This correspondence is made precise by SoK, which uses an NP-language instance
+as the public verification key. Instead of signing with the secret key, SoK
+signing requires knowledge of the NP-witness. Intuitively, an SoK is thus a
+proof of knowledge (PoK) of a witness that is tied to a message. In fact, many
+signatures schemes, e.g., Schnorr, can be read as SoK for a specific hard
+relation, e.g., DL (Dodis et al. 2010). To model strong existential unforgeability
+of SoK signatures, even when given an oracle for obtaining signatures on
+different instances, an attacker must not be able to produce new signatures.
+Chase and Lysyanskaya (2006) model this via the notion of simulation
+extractability which guarantees extraction of a witness even in the presence of
+simulated signatures.
+
+In practice, an adversary against a zkSNARK system also has access to proofs
+computed by honest parties that should be modeled as simulated proofs. The
+definition of knowledge soundness (KS) ignores the ability of an adversary to
+see other valid proofs that may occur in real-world applications. For instance,
+in applications of zkSNARKs in privacy-preserving blockchains, proofs are
+posted on-chain for all blockchain participants to see. We thus argue that SE
+is a much more suitable notion for robust protocol design. We also claim that
+SE has primarily an intellectual cost, as it is harder to prove SE than
+KS---another analogy here is IND-CCA vs IND-CPA security for encryption.
+However, we will show that the proof systems we consider are SE out-of-the-box.
+
+\subsection{Our contribution}
+We investigate the non-malleability properties of zkSNARK protocols obtained by FS-compiling multi-message protocols in the updatable SRS setting and give a modular approach to analyze their simulation-extractability. We make the following contributions:
+\begin{itemize}
+\item 
+\emph{Updatable simulation extractability (USE)}. 
+We propose a definition of simulation extractability in the updatable SRS setting called USE, that captures the additional power the adversary gets by being able to update the SRS. 
+    
+\item \emph{Theorem for USE of FS-compiled proof systems.} We
+         define three notions in the updatable SRS and ROM, 
+        \emph{trapdoor-less zero-knowledge},
+        a \emph{unique response} property, and \emph{rewinding-based
+        knowledge soundness}. Our main theorem shows that multi-message FS-compiled proof systems that satisfy these notions \emph{are USE
+        out-of-the box}.
+    
+\item
+\emph{USE for concrete zkSNARKs.}
+We prove that the most efficient updatable SRS SNARKS -- Plonk/Sonic/Marlin -- satisfy the premises of our theorem. We thus show that these zkSNARKs are updatable simulation extractable.
+
+\item
+  \emph{SNARKY signatures in the updatable setting.} Our results validate the folklore that the Fiat--Shamir transform is a natural means for constructing signatures of knowledge. This gives rise to the first SoK in the updatable setting and confirms that a much larger class of zkSNARKs, besides \cite{C:GroMal17}, can be lifted to SoK.
+
+\item \emph{Broad applicability.} The updatable SRS plus ROM includes both the trusted SRS and the ROM as special cases. This implies the relevance of our theorem for transparent zkSNARKs such as Halo2 and Plonky2 that replace the polynomial commitments of~Kate et al. with commitments from Bulletproof and STARKs, respectively.
+  
+\end{itemize}
+% \paragraph{SE zkSNARKs}
+
+% Recently, Ganesh et al. (SCN 2022) shown that Plonk, Marlin, Sonic are
+% simulation-extractable out-of-the-box. Namely, no transformation, that would
+% inevitably worse the zkSNARK's performance, is needed. More generally, the
+% authors prove that any zkSNARK that is 
+% \begin{itemize}
+% \item rewinding-based knowledge sound
+% \item has unique response property, and
+% \item trapdoor less zero Knowledge
+% \end{itemize}
+% is simulation extractable. 
+\subsection{Technical Overview}
+At a high level, the proof of our main theorem for updatable simulation
+extractability is along the lines of the simulation extractability proof for
+FS-compiled sigma protocols from (Faust et al. Indocrypt 2012). However, our theorem
+introduces new notions that are more general to allow us to consider proof
+systems that are richer than sigma protocols and support an updatable setup. We
+discuss some of the technical challenges below.
+
+\oursubsub{Rewinding-Based Knowledge Soundness (RBKS).}
+Following Faust et al., one would have to show that for the protocols
+we consider, a witness can be extracted from sufficiently many valid transcripts
+with a common prefix. The standard definition of special soundness for sigma
+protocols requires the extraction of a witness from any two transcripts with the
+same first message. However, most zkSNARK protocols do not satisfy this notion.
+We put forth a notion analogous to special soundness that is more general and
+applicable to a wider class of protocols. Namely, protocols compiled using multi-round FS that rely on an (updatable) SRS,  have more than three messages, and the number of transcripts required for extraction is more than two. 
+
+Furthermore, the protocols we consider are arguments and rely on a SRS that comes with a trapdoor. An adversary in possession of the trapdoor can produce multiple valid proof transcripts potentially for false statements without
+knowing any witness. 
+
+Instead, we give a rewinding-based knowledge soundness definition with an extractor that proceeds in two steps. It first uses a tree building algorithm $\tdv$ to obtain a tree of transcripts. In the second step, it uses a tree extraction algorithm $\extcss$ to compute a witness from this tree. Tree-based knowledge soundness guarantees that it is possible to extract a witness from all
+(but negligibly many) trees of accepting transcripts produced by probabilistic
+polynomial time (PPT) adversaries.
+
+\oursubsub{Unique Response Protocols (UR).}  Another property
+required to show simulation extractability is the unique response property which says
+that for $3$-message sigma protocols, the response of the prover ($3$-rd message) is determined by the first message and the challenge (intuitively, the prover can only employ fresh randomness in the first
+message of the protocol). We cannot use this definition since the protocols
+we consider have multiple rounds of randomized prover messages. We propose a generalization of the unique response property called $\ur{k}$. It requires that the behavior of the prover be determined by the first
+$k$ of its messages. 
+
+\oursubsub{Trapdoor-Less Zero-Knowledge (TLZK).} 
+The premises of our main theorem include two computational properties that do not mention a simulator, RBKS and UR. The theorem states that together with a suitable property for the simulator of the zero-knowledge property, they imply USE.
+%
+Our key technique is to simulate simulation queries when reducing to RBKS and UR. For this it is convenient that the zero-knowledge simulator be trapdoor-less, that is can produce proofs without relying on the
+knowledge of the trapdoor. Simulation is based purely on the simulators early control over the challenge. 
+%
+In the ROM this corresponds to a simulator that programs the random oracle and can be understood as a generalization of
+honest-verifier zero-knowledge for multi-message Fiat--Shamir transformed proof systems with an
+SRS. 
+\end{document}
