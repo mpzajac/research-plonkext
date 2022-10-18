@@ -118,7 +118,14 @@
     \item[Desired time slot:] 20 minutes   
 \end{description}
 \section{Content}
-We show our result on simulation extractability of zkSNARKs. We prove a theorem stating that zkSNARKs that fulfils some, relatively mild, properties are simulation-extractable out-of-the-box. In our paper, we show that Plonk, Marlin, Sonic (and related) posses the required properties. We argue, that since simulation extractability much better fit real-life zkSNARKs' use cases, it should be the go-to security notion. Especially that the requirements for simulation-extractability, as we show in the paper, are easy to meet. 
+We show that three popular universal zero-knowledge SNARKs (Plonk, Sonic, and Marlin) are updatable SRS simulation extractable NIZKs and signatures of knowledge   (SoK) out-of-the-box avoiding any compilation overhead.
+
+Towards this we generalize results for the Fiat--Shamir (FS) transformation, which turns interactive protocols into signature schemes, non-interactive proof systems, or SoK in the random oracle model (ROM).  The security of the transformation relies on rewinding to extract the secret key or the witness, even in the presence of signing queries for signatures and simulation queries for proof systems and SoK, respectively.  We build on this line of work and analyze multi-round FS for arguments with a structured reference string (SRS). The combination of ROM and SRS, while redundant in theory, is the model of choice for the most efficient practical systems to date. We also consider the case where the SRS is updatable and define a strong simulation extractability notion that allows for simulated proofs with respect to an SRS to which the adversary can contribute updates.
+  
+We define three properties (trapdoor-less zero-knowledge, rewinding-based knowledge soundness, and a unique response property) that are sufficient for argument systems based on multi-round FS to be also simulation extractable in this strong sense. We show that Plonk, Sonic, and Marlin satisfy these properties, and conjecture that many other argument systems such as Lunar, Basilisk, and transparent variants of Plonk fall within the reach of our main theorem.
+
+% We show our result on simulation extractability of zkSNARKs. We prove a theorem stating that zkSNARKs that fulfils some, relatively mild, properties are simulation-extractable out-of-the-box. In our paper, we show that Plonk, Marlin, Sonic (and related) posses the required properties. 
+We argue, that since simulation extractability much better fit real-life zkSNARKs' use cases, it should be the go-to security notion. Especially that the requirements for simulation-extractability, as we show in the paper, are easy to meet. 
 
 \subsection{Motivation}
 Most zkSNARKs are shown only to satisfy a standard knowledge soundness property.
@@ -203,23 +210,26 @@ with a common prefix. The standard definition of special soundness for sigma
 protocols requires the extraction of a witness from any two transcripts with the
 same first message. However, most zkSNARK protocols do not satisfy this notion.
 We put forth a notion analogous to special soundness that is more general and
-applicable to a wider class of protocols. Namely, protocols compiled using multi-round FS that rely on an (updatable) SRS,  have more than three messages, and the number of transcripts required for extraction is more than two. 
-
-Furthermore, the protocols we consider are arguments and rely on a SRS that comes with a trapdoor. An adversary in possession of the trapdoor can produce multiple valid proof transcripts potentially for false statements without
-knowing any witness. 
+applicable to a wider class of protocols. 
+% Namely, protocols compiled using multi-round FS that rely on an (updatable) SRS,  have more than three messages, and the number of transcripts required for extraction is more than two. 
+% %
+% Furthermore, the protocols we consider are arguments and rely on a SRS that comes with a trapdoor. An adversary in possession of the trapdoor can produce multiple valid proof transcripts potentially for false statements without
+% knowing any witness. 
 
 % Instead, we give a rewinding-based knowledge soundness definition with an extractor that proceeds in two steps. It first uses a tree building algorithm $\tdv$ to obtain a tree of transcripts. In the second step, it uses a tree extraction algorithm $\extcss$ to compute a witness from this tree. Tree-based knowledge soundness guarantees that it is possible to extract a witness from all(but negligibly many) trees of accepting transcripts produced by probabilisticpolynomial time (PPT) adversaries.
 
-\oursubsub{Unique Response Protocols (UR).}  Another property
-required to show simulation extractability is the unique response property which says
-that for $3$-message sigma protocols, the response of the prover ($3$-rd message) is determined by the first message and the challenge (intuitively, the prover can only employ fresh randomness in the first
-message of the protocol). We cannot use this definition since the protocols
-we consider have multiple rounds of randomized prover messages. We propose a generalization of the unique response property called $\ur{k}$. It requires that the behavior of the prover be determined by the first
+\oursubsub{Unique Response Protocols (UR).}  
+% Another property
+% required to show simulation extractability is the unique response property which says
+% that for $3$-message sigma protocols, the response of the prover ($3$-rd message) is determined by the first message and the challenge (intuitively, the prover can only employ fresh randomness in the first
+% message of the protocol). We cannot use this definition since the protocols
+% we consider have multiple rounds of randomized prover messages. 
+We propose a generalization of the unique response property called $\ur{k}$. It requires that the behavior of the prover be determined by the first
 $k$ of its messages. 
 
 \oursubsub{Trapdoor-Less Zero-Knowledge (TLZK).} 
-The premises of our main theorem include two computational properties that do not mention a simulator, RBKS and UR. The theorem states that together with a suitable property for the simulator of the zero-knowledge property, they imply USE.
-%
+% The premises of our main theorem include two computational properties that do not mention a simulator, RBKS and UR. The theorem states that together with a suitable property for the simulator of the zero-knowledge property, they imply USE.
+% %
 Our key technique is to simulate simulation queries when reducing to RBKS and UR. For this it is convenient that the zero-knowledge simulator be trapdoor-less, that is can produce proofs without relying on the
 knowledge of the trapdoor. Simulation is based purely on the simulators early control over the challenge. 
 %
