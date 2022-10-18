@@ -118,7 +118,7 @@
     \item[Desired time slot:] 20 minutes   
 \end{description}
 \section{Content}
-Simulation extractability of zkSNARKs
+We show our result on simulation extractability of zkSNARKs. We prove a theorem stating that zkSNARKs that fulfils some, relatively mild, properties are simulation-extractable out-of-the-box. In our paper, we show that Plonk, Marlin, Sonic (and related) posses the required properties. We argue, that since simulation extractability much better fit real-life zkSNARKs' use cases, it should be the go-to security notion. Especially that the requirements for simulation-extractability, as we show in the paper, are easy to meet. 
 
 \subsection{Motivation}
 Most zkSNARKs are shown only to satisfy a standard knowledge soundness property.
@@ -171,7 +171,7 @@ We propose a definition of simulation extractability in the updatable SRS settin
 We prove that the most efficient updatable SRS SNARKS -- Plonk/Sonic/Marlin -- satisfy the premises of our theorem. We thus show that these zkSNARKs are updatable simulation extractable.
 
 \item
-  \emph{SNARKY signatures in the updatable setting.} Our results validate the folklore that the Fiat--Shamir transform is a natural means for constructing signatures of knowledge. This gives rise to the first SoK in the updatable setting and confirms that a much larger class of zkSNARKs, besides \cite{C:GroMal17}, can be lifted to SoK.
+  \emph{SNARKY signatures in the updatable setting.} Our results validate the folklore that the Fiat--Shamir transform is a natural means for constructing signatures of knowledge. This gives rise to the first SoK in the updatable setting and confirms that a much larger class of zkSNARKs, besides (Groth--Maller, 2017), can be lifted to SoK.
 
 \item \emph{Broad applicability.} The updatable SRS plus ROM includes both the trusted SRS and the ROM as special cases. This implies the relevance of our theorem for transparent zkSNARKs such as Halo2 and Plonky2 that replace the polynomial commitments of~Kate et al. with commitments from Bulletproof and STARKs, respectively.
   
@@ -208,9 +208,7 @@ applicable to a wider class of protocols. Namely, protocols compiled using multi
 Furthermore, the protocols we consider are arguments and rely on a SRS that comes with a trapdoor. An adversary in possession of the trapdoor can produce multiple valid proof transcripts potentially for false statements without
 knowing any witness. 
 
-Instead, we give a rewinding-based knowledge soundness definition with an extractor that proceeds in two steps. It first uses a tree building algorithm $\tdv$ to obtain a tree of transcripts. In the second step, it uses a tree extraction algorithm $\extcss$ to compute a witness from this tree. Tree-based knowledge soundness guarantees that it is possible to extract a witness from all
-(but negligibly many) trees of accepting transcripts produced by probabilistic
-polynomial time (PPT) adversaries.
+% Instead, we give a rewinding-based knowledge soundness definition with an extractor that proceeds in two steps. It first uses a tree building algorithm $\tdv$ to obtain a tree of transcripts. In the second step, it uses a tree extraction algorithm $\extcss$ to compute a witness from this tree. Tree-based knowledge soundness guarantees that it is possible to extract a witness from all(but negligibly many) trees of accepting transcripts produced by probabilisticpolynomial time (PPT) adversaries.
 
 \oursubsub{Unique Response Protocols (UR).}  Another property
 required to show simulation extractability is the unique response property which says
