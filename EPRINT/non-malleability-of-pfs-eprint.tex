@@ -161,11 +161,12 @@ the Fiat--Shamir transformed version of Plonk. Note that for notational convenie
 	& + (\p{z}(X) - 1) \lag_1(X) \infrac{\alpha^2}{\p{Z_H}(X)}
 	\end{align*}
 	Split $\p{t}(X)$ into degree less then $\noofc$ polynomials
-	$\p{t_{lo}}(X), \p{t_{mid}}(X), \p{t_{hi}}(X)$, such that
+	$\p{t'_{lo}}(X), \p{t'_{mid}}(X), \p{t'_{hi}}(X)$, such that
 	\(
 	\p{t}(X) = \p{t_{lo}}(X) + X^{\noofc} \p{t_{mid}}(X) + X^{2 \noofc}
 	\p{t_{hi}}(X)\,.
 	\)
+	Compute $\p{t_{lo}}(X) = \p{t'_{lo}}(X) + b_{10} X^{\noofc}, \p{t_{mid}}(X) = \p{t'_{mid}} - b_{10} + b_{11} X^{\noofc}, \p{t_{hi}}(X) = \p{t'_{hi}}(X) - b_{11}$.
 	Output $\gone{\p{t_{lo}}(\chi), \p{t_{mid}}(\chi), \p{t_{hi}}(\chi)}$.
 	
 	\item[Message 4] Get the challenge $\chz \in \FF_p$, $\chz = \ro(\tzkproof[0..3])$.
