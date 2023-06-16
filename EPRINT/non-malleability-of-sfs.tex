@@ -441,26 +441,21 @@ $\sonicprotfs$ is 2-programmable trapdoor-less zero-knowledge.
       \vec{c} = \vec{a} \cdot \vec{b}. 
     \end{equation}
   \item Pick randomizers $c_{\multconstr + 1}, \ldots, c_{\multconstr + 4}$,
-    honestly compute polynomials $\p{r}(X, Y), \p{r'}(X, Y), \p{s}(X, Y)$ and
-    pick randomly challenges $y$, $z$.
-  \item Output commitment $\gone{r} \gets \com(\srs, \multconstr, \p{r} (X,
-    1))$ and challenge $y$. 
-  \item Compute
-    \begin{align*}
-      & a' = \p{r}(z, 1),\\
-      & b' = \p{r}(z, y),\\
-      & s' = \p{s}(z, y).
-    \end{align*} 
-  \item Pick polynomial $\p{t}(X, Y)$ such that
-    \begin{align*}
-      & \p{t} (X, y) = \p{r} (X, 1) (\p{r}(X, y) + \p{s} (X, y)) - \p{k} (Y)\\
-      & \p{t} (0, y) = 0
-    \end{align*}
-  \item Output commitment $\gone{t} = \com (\srs, \dconst, \p{t} (X, y))$ and
-    challenge $z$.
+    honestly compute polynomials $\p{r}(X, Y), \p{s}(X, Y), \p{r'}(X, Y) = (\p{r}(X, Y) + \p{s} (X, Y))$.
+  \item Compute polynomial $\p{t} (X, Y) = \p{r} (X, 1) \p{r'}(X, Y) - \p{k} (Y)$ and pick $y$ such that $\p{t} (0, y) = 0$
+  \item Output commitment $\gone{r} \gets \com(\srs, \multconstr, \p{r} (X, 1))$ and challenge $y$. 
+  % \item Output commitment $\gone{t} = \com (\srs, \dconst, \p{t} (X, y))$ and
+  % challenge $z$.
+  % \item Compute
+  %   \begin{align*}
+  %     & a' = \p{r}(z, 1),\\
+  %     & b' = \p{r}(z, y),\\
+  %     & s' = \p{s}(z, y).
+  %   \end{align*} 
+  % % \item Output polynomial $\p{t}(X, Y)$
   \item Continue following the protocol.
   \end{enumerate}
-
+\michals{16.06}{Change the discussion below to accommodate for the new simulation strategy}
   We note that the simulation is perfect. This comes since, except polynomial
   $\p{t} (X, Y)$ all polynomials are computed following the protocol. For
   polynomial $\p{t} (X, Y)$ we observe that in a case of both real and simulated
