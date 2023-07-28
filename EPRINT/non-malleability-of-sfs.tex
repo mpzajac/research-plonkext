@@ -457,7 +457,11 @@ $\sonicprotfs$ is 2-programmable trapdoor-less zero-knowledge.
   \end{enumerate}
 \michals{16.06}{Change the discussion below to accommodate for the new simulation strategy}
 \michals{28.07}{We need to argue that $y$ looks random}
-  We note that the simulation is perfect. This comes since all polynomials are computed following the protocol, only $\gamma$ is programmed for the simulated proof. For 
+  We note that the simulation is perfect. 
+  
+  \markulf{28.07}{Due to the randomization, evaluations are equality distributed in the real and the simulated proof. we should check this by enumerating evaluation ($r(\chi,1), t(\chi, y), r(z,1), r(yz,1), t(z,y)$), where $r(z,1), r(yz,1)$ determine $t(z,y)$ and explaining randomization better. As $\vec{a}$ and $\vec{b}$ are sampled at random, all values $y$ are equally likely to be roots of $t(0,Y)$. I actually wonder whether we can pick witnesses in a way that makes this more obvious.}
+  
+  This comes since all polynomials are computed following the protocol, only $\gamma$ is programmed for the simulated proof. For 
   polynomial $\p{t} (X, Y)$ we observe that in a case of both real and simulated
   proof the verifier only learns commitment $\gone{t} = \p{t} (\chi, y)$ and
   evaluation $t' = \p{t} (z, y)$. Since the simulator picks $\p{t} (X, Y)$ such
