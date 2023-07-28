@@ -389,7 +389,7 @@ Then we analyze the case that one of the proofs in the tree $\tree$ outputted by
 
 \oursubsub{Trapdoor-Less Zero-Knowledge of Plonk}
 \michals{16.06}{PKC proof below, check}
-\begin{lemma}
+\begin{lemma}\label{lem:plonk_tlzk}
 	$\plonk$ is trapdoor-less zero-knowledge.\footnote{The simulator works as a simulator for proofs that are zero-knowledge in the standard model. However, we do not say that $\plonk$ is HVZK in the standard model as proof of that \emph{requires} the CRS simulator.} More precisely, assume that $\plonk$'s CRS simulator $\simulator_\chi$ produces a proof that is at most $\epszk$ far from a real proof, and $(\pR, \pS, \pT, \pf)$-uber assumption for $\pR, \pS, \pT, \pf$ as defined in \cref{eq:uber} is $\epsuber$-secure. Then for any $\ppt$ adversary $\adv$ its advantage in telling a proof produced by $\simulator$ from a real proof is upper-bounded by $\epszk + \epsuber$.
 	\end{lemma}
 	\begin{proof}
@@ -583,7 +583,6 @@ Then we analyze the case that one of the proofs in the tree $\tree$ outputted by
 	\abs{\prob{\game{1}} - \prob{\game{2}}} \leq \epsuber.  \) Eventually, \(
 	\abs{\prob{\game{0}} - \prob{\game{2}}} \leq \epszk + \epsuber.  \) \qed
 	\end{proof}
-\michals{9.06}{Got back to the uber assumption}
 \COMMENT{
 \begin{lemma}
 	\label{lem:plonk_tlzk}

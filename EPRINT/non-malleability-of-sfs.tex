@@ -442,8 +442,8 @@ $\sonicprotfs$ is 2-programmable trapdoor-less zero-knowledge.
     \end{equation}
   \item Pick randomizers $c_{\multconstr + 1}, \ldots, c_{\multconstr + 4}$,
     honestly compute polynomials $\p{r}(X, Y), \p{s}(X, Y), \p{r'}(X, Y) = (\p{r}(X, Y) + \p{s} (X, Y))$.
-  \item Compute polynomial $\p{t} (X, Y) = \p{r} (X, 1) \p{r'}(X, Y) - \p{k} (Y)$ and pick $y$ such that $\p{t} (0, y) = 0$
-  \item Output commitment $\gone{r} \gets \com(\srs, \multconstr, \p{r} (X, 1))$ and challenge $y$. 
+  \item Compute polynomial $\p{t} (X, Y) = \p{r} (X, 1) \p{r'}(X, Y) - \p{k} (Y)$.
+  \item Output commitment $\gone{r} \gets \com(\srs, \multconstr, \p{r} (X, 1))$ and challenge $y$, such that  $\p{t} (0, y) = 0$. 
   % \item Output commitment $\gone{t} = \com (\srs, \dconst, \p{t} (X, y))$ and
   % challenge $z$.
   % \item Compute
@@ -456,16 +456,16 @@ $\sonicprotfs$ is 2-programmable trapdoor-less zero-knowledge.
   \item Continue following the protocol.
   \end{enumerate}
 \michals{16.06}{Change the discussion below to accommodate for the new simulation strategy}
-  We note that the simulation is perfect. This comes since, except polynomial
-  $\p{t} (X, Y)$ all polynomials are computed following the protocol. For
+\michals{28.07}{We need to argue that $y$ looks random}
+  We note that the simulation is perfect. This comes since all polynomials are computed following the protocol, only $\gamma$ is programmed for the simulated proof. For 
   polynomial $\p{t} (X, Y)$ we observe that in a case of both real and simulated
   proof the verifier only learns commitment $\gone{t} = \p{t} (\chi, y)$ and
   evaluation $t' = \p{t} (z, y)$. Since the simulator picks $\p{t} (X, Y)$ such
   that 
   \begin{align*}
-      \p{t} (X, y) = \p{r} (X, 1) (\p{r}(X, y) + \p{s} (X, y)) - \p{k} (Y)
+      \p{t} (X, y) = \p{r} (X, 1) (\p{r}(X, y) + \p{s} (X, y)) - \p{k} (Y),
   \end{align*}
-  Values of $\gone{t}$ are equal in both proofs.
+  values of $\gone{t}$ are equal in both proofs.
   Furthermore, the simulator picks its polynomial such that $\p{t}(0, y) = 0$,
   hence it does not need the trapdoor to commit to it. (Note that the proof
   system's SRS does not allow to commit to polynomials which have non-zero
